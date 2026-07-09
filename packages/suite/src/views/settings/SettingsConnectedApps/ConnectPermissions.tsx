@@ -47,7 +47,7 @@ import {
     WalletIcon,
     XCircleIcon,
 } from '@trezor/icons';
-import { NetworkIcon, isNetworkSymbolWithIcon } from '@trezor/product-components';
+import { NetworkLogo, isNetworkSymbolWithIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
@@ -123,13 +123,13 @@ export const getPermissionText = (permissionType: MethodPermission | string) => 
 };
 
 // Network icon for a coin group; falls back to a rounded-square badge that
-// mirrors NetworkIcon for the device group (no coin) or altcoins that suite has
+// mirrors NetworkLogo for the device group (no coin) or altcoins that suite has
 // no network icon for.
 const GroupBadge = ({ coin }: { coin?: string }) => {
     const symbol = coin?.toLowerCase();
 
     if (symbol && isNetworkSymbolWithIcon(symbol)) {
-        return <NetworkIcon networkSymbol={symbol} size={24} />;
+        return <NetworkLogo networkSymbol={symbol} size={24} />;
     }
 
     return (

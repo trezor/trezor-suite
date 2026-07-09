@@ -5,7 +5,7 @@ import {
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { HStack, Text } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
+import { TokenLogo } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { TradeInfoRow } from '@suite-native/trading-atoms';
 
@@ -29,7 +29,7 @@ export const OriginalLimit = () => {
             </Text>
             <HStack alignItems="center">
                 {!!network?.symbol && (
-                    <CryptoIcon
+                    <TokenLogo
                         symbol={network.symbol}
                         contractAddress={contractAddress}
                         size="extraSmall"

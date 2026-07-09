@@ -20,7 +20,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { Banner, Card, Column, IconButton, Link, Row, Text } from '@trezor/components';
 import { CaretDownIcon } from '@trezor/icons';
-import { AssetLogo, CoinLogo } from '@trezor/product-components';
+import { TokenLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
@@ -113,18 +113,16 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
             <Card type="raised" paddingType="normal" onClick={onOpenTokensModal}>
                 <Row justifyContent="space-between" height={64}>
                     <Row justifyContent="flex-start" gap={spacings.sm}>
-                        {selectedToken ? (
-                            <AssetLogo
-                                symbol={account.symbol}
-                                contractAddress={selectedToken?.contract}
-                                size={24}
-                                placeholder={selectedToken?.symbol || account.symbol}
-                                placeholderWithTooltip={false}
-                                shouldTryToFetch={isTokenKnown}
-                            />
-                        ) : (
-                            <CoinLogo symbol={account.symbol} size={40} type="tokenWithNetwork" />
-                        )}
+                        <TokenLogo
+                            symbol={account.symbol}
+                            contractAddress={selectedToken?.contract}
+                            size={selectedToken?.contract ? 24 : 40}
+                            shouldTryToFetch={isTokenKnown}
+                            showNetworkIcon={!!selectedToken?.contract}
+                            placeholder={selectedToken?.symbol || account.symbol}
+                            placeholderWithTooltip={false}
+                        />
+
                         <Column alignItems="flex-start">
                             <Row justifyContent="flex-start">
                                 <Text intent="neutral" typographyStyle="body-md">

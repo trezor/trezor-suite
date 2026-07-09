@@ -23,7 +23,7 @@ import {
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
-import { NetworkIcon } from '@suite-native/icons';
+import { NetworkLogo } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { TxSimulationRiskBanner } from '@suite-native/tx-simulation';
@@ -179,8 +179,8 @@ export const WalletConnectSessionPopupScreen = () => {
                                         })}
                                     >
                                         {network.symbol && (
-                                            <NetworkIcon
-                                                symbol={network.symbol as any}
+                                            <NetworkLogo
+                                                networkSymbol={network.symbol as any}
                                                 size="large"
                                             />
                                         )}

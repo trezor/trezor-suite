@@ -1,6 +1,6 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Card, HStack, Text } from '@suite-native/atoms';
-import { NetworkIcon } from '@suite-native/icons';
+import { NetworkLogo } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
 type YieldDepositTxSimulationHeaderProps = {
@@ -25,7 +25,7 @@ export const YieldDepositTxSimulationHeader = ({
                     <Translation id="moduleTrading.exchangeTradePreviewCard.account" />
                 </Text>
                 <HStack spacing="sp8" alignItems="center">
-                    <NetworkIcon symbol={networkSymbol} size={20} />
+                    <NetworkLogo networkSymbol={networkSymbol} size={20} />
                     <Text variant="body-sm">{accountLabel}</Text>
                 </HStack>
             </HStack>

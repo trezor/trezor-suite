@@ -1,6 +1,6 @@
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Card, HStack, InlineAlertBox, Text } from '@suite-native/atoms';
-import { NetworkIcon } from '@suite-native/icons';
+import { NetworkLogo } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -50,7 +50,7 @@ export const CorrectNetworkMessageCard = ({
     return (
         <Card style={applyStyle(cardStyle)}>
             <HStack spacing="sp12" alignItems="center">
-                <NetworkIcon symbol={symbol} size="extraLarge" />
+                <NetworkLogo networkSymbol={symbol} size="extraLarge" />
                 <Text variant="body-sm">
                     <Translation
                         id="moduleSend.outputs.correctNetworkMessage"

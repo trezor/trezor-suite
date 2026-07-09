@@ -3,11 +3,11 @@ import { type Meta, type StoryObj } from '@storybook/react';
 import { isNetworkIconSymbol, networkIconSymbolMap } from '@suite-common/icons/src/iconUtils';
 import { Column, Grid, Paragraph } from '@trezor/components';
 
-import { NetworkIcon, allowedNetworkIconSizes } from './NetworkIcon';
+import { NetworkLogo, allowedNetworkLogoSizes } from '../NetworkLogo/NetworkLogo';
 
-const meta: Meta<typeof NetworkIcon> = {
-    title: 'NetworkIcon',
-    component: NetworkIcon,
+const meta: Meta<typeof NetworkLogo> = {
+    title: 'NetworkLogo',
+    component: NetworkLogo,
 };
 export default meta;
 
@@ -22,7 +22,7 @@ export const All: StoryObj = {
             {Object.keys(networkIconSymbolMap).map(networkSymbol => (
                 <Column key={networkSymbol} justifyContent="center" alignItems="center" gap={12}>
                     {isNetworkIconSymbol(networkSymbol) && (
-                        <NetworkIcon networkSymbol={networkSymbol} size={40} />
+                        <NetworkLogo networkSymbol={networkSymbol} size={40} />
                     )}
                     <Paragraph intent="neutral" priority="secondary" isMonospaced>
                         {networkSymbol}
@@ -33,14 +33,14 @@ export const All: StoryObj = {
     ),
 };
 
-export const Single: StoryObj<typeof NetworkIcon> = {
+export const Single: StoryObj<typeof NetworkLogo> = {
     args: {
         networkSymbol: 'btc',
         size: 64,
     },
     argTypes: {
         size: {
-            options: allowedNetworkIconSizes,
+            options: allowedNetworkLogoSizes,
             control: { type: 'select' },
         },
     },

@@ -2,7 +2,7 @@ import { invariant } from '@suite-common/suite-utils';
 import { cryptoIdToSymbol } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { Box, HStack, Text } from '@suite-native/atoms';
-import { NetworkIcon } from '@suite-native/icons';
+import { NetworkLogo } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
@@ -32,7 +32,7 @@ export const TradeableAssetNetworkInfo = ({ asset }: TradeableAssetNetworkInfoPr
 
     return (
         <HStack paddingHorizontal="sp8">
-            <NetworkIcon symbol={symbol} size="large" />
+            <NetworkLogo networkSymbol={symbol} size="large" />
             <Text
                 variant="body-sm"
                 color="contentPrimary"

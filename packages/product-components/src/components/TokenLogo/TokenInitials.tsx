@@ -18,13 +18,13 @@ const Circle = styled.div<{ $size: number }>`
     border: solid 1px ${({ theme }) => theme.elementBorderNeutralSofter};
     background-color: ${({ theme }) => theme.elementFillElevated};
 `;
-type AssetInitialsProps = {
+type TokenInitialsProps = {
     children: string;
     withTooltip?: boolean;
     size: number;
 };
 
-const AssetInitialsInner = ({ children, size, withTooltip = true }: AssetInitialsProps) => {
+const TokenInitialsInner = ({ children, size, withTooltip = true }: TokenInitialsProps) => {
     const firstChar = children[0];
 
     return (
@@ -42,6 +42,6 @@ const AssetInitialsInner = ({ children, size, withTooltip = true }: AssetInitial
     );
 };
 
-export const AssetInitials = ({ children, ...rest }: AssetInitialsProps) => (
-    <AssetInitialsInner {...rest}>{children}</AssetInitialsInner>
+export const TokenInitials = ({ children, ...rest }: TokenInitialsProps) => (
+    <TokenInitialsInner {...rest}>{children}</TokenInitialsInner>
 );

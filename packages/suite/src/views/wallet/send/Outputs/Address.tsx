@@ -31,7 +31,7 @@ import {
 import { Icon, IconButton, Input, Link, Row, Text } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { CheckIcon, InfoIcon, QrCodeIcon, WarningCircleIcon, XIcon } from '@trezor/icons';
-import { CoinLogo } from '@trezor/product-components';
+import { TokenLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { type TimerId } from '@trezor/type-utils';
 import {
@@ -483,7 +483,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         }
 
         if (isAddressWithLabel) {
-            return <CoinLogo symbol={symbol} size={16} />;
+            return <TokenLogo symbol={symbol} size={16} />;
         }
 
         return undefined;

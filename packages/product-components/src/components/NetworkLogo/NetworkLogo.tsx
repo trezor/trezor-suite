@@ -2,18 +2,18 @@ import { ReactSVG } from 'react-svg';
 
 import styled from 'styled-components';
 
-import { type NetworkIconSymbol } from '@suite-common/icons/src/iconSymbols';
 import {
+    type NetworkIconSymbol,
     getNetworkIconName,
     isNetworkIconSymbol,
     isTestnetNetworkIconSymbol,
-} from '@suite-common/icons/src/iconUtils';
-import { networkIcons } from '@suite-common/icons/src/networkIcons';
+    networkIcons,
+} from '@suite-common/icons';
 
-export const allowedNetworkIconSizes = [8, 12, 16, 20, 24, 32, 40, 48, 64] as const;
-export type NetworkIconSize = (typeof allowedNetworkIconSizes)[number];
+export const allowedNetworkLogoSizes = [8, 12, 16, 20, 24, 32, 40, 48, 64] as const;
+export type NetworkLogoSize = (typeof allowedNetworkLogoSizes)[number];
 
-const IconWrapper = styled.div<{ $size: NetworkIconSize; $isTestnet: boolean }>`
+const IconWrapper = styled.div<{ $size: NetworkLogoSize; $isTestnet: boolean }>`
     display: flex;
     flex-shrink: 0;
     width: ${({ $size }) => $size}px;
@@ -44,17 +44,17 @@ const StyledReactSVG = styled(ReactSVG)`
     }
 ` as typeof ReactSVG;
 
-export interface NetworkIconProps {
+interface NetworkLogoProps {
     networkSymbol: NetworkIconSymbol;
-    size?: NetworkIconSize;
+    size?: NetworkLogoSize;
     'data-testid'?: string;
 }
 
-export function NetworkIcon({
+export const NetworkLogo = ({
     networkSymbol,
     size = 32,
     'data-testid': dataTestId,
-}: NetworkIconProps) {
+}: NetworkLogoProps) => {
     if (!isNetworkIconSymbol(networkSymbol)) {
         console.error(`Network icon for ${networkSymbol} not found`);
 
@@ -76,4 +76,4 @@ export function NetworkIcon({
             />
         </IconWrapper>
     );
-}
+};

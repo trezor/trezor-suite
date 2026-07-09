@@ -4,5 +4,6 @@ export * from './CryptoIconWithPercentage';
 export * from './DeviceModelIcon';
 export * from './PizzaIcon';
 export * from './CryptoIconWithNetwork';
-export * from './NetworkIcon';
+export * from './NetworkLogo';
+export * from './TokenLogo';
 export * from './PaymentMethodIcon';

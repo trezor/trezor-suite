@@ -1,10 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
+import { ReactSVG } from 'react-svg';
 
 import styled, { css } from 'styled-components';
 
-import { isNetworkIconSymbol } from '@suite-common/icons/src/iconUtils';
-import { type NetworkSymbolExtended } from '@suite-common/wallet-config';
-import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils/src/tokenUtils';
+import {
+    type NetworkIconSymbol,
+    cryptoIcons,
+    isCryptoIconSymbol,
+    isNetworkIconSymbol,
+} from '@suite-common/icons';
+import {
+    type NetworkSymbolExtended,
+    getCoingeckoId,
+    getNetworkOptional,
+    isNetworkSymbol,
+} from '@suite-common/wallet-config';
+import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import {
     type FrameProps,
@@ -15,7 +26,7 @@ import {
 } from '@trezor/components';
 import { borders } from '@trezor/theme';
 
-import { AssetInitials } from './AssetInitials';
+import { TokenInitials } from './TokenInitials';
 import {
     type LogoCandidate,
     ZERO_ADDRESS,
@@ -24,36 +35,14 @@ import {
     makeAddressKey,
     makeCacheKey,
     resolvedLogoCache,
-} from './assetLogoUtils';
-import { NetworkIconBadge } from '../NetworkIcon/NetworkIconBadge';
+} from './tokenLogoUtils';
+import { NetworkLogoBadge } from '../NetworkLogo/NetworkLogoBadge';
 
-export const allowedAssetLogoSizes = [20, 24, 32, 40] as const satisfies number[];
-export type AssetLogoSize = (typeof allowedAssetLogoSizes)[number];
+export const allowedTokenLogoSizes = [16, 20, 24, 32, 40, 48, 64] as const;
+export type TokenLogoSize = (typeof allowedTokenLogoSizes)[number];
 
-export const allowedAssetLogoFrameProps = ['margin'] as const satisfies FramePropsKeys[];
-export type AllowedFrameProps = Pick<FrameProps, (typeof allowedAssetLogoFrameProps)[number]>;
-
-type AssetLogoBaseProps = AllowedFrameProps & {
-    size: AssetLogoSize;
-    contractAddress?: string | null;
-    shouldTryToFetch?: boolean;
-    placeholderWithTooltip?: boolean;
-    placeholder?: string;
-    'data-testid'?: string;
-    showNetworkIcon?: boolean;
-    customLogoUrl?: string;
-    isBordered?: boolean;
-};
-
-export type AssetLogoProps = AssetLogoBaseProps & {
-    symbol: NetworkSymbolExtended;
-    coingeckoId?: string;
-};
-
-export type AssetLogoWithIdProps = AssetLogoBaseProps & {
-    coingeckoId: string;
-    symbol?: NetworkSymbolExtended;
-};
+export const allowedTokenLogoFrameProps = ['margin'] as const satisfies FramePropsKeys[];
+export type AllowedFrameProps = Pick<FrameProps, (typeof allowedTokenLogoFrameProps)[number]>;
 
 const Container = styled.div<TransientProps<AllowedFrameProps> & { $size: number }>`
     ${({ $size }) => `
@@ -85,21 +74,36 @@ const Logo = styled.img<{ $size: number }>`
     background-color: ${({ theme }) => theme.elementFillElevated};
 `;
 
-export const AssetLogoWithId = ({
-    size,
-    coingeckoId,
+export interface TokenLogoProps extends AllowedFrameProps {
+    symbol: NetworkIconSymbol & NetworkSymbolExtended;
+    contractAddress?: string | null;
+    coingeckoId: string;
+    size?: TokenLogoSize;
+    shouldTryToFetch?: boolean;
+    placeholderWithTooltip?: boolean;
+    placeholder?: string;
+    showNetworkIcon?: boolean;
+    customLogoUrl?: string;
+    isBordered?: boolean;
+    'data-testid'?: string;
+}
+
+const AssetLogo = ({
     symbol,
-    contractAddress = null,
+    contractAddress,
+    coingeckoId,
+    size = 32,
     shouldTryToFetch = true,
-    placeholder = '',
     placeholderWithTooltip = true,
+    placeholder = '',
     showNetworkIcon = false,
     customLogoUrl,
     isBordered = true,
     'data-testid': dataTest,
     ...rest
-}: AssetLogoWithIdProps) => {
+}: TokenLogoProps) => {
     const [contractAddressArray, setContractAddressArray] = useState<string[] | undefined>();
+
     useEffect(() => {
         getAssetLogoContractAddresses(symbol, contractAddress).then(setContractAddressArray);
     }, [symbol, contractAddress]);
@@ -222,7 +226,7 @@ export const AssetLogoWithId = ({
         setShowPlaceholder(false);
     }, [cacheKey, candidates, hasCandidates]);
 
-    const frameProps = pickAndPrepareFrameProps(rest, allowedAssetLogoFrameProps);
+    const frameProps = pickAndPrepareFrameProps(rest, allowedTokenLogoFrameProps);
 
     const handleLoadError = () => {
         if (!current) return;
@@ -246,9 +250,9 @@ export const AssetLogoWithId = ({
     const logo = (
         <>
             {showPlaceholder && (
-                <AssetInitials size={size} withTooltip={placeholderWithTooltip}>
+                <TokenInitials size={size} withTooltip={placeholderWithTooltip}>
                     {placeholder}
-                </AssetInitials>
+                </TokenInitials>
             )}
             {!showPlaceholder && current && (
                 <LogoWrapper $size={size} $isBordered={isBordered}>
@@ -271,12 +275,124 @@ export const AssetLogoWithId = ({
     return (
         <Container $size={size} {...frameProps}>
             {showNetworkIcon && symbol && isNetworkIconSymbol(symbol) ? (
-                <NetworkIconBadge networkSymbol={symbol} parentSize={size}>
+                <NetworkLogoBadge networkSymbol={symbol} parentSize={size}>
                     {logo}
-                </NetworkIconBadge>
+                </NetworkLogoBadge>
             ) : (
                 logo
             )}
         </Container>
+    );
+};
+
+const SvgContainer = styled.div<{ $size: TokenLogoSize }>`
+    display: flex;
+    flex-shrink: 0;
+    width: ${({ $size }) => $size}px;
+    height: ${({ $size }) => $size}px;
+`;
+
+const StyledReactSVG = styled(ReactSVG)`
+    display: flex;
+    width: 100%;
+    height: 100%;
+
+    div {
+        display: flex;
+        width: 100%;
+        height: 100%;
+    }
+
+    svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+` as typeof ReactSVG;
+
+type TokenSvgProps = {
+    src: string;
+    size: TokenLogoSize;
+    'data-testid'?: string;
+};
+
+const TokenSvg = ({ src, size, 'data-testid': dataTestId }: TokenSvgProps) => (
+    <SvgContainer $size={size} data-testid={dataTestId}>
+        <StyledReactSVG
+            src={src}
+            beforeInjection={svg => {
+                svg.setAttribute('width', `${size}px`);
+                svg.setAttribute('height', `${size}px`);
+            }}
+            loading={() => <span className="loading" />}
+        />
+    </SvgContainer>
+);
+
+interface NativeTokenLogoProps {
+    symbol: NetworkIconSymbol & NetworkSymbolExtended;
+    size?: TokenLogoSize;
+    'data-testid'?: string;
+}
+
+const NativeTokenLogo = ({
+    symbol,
+    size = 32,
+    'data-testid': dataTestId,
+}: NativeTokenLogoProps) => (
+    <TokenSvg src={cryptoIcons[symbol]} size={size} data-testid={dataTestId} />
+);
+
+export const TokenLogo = ({
+    symbol,
+    contractAddress,
+    size = 32,
+    showNetworkIcon = false,
+    'data-testid': dataTestId,
+    ...rest
+}: Omit<TokenLogoProps, 'coingeckoId'>) => {
+    if (!contractAddress) {
+        if (showNetworkIcon) {
+            const network = getNetworkOptional(symbol);
+            const networkSymbol = network?.settlementLayer ?? symbol;
+            const displaySymbol = networkSymbol !== symbol ? networkSymbol : symbol;
+            const logo = (
+                <NativeTokenLogo symbol={displaySymbol} size={size} data-testid={dataTestId} />
+            );
+
+            if (networkSymbol !== symbol && isNetworkIconSymbol(symbol)) {
+                return (
+                    <NetworkLogoBadge networkSymbol={symbol} parentSize={size}>
+                        {logo}
+                    </NetworkLogoBadge>
+                );
+            }
+
+            return logo;
+        }
+
+        return <NativeTokenLogo symbol={symbol} size={size} data-testid={dataTestId} />;
+    }
+
+    const coingeckoId = isNetworkSymbol(symbol) ? getCoingeckoId(symbol) : undefined;
+
+    if (!coingeckoId) {
+        if (isCryptoIconSymbol(symbol)) {
+            return <NativeTokenLogo symbol={symbol} size={size} data-testid={dataTestId} />;
+        }
+
+        return null;
+    }
+
+    return (
+        <AssetLogo
+            coingeckoId={coingeckoId}
+            symbol={symbol}
+            contractAddress={contractAddress}
+            size={size}
+            showNetworkIcon={showNetworkIcon}
+            data-testid={dataTestId}
+            {...rest}
+        />
     );
 };

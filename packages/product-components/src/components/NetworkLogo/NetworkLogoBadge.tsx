@@ -4,16 +4,17 @@ import styled from 'styled-components';
 
 import { type NetworkIconSymbol } from '@suite-common/icons/src/iconSymbols';
 
-import { NetworkIcon, type NetworkIconSize } from './NetworkIcon';
+import { type NetworkLogoSize } from './NetworkLogo';
+import { NetworkLogo } from '../NetworkLogo/NetworkLogo';
 
 const NETWORK_ICON_BADGE_CUTOUT_SPACING = 2;
-const MIN_NETWORK_ICON_BADGE_PARENT_SIZE = 24 as const satisfies NetworkIconSize;
+const MIN_NETWORK_ICON_BADGE_PARENT_SIZE = 24 as const satisfies NetworkLogoSize;
 
-type NetworkIconBadgeParentSize = Extract<NetworkIconSize, 24 | 32 | 40 | 48 | 64>;
+type NetworkLogoBadgeParentSize = Extract<NetworkLogoSize, 24 | 32 | 40 | 48 | 64>;
 
 export const shouldShowNetworkIconBadge = (
-    parentSize: NetworkIconSize,
-): parentSize is NetworkIconBadgeParentSize => parentSize >= MIN_NETWORK_ICON_BADGE_PARENT_SIZE;
+    parentSize: NetworkLogoSize,
+): parentSize is NetworkLogoBadgeParentSize => parentSize >= MIN_NETWORK_ICON_BADGE_PARENT_SIZE;
 
 const parentSizeToSize = {
     24: 8,
@@ -21,9 +22,9 @@ const parentSizeToSize = {
     40: 16,
     48: 20,
     64: 24,
-} as const satisfies Record<NetworkIconBadgeParentSize, NetworkIconSize>;
+} as const satisfies Record<NetworkLogoBadgeParentSize, NetworkLogoSize>;
 
-export const mapParentSizeToSize = (parentSize: NetworkIconBadgeParentSize): NetworkIconSize =>
+export const mapParentSizeToSize = (parentSize: NetworkLogoBadgeParentSize): NetworkLogoSize =>
     parentSizeToSize[parentSize];
 
 const getRoundedRectPath = (offset: number, size: number, radius: number) =>
@@ -40,10 +41,10 @@ const getRoundedRectPath = (offset: number, size: number, radius: number) =>
         'Z',
     ].join(' ');
 
-const getNetworkIconBadgeOuterSize = (iconSize: NetworkIconSize) =>
+const getNetworkIconBadgeOuterSize = (iconSize: NetworkLogoSize) =>
     iconSize + NETWORK_ICON_BADGE_CUTOUT_SPACING * 2;
 
-const getCutoutMask = (parentSize: NetworkIconSize, iconSize: NetworkIconSize) => {
+const getCutoutMask = (parentSize: NetworkLogoSize, iconSize: NetworkLogoSize) => {
     const badgeOuterSize = getNetworkIconBadgeOuterSize(iconSize);
     const badgePosition = parentSize - badgeOuterSize + NETWORK_ICON_BADGE_CUTOUT_SPACING;
     const cutoutPath = getRoundedRectPath(badgePosition, badgeOuterSize, badgeOuterSize / 4);
@@ -53,15 +54,15 @@ const getCutoutMask = (parentSize: NetworkIconSize, iconSize: NetworkIconSize) =
     return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 };
 
-const Wrapper = styled.div<{ $parentSize: NetworkIconSize }>`
+const Wrapper = styled.div<{ $parentSize: NetworkLogoSize }>`
     position: relative;
     width: ${({ $parentSize }) => $parentSize}px;
     height: ${({ $parentSize }) => $parentSize}px;
 `;
 
 const MaskedContent = styled.div<{
-    $parentSize: NetworkIconSize;
-    $iconSize: NetworkIconSize;
+    $parentSize: NetworkLogoSize;
+    $iconSize: NetworkLogoSize;
 }>`
     width: 100%;
     height: 100%;
@@ -69,7 +70,7 @@ const MaskedContent = styled.div<{
         no-repeat;
 `;
 
-const BadgeWrapper = styled.div<{ $iconSize: NetworkIconSize }>`
+const BadgeWrapper = styled.div<{ $iconSize: NetworkLogoSize }>`
     position: absolute;
     right: 0;
     bottom: 0;
@@ -79,19 +80,19 @@ const BadgeWrapper = styled.div<{ $iconSize: NetworkIconSize }>`
     border-radius: 25%;
 `;
 
-type NetworkIconBadgeProps = {
+type NetworkLogoBadgeProps = {
     networkSymbol: NetworkIconSymbol;
-    parentSize: NetworkIconSize;
+    parentSize: NetworkLogoSize;
     children: ReactNode;
     'data-testid'?: string;
 };
 
-export const NetworkIconBadge = ({
+export const NetworkLogoBadge = ({
     networkSymbol,
     parentSize,
     children,
     'data-testid': dataTestId,
-}: NetworkIconBadgeProps) => {
+}: NetworkLogoBadgeProps) => {
     if (!shouldShowNetworkIconBadge(parentSize)) {
         return children;
     }
@@ -104,7 +105,7 @@ export const NetworkIconBadge = ({
                 {children}
             </MaskedContent>
             <BadgeWrapper $iconSize={size}>
-                <NetworkIcon networkSymbol={networkSymbol} size={size} />
+                <NetworkLogo networkSymbol={networkSymbol} size={size} />
             </BadgeWrapper>
         </Wrapper>
     );

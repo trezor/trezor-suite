@@ -1,0 +1,39 @@
+import { Text, View } from 'react-native';
+
+import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+import { MAX_FONT_SIZE_MULTIPLIER } from './Icon';
+
+type TokenLogoPlaceholderProps = {
+    placeholder: string;
+    containerStyle: NativeStyleObject;
+};
+
+const iconStyle = prepareNativeStyle(utils => ({
+    backgroundColor: utils.colors.surfaceFillPage,
+    alignItems: 'center',
+    justifyContent: 'center',
+}));
+
+const textStyle = prepareNativeStyle(utils => ({
+    ...utils.typography['body-md'],
+    color: utils.colors.contentPrimary,
+    textAlign: 'center',
+}));
+
+export const TokenLogoPlaceholder = ({
+    placeholder,
+    containerStyle,
+}: TokenLogoPlaceholderProps) => {
+    const { applyStyle } = useNativeStyles();
+    const firstChar = placeholder[0] || 'T';
+
+    // due to circular deps issues we need to use Text and View comp from 'react-native' instead of 'atoms'
+    return (
+        <View style={[containerStyle, applyStyle(iconStyle)]}>
+            <Text style={applyStyle(textStyle)} maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}>
+                {firstChar}
+            </Text>
+        </View>
+    );
+};

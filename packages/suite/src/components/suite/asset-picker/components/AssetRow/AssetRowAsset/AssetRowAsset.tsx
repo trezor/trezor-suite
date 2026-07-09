@@ -1,6 +1,6 @@
 import { type TradingAssetOption } from '@suite-common/trading';
 import { Row } from '@trezor/components';
-import { AssetLogo, CoinLogo, shouldShowNetworkIcon } from '@trezor/product-components';
+import { TokenLogo, shouldShowNetworkIcon } from '@trezor/product-components';
 
 import { AssetDetails } from '../AssetDetails';
 import { ItemClickableContainer } from '../ItemClickableContainer';
@@ -19,20 +19,16 @@ export function AssetRowAsset({ asset, dataTestId, onClick }: AssetRowAssetProps
             }}
         >
             <Row data-testid={dataTestId} gap={12} overflow="hidden" maxWidth="100%">
-                {asset.isNativeToken ? (
-                    <CoinLogo size={40} symbol={asset.symbol} type="tokenWithNetwork" />
-                ) : (
-                    <AssetLogo
-                        size={40}
-                        symbol={asset.networkSymbol}
-                        contractAddress={asset.contractAddress}
-                        placeholder={asset.displaySymbol}
-                        showNetworkIcon={shouldShowNetworkIcon(
-                            asset.networkSymbol,
-                            asset.contractAddress,
-                        )}
-                    />
-                )}
+                <TokenLogo
+                    symbol={asset.isNativeToken ? asset.symbol : asset.networkSymbol}
+                    contractAddress={asset.isNativeToken ? undefined : asset.contractAddress}
+                    size={40}
+                    showNetworkIcon={
+                        asset.isNativeToken ||
+                        shouldShowNetworkIcon(asset.networkSymbol, asset.contractAddress)
+                    }
+                    placeholder={asset.displaySymbol}
+                />
                 <AssetDetails
                     name={asset.displaySymbolName ?? asset.name}
                     displaySymbol={asset.displaySymbol}

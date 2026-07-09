@@ -12,7 +12,7 @@ import {
 } from '@suite-common/wallet-config';
 import { selectDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
 import { Text } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
+import { TokenLogo } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';
@@ -26,7 +26,7 @@ const Row = styled.span`
     display: flex;
 `;
 
-const getIcon = (symbol?: NetworkSymbol) => symbol && <CoinLogo symbol={symbol} size={24} />;
+const getIcon = (symbol?: NetworkSymbol) => symbol && <TokenLogo symbol={symbol} size={24} />;
 
 export const CoinProtocolRenderer = ({
     render,

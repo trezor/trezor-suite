@@ -26,7 +26,7 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
-import { CryptoIcon, Icon, NetworkIcon } from '@suite-native/icons';
+import { Icon, NetworkLogo, TokenLogo } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -192,7 +192,7 @@ export const YieldPendingTransactionModal = ({
                         label={<Translation id="moduleTrading.exchangeTradePreviewCard.account" />}
                     >
                         <HStack spacing="sp8" alignItems="center">
-                            <NetworkIcon symbol={accountSymbol} size={20} />
+                            <NetworkLogo networkSymbol={accountSymbol} size={20} />
                             <Text variant="body-sm" color="contentPrimary">
                                 {accountLabel}
                             </Text>
@@ -210,7 +210,7 @@ export const YieldPendingTransactionModal = ({
                                 alignItems="center"
                                 style={applyStyle(valueStyle)}
                             >
-                                <CryptoIcon
+                                <TokenLogo
                                     symbol={accountSymbol}
                                     contractAddress={vaultTokenContract}
                                     size="extraSmall"
@@ -236,7 +236,7 @@ export const YieldPendingTransactionModal = ({
                                     alignItems="center"
                                     style={applyStyle(valueStyle)}
                                 >
-                                    <CryptoIcon
+                                    <TokenLogo
                                         symbol={accountSymbol}
                                         contractAddress={amountTokenContract}
                                         size="extraSmall"

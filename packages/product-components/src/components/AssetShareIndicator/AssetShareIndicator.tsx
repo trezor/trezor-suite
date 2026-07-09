@@ -7,7 +7,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { motionEasing } from '@trezor/components';
 import { coinsColors } from '@trezor/theme';
 
-import { CoinLogo, type CoinLogoProps } from '../CoinLogo/CoinLogo';
+import { TokenLogo, type TokenLogoProps } from '../TokenLogo/TokenLogo';
 
 const Container = styled.div`
     position: relative;
@@ -19,7 +19,7 @@ const Container = styled.div`
     border-radius: 50%;
 `;
 
-export interface AssetShareIndicatorProps extends CoinLogoProps {
+export interface AssetShareIndicatorProps extends TokenLogoProps {
     symbol: NetworkSymbol;
     percentageShare?: number;
     index?: number;
@@ -112,7 +112,7 @@ export const AssetShareIndicator = ({
     ...rest
 }: AssetShareIndicatorProps) => (
     <Container>
-        <CoinLogo symbol={symbol} size={size} {...rest} />
+        <TokenLogo symbol={symbol} size={size} {...rest} />
         <ProgressCircle
             symbol={symbol}
             size={size}

@@ -8,8 +8,9 @@ import {
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { CryptoIcon, type CryptoIconSize, cryptoIconSizes } from './CryptoIcon';
-import { NetworkIcon, networkIconSizes } from './NetworkIcon';
+import { type CryptoIconSize, cryptoIconSizes } from './CryptoIcon';
+import { NetworkLogo, networkLogoSizes } from './NetworkLogo';
+import { TokenLogo } from './TokenLogo';
 
 interface CryptoIconWithNetworkProps {
     symbol: NetworkSymbol;
@@ -23,7 +24,7 @@ const networkWrapperStyle = prepareNativeStyle<{ size: CryptoIconSize }>((utils,
     bottom: 0,
     borderWidth: utils.borders.widths.small,
     borderColor: utils.colors.borderNeutral,
-    borderRadius: networkIconSizes[size] / 3,
+    borderRadius: networkLogoSizes[size] / 3,
 }));
 
 // This component shows network icon for tokens
@@ -42,10 +43,14 @@ export const CryptoIconWithNetwork = ({
 
     return (
         <View style={{ width: cryptoIconSizes[size], height: cryptoIconSizes[size] }}>
-            <CryptoIcon symbol={iconSymbol} contractAddress={contractAddress} size={size} />
+            <TokenLogo
+                symbol={iconSymbol as NetworkSymbol}
+                contractAddress={contractAddress}
+                size={size}
+            />
             {shouldShowNetwork && (
                 <View style={applyStyle(networkWrapperStyle, { size })}>
-                    <NetworkIcon symbol={symbol} size={size} />
+                    <NetworkLogo networkSymbol={symbol} size={size} />
                 </View>
             )}
         </View>

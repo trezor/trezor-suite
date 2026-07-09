@@ -6,7 +6,7 @@ import {
     type TradingAssetSellOption,
 } from '@suite-common/trading';
 import { Column, Row, Text } from '@trezor/components';
-import { AssetLogo, CoinLogo } from '@trezor/product-components';
+import { TokenLogo } from '@trezor/product-components';
 
 export type AssetPickerInputContentProps = {} & (
     | {
@@ -36,17 +36,13 @@ export function AssetPickerInputContent({ value }: AssetPickerInputContentProps)
 
     return (
         <Row gap={12}>
-            {isNativeToken ? (
-                <CoinLogo size={32} symbol={symbol} type="tokenWithNetwork" />
-            ) : (
-                <AssetLogo
-                    size={32}
-                    symbol={networkSymbol}
-                    contractAddress={contractAddress}
-                    placeholder={displaySymbol}
-                    showNetworkIcon={showNetwork}
-                />
-            )}
+            <TokenLogo
+                symbol={isNativeToken ? symbol : networkSymbol}
+                contractAddress={isNativeToken ? undefined : contractAddress}
+                size={32}
+                showNetworkIcon={isNativeToken || showNetwork}
+                placeholder={displaySymbol}
+            />
             <Column alignItems="start">
                 <Text
                     intent="neutral"

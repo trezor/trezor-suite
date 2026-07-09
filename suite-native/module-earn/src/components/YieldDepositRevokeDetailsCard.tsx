@@ -1,6 +1,6 @@
 import { type Account, type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { Card, HStack, Text } from '@suite-native/atoms';
-import { NetworkIcon } from '@suite-native/icons';
+import { NetworkLogo } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -50,7 +50,7 @@ export const YieldDepositRevokeDetailsCard = ({
                     flexShrink={1}
                     style={applyStyle(detailsRowValueStyle)}
                 >
-                    <NetworkIcon symbol={account.symbol} size={20} />
+                    <NetworkLogo networkSymbol={account.symbol} size={20} />
                     <Text
                         color="contentPrimary"
                         ellipsizeMode="tail"

@@ -17,7 +17,7 @@ import {
 import { findAccountsByAddress } from '@suite-common/wallet-utils';
 import { Card, Column, DotIndicator, H4, Modal, Row } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-import { CoinLogo, ConfirmOnDevicePill } from '@trezor/product-components';
+import { ConfirmOnDevicePill, TokenLogo } from '@trezor/product-components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
@@ -109,7 +109,7 @@ export const SignMessageModal = ({
                     >
                         {network && (
                             <Row gap={spacings.xxs}>
-                                <CoinLogo size={16} symbol={network.symbol} />
+                                <TokenLogo symbol={network.symbol} size={16} />
                                 {account ? (
                                     <AccountLabel
                                         account={account}

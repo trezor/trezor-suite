@@ -1,9 +1,9 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Card, Column, GhostContainer, Row, Text } from '@trezor/components';
 
-import { AssetLogo } from '../AssetLogo/AssetLogo';
 import { type AssetLogoProps } from '../AssetLogo/AssetLogoWithId';
-import { CoinLogo } from '../CoinLogo/CoinLogo';
+import { TokenLogo } from '../TokenLogo/TokenLogo';
+import { shouldShowNetworkIcon } from '../TokenLogo/tokenLogoUtils';
 
 export type Asset = {
     id: string;
@@ -47,21 +47,23 @@ export function TopAssets({
                         cursor="pointer"
                     >
                         <Column alignItems="center" justifyContent="center" gap={4}>
-                            {asset.isNativeToken ? (
-                                <CoinLogo
-                                    size={logoSize}
-                                    // @ts-expect-error
-                                    symbol={asset.symbol}
-                                    type="tokenWithNetwork"
-                                />
-                            ) : (
-                                <AssetLogo
-                                    size={logoSize}
-                                    symbol={asset.networkSymbol}
-                                    contractAddress={asset.contractAddress}
-                                    placeholder={asset.displaySymbol}
-                                />
-                            )}
+                            <TokenLogo
+                                // @ts-expect-error
+                                symbol={asset.isNativeToken ? asset.symbol : asset.networkSymbol}
+                                contractAddress={
+                                    asset.isNativeToken ? undefined : asset.contractAddress
+                                }
+                                size={logoSize}
+                                showNetworkIcon={
+                                    asset.isNativeToken ||
+                                    shouldShowNetworkIcon(
+                                        asset.networkSymbol,
+                                        asset.contractAddress,
+                                    )
+                                }
+                                placeholder={asset.displaySymbol}
+                            />
+
                             <Text typographyStyle="body-sm" intent="neutral">
                                 {asset.displaySymbol}
                             </Text>

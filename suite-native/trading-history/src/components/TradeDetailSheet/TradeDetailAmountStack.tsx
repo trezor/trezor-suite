@@ -4,9 +4,9 @@ import {
     cryptoIdToNetworkAndContractAddress,
     isCryptoIdForNativeToken,
 } from '@suite-common/trading';
-import type { NetworkDisplaySymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { HStack, Text, VStack } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
+import { TokenLogo } from '@suite-native/icons';
 import { CryptoToFiatValueBadge } from '@suite-native/trading-quote-utils';
 
 type TradeDetailAmountStackProps = {
@@ -25,10 +25,14 @@ const CryptoIdIcon = ({ cryptoId }: CryptoIdIconProps) => {
         return null;
     }
 
-    return isCryptoIdForNativeToken(cryptoId) ? (
-        <CryptoIcon symbol={network.displaySymbol as NetworkDisplaySymbol} size="tiny" />
-    ) : (
-        <CryptoIcon symbol={network.symbol} contractAddress={contractAddress} size="tiny" />
+    const isNativeToken = isCryptoIdForNativeToken(cryptoId);
+
+    return (
+        <TokenLogo
+            symbol={isNativeToken ? (network.displaySymbol as NetworkSymbol) : network.symbol}
+            contractAddress={isNativeToken ? undefined : contractAddress}
+            size="tiny"
+        />
     );
 };
 

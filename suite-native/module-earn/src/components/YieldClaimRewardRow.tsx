@@ -6,7 +6,7 @@ import {
 } from '@suite-common/wallet-types';
 import { HStack, Text } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
-import { CryptoIcon } from '@suite-native/icons';
+import { TokenLogo } from '@suite-native/icons';
 import { BigNumber } from '@trezor/utils';
 
 type YieldClaimRewardRowProps = {
@@ -38,10 +38,10 @@ export const YieldClaimRewardRow = ({
     return (
         <HStack spacing="sp16" justifyContent="space-between" alignItems="center">
             <HStack spacing="sp4" alignItems="center" flex={1}>
-                <CryptoIcon
+                <TokenLogo
                     symbol={networkSymbol}
                     contractAddress={tokenContractAddress}
-                    size={20}
+                    size="little"
                 />
                 <CryptoAmountFormatter
                     value={amount}

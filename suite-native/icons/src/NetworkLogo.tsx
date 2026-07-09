@@ -22,42 +22,43 @@ import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type CSSColor } from '@trezor/theme';
 
-import { type CryptoIconSize } from './CryptoIcon';
+import { type TokenLogoSize } from './TokenLogo';
 
-interface NetworkIconProps {
-    symbol: NetworkSymbol;
-    size?: CryptoIconSize | number;
+interface NetworkLogoProps {
+    networkSymbol: NetworkSymbol;
+    size?: TokenLogoSize | number;
 }
 
-export const networkIconSizes = {
+export const networkLogoSizes = {
     tiny: 6,
+    little: 8,
     extraSmall: 9,
     small: 12,
     large: 18,
     extraLarge: 24,
 } as const;
 
-const iconStyle = prepareNativeStyle<{ width: number; height: number }>((_, { width, height }) => ({
+const logoStyle = prepareNativeStyle<{ width: number; height: number }>((_, { width, height }) => ({
     width,
     height,
 }));
 
-type NetworkIconCanvasProps = {
-    iconName: NetworkIconName;
+type NetworkLogoCanvasProps = {
+    logoName: NetworkIconName;
     size: number;
     backgroundColor: CSSColor;
-    iconColor: CSSColor;
+    logoColor: CSSColor;
 };
 
-const NetworkIconCanvas = ({
-    iconName,
+const NetworkLogoCanvas = ({
+    logoName,
     size,
     backgroundColor,
-    iconColor,
-}: NetworkIconCanvasProps) => {
-    const iconSvg = useSVG(networkIcons[iconName]);
+    logoColor,
+}: NetworkLogoCanvasProps) => {
+    const logoSvg = useSVG(networkIcons[logoName]);
 
-    if (!iconSvg) {
+    if (!logoSvg) {
         return null;
     }
 
@@ -74,32 +75,34 @@ const NetworkIconCanvas = ({
             <Group
                 layer={
                     <Paint>
-                        <BlendColor color={iconColor} mode="srcIn" />
+                        <BlendColor color={logoColor} mode="srcIn" />
                     </Paint>
                 }
             >
-                <ImageSVG svg={iconSvg} x={0} y={0} width={size} height={size} />
+                <ImageSVG svg={logoSvg} x={0} y={0} width={size} height={size} />
             </Group>
         </Canvas>
     );
 };
 
-export const NetworkIcon = ({ symbol, size = 'small' }: NetworkIconProps) => {
+export const NetworkLogo = ({ networkSymbol, size = 'small' }: NetworkLogoProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const { translate } = useTranslate();
 
-    const sizeNumber = typeof size === 'number' ? size : networkIconSizes[size];
+    const sizeNumber = typeof size === 'number' ? size : networkLogoSizes[size];
 
-    if (!isNetworkIconSymbol(symbol)) {
+    if (!isNetworkIconSymbol(networkSymbol)) {
         return null;
     }
 
-    const iconName = getNetworkIconName(symbol);
-    const isTestnet = isTestnetNetworkIconSymbol(symbol);
+    const logoName = getNetworkIconName(networkSymbol);
+    const isTestnet = isTestnetNetworkIconSymbol(networkSymbol);
+
     const backgroundColor = isTestnet
         ? utils.colors.elementFillCriticalBold
         : utils.colors.elementFillContrast;
-    const iconColor = isTestnet
+
+    const logoColor = isTestnet
         ? utils.colors.contentOnDarkPrimary
         : utils.colors.contentPrimaryInverse;
 
@@ -108,13 +111,13 @@ export const NetworkIcon = ({ symbol, size = 'small' }: NetworkIconProps) => {
             accessible
             accessibilityRole="image"
             accessibilityHint={translate('icons.networkIconHint')}
-            style={applyStyle(iconStyle, { width: sizeNumber, height: sizeNumber })}
+            style={applyStyle(logoStyle, { width: sizeNumber, height: sizeNumber })}
         >
-            <NetworkIconCanvas
-                iconName={iconName}
+            <NetworkLogoCanvas
+                logoName={logoName}
                 size={sizeNumber}
                 backgroundColor={backgroundColor}
-                iconColor={iconColor}
+                logoColor={logoColor}
             />
         </View>
     );

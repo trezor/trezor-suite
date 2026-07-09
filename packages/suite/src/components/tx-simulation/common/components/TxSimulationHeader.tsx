@@ -3,7 +3,7 @@ import { type ReactNode } from 'react';
 import { AccountLabel } from '@suite/account';
 import { type Account } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
+import { TokenLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 interface TxSimulationHeaderProps {
@@ -21,7 +21,7 @@ export function TxSimulationHeader({ account, children }: TxSimulationHeaderProp
         >
             {account && (
                 <Row gap={spacings.xxs}>
-                    <CoinLogo size={16} symbol={account.symbol} />
+                    <TokenLogo symbol={account.symbol} size={16} />
                     <AccountLabel
                         account={account}
                         showAccountTypeBadge

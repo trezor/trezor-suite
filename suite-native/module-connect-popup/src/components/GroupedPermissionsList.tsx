@@ -11,7 +11,7 @@ import {
 import { isNetworkIconSymbol } from '@suite-common/icons';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { AccordionContent, AnimatedBox, Box, HStack, Text, VStack } from '@suite-native/atoms';
-import { Icon, NetworkIcon } from '@suite-native/icons';
+import { Icon, NetworkLogo } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { type MethodPermission, type PermissionRequest } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -42,14 +42,14 @@ const fallbackBadgeStyle = prepareNativeStyle(utils => ({
 }));
 
 // Network icon for a coin group; falls back to a rounded-square badge that
-// mirrors NetworkIcon for the device group (no coin) or altcoins that suite has
+// mirrors NetworkLogo for the device group (no coin) or altcoins that suite has
 // no network icon for.
 const GroupBadge = ({ coin }: { coin?: string }) => {
     const { applyStyle } = useNativeStyles();
     const symbol = coin?.toLowerCase();
 
     if (symbol && isNetworkIconSymbol(symbol)) {
-        return <NetworkIcon symbol={symbol as NetworkSymbol} size={24} />;
+        return <NetworkLogo networkSymbol={symbol as NetworkSymbol} size={24} />;
     }
 
     return (

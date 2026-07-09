@@ -1,7 +1,7 @@
 import { Icon, Input, Row, Select, Text } from '@trezor/components';
 import { MagnifyingGlassIcon } from '@trezor/icons';
 
-import { CoinLogo } from '../CoinLogo/CoinLogo';
+import { NetworkLogo } from '../NetworkLogo/NetworkLogo';
 import { type SearchAssetSelectConfig, useNetworkSelect } from './hooks/useNetworkSelect';
 
 export type SearchAssetProps = {
@@ -38,7 +38,7 @@ export const SearchAsset = ({
                             : `${dataTestIdBase}/filter/select-option-value/${option.value ?? 'all-networks'}`
                     }
                 >
-                    {option.value && <CoinLogo size={20} symbol={option.value} type="network" />}
+                    {option.value && <NetworkLogo networkSymbol={option.value} size={20} />}
                     <Text typographyStyle="body-sm" textWrap="nowrap">
                         {option.label}
                     </Text>

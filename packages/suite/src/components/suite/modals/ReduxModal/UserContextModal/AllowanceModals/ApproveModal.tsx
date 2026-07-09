@@ -20,7 +20,7 @@ import {
     Text,
 } from '@trezor/components';
 import { CaretDownIcon, InfoIcon, WarningIcon } from '@trezor/icons';
-import { AssetLogo, NetworkIcon } from '@trezor/product-components';
+import { NetworkLogo, TokenLogo } from '@trezor/product-components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
@@ -121,7 +121,7 @@ export const ApproveModal = (props: ApproveModalProps) => {
                                 <Translation id="TR_ACCOUNT" />
                             </Text>
                             <Row gap={8}>
-                                <NetworkIcon networkSymbol={account.symbol} size={20} />
+                                <NetworkLogo networkSymbol={account.symbol} size={20} />
                                 <AccountLabeling
                                     account={account}
                                     showAccountTypeBadge
@@ -141,7 +141,7 @@ export const ApproveModal = (props: ApproveModalProps) => {
                                     <Translation id="TR_APPROVAL_CURRENT_LIMIT" />
                                 </Text>
                                 <Row gap={8}>
-                                    <AssetLogo
+                                    <TokenLogo
                                         symbol={account.symbol}
                                         contractAddress={token.contract}
                                         size={20}

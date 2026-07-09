@@ -30,7 +30,7 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { ShieldCheckFilledIcon, ShieldWarningFilledIcon } from '@trezor/icons';
-import { CoinLogo } from '@trezor/product-components';
+import { NetworkLogo, TokenLogo } from '@trezor/product-components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
@@ -197,9 +197,8 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                                 >
                                     <NetworkItemWrapper $isDisabled={network.status !== 'active'}>
                                         {network.symbol && (
-                                            <CoinLogo
-                                                type="network"
-                                                symbol={network.symbol as any}
+                                            <NetworkLogo
+                                                networkSymbol={network.symbol as any}
                                                 size={24}
                                             />
                                         )}
@@ -227,7 +226,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                             formatOptionLabel={(account: Account) => (
                                 <Row gap={spacings.xs}>
                                     {account.symbol && (
-                                        <CoinLogo type="token" symbol={account.symbol} size={24} />
+                                        <TokenLogo symbol={account.symbol} size={24} />
                                     )}
                                     <AccountLabel
                                         account={account}

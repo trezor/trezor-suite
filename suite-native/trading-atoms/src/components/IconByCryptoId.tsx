@@ -1,8 +1,12 @@
 import type { CryptoId } from 'invity-api';
 
 import { cryptoIdToNetworkSymbolAndContractAddress } from '@suite-common/trading';
-import { type NetworkDisplaySymbol, getDisplaySymbol } from '@suite-common/wallet-config';
-import { CryptoIcon, type CryptoIconSize, CryptoIconWithNetwork } from '@suite-native/icons';
+import {
+    type NetworkDisplaySymbol,
+    type NetworkSymbol,
+    getDisplaySymbol,
+} from '@suite-common/wallet-config';
+import { type CryptoIconSize, TokenLogo } from '@suite-native/icons';
 
 export type IconByCryptoIdProps = {
     cryptoId: CryptoId;
@@ -23,9 +27,12 @@ export const IconByCryptoId = ({ cryptoId, size, withNetwork = false }: IconByCr
         ? symbol
         : (getDisplaySymbol(symbol) as NetworkDisplaySymbol);
 
-    return withNetwork ? (
-        <CryptoIconWithNetwork symbol={symbol} contractAddress={contractAddress} size={size} />
-    ) : (
-        <CryptoIcon symbol={adjustedSymbol} contractAddress={contractAddress} size={size} />
+    return (
+        <TokenLogo
+            symbol={withNetwork ? symbol : (adjustedSymbol as NetworkSymbol)}
+            contractAddress={contractAddress}
+            size={size}
+            showNetworkIcon={withNetwork}
+        />
     );
 };
