@@ -8,19 +8,19 @@ import { TradingFiatAmountInfoItem } from 'src/views/wallet/trading/common/Tradi
 import { TradingInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoItem';
 import { TradingPaymentMethodInfoItem } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingPaymentMethodInfoItem';
 
-type TradingDetailBuySidebarProps = {
+type TradingBuyDetailSidebarProps = {
     receiveAccount?: Account;
     paymentMethod?: TradingPaymentMethodType;
     paymentMethodName?: string;
     quoteAmounts: TradingGetCryptoQuoteAmountProps;
 };
 
-export const TradingDetailBuySidebar = ({
+export const TradingBuyDetailSidebar = ({
     receiveAccount,
     paymentMethod,
     paymentMethodName,
     quoteAmounts,
-}: TradingDetailBuySidebarProps) => (
+}: TradingBuyDetailSidebarProps) => (
     <Card paddingType="none" data-testid="@trading/transaction/detail/sidebar">
         <Column gap={24} padding={24}>
             <TradingInfoItem

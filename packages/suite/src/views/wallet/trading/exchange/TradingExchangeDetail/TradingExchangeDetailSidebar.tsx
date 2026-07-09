@@ -18,19 +18,19 @@ import { TradingInfoItem } from 'src/views/wallet/trading/common/TradingSelected
 import { TradingUtilsProviderKyc } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsProviderKyc';
 import { formatCryptoAmountAsAmount } from 'src/views/wallet/trading/common/formatCryptoAmountAsAmount';
 
-type TradingDetailExchangeSidebarProps = {
+type TradingExchangeDetailSidebarProps = {
     providers?: TradingExchangeProvidersInfoProps;
     receiveAccount?: Account;
     sendAccount?: Account;
     trade: ExchangeTrade;
 };
 
-export const TradingDetailExchangeSidebar = ({
+export const TradingExchangeDetailSidebar = ({
     providers,
     receiveAccount,
     sendAccount,
     trade,
-}: TradingDetailExchangeSidebarProps) => {
+}: TradingExchangeDetailSidebarProps) => {
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();

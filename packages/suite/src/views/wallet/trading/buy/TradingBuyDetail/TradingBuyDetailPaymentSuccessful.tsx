@@ -6,18 +6,17 @@ import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/compone
 import { CheckIcon } from '@trezor/icons';
 
 import { useDispatch } from 'src/hooks/suite';
+import { TradingDetailProviderInfo } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProviderInfo';
 
-import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
-
-type TradingDetailBuyPaymentSuccessfulProps = {
+type TradingBuyDetailPaymentSuccessfulProps = {
     trade: BuyTrade;
     provider?: BuyProviderInfo;
 };
 
-export const TradingDetailBuyPaymentPaymentSuccessful = ({
+export const TradingBuyDetailPaymentSuccessful = ({
     trade,
     provider,
-}: TradingDetailBuyPaymentSuccessfulProps) => {
+}: TradingBuyDetailPaymentSuccessfulProps) => {
     const dispatch = useDispatch();
 
     const handleClick = () => dispatch(goto({ routeName: 'wallet-trading-buy' }));

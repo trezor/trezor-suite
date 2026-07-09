@@ -11,10 +11,9 @@ import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActio
 import { useDispatch } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 import { createTxLink } from 'src/utils/wallet/trading/buyUtils';
+import { TradingDetailStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStep';
 
-import { TradingDetailStep } from '../TradingDetailStep';
-
-type TradingDetailBuyPaymentWaitingForUserStepProps = {
+type TradingBuyDetailPaymentWaitingForUserStepProps = {
     trade: BuyTrade;
     account: Account;
     providerName?: string;
@@ -56,11 +55,11 @@ const getButtonLabelId = (trade: BuyTrade): TranslationKey => {
     }
 };
 
-export const TradingDetailBuyPaymentWaitingForUserStep = ({
+export const TradingBuyDetailPaymentWaitingForUserStep = ({
     trade,
     account,
     providerName,
-}: TradingDetailBuyPaymentWaitingForUserStepProps) => {
+}: TradingBuyDetailPaymentWaitingForUserStepProps) => {
     const [isWorking, setIsWorking] = useState(false);
     const dispatch = useDispatch();
     const state = getState(trade);

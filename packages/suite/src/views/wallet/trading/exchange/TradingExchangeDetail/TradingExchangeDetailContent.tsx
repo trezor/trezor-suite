@@ -21,16 +21,16 @@ import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDeta
 import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { AfterTradeExperiment } from 'src/views/wallet/trading/common/TradingDetail/AfterTradeExperiment';
-import { TradingDetailExchangePaymentConverting } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentConverting';
-import { TradingDetailExchangePaymentFailed } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentFailed';
-import { TradingDetailExchangePaymentKYC } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentKYC';
-import { TradingDetailExchangePaymentSending } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentSending';
-import { TradingDetailExchangePaymentSuccessful } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentSuccessful';
-import { TradingDetailExchangeSidebar } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchangeSidebar';
 import { TradingDetailHeader } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailHeader';
+import { TradingDetailStepList } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStepList';
 import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
-import { TradingDetailStepList } from '../TradingDetailStepList';
+import { TradingExchangeDetailPaymentConverting } from './TradingExchangeDetailPaymentConverting';
+import { TradingExchangeDetailPaymentFailed } from './TradingExchangeDetailPaymentFailed';
+import { TradingExchangeDetailPaymentKYC } from './TradingExchangeDetailPaymentKYC';
+import { TradingExchangeDetailPaymentSending } from './TradingExchangeDetailPaymentSending';
+import { TradingExchangeDetailPaymentSuccessful } from './TradingExchangeDetailPaymentSuccessful';
+import { TradingExchangeDetailSidebar } from './TradingExchangeDetailSidebar';
 
 const Wrapper = styled.div`
     ${TradingWrapper}
@@ -56,7 +56,7 @@ const getTradeStatusStep = (tradeStatus: ExchangeTradeStatus) => {
     }
 };
 
-export const TradingDetailExchange = () => {
+export const TradingExchangeDetailContent = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const accounts = useSelector(selectAccounts);
     const { trade, info } = useTradingDetailContext<TradingExchangeType>();
@@ -112,7 +112,7 @@ export const TradingDetailExchange = () => {
         switch (tradeStatusStep) {
             case 'success':
                 return (
-                    <TradingDetailExchangePaymentSuccessful
+                    <TradingExchangeDetailPaymentSuccessful
                         trade={trade.data}
                         account={sendAccount}
                         provider={provider}
@@ -120,7 +120,7 @@ export const TradingDetailExchange = () => {
                 );
             case 'error':
                 return (
-                    <TradingDetailExchangePaymentFailed
+                    <TradingExchangeDetailPaymentFailed
                         trade={trade.data}
                         account={sendAccount}
                         provider={provider}
@@ -128,7 +128,7 @@ export const TradingDetailExchange = () => {
                 );
             case 'kyc':
                 return (
-                    <TradingDetailExchangePaymentKYC
+                    <TradingExchangeDetailPaymentKYC
                         trade={trade.data}
                         account={sendAccount}
                         provider={provider}
@@ -146,13 +146,13 @@ export const TradingDetailExchange = () => {
                         <Box margin={{ top: 32, bottom: 12 }}>
                             <TradingDetailStepList>
                                 {!trade.data.isDex && (
-                                    <TradingDetailExchangePaymentSending
+                                    <TradingExchangeDetailPaymentSending
                                         trade={trade.data}
                                         account={sendAccount}
                                         composedTransaction={composedTransaction}
                                     />
                                 )}
-                                <TradingDetailExchangePaymentConverting
+                                <TradingExchangeDetailPaymentConverting
                                     trade={trade.data}
                                     provider={provider}
                                     account={trade.data.isDex ? sendAccount : undefined}
@@ -183,7 +183,7 @@ export const TradingDetailExchange = () => {
                     quoteAmounts={quoteAmounts}
                 />
             </Column>
-            <TradingDetailExchangeSidebar
+            <TradingExchangeDetailSidebar
                 sendAccount={sendAccount}
                 receiveAccount={receiveAccount}
                 trade={trade.data}
