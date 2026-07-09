@@ -63,7 +63,9 @@ export const composeYieldWithdrawTransaction = async ({
         flowType,
     });
 
-    const nonceTask = dispatch(ethereumGetCurrentNonceThunk({ selectedAccount: account })).unwrap();
+    const nonceTask = dispatch(
+        ethereumGetCurrentNonceThunk({ selectedAccount: account, fetchConfirmedNonce: true }),
+    ).unwrap();
 
     const estimatedFeeTask = TrezorConnect.blockchainEstimateFee({
         coin: account.symbol,

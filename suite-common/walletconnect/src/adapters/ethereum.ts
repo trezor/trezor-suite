@@ -171,7 +171,10 @@ const ethereumRequestThunk = createThunk<
                 transaction.value = '0x0';
             }
             const { nonce } = await dispatch(
-                ethereumGetCurrentNonceThunk({ selectedAccount: account }),
+                ethereumGetCurrentNonceThunk({
+                    selectedAccount: account,
+                    fetchConfirmedNonce: true,
+                }),
             ).unwrap();
             const nonceHex = sanitizeHex(parseInt(nonce).toString(16));
             const payload = {
