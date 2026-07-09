@@ -40,7 +40,7 @@ export const TransactionReviewOutputTimer = ({
                     isDisabled={isSending || disabled}
                     onClick={() => handleClick(() => onTryAgain(true))}
                 >
-                    <Translation id="TR_RETRY" />
+                    <Translation id="TR_TRY_AGAIN" />
                 </Button>
                 <Badge intent="warning">
                     <TimerBox>
@@ -51,7 +51,7 @@ export const TransactionReviewOutputTimer = ({
                                 deadline={deadline}
                                 unitDisplay="narrow"
                                 message="TR_TX_CONFIRMATION_TIMER_SHORT"
-                                pastDeadlineMessage="TR_TX_SEND_FAILED_TITLE"
+                                pastDeadlineMessage="TR_TX_SEND_FAILED"
                             />
                         )}
                     </TimerBox>
@@ -65,7 +65,7 @@ export const TransactionReviewOutputTimer = ({
             icon={HourglassIcon}
             rightContent={
                 <Banner.Button isDisabled={isSending} onClick={() => onTryAgain(true)}>
-                    <Translation id="TR_RETRY" />
+                    <Translation id="TR_TRY_AGAIN" />
                 </Banner.Button>
             }
             description={
@@ -75,7 +75,7 @@ export const TransactionReviewOutputTimer = ({
                             deadline={deadline}
                             unitDisplay="long"
                             message="TR_TX_CONFIRMATION_TIMER"
-                            pastDeadlineMessage="TR_TX_SEND_FAILED_TITLE"
+                            pastDeadlineMessage="TR_TX_SEND_FAILED"
                         />
                     </Text>
                     <Translation id="TR_SOLANA_TX_CONFIRMATION_TIMER_DESCRIPTION" />

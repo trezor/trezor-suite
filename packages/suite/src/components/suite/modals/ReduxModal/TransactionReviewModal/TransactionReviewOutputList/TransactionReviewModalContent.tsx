@@ -23,10 +23,9 @@ import { Column } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 
-import { TransactionReviewOutputList } from './TransactionReviewOutputList';
-import { ExpiredTxValidity } from '../../UserContextModal/TxDetailModal/ExpiredTxValidity';
 import { ReplaceByFeeFailedOriginalTxConfirmed } from '../../UserContextModal/TxDetailModal/ReplaceByFeeFailedOriginalTxConfirmed';
 import { TransactionReviewDetails } from '../TransactionReviewDetails';
+import { TransactionReviewOutputList } from './TransactionReviewOutputList';
 
 type TransactionReviewModalContentProps = {
     account: Account;
@@ -54,7 +53,6 @@ export const TransactionReviewModalContent = ({
     availableRewards,
     onTryAgain,
     isSending,
-    hasTxReviewExpired,
     isRbfConfirmedError,
 }: TransactionReviewModalContentProps) => {
     const { symbol, networkType } = account;
@@ -106,11 +104,6 @@ export const TransactionReviewModalContent = ({
 
     const stakeType = getStakeType(precomposedForm);
 
-    const shouldCheckTxTimeValidity = useMemo(
-        () => account.networkType === 'solana' && createdTxTimestamp !== 0,
-        [account.networkType, createdTxTimestamp],
-    );
-
     if (areDetailsVisible) {
         return <TransactionReviewDetails tx={precomposedTx} txHash={serializedTx?.tx} />;
     }
@@ -122,10 +115,6 @@ export const TransactionReviewModalContent = ({
                 networkType={networkType}
             />
         );
-    }
-
-    if (shouldCheckTxTimeValidity && hasTxReviewExpired && !isSending) {
-        return <ExpiredTxValidity symbol={symbol} />;
     }
 
     return (

@@ -11575,14 +11575,17 @@ export const messages = defineMessages({
         id: 'TR_EARN_CONSENT_TO_STAKING_WITH_PROVIDER',
         defaultMessage: 'I acknowledge and consent to stake with {providerName}.',
     },
-    TR_TX_SEND_FAILED_TITLE: {
-        id: 'TR_TX_SEND_FAILED_TITLE',
+    TR_TX_SEND_FAILED: {
+        id: 'TR_TX_SEND_FAILED',
         defaultMessage: 'Send transaction failed',
     },
-    TR_TX_SEND_FAILED_DESCRIPTION: {
-        id: 'TR_TX_SEND_FAILED_DESCRIPTION',
-        defaultMessage:
-            "The signing time for your {networkName} transaction has expired. The transaction is no longer valid and can't be submitted.",
+    TR_TX_EXPIRED_MODAL_TITLE: {
+        id: 'TR_TX_EXPIRED_MODAL_TITLE',
+        defaultMessage: 'Transaction confirmation expired',
+    },
+    TR_TX_EXPIRED_MODAL_DESCRIPTION: {
+        id: 'TR_TX_EXPIRED_MODAL_DESCRIPTION',
+        defaultMessage: 'Your funds are safe. Try again to continue.',
     },
     TR_TX_CONFIRMATION_TIMER: {
         id: 'TR_TX_CONFIRMATION_TIMER',
