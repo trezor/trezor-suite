@@ -6,7 +6,7 @@ import {
     getFwUpdateVersion,
     parseFirmwareChangelog,
 } from '@suite-common/suite-utils';
-import { Column, H4, Icon, Row, Text, TextButton, Tooltip } from '@trezor/components';
+import { Column, Icon, Row, Text, TextButton, Tooltip } from '@trezor/components';
 import { type FirmwareType } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { ArrowRightIcon } from '@trezor/icons';
@@ -85,30 +85,31 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                 </Text>
                 <Tooltip
                     hasIcon
-                    title={
-                        parsedChangelog ? (
-                            <H4>
-                                <Translation
-                                    id="TR_VERSION"
-                                    values={{ version: parsedChangelog.versionString }}
-                                />
-                            </H4>
-                        ) : undefined
-                    }
-                    addon={
-                        parsedChangelog ? (
-                            <TextButton
-                                size="small"
-                                intent="neutral"
-                                priority="secondary"
-                                href={changelogUrl}
-                            >
-                                <Translation id="TR_VIEW_ALL" />
-                            </TextButton>
-                        ) : undefined
-                    }
                     content={
-                        <Column>
+                        <Column padding={4} gap={4}>
+                            {parsedChangelog && (
+                                <Row justifyContent="space-between">
+                                    <Text
+                                        typographyStyle="body-sm-strong"
+                                        isInverse
+                                        intent="neutral"
+                                    >
+                                        <Translation
+                                            id="TR_VERSION"
+                                            values={{ version: parsedChangelog.versionString }}
+                                        />
+                                    </Text>
+                                    <TextButton
+                                        size="small"
+                                        intent="neutral"
+                                        priority="secondary"
+                                        href={changelogUrl}
+                                        isInverse
+                                    >
+                                        <Translation id="TR_VIEW_ALL" />
+                                    </TextButton>
+                                </Row>
+                            )}
                             {parsedChangelog ? (
                                 <MarkdownWithComponents>
                                     {parsedChangelog.changelog}

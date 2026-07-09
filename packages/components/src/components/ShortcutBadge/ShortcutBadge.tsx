@@ -4,7 +4,6 @@ import { isMacOs } from '@trezor/env-utils';
 import { borders, spacingsPx } from '@trezor/theme';
 
 import { type KeyboardKey, type Keys, keyboardKeys } from './keyboardKeys';
-import { addAlphaToHex } from '../../utils/utils';
 import { Row } from '../Flex/Flex';
 import { Text } from '../typography/Text/Text';
 
@@ -15,11 +14,11 @@ const Wrapper = styled.div`
     }
 `;
 
-const ShortcutContainer = styled.div`
-    background-color: ${({ theme }) => addAlphaToHex(theme.borderNeutralDark, 0.09)};
+const ShortcutContainer = styled.div<{ $isInverse: boolean }>`
+    background-color: ${({ theme, $isInverse }) =>
+        $isInverse ? theme.elementFillOnDarkNeutralSoft : theme.elementFillNeutralSoft};
     border-radius: ${borders.radii.xxs};
     padding: 0 ${spacingsPx.xxs};
-    border: 1px solid ${({ theme }) => theme.elementBorderOnDarkNeutralSofter};
 
     /* Slashed zero so the "0" key is distinguishable from the letter "O". */
     font-variant-numeric: slashed-zero;
@@ -27,9 +26,10 @@ const ShortcutContainer = styled.div`
 
 export type ShortcutBadgeProps = {
     shortcut: Keys[];
+    isInverse?: boolean;
 };
 
-export const ShortcutBadge = ({ shortcut }: ShortcutBadgeProps) => {
+export const ShortcutBadge = ({ shortcut, isInverse = false }: ShortcutBadgeProps) => {
     const isMac = isMacOs();
 
     return (
@@ -43,7 +43,7 @@ export const ShortcutBadge = ({ shortcut }: ShortcutBadgeProps) => {
                             : keyObject.value;
 
                         return (
-                            <ShortcutContainer key={`key-${key}-${index}`}>
+                            <ShortcutContainer key={`key-${key}-${index}`} $isInverse={isInverse}>
                                 {value}
                             </ShortcutContainer>
                         );

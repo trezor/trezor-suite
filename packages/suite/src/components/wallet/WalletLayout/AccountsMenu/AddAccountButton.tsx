@@ -47,7 +47,7 @@ export const AddAccountButton = ({ device }: AddAccountButtonProps) => {
             content={
                 <Row gap={spacings.sm}>
                     <Translation id="TR_ADD_ACCOUNT" />
-                    <ShortcutBadge shortcut={['ALT', 'KEY_A']} />
+                    <ShortcutBadge shortcut={['ALT', 'KEY_A']} isInverse />
                 </Row>
             }
         >

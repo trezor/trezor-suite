@@ -27,7 +27,7 @@ export const HideBalances = () => {
                 content: (
                     <Row gap={8}>
                         {translationString(translationLabel)}
-                        <ShortcutBadge shortcut={['ALT', 'KEY_H']} />
+                        <ShortcutBadge shortcut={['ALT', 'KEY_H']} isInverse />
                     </Row>
                 ),
             }}

@@ -7,7 +7,7 @@ import { typography } from '@trezor/theme';
 const StyledMarkdown = styled.div`
     ${typography['body-sm']}
 
-    color: ${({ theme }) => theme.contentPrimary};
+    color: currentcolor;
 
     h1,
     h2,
@@ -15,7 +15,7 @@ const StyledMarkdown = styled.div`
     h4,
     h5,
     h6 {
-        color: ${({ theme }) => theme.contentPrimary};
+        color: currentcolor;
     }
 
     h1 {

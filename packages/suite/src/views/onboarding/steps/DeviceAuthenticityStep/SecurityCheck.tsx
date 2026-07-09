@@ -83,8 +83,12 @@ const getNoFirmwareChecklist = (isBelowTablet: boolean) =>
                         strong: chunks => (
                             <Tooltip
                                 placement={isBelowTablet ? 'top' : 'left'}
-                                title={<Translation id="TR_HOLOGRAM_STEP_HEADING" />}
-                                content={<Hologram />}
+                                content={
+                                    <Column>
+                                        <Translation id="TR_HOLOGRAM_STEP_HEADING" />
+                                        <Hologram />
+                                    </Column>
+                                }
                                 display="inline-flex"
                                 as="span"
                                 hasIcon

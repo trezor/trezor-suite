@@ -116,7 +116,7 @@ const NavItem = ({
                 shortcut ? (
                     <Row gap={spacings.sm}>
                         <Title nameId={nameId} values={values} />
-                        <ShortcutBadge shortcut={shortcut} />
+                        <ShortcutBadge shortcut={shortcut} isInverse />
                     </Row>
                 ) : (
                     <Title nameId={nameId} values={values} />

@@ -114,7 +114,7 @@ export const DeviceSelector = () => {
                     content={
                         <Row gap={spacings.sm} alignItems="center">
                             <Translation id="TR_GUIDE_KEYBOARD_SHORTCUTS_SWITCH_DEVICE" />
-                            <ShortcutBadge shortcut={['ALT', 'KEY_W']} />
+                            <ShortcutBadge shortcut={['ALT', 'KEY_W']} isInverse />
                         </Row>
                     }
                 >

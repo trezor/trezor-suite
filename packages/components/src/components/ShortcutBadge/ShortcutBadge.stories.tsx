@@ -13,3 +13,10 @@ export const ShortcutBadge: StoryObj<ShortcutBadgeProps> = {
         shortcut: ['CTRL', 'KEY_P'],
     },
 };
+
+export const Inverse: StoryObj<ShortcutBadgeProps> = {
+    args: {
+        shortcut: ['CTRL', 'KEY_P'],
+        isInverse: true,
+    },
+};

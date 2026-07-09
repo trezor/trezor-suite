@@ -25,7 +25,7 @@ const DebugAndExperimentalTooltip = ({
                 icon={CheckIcon}
                 intent="brand"
                 header={<Translation id="TR_EXPERIMENTAL_FEATURES_ALLOW" />}
-                leftItem={<Icon as={AtomIcon} intent="warning" size={16} />}
+                leftItem={<Icon as={AtomIcon} intent="warning" isInverse size={16} />}
             >
                 <Translation id="TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED" />
             </TooltipRow>
@@ -35,7 +35,7 @@ const DebugAndExperimentalTooltip = ({
                 icon={CheckIcon}
                 intent="brand"
                 header={<Translation id="TR_EARLY_ACCESS" />}
-                leftItem={<Icon as={StarFourIcon} intent="info" size={16} />}
+                leftItem={<Icon as={StarFourIcon} intent="info" isInverse size={16} />}
             >
                 <Translation id="TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED" />
             </TooltipRow>
@@ -45,7 +45,7 @@ const DebugAndExperimentalTooltip = ({
                 icon={CheckIcon}
                 intent="brand"
                 header="Debug Mode"
-                leftItem={<Icon as={DotOutlineFilledIcon} intent="critical" size={16} />}
+                leftItem={<Icon as={DotOutlineFilledIcon} intent="critical" isInverse size={16} />}
             >
                 <Translation id="TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED" />
             </TooltipRow>
