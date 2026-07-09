@@ -149,7 +149,10 @@ export const claimMerklRewardsThunk = createThunk(
             });
 
             const nonceTask = dispatch(
-                ethereumGetCurrentNonceThunk({ selectedAccount: account }),
+                ethereumGetCurrentNonceThunk({
+                    selectedAccount: account,
+                    fetchConfirmedNonce: true,
+                }),
             ).unwrap();
 
             const [estimatedFee, { nonce }] = await Promise.all([estimatedFeeTask, nonceTask]);

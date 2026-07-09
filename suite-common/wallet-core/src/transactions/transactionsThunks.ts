@@ -373,8 +373,11 @@ export const addFakePendingEvmTxThunk = createThunk(
             return;
         }
 
+        // Display-only fake pending tx (rendered after the real tx was already pushed): a confirmed-
+        // nonce backend round-trip here is unwarranted, and any transient mismatch self-corrects once
+        // the backend picks up the real tx.
         const { nonce } = await dispatch(
-            ethereumGetCurrentNonceThunk({ selectedAccount: account }),
+            ethereumGetCurrentNonceThunk({ selectedAccount: account, fetchConfirmedNonce: false }),
         ).unwrap();
 
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
