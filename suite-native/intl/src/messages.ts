@@ -2157,6 +2157,20 @@ export const messages = {
                 values: 'Compare values',
                 inputs: 'Inputs & outputs',
             },
+            cancelTransaction: {
+                button: 'Cancel transaction',
+                sheetTitle: 'Cancel transaction',
+                notice: 'A replacement transaction with no value and a higher fee will be sent to your own address, overriding the original transaction.',
+                originalFeeLabel: 'Original fee',
+                newFeeLabel: 'New fee',
+                confirmButton: 'Cancel transaction',
+                confirmOnDevice:
+                    'Follow the instructions on your Trezor to confirm the cancellation.',
+                successToast: 'Cancel transaction sent',
+                errorToast: 'Transaction cancellation failed: {error}',
+                errorToastGeneric: 'Transaction cancellation failed. Please try again.',
+                composeErrorMessage: 'Unable to prepare the cancellation transaction.',
+            },
         },
         name: {
             received: 'Received',
