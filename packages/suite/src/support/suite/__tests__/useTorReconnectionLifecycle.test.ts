@@ -3,11 +3,14 @@ import { act, renderHook } from '@testing-library/react';
 import { TorStatus } from '@suite/tor';
 import { mock } from '@suite-common/dependency-injection';
 
-import { useTorReconnectionLifecycle } from '../useTorReconnectionLifecycle';
+import {
+    type TorReconnectionLifecycleParams,
+    useTorReconnectionLifecycle,
+} from '../useTorReconnectionLifecycle';
 
 describe(useTorReconnectionLifecycle.name, () => {
-    type Disconnect = Parameters<typeof useTorReconnectionLifecycle>[0]['disconnect'];
-    type Reconnect = Parameters<typeof useTorReconnectionLifecycle>[0]['reconnect'];
+    type Disconnect = TorReconnectionLifecycleParams['disconnect'];
+    type Reconnect = TorReconnectionLifecycleParams['reconnect'];
     type CallSequence = Array<'disconnect' | 'reconnect-clearnet' | 'reconnect-tor'>;
 
     const renderUseTorReconnectionLifecycle = () => {

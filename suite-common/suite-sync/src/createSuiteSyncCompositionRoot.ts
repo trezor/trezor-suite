@@ -51,8 +51,8 @@ import { createLoadSuiteSyncOwnerFromState } from './owner/createLoadSuiteSyncOw
 import { createRetrieveSuiteSyncOwner } from './owner/createRetrieveSuiteSyncOwner';
 import { createSaveSuiteSyncOwner } from './owner/createSaveSuiteSyncOwner';
 import { createChangeRelayUrl } from './relay/createChangeRelayUrl';
-import { createDisconnectAll } from './relay/createDisconnectAll';
-import { createReconnectAll } from './relay/createReconnectAll';
+import { createDisconnectAllRelays } from './relay/createDisconnectAllRelays';
+import { createReconnectAllRelays } from './relay/createReconnectAllRelays';
 import { isUsingTrezorServer } from './relay/isUsingTrezorServer';
 import { selectSuiteSyncRelayUrl } from './relay/relayUrl';
 import { createEnsureStorage } from './storage/createEnsureStorage';
@@ -224,11 +224,11 @@ export const createSuiteSyncCompositionRoot = (
         writeAddressLabel: writeLabels.writeAddressLabel,
     });
 
-    const disconnectAll = createDisconnectAll({
+    const disconnectAllRelays = createDisconnectAllRelays({
         suiteSyncStorageRepository,
         getAllDeviceSessionIds,
     });
-    const reconnectAll = createReconnectAll({
+    const reconnectAllRelays = createReconnectAllRelays({
         suiteSyncStorageRepository,
         getAllDeviceSessionIds,
         getState: deps.getState,
@@ -238,10 +238,10 @@ export const createSuiteSyncCompositionRoot = (
         changeRelayUrl: createChangeRelayUrl({
             dispatch: deps.dispatch,
             getIsTorEnabled: deps.getIsTorEnabled,
-            reconnectAll,
+            reconnectAllRelays,
         }),
-        disconnectAll,
-        reconnectAll,
+        disconnectAllRelays,
+        reconnectAllRelays,
         ensureWalletSuiteSyncOnUncontrolled,
         ensureWalletSuiteSyncOn,
         turnOffSuiteSyncForWallet,

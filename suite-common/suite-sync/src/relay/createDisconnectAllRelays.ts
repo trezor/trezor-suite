@@ -1,5 +1,5 @@
 import {
-    type DisconnectAll,
+    type DisconnectAllRelays,
     type GetAllDeviceSessionIdsDep,
     type SuiteSyncStorageRepositoryDep,
 } from '@suite-common/suite-sync-types';
@@ -7,10 +7,10 @@ import { isNotNull } from '@trezor/utils';
 
 import { createStorageIdFromDeviceStaticSessionId } from '../storage/createStorageIdFromDeviceStaticSessionId';
 
-export type DisconnectAllDeps = GetAllDeviceSessionIdsDep & SuiteSyncStorageRepositoryDep;
+export type DisconnectAllRelaysDeps = GetAllDeviceSessionIdsDep & SuiteSyncStorageRepositoryDep;
 
-export const createDisconnectAll =
-    (deps: DisconnectAllDeps): DisconnectAll =>
+export const createDisconnectAllRelays =
+    (deps: DisconnectAllRelaysDeps): DisconnectAllRelays =>
     async () => {
         const deviceStaticSessionIds = deps.getAllDeviceSessionIds();
 

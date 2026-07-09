@@ -4,7 +4,7 @@ import { type StaticSessionId } from '@trezor/connect';
 import { isCodesignBuild } from '@trezor/env-utils';
 
 import { type WithSuiteSyncState } from '../../suiteSyncSlice';
-import { type ReconnectAllDeps, createReconnectAll } from '../createReconnectAll';
+import { type ReconnectAllRelaysDeps, createReconnectAllRelays } from '../createReconnectAllRelays';
 
 jest.mock('@trezor/env-utils', () => ({
     ...jest.requireActual('@trezor/env-utils'),
@@ -26,11 +26,11 @@ const state: WithSuiteSyncState = {
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 
 type CreateDepsParams = {
-    storageGet: ReconnectAllDeps['suiteSyncStorageRepository']['get'];
+    storageGet: ReconnectAllRelaysDeps['suiteSyncStorageRepository']['get'];
 };
 
 const createDeps = ({ storageGet }: CreateDepsParams) =>
-    createMockDeps<ReconnectAllDeps>({
+    createMockDeps<ReconnectAllRelaysDeps>({
         getAllDeviceSessionIds: () => [deviceStaticSessionId],
         getState: () => state,
         suiteSyncStorageRepository: {
@@ -40,7 +40,7 @@ const createDeps = ({ storageGet }: CreateDepsParams) =>
         },
     });
 
-describe(createReconnectAll.name, () => {
+describe(createReconnectAllRelays.name, () => {
     beforeEach(() => {
         (isCodesignBuild as jest.Mock).mockReturnValue(true);
     });
@@ -60,14 +60,14 @@ describe(createReconnectAll.name, () => {
             storageGet: mock(() => mockStorage),
         });
 
-        const reconnectAll = createReconnectAll(deps);
+        const reconnectAllRelays = createReconnectAllRelays(deps);
 
-        await reconnectAll({ isTorEnabled: false });
+        await reconnectAllRelays({ isTorEnabled: false });
         expect(deps.suiteSyncStorageRepository.get).toHaveBeenCalledWith('1');
         expect(updateRelayUrl).toHaveBeenNthCalledWith(1, 'https://suite-sync.trezor.io/evolu/');
         expect(currentRelayUrl).toBe('https://suite-sync.trezor.io/evolu/');
 
-        await reconnectAll({ isTorEnabled: true });
+        await reconnectAllRelays({ isTorEnabled: true });
 
         expect(currentRelayUrl).toBe(
             'http://suite-sync.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion/evolu/',
@@ -83,7 +83,7 @@ describe(createReconnectAll.name, () => {
             storageGet: mock(() => null),
         });
 
-        await createReconnectAll(deps)({ isTorEnabled: true });
+        await createReconnectAllRelays(deps)({ isTorEnabled: true });
 
         expect(deps.suiteSyncStorageRepository.get).toHaveBeenCalledWith('1');
     });

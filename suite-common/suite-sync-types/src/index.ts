@@ -36,16 +36,16 @@ export {
     selectChangeRelayUrlDep,
 } from './relay/changeRelayUrl';
 export {
-    type DisconnectAll,
-    type DisconnectAllDep,
-    selectDisconnectAllDep,
-} from './relay/disconnectAll';
+    type DisconnectAllRelays,
+    type DisconnectAllRelaysDep,
+    selectDisconnectAllRelaysDep,
+} from './relay/disconnectAllRelays';
 export {
-    type ReconnectAll,
-    type ReconnectAllDep,
-    type ReconnectAllParams,
-    selectReconnectAllDep,
-} from './relay/reconnectAll';
+    type ReconnectAllRelays,
+    type ReconnectAllRelaysDep,
+    type ReconnectAllRelaysParams,
+    selectReconnectAllRelaysDep,
+} from './relay/reconnectAllRelays';
 
 export type {
     EnsureSuiteSyncOwnerDep,

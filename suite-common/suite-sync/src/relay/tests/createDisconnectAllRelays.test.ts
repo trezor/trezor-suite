@@ -2,16 +2,19 @@ import { createMockDeps, mock, mockNotExpected } from '@suite-common/dependency-
 import { mockSuiteSyncStorage } from '@suite-common/suite-sync-storage/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 
-import { type DisconnectAllDeps, createDisconnectAll } from '../createDisconnectAll';
+import {
+    type DisconnectAllRelaysDeps,
+    createDisconnectAllRelays,
+} from '../createDisconnectAllRelays';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 
 type CreateDepsParams = {
-    storageGet: DisconnectAllDeps['suiteSyncStorageRepository']['get'];
+    storageGet: DisconnectAllRelaysDeps['suiteSyncStorageRepository']['get'];
 };
 
 const createDeps = ({ storageGet }: CreateDepsParams) =>
-    createMockDeps<DisconnectAllDeps>({
+    createMockDeps<DisconnectAllRelaysDeps>({
         getAllDeviceSessionIds: () => [deviceStaticSessionId],
         suiteSyncStorageRepository: {
             delete: null,
@@ -20,7 +23,7 @@ const createDeps = ({ storageGet }: CreateDepsParams) =>
         },
     });
 
-describe(createDisconnectAll.name, () => {
+describe(createDisconnectAllRelays.name, () => {
     it('disconnects existing storages', async () => {
         const disconnectRelay = jest.fn(() => Promise.resolve());
         const mockStorage = mockSuiteSyncStorage({
@@ -32,7 +35,7 @@ describe(createDisconnectAll.name, () => {
             storageGet: mock(() => mockStorage),
         });
 
-        await createDisconnectAll(deps)();
+        await createDisconnectAllRelays(deps)();
 
         expect(deps.suiteSyncStorageRepository.get).toHaveBeenCalledWith('1');
         expect(disconnectRelay).toHaveBeenCalledTimes(1);
@@ -43,7 +46,7 @@ describe(createDisconnectAll.name, () => {
             storageGet: mock(() => null),
         });
 
-        await createDisconnectAll(deps)();
+        await createDisconnectAllRelays(deps)();
 
         expect(deps.suiteSyncStorageRepository.get).toHaveBeenCalledWith('1');
     });

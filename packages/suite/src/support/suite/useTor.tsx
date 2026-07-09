@@ -2,7 +2,10 @@ import { useEffect, useMemo } from 'react';
 
 import { TorStatus, getIsTorDomain, selectTorState } from '@suite/tor';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDisconnectAllDep, selectReconnectAllDep } from '@suite-common/suite-sync-types';
+import {
+    selectDisconnectAllRelaysDep,
+    selectReconnectAllRelaysDep,
+} from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getLocationHostname, isDesktop, isWeb } from '@trezor/env-utils';
 import { type BootstrapTorEvent, type TorStatusEvent, desktopApi } from '@trezor/suite-desktop-api';
@@ -18,9 +21,9 @@ import { useTorReconnectionLifecycle } from './useTorReconnectionLifecycle';
 
 export const useTor = () => {
     const { torBootstrap, isTorEnabling } = useSelector(selectTorState);
-    const { reconnectAll, disconnectAll } = useServices(
-        selectReconnectAllDep,
-        selectDisconnectAllDep,
+    const { reconnectAllRelays, disconnectAllRelays } = useServices(
+        selectReconnectAllRelaysDep,
+        selectDisconnectAllRelaysDep,
     );
     const dispatch = useDispatch();
 
@@ -29,10 +32,10 @@ export const useTor = () => {
     //            Tor is changing the state.
     const torReconnectionLifecycleParams = useMemo(
         () => ({
-            reconnect: reconnectAll,
-            disconnect: disconnectAll,
+            reconnect: reconnectAllRelays,
+            disconnect: disconnectAllRelays,
         }),
-        [disconnectAll, reconnectAll],
+        [disconnectAllRelays, reconnectAllRelays],
     );
 
     const handleTorReconnection = useTorReconnectionLifecycle(torReconnectionLifecycleParams);

@@ -4,8 +4,8 @@ import { type UpdateAddressLabelDep, type WriteAddressLabelDep } from './data/up
 import { type UpdateOutputLabelDep, type WriteOutputLabelDep } from './data/updateOutputLabel';
 import { type UpdateWalletLabelDep, type WriteWalletLabelDep } from './data/updateWalletLabel';
 import { type ChangeRelayUrlDep } from './relay/changeRelayUrl';
-import { type DisconnectAllDep } from './relay/disconnectAll';
-import { type ReconnectAllDep } from './relay/reconnectAll';
+import { type DisconnectAllRelaysDep } from './relay/disconnectAllRelays';
+import { type ReconnectAllRelaysDep } from './relay/reconnectAllRelays';
 import {
     type EnsureWalletSuiteSyncOnDep,
     type EnsureWalletSuiteSyncOnUncontrolledDep,
@@ -27,8 +27,8 @@ export type WriteLabelsDep = WriteWalletLabelDep &
     WriteOutputLabelDep;
 
 export type SuiteSync = ChangeRelayUrlDep &
-    DisconnectAllDep &
-    ReconnectAllDep &
+    DisconnectAllRelaysDep &
+    ReconnectAllRelaysDep &
     TurnOnSuiteSyncDep &
     TurnOffSuiteSyncDep &
     EnsureWalletSuiteSyncOnDep &
