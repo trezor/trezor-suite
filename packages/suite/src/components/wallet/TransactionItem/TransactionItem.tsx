@@ -87,11 +87,7 @@ export const TransactionItem = memo(
         const fee = formatNetworkAmount(transaction.fee, transaction.symbol);
         const showFeeRow = isTxFeePaid(transaction);
 
-        const isTxCancellable = isTransactionCancellable(
-            transaction,
-            isPending,
-            network.networkType,
-        );
+        const isTxCancellable = isTransactionCancellable(transaction, isPending, networkFeatures);
 
         const isTxBumpable =
             !isActionDisabled && isTransactionBumpable(transaction, networkFeatures);

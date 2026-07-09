@@ -12,7 +12,6 @@ import {
     type ChainedTransactions,
     type FormState,
     type PrecomposedTransactionFinalCancelRbf,
-    type SelectedAccountLoaded,
     type WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
 import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
@@ -39,7 +38,7 @@ type CancelTransactionModalProps = {
     onBackClick: () => void;
     onShowChained: () => void;
     chainedTxs?: ChainedTransactions;
-    selectedAccount: SelectedAccountLoaded;
+    account: Account;
     nonceStatus?: PendingEvmNonceStatus;
     nextNonce?: number;
 };
@@ -50,11 +49,10 @@ export const CancelTransactionModal = ({
     onBackClick,
     onShowChained,
     chainedTxs,
-    selectedAccount,
+    account,
     nonceStatus,
     nextNonce,
 }: CancelTransactionModalProps) => {
-    const { account } = selectedAccount;
     const dispatch = useDispatch();
 
     const {
@@ -123,10 +121,7 @@ export const CancelTransactionModal = ({
                         </Modal.Button>
                     ) : (
                         <>
-                            <CancelTransactionButton
-                                account={selectedAccount.account}
-                                onSuccess={onCancel}
-                            />
+                            <CancelTransactionButton account={account} onSuccess={onCancel} />
                             {error !== null ? (
                                 // This shall never happen, error like this always signal big in the code,
                                 // this is here just to make easier to detect and fix
@@ -154,7 +149,7 @@ export const CancelTransactionModal = ({
                     />
                 ) : (
                     <Column gap={16}>
-                        <CancelTransaction tx={tx} selectedAccount={selectedAccount} />
+                        <CancelTransaction tx={tx} account={account} />
                         <AffectedTransactions showChained={onShowChained} chainedTxs={chainedTxs} />
                     </Column>
                 )}

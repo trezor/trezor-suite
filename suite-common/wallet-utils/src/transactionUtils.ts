@@ -76,17 +76,24 @@ export const isPending = (tx: WalletAccountTransaction | AccountTransaction) => 
 export const isSentTransaction = (tx: WalletAccountTransaction | AccountTransaction) =>
     ['sent', 'self', 'contract'].includes(tx.type);
 
-// Shared by the transaction list and its detail modal so both agree on which pending
-// transactions offer a cancel/bump-fee action.
+// Shared by the transaction list and its detail modal so both agree on which pending transactions
+// offer a cancel action. Cancelling replaces the tx with a 0-value self-send at the same
+// nonce/inputs, so it needs both rbfParams (getRbfParams omits these for received 'recv' txs and for
+// swaps it cannot resolve as our own replaceable send) and a network that actually supports RBF.
+// Gating on the 'rbf' network feature — the same signal isTransactionBumpable uses — keeps the list
+// in sync with the detail modal, which only performs the cancel when the tx is replaceable. Without
+// both checks a dead "does nothing" cancel button would show for receive txs, non-replaceable swaps,
+// and coins whose networkType is bitcoin/ethereum but that lack RBF (e.g. LTC, BCH, DOGE, ZEC, ETC).
 export const isTransactionCancellable = (
-    tx: WalletAccountTransaction | AccountTransaction,
+    tx: Pick<WalletAccountTransaction, 'rbfParams' | 'type'>,
     isPendingTx: boolean,
-    networkType: NetworkType,
+    networkFeatures: NetworkFeature[] | undefined,
 ) =>
     isPendingTx &&
+    !!tx.rbfParams &&
     tx.type !== 'self' &&
     tx.type !== 'joint' &&
-    (networkType === 'bitcoin' || networkType === 'ethereum');
+    !!networkFeatures?.includes('rbf');
 
 export const isTransactionBumpable = (
     tx: Pick<WalletAccountTransaction, 'rbfParams' | 'deadline' | 'type'>,
@@ -212,7 +219,11 @@ export const getPendingEvmNonceStatus = (
  */
 export const getEvmNonceStatus = (
     nonce: number,
-    { confirmedNonce, nextNonce, pendingNonces }: EvmNonceInfo,
+    {
+        confirmedNonce,
+        nextNonce,
+        pendingNonces,
+    }: Pick<EvmNonceInfo, 'confirmedNonce' | 'nextNonce' | 'pendingNonces'>,
 ): 'ok' | 'superseded' | 'gap' | 'replacement' => {
     if (nonce < confirmedNonce) return 'superseded'; // already mined under another tx/txid
     if (pendingNonces.includes(nonce)) return 'replacement'; // collides with a known own pending tx
