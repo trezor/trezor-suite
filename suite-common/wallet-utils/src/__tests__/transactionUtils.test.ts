@@ -19,6 +19,7 @@ import {
     groupTokensTransactionsByContractAddress,
     groupTransactionsByDate,
     isPending,
+    isTransactionCancellable,
     parseTransactionDateKey,
     parseTransactionMonthKey,
 } from '../transactionUtils';
@@ -49,6 +50,59 @@ describe('transaction utils', () => {
                 const { blockHeight } = transaction;
                 expect(isPending(transaction)).toEqual(!blockHeight || blockHeight < 0);
             });
+        });
+    });
+
+    describe('isTransactionCancellable', () => {
+        // The function only checks for the presence of rbfParams, not their shape, so any valid
+        // value serves for the positive cases.
+        const rbfParams: WalletAccountTransaction['rbfParams'] = {
+            type: 'bitcoin',
+            txid: 'txid',
+            utxo: [],
+            outputs: [],
+            feeRate: '1',
+            baseFee: 144,
+        };
+
+        it('is cancellable for a pending sent tx with rbfParams on an rbf network', () => {
+            const tx = getWalletTransaction({ type: 'sent', rbfParams });
+            expect(isTransactionCancellable(tx, true, ['rbf', 'sign-verify'])).toBe(true);
+        });
+
+        it('is not cancellable for a received tx (never has rbfParams)', () => {
+            const tx = getWalletTransaction({ type: 'recv', rbfParams: undefined });
+            expect(isTransactionCancellable(tx, true, ['rbf'])).toBe(false);
+        });
+
+        it('is not cancellable for a pending tx without rbfParams (e.g. a non-replaceable swap)', () => {
+            const tx = getWalletTransaction({ type: 'sent', rbfParams: undefined });
+            expect(isTransactionCancellable(tx, true, ['rbf'])).toBe(false);
+        });
+
+        it('is not cancellable when the tx is not pending', () => {
+            const tx = getWalletTransaction({ type: 'sent', rbfParams });
+            expect(isTransactionCancellable(tx, false, ['rbf'])).toBe(false);
+        });
+
+        it('is not cancellable for a self tx', () => {
+            const tx = getWalletTransaction({ type: 'self', rbfParams });
+            expect(isTransactionCancellable(tx, true, ['rbf'])).toBe(false);
+        });
+
+        it('is not cancellable for a joint (coinjoin) tx', () => {
+            const tx = getWalletTransaction({ type: 'joint', rbfParams });
+            expect(isTransactionCancellable(tx, true, ['rbf'])).toBe(false);
+        });
+
+        it('is not cancellable on a network without the rbf feature (e.g. LTC, ETC)', () => {
+            const tx = getWalletTransaction({ type: 'sent', rbfParams });
+            expect(isTransactionCancellable(tx, true, ['sign-verify', 'graph'])).toBe(false);
+        });
+
+        it('is not cancellable when the network has no features', () => {
+            const tx = getWalletTransaction({ type: 'sent', rbfParams });
+            expect(isTransactionCancellable(tx, true, undefined)).toBe(false);
         });
     });
 
