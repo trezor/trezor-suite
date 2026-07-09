@@ -51,7 +51,8 @@ describe(getSuiteSyncDefaultRelayUrl.name, () => {
         {
             isCodesignBuildEnabled: false,
             isTorEnabled: true,
-            expectedUrl: 'https://suite-sync-dev.suite.sldev.cz/evolu/',
+            expectedUrl:
+                'http://suite-sync-dev.suite.sldevz5tqu7uh4owm4gg5erbn3doap5rhilvkwtvdq7ihibfpzw2a5ad.onion/evolu/',
         },
     ])(
         'returns $expectedUrl for codesign=$isCodesignBuildEnabled and tor=$isTorEnabled',
@@ -79,7 +80,8 @@ describe(getSuiteSyncRelayUrl.name, () => {
         {
             env: 'dev' as const,
             isTorEnabled: true,
-            expectedUrl: 'https://suite-sync-dev.suite.sldev.cz/evolu/',
+            expectedUrl:
+                'http://suite-sync-dev.suite.sldevz5tqu7uh4owm4gg5erbn3doap5rhilvkwtvdq7ihibfpzw2a5ad.onion/evolu/',
         },
         {
             env: 'local' as const,

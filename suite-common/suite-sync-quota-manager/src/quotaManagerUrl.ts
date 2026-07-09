@@ -14,6 +14,9 @@ const LOCAL_QUOTA_MANAGER_URL = 'http://127.0.0.1:4001/';
 
 const DEV_QUOTA_MANAGER_URL = 'https://suite-sync-dev.suite.sldev.cz/quota-manager/';
 
+const DEV_QUOTA_MANAGER_URL_ONION =
+    urlToOnion(DEV_QUOTA_MANAGER_URL, TOR_URLS) ?? DEV_QUOTA_MANAGER_URL;
+
 const PRODUCTION_QUOTA_MANAGER_URL = 'https://suite-sync.trezor.io/quota-manager/';
 
 const PRODUCTION_QUOTA_MANAGER_URL_ONION =
@@ -22,7 +25,7 @@ const PRODUCTION_QUOTA_MANAGER_URL_ONION =
 const QUOTA_MANAGER_URL: QuotaManagerUrlMap = {
     dev: {
         clearnet: DEV_QUOTA_MANAGER_URL,
-        onion: DEV_QUOTA_MANAGER_URL,
+        onion: DEV_QUOTA_MANAGER_URL_ONION,
     },
     local: {
         clearnet: LOCAL_QUOTA_MANAGER_URL,

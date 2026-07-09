@@ -21,6 +21,9 @@ const LOCAL_SUITE_SYNC_RELAY_URL = 'http://127.0.0.1:4000/evolu/';
 
 const DEFAULT_SUITE_SYNC_RELAY_URL_DEV = 'https://suite-sync-dev.suite.sldev.cz/evolu/';
 
+const DEFAULT_SUITE_SYNC_RELAY_URL_DEV_ONION =
+    urlToOnion(DEFAULT_SUITE_SYNC_RELAY_URL_DEV, TOR_URLS) ?? DEFAULT_SUITE_SYNC_RELAY_URL_DEV;
+
 const DEFAULT_SUITE_SYNC_RELAY_URL_PROD = 'https://suite-sync.trezor.io/evolu/';
 
 const DEFAULT_SUITE_SYNC_RELAY_URL_PROD_ONION =
@@ -33,7 +36,7 @@ const SUITE_SYNC_RELAY_URL: SuiteSyncRelayUrlMap = {
     },
     dev: {
         clearnet: DEFAULT_SUITE_SYNC_RELAY_URL_DEV,
-        onion: DEFAULT_SUITE_SYNC_RELAY_URL_DEV,
+        onion: DEFAULT_SUITE_SYNC_RELAY_URL_DEV_ONION,
     },
     prod: {
         clearnet: DEFAULT_SUITE_SYNC_RELAY_URL_PROD,
@@ -43,18 +46,18 @@ const SUITE_SYNC_RELAY_URL: SuiteSyncRelayUrlMap = {
 
 const getTorVariant = (isTorEnabled: boolean): TorVariant => (isTorEnabled ? 'onion' : 'clearnet');
 
-export const getSuiteSyncRelayUrl = ({ env, isTorEnabled }: GetSuiteSyncRelayUrlParams) =>
+export const getSuiteSyncRelayUrl = ({ env, isTorEnabled }: GetSuiteSyncRelayUrlParams): string =>
     SUITE_SYNC_RELAY_URL[env][getTorVariant(isTorEnabled)];
 
 const getSuiteSyncRelayUrlEnvironment = (): Environment => (isCodesignBuild() ? 'prod' : 'dev');
 
-export const getSuiteSyncDefaultRelayUrl = ({ isTorEnabled }: { isTorEnabled: boolean }) =>
+export const getSuiteSyncDefaultRelayUrl = ({ isTorEnabled }: { isTorEnabled: boolean }): string =>
     getSuiteSyncRelayUrl({
         env: getSuiteSyncRelayUrlEnvironment(),
         isTorEnabled,
     });
 
-export const getSuiteSyncTrezorRelayUrls = () =>
+export const getSuiteSyncTrezorRelayUrls = (): string[] =>
     typedObjectValues({
         dev: SUITE_SYNC_RELAY_URL.dev,
         prod: SUITE_SYNC_RELAY_URL.prod,
@@ -68,5 +71,5 @@ export const selectSuiteSyncCustomRelayUrl = (state: WithSuiteSyncState): string
         : null;
 };
 
-export const selectSuiteSyncRelayUrl = (state: WithSuiteSyncState, isTorEnabled: boolean) =>
+export const selectSuiteSyncRelayUrl = (state: WithSuiteSyncState, isTorEnabled: boolean): string =>
     selectSuiteSyncCustomRelayUrl(state) ?? getSuiteSyncDefaultRelayUrl({ isTorEnabled });
