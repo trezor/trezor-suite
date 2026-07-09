@@ -50,6 +50,22 @@ export const getYieldDepositCompleteRows = ({
         ),
     },
     {
+        key: 'sent',
+        label: <Translation id="earn.yieldCompleteScreen.deposited" />,
+        value: (
+            <HStack spacing="sp4" alignItems="center" flexShrink={1}>
+                <CryptoIcon
+                    symbol={accountSymbol}
+                    contractAddress={sentTokenContract}
+                    size="extraSmall"
+                />
+                <Text variant="body-md-strong" color="contentPrimary" numberOfLines={1}>
+                    {sentAmount}
+                </Text>
+            </HStack>
+        ),
+    },
+    {
         key: 'received',
         label: <Translation id="earn.yieldCompleteScreen.received" />,
         value: (
@@ -61,22 +77,6 @@ export const getYieldDepositCompleteRows = ({
                 />
                 <Text variant="body-md-strong" color="contentPrimary" numberOfLines={1}>
                     {receivedAmount}
-                </Text>
-            </HStack>
-        ),
-    },
-    {
-        key: 'sent',
-        label: <Translation id="earn.yieldCompleteScreen.sent" />,
-        value: (
-            <HStack spacing="sp4" alignItems="center" flexShrink={1}>
-                <CryptoIcon
-                    symbol={accountSymbol}
-                    contractAddress={sentTokenContract}
-                    size="extraSmall"
-                />
-                <Text variant="body-md-strong" color="contentPrimary" numberOfLines={1}>
-                    -{sentAmount}
                 </Text>
             </HStack>
         ),
