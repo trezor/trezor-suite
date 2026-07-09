@@ -17,7 +17,7 @@ export const orderedAccountTypes: AccountType[] = [
     'ledger',
 ];
 
-export const sendDisabledNetworkTypes: NetworkType[] = ['cardano'];
+export const sendDisabledNetworkTypes: NetworkType[] = [];
 
 export const sortNetworks = (networksToSort: Network[]) =>
     A.sort(networksToSort, (a, b) => {

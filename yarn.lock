@@ -2765,6 +2765,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@emurgo/csl-mobile-bridge@npm:9.0.1":
+  version: 9.0.1
+  resolution: "@emurgo/csl-mobile-bridge@npm:9.0.1"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/82c08d7fd2b6a06d2def418556b54f5e6901ba3b75a777abb6ea59853ba444afbc14b68704b96f7b2da27bdf1d4e711680904cb8f6464587c04d8113e9c6e580
+  languageName: node
+  linkType: hard
+
+"@emurgo/csl-mobile-bridge@patch:@emurgo/csl-mobile-bridge@npm%3A9.0.1#~/.yarn/patches/@emurgo-csl-mobile-bridge-npm-9.0.1-4bdc115e15.patch":
+  version: 9.0.1
+  resolution: "@emurgo/csl-mobile-bridge@patch:@emurgo/csl-mobile-bridge@npm%3A9.0.1#~/.yarn/patches/@emurgo-csl-mobile-bridge-npm-9.0.1-4bdc115e15.patch::version=9.0.1&hash=567a96"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/25f7dfc6e204457d46831fb2cd0362efa9927cf29901c40b0cb26ed4065093803e4b29e2b5db5fae4ac153f0eeb863e567d7f43e321e4793117a85a4a33b735b
+  languageName: node
+  linkType: hard
+
 "@esbuild/aix-ppc64@npm:0.27.7":
   version: 0.27.7
   resolution: "@esbuild/aix-ppc64@npm:0.27.7"
@@ -11785,6 +11805,7 @@ __metadata:
     "@babel/core": "npm:7.29.7"
     "@config-plugins/detox": "npm:^11.0.0"
     "@currents/cmd": "npm:1.9.7"
+    "@emurgo/csl-mobile-bridge": "patch:@emurgo/csl-mobile-bridge@npm%3A9.0.1#~/.yarn/patches/@emurgo-csl-mobile-bridge-npm-9.0.1-4bdc115e15.patch"
     "@evolu/common": "npm:8.0.0-next.5"
     "@evolu/react-native": "npm:15.0.0-next.2"
     "@exodus/patch-broken-hermes-typed-arrays": "npm:^1.0.0-alpha.1"

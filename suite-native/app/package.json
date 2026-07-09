@@ -15,6 +15,7 @@
         "eas-build-post-install": "yarn workspace @suite-common/message-system sign-config",
         "eas-build-on-success": "./eas-post-success.sh",
         "prebuild:clean": "expo prebuild --clean",
+        "cardano:generate-native-binaries": "node ./scripts/generateCardanoNativeBinaries.js",
         "build:e2e": "detox build --configuration",
         "test:e2e": "node ./scripts/cleanArtifacts.js && tsx e2e/trezorDetoxRunner/index.ts",
         "test:e2e:android": "node ./scripts/cleanArtifacts.js && tsx e2e/trezorDetoxRunner/index.ts --config=e2e/trezorDetoxRunner/config/runner-android.config.js",
@@ -25,6 +26,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@emurgo/csl-mobile-bridge": "patch:@emurgo/csl-mobile-bridge@npm%3A9.0.1#~/.yarn/patches/@emurgo-csl-mobile-bridge-npm-9.0.1-4bdc115e15.patch",
         "@evolu/common": "8.0.0-next.5",
         "@evolu/react-native": "15.0.0-next.2",
         "@exodus/patch-broken-hermes-typed-arrays": "^1.0.0-alpha.1",
