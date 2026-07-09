@@ -10,7 +10,7 @@ import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { type TradingBuyType, selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { Box, Card, Column, H3, Paragraph, StepList } from '@trezor/components';
+import { Box, Card, Column, StepList } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
@@ -21,6 +21,8 @@ import { TradingDetailBuyPaymentProcessingStep } from 'src/views/wallet/trading/
 import { TradingDetailBuyPaymentPaymentSuccessful } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentSuccessful';
 import { TradingDetailBuyPaymentWaitingForUserStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentWaitingForUserStep';
 import { TradingDetailBuySidebar } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuySidebar';
+import { TradingDetailHeader } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailHeader';
+import { getBuyDetailHeaderMessages } from 'src/views/wallet/trading/common/TradingDetail/utils';
 import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
 import { TradingDetailStepList } from '../TradingDetailStepList';
@@ -112,15 +114,10 @@ export const TradingDetailBuy = () => {
             default:
                 return (
                     <>
-                        <H3>
-                            <Translation id="TR_BUY_HEADER_TITLE" />
-                        </H3>
-                        <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
-                            <Translation
-                                id="TR_TRADING_HEADER_DESCRIPTION"
-                                values={{ type: translationString('TR_BUY').toLowerCase() }}
-                            />
-                        </Paragraph>
+                        <TradingDetailHeader
+                            {...getBuyDetailHeaderMessages(tradeStatus)}
+                            type={translationString('TR_BUY').toLowerCase()}
+                        />
                         <Box margin={{ top: 32, bottom: 12 }}>
                             <TradingDetailStepList>
                                 <TradingDetailBuyPaymentWaitingForUserStep
