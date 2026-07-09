@@ -20,8 +20,13 @@ yarn format                # Format code with Prettier
 yarn lint:styles --no-tui  # Lint CSS styles (check logs only if exit status is not 0)
 yarn lint:js:fix --no-tui  # Auto-fix linting issues (check logs only if exit status is not 0)
 yarn type-check --no-tui   # TypeScript type checking (allow 15 minutes, check logs only if exit status is not 0)
-yarn nx run @package-scope/package-name:type-check  # TypeScript check of specific package (allow 10 minutes)
+yarn nx run @package-scope/package-name:type-check  # Package-level TypeScript integration check
 ```
+
+For isolated changes, rely on IDE TypeScript diagnostics and focused tests, formatting, and linting; do not run a
+type-check command. Batch changes and run `yarn nx run <package>:type-check` at most once near final validation, only for
+integration risk or on request. It may check the full dependency graph and take minutes, so warn first. Never run
+affected or repo-wide type-checks unless requested.
 
 ## Testing
 
