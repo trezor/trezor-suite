@@ -2,7 +2,10 @@ import { Address } from '@suite/address';
 import type { TranslationKey } from '@suite/intl';
 import { Translation } from '@suite/intl';
 import type { YieldPendingTransactionState } from '@suite-common/wallet-core';
-import { PendingTransactionInfo } from '@trezor/product-components';
+import {
+    PENDING_TRANSACTION_TIME_ESTIMATE_SECONDS,
+    PendingTransactionInfo,
+} from '@trezor/product-components';
 
 type YieldPendingTransactionProps = {
     pendingTransaction: YieldPendingTransactionState;
@@ -41,6 +44,7 @@ export const YieldPendingTransaction = ({
                 typographyStyle="body-md"
             />
         }
+        timeEstimateSeconds={PENDING_TRANSACTION_TIME_ESTIMATE_SECONDS}
         onTxClick={() => onTxClick(pendingTransaction.txid)}
     />
 );
