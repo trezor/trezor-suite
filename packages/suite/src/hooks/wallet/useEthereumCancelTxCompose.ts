@@ -1,18 +1,16 @@
 import { useEffect } from 'react';
 
+import { isRejected } from '@reduxjs/toolkit';
 import { useMutation } from '@tanstack/react-query';
 
-import { getNetwork } from '@suite-common/wallet-config';
 import {
     type ComposeFeeLevelsError,
-    composeSendFormTransactionFeeLevelsThunk,
-    getEthereumRbfFeeInfo,
+    type ComposedEthereumCancelTransaction,
+    composeEthereumCancelTransactionThunk,
     selectConvertedNetworkFeeInfo,
 } from '@suite-common/wallet-core';
 import {
     type Account,
-    type FormState,
-    type PrecomposedTransactionFinalCancelRbf,
     type WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
 
@@ -53,62 +51,17 @@ export const useEthereumCancelTxCompose = ({ account, tx }: UseEthereumCancelTxC
         error: mutationError,
         isPending: isComposing,
     } = useMutation({
-        mutationFn: async (): Promise<{
-            composedCancelTx: PrecomposedTransactionFinalCancelRbf;
-            cancelFormState: FormState;
-        }> => {
-            if (!feeInfo || tx.rbfParams?.type !== 'ethereum') {
-                throw new Error('Missing fee info or invalid RBF params for Ethereum cancellation');
+        mutationFn: async (): Promise<ComposedEthereumCancelTransaction> => {
+            if (account.networkType !== 'ethereum') {
+                throw new Error('Ethereum cancellation is only available for EVM accounts');
             }
 
-            const { rbfParams } = tx;
-            const network = getNetwork(account.symbol);
-
-            const formState: FormState = {
-                outputs: [
-                    {
-                        type: 'payment',
-                        address: account.descriptor,
-                        amount: '0',
-                        fiat: '',
-                        currency: { value: '', label: '' },
-                        token: null,
-                    },
-                ],
-                selectedFee: 'normal',
-                feePerUnit: '',
-                feeLimit: '',
-                options: ['broadcast'],
-                isCoinControlEnabled: false,
-                hasCoinControlBeenOpened: false,
-                selectedUtxos: [],
-                rbfParams,
-            };
-
-            const feeLevels = await dispatch(
-                composeSendFormTransactionFeeLevelsThunk({
-                    formState,
-                    composeContext: {
-                        account,
-                        network,
-                        feeInfo: getEthereumRbfFeeInfo(feeInfo, rbfParams),
-                    },
-                }),
-            ).unwrap();
-
-            const normalLevel = feeLevels.normal;
-            if (!normalLevel || normalLevel.type === 'error' || normalLevel.type === 'nonfinal') {
-                throw new Error('Unable to compose a valid cancellation fee level.');
+            const result = await dispatch(composeEthereumCancelTransactionThunk({ account, tx }));
+            if (isRejected(result)) {
+                throw result.payload ?? new Error('Unknown error');
             }
 
-            return {
-                composedCancelTx: {
-                    ...normalLevel,
-                    rbfType: 'cancel',
-                    prevTxid: tx.txid,
-                } as PrecomposedTransactionFinalCancelRbf,
-                cancelFormState: formState,
-            };
+            return result.payload;
         },
     });
 
