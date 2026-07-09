@@ -73,13 +73,12 @@ export const TransactionListItemValues = ({
                         value={amount}
                         symbol={transaction.symbol}
                         historicRate={historicRate}
-                        useHistoricRate
+                        useHistoricRate={!!historicRate}
                         isForcedDiscreetMode={isPhishingTransaction}
                         style={applyStyle(failedTxStyle, { isFailedTx })}
                     />
                 </Box>
             )}
-
             <CryptoAmountFormatter
                 value={amount}
                 symbol={transaction.symbol}
