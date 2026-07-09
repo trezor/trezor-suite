@@ -1337,6 +1337,7 @@ export const messages = {
                 testnets: 'Testnet networks',
                 tokens: 'Including tokens',
                 tokensAndStaking: 'Including tokens & staking',
+                more: '+more',
             },
             toasts: {
                 coinEnabled: 'Connect your Trezor to load {coin}',
