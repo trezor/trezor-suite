@@ -27,6 +27,7 @@ describe('resolveEthereumNonce', () => {
             selectedAccount: ethAccount,
             rbfParams: rbf(7),
             accountTransactions: [],
+            fetchConfirmedNonce: false,
         });
 
         expect(result).toEqual({ nonce: '7', confirmedNonce: '7' });
@@ -37,6 +38,7 @@ describe('resolveEthereumNonce', () => {
         const result = await resolveEthereumNonce({
             selectedAccount: accountWithNonce(0),
             accountTransactions: [],
+            fetchConfirmedNonce: false,
         });
 
         expect(result).toEqual({ nonce: '0', confirmedNonce: '0' });
@@ -46,6 +48,7 @@ describe('resolveEthereumNonce', () => {
         const result = await resolveEthereumNonce({
             selectedAccount: accountWithNonce(5),
             accountTransactions: [],
+            fetchConfirmedNonce: false,
         });
 
         expect(result).toEqual({ nonce: '5', confirmedNonce: '5' });
@@ -59,6 +62,7 @@ describe('resolveEthereumNonce', () => {
                 evmTx(6, { confirmed: false }),
                 evmTx(7, { confirmed: false }),
             ],
+            fetchConfirmedNonce: false,
         });
 
         expect(result).toEqual({ nonce: '8', confirmedNonce: '5' });
@@ -68,6 +72,7 @@ describe('resolveEthereumNonce', () => {
         const result = await resolveEthereumNonce({
             selectedAccount: accountWithNonce(6),
             accountTransactions: [evmTx(13, { confirmed: false })],
+            fetchConfirmedNonce: false,
         });
 
         expect(result).toEqual({ nonce: '6', confirmedNonce: '6' });
@@ -77,6 +82,7 @@ describe('resolveEthereumNonce', () => {
         const result = await resolveEthereumNonce({
             selectedAccount: accountWithNonce(3),
             accountTransactions: [evmTx(99, { confirmed: false, type: 'recv' })],
+            fetchConfirmedNonce: false,
         });
 
         expect(result).toEqual({ nonce: '3', confirmedNonce: '3' });
