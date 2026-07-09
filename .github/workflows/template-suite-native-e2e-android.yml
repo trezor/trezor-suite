@@ -75,7 +75,7 @@ jobs:
           key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
 
       - name: Install SafeDep PMG
-        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        uses: safedep/pmg@c601e17cdcf5fb35e55349f15e0f1b40fc78dc67 # v0.22.1
         continue-on-error: true
         with:
           version: v0.19.1
@@ -128,7 +128,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
 
       - name: Run Detox E2E Android tests
-        uses: reactivecircus/android-emulator-runner@e89f39f1abbbd05b1113a29cf4db69e7540cae5a # v2
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
         env:
           RUNNER_TEMP: /tmp
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
