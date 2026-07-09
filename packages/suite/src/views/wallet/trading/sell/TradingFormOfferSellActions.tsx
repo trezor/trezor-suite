@@ -1,6 +1,7 @@
 import { selectIsTradingNetworkFeeMissing, tradingSellActions } from '@suite-common/trading';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 
+import { selectSellQuoteThunk } from 'src/actions/wallet/trading/sell/selectSellQuoteThunk';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { getTradingFirstOutput } from 'src/utils/wallet/trading/tradingUtils';
@@ -17,8 +18,7 @@ export const TradingFormOfferSellActions = () => {
         watch,
         shouldSendInSats,
         sellInfo,
-        selectQuote,
-        form: { state },
+        form: { state, helpers },
     } = context;
 
     const isNetworkFeeMissing = useSelector(selectIsTradingNetworkFeeMissing);
@@ -50,7 +50,7 @@ export const TradingFormOfferSellActions = () => {
             dispatch(tradingSellActions.setFormStep('SEND_TRANSACTION'));
         }
 
-        selectQuote(quote);
+        dispatch(selectSellQuoteThunk({ quote, fractionButton: helpers.fractionButton }));
     };
 
     return (

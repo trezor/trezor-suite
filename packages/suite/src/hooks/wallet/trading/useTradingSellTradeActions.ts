@@ -10,19 +10,24 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type TradingSignAndPushSendFormTransactionProps,
     isSendRejectedError,
+    selectTradingComposedTransactionInfo,
     selectTradingIsSlip24Allowed,
     selectTradingSellActiveTrade,
+    selectTradingSellInfo,
+    selectTradingSellQuotesRequest,
     selectTradingSellSelectedQuote,
     sellThunks,
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
+import { requestSellTradeThunk } from 'src/actions/wallet/trading/sell/requestSellTradeThunk';
+import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { useTradingSellTradeRequest } from 'src/hooks/wallet/trading/form/common/useTradingSellTradeRequest';
 import { useTradingFormAccount } from 'src/hooks/wallet/trading/form/useTradingFormAccount';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { buildSellReturnUrl } from 'src/utils/wallet/trading/buildSellReturnUrl';
 
 export const useTradingSellTradeActions = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
@@ -31,6 +36,9 @@ export const useTradingSellTradeActions = () => {
 
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
     const trade = useSelector(selectTradingSellActiveTrade);
+    const sellInfo = useSelector(selectTradingSellInfo);
+    const quotesRequest = useSelector(selectTradingSellQuotesRequest);
+    const composedInfo = useSelector(selectTradingComposedTransactionInfo);
 
     const { account: formAccount } = useTradingFormAccount('sell');
     const tradeSendAccount = useSelector(
@@ -58,17 +66,19 @@ export const useTradingSellTradeActions = () => {
             : false,
     );
 
-    const { getTradeRequestParams, handleSellTrade } = useTradingSellTradeRequest(account);
-
     const confirmTrade = async (bankAccount: BankAccount) => {
         if (!selectedQuote || !account) return;
 
         const quote = { ...selectedQuote, bankAccount };
-        const commonFunctions = await getTradeRequestParams(quote);
+        const returnUrl = await buildSellReturnUrl({
+            quote,
+            account,
+            sellInfo,
+            quotesRequest,
+            composedInfo,
+        });
 
-        if (!commonFunctions) return;
-
-        const { returnUrl, processResponseData } = commonFunctions;
+        if (!returnUrl) return;
 
         const triggerAnalyticsTradeConfirmation = () => {
             analytics.report({
@@ -83,7 +93,9 @@ export const useTradingSellTradeActions = () => {
                 bankAccount,
                 returnUrl,
                 triggerAnalyticsTradeConfirmation,
-                processResponseData,
+                processResponseData: response => {
+                    dispatch(submitRequestForm(response.tradeForm?.form));
+                },
             }),
         );
     };
@@ -91,7 +103,7 @@ export const useTradingSellTradeActions = () => {
     const addBankAccount = async () => {
         if (!selectedQuote) return;
 
-        await handleSellTrade(selectedQuote);
+        await dispatch(requestSellTradeThunk({ quote: selectedQuote })).unwrap();
     };
 
     const sendTransaction = async () => {

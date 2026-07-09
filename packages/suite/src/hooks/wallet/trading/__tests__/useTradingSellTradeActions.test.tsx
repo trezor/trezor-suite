@@ -48,16 +48,18 @@ jest.mock('@suite/settings', () => ({
     selectHasExperimentalFeature: () => () => false,
 }));
 
-const mockHandleSellTrade = jest.fn();
-jest.mock('src/hooks/wallet/trading/form/common/useTradingSellTradeRequest', () => ({
-    useTradingSellTradeRequest: () => ({
-        getTradeRequestParams: () =>
-            Promise.resolve({
-                returnUrl: 'https://return.url',
-                processResponseData: jest.fn(),
-            }),
-        handleSellTrade: mockHandleSellTrade,
-    }),
+const mockBuildSellReturnUrl = jest.fn((..._args: unknown[]) =>
+    Promise.resolve('https://return.url'),
+);
+jest.mock('src/utils/wallet/trading/buildSellReturnUrl', () => ({
+    buildSellReturnUrl: (...args: unknown[]) => mockBuildSellReturnUrl(...args),
+}));
+
+const mockRequestSellTradeThunk = jest.fn((args: unknown) =>
+    Object.assign(() => ({ unwrap: () => Promise.resolve({ isRedirecting: false }) }), { args }),
+);
+jest.mock('src/actions/wallet/trading/sell/requestSellTradeThunk', () => ({
+    requestSellTradeThunk: (args: unknown) => mockRequestSellTradeThunk(args),
 }));
 
 const mockConfirmTradeThunk = jest.fn((args: unknown) =>
@@ -167,7 +169,8 @@ describe('useTradingSellTradeActions', () => {
     beforeEach(() => {
         mockConfirmTradeThunk.mockClear();
         mockSendTransactionThunk.mockClear();
-        mockHandleSellTrade.mockClear();
+        mockBuildSellReturnUrl.mockClear();
+        mockRequestSellTradeThunk.mockClear();
         mockUseTradingFormAccount.mockReset();
     });
 
@@ -210,12 +213,12 @@ describe('useTradingSellTradeActions', () => {
     });
 
     describe('addBankAccount', () => {
-        it('delegates to handleSellTrade with the selected quote', async () => {
+        it('delegates to requestSellTradeThunk with the selected quote', async () => {
             const { result } = renderActions();
 
             await result.current.addBankAccount();
 
-            expect(mockHandleSellTrade).toHaveBeenCalledWith(SELECTED_QUOTE);
+            expect(mockRequestSellTradeThunk).toHaveBeenCalledWith({ quote: SELECTED_QUOTE });
         });
     });
 
