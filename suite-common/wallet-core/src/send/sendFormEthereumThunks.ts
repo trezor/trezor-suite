@@ -450,6 +450,9 @@ interface ResolveEthereumNonceParams {
     selectedAccount: AccountWithNetworkType<'ethereum'>;
     rbfParams?: RbfTransactionParams;
     accountTransactions: WalletAccountTransaction[];
+    // Required (yet optional for types to match) on purpose: every caller must consciously decide whether to pay for
+    // the authoritative mined-only backend nonce (outgoing txs) or skip it (RBF / display-only).
+    // Silently omitting it is exactly how the staking/WalletConnect/earn flows ended up stale.
     fetchConfirmedNonce?: boolean;
 }
 
@@ -516,6 +519,7 @@ export const resolveEthereumNonce = async ({
 interface EthereumGetCurrentNonceThunkParams {
     selectedAccount: AccountWithNetworkType<'ethereum'>;
     rbfParams?: RbfTransactionParams;
+    // See ResolveEthereumNonceParams: temporarily required so no caller can silently fall back to the stale nonce.
     fetchConfirmedNonce?: boolean;
 }
 

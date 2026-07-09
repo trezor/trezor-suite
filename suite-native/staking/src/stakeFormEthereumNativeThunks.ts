@@ -200,7 +200,10 @@ export const signEthereumStakingTransactionNativeThunk = createThunk<
                 const device = selectSelectedDevice(getState());
 
                 const { nonce } = await dispatch(
-                    ethereumGetCurrentNonceThunk({ selectedAccount: account }),
+                    ethereumGetCurrentNonceThunk({
+                        selectedAccount: account,
+                        fetchConfirmedNonce: true,
+                    }),
                 ).unwrap();
 
                 const tx = transformTx(

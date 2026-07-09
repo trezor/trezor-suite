@@ -130,6 +130,7 @@ export const signTransaction =
             ethereumGetCurrentNonceThunk({
                 selectedAccount: account,
                 rbfParams: formValues.rbfParams,
+                fetchConfirmedNonce: true,
             }),
         ).unwrap();
 
