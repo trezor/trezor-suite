@@ -1,6 +1,10 @@
 import { testMocks } from '@suite-common/test-utils';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type NetworkFeature, asNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type RbfTransactionParamsEthereum,
+    type WalletAccountTransaction,
+    asAccountDescriptor,
+} from '@suite-common/wallet-types';
 
 import * as fixtures from './__fixtures__/transactionUtils';
 import {
@@ -901,6 +905,115 @@ describe('transaction utils', () => {
 
         it('equal to nextNonce with no colliding pending tx is ok', () => {
             expect(getEvmNonceStatus(43, bounds)).toBe('ok');
+        });
+    });
+
+    // The actual cancel/bump eligibility gate (TxDetailModal, TransactionItem, native
+    // useCancelEvmTransaction): a *pending* tx can be replaced only while its own nonce still sits
+    // in the account's live window. Below confirmedNonce it already confirmed elsewhere; above
+    // nextNonce a lower nonce is still missing so a replacement could never confirm.
+    describe('getPendingEvmNonceStatus', () => {
+        const bounds = { confirmedNonce: 41, nextNonce: 43 };
+
+        it('below confirmedNonce is superseded (already mined under another txid)', () => {
+            expect(getPendingEvmNonceStatus(40, bounds)).toBe('superseded');
+        });
+
+        it('above nextNonce is a gap (a lower nonce is still missing)', () => {
+            expect(getPendingEvmNonceStatus(44, bounds)).toBe('gap');
+        });
+
+        it('equal to confirmedNonce is ok (next in line to confirm)', () => {
+            expect(getPendingEvmNonceStatus(41, bounds)).toBe('ok');
+        });
+
+        it('inside the contiguous pending window is ok', () => {
+            expect(getPendingEvmNonceStatus(42, bounds)).toBe('ok');
+        });
+
+        it('equal to nextNonce is ok', () => {
+            expect(getPendingEvmNonceStatus(43, bounds)).toBe('ok');
+        });
+
+        it('ignores pendingNonces membership, unlike getEvmNonceStatus', () => {
+            // A pending tx trivially occupies its own nonce, so getEvmNonceStatus would read it as a
+            // "replacement". getPendingEvmNonceStatus deliberately drops that check so an in-window
+            // pending tx stays cancellable ('ok') rather than being flagged as replacing itself.
+            const nonce = 42;
+            const evmNonceInfo = { ...bounds, pendingNonces: [41, 42] };
+            expect(getEvmNonceStatus(nonce, evmNonceInfo)).toBe('replacement');
+            expect(getPendingEvmNonceStatus(nonce, evmNonceInfo)).toBe('ok');
+        });
+    });
+
+    // Shared entry-point gate for offering a cancel/bump action on a pending tx.
+    describe('isTransactionCancellable', () => {
+        const tx = (type: WalletAccountTransaction['type']) => getWalletTransaction({ type });
+
+        it('is true for a pending outgoing ethereum tx', () => {
+            expect(isTransactionCancellable(tx('sent'), true, 'ethereum')).toBe(true);
+        });
+
+        it('is true for a pending outgoing bitcoin tx', () => {
+            expect(isTransactionCancellable(tx('sent'), true, 'bitcoin')).toBe(true);
+        });
+
+        it('is false when the tx is not pending', () => {
+            expect(isTransactionCancellable(tx('sent'), false, 'ethereum')).toBe(false);
+        });
+
+        it("is false for a 'self' tx", () => {
+            expect(isTransactionCancellable(tx('self'), true, 'ethereum')).toBe(false);
+        });
+
+        it("is false for a 'joint' (coinjoin) tx", () => {
+            expect(isTransactionCancellable(tx('joint'), true, 'bitcoin')).toBe(false);
+        });
+
+        it('is false for networks without replacement support (e.g. ripple, solana)', () => {
+            expect(isTransactionCancellable(tx('sent'), true, 'ripple')).toBe(false);
+            expect(isTransactionCancellable(tx('sent'), true, 'solana')).toBe(false);
+        });
+    });
+
+    describe('isTransactionBumpable', () => {
+        const ethRbfParams: RbfTransactionParamsEthereum = {
+            type: 'ethereum',
+            txid: '0x1',
+            outputs: [],
+            ethereumNonce: 1,
+            transactionData: '',
+            gasPrice: '',
+            maxFeePerGas: '20',
+            maxPriorityFeePerGas: '2',
+        };
+        const rbfFeatures: NetworkFeature[] = ['rbf'];
+        const bumpableTx = (overrides?: Partial<WalletAccountTransaction>) =>
+            getWalletTransaction({ type: 'sent', rbfParams: ethRbfParams, ...overrides });
+
+        it('is true with rbfParams, the rbf network feature, no deadline and a non-joint tx', () => {
+            expect(isTransactionBumpable(bumpableTx(), rbfFeatures)).toBe(true);
+        });
+
+        it('is false without rbfParams', () => {
+            expect(isTransactionBumpable(bumpableTx({ rbfParams: undefined }), rbfFeatures)).toBe(
+                false,
+            );
+        });
+
+        it('is false when the network has no rbf feature', () => {
+            expect(isTransactionBumpable(bumpableTx(), [])).toBe(false);
+            expect(isTransactionBumpable(bumpableTx(), undefined)).toBe(false);
+        });
+
+        it('is false when the tx has a deadline (e.g. a time-boxed swap)', () => {
+            expect(isTransactionBumpable(bumpableTx({ deadline: 123456 }), rbfFeatures)).toBe(
+                false,
+            );
+        });
+
+        it("is false for a 'joint' (coinjoin) tx", () => {
+            expect(isTransactionBumpable(bumpableTx({ type: 'joint' }), rbfFeatures)).toBe(false);
         });
     });
 
