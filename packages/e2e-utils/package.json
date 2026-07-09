@@ -10,6 +10,7 @@
         "type-check": "yarn g:tsc --build",
         "test-health": "tsx ./src/quarantineBot/index.ts",
         "select-tests": "tsx ./src/testCoverage/selectTestsByChangedFiles.ts",
+        "build-coverage-map": "tsx ./src/testCoverage/buildCoverageMap.ts",
         "seed-tests": "CURRENTS_PROJECT_ID=iBEsWE yarn pwc --config ./src/quarantineBot/seed/playwright.config.ts",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "analyze-tests": "tsx ./src/llmTestAnalyzer/index.ts",
