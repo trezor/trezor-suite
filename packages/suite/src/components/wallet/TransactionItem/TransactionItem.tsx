@@ -12,6 +12,7 @@ import {
     selectAccountByKey,
     selectIsPhishingTransaction,
     useDisplayBaseCurrency,
+    useEvmNonceInfo,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
@@ -28,7 +29,6 @@ import { OutlineHighlight } from '@trezor/product-components';
 
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useEvmNonceInfo } from 'src/hooks/wallet/useEvmNonceInfo';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { EvmBumpFeeTooltip } from './EvmBumpFeeTooltip';
