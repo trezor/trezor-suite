@@ -1,0 +1,179 @@
+import { type ReactNode } from 'react';
+
+import {
+    selectDeviceButtonRequestsCodes,
+    selectIsDeviceConnectedAndAuthorized,
+} from '@suite-common/device';
+import { QueryClient, QueryClientProvider } from '@suite-common/react-query';
+import {
+    selectAccountByKey,
+    selectIsTransactionPending,
+    useEvmNonceInfo,
+} from '@suite-common/wallet-core';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { type EvmNonceInfo } from '@suite-common/wallet-utils';
+import {
+    createStoreFromPreloadedState,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils-store';
+
+import { useCancelEvmTransaction } from '../useCancelEvmTransaction';
+
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => ({ navigate: jest.fn(), goBack: jest.fn() }),
+    useFocusEffect: jest.fn(),
+}));
+
+jest.mock('@suite-common/wallet-core', () => ({
+    __esModule: true,
+    ...jest.requireActual('@suite-common/wallet-core'),
+    selectAccountByKey: jest.fn(),
+    selectIsTransactionPending: jest.fn(),
+    useEvmNonceInfo: jest.fn(),
+}));
+
+jest.mock('@suite-common/device', () => ({
+    __esModule: true,
+    ...jest.requireActual('@suite-common/device'),
+    selectIsDeviceConnectedAndAuthorized: jest.fn(),
+    selectDeviceButtonRequestsCodes: jest.fn(),
+}));
+
+jest.mock('@suite-native/toasts', () => ({
+    ...jest.requireActual('@suite-native/toasts'),
+    useToast: () => ({ showToast: jest.fn() }),
+}));
+
+jest.mock('@suite-native/send', () => ({
+    __esModule: true,
+    signAndPushEvmCancelTransactionThunk: jest.fn(() => ({ type: 'mock/signAndPush' })),
+}));
+
+const ethAccount = mockWalletAccount({ symbol: 'eth' });
+const btcAccount = mockWalletAccount({ symbol: 'btc' });
+
+const ethRbfParams = {
+    type: 'ethereum',
+    txid: '0xpendingtxid',
+    outputs: [],
+    ethereumNonce: 5,
+    transactionData: '',
+    gasPrice: '',
+    maxFeePerGas: '20',
+    maxPriorityFeePerGas: '2',
+};
+
+// A pending outgoing ETH tx (nonce 5) that carries ethereum rbf params — the cancellable base case.
+const pendingEvmTx = {
+    type: 'sent',
+    txid: '0xpendingtxid',
+    blockHeight: 0,
+    ethereumSpecific: { nonce: 5 },
+    rbfParams: ethRbfParams,
+} as unknown as WalletAccountTransaction;
+
+// nonce 5 sits inside [confirmedNonce, nextNonce] with no confirmed tx in its slot -> 'ok'.
+const liveNonceInfo: EvmNonceInfo = {
+    confirmedNonce: 5,
+    nextNonce: 6,
+    pendingNonces: [5],
+    confirmedNonces: [],
+};
+// nonce 5 is below confirmedNonce 6 and a locally-known confirmed tx occupies that slot
+// (confirmedNonces) -> 'superseded' -> stuck.
+const stuckNonceInfo: EvmNonceInfo = {
+    confirmedNonce: 6,
+    nextNonce: 6,
+    pendingNonces: [],
+    confirmedNonces: [5],
+};
+
+const selectAccountByKeyMock = selectAccountByKey as unknown as jest.Mock;
+const selectIsTransactionPendingMock = selectIsTransactionPending as unknown as jest.Mock;
+const useEvmNonceInfoMock = useEvmNonceInfo as unknown as jest.Mock;
+const selectIsDeviceConnectedAndAuthorizedMock =
+    selectIsDeviceConnectedAndAuthorized as unknown as jest.Mock;
+const selectDeviceButtonRequestsCodesMock = selectDeviceButtonRequestsCodes as unknown as jest.Mock;
+
+// Stable references so react-redux's reference-equality useSelector doesn't re-render every tick.
+const EMPTY_BUTTON_REQUEST_CODES: number[] = [];
+
+const renderCancelHook = (transaction: WalletAccountTransaction = pendingEvmTx) => {
+    const queryClient = new QueryClient({
+        defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    });
+    const wrapper = ({ children }: { children: ReactNode }) => (
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    );
+
+    return renderHookWithStoreProvider(
+        () => useCancelEvmTransaction({ accountKey: ethAccount.key, transaction }),
+        {
+            store: createStoreFromPreloadedState({
+                wallet: { settings: { localCurrency: 'usd', bitcoinAmountUnit: 0 } },
+                locale: {
+                    appLocaleCode: 'en-US',
+                    systemLocaleCode: 'en-US',
+                    isSystemLocaleUsed: true,
+                },
+            }),
+            wrapper,
+        },
+    );
+};
+
+describe('useCancelEvmTransaction', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        selectAccountByKeyMock.mockReturnValue(ethAccount);
+        selectIsTransactionPendingMock.mockReturnValue(true);
+        useEvmNonceInfoMock.mockReturnValue({ nonceInfo: liveNonceInfo });
+        selectIsDeviceConnectedAndAuthorizedMock.mockReturnValue(true);
+        selectDeviceButtonRequestsCodesMock.mockReturnValue(EMPTY_BUTTON_REQUEST_CODES);
+    });
+
+    it('is cancellable for a pending EVM tx with rbf params and a live (non-stuck) nonce', () => {
+        const { result } = renderCancelHook();
+
+        expect(result.current.isCancellable).toBe(true);
+        // sanity: nothing composed/signing yet
+        expect(result.current.composedCancelTx).toBeNull();
+        expect(result.current.isComposing).toBe(false);
+        expect(result.current.composeError).toBe(false);
+        expect(result.current.isSigning).toBe(false);
+    });
+
+    it('is not cancellable when the account is not an EVM account', () => {
+        selectAccountByKeyMock.mockReturnValue(btcAccount);
+
+        const { result } = renderCancelHook();
+
+        expect(result.current.isCancellable).toBe(false);
+    });
+
+    it('is not cancellable when the transaction is no longer pending', () => {
+        selectIsTransactionPendingMock.mockReturnValue(false);
+
+        const { result } = renderCancelHook();
+
+        expect(result.current.isCancellable).toBe(false);
+    });
+
+    it("is not cancellable when the tx's own nonce is stuck (superseded/gapped)", () => {
+        useEvmNonceInfoMock.mockReturnValue({ nonceInfo: stuckNonceInfo });
+
+        const { result } = renderCancelHook();
+
+        expect(result.current.isCancellable).toBe(false);
+    });
+
+    it('is not cancellable for a tx without ethereum rbf params', () => {
+        const txWithoutRbf = { ...pendingEvmTx, rbfParams: undefined } as WalletAccountTransaction;
+
+        const { result } = renderCancelHook(txWithoutRbf);
+
+        expect(result.current.isCancellable).toBe(false);
+    });
+});

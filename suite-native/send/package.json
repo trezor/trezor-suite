@@ -26,5 +26,8 @@
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
+    },
+    "devDependencies": {
+        "@suite-common/test-utils": "workspace:*"
     }
 }

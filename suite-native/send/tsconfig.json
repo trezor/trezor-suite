@@ -24,6 +24,9 @@
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/type-utils" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        {
+            "path": "../../suite-common/test-utils"
+        }
     ]
 }

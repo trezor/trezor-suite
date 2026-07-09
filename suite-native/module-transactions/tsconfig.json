@@ -5,8 +5,12 @@
         {
             "path": "../../suite-common/dependency-injection"
         },
+        { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/formatters"
+        },
+        {
+            "path": "../../suite-common/react-query"
         },
         {
             "path": "../../suite-common/token-definitions"
@@ -28,6 +32,7 @@
         { "path": "../atoms" },
         { "path": "../clipboard" },
         { "path": "../config" },
+        { "path": "../confirm-on-trezor" },
         { "path": "../formatters" },
         { "path": "../icons" },
         { "path": "../in-app-rating" },
@@ -35,6 +40,8 @@
         { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../send" },
+        { "path": "../toasts" },
         { "path": "../tokens" },
         { "path": "../transaction-management" },
         { "path": "../transactions" },
@@ -43,6 +50,7 @@
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/urls" },
+        { "path": "../test-utils-store" },
         { "path": "../../packages/requirements" }
     ]
 }
