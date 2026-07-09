@@ -43,6 +43,7 @@ const buildPreloadedState = (
     transactions: WalletAccountTransaction[] = [confirmedTransaction],
 ) => ({
     wallet: {
+        accounts: [],
         transactions: {
             transactions: { [ACCOUNT_KEY]: transactions },
             fetchStatusDetail: {},

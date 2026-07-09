@@ -93,6 +93,7 @@ export const UtxoCard = ({
             params: {
                 txid: utxo.txid,
                 accountKey,
+                allowFetchFallback: true,
             },
         });
     };
