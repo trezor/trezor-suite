@@ -27,6 +27,7 @@ import {
     useFetchMissingTransactionFiatRates,
 } from '@suite-native/transactions';
 
+import { CancelEvmTransactionButton } from '../components/CancelEvmTransactionButton';
 import { TransactionDetailData } from '../components/TransactionDetailData';
 import { TransactionDetailHeader } from '../components/TransactionDetailHeader';
 import { TransactionDetailTitle } from '../components/TransactionDetailTitle';
@@ -114,6 +115,7 @@ export const TransactionDetailScreen = ({
                         tokenTransfer={tokenTransfer}
                     />
                 </VStack>
+                <CancelEvmTransactionButton accountKey={accountKey} transaction={transaction} />
                 <Button
                     iconRight="arrowUpRight"
                     onPress={handleOpenBlockchain}
