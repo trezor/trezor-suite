@@ -808,10 +808,6 @@ export const messages = defineMessages({
         defaultMessage: 'Pending',
         id: 'TR_SELL_STATUS_PENDING',
     },
-    TR_SELL_PROVIDER_ADJUSTED_AMOUNT: {
-        defaultMessage: 'Provider adjusted your amount to {roundedAmountWithSymbol}',
-        id: 'TR_SELL_PROVIDER_ADJUSTED_AMOUNT',
-    },
     TR_REQUIRED_FIELD: {
         defaultMessage: 'Required',
         id: 'TR_REQUIRED_FIELD',
@@ -1161,19 +1157,6 @@ export const messages = defineMessages({
         defaultMessage: 'Searching for your best offer...',
         id: 'TR_TRADING_OFFER_LOOKING',
     },
-    TR_TRADING_FEES_INCLUDED: {
-        defaultMessage: 'Fees included',
-        id: 'TR_TRADING_FEES_INCLUDED',
-    },
-    TR_TRADING_FEES_NOT_INCLUDED: {
-        defaultMessage: 'Fees not included',
-        id: 'TR_TRADING_FEES_NOT_INCLUDED',
-    },
-    TR_TRADING_FEES_ON_WEBSITE: {
-        defaultMessage:
-            "Some fees may not be included in the displayed price. The final cost will be shown on the provider's website.",
-        id: 'TR_TRADING_FEES_ON_WEBSITE',
-    },
     TR_TRADING_FEES_CALCULATION_DISCLAIMER: {
         defaultMessage: 'See how fees are calculated.',
         id: 'TR_TRADING_FEES_CALCULATION_DISCLAIMER',
@@ -1210,18 +1193,10 @@ export const messages = defineMessages({
         defaultMessage: 'Network fee',
         id: 'TR_TRADING_NETWORK_FEE',
     },
-    TR_TRADING_TRADE_FEE: {
-        defaultMessage: 'Trade fee',
-        id: 'TR_TRADING_TRADE_FEE',
-    },
     TR_TRADING_TRADE_HISTORY_COUNTER: {
         defaultMessage:
             '{totalBuys, plural, =0 {{totalBuys} buys} one {{totalBuys} buy} other {{totalBuys} buys} } • {totalSells, plural, =0 {{totalSells} sells} one {{totalSells} sell} other {{totalSells} sells} } • {totalSwaps, plural, =0 {{totalSwaps} swaps} one {{totalSwaps} swap} other {{totalSwaps} swaps} }',
         id: 'TR_TRADING_TRADE_HISTORY_COUNTER',
-    },
-    TR_TRADING_TOKEN_NETWORK: {
-        defaultMessage: '{tokenName} on {networkName} network',
-        id: 'TR_TRADING_TOKEN_NETWORK',
     },
     TR_TRADING_ENTER_AMOUNT_IN: {
         defaultMessage: 'Enter amount in {currency}',
