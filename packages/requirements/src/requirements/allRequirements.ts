@@ -1,7 +1,6 @@
 import type { Requirement, RequirementScope } from './Requirement';
 import { requireAgentsSkills } from './agents-skills/requireAgentsSkills';
 import { requireUnifiedDependencyVersions } from './dependency-versions/requireUnifiedDependencyVersions';
-import { requireDocsSummary } from './docs-summary/requireDocsSummary';
 import { requireFirmwareReleaseVersionMonotonicity } from './firmware-releases/requireFirmwareReleaseVersionMonotonicity';
 import { requireForbiddenDeps } from './forbidden-deps/requireForbiddenDeps';
 import { requirePackageJsonScripts } from './package-json/requirePackageJsonScripts';
@@ -12,7 +11,6 @@ export const requirements: ReadonlyArray<Requirement<RequirementScope>> = [
     requireAgentsSkills,
     requireUnifiedDependencyVersions,
     requireConnectPublicDependencies,
-    requireDocsSummary,
     requireFirmwareReleaseVersionMonotonicity,
     requireForbiddenDeps,
     requirePackageJsonScripts,
