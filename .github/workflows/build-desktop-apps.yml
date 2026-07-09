@@ -6,7 +6,6 @@ on:
       - develop
     paths-ignore:
       - "suite-native/**"
-      - "docs/**"
       - "docker/**"
       - "ci/**"
       - ".vscode/**"
