@@ -3017,6 +3017,7 @@ export const messages = {
             received: 'Received',
             rewards: 'Rewards',
             sent: 'Sent',
+            deposited: 'Deposited',
             withdrawalAmount: 'Withdrawal amount',
             backToOverview: 'Back to overview',
         },
