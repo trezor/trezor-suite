@@ -1,8 +1,5 @@
 import { type TranslationKey } from '@suite/intl';
-import {
-    type SelectedAccountLoaded,
-    type WalletAccountTransaction,
-} from '@suite-common/wallet-types';
+import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -18,20 +15,19 @@ type UseCancelTransactionDataResult = {
     noticeId: TranslationKey;
     topRow: CancelTxRow;
     bottomRow: CancelTxRow;
-    networkType: SelectedAccountLoaded['account']['networkType'];
+    networkType: Account['networkType'];
     symbol: WalletAccountTransaction['symbol'];
 } | null;
 
 type UseCancelTransactionDataParams = {
     tx: WalletAccountTransaction;
-    selectedAccount: SelectedAccountLoaded;
+    account: Account;
 };
 
 export const useCancelTransactionData = ({
     tx,
-    selectedAccount,
+    account,
 }: UseCancelTransactionDataParams): UseCancelTransactionDataResult => {
-    const { account } = selectedAccount;
     const { networkType } = account;
     const { composedCancelTx } = useCancelTxContext();
 
