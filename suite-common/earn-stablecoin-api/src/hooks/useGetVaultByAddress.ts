@@ -20,7 +20,7 @@ export function useGetVaultByAddress({ enabled, outputToken }: GetVaultByAddress
                 },
             });
 
-            return items?.[0];
+            return items?.[0] ?? null;
         },
     });
 }

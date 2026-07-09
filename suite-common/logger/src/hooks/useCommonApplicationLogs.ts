@@ -28,6 +28,7 @@ export const useCommonApplicationLogs = (hideSensitiveInfo: boolean) => {
 
     // Enhance devices info with telemetry data (battery temp, etc.)
     const devicePaths = new Set(redactedApplicationInfo.devices.map(d => d.path));
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is the set of device paths (already spread into the key); the queryFn reads the full device objects only to enrich them with telemetry
     const { data: devicesWithTelemetry, isLoading } = useQuery({
         queryKey: ['device-telemetry', ...devicePaths],
         queryFn: async ({ signal }) => {

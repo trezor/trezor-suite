@@ -45,9 +45,10 @@ export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTo
         data: allInactiveTokens,
         isLoading,
         isError,
+        // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is account.symbol + account.key; the queryFn passes the full account to getStellarInactiveTokens and uses dispatch only for an error toast — neither the extra account fields nor the stable dispatch belong in the key
     } = useQuery({
         enabled: account.symbol === 'xlm',
-        queryKey: desktopQueryKeys.inactiveTokens(account.symbol),
+        queryKey: desktopQueryKeys.inactiveTokens(account.symbol, account.key),
         queryFn: () => {
             try {
                 return getStellarInactiveTokens(account);
