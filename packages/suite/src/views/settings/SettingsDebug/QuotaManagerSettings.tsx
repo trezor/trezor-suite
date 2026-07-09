@@ -100,7 +100,7 @@ export const QuotaManagerSettings = () => {
                                 isDisabled={isUpdateUrlLoading}
                                 onClick={() =>
                                     onQuotaManagerUrlPresetClick(
-                                        getQuotaManagerUrl({ env: 'dev', isTorEnabled: false }),
+                                        getQuotaManagerUrl({ env: 'dev', isTorEnabled }),
                                     )
                                 }
                             >
@@ -111,7 +111,7 @@ export const QuotaManagerSettings = () => {
                                 isDisabled={isUpdateUrlLoading}
                                 onClick={() =>
                                     onQuotaManagerUrlPresetClick(
-                                        getQuotaManagerUrl({ env: 'local', isTorEnabled: false }),
+                                        getQuotaManagerUrl({ env: 'local', isTorEnabled }),
                                     )
                                 }
                             >

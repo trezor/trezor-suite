@@ -49,7 +49,8 @@ describe(getQuotaManagerDefaultUrl.name, () => {
         {
             isCodesignBuildEnabled: false,
             isTorEnabled: true,
-            expectedUrl: 'https://suite-sync-dev.suite.sldev.cz/quota-manager/',
+            expectedUrl:
+                'http://suite-sync-dev.suite.sldevz5tqu7uh4owm4gg5erbn3doap5rhilvkwtvdq7ihibfpzw2a5ad.onion/quota-manager/',
         },
     ])(
         'returns $expectedUrl for codesign=$isCodesignBuildEnabled and tor=$isTorEnabled',
@@ -77,7 +78,8 @@ describe(getQuotaManagerUrl.name, () => {
         {
             env: 'dev' as const,
             isTorEnabled: true,
-            expectedUrl: 'https://suite-sync-dev.suite.sldev.cz/quota-manager/',
+            expectedUrl:
+                'http://suite-sync-dev.suite.sldevz5tqu7uh4owm4gg5erbn3doap5rhilvkwtvdq7ihibfpzw2a5ad.onion/quota-manager/',
         },
         {
             env: 'local' as const,
@@ -134,5 +136,13 @@ describe(selectQuotaManagerUrl.name, () => {
                 true,
             ),
         ).toBe('http://localhost:4001/quota-manager/');
+    });
+
+    it('uses default quota manager url when custom url is not set', () => {
+        (isCodesignBuild as jest.Mock).mockReturnValue(false);
+
+        expect(selectQuotaManagerUrl(createQuotaManagerState({ baseUrl: null }), false)).toBe(
+            'https://suite-sync-dev.suite.sldev.cz/quota-manager/',
+        );
     });
 });
