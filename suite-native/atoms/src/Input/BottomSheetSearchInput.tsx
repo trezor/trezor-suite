@@ -1,4 +1,4 @@
-import { type Ref, forwardRef } from 'react';
+import { forwardRef } from 'react';
 import { type TextInput } from 'react-native';
 
 import { SearchInput, type SearchInputProps } from './SearchInput';
@@ -13,4 +13,4 @@ export type BottomSheetSearchInputRef = TextInput | null;
 export const BottomSheetSearchInput = forwardRef<
     BottomSheetSearchInputRef,
     BottomSheetSearchInputProps
->((props, ref) => <SearchInput ref={ref as Ref<TextInput>} {...props} isBottomSheetInput />);
+>((props, ref) => <SearchInput ref={ref} {...props} isBottomSheetInput />);
