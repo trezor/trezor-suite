@@ -152,14 +152,14 @@ jobs:
         with:
           pattern: coverage-map-group-*
           merge-multiple: true
-          path: coverage-map/
+          path: packages/e2e-utils/coverage-map/
 
       - name: Build coverage map index
         run: |
-          yarn tsx packages/e2e-utils/src/testCoverage/buildCoverageMap.ts \
+          yarn workspace @trezor/e2e-utils build-coverage-map \
             --input coverage-map \
             --output coverage-map/index.json
 
       - name: Upload coverage map to S3
         run: |
-          aws s3api put-object --bucket dev.suite.sldev.cz --key coverage/e2e/index.json --body coverage-map/index.json --content-type application/json --cache-control "no-cache, max-age=0"
+          aws s3api put-object --bucket dev.suite.sldev.cz --key coverage/e2e/index.json --body packages/e2e-utils/coverage-map/index.json --content-type application/json --cache-control "no-cache, max-age=0"
