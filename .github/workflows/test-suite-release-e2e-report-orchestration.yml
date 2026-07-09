@@ -14,14 +14,8 @@ jobs:
     uses: ./.github/workflows/test-suite-manual-release.yml
     secrets: inherit
 
-  call-test-suite-desktop-e2e-release:
-    uses: ./.github/workflows/test-suite-desktop-e2e-release.yml
-    secrets: inherit
-    with:
-      publish_results_to_github: true
-
-  call-test-suite-web-e2e-release:
-    uses: ./.github/workflows/test-suite-web-e2e-release.yml
+  call-test-suite-web-desktop-e2e-release:
+    uses: ./.github/workflows/test-suite-web-desktop-e2e-release.yml
     secrets: inherit
     with:
       publish_results_to_github: true
