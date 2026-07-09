@@ -73,7 +73,12 @@ export const sendYieldTransaction = async ({
     dispatch(
         stablecoinYieldActions.storePrecomposedTransaction({
             precomposedTx: precomposedTransaction,
-            precomposedForm: formState,
+            // transactionForSigning.nonce is hex; store a decimal string so the review modal shows
+            // it like the Send flow.
+            precomposedForm: {
+                ...formState,
+                ethereumNonce: parseInt(transactionForSigning.nonce, 16).toString(),
+            },
             accountKey: account.key,
             flowKey,
             flowType,
