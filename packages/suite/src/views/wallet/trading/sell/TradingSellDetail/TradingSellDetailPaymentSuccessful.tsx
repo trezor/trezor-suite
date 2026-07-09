@@ -3,9 +3,9 @@ import { type SellFiatTrade, type SellProviderInfo } from 'invity-api';
 import { Translation, useTranslation } from '@suite/intl';
 import { Card, Column, Paragraph, type StepListItemState } from '@trezor/components';
 
-import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
-import { TradingDetailStep } from '../TradingDetailStep';
-import { TradingDetailSupportBanner } from '../TradingDetailSupportBanner';
+import { TradingDetailProviderInfo } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProviderInfo';
+import { TradingDetailStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStep';
+import { TradingDetailSupportBanner } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSupportBanner';
 
 const getState = (trade: SellFiatTrade): StepListItemState => {
     switch (trade.status) {
@@ -16,15 +16,15 @@ const getState = (trade: SellFiatTrade): StepListItemState => {
     }
 };
 
-type TradingDetailSellPaymentSuccessfulProps = {
+type TradingSellDetailPaymentSuccessfulProps = {
     trade: SellFiatTrade;
     provider?: SellProviderInfo;
 };
 
-export const TradingDetailSellPaymentSuccessful = ({
+export const TradingSellDetailPaymentSuccessful = ({
     trade,
     provider,
-}: TradingDetailSellPaymentSuccessfulProps) => {
+}: TradingSellDetailPaymentSuccessfulProps) => {
     const { translationString } = useTranslation();
     const state = getState(trade);
 

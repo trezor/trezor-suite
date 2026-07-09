@@ -1,4 +1,4 @@
-import { type ExchangeProviderInfo, type ExchangeTrade } from 'invity-api';
+import { type SellFiatTrade, type SellProviderInfo } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
@@ -7,38 +7,37 @@ import { XIcon } from '@trezor/icons';
 
 import { useDispatch } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
+import { TradingDetailProviderInfo } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProviderInfo';
+import { TradingDetailSupportBanner } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSupportBanner';
 
-import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
-import { TradingDetailSupportBanner } from '../TradingDetailSupportBanner';
-
-type TradingDetailExchangePaymentFailedProps = {
-    trade: ExchangeTrade;
-    account?: Account;
-    provider?: ExchangeProviderInfo;
+type TradingSellDetailPaymentFailedProps = {
+    account: Account;
+    trade: SellFiatTrade;
+    provider?: SellProviderInfo;
 };
 
-export const TradingDetailExchangePaymentFailed = ({
+export const TradingSellDetailPaymentFailed = ({
+    account,
     trade,
     provider,
-    account,
-}: TradingDetailExchangePaymentFailedProps) => {
+}: TradingSellDetailPaymentFailedProps) => {
     const dispatch = useDispatch();
 
-    const handleClick = () => dispatch(goto({ routeName: 'wallet-trading-exchange' }));
+    const handleClick = () => dispatch(goto({ routeName: 'wallet-trading-sell' }));
 
     return (
         <Column gap={24} padding={{ top: 12, bottom: 4 }}>
             <IconCircle icon={XIcon} intent="critical" size={96} />
             <Column>
                 <H3 data-testid="@trading/transaction/detail/status">
-                    <Translation id="TR_EXCHANGE_DETAIL_ERROR_TITLE" />
+                    <Translation id="TR_SELL_DETAIL_ERROR_TITLE" />
                 </H3>
                 <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
-                    <Translation id="TR_EXCHANGE_DETAIL_ERROR_TEXT" />
+                    <Translation id="TR_SELL_DETAIL_ERROR_TEXT" />
                 </Paragraph>
             </Column>
             <Button onClick={handleClick} intent="neutral" priority="secondary">
-                <Translation id="TR_EXCHANGE_DETAIL_ERROR_BUTTON" />
+                <Translation id="TR_SELL_DETAIL_ERROR_BUTTON" />
             </Button>
             <Card>
                 <Column gap={24}>
@@ -48,7 +47,7 @@ export const TradingDetailExchangePaymentFailed = ({
                             orderId={trade.orderId}
                             provider={provider}
                             trade={trade}
-                            txId={trade.receiveTxHash}
+                            txId={trade.txid}
                         />
                     )}
                     <TradingDetailSupportBanner provider={provider} trade={trade} />

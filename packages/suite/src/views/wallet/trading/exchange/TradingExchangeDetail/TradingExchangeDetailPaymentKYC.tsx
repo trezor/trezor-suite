@@ -5,22 +5,21 @@ import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/compone
 import { WarningIcon } from '@trezor/icons';
 
 import { type Account } from 'src/types/wallet';
+import { TradingDetailProviderInfo } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProviderInfo';
 
-import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
-
-type TradingDetailExchangePaymentKYCProps = {
+type TradingExchangeDetailPaymentKYCProps = {
     trade: ExchangeTrade;
     account?: Account;
     provider?: ExchangeProviderInfo;
     supportUrl?: string;
 };
 
-export const TradingDetailExchangePaymentKYC = ({
+export const TradingExchangeDetailPaymentKYC = ({
     trade,
     account,
     provider,
     supportUrl,
-}: TradingDetailExchangePaymentKYCProps) => (
+}: TradingExchangeDetailPaymentKYCProps) => (
     <Column gap={24} padding={{ top: 12, bottom: 4 }}>
         <IconCircle icon={WarningIcon} intent="warning" size={96} />
         <Column>

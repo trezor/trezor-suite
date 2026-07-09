@@ -18,14 +18,14 @@ import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrad
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { AfterTradeExperiment } from 'src/views/wallet/trading/common/TradingDetail/AfterTradeExperiment';
 import { TradingDetailHeader } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailHeader';
-import { TradingDetailSellPaymentFailed } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSell/TradingDetailSellPaymentFailed';
-import { TradingDetailSellPaymentSending } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSell/TradingDetailSellPaymentSending';
-import { TradingDetailSellPaymentSuccessful } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSell/TradingDetailSellPaymentSuccessful';
-import { TradingDetailSellSidebar } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSellSidebar';
-import { getSellDetailHeaderMessages } from 'src/views/wallet/trading/common/TradingDetail/utils';
+import { TradingDetailStepList } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStepList';
 import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
-import { TradingDetailStepList } from '../TradingDetailStepList';
+import { TradingSellDetailPaymentFailed } from './TradingSellDetailPaymentFailed';
+import { TradingSellDetailPaymentSending } from './TradingSellDetailPaymentSending';
+import { TradingSellDetailPaymentSuccessful } from './TradingSellDetailPaymentSuccessful';
+import { TradingSellDetailSidebar } from './TradingSellDetailSidebar';
+import { getSellDetailHeaderMessages } from './utils';
 
 const Wrapper = styled.div`
     ${TradingWrapper}
@@ -41,7 +41,7 @@ const getTradeStatusStep = (tradeStatus: SellTradeStatus) => {
     }
 };
 
-export const TradingDetailSell = () => {
+export const TradingSellDetailContent = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const accounts = useSelector(selectAccounts);
     const { trade, info } = useTradingDetailContext<TradingSellType>();
@@ -97,7 +97,7 @@ export const TradingDetailSell = () => {
         switch (tradeStatusStep) {
             case 'error':
                 return (
-                    <TradingDetailSellPaymentFailed
+                    <TradingSellDetailPaymentFailed
                         account={sendAccount!}
                         provider={provider}
                         trade={trade.data}
@@ -112,12 +112,12 @@ export const TradingDetailSell = () => {
                         />
                         <Box margin={{ top: 32, bottom: 12 }}>
                             <TradingDetailStepList>
-                                <TradingDetailSellPaymentSending
+                                <TradingSellDetailPaymentSending
                                     trade={trade.data}
                                     account={sendAccount}
                                     composedTransaction={composedTransaction}
                                 />
-                                <TradingDetailSellPaymentSuccessful
+                                <TradingSellDetailPaymentSuccessful
                                     trade={trade.data}
                                     provider={provider}
                                 />
@@ -143,7 +143,7 @@ export const TradingDetailSell = () => {
                     country={country}
                 />
             </Column>
-            <TradingDetailSellSidebar
+            <TradingSellDetailSidebar
                 sendAccount={sendAccount}
                 quoteAmounts={quoteAmounts}
                 paymentMethod={trade.data.paymentMethod}

@@ -7,20 +7,19 @@ import { CheckIcon } from '@trezor/icons';
 
 import { useDispatch } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
+import { TradingDetailProviderInfo } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProviderInfo';
 
-import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
-
-type TradingDetailExchangePaymentSuccessfulProps = {
+type TradingExchangeDetailPaymentSuccessfulProps = {
     trade: ExchangeTrade;
     account?: Account;
     provider?: ExchangeProviderInfo;
 };
 
-export const TradingDetailExchangePaymentSuccessful = ({
+export const TradingExchangeDetailPaymentSuccessful = ({
     trade,
     account,
     provider,
-}: TradingDetailExchangePaymentSuccessfulProps) => {
+}: TradingExchangeDetailPaymentSuccessfulProps) => {
     const dispatch = useDispatch();
 
     const handleClick = () => dispatch(goto({ routeName: 'wallet-trading-exchange' }));

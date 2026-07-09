@@ -16,16 +16,16 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { AfterTradeExperiment } from 'src/views/wallet/trading/common/TradingDetail/AfterTradeExperiment';
-import { TradingDetailBuyPaymentFailed } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentFailed';
-import { TradingDetailBuyPaymentProcessingStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentProcessingStep';
-import { TradingDetailBuyPaymentPaymentSuccessful } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentSuccessful';
-import { TradingDetailBuyPaymentWaitingForUserStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentWaitingForUserStep';
-import { TradingDetailBuySidebar } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuySidebar';
 import { TradingDetailHeader } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailHeader';
-import { getBuyDetailHeaderMessages } from 'src/views/wallet/trading/common/TradingDetail/utils';
+import { TradingDetailStepList } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStepList';
 import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
-import { TradingDetailStepList } from '../TradingDetailStepList';
+import { TradingBuyDetailPaymentFailed } from './TradingBuyDetailPaymentFailed';
+import { TradingBuyDetailPaymentProcessingStep } from './TradingBuyDetailPaymentProcessingStep';
+import { TradingBuyDetailPaymentSuccessful } from './TradingBuyDetailPaymentSuccessful';
+import { TradingBuyDetailPaymentWaitingForUserStep } from './TradingBuyDetailPaymentWaitingForUserStep';
+import { TradingBuyDetailSidebar } from './TradingBuyDetailSidebar';
+import { getBuyDetailHeaderMessages } from './utils';
 
 const Wrapper = styled.div`
     ${TradingWrapper}
@@ -48,7 +48,7 @@ const getTradeStatusStep = (tradeStatus?: BuyTradeStatus) => {
     }
 };
 
-export const TradingDetailBuy = () => {
+export const TradingBuyDetailContent = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const accounts = useSelector(selectAccounts);
     const { trade, info, account } = useTradingDetailContext<TradingBuyType>();
@@ -103,14 +103,9 @@ export const TradingDetailBuy = () => {
     const getContent = () => {
         switch (tradeStatusStep) {
             case 'success':
-                return (
-                    <TradingDetailBuyPaymentPaymentSuccessful
-                        trade={trade.data}
-                        provider={provider}
-                    />
-                );
+                return <TradingBuyDetailPaymentSuccessful trade={trade.data} provider={provider} />;
             case 'error':
-                return <TradingDetailBuyPaymentFailed trade={trade.data} provider={provider} />;
+                return <TradingBuyDetailPaymentFailed trade={trade.data} provider={provider} />;
             default:
                 return (
                     <>
@@ -120,12 +115,12 @@ export const TradingDetailBuy = () => {
                         />
                         <Box margin={{ top: 32, bottom: 12 }}>
                             <TradingDetailStepList>
-                                <TradingDetailBuyPaymentWaitingForUserStep
+                                <TradingBuyDetailPaymentWaitingForUserStep
                                     trade={trade.data}
                                     account={account}
                                     providerName={provider?.brandName || provider?.companyName}
                                 />
-                                <TradingDetailBuyPaymentProcessingStep
+                                <TradingBuyDetailPaymentProcessingStep
                                     trade={trade.data}
                                     provider={provider}
                                 />
@@ -155,7 +150,7 @@ export const TradingDetailBuy = () => {
                     country={country}
                 />
             </Column>
-            <TradingDetailBuySidebar
+            <TradingBuyDetailSidebar
                 receiveAccount={receiveAccount}
                 quoteAmounts={quoteAmounts}
                 paymentMethod={trade.data.paymentMethod}

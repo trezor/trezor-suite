@@ -3,9 +3,9 @@ import { type BuyProviderInfo, type BuyTrade } from 'invity-api';
 import { Translation, useTranslation } from '@suite/intl';
 import { Card, Column, type StepListItemState } from '@trezor/components';
 
-import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
-import { TradingDetailStep } from '../TradingDetailStep';
-import { TradingDetailSupportBanner } from '../TradingDetailSupportBanner';
+import { TradingDetailProviderInfo } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProviderInfo';
+import { TradingDetailStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStep';
+import { TradingDetailSupportBanner } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSupportBanner';
 
 const getState = (trade: BuyTrade): StepListItemState => {
     switch (trade.status) {
@@ -18,15 +18,15 @@ const getState = (trade: BuyTrade): StepListItemState => {
     }
 };
 
-type TradingDetailBuyPaymentProcessingStepProps = {
+type TradingBuyDetailPaymentProcessingStepProps = {
     trade: BuyTrade;
     provider?: BuyProviderInfo;
 };
 
-export const TradingDetailBuyPaymentProcessingStep = ({
+export const TradingBuyDetailPaymentProcessingStep = ({
     trade,
     provider,
-}: TradingDetailBuyPaymentProcessingStepProps) => {
+}: TradingBuyDetailPaymentProcessingStepProps) => {
     const { translationString } = useTranslation();
 
     const providerName = provider?.brandName ?? provider?.companyName ?? provider?.name ?? '';

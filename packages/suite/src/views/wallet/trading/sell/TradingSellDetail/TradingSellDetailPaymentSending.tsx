@@ -1,4 +1,4 @@
-import { type ExchangeTrade } from 'invity-api';
+import { type SellFiatTrade } from 'invity-api';
 
 import { Translation, type TranslationKey } from '@suite/intl';
 import { formatDurationStrict } from '@suite-common/suite-utils';
@@ -10,41 +10,33 @@ import { Card, Column, InfoItem, type StepListItemState } from '@trezor/componen
 import { useLocales } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { type Account } from 'src/types/wallet';
+import { TradingDetailStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStep';
+import { TradingDetailTxId } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailTxId';
+import { getTxEstimatedTimeSeconds } from 'src/views/wallet/trading/common/TradingDetail/utils';
 
-import { TradingDetailStep } from '../TradingDetailStep';
-import { TradingDetailTxId } from '../TradingDetailTxId';
-import { getTxEstimatedTimeSeconds } from '../utils';
-
-const getState = (trade: ExchangeTrade): StepListItemState => {
-    switch (trade.status) {
-        case 'CONVERTING':
-        case 'SUCCESS':
-            return 'done';
-        default:
-            return 'active';
-    }
-};
+const getState = (trade: SellFiatTrade): StepListItemState =>
+    trade.status === 'SUCCESS' ? 'done' : 'active';
 
 const getTitleId = (state: StepListItemState): TranslationKey => {
     switch (state) {
         case 'active':
-            return 'TR_EXCHANGE_DETAIL_SENDING_TRANSACTION';
+            return 'TR_SELL_DETAIL_SENDING_TRANSACTION';
         default:
-            return 'TR_EXCHANGE_DETAIL_TRANSACTION_SENT';
+            return 'TR_SELL_DETAIL_TRANSACTION_SENT';
     }
 };
 
-type TradingDetailExchangePaymentSendingProps = {
-    trade: ExchangeTrade;
+type TradingSellDetailPaymentSendingProps = {
+    trade: SellFiatTrade;
     account?: Account;
     composedTransaction?: TradingComposedTransactionInfo;
 };
 
-export const TradingDetailExchangePaymentSending = ({
+export const TradingSellDetailPaymentSending = ({
     trade,
     account,
     composedTransaction,
-}: TradingDetailExchangePaymentSendingProps) => {
+}: TradingSellDetailPaymentSendingProps) => {
     const locale = useLocales();
     const rawFeeInfo = useSelector(state =>
         account ? selectRawNetworkFeeInfo(state, account.symbol) : undefined,
@@ -62,11 +54,11 @@ export const TradingDetailExchangePaymentSending = ({
         : undefined;
 
     const txId =
-        trade.receiveTxHash && account ? (
+        trade.txid && account ? (
             <TradingDetailTxId
                 intent="neutral"
                 priority={state === 'done' ? 'secondary' : 'primary'}
-                value={trade.receiveTxHash}
+                value={trade.txid}
                 account={account}
             />
         ) : null;

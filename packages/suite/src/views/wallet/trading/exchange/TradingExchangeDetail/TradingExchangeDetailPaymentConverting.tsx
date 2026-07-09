@@ -4,10 +4,9 @@ import { Translation, useTranslation } from '@suite/intl';
 import { Card, Column, type StepListItemState } from '@trezor/components';
 
 import { type Account } from 'src/types/wallet';
-
-import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
-import { TradingDetailStep } from '../TradingDetailStep';
-import { TradingDetailSupportBanner } from '../TradingDetailSupportBanner';
+import { TradingDetailProviderInfo } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailProviderInfo';
+import { TradingDetailStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStep';
+import { TradingDetailSupportBanner } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSupportBanner';
 
 const getState = (trade: ExchangeTrade, isDex?: boolean): StepListItemState => {
     switch (trade.status) {
@@ -20,19 +19,19 @@ const getState = (trade: ExchangeTrade, isDex?: boolean): StepListItemState => {
     }
 };
 
-type TradingDetailExchangePaymentConvertingProps = {
+type TradingExchangeDetailPaymentConvertingProps = {
     trade: ExchangeTrade;
     provider?: ExchangeProviderInfo;
     account?: Account;
     isDex?: boolean;
 };
 
-export const TradingDetailExchangePaymentConverting = ({
+export const TradingExchangeDetailPaymentConverting = ({
     trade,
     provider,
     account,
     isDex,
-}: TradingDetailExchangePaymentConvertingProps) => {
+}: TradingExchangeDetailPaymentConvertingProps) => {
     const { translationString } = useTranslation();
 
     const providerName = provider?.companyName ?? provider?.name ?? '';
