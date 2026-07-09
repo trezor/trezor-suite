@@ -1,9 +1,6 @@
 import { Translation } from '@suite/intl';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
-import {
-    type SelectedAccountLoaded,
-    type WalletAccountTransaction,
-} from '@suite-common/wallet-types';
+import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Column, Divider, InfoItem, Row, Skeleton, Text } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';
 
@@ -18,13 +15,13 @@ import { useCancelTransactionData } from './useCancelTransactionData';
 
 type CancelTransactionProps = {
     tx: WalletAccountTransaction;
-    selectedAccount: SelectedAccountLoaded;
+    account: Account;
 };
 
-export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProps) => {
+export const CancelTransaction = ({ tx, account }: CancelTransactionProps) => {
     const { isComposing } = useCancelTxContext();
     const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
-    const data = useCancelTransactionData({ tx, selectedAccount });
+    const data = useCancelTransactionData({ tx, account });
 
     if (!data) {
         if (!isComposing) return null;
