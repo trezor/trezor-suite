@@ -20,6 +20,7 @@ export type NoteProps = AllowedFrameProps & {
     gap?: SpacingValues;
     children: ReactNode;
     'data-testid'?: string;
+    isInverse?: boolean;
 };
 
 export const Note = ({
@@ -31,16 +32,25 @@ export const Note = ({
     intent = 'neutral',
     priority = 'secondary',
     isDisabled = false,
+    isInverse = false,
     'data-testid': dataTestId,
 }: NoteProps) => (
     <Row gap={gap} margin={margin} minWidth={minWidth}>
-        <Icon as={icon} size={16} intent={intent} priority={priority} isDisabled={isDisabled} />
+        <Icon
+            as={icon}
+            size={16}
+            intent={intent}
+            priority={priority}
+            isDisabled={isDisabled}
+            isInverse={isInverse}
+        />
         <Paragraph
             data-testid={dataTestId}
             typographyStyle="body-sm"
             intent={intent}
             priority={priority}
             isDisabled={isDisabled}
+            isInverse={isInverse}
         >
             {children}
         </Paragraph>

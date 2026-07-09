@@ -37,7 +37,7 @@ export const GuideButton = () => {
                         content: (
                             <Row gap={8}>
                                 <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
-                                <ShortcutBadge shortcut={['F1']} />
+                                <ShortcutBadge shortcut={['F1']} isInverse />
                             </Row>
                         ),
                         placement: 'top',

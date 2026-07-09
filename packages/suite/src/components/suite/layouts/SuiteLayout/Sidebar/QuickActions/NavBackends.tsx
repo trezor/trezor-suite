@@ -35,6 +35,7 @@ const BackendRow = ({
                         typographyStyle="body-xs"
                         intent="neutral"
                         priority="secondary"
+                        isInverse
                         case="capitalize"
                     >
                         {type}
@@ -60,7 +61,7 @@ export const NavBackends = ({ customBackends }: NavBackendsProps) => {
                     <BackendRow key={backend.symbol} backend={backend} blockchain={blockchain} />
                 ))}
             </Column>
-            <Note>
+            <Note isInverse>
                 <Translation id="TR_OTHER_COINS_USE_DEFAULT_BACKEND" />
             </Note>
         </Column>

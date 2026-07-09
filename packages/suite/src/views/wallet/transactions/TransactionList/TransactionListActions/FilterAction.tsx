@@ -118,6 +118,7 @@ export const FilterAction = () => {
                         priority="secondary"
                         size="small"
                         onClick={handleClose}
+                        isInverse
                         data-testid="@hideScamTransactionsTooltip/gotIt"
                     >
                         <Translation id="TR_GOT_IT_BUTTON" />

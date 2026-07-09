@@ -49,15 +49,15 @@ const StoreBadgeWithQr = ({ url, image, analyticsPayload }: StoreBadgeWithQrProp
             cursor={isBelowTablet ? 'not-allowed' : undefined}
             content={
                 <Column alignItems="center" gap={10} padding={{ top: 4 }}>
-                    <SvgImage image={image} height={26} color="contentPrimary" />
+                    <SvgImage image={image} height={26} color="contentOnDarkPrimary" />
                     <Box
                         height={140}
                         width={140}
                         padding={4}
-                        backgroundColor="elementFillContrast"
+                        backgroundColor="elementFillOnDarkContrast"
                         borderRadius={6}
                     >
-                        <QrCode value={url} color="contentPrimaryInverse" />
+                        <QrCode value={url} color="contentOnDarkPrimaryInverse" />
                     </Box>
                 </Column>
             }

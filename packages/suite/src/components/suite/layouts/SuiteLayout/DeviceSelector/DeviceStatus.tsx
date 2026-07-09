@@ -64,7 +64,7 @@ export const DeviceStatus = ({
                         content={
                             <Row gap={16} alignItems="center">
                                 {content}
-                                <ShortcutBadge shortcut={['ALT', 'KEY_W']} />
+                                <ShortcutBadge shortcut={['ALT', 'KEY_W']} isInverse />
                             </Row>
                         }
                     >

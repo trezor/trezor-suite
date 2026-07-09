@@ -1,7 +1,7 @@
 import { type MutableRefObject, type ReactNode } from 'react';
 
 import { type Placement, type ShiftOptions } from '@floating-ui/react';
-import styled, { ThemeProvider } from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import { QuestionIcon } from '@trezor/icons';
 import { type ZIndexValues, spacingsPx, zIndices } from '@trezor/theme';
@@ -10,7 +10,6 @@ import { TooltipArrow } from './TooltipArrow';
 import { TooltipBox, type TooltipBoxProps } from './TooltipBox';
 import { TOOLTIP_DELAY_SHORT, type TooltipDelay } from './TooltipDelay';
 import { TooltipContent, TooltipFloatingUi, TooltipTrigger } from './TooltipFloatingUi';
-import { intermediaryTheme } from '../../config/colors';
 import {
     type FrameProps,
     type FramePropsKeys,
@@ -85,7 +84,6 @@ export const Tooltip = ({
     offset = 12,
     content,
     addon,
-    title,
     isOpen,
     hasArrow = true,
     hasIcon = false,
@@ -96,6 +94,7 @@ export const Tooltip = ({
     as = 'div',
     ...rest
 }: TooltipProps) => {
+    const theme = useTheme();
     const frameProps = pickAndPrepareFrameProps(
         rest,
         allowedTooltipFrameProps,
@@ -106,7 +105,6 @@ export const Tooltip = ({
     }
 
     const delayConfiguration = { open: delayShow, close: delayHide };
-    const tooltipTheme = { variant: 'dark' as const, ...intermediaryTheme.dark };
 
     return (
         <TooltipFloatingUi
@@ -125,31 +123,24 @@ export const Tooltip = ({
                 </Content>
             </TooltipTrigger>
 
-            <ThemeProvider theme={tooltipTheme}>
-                <TooltipContent
-                    data-testid="@tooltip"
-                    style={{ zIndex }}
-                    arrowRender={
-                        hasArrow
-                            ? props => (
-                                  <TooltipArrow
-                                      {...props}
-                                      fill={tooltipTheme.surfaceFillModelessNeutralDark}
-                                  />
-                              )
-                            : undefined
-                    }
-                    appendTo={appendTo}
-                    onClick={e => e.stopPropagation()}
-                >
-                    <TooltipBox
-                        content={content}
-                        addon={addon}
-                        tooltipMaxWidth={tooltipMaxWidth}
-                        title={title}
-                    />
-                </TooltipContent>
-            </ThemeProvider>
+            <TooltipContent
+                data-testid="@tooltip"
+                style={{ zIndex }}
+                arrowRender={
+                    hasArrow
+                        ? props => (
+                              <TooltipArrow
+                                  {...props}
+                                  fill={theme.surfaceFillModelessNeutralDark}
+                              />
+                          )
+                        : undefined
+                }
+                appendTo={appendTo}
+                onClick={e => e.stopPropagation()}
+            >
+                <TooltipBox content={content} addon={addon} tooltipMaxWidth={tooltipMaxWidth} />
+            </TooltipContent>
         </TooltipFloatingUi>
     );
 };
