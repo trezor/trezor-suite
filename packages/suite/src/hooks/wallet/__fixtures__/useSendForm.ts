@@ -443,6 +443,8 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
         ),
         suiteSync: createReducer(
             {
+                relayConnectionLog: [],
+                relayConnections: [],
                 settings: {
                     isSuiteSyncEnabled: false,
                     isSuiteSyncDebugEnabled: false,

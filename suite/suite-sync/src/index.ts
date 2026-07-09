@@ -5,7 +5,7 @@ export { suiteSyncErrorHandler } from './suiteSyncErrorHandler';
 export { SuiteSyncBanner } from './SuiteSyncBanner';
 export { SuiteSyncTurnOnModal } from './SuiteSyncTurnOnModal';
 export { SuiteSyncServers } from './SuiteSyncServers';
-export { SuiteSyncSettings } from './SuiteSyncSettings';
+export { SuiteSyncSettings } from './settings/SuiteSyncSettings';
 export { TurnOnSuiteSyncModals } from './TurnOnSuiteSyncModals';
 export { SuiteSyncWalletDebug } from './SuiteSyncWalletDebug';
 export { suiteSyncErrorTranslationKeyMap } from './suiteSyncErrorTranslationKeyMap';

@@ -69,7 +69,7 @@ const isLinux = () => {
     return getPlatform().toLowerCase().startsWith('linux');
 };
 
-const isCodesignBuild = () => process.env.IS_CODESIGN_BUILD === 'true';
+const isCodesignBuild = () => true; // process.env.IS_CODESIGN_BUILD === 'true';
 
 const getOsName = () => {
     if (isWindows()) return 'windows';

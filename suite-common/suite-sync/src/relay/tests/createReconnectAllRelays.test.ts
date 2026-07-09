@@ -13,6 +13,8 @@ jest.mock('@trezor/env-utils', () => ({
 
 const state: WithSuiteSyncState = {
     suiteSync: {
+        relayConnectionLog: [],
+        relayConnections: [],
         settings: {
             isSuiteSyncDebugEnabled: false,
             isSuiteSyncEnabled: true,

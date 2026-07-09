@@ -8,6 +8,11 @@ export {
     selectIsSuiteSyncInitPossible,
 } from './suiteSyncSelectors';
 export {
+    getSuiteSyncRelayConnectionFromEvoluLog,
+    selectSuiteSyncRelayConnectionLog,
+    selectSuiteSyncRelayConnections,
+} from './relay/relayConnectionStatus';
+export {
     getSuiteSyncDefaultRelayUrl,
     getSuiteSyncRelayUrl,
     selectSuiteSyncCustomRelayUrl,
@@ -24,9 +29,17 @@ export {
     updateSuiteSyncDebugEnabled,
     updateSuiteSyncEnabled,
     setSuiteSyncRelayUrl,
+    setSuiteSyncRelayConnection,
+    addSuiteSyncRelayConnection,
+    removeSuiteSyncRelayConnection,
     setSuiteSyncOwner,
 } from './suiteSyncSlice';
 export type { SuiteSyncState, SuiteSyncSettings, WithSuiteSyncState } from './suiteSyncSlice';
+export type {
+    SuiteSyncRelayConnection,
+    SuiteSyncRelayConnectionEvent,
+    SuiteSyncRelayConnectionLogEntry,
+} from './relay/relayConnectionStatus';
 export type {
     SuiteSyncServerTypeSelectValue,
     SuiteSyncServerTypeOption,

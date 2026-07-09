@@ -14,6 +14,11 @@ import {
 } from '@suite-common/suite-types';
 import { type StaticSessionId } from '@trezor/connect';
 
+import {
+    type SuiteSyncRelayConnection,
+    type SuiteSyncRelayConnectionLogEntry,
+} from './relay/relayConnectionStatus';
+
 export type SuiteSyncErrorType =
     | DeviceErrorType
     | DeviceCancelledErrType
@@ -45,6 +50,8 @@ export type SuiteSyncSettings = {
 };
 
 export type SuiteSyncState = {
+    relayConnectionLog: SuiteSyncRelayConnectionLogEntry[];
+    relayConnections: SuiteSyncRelayConnection[];
     settings: SuiteSyncSettings;
     suiteSyncErrors: Record<StaticSessionId, SuiteSyncErrorType>;
     suiteSyncOwners: Record<StaticSessionId, EncryptedHex<SuiteSyncOwnerSerialized>>;
@@ -55,6 +62,8 @@ export type WithSuiteSyncState = {
 };
 
 export const initialSuiteSyncState: SuiteSyncState = {
+    relayConnectionLog: [],
+    relayConnections: [],
     settings: {
         isSuiteSyncEnabled: false,
         isSuiteSyncDebugEnabled: false,
@@ -78,6 +87,13 @@ type SetSuiteSyncOwnerAction = PayloadAction<{
     owner: EncryptedHex<SuiteSyncOwnerSerialized> | null;
 }>;
 
+type SetSuiteSyncRelayConnectionAction = PayloadAction<SuiteSyncRelayConnectionLogEntry>;
+
+const getSuiteSyncRelayConnectionState = (
+    relayConnectionLogEntry: SuiteSyncRelayConnectionLogEntry,
+): SuiteSyncRelayConnection['state'] =>
+    relayConnectionLogEntry.state === 'connected' ? 'connected' : 'disconnected';
+
 export const suiteSyncSlice = createSlice({
     name: 'suiteSync',
     initialState: initialSuiteSyncState,
@@ -98,6 +114,40 @@ export const suiteSyncSlice = createSlice({
         },
         setSuiteSyncRelayUrl: (state, { payload }: PayloadAction<{ url: string | null }>) => {
             state.settings.suiteSyncRelayUrl = payload.url;
+        },
+        setSuiteSyncRelayConnection: (state, { payload }: SetSuiteSyncRelayConnectionAction) => {
+            state.relayConnectionLog = [payload, ...state.relayConnectionLog].slice(0, 20);
+
+            const relayConnectionState = getSuiteSyncRelayConnectionState(payload);
+            const existingConnection = state.relayConnections.find(
+                connection => connection.url === payload.url,
+            );
+
+            if (existingConnection) {
+                existingConnection.state = relayConnectionState;
+            } else if (relayConnectionState === 'connected') {
+                state.relayConnections.push({
+                    state: relayConnectionState,
+                    url: payload.url,
+                });
+            }
+        },
+        addSuiteSyncRelayConnection: (state, { payload }: PayloadAction<{ url: string }>) => {
+            const existingConnection = state.relayConnections.find(
+                connection => connection.url === payload.url,
+            );
+
+            if (!existingConnection) {
+                state.relayConnections.push({
+                    state: 'disconnected',
+                    url: payload.url,
+                });
+            }
+        },
+        removeSuiteSyncRelayConnection: (state, { payload }: PayloadAction<{ url: string }>) => {
+            state.relayConnections = state.relayConnections.filter(
+                connection => connection.url !== payload.url,
+            );
         },
         setSuiteSyncError: (state, { payload }: SetSuiteSyncErrorAction) => {
             state.suiteSyncErrors[payload.deviceStaticSessionId] = payload.error;
@@ -129,6 +179,9 @@ export const {
     updateSuiteSyncEnabled,
     updateSuiteSyncDebugEnabled,
     setSuiteSyncRelayUrl,
+    setSuiteSyncRelayConnection,
+    addSuiteSyncRelayConnection,
+    removeSuiteSyncRelayConnection,
     setSuiteSyncError,
     resetSuiteSyncError,
     setSuiteSyncOwner,

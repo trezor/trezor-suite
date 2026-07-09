@@ -28,6 +28,8 @@ export const createEvoluStorageFactory =
         const evolu = await deps.createEvoluInstance({ suiteSyncOwner });
 
         const disconnectRelay = () => {
+            globalThis.console.log('_____ suiteSync.evoluStorage:disconnectRelay');
+
             unuseOwner();
             unuseOwner = () => {};
 
@@ -35,12 +37,16 @@ export const createEvoluStorageFactory =
         };
 
         const updateRelayUrl = async (url: string) => {
+            globalThis.console.log('_____ suiteSync.evoluStorage:updateRelayUrl', { url });
+
             const owner = await evolu.appOwner;
 
             await disconnectRelay();
             unuseOwner = evolu.useOwner(owner, [
                 createOwnerWebSocketTransport({ url, ownerId: owner.id }),
             ]);
+
+            globalThis.console.log('_____ suiteSync.evoluStorage:updateRelayUrl:done', { url });
         };
 
         return {

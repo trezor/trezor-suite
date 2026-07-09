@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { selectIsTorEnabled } from '@suite/tor';
 import { useServices } from '@suite-common/dependency-injection';
@@ -7,16 +7,15 @@ import {
     type WithSuiteSyncState,
     getSuiteSyncDefaultRelayUrl,
     getSuiteSyncRelayUrl,
-    selectIsSuiteSyncDebugEnabled,
     selectIsSuiteSyncFeatureAvailable,
     selectSuiteSyncCustomRelayUrl,
-    updateSuiteSyncDebugEnabled,
 } from '@suite-common/suite-sync';
 import { selectChangeRelayUrlDep } from '@suite-common/suite-sync-types';
-import { Button, ButtonGroup, Checkbox, Code, Column, Input, Text } from '@trezor/components';
+import { Button, ButtonGroup, Code, Column, Input, Text } from '@trezor/components';
 import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/product-components';
 import { type BreakpointFlags, spacings } from '@trezor/theme';
 
+import { SuiteSyncSettingsDebug } from './SuiteSyncSettingsDebug';
 import { WipeSuiteSyncLabels, type WipeSuiteSyncLabelsOnError } from './WipeSuiteSyncLabels';
 
 const selectIsBelowLaptop = (state: { window: BreakpointFlags }) => state.window.isBelowLaptop;
@@ -30,21 +29,15 @@ export const SuiteSyncSettings = ({ onError }: SuiteSyncSettingsProps) => {
 
     const { changeRelayUrl } = useServices(selectChangeRelayUrlDep);
 
-    const dispatch = useDispatch();
     const isBelowLaptop = useSelector(selectIsBelowLaptop);
 
     const isSuiteSyncFeatureEnabled = useSelector(selectIsSuiteSyncFeatureAvailable);
-    const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
     const isTorEnabled = useSelector(selectIsTorEnabled);
     const suiteSyncCustomRelayUrl = useSelector((state: WithSuiteSyncState) =>
         selectSuiteSyncCustomRelayUrl(state),
     );
 
     const [relayUrl, setRelayUrl] = useState(suiteSyncCustomRelayUrl ?? '');
-
-    const handleToggleSuiteSyncDebug = () => {
-        dispatch(updateSuiteSyncDebugEnabled({ isEnabled: !isSuiteSyncDebugEnabled }));
-    };
 
     const onRelayUrlSave = async (url = relayUrl) => {
         setIsRelayUrlLoading(true);
@@ -137,16 +130,7 @@ export const SuiteSyncSettings = ({ onError }: SuiteSyncSettingsProps) => {
                 </ActionColumn>
             </SectionItem>
             <WipeSuiteSyncLabels onError={onError} />
-            <SectionItem>
-                <TextColumn title="Suite Sync (Evolu) Debug" />
-                <ActionColumn>
-                    <Checkbox
-                        data-testid="@settings/debug/suite-sync/debug-toggle"
-                        isChecked={isSuiteSyncDebugEnabled}
-                        onChange={handleToggleSuiteSyncDebug}
-                    />
-                </ActionColumn>
-            </SectionItem>
+            <SuiteSyncSettingsDebug />
         </SettingsSection>
     );
 };

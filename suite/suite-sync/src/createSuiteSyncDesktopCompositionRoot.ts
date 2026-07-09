@@ -1,4 +1,5 @@
-import { createConsole, createConsoleFormatter } from '@evolu/common';
+import { createConsole, createConsoleFormatter, createConsoleStoreOutput } from '@evolu/common';
+import { consoleEntryOrErrorBroadcastChannelName } from '@evolu/common/local-first';
 import { createEvoluDeps, createRun } from '@evolu/web';
 import { type Dispatch } from '@reduxjs/toolkit';
 
@@ -7,7 +8,13 @@ import { selectIsTorEnabled } from '@suite/tor';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { toGetter } from '@suite-common/dependency-injection';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
-import { createSuiteSyncCompositionRoot } from '@suite-common/suite-sync';
+import {
+    addSuiteSyncRelayConnection,
+    createSuiteSyncCompositionRoot,
+    getSuiteSyncRelayConnectionFromEvoluLog,
+    removeSuiteSyncRelayConnection,
+    setSuiteSyncRelayConnection,
+} from '@suite-common/suite-sync';
 import {
     createEvoluErrorHandler,
     createEvoluInstanceFactory,
@@ -32,13 +39,71 @@ type SuiteSyncDesktopCompositionRootDeps = {
     DesktopAnalyticsDep &
     FetchDep;
 
+const stringifyEvoluConsoleEntry = (entry: unknown) =>
+    JSON.stringify(entry, (_key, value) => {
+        if (value instanceof Error) {
+            return {
+                message: value.message,
+                name: value.name,
+            };
+        }
+
+        return value;
+    });
+
 export const createSuiteSyncDesktopCompositionRoot = (
     deps: SuiteSyncDesktopCompositionRootDeps,
 ): SuiteSync => {
+    const evoluConsoleStoreOutput = createConsoleStoreOutput();
+
     const console = createConsole({
-        level: 'warn',
+        level: 'debug',
+        output: evoluConsoleStoreOutput,
         formatter: createConsoleFormatter()({ timestampFormat: 'absolute' }),
     });
+
+    const evoluConsoleBroadcastChannel = new BroadcastChannel(
+        consoleEntryOrErrorBroadcastChannelName,
+    );
+    evoluConsoleBroadcastChannel.onmessage = ({ data }) => {
+        globalThis.console.log('_____ suiteSync.evoluConsoleBroadcastChannel:onmessage', data);
+
+        if (typeof data !== 'object' || data === null || !('type' in data)) return;
+
+        if (data.type !== 'ConsoleEntry' || !('entry' in data)) return;
+
+        globalThis.console.log('_____ suiteSync.evoluConsoleEntry', data.entry);
+        globalThis.console.log(
+            '_____ suiteSync.evoluConsoleEntry:stringified',
+            stringifyEvoluConsoleEntry(data.entry),
+        );
+
+        const relayConnectionEvents = getSuiteSyncRelayConnectionFromEvoluLog(data.entry);
+
+        globalThis.console.log('_____ suiteSync.relayConnectionEvents', relayConnectionEvents);
+
+        relayConnectionEvents.forEach(event => {
+            if (event.type === 'add') {
+                globalThis.console.log('_____ suiteSync.relayConnection:add', event);
+
+                deps.dispatch(addSuiteSyncRelayConnection({ url: event.url }));
+
+                return;
+            }
+
+            if (event.type === 'remove') {
+                globalThis.console.log('_____ suiteSync.relayConnection:remove', event);
+
+                deps.dispatch(removeSuiteSyncRelayConnection({ url: event.url }));
+
+                return;
+            }
+
+            globalThis.console.log('_____ suiteSync.relayConnection:status', event.connection);
+
+            deps.dispatch(setSuiteSyncRelayConnection(event.connection));
+        });
+    };
 
     const evoluDeps = createEvoluDeps({
         console,
