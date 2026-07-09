@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
+import {
+    type RouteProp,
+    StackActions,
+    useIsFocused,
+    useNavigation,
+    useRoute,
+} from '@react-navigation/native';
 
 import { getNetwork } from '@suite-common/wallet-config';
 import { stablecoinYieldActions } from '@suite-common/wallet-core';
@@ -177,8 +183,10 @@ export const YieldDepositScreen = () => {
             }),
         );
 
-        navigation.goBack();
-    }, [amountValue, dispatch, flowKey, isDepositPending, navigation]);
+        navigation.dispatch(
+            StackActions.popTo(YieldStackRoutes.YieldDepositApproval, route.params),
+        );
+    }, [amountValue, dispatch, flowKey, isDepositPending, navigation, route.params]);
 
     const handleActionReady = useCallback(
         (preparedAction: PreparedYieldDepositAction) => {
