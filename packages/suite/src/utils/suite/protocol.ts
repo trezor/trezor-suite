@@ -12,6 +12,17 @@ export type CoinProtocolInfo = {
 };
 
 const removeLeadingTrailingSlashes = (text: string) => text.replace(/^\/{0,2}|\/$/g, '');
+const AMOUNT_REGEXP = /^\d+(?:\.\d+)?$/;
+
+const parseAmount = (amount: string | undefined): number | undefined => {
+    if (!amount || !AMOUNT_REGEXP.test(amount)) {
+        return undefined;
+    }
+
+    const parsedAmount = Number(amount);
+
+    return Number.isFinite(parsedAmount) && parsedAmount > 0 ? parsedAmount : undefined;
+};
 
 export const getProtocolInfo = (
     uri: string,
@@ -41,8 +52,7 @@ export const getProtocolInfo = (
             };
         }
 
-        const floatAmount = Number.parseFloat(params.amount ?? '');
-        const amount = !Number.isNaN(floatAmount) && floatAmount > 0 ? floatAmount : undefined;
+        const amount = parseAmount(params.amount);
 
         const address =
             removeLeadingTrailingSlashes(pathname) || removeLeadingTrailingSlashes(host);

@@ -95,6 +95,33 @@ export const getProtocolInfo: getProtocolInfoFixture[] = [
         },
     },
     {
+        description: 'should ignore Bitcoin URI amount with trailing text',
+        uri: 'bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=1btc',
+        result: {
+            scheme: 'bitcoin',
+            address: '3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf',
+            amount: undefined,
+        },
+    },
+    {
+        description: 'should ignore Bitcoin URI amount with exponent notation',
+        uri: 'bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=1e2',
+        result: {
+            scheme: 'bitcoin',
+            address: '3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf',
+            amount: undefined,
+        },
+    },
+    {
+        description: 'should ignore Bitcoin URI amount with commas',
+        uri: 'bitcoin:3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf?amount=50,000.00',
+        result: {
+            scheme: 'bitcoin',
+            address: '3QmuBaZrJNCxc5Xs7aGzZUK8RirUT8jRKf',
+            amount: undefined,
+        },
+    },
+    {
         description: 'invalid uri',
         uri: 'gibberish',
         result: null,
