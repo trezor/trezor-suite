@@ -129,6 +129,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                     symbol: transaction.symbol,
                     deviceState: transaction.deviceState,
                     flow: 'detail',
+                    allowFetchFallback: true,
                 }),
             );
         }

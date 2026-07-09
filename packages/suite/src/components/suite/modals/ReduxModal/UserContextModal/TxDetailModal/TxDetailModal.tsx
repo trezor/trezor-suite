@@ -13,6 +13,7 @@ import {
     createAccountKey,
 } from '@suite-common/wallet-types';
 import {
+    fetchTransactionForAccount,
     findChainedTransactions,
     getPendingEvmNonceStatus,
     isPending,
@@ -21,6 +22,7 @@ import {
     isTransactionCancellable,
 } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
+import { useAsyncMemo } from '@trezor/react-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useEvmNonceInfo } from 'src/hooks/wallet/useEvmNonceInfo';
@@ -45,6 +47,7 @@ type TxDetailModalProps = {
     deviceState: Account['deviceState'];
     flow: 'detail' | 'bump-fee' | 'cancel-transaction';
     onCancel: () => void;
+    allowFetchFallback?: boolean;
 };
 
 export const TxDetailModal = ({
@@ -54,6 +57,7 @@ export const TxDetailModal = ({
     deviceState,
     flow,
     onCancel,
+    allowFetchFallback,
 }: TxDetailModalProps) => {
     const [section, setSection] = useState<TxDetailModalProps['flow']>(flow);
     const [tab, setTab] = useState<TabID | undefined>(undefined);
@@ -63,9 +67,24 @@ export const TxDetailModal = ({
         networkSymbol: symbol,
         deviceStaticSessionId: deviceState,
     });
-    const originalTx = useSelector(state =>
+
+    const account = useSelector(state => selectAccountByKey(state, accountKey));
+
+    // Try to get the transaction from redux
+    const reducerTx = useSelector(state =>
         selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
     );
+
+    // If it's not there, fetch the transaction from backend
+    const fetchedTx = useAsyncMemo(
+        () =>
+            !reducerTx && account && allowFetchFallback
+                ? fetchTransactionForAccount(txid, account)
+                : Promise.resolve(undefined),
+        [account, reducerTx, txid, allowFetchFallback],
+    );
+
+    const originalTx = reducerTx ?? fetchedTx;
 
     // Filter out internal transfers that are instant staking transactions
     const filteredInternalTransfers = useMemo(() => {
@@ -87,7 +106,6 @@ export const TxDetailModal = ({
         };
     }, [originalTx, filteredInternalTransfers]);
 
-    const account = useSelector(state => selectAccountByKey(state, accountKey));
     const selectedAccount = useSelector(selectWalletSelectedAccount);
     const nonceAccount = account?.networkType === 'ethereum' ? account : undefined;
     const { nonceInfo: fetchedNonceInfo } = useEvmNonceInfo(nonceAccount);
