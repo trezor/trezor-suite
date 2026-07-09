@@ -95,7 +95,7 @@ export const MyAssetSheet = memo(
                         />
                     );
                 }}
-                flashListKey={filterValue}
+                scrollResetKey={filterValue}
             />
         );
     },

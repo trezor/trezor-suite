@@ -56,9 +56,6 @@ export const CountrySheet = memo(
             [filteredData],
         );
 
-        // re-mount FLashList component when filterValue changes (resets scroll position)
-        const flashListKey = 'countries_list-' + filterValue;
-
         return (
             <BottomSheetSectionList<TradingCountryOption>
                 isVisible={isVisible}
@@ -77,7 +74,8 @@ export const CountrySheet = memo(
                 )}
                 data={listData}
                 keyExtractor={keyExtractor}
-                flashListKey={flashListKey}
+                // reset scroll position when filterValue changes
+                scrollResetKey={filterValue}
                 extraData={selectedCountryId}
                 testID={bottomSheetTestId}
                 ItemSeparatorComponent={ItemSeparator}

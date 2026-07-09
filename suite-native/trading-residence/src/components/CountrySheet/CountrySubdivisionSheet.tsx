@@ -70,8 +70,6 @@ export const CountrySubdivisionSheet = memo(
             [filteredData],
         );
 
-        const flashListKey = 'country_subdivisions_list-' + filterValue;
-
         return (
             <BottomSheetSectionList<TradingCountrySubdivisionOption>
                 isVisible={isVisible}
@@ -99,7 +97,8 @@ export const CountrySubdivisionSheet = memo(
                 )}
                 data={listData}
                 keyExtractor={keyExtractor}
-                flashListKey={flashListKey}
+                // reset scroll position when filterValue changes
+                scrollResetKey={filterValue}
                 extraData={selectedSubdivisionId}
                 testID={bottomSheetTestId}
                 noSingletonSectionHeader
