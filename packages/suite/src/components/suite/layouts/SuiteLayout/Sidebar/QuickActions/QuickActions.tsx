@@ -1,4 +1,5 @@
 import { UpdateStatusActionBarIcon } from '@suite/desktop-update';
+import { SuiteSyncQuickAction } from '@suite/suite-sync';
 import { Flex } from '@trezor/components';
 
 import { CustomBackend } from './CustomBackend';
@@ -22,6 +23,7 @@ export const QuickActions = ({ isSidebarCollapsed }: QuickActionsProps) => (
         <DebugAndExperimental />
         <CustomBackend />
         <Tor />
+        <SuiteSyncQuickAction />
         <HideBalances />
     </Flex>
 );

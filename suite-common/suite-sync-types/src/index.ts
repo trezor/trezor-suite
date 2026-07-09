@@ -132,6 +132,7 @@ export {
 
 export type {
     SuiteSyncInternalErrorHandler,
+    SubscribeSuiteSyncInternalErrorHandler,
     SuiteSyncOtherError,
     RelayQuotaExceededError,
     Errors,

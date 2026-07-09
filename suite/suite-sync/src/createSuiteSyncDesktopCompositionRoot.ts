@@ -1,5 +1,3 @@
-import { createConsole, createConsoleFormatter } from '@evolu/common';
-import { createEvoluDeps, createRun } from '@evolu/web';
 import { type Dispatch } from '@reduxjs/toolkit';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
@@ -7,18 +5,16 @@ import { selectIsTorEnabled } from '@suite/tor';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { toGetter } from '@suite-common/dependency-injection';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
-import { createSuiteSyncCompositionRoot } from '@suite-common/suite-sync';
 import {
-    createEvoluErrorHandler,
-    createEvoluInstanceFactory,
-    createEvoluStorageFactory,
-    evoluCreateSuiteSyncOwner,
-} from '@suite-common/suite-sync-evolu';
+    createSuiteSyncCompositionRoot,
+    createUpdateRelayConnectionStatus,
+} from '@suite-common/suite-sync';
+import { evoluCreateSuiteSyncOwner } from '@suite-common/suite-sync-evolu';
 import { type FetchDep } from '@suite-common/suite-sync-quota-manager';
 import { type OnStorageEnsured, type SuiteSync } from '@suite-common/suite-sync-types';
 import { type TrezorConnect } from '@trezor/connect';
 
-import { createOnSharedWorkerUnsupported } from './createOnSharedWorkerUnsupported';
+import { createEvoluDeps } from './evolu/createEvoluDeps';
 import { suiteSyncErrorHandler } from './suiteSyncErrorHandler';
 import { createTurnOnDesktopSuiteSync } from './turnOnDesktopSuiteSync';
 
@@ -35,34 +31,23 @@ type SuiteSyncDesktopCompositionRootDeps = {
 export const createSuiteSyncDesktopCompositionRoot = (
     deps: SuiteSyncDesktopCompositionRootDeps,
 ): SuiteSync => {
-    const console = createConsole({
-        level: 'warn',
-        formatter: createConsoleFormatter()({ timestampFormat: 'absolute' }),
+    const updateRelayConnectionStatus = createUpdateRelayConnectionStatus({
+        dispatch: deps.dispatch,
+    });
+    const { createSuiteStorage, subscribeError } = createEvoluDeps({
+        dispatch: deps.dispatch,
+        updateRelayConnectionStatus,
     });
 
-    const evoluDeps = createEvoluDeps({
-        console,
-        onSharedWorkerUnsupported: createOnSharedWorkerUnsupported({
-            dispatch: deps.dispatch,
-        }),
-    });
-
-    const run = createRun(evoluDeps);
     // This sets up Evolu as a SuiteSync Storage. We provide a factory that
     // accepts `suiteSyncErrorHandler` and creates the evolu instance accordingly.
     const suiteSync = createSuiteSyncCompositionRoot({
         ...deps,
-        createSuiteStorage: createEvoluStorageFactory({
-            createEvoluInstance: createEvoluInstanceFactory({ run }),
-        }),
+        createSuiteStorage,
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
         getIsTorEnabled: toGetter(deps.getState, selectIsTorEnabled),
         analytics: deps.analytics,
-        subscribeError: suiteSyncInternalErrorHandler => {
-            evoluDeps.evoluError.subscribe(
-                createEvoluErrorHandler(evoluDeps.evoluError, suiteSyncInternalErrorHandler),
-            );
-        },
+        subscribeError,
         suiteSyncUncontrolledErrorHandler: ({ device, error }) =>
             suiteSyncErrorHandler({
                 error,

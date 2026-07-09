@@ -57,6 +57,8 @@ export {
     type EmojiRatingSelectorProps,
 } from './components/EmojiRatingSelector/EmojiRatingSelector';
 export { QuickActionButton } from './components/QuickActionButton/QuickActionButton';
+export { LastUpdateTooltip } from './components/LastUpdateTooltip/LastUpdateTooltip';
+export { RelativeTime } from './components/RelativeTime/RelativeTime';
 export { TooltipRow } from './components/TooltipRow/TooltipRow';
 export {
     PendingTransactionInfo,

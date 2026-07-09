@@ -3474,6 +3474,18 @@ export const messages = defineMessages({
         defaultMessage: 'Allow',
         id: 'TR_SUITE_SYNC_GET_KEYS',
     },
+    TR_SUITE_SYNC_SYNCED: {
+        defaultMessage: 'Synced',
+        id: 'TR_SUITE_SYNC_SYNCED',
+    },
+    TR_SUITE_SYNC_NOT_SYNCED: {
+        defaultMessage: 'Not synced',
+        id: 'TR_SUITE_SYNC_NOT_SYNCED',
+    },
+    TR_SUITE_SYNC_LAST_SYNCED: {
+        defaultMessage: 'Last synced {relativeTime}',
+        id: 'TR_SUITE_SYNC_LAST_SYNCED',
+    },
     TR_SUITE_SYNC_FIRMWARE_UPDATE: {
         defaultMessage: 'Update',
         id: 'TR_SUITE_SYNC_FIRMWARE_UPDATE',

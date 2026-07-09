@@ -3293,6 +3293,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@evolu/web@patch:@evolu/web@npm%3A3.0.0-next.1#~/.yarn/patches/@evolu-web-npm-3.0.0-next.1-9b296ca288.patch":
+  version: 3.0.0-next.1
+  resolution: "@evolu/web@patch:@evolu/web@npm%3A3.0.0-next.1#~/.yarn/patches/@evolu-web-npm-3.0.0-next.1-9b296ca288.patch::version=3.0.0-next.1&hash=c7a414"
+  dependencies:
+    "@evolu/sqlite-wasm": "npm:2.2.4"
+    idb-keyval: "npm:^6.2.2"
+  peerDependencies:
+    "@evolu/common": ^8.0.0-next.0
+  checksum: 10/32ffb82939d7d038e1634a4c9f12309df1d0aa96f93661806e0fc098830542995cc133c8f804fb789b8eb0f40e40b693a69d6b3a46a35329e3217a6d9d1176a1
+  languageName: node
+  linkType: hard
+
 "@exodus/patch-broken-hermes-typed-arrays@npm:^1.0.0-alpha.1":
   version: 1.0.0-alpha.1
   resolution: "@exodus/patch-broken-hermes-typed-arrays@npm:1.0.0-alpha.1"
@@ -15464,7 +15476,7 @@ __metadata:
   resolution: "@suite/suite-sync@workspace:suite/suite-sync"
   dependencies:
     "@evolu/common": "npm:8.0.0-next.5"
-    "@evolu/web": "npm:3.0.0-next.1"
+    "@evolu/web": "patch:@evolu/web@npm%3A3.0.0-next.1#~/.yarn/patches/@evolu-web-npm-3.0.0-next.1-9b296ca288.patch"
     "@hookform/resolvers": "npm:^5.4.0"
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/delegated-identity-key-types": "workspace:*"
@@ -15481,6 +15493,7 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite/analytics": "workspace:*"
+    "@suite/debug": "workspace:*"
     "@suite/firmware-upgrade": "workspace:*"
     "@suite/intl": "workspace:*"
     "@suite/router": "workspace:*"

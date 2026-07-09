@@ -20,6 +20,7 @@ const createSuiteSyncState = ({
     suiteSyncRelayUrl,
 }: CreateSuiteSyncStateParams): WithSuiteSyncState => ({
     suiteSync: {
+        relayConnectionStatuses: [],
         settings: {
             isSuiteSyncDebugEnabled: false,
             isSuiteSyncEnabled: false,
