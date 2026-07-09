@@ -12,7 +12,7 @@ describe(createChangeRelayUrl.name, () => {
         const deps: ChangeRelayUrlDeps = {
             dispatch: (action: any) => actions.push(action),
             getIsTorEnabled: mock(() => true),
-            reconnectAll: mock(() => Promise.resolve()),
+            reconnectAllRelays: mock(() => Promise.resolve()),
         };
 
         const changeRelayUrl = createChangeRelayUrl(deps);
@@ -24,7 +24,7 @@ describe(createChangeRelayUrl.name, () => {
                 type: setSuiteSyncRelayUrl.type,
             },
         ]);
-        expect(deps.reconnectAll).toHaveBeenCalledWith({ isTorEnabled: true });
+        expect(deps.reconnectAllRelays).toHaveBeenCalledWith({ isTorEnabled: true });
     });
 
     it('saves empty relay url and reconnects all storages', async () => {
@@ -33,7 +33,7 @@ describe(createChangeRelayUrl.name, () => {
         const deps: ChangeRelayUrlDeps = {
             dispatch: (action: any) => actions.push(action),
             getIsTorEnabled: mock(() => false),
-            reconnectAll: mock(() => Promise.resolve()),
+            reconnectAllRelays: mock(() => Promise.resolve()),
         };
 
         const changeRelayUrl = createChangeRelayUrl(deps);
@@ -45,6 +45,6 @@ describe(createChangeRelayUrl.name, () => {
                 type: setSuiteSyncRelayUrl.type,
             },
         ]);
-        expect(deps.reconnectAll).toHaveBeenCalledWith({ isTorEnabled: false });
+        expect(deps.reconnectAllRelays).toHaveBeenCalledWith({ isTorEnabled: false });
     });
 });

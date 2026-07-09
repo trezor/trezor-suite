@@ -112,4 +112,12 @@ describe(selectSuiteSyncRelayUrl.name, () => {
             ),
         ).toBe('http://localhost:4000/evolu/');
     });
+
+    it('uses default relay url when custom url is not set', () => {
+        (isCodesignBuild as jest.Mock).mockReturnValue(false);
+
+        expect(
+            selectSuiteSyncRelayUrl(createSuiteSyncState({ suiteSyncRelayUrl: null }), false),
+        ).toBe('https://suite-sync-dev.suite.sldev.cz/evolu/');
+    });
 });

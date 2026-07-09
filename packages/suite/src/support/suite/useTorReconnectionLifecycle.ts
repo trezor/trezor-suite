@@ -16,7 +16,7 @@ type ReconnectionState = {
     isReconnectNeeded: boolean;
 };
 
-type TorReconnectionLifecycleParams = {
+export type TorReconnectionLifecycleParams = {
     reconnect: (params: ReconnectParams) => void;
     disconnect: () => void;
 };
