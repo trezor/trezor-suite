@@ -4,9 +4,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import type { BuyTrade } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { goto } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     TRADING_DEFAULT_CRYPTO_CURRENCY,
     TRADING_FORM_CRYPTO_INPUT,
@@ -15,7 +13,6 @@ import {
     TRADING_FORM_PROVIDER_SELECT,
     type TradingAmountLimitProps,
     type TradingBuyFormProps,
-    buyThunks,
     isCountrySubdivisionEmpty,
     mapFiatCurrencyCodeToBaseCurrencyCode,
     selectTradingBuyAmountLimits,
@@ -33,7 +30,6 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { isChanged } from '@trezor/utils';
 
-import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingBuyHandleChange } from 'src/hooks/wallet/trading/form/common/useTradingBuyHandleChange';
 import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';
@@ -42,7 +38,6 @@ import { useTradingBuyFormRedirectValues } from 'src/hooks/wallet/trading/form/u
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { type Dispatch } from 'src/types/suite';
 import { type TradingBuyFormContextProps } from 'src/types/trading/tradingForm';
-import { createQuoteLink } from 'src/utils/wallet/trading/buyUtils';
 
 import { useTradingClearStaleQuotes } from './common/useTradingClearStaleQuotes';
 import { useTradingFiatValues } from './common/useTradingFiatValues';
@@ -51,7 +46,6 @@ import { useTradingFormAccount } from './useTradingFormAccount';
 import { useTradingReceiveAddress } from './useTradingReceiveAddress';
 
 export const useTradingBuyForm = (): TradingBuyFormContextProps => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const type = 'buy';
     const dispatch = useDispatch();
 
@@ -146,51 +140,12 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
         setValue,
     });
 
-    const selectQuote = async (quote: BuyTrade) => {
-        const provider = buyInfo && quote.exchange ? buyInfo.providerInfos[quote.exchange] : null;
-
-        if (!quotesRequest || !provider) return;
-        if (!receiveAddress) return;
-
-        const returnUrl = await createQuoteLink(
-            { ...quotesRequest, paymentMethod: quote.paymentMethod },
-            account,
-        );
-
-        analytics.report({
-            type: events.tradeBuyEvent.name,
-            payload: {
-                action: 'continue',
-                step: 'buy-form',
-                cryptoLabel: values.cryptoSelect?.name,
-                cryptoNetworkSymbol: values.cryptoSelect?.networkSymbol,
-                cryptoContractAddress: values.cryptoSelect?.contractAddress ?? undefined,
-                exchangeName: quote?.exchange,
-                paymentMethod: values.paymentMethod?.value,
-                countryOfResidence: values.countrySelect?.value,
-            },
-        });
-
-        await dispatch(
-            buyThunks.selectQuoteThunk({
-                quote,
-                returnUrl,
-                loginRequest: form => {
-                    dispatch(submitRequestForm(form));
-                },
-                nextStep: () => {
-                    dispatch(goto({ routeName: 'wallet-trading-buy-confirm' }));
-                },
-            }),
-        );
-    };
-
     const verifyAddress =
-        (account: Account, address: string | undefined, path: string | undefined) =>
-        async (dispatch: Dispatch) => {
-            await dispatch(
+        (verifyAccount: Account, address: string | undefined, path: string | undefined) =>
+        async (verifyDispatch: Dispatch) => {
+            await verifyDispatch(
                 tradingThunks.verifyAddressThunk({
-                    account,
+                    account: verifyAccount,
                     address,
                     path,
                 }),
@@ -325,7 +280,6 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
         selectedQuote,
         tradingReceiveAddress,
         isAmountEmpty,
-        selectQuote,
         onQuoteSelected,
         verifyAddress,
         setAmountLimits: (limits: TradingAmountLimitProps | undefined) => {

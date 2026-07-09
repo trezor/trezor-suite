@@ -137,7 +137,6 @@ export interface TradingBuyFormContextProps
     tradingReceiveAddress: ReturnType<typeof useTradingReceiveAddress>;
     isAmountEmpty: boolean;
 
-    selectQuote: (quote: BuyTrade) => Promise<void>;
     onQuoteSelected: (quote: BuyTrade) => void;
     verifyAddress: TradingVerifyAccountProps;
     setAmountLimits: (limits?: AmountLimitProps) => void;
