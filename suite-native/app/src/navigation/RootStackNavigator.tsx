@@ -45,6 +45,7 @@ import {
 import { FeatureFeedbackModalScreen } from '@suite-native/module-home';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
 import { PassphraseStackNavigator } from '@suite-native/module-passphrase';
+import { ReceiveStackNavigator } from '@suite-native/module-receive';
 import { SendStackNavigator } from '@suite-native/module-send';
 import { SettingsStackNavigator } from '@suite-native/module-settings';
 import { StellarManageTokenStackNavigator } from '@suite-native/module-stellar-token-management';
@@ -66,7 +67,6 @@ import {
     RootStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
-import { ReceiveStackNavigator } from '@suite-native/receive';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { StorybookUI } from '@suite-native/storybook';
 import { TradingLocationModalScreen } from '@suite-native/trading-residence';

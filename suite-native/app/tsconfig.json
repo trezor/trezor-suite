@@ -70,6 +70,7 @@
         { "path": "../module-home" },
         { "path": "../module-onboarding" },
         { "path": "../module-passphrase" },
+        { "path": "../module-receive" },
         { "path": "../module-send" },
         { "path": "../module-settings" },
         {
@@ -78,7 +79,6 @@
         { "path": "../module-trading" },
         { "path": "../module-transactions" },
         { "path": "../navigation" },
-        { "path": "../receive" },
         { "path": "../sentry" },
         { "path": "../services" },
         { "path": "../settings" },
