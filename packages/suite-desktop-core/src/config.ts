@@ -1,7 +1,8 @@
 import { isDevEnv } from '@suite-common/suite-utils';
 import { TOR_URLS } from '@trezor/urls';
 
-export const onionDomain = TOR_URLS['trezor.io'];
+export const trezorIoOnionDomain = TOR_URLS['trezor.io'];
+export const sldevOnionDomain = TOR_URLS['sldev.cz'];
 
 export const oauthUrls = [
     'https://accounts.google.com',
@@ -30,7 +31,8 @@ export const allowedDomains = [
     'o117836.ingest.sentry.io', // TODO is this needed? Seems that the Sentry SDK bypasses interceptor
     'oauth2.googleapis.com',
     'googleapis.com',
-    onionDomain,
+    trezorIoOnionDomain,
+    sldevOnionDomain,
     'earn.trezor.io',
     'verify.walletconnect.org', // WalletConnect
     'horizon.stellar.org', // Stellar Horizon, hosted by SDF
