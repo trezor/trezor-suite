@@ -56,5 +56,6 @@ yup
 viem
 @tanstack/react-query-devtools
 @tanstack/react-query
+@tanstack/eslint-plugin-query
 orval
 up-fetch
