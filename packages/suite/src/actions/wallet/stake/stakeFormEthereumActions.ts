@@ -19,7 +19,7 @@ import {
     MIN_ETH_FOR_WITHDRAWALS,
     UNSTAKE_INTERCHANGES,
 } from '@suite-common/wallet-constants';
-import { selectAddressDisplayType } from '@suite-common/wallet-core';
+import { selectAddressDisplayType, stakeActions } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import {
     AddressDisplayOptions,
@@ -133,6 +133,10 @@ export const signTransaction =
                 fetchConfirmedNonce: true,
             }),
         ).unwrap();
+
+        // Store the signed-with nonce (decimal) so the review modal can display it, mirroring the
+        // Send flow. Set before ethereumSignTransaction fires the device button-request below.
+        dispatch(stakeActions.setResolvedEthereumNonce(nonce));
 
         const identity = getAccountIdentity(account);
 

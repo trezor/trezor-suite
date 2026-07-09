@@ -40,11 +40,19 @@ const requestPushTransaction = createAction(
     }),
 );
 
+const setResolvedEthereumNonce = createAction(
+    `${STAKE_MODULE_PREFIX}/setResolvedEthereumNonce`,
+    (payload: string) => ({
+        payload,
+    }),
+);
+
 const dispose = createAction(`${STAKE_MODULE_PREFIX}/dispose`);
 
 export const stakeActions = {
     requestSignTransaction,
     requestPushTransaction,
     setVotingDelegationOption,
+    setResolvedEthereumNonce,
     dispose,
 };

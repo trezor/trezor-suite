@@ -200,7 +200,8 @@ export const claimMerklRewardsThunk = createThunk(
             dispatch(
                 stablecoinYieldActions.storePrecomposedTransaction({
                     precomposedTx: precomposedTransaction,
-                    precomposedForm: formState,
+                    // Surface the resolved nonce (decimal) so the review modal shows it like Send.
+                    precomposedForm: { ...formState, ethereumNonce: nonce },
                     availableRewards,
                     accountKey: account.key,
                 }),
