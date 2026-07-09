@@ -8,7 +8,7 @@ import { Box, CardList, Icon, Input, Paragraph, Spinner } from '@trezor/componen
 import { typography } from '@trezor/theme';
 
 import { GuideNode } from 'src/components/guide';
-import { useGuideSearch } from 'src/hooks/guide';
+import { MIN_QUERY_LENGTH, useGuideSearch } from 'src/hooks/guide';
 
 const PreviewContent = styled.div`
     white-space: nowrap;
@@ -47,7 +47,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
     const inputRef = useRef<HTMLInputElement | null>(null);
 
     const { translationString } = useTranslation();
-    const { searchResult, loading } = useGuideSearch(query, pageRoot);
+    const { searchResult, loading, isQueryTooShort } = useGuideSearch(query, pageRoot);
 
     useEffect(() => {
         setSearchActive?.(!!searchResult.length || !!query);
@@ -94,7 +94,21 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
                 </CardList>
             ) : (
                 query &&
-                !loading && (
+                !loading &&
+                (isQueryTooShort ? (
+                    <Paragraph
+                        data-testid="@guide/search/min-query-length"
+                        typographyStyle="body-md"
+                        intent="neutral"
+                        priority="secondary"
+                        margin={{ top: 16 }}
+                    >
+                        <Translation
+                            id="TR_GUIDE_SEARCH_MIN_QUERY_LENGTH"
+                            values={{ count: MIN_QUERY_LENGTH }}
+                        />
+                    </Paragraph>
+                ) : (
                     <Paragraph
                         data-testid="@guide/search/no-results"
                         typographyStyle="body-md"
@@ -104,7 +118,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
                     >
                         <Translation id="TR_ACCOUNT_SEARCH_NO_RESULTS" />
                     </Paragraph>
-                )
+                ))
             )}
         </Box>
     );

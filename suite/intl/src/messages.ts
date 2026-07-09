@@ -7826,6 +7826,10 @@ export const messages = defineMessages({
         id: 'TR_GUIDE_SUPPORT_AND_FEEDBACK',
         defaultMessage: 'Help & Support',
     },
+    TR_GUIDE_SEARCH_MIN_QUERY_LENGTH: {
+        id: 'TR_GUIDE_SEARCH_MIN_QUERY_LENGTH',
+        defaultMessage: 'Type at least {count} characters to search.',
+    },
     TR_GUIDE_KEYBOARD_SHORTCUTS: {
         id: 'TR_GUIDE_KEYBOARD_SHORTCUTS',
         defaultMessage: 'Keyboard shortcuts',
