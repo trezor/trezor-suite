@@ -2,11 +2,11 @@ import { useEffect } from 'react';
 import { useWatch } from 'react-hook-form';
 
 import { formInputsMaxLength } from '@suite-common/validators';
+import { useEvmNonceInfo } from '@suite-common/wallet-core';
 import { type AccountWithNetworkType, type FormOptions } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
 
 import { useSendFormContext } from 'src/hooks/wallet';
-import { useEvmNonceInfo } from 'src/hooks/wallet/useEvmNonceInfo';
 
 import { EthereumNonce } from './EthereumNonce';
 import { TransactionData } from '../shared/TransactionData';

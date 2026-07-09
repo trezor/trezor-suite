@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
-import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
-import { selectAccountTransactions } from '@suite-common/wallet-core';
+import { commonQueryKeys, useQuery } from '@suite-common/react-query';
 import {
     type AccountWithNetworkType,
     type WalletAccountTransaction,
@@ -14,7 +14,9 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 
-import { useSelector } from 'src/hooks/suite';
+import { type AccountsRootState } from '../accounts/accountsReducer';
+import type { TransactionsRootState } from '../transactions/transactionsReducerTypes';
+import { selectAccountTransactions } from '../transactions/transactionsSelectors';
 
 const EMPTY_TRANSACTIONS: WalletAccountTransaction[] = [];
 
@@ -40,7 +42,7 @@ export const useEvmNonceInfo = (
     account: AccountWithNetworkType<'ethereum'> | undefined,
     { enabled = true }: UseEvmNonceInfoOptions = {},
 ) => {
-    const transactions = useSelector(state =>
+    const transactions = useSelector((state: TransactionsRootState & AccountsRootState) =>
         account ? selectAccountTransactions(state, account.key) : EMPTY_TRANSACTIONS,
     );
     const isEnabled = enabled && account !== undefined;
@@ -51,7 +53,7 @@ export const useEvmNonceInfo = (
         // dispatches the tx-list update, then updates account.misc.nonce only after an `await` a few
         // lines later — see accountsThunks.ts) invalidates the query instead of leaving it stuck on
         // whatever nonce happened to be current when this hook's very first fetch fired.
-        queryKey: desktopQueryKeys.evmConfirmedNonce(
+        queryKey: commonQueryKeys.evmConfirmedNonce(
             account?.symbol ?? '',
             account?.descriptor ?? '',
             account?.misc.nonce ?? '',
