@@ -68,10 +68,10 @@ export const useDeviceAuthenticityCheck = () => {
                     scope.setLevel(sentryLevel);
                     scope.setTag('deviceAuthenticityResult', result);
                     scope.setTag('deviceAuthenticityError', error);
-
-                    const exceptionForSentry = new Error(
-                        `Device authenticity ${result}!\n${JSON.stringify(payload)}`,
-                    );
+                    if (payload) {
+                        scope.setExtra('errorDetails', payload);
+                    }
+                    const exceptionForSentry = new Error(`Device authenticity ${result}!`);
                     exceptionForSentry.name = 'reportCheckFail'; // Custom issue title
                     captureSentryException(exceptionForSentry, scope);
                 });
