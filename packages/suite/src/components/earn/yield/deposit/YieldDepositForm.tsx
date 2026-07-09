@@ -29,6 +29,7 @@ export const YieldDepositForm = () => {
         completedReceiptAmount,
         maxAmount,
         errorMessage,
+        errorCode,
         approveModalState,
         pendingTransaction,
         allowanceAmount,
@@ -153,7 +154,12 @@ export const YieldDepositForm = () => {
                             {errorMessage && (
                                 <Banner
                                     intent="warning"
-                                    description={<Translation id={errorMessage} />}
+                                    description={
+                                        <>
+                                            <Translation id={errorMessage} />
+                                            {errorCode && ` (${errorCode})`}
+                                        </>
+                                    }
                                 />
                             )}
 

@@ -76,6 +76,7 @@ export type UseYieldFlowResult = {
     completedAmount: string;
     completedReceiptAmount: string;
     errorMessage: TranslationKey | undefined;
+    errorCode: string | undefined;
     approveModalState: YieldApproveModalState | null;
     pendingTransaction: YieldPendingTransactionState | null;
     allowanceAmount: string;
@@ -346,7 +347,7 @@ export const useYieldFlow = ({
                 stablecoinYieldActions.setError({
                     flowType,
                     flowKey,
-                    error: 'TR_EARN_YIELD_ERROR_GENERIC',
+                    errorCode: 'missing-flow-tokens',
                 }),
             );
 
@@ -395,7 +396,7 @@ export const useYieldFlow = ({
                 stablecoinYieldActions.setError({
                     flowType,
                     flowKey,
-                    error: 'TR_EARN_YIELD_ERROR_GENERIC',
+                    errorCode: 'missing-flow-tokens',
                 }),
             );
 
@@ -466,7 +467,7 @@ export const useYieldFlow = ({
                 stablecoinYieldActions.setError({
                     flowType,
                     flowKey,
-                    error: 'TR_EARN_YIELD_ERROR_GENERIC',
+                    errorCode: 'missing-flow-tokens',
                 }),
             );
 
@@ -563,7 +564,8 @@ export const useYieldFlow = ({
         actionAmount: session.action.amount,
         completedAmount: session.result.completedAmount,
         completedReceiptAmount: session.result.completedReceiptAmount,
-        errorMessage: session.error ?? undefined,
+        errorMessage: session.error?.message,
+        errorCode: session.error?.code ?? undefined,
         approveModalState: session.approval.modalState,
         pendingTransaction: session.action.pendingTransaction,
         allowanceAmount,

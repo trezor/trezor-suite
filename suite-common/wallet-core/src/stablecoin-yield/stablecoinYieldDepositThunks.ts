@@ -12,8 +12,9 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
-import { getApprovalRequestAmount, setYieldGenericError } from './stablecoinYieldApprovalThunks';
+import { getApprovalRequestAmount, setYieldError } from './stablecoinYieldApprovalThunks';
 import { STABLECOIN_YIELD_PREFIX } from './stablecoinYieldConstants';
+import type { YieldDepositErrorReason } from './stablecoinYieldErrors';
 import { stablecoinYieldActions } from './stablecoinYieldReducer';
 import type { YieldFlowResolvedData } from './stablecoinYieldTypes';
 import {
@@ -27,13 +28,6 @@ import { selectRawNetworkFeeInfo } from '../fees/feesReducer';
 import { ethereumGetCurrentNonceThunk } from '../send/sendFormEthereumThunks';
 
 const YIELD_DEPOSIT_THUNK_PREFIX = `${STABLECOIN_YIELD_PREFIX}/thunk`;
-
-export type YieldDepositErrorReason =
-    | 'unsupported-network'
-    | 'missing-deposit-params'
-    | 'vault-chain-mismatch'
-    | 'missing-fee-level'
-    | 'compose-failed';
 
 export type PrepareYieldDepositResult =
     | {
@@ -201,12 +195,12 @@ export const prepareYieldDepositThunk = createThunk<
             ).unwrap();
 
             if (result.type === 'error') {
-                setYieldGenericError({ dispatch, flowType, flowKey });
+                setYieldError({ dispatch, flowType, flowKey, errorCode: result.reason });
             }
 
             return result;
         } catch {
-            setYieldGenericError({ dispatch, flowType, flowKey });
+            setYieldError({ dispatch, flowType, flowKey, errorCode: 'compose-failed' });
 
             return { type: 'error', reason: 'compose-failed' } as const;
         } finally {

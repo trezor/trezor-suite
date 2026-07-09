@@ -4,7 +4,6 @@ import { useDevice } from '@suite/device';
 import { type YieldFlowType, stablecoinYieldActions } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
-import { getYieldErrorTranslationKey } from 'src/actions/wallet/stablecoin-yield/signingHelpers';
 import { useDispatch } from 'src/hooks/suite';
 
 type UseEnsureYieldDeviceSessionParams = {
@@ -25,7 +24,7 @@ export const useEnsureYieldDeviceSession = ({
                 stablecoinYieldActions.setError({
                     flowType,
                     flowKey,
-                    error: 'TR_EARN_YIELD_ERROR_GENERIC',
+                    errorCode: 'missing-device-session',
                 }),
             );
 
@@ -54,9 +53,7 @@ export const useEnsureYieldDeviceSession = ({
             stablecoinYieldActions.setError({
                 flowType,
                 flowKey,
-                error: getYieldErrorTranslationKey(
-                    new Error(response.error.message, { cause: code }),
-                ),
+                errorCode: code ?? 'device-state-failed',
             }),
         );
 

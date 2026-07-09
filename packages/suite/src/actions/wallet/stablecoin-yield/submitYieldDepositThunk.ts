@@ -8,11 +8,11 @@ import {
     type YieldFlowResolvedData,
     composeYieldDepositTransactionThunk,
     openYieldApproveModal,
-    setYieldGenericError,
+    setYieldError,
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
 
-import { getYieldErrorTranslationKey, sendYieldTransaction } from './signingHelpers';
+import { getYieldErrorCode, sendYieldTransaction } from './signingHelpers';
 
 type SubmitYieldDepositPayload = {
     flowKey: string;
@@ -36,7 +36,17 @@ export const submitYieldDepositThunk = createThunk(
             ).unwrap();
 
             if (result.type === 'error') {
-                setYieldGenericError({ dispatch, flowType, flowKey });
+                asTypedDesktopAnalytics(extra.services.analytics).report({
+                    type: events.yieldDepositEvent.name,
+                    payload: {
+                        type: 'error',
+                        action: 'continue',
+                        networkSymbol: flowData.account.symbol,
+                        vaultId: flowData.vault.id,
+                        errorMessage: result.reason,
+                    },
+                });
+                setYieldError({ dispatch, flowType, flowKey, errorCode: result.reason });
 
                 return;
             }
@@ -101,9 +111,25 @@ export const submitYieldDepositThunk = createThunk(
                 selectedFee,
             });
 
+            if (!sendResult.success) {
+                asTypedDesktopAnalytics(extra.services.analytics).report({
+                    type: events.yieldDepositEvent.name,
+                    payload: {
+                        type: 'error',
+                        action: 'continue',
+                        networkSymbol: flowData.account.symbol,
+                        vaultId: flowData.vault.id,
+                        errorMessage: sendResult.error.code,
+                    },
+                });
+                setYieldError({ dispatch, flowType, flowKey, errorCode: sendResult.error.code });
+
+                return;
+            }
+
             userAcceptedTxSimulation?.resolve();
 
-            if (!sendResult) {
+            if (sendResult.payload.type === 'cancelled') {
                 asTypedDesktopAnalytics(extra.services.analytics).report({
                     type: events.yieldDepositEvent.name,
                     payload: {
@@ -123,7 +149,7 @@ export const submitYieldDepositThunk = createThunk(
                     type: 'tx-yield-deposit',
                     descriptor: flowData.account.descriptor,
                     symbol: flowData.account.symbol,
-                    txid: sendResult.txid,
+                    txid: sendResult.payload.txid,
                 }),
             );
 
@@ -133,7 +159,7 @@ export const submitYieldDepositThunk = createThunk(
                     flowKey,
                     tx: {
                         type: flowType,
-                        txid: sendResult.txid,
+                        txid: sendResult.payload.txid,
                         amount,
                     },
                     receiptAmount: result.receiptAmount,
@@ -148,14 +174,14 @@ export const submitYieldDepositThunk = createThunk(
                     action: 'continue',
                     networkSymbol: flowData.account.symbol,
                     vaultId: flowData.vault.id,
-                    errorMessage: 'submit-failed',
+                    errorMessage: getYieldErrorCode(error),
                 },
             });
             dispatch(
                 stablecoinYieldActions.setError({
                     flowType,
                     flowKey,
-                    error: getYieldErrorTranslationKey(error),
+                    errorCode: getYieldErrorCode(error),
                 }),
             );
         } finally {

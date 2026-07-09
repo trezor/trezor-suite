@@ -15,15 +15,18 @@ import {
 } from '@suite-common/wallet-types';
 import { getAccountIdentity, getMevProtectedTxData } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { type Result, err, ok } from '@trezor/type-utils';
 
 import type { AppState, Dispatch } from 'src/types/suite';
 
-export const getYieldErrorTranslationKey = (error: unknown) =>
-    error instanceof Error &&
-    (error.cause === 'Device_InvalidState' || // incorrect passphrase submitted
-        error.cause === 'Method_Interrupted') // passphrase modal closed
-        ? 'TR_EARN_YIELD_ERROR_PASSPHRASE_INCORRECT'
-        : 'TR_EARN_YIELD_ERROR_GENERIC';
+// Only the machine-readable cause may be exposed (UI banner, analytics) — `error.message`
+// can contain account data and must stay in the console.
+export const getYieldErrorCode = (error: unknown) =>
+    error instanceof Error && typeof error.cause === 'string' ? error.cause : 'submit-failed';
+
+export type SendYieldTransactionOutcome = { type: 'pushed'; txid: string } | { type: 'cancelled' };
+
+export type SendYieldTransactionResult = Result<SendYieldTransactionOutcome, { code: string }>;
 
 export type SendYieldTransactionParams = {
     account: Account;
@@ -43,16 +46,16 @@ export const sendYieldTransaction = async ({
     dispatch,
     getState,
     selectedFee,
-}: SendYieldTransactionParams) => {
+}: SendYieldTransactionParams): Promise<SendYieldTransactionResult> => {
     const device = selectSelectedDevice(getState());
     const addressDisplayType = selectAddressDisplayType(getState());
 
     if (!device) {
-        throw new Error('Device not found.');
+        return err({ code: 'missing-device' });
     }
 
     if (account.networkType !== 'ethereum') {
-        throw new Error('Yield actions currently support only EVM accounts.');
+        return err({ code: 'unsupported-network' });
     }
 
     const transactionReview = buildStablecoinYieldTransactionReview({
@@ -93,10 +96,12 @@ export const sendYieldTransaction = async ({
 
             const { code } = signingResponse.error;
             if (code === 'Failure_ActionCancelled' || code === 'Method_Cancel') {
-                return;
+                return ok({ type: 'cancelled' });
             }
 
-            throw new Error(`${code}: ${signingResponse.error.message}`, { cause: code });
+            console.error(signingResponse.error);
+
+            return err({ code: code ?? 'sign-failed' });
         }
 
         dispatch(
@@ -111,7 +116,7 @@ export const sendYieldTransaction = async ({
         const isPushConfirmed = await dispatch(openDeferredModal({ type: 'review-transaction' }));
 
         if (!isPushConfirmed) {
-            return;
+            return ok({ type: 'cancelled' });
         }
 
         const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
@@ -128,7 +133,9 @@ export const sendYieldTransaction = async ({
         dispatch(closeModal());
 
         if (!pushResponse.success) {
-            throw new Error(`${pushResponse.error.code}: ${pushResponse.error.message}`);
+            console.error(pushResponse.error);
+
+            return err({ code: pushResponse.error.code ?? 'push-failed' });
         }
 
         dispatch(
@@ -140,10 +147,7 @@ export const sendYieldTransaction = async ({
             }),
         );
 
-        return pushResponse.payload;
-    } catch (error) {
-        console.error(error);
-        throw error;
+        return ok({ type: 'pushed', txid: pushResponse.payload.txid });
     } finally {
         dispatch(stablecoinYieldActions.discardTransaction());
     }

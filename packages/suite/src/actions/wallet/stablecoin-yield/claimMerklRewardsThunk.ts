@@ -33,7 +33,7 @@ import {
 import { getAccountIdentity, getMevProtectedTxData } from '@suite-common/wallet-utils';
 import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
 
-import { getYieldErrorTranslationKey } from './signingHelpers';
+import { getYieldErrorCode } from './signingHelpers';
 
 type ClaimMerklReward = YieldAccountsRewards[number]['rewards'][number];
 
@@ -262,7 +262,9 @@ export const claimMerklRewardsThunk = createThunk(
                 dispatch(closeModal());
 
                 if (!pushResponse.success) {
-                    throw new Error(pushResponse.error.message);
+                    throw new Error(pushResponse.error.message, {
+                        cause: pushResponse.error.code ?? 'push-failed',
+                    });
                 }
 
                 dispatch(
@@ -311,14 +313,14 @@ export const claimMerklRewardsThunk = createThunk(
                     action: 'continue',
                     networkSymbol: account.symbol,
                     rewardCount: rewards.length,
-                    errorMessage: 'submit-failed',
+                    errorMessage: getYieldErrorCode(error),
                 },
             });
             dispatch(
                 stablecoinYieldActions.setError({
                     flowType: 'claim',
                     flowKey,
-                    error: getYieldErrorTranslationKey(error),
+                    errorCode: getYieldErrorCode(error),
                 }),
             );
         } finally {

@@ -210,7 +210,13 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                                             <Banner
                                                 intent="warning"
                                                 description={
-                                                    <Translation id={claimSession.error} />
+                                                    <>
+                                                        <Translation
+                                                            id={claimSession.error.message}
+                                                        />
+                                                        {claimSession.error.code &&
+                                                            ` (${claimSession.error.code})`}
+                                                    </>
                                                 }
                                             />
                                         )}
