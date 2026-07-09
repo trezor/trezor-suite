@@ -161,7 +161,11 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
                                 icon={InfoIcon}
                                 title={<Translation id="TR_DASHBOARD_MODAL_ACTIVATE_ASSETS_NOTE" />}
                                 rightContent={
-                                    <Banner.Button size="small" onClick={handleBannerClose}>
+                                    <Banner.Button
+                                        size="small"
+                                        onClick={handleBannerClose}
+                                        data-testid="@modal/activate-assets/got-it"
+                                    >
                                         <Translation id="TR_GOT_IT" />
                                     </Banner.Button>
                                 }
