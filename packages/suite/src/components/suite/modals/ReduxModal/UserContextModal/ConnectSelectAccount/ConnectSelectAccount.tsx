@@ -16,6 +16,7 @@ import {
 } from '@suite-common/connect-popup';
 import { type AccountType } from '@suite-common/wallet-config';
 import { Column, H3, Icon, Modal, Paragraph, Row, SubTabs, Text } from '@trezor/components';
+import { CheckCircleIcon } from '@trezor/icons';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -230,7 +231,7 @@ export const ConnectSelectAccount = () => {
                     <Column gap={spacings.xs}>
                         {exported ? (
                             <Row alignItems="center" gap={spacings.sm}>
-                                <Icon name="checkCircle" size={32} intent="brand" />
+                                <Icon as={CheckCircleIcon} size={32} intent="brand" />
                                 <H3 intent="brand">
                                     <Translation id="TR_CONNECT_SELECT_ACCOUNT_EXPORTED" />
                                 </H3>

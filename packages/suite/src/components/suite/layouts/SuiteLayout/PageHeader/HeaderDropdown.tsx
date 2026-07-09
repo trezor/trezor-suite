@@ -5,7 +5,7 @@ import { Translation } from '@suite/intl';
 import { getNetwork } from '@suite-common/wallet-config';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Dropdown, type DropdownMenuItemProps, type IconComponent } from '@trezor/components';
-import { PencilLineIcon } from '@trezor/icons';
+import { PencilLineIcon, WalletConnectIcon } from '@trezor/icons';
 
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { useSelector } from 'src/hooks/suite';
@@ -55,7 +55,7 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
                 });
             },
             title: <Translation id="TR_WALLETCONNECT" />,
-            icon: 'walletConnect' as const,
+            icon: WalletConnectIcon,
             // caipId marks networks with a WalletConnect adapter (see suite-common/walletconnect)
             isHidden: account ? !getNetwork(account.symbol).caipId : true,
         },

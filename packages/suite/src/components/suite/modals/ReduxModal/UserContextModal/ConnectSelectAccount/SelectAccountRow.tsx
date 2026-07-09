@@ -15,6 +15,7 @@ import {
     Text,
 } from '@trezor/components';
 import { type DeviceModelInternal } from '@trezor/device-utils';
+import { ArrowsClockwiseIcon, CaretRightIcon, CheckIcon, WarningIcon } from '@trezor/icons';
 import {
     NetworkIcon,
     isNetworkSymbolWithIcon,
@@ -96,7 +97,7 @@ export const SelectAccountRow = ({
                         intent="neutral"
                         priority="secondary"
                         size="small"
-                        iconLeft="arrowsClockwise"
+                        iconLeft={ArrowsClockwiseIcon}
                         isDisabled={disabled || discovering}
                         onClick={onRetry}
                         data-testid={`@connect-select-account/retry-button/${accountIndex}`}
@@ -113,7 +114,7 @@ export const SelectAccountRow = ({
                     <Text typographyStyle="body-sm">
                         {balance ?? '0'} {getNetworkDisplaySymbol(symbol)}
                     </Text>
-                    <Icon name="caretRight" size={16} intent="neutral" />
+                    <Icon as={CaretRightIcon} size={16} intent="neutral" />
                 </Row>
             );
         }
@@ -128,7 +129,7 @@ export const SelectAccountRow = ({
                         {validated === 'valid' && (
                             <Badge
                                 intent="brand"
-                                iconLeft="check"
+                                iconLeft={CheckIcon}
                                 size="small"
                                 data-testid={`@connect-select-account/verified-badge/${accountIndex}`}
                             >
@@ -138,7 +139,7 @@ export const SelectAccountRow = ({
                         {validated === 'failed' && (
                             <Badge
                                 intent="warning"
-                                iconLeft="warning"
+                                iconLeft={WarningIcon}
                                 size="small"
                                 data-testid={`@connect-select-account/error-badge/${accountIndex}`}
                             >

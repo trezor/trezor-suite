@@ -26,6 +26,7 @@
         { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/dom-utils" },
+        { "path": "../../packages/icons" },
         {
             "path": "../../packages/product-components"
         },

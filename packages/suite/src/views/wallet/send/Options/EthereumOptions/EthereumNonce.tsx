@@ -14,6 +14,7 @@ import {
     isSentTransaction,
 } from '@suite-common/wallet-utils';
 import { Card, Column, H4, IconButton, Input, Note, Row, TextButton } from '@trezor/components';
+import { InfoIcon, WarningIcon, XIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -162,7 +163,7 @@ export const EthereumNonce = ({ displayNonce, confirmedNonce, onCancel }: Ethere
                     <IconButton
                         intent="neutral"
                         priority="secondary"
-                        icon="x"
+                        icon={XIcon}
                         size="small"
                         data-testid="send/close-transaction-data"
                         onClick={onCancel}
@@ -184,7 +185,7 @@ export const EthereumNonce = ({ displayNonce, confirmedNonce, onCancel }: Ethere
 
                 {warningType === 'gap' && (
                     <Note
-                        iconName="warning"
+                        icon={WarningIcon}
                         intent="warning"
                         data-testid="@send/ethereum-nonce-warning"
                     >
@@ -197,7 +198,7 @@ export const EthereumNonce = ({ displayNonce, confirmedNonce, onCancel }: Ethere
 
                 {warningType === 'replacement' &&
                     (isFeeBumpApplied ? (
-                        <Note iconName="info" data-testid="@send/ethereum-nonce-replacement-info">
+                        <Note icon={InfoIcon} data-testid="@send/ethereum-nonce-replacement-info">
                             <Translation
                                 id="ETHEREUM_NONCE_REPLACES_PENDING"
                                 values={{ nonce: nonceValue }}
@@ -206,7 +207,7 @@ export const EthereumNonce = ({ displayNonce, confirmedNonce, onCancel }: Ethere
                     ) : (
                         <Column gap={8} alignItems="flex-start">
                             <Note
-                                iconName="warning"
+                                icon={WarningIcon}
                                 intent="warning"
                                 data-testid="@send/ethereum-nonce-warning"
                             >
