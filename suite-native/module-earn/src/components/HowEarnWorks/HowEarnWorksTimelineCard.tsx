@@ -28,7 +28,9 @@ export const HowEarnWorksTimelineCard = ({
     children,
 }: HowEarnWorksTimelineCardProps) => {
     const { applyStyle } = useNativeStyles();
-    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
+    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal({
+        isNestedSheet: true,
+    });
 
     return (
         <>
