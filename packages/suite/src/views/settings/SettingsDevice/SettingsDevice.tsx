@@ -21,6 +21,7 @@ import {
     PlugsIcon,
     PuzzlePieceIcon,
     ShieldCheckIcon,
+    ShieldWarningIcon,
     TrezorLogoIcon,
 } from '@trezor/icons';
 import { SettingsSection } from '@trezor/product-components';
@@ -252,7 +253,7 @@ export const SettingsDevice = () => {
             <SettingsSection
                 hasVerticalLayout={hasContentBelowTabletWidth}
                 title={<Translation id="TR_SETTINGS_ADVANCED" />}
-                icon="shieldWarning"
+                icon={ShieldWarningIcon}
             >
                 <DeviceAuthenticityOptOut
                     isDeviceAuthenticityCheckSupported={supportsDeviceAuthentication}

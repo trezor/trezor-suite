@@ -20,6 +20,7 @@ import {
     LockIcon,
     PlugsIcon,
     ShieldIcon,
+    ShieldWarningIcon,
     TagIcon,
 } from '@trezor/icons';
 import { SettingsSection } from '@trezor/product-components';
@@ -165,7 +166,7 @@ export const SettingsGeneral = () => {
             <SettingsSection
                 hasVerticalLayout={hasContentBelowTabletWidth}
                 title={<Translation id="TR_SETTINGS_ADVANCED" />}
-                icon="shieldWarning"
+                icon={ShieldWarningIcon}
             >
                 {desktopUpdate.enabled && <EarlyAccess />}
                 <AddressDisplay />

@@ -25,6 +25,7 @@
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/dom-utils": "workspace:*",
+        "@trezor/icons": "workspace:*",
         "@trezor/product-components": "workspace:*",
         "@trezor/react-utils": "workspace:*",
         "@trezor/theme": "workspace:*",

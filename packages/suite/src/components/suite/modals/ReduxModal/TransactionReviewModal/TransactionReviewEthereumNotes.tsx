@@ -3,6 +3,7 @@ import { selectResolvedEthereumNonce } from '@suite-common/wallet-core';
 import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getFee, hasEip1559MaxPriorityFee, isEip1559 } from '@suite-common/wallet-utils';
 import { Note } from '@trezor/components';
+import { CheckCircleIcon, GasPumpIcon } from '@trezor/icons';
 import { FeeRate } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -35,24 +36,24 @@ export const TransactionReviewEthereumNotes = ({
     return (
         <>
             {ethereumNonce !== undefined && (
-                <Note data-testid="@modal/ethereum/nonce" iconName="receipt">
+                <Note data-testid="@modal/ethereum/nonce" icon={CheckCircleIcon}>
                     <Translation id="TR_NONCE" />
                     {': '}
                     {ethereumNonce}
                 </Note>
             )}
-            <Note data-testid="@modal/ethereum/gas-limit" iconName="gasPump">
+            <Note data-testid="@modal/ethereum/gas-limit" icon={GasPumpIcon}>
                 <Translation id="TR_GAS_LIMIT" />
                 {': '}
                 {tx.feeLimit}
             </Note>
-            <Note data-testid="@modal/ethereum/fee" iconName="gasPump">
+            <Note data-testid="@modal/ethereum/fee" icon={GasPumpIcon}>
                 <Translation id={isEip1559(tx) ? 'TR_MAX_FEE_PER_GAS' : 'TR_GAS_PRICE'} />
                 {': '}
                 <FeeRate feeRate={fee} networkType={account.networkType} />
             </Note>
             {hasEip1559MaxPriorityFee(tx) && (
-                <Note data-testid="@modal/ethereum/priority-fee" iconName="gasPump">
+                <Note data-testid="@modal/ethereum/priority-fee" icon={GasPumpIcon}>
                     <Translation id="TR_MAX_PRIORITY_FEE_PER_GAS" />
                     {': '}
                     <FeeRate feeRate={tx.maxPriorityFeePerGas} networkType={account.networkType} />
