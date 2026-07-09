@@ -16,11 +16,21 @@ import {
     selectDeviceUnavailableCapabilities,
 } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { type NetworkSymbolExtended, isNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type TokenDefinitionsRootState,
+    selectTokenDefinitions,
+} from '@suite-common/token-definitions';
+import {
+    type NetworkSymbolExtended,
+    getNetwork,
+    isNetworkSymbol,
+} from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
+    selectAccountByKey,
     selectAccounts,
     selectDeviceAccounts,
+    selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -71,6 +81,7 @@ import {
     getTradingPlatformsInfoByCryptoId,
     getTradingSymbolAndContractAddressByCryptoId,
 } from '../utils/infoUtils';
+import { isAccountEligibleForTrade, pickFallbackAccount } from '../utils/tradingAccountUtils';
 
 export { EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES, type GroupedTradingExchangeQuotes };
 
@@ -86,6 +97,9 @@ export type TradingRootStateWithDeviceAndAccounts = TradingRootState &
     DeviceRootState &
     AccountsRootState &
     SelectedAccountRootState;
+
+export type TradingFormAccountRootState = TradingRootStateWithDeviceAndAccounts &
+    TokenDefinitionsRootState;
 
 export type TradingBuyInfoSelector = Omit<
     BuyInfo,
@@ -132,6 +146,8 @@ export type TradingStateSelector = Omit<TradingState, 'buy' | 'exchange' | 'sell
 const createMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();
 const createMemoizedSelectorWithDeviceAndAccounts =
     createWeakMapSelector.withTypes<TradingRootStateWithDeviceAndAccounts>();
+const createMemoizedFormAccountSelector =
+    createWeakMapSelector.withTypes<TradingFormAccountRootState>();
 
 export const bestBuyQuotePerPaymentMethodProjection = (quotes: BuyTrade[]) =>
     bestQuotePerPaymentMethodProjection<BuyCryptoPaymentMethod, BuyTrade>(
@@ -926,6 +942,97 @@ export const selectTradingExchangeActiveTrade = (
             trade.data.orderId === transactionId,
     );
 };
+
+const selectPreferredTradingAccount = (
+    state: TradingFormAccountRootState,
+    tradingType: TradingType,
+) => {
+    const accountKey = selectTradingAccountKeyByTradeType(state, tradingType);
+    const prefilled = selectTradingPrefilledFromAccount(state);
+
+    return selectAccountByKey(state, accountKey ?? prefilled.key);
+};
+
+/*
+ * Selects the most suitable account for trading forms.
+ *
+ * Eligibility (per isAccountEligibleForTrade):
+ * - buy: any account is eligible.
+ * - native cryptoId (or none): positive native balance OR any non-hidden token with balance.
+ * - specific token cryptoId (prefilled): that token must have a positive balance.
+ *
+ * Selection priority:
+ * 1) Preferred account (selected trading account key OR prefilled.key) if eligible.
+ * 2) First account with the same symbol as the preferred account that is eligible.
+ * 3) Fallback (pickFallbackAccount): first eligible account, otherwise the first
+ *    available account as a last resort.
+ */
+export const selectTradingFormAccount = createMemoizedFormAccountSelector(
+    [
+        selectVisibleDeviceAccounts,
+        selectTokenDefinitions,
+        selectTradingPrefilledFromAccount,
+        selectPreferredTradingAccount,
+        (_state: TradingFormAccountRootState, tradingType: TradingType) => tradingType,
+    ],
+    (visibleDeviceAccounts, tokenDefinitions, prefilled, preferredAccount, tradingType) => {
+        const eligibilityCryptoId = prefilled.key ? prefilled.cryptoId : undefined;
+
+        const isEligible = (account: Account, cryptoId?: CryptoId) =>
+            isAccountEligibleForTrade(account, tradingType, tokenDefinitions, cryptoId);
+
+        if (preferredAccount && isEligible(preferredAccount, eligibilityCryptoId)) {
+            return preferredAccount;
+        }
+
+        const sameSymbolAccount = visibleDeviceAccounts.find(
+            account =>
+                account.symbol === preferredAccount?.symbol &&
+                isEligible(account, eligibilityCryptoId),
+        );
+
+        if (sameSymbolAccount) {
+            return sameSymbolAccount;
+        }
+
+        return pickFallbackAccount(visibleDeviceAccounts, tradingType, tokenDefinitions);
+    },
+);
+
+export const selectTradingFormCryptoId = createMemoizedFormAccountSelector(
+    [selectTradingFormAccount, selectPreferredTradingAccount, selectTradingPrefilledFromAccount],
+    (account, preferredAccount, prefilled): CryptoId => {
+        if (prefilled.cryptoId && account.key === preferredAccount?.key) {
+            return prefilled.cryptoId;
+        }
+
+        return (getNetwork(account.symbol).tradeCryptoId ?? 'bitcoin') as CryptoId;
+    },
+);
+
+const selectTradingActiveTradeSendAccount = (
+    state: TradingFormAccountRootState,
+    tradingType: TradingType,
+) => {
+    switch (tradingType) {
+        case 'sell':
+            return selectAccountByKey(state, selectTradingSellActiveTrade(state)?.sendAccountKey);
+        case 'exchange':
+            return selectAccountByKey(
+                state,
+                selectTradingExchangeActiveTrade(state)?.sendAccountKey,
+            );
+        case 'buy':
+            return undefined;
+        default:
+            return exhaustive(tradingType);
+    }
+};
+
+export const selectTradingSendAccount = createMemoizedFormAccountSelector(
+    [selectTradingActiveTradeSendAccount, selectTradingFormAccount],
+    (tradeSendAccount, formAccount) => tradeSendAccount ?? formAccount,
+);
 
 export const selectTradingBuyTransactionId = (state: TradingRootState) =>
     state.wallet.trading.buy.transactionId;

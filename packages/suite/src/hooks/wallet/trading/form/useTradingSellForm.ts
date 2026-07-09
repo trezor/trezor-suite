@@ -23,13 +23,14 @@ import {
     selectTradingSellQuotesRequest,
     selectTradingSellSelectedQuote,
     selectTradingSellTransactionId,
+    selectTradingSendAccount,
     sellThunks,
     sellUtils,
     tradingSellActions,
     tradingThunks,
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
-import { selectAccountByKey, selectBaseCurrency } from '@suite-common/wallet-core';
+import { selectBaseCurrency } from '@suite-common/wallet-core';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
@@ -61,16 +62,10 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
 
     const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
 
-    const {
-        account: formAccount,
-        tradingAccountKey: accountKey,
-        cryptoId,
-    } = useTradingFormAccount(type);
+    const { tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount(type);
 
     const trade = useSelector(selectTradingSellActiveTrade);
-
-    const tradeSendAccount = useSelector(state => selectAccountByKey(state, trade?.sendAccountKey));
-    const account = tradeSendAccount ?? formAccount;
+    const account = useSelector(state => selectTradingSendAccount(state, type));
 
     const { device } = useTradingInitializer();
 
