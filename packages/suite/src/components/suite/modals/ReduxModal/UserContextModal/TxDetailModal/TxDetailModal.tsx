@@ -24,8 +24,6 @@ import {
 import { Modal } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
-import { useEvmNonceInfo } from 'src/hooks/wallet/useEvmNonceInfo';
-import { type AppState } from 'src/types/suite';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { CancelTransactionModal } from './CancelTransaction/CancelTransactionModal';
