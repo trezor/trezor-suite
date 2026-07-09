@@ -41,6 +41,7 @@
             "path": "../../suite-common/toast-notifications"
         },
         { "path": "../analytics" },
+        { "path": "../debug" },
         { "path": "../firmware-upgrade" },
         { "path": "../intl" },
         { "path": "../router" },

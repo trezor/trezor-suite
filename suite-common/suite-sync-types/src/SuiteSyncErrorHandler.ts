@@ -11,3 +11,7 @@ export type Errors = RelayQuotaExceededError | SuiteSyncOtherError;
  * onto SuiteSync Errors.
  */
 export type SuiteSyncInternalErrorHandler = (error: Errors) => Promise<void>;
+
+export type SubscribeSuiteSyncInternalErrorHandler = (
+    errorHandler: SuiteSyncInternalErrorHandler,
+) => void;

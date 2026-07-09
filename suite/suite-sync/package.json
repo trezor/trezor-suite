@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@evolu/common": "8.0.0-next.5",
-        "@evolu/web": "3.0.0-next.1",
+        "@evolu/web": "patch:@evolu/web@npm%3A3.0.0-next.1#~/.yarn/patches/@evolu-web-npm-3.0.0-next.1-9b296ca288.patch",
         "@hookform/resolvers": "^5.4.0",
         "@reduxjs/toolkit": "2.12.0",
         "@suite-common/delegated-identity-key-types": "workspace:*",
@@ -29,6 +29,7 @@
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
         "@suite/analytics": "workspace:*",
+        "@suite/debug": "workspace:*",
         "@suite/firmware-upgrade": "workspace:*",
         "@suite/intl": "workspace:*",
         "@suite/router": "workspace:*",

@@ -23,8 +23,8 @@ import {
     type GetIsTorEnabledDep,
     type OnStorageEnsured,
     type OnStorageEnsuredDep,
+    type SubscribeSuiteSyncInternalErrorHandler,
     type SuiteSync,
-    type SuiteSyncInternalErrorHandler,
 } from '@suite-common/suite-sync-types';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Analytics } from '@trezor/analytics-uploader';
@@ -74,8 +74,6 @@ export type SuiteSyncAnalytics = Pick<Analytics<AnalyticsSharedEvents>, 'report'
 export type SuiteSyncAnalyticsDep = {
     analytics?: SuiteSyncAnalytics;
 };
-
-type SubscribeSuiteSyncInternalErrorHandler = (errorHandler: SuiteSyncInternalErrorHandler) => void;
 
 type CreateSuiteSyncCompositionRootDeps = {
     getState: () => WithSuiteSyncAndDeviceState &

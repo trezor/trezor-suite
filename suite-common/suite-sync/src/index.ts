@@ -8,6 +8,12 @@ export {
     selectIsSuiteSyncInitPossible,
 } from './suiteSyncSelectors';
 export {
+    selectIsSuiteSyncRelayConnected,
+    selectLastSuiteSyncRelayDisconnectedTimestamp,
+    selectSuiteSyncRelayConnectionStatuses,
+} from './relay/relayConnectionSelectors';
+export { createUpdateRelayConnectionStatus } from './relay/createUpdateRelayConnectionStatus';
+export {
     getSuiteSyncDefaultRelayUrl,
     getSuiteSyncRelayUrl,
     selectSuiteSyncCustomRelayUrl,
@@ -24,9 +30,21 @@ export {
     updateSuiteSyncDebugEnabled,
     updateSuiteSyncEnabled,
     setSuiteSyncRelayUrl,
+    setSuiteSyncRelayConnection,
+    addSuiteSyncRelayConnection,
+    removeSuiteSyncRelayConnection,
     setSuiteSyncOwner,
 } from './suiteSyncSlice';
 export type { SuiteSyncState, SuiteSyncSettings, WithSuiteSyncState } from './suiteSyncSlice';
+export type {
+    SuiteSyncRelayConnection,
+    SuiteSyncRelayConnectionEvent,
+    SuiteSyncRelayConnectionLogEntry,
+} from './relay/relayConnectionStatus';
+export type {
+    UpdateRelayConnectionStatus,
+    UpdateRelayConnectionStatusDeps,
+} from './relay/createUpdateRelayConnectionStatus';
 export type {
     SuiteSyncServerTypeSelectValue,
     SuiteSyncServerTypeOption,
