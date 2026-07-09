@@ -49,6 +49,7 @@ export class TradingPage {
     // Transactions
     readonly backButton: Locator;
     readonly transactionDetailStatus: Locator;
+    readonly transactionDetailHeader: Locator;
     readonly transactionDetail: Locator;
     readonly transactions: TradingTransactionsSection;
 
@@ -88,6 +89,7 @@ export class TradingPage {
 
         this.backButton = this.page.getByTestId('@account-subpage/back');
         this.transactionDetailStatus = this.page.getByTestId('@trading/transaction/detail/status');
+        this.transactionDetailHeader = this.page.getByTestId('@trading/transaction/detail/header');
         this.transactionDetail = this.page.getByTestId('@trading/transaction/detail');
         this.transactions = new TradingTransactionsSection(page);
 

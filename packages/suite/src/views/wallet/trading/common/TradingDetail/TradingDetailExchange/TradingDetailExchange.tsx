@@ -14,7 +14,7 @@ import {
     selectTradingDisplayComposedFee,
 } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { Box, Card, Column, H3, Paragraph, StepList } from '@trezor/components';
+import { Box, Card, Column, StepList } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
@@ -27,6 +27,7 @@ import { TradingDetailExchangePaymentKYC } from 'src/views/wallet/trading/common
 import { TradingDetailExchangePaymentSending } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentSending';
 import { TradingDetailExchangePaymentSuccessful } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentSuccessful';
 import { TradingDetailExchangeSidebar } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchangeSidebar';
+import { TradingDetailHeader } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailHeader';
 import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
 import { TradingDetailStepList } from '../TradingDetailStepList';
@@ -137,17 +138,11 @@ export const TradingDetailExchange = () => {
             default:
                 return (
                     <>
-                        <H3>
-                            <Translation id="TR_EXCHANGE_HEADER_TITLE" />
-                        </H3>
-                        <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
-                            <Translation
-                                id="TR_TRADING_HEADER_DESCRIPTION"
-                                values={{
-                                    type: translationString('TR_TRADING_SWAP').toLowerCase(),
-                                }}
-                            />
-                        </Paragraph>
+                        <TradingDetailHeader
+                            title="TR_TRADING_HEADER_PROCESSING_TITLE"
+                            description="TR_TRADING_HEADER_PROCESSING_DESCRIPTION"
+                            type={translationString('TR_TRADING_SWAP').toLowerCase()}
+                        />
                         <Box margin={{ top: 32, bottom: 12 }}>
                             <TradingDetailStepList>
                                 {!trade.data.isDex && (

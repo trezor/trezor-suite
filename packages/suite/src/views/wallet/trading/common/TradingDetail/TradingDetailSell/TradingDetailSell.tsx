@@ -5,22 +5,24 @@ import { type SellTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { Translation, useTranslation } from '@suite/intl';
+import { useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { type TradingSellType, selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { Box, Card, Column, H3, Paragraph } from '@trezor/components';
+import { Box, Card, Column } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { AfterTradeExperiment } from 'src/views/wallet/trading/common/TradingDetail/AfterTradeExperiment';
+import { TradingDetailHeader } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailHeader';
 import { TradingDetailSellPaymentFailed } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSell/TradingDetailSellPaymentFailed';
 import { TradingDetailSellPaymentSending } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSell/TradingDetailSellPaymentSending';
 import { TradingDetailSellPaymentSuccessful } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSell/TradingDetailSellPaymentSuccessful';
 import { TradingDetailSellSidebar } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSellSidebar';
+import { getSellDetailHeaderMessages } from 'src/views/wallet/trading/common/TradingDetail/utils';
 import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
 import { TradingDetailStepList } from '../TradingDetailStepList';
@@ -104,17 +106,10 @@ export const TradingDetailSell = () => {
             default:
                 return (
                     <>
-                        <H3>
-                            <Translation id="TR_SELL_HEADER_TITLE" />
-                        </H3>
-                        <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
-                            <Translation
-                                id="TR_TRADING_HEADER_DESCRIPTION"
-                                values={{
-                                    type: translationString('TR_TRADING_SELL').toLowerCase(),
-                                }}
-                            />
-                        </Paragraph>
+                        <TradingDetailHeader
+                            {...getSellDetailHeaderMessages(tradeStatus)}
+                            type={translationString('TR_TRADING_SELL').toLowerCase()}
+                        />
                         <Box margin={{ top: 32, bottom: 12 }}>
                             <TradingDetailStepList>
                                 <TradingDetailSellPaymentSending
