@@ -68,6 +68,7 @@ export function useNetworkTxSimulation(
     input: UseTxSimulationParams,
     { onSuccess }: UseTxSimulationProps = {},
 ) {
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is input.params; onSuccess is a side-effect callback and input.method is derived from the same params — neither belongs in the key
     return useQuery({
         enabled: Boolean(input),
         queryKey: commonQueryKeys.networkTxSimulation(input?.params),

@@ -75,6 +75,7 @@ export function useSolanaRewardsHistory(
     account: Account,
     { limit, offset }: UseSolanaRewardsProps,
 ) {
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is account.descriptor (+ offset/limit); the queryFn only additionally reads account.misc/symbol to derive staleness & telemetry flags, which intentionally must not widen the key
     return useQuery({
         enabled: account.symbol === 'sol',
         queryKey: commonQueryKeys.solanaRewards(account.descriptor, offset, limit),

@@ -18,6 +18,7 @@ export const useTradingStellarActivateToken = ({
 }: UseTradingStellarActivateTokenProps) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is account.symbol + account.key; the queryFn passes the full account to getStellarInactiveTokens, but the extra fields aren't part of the key
     const { data: inactiveTokens, refetch } = useQuery({
         enabled: account?.symbol === 'xlm',
         queryKey: desktopQueryKeys.inactiveTokens(account?.symbol ?? 'xlm', account?.key),

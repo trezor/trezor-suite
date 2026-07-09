@@ -22,6 +22,7 @@ export const useApproximateInstantUnstakeAmount = (accountKey: AccountKey, amoun
         descriptor && symbol && isSupportedEthStakingNetworkSymbol(symbol) && isAmountValid,
     );
 
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- isAmountValid is derived from amount, which is already part of the key
     const { data: approximatedAmount } = useQuery<string | null>({
         enabled: isQueryEnabled,
         queryKey: ['approximate-instant-unstake-amount', descriptor, symbol, amount],

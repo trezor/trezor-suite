@@ -8,7 +8,7 @@ import { type TradingCountryCode, type TradingOTC } from '../types';
 const FALLBACK_API_KEY = getWeakRandomId(20);
 
 export const getOtcProvidersByCountry = (
-    data: TradingOTC | undefined,
+    data: TradingOTC | null | undefined,
     country: TradingCountryCode,
 ) =>
     returnStableArrayIfEmpty(data?.links?.filter(link => link.allowedCountries?.includes(country)));
@@ -21,7 +21,7 @@ export const useFetchOtc = () =>
                 invityAPI.createInvityAPIKey(FALLBACK_API_KEY);
             }
 
-            return await invityAPI.getOTCData();
+            return (await invityAPI.getOTCData()) ?? null;
         },
         staleTime: 1000 * 6,
     });
