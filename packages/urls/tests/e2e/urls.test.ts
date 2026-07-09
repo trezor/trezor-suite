@@ -14,8 +14,6 @@ const skippedUrls = [
 const expectedFailingUrls = [
     // DATA_URL because it returns 404 on itself (forbidden listing)
     URLS.DATA_URL,
-    // 503 from CI
-    URLS.LTC_ADDRESS_INFO_URL,
     // captcha, returning 403 in ci
     URLS.TREZOR_FORUM_URL,
     URLS.IMAGE_PROXY_API_URL, // returns 'unauthorized'
