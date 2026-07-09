@@ -1,7 +1,7 @@
-export function hexToRgba(
-    hex: string,
-    alpha?: number,
-): `rgba(${number}, ${number}, ${number}, ${number})` | `rgb(${number}, ${number}, ${number})` {
+export type RgbColor = `rgb(${number}, ${number}, ${number})`;
+export type RgbaColor = `rgba(${number}, ${number}, ${number}, ${number})`;
+
+export function hexToRgba(hex: string, alpha?: number): RgbaColor | RgbColor {
     const norm = hex.replace('#', '');
     const r = parseInt(norm.slice(0, 2), 16);
     const g = parseInt(norm.slice(2, 4), 16);

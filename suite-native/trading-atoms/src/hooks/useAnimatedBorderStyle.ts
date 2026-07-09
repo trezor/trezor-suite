@@ -7,6 +7,7 @@ import {
 } from 'react-native-reanimated';
 
 import { useNativeStyles } from '@trezor/styles-native';
+import { type RgbaColor } from '@trezor/utils';
 
 export const useAnimatedBorderStyle = (isAmountInputActive: boolean) => {
     const { utils } = useNativeStyles();
@@ -17,7 +18,7 @@ export const useAnimatedBorderStyle = (isAmountInputActive: boolean) => {
             progress.value,
             [0, 1],
             [utils.colors.surfaceFillRaised, utils.colors.elementBorderFieldFocused],
-        ) as `rgba(${number}, ${number}, ${number}, ${number})`,
+        ) as RgbaColor,
         borderWidth: interpolate(progress.value, [0, 1], [0, utils.borders.widths.large]),
         borderRadius: utils.borders.radii.r16,
     }));

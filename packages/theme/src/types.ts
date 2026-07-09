@@ -1,6 +1,3 @@
-export type CSSColor =
-    | `#${string}`
-    | `rgb(${number}, ${number}, ${number})`
-    | `rgba(${number}, ${number}, ${number}, ${number})`
-    | 'transparent'
-    | 'currentColor';
+import { type RgbColor, type RgbaColor } from '@trezor/utils';
+
+export type CSSColor = `#${string}` | RgbColor | RgbaColor | 'transparent' | 'currentColor';
