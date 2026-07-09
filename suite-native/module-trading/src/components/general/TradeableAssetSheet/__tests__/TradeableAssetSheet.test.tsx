@@ -18,7 +18,7 @@ describe('TradeableAssetSheet', () => {
                 isVisible={true}
                 onFilterChange={jest.fn}
                 onSelectedNetworkFilter={jest.fn}
-                flashListKey="test-key"
+                scrollResetKey="test-key"
                 {...props}
             />,
         );

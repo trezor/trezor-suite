@@ -21,7 +21,7 @@ export type TradeableAssetsSheetProps = {
     assets: TradeableAsset[];
     onFilterChange: (value: string) => void;
     onSelectedNetworkFilter: (symbol: NetworkSymbol | undefined) => void;
-    flashListKey: string;
+    scrollResetKey: string;
     testID?: string;
 };
 
@@ -42,7 +42,7 @@ export const TradeableAssetSheet = memo(
         assets,
         onFilterChange,
         onSelectedNetworkFilter,
-        flashListKey,
+        scrollResetKey,
         testID,
     }: TradeableAssetsSheetProps) => {
         const listData = useFavouriteAssetsSectionList(assets);
@@ -76,7 +76,7 @@ export const TradeableAssetSheet = memo(
                         closeSheet();
                     })
                 }
-                flashListKey={flashListKey}
+                scrollResetKey={scrollResetKey}
                 noSingletonSectionHeader
                 testID={testID}
             />

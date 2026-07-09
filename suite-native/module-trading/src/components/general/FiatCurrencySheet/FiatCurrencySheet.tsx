@@ -50,9 +50,6 @@ export const FiatCurrencySheet = memo(
             [setFilterValue, translate, searchInputTestId],
         );
 
-        // re-mount FLashList component when filterValue changes (resets scroll position)
-        const flashListKey = 'fiat_currencies_list-' + filterValue;
-
         return (
             <BottomSheetSectionList<FiatCurrencyItem>
                 isVisible={isVisible}
@@ -71,7 +68,8 @@ export const FiatCurrencySheet = memo(
                 )}
                 data={filteredData}
                 keyExtractor={keyExtractor}
-                flashListKey={flashListKey}
+                // reset scroll position when filterValue changes
+                scrollResetKey={filterValue}
                 ItemSeparatorComponent={ItemSeparator}
                 noSingletonSectionHeader
             />
