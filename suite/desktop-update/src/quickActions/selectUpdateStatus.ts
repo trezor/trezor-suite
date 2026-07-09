@@ -25,12 +25,6 @@ type GetSuiteUpdateStatusArgs = {
 };
 
 const getSuiteUpdateStatus = ({ desktopUpdate }: GetSuiteUpdateStatusArgs): UpdateStatusSuite => {
-    const isSuiteJustUpdated = desktopUpdate.firstRunAfterUpdate;
-
-    if (isSuiteJustUpdated && !desktopUpdate.justUpdatedInteractedWith) {
-        return 'just-updated';
-    }
-
     // We don't show update-availability in case of auto-updates until the update is downloaded
     if (desktopUpdate.isAutomaticUpdateEnabled && desktopUpdate.state === UpdateState.Ready) {
         return 'update-downloaded-auto-restart-to-update';
@@ -128,10 +122,6 @@ export const selectUpdateStatus = (
         common.updateStatusDevice === 'update-available'
     ) {
         return { updateStatus: 'update-available', ...common };
-    }
-
-    if (common.updateStatusSuite === 'just-updated') {
-        return { updateStatus: 'just-updated', ...common };
     }
 
     return { updateStatus: 'up-to-date', ...common };

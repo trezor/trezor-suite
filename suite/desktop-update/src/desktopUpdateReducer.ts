@@ -20,15 +20,8 @@ export interface DesktopUpdateState {
     isModalVisible: boolean;
     allowPrerelease: boolean;
     isAutomaticUpdateEnabled: boolean;
-    firstRunAfterUpdate: boolean;
     // Displays an informational modal to view current version
     isVersionInfoModalVisible: boolean;
-
-    /**
-     * This flag suppresses the "just updated" notification state
-     * when user already interacted with it.
-     */
-    justUpdatedInteractedWith: boolean;
 }
 
 export type DesktopUpdateRootState = {
@@ -46,9 +39,7 @@ const initialState: DesktopUpdateState = {
     isModalVisible: false,
     allowPrerelease: false,
     isAutomaticUpdateEnabled: false,
-    firstRunAfterUpdate: false,
     isVersionInfoModalVisible: false,
-    justUpdatedInteractedWith: false,
 };
 
 export const desktopUpdateInitialState = initialState;
@@ -78,11 +69,6 @@ const desktopUpdateSlice = createSlice({
             state.state = UpdateState.Ready;
             state.latest = action.payload;
         },
-        justUpdated: state => {
-            state.state = UpdateState.JustUpdated;
-            state.isModalVisible = true;
-            state.justUpdatedInteractedWith = true;
-        },
         setIsUpdateModalVisible: (state, action: PayloadAction<boolean>) => {
             state.isModalVisible = action.payload;
         },
@@ -111,7 +97,6 @@ const desktopUpdateSlice = createSlice({
                 draft.allowPrerelease = action.payload.desktopUpdate.allowPrerelease;
                 draft.isAutomaticUpdateEnabled =
                     action.payload.desktopUpdate.isAutomaticUpdateEnabled;
-                draft.firstRunAfterUpdate = action.payload.desktopUpdate.firstRun !== undefined;
             }
         });
     },

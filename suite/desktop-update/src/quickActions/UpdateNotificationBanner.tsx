@@ -26,14 +26,12 @@ const mapSuiteUpdateStatusToHeaderTranslation: Record<UpdateStatusSuite, Transla
     'update-downloaded-auto-restart-to-update':
         'TR_QUICK_ACTION_UPDATE_POPOVER_APP_HAS_BEEN_UPDATED',
     'update-downloaded-manual': 'TR_QUICK_ACTION_UPDATE_POPOVER_APP_DOWNLOADED',
-    'just-updated': 'TR_QUICK_ACTION_UPDATE_POPOVER_APP_HAS_BEEN_UPDATED',
     'up-to-date': null,
     'update-available': 'TR_QUICK_ACTION_UPDATE_POPOVER_APP_UPDATE_AVAILABLE',
 };
 
 const mapSuiteUpdateStatusToCallToActionTranslation: Record<UpdateStatus, TranslationKey | null> = {
     disconnected: null,
-    'just-updated': 'TR_QUICK_ACTION_UPDATE_POPOVER_WHATS_NEW',
     'up-to-date': null,
     'update-available': 'TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_START_UPDATE',
     'update-downloaded-auto-restart-to-update':
