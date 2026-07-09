@@ -24,6 +24,8 @@ import { useTranslate } from '@suite-native/intl';
 import { type YieldFlowParams } from '@suite-native/navigation';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
+import { getAccountTokenByContract } from '../utils/contractTokenBalanceUtils';
+
 export type YieldFlowResolutionStatus =
     | 'resolved'
     | 'missing-vault'
@@ -74,11 +76,6 @@ type ResolveYieldFlowDataParams = {
     yieldOpportunities: YieldDtoV2[];
 };
 
-type GetMatchingTokenParams = {
-    account: Account;
-    tokenContract: string;
-};
-
 type YieldFlowProps = { displayError?: boolean } & YieldFlowParams;
 
 const defaultFlowData: ResolvedYieldFlowData = {
@@ -97,16 +94,6 @@ const defaultFlowData: ResolvedYieldFlowData = {
     vaultTokenName: null,
     vaultTokenSymbol: null,
 };
-
-const getMatchingToken = ({ account, tokenContract }: GetMatchingTokenParams) =>
-    account.tokens?.find(token => {
-        const normalizedAccountTokenContract = getContractAddressForNetworkSymbol(
-            account.symbol,
-            token.contract,
-        );
-
-        return normalizedAccountTokenContract === tokenContract;
-    }) ?? null;
 
 export const resolveYieldFlowData = ({
     account,
@@ -168,14 +155,8 @@ export const resolveYieldFlowData = ({
         account.symbol,
         vault.outputToken.address,
     );
-    const token = getMatchingToken({
-        account,
-        tokenContract: underlyingTokenContract,
-    });
-    const outputToken = getMatchingToken({
-        account,
-        tokenContract: outputTokenContract,
-    });
+    const token = getAccountTokenByContract(account, underlyingTokenContract);
+    const outputToken = getAccountTokenByContract(account, outputTokenContract);
 
     if (!outputToken && !yieldId) {
         return {

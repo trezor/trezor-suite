@@ -1,3 +1,4 @@
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol, type StakingNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -7,6 +8,8 @@ import {
     type TokenAddress,
     type TokenSymbol,
 } from '@suite-common/wallet-types';
+
+type StablecoinYieldPricePerShareState = NonNullable<YieldDtoV2['state']>['pricePerShareState'];
 
 export type EarnFormDraftPrefix = 'stake' | 'unstake' | 'claim';
 
@@ -51,6 +54,9 @@ export type StablecoinYieldEarnItem = {
     accountLabel?: Account['accountLabel'];
     tokenBalance: string | null;
     apy: number | null;
+    token?: YieldDtoV2['token'];
+    outputToken?: YieldDtoV2['outputToken'];
+    pricePerShareState?: StablecoinYieldPricePerShareState;
 };
 
 export type StablecoinYieldClaimSummary = {
@@ -69,7 +75,19 @@ export type StablecoinYieldNavigationItem = Pick<
 >;
 
 export type StablecoinYieldPromoNavigationItem = StablecoinYieldNavigationItem &
-    Pick<StablecoinYieldEarnItem, 'networkSymbol'>;
+    Pick<
+        StablecoinYieldEarnItem,
+        'networkSymbol' | 'tokenSymbol' | 'token' | 'outputToken' | 'pricePerShareState'
+    >;
+
+export type ChooseAccountTokenBalance = {
+    tokenContractAddress: TokenAddress;
+    tokenSymbol: TokenSymbol;
+    receiptTokenContract?: TokenAddress | null;
+    token?: StablecoinYieldEarnItem['token'];
+    outputToken?: StablecoinYieldEarnItem['outputToken'];
+    pricePerShareState?: StablecoinYieldEarnItem['pricePerShareState'];
+};
 
 export type EarnPromoItem = StakingEarnItem | StablecoinYieldEarnItem;
 

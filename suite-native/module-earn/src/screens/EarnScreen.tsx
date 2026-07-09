@@ -186,6 +186,7 @@ const EarnScreenContent = () => {
                     accounts={stablecoinYield.chosenAccounts}
                     onAccountSelected={stablecoinYield.handleAccountSelected}
                     onClose={stablecoinYield.closeChooseAccountModal}
+                    tokenBalance={stablecoinYield.chooseAccountTokenBalance}
                 />
                 <EnableNetworkForEarnBottomSheet
                     ref={stablecoinYield.enableNetworkSheetRef}

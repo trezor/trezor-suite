@@ -17,7 +17,7 @@ import {
 } from '@suite-native/navigation';
 
 import { useEarnPortfolioTrackerGuard } from '../components/EarnPortfolioTrackerGuard';
-import { type StablecoinYieldPromoNavigationItem } from '../types';
+import { type ChooseAccountTokenBalance, type StablecoinYieldPromoNavigationItem } from '../types';
 import { useStablecoinYieldFirmwareUpdateAlert } from './useStablecoinYieldFirmwareUpdateAlert';
 import { navigateByYieldAccountState } from '../utils/navigateByYieldAccountState';
 
@@ -30,6 +30,7 @@ type UseStablecoinYieldPromoNavigationReturn = {
     chooseAccountSheetRef: BottomSheetModalRef;
     enableNetworkSheetRef: BottomSheetModalRef;
     closeChooseAccountModal: () => void;
+    chooseAccountTokenBalance?: ChooseAccountTokenBalance;
 };
 
 export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavigationReturn => {
@@ -58,6 +59,16 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
     const [chosenYieldItem, setChosenYieldItem] =
         useState<StablecoinYieldPromoNavigationItem | null>(null);
     const [pendingEnableSymbol, setPendingEnableSymbol] = useState<NetworkSymbol | null>(null);
+    const chooseAccountTokenBalance = chosenYieldItem
+        ? {
+              tokenContractAddress: chosenYieldItem.underlyingTokenContract,
+              tokenSymbol: chosenYieldItem.tokenSymbol,
+              receiptTokenContract: chosenYieldItem.receiptTokenContract,
+              token: chosenYieldItem.token,
+              outputToken: chosenYieldItem.outputToken,
+              pricePerShareState: chosenYieldItem.pricePerShareState,
+          }
+        : undefined;
 
     const handleAccountSelected = useCallback(
         (account: Account) => {
@@ -168,5 +179,6 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
         chooseAccountSheetRef,
         enableNetworkSheetRef,
         closeChooseAccountModal,
+        chooseAccountTokenBalance,
     };
 };
