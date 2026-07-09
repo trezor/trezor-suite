@@ -1,72 +1,119 @@
 import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
 
-import { type AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { AccountLabel, AccountsListItemBase } from '@suite-native/accounts';
-import { Badge } from '@suite-native/atoms';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
-import { CryptoIcon } from '@suite-native/icons';
+import { AccountLabel } from '@suite-native/accounts';
+import { Box, Card, PressableOpacity, VStack } from '@suite-native/atoms';
+import {
+    CryptoAmountFormatter,
+    CryptoToFiatAmountFormatter,
+    TokenAmountFormatter,
+    TokenToFiatAmountFormatter,
+} from '@suite-native/formatters';
+import { CryptoIcon, Icon } from '@suite-native/icons';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { CRYPTO_BALANCE_DECIMALS } from '../constants';
+import { type ChooseAccountBalanceData } from '../utils/chooseAccountBalanceUtils';
+
+const itemCardStyle = prepareNativeStyle(utils => ({
+    marginBottom: utils.spacings.sp16,
+}));
+
+const rowStyle = prepareNativeStyle(utils => ({
+    paddingLeft: utils.spacings.sp16,
+    paddingRight: utils.spacings.sp12,
+    paddingVertical: utils.spacings.sp12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    minHeight: 70,
+}));
+
+const labelStyle = prepareNativeStyle(() => ({
+    flex: 1,
+}));
+
+const valuesStyle = prepareNativeStyle(utils => ({
+    alignItems: 'flex-end',
+    flexShrink: 1,
+    paddingLeft: utils.spacings.sp8,
+}));
 
 type ChooseAccountItemProps = {
     account: Account;
+    balanceData: ChooseAccountBalanceData;
     onPress: (account: Account) => void;
-    isFirst?: boolean;
-    isLast?: boolean;
-    showDivider?: boolean;
 };
 
-export const ChooseAccountItem = ({
-    account,
-    onPress,
-    isFirst = false,
-    isLast = false,
-    showDivider = false,
-}: ChooseAccountItemProps) => {
-    const formattedAccountType = useSelector((state: AccountsRootState) =>
-        selectFormattedAccountType(state, account.key),
-    );
+export const ChooseAccountItem = ({ account, balanceData, onPress }: ChooseAccountItemProps) => {
+    const { applyStyle } = useNativeStyles();
 
     const handlePress = useCallback(() => {
         onPress(account);
     }, [account, onPress]);
 
     return (
-        <AccountsListItemBase
-            hasBackground
-            isFirst={isFirst}
-            isLast={isLast}
-            showDivider={showDivider}
-            onPress={handlePress}
-            icon={<CryptoIcon symbol={account.symbol} />}
-            title={<AccountLabel account={account} />}
-            titleBadge={
-                formattedAccountType ? (
-                    <Badge label={formattedAccountType} size="small" />
-                ) : undefined
-            }
-            mainValue={
-                <CryptoAmountFormatter
-                    value={account.formattedBalance}
-                    symbol={account.symbol}
-                    decimals={CRYPTO_BALANCE_DECIMALS}
-                    variant="body-md-strong"
-                    color="contentPrimary"
-                    numberOfLines={1}
-                    adjustsFontSizeToFit
-                />
-            }
-            secondaryValue={
-                <CryptoToFiatAmountFormatter
-                    value={account.formattedBalance}
-                    symbol={account.symbol}
-                    isBalance
-                    variant="body-sm"
-                    color="contentSecondary"
-                />
-            }
-        />
+        <Card borderColor="borderNeutral" noPadding style={applyStyle(itemCardStyle)}>
+            <PressableOpacity onPress={handlePress} style={applyStyle(rowStyle)}>
+                <Box marginRight="sp12">
+                    <CryptoIcon symbol={account.symbol} />
+                </Box>
+
+                <Box style={applyStyle(labelStyle)}>
+                    <AccountLabel
+                        account={account}
+                        showAccountTypeBadge
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                    />
+                </Box>
+
+                <VStack spacing="sp2" style={applyStyle(valuesStyle)}>
+                    {balanceData.type === 'account' ? (
+                        <>
+                            <CryptoAmountFormatter
+                                value={balanceData.value}
+                                symbol={account.symbol}
+                                decimals={CRYPTO_BALANCE_DECIMALS}
+                                variant="body-md"
+                                color="contentPrimary"
+                                numberOfLines={1}
+                                adjustsFontSizeToFit
+                            />
+                            <CryptoToFiatAmountFormatter
+                                value={balanceData.value}
+                                symbol={account.symbol}
+                                isBalance
+                                variant="body-sm"
+                                color="contentSecondary"
+                                numberOfLines={1}
+                            />
+                        </>
+                    ) : (
+                        <>
+                            <TokenAmountFormatter
+                                value={balanceData.value}
+                                tokenSymbol={balanceData.tokenSymbol}
+                                variant="body-md"
+                                color="contentPrimary"
+                                numberOfLines={1}
+                                adjustsFontSizeToFit
+                            />
+                            <TokenToFiatAmountFormatter
+                                value={balanceData.value}
+                                symbol={account.symbol}
+                                contract={balanceData.tokenContractAddress}
+                                variant="body-sm"
+                                color="contentSecondary"
+                                numberOfLines={1}
+                            />
+                        </>
+                    )}
+                </VStack>
+
+                <Box marginLeft="sp12">
+                    <Icon name="caretRight" size="mediumLarge" color="contentSecondary" />
+                </Box>
+            </PressableOpacity>
+        </Card>
     );
 };
