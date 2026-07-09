@@ -3,7 +3,10 @@ import { type ReactNode } from 'react';
 import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { PendingTransactionInfo } from '@trezor/product-components';
+import {
+    PENDING_TRANSACTION_TIME_ESTIMATE_SECONDS,
+    PendingTransactionInfo,
+} from '@trezor/product-components';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -35,6 +38,7 @@ export const TronStakePendingTransaction = ({ title }: TronStakePendingTransacti
                     typographyStyle="body-md"
                 />
             }
+            timeEstimateSeconds={PENDING_TRANSACTION_TIME_ESTIMATE_SECONDS}
             onTxClick={() =>
                 dispatch(
                     openModal({

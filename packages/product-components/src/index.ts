@@ -61,3 +61,8 @@ export {
     PendingTransactionInfo,
     type PendingTransactionInfoProps,
 } from './components/PendingTransactionInfo/PendingTransactionInfo';
+export {
+    PENDING_TRANSACTION_TIME_ESTIMATE_SECONDS,
+    PendingTransactionTimeEstimate,
+    type PendingTransactionTimeEstimateProps,
+} from './components/PendingTransactionInfo/PendingTransactionTimeEstimate';
