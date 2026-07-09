@@ -1,1 +1,0 @@
-../../../skills/skills-and-code-style-contribution/SKILL.md

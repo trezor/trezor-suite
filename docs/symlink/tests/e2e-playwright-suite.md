@@ -1,1 +1,0 @@
-../../../suite/e2e/docs/e2e-playwright-suite.md

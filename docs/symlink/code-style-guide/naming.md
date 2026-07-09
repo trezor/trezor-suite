@@ -1,1 +1,0 @@
-../../../skills/naming/SKILL.md

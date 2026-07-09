@@ -1,1 +1,0 @@
-../../../skills/redux/SKILL.md

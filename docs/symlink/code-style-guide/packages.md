@@ -1,1 +1,0 @@
-../../../skills/packages/SKILL.md
