@@ -243,3 +243,16 @@ export const stakingTrxStatsResponseItem = zod.object({
     apr: zod.number().describe('Estimated annual yield for voters in percent.'),
 });
 export const stakingTrxStatsResponse = zod.array(stakingTrxStatsResponseItem);
+
+/**
+ * @summary Report staking transaction IDs
+ */
+export const reportStakingTxIdsBodyTxidRegExp = new RegExp('^[0-9a-f]{64}$');
+
+export const reportStakingTxIdsBody = zod.object({
+    txid: zod.string().regex(reportStakingTxIdsBodyTxidRegExp),
+    network: zod.enum(['tron']),
+    kind: zod.enum(['freeze', 'vote']),
+});
+
+export const reportStakingTxIdsResponse = zod.unknown();

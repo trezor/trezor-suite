@@ -1,6 +1,7 @@
 import { createHttpClient } from '@suite-common/http-client';
 
 import {
+    reportStakingTxIdsResponse,
     stakingBatchResponse,
     stakingCardanoPoolsResponse,
     stakingEthereumValidatorsQueueResponse,
@@ -48,4 +49,10 @@ export const getSolanaRewardsHistory = earnHttpClient('/sol/rewards/:address', {
 export const getSolanaRewardsTotal = earnHttpClient('/sol/rewards/:address/total', {
     method: 'GET',
     schema: stakingSolanaRewardsTotalResponse,
+});
+
+export const reportStakingTxIds = earnHttpClient('/report', {
+    method: 'POST',
+    schema: reportStakingTxIdsResponse,
+    timeout: 60_000,
 });
