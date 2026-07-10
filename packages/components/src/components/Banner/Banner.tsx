@@ -36,9 +36,9 @@ const Layout = styled.div`
     align-items: center;
 `;
 
-const IconCell = styled.div`
+const IconCell = styled.div<{ $isCentered: boolean }>`
     grid-column: 1;
-    grid-row: 1;
+    grid-row: ${({ $isCentered }) => ($isCentered ? '1 / span 2' : '1')};
     margin-right: ${spacingsPx.sm};
 `;
 
@@ -71,6 +71,8 @@ export type BannerProps = AllowedFrameProps & {
     intent?: BannerIntent;
     rightContent?: ReactNode;
     icon?: IconComponent | true;
+    /** Centers the icon against the whole title + description block instead of the title row. */
+    isIconCentered?: boolean;
     'data-testid'?: string;
     isLoading?: boolean;
 } & ({ title: ReactNode; description?: ReactNode } | { title?: ReactNode; description: ReactNode });
@@ -80,6 +82,7 @@ export const Banner = ({
     description,
     intent = DEFAULT_INTENT,
     icon,
+    isIconCentered = false,
     rightContent,
     'data-testid': dataTest,
     isLoading = false,
@@ -104,7 +107,7 @@ export const Banner = ({
         >
             <Layout>
                 {(isLoading || withIcon) && (
-                    <IconCell>
+                    <IconCell $isCentered={isIconCentered && Boolean(title && description)}>
                         {isLoading && <Spinner size={20} isDisabled={true} />}
                         {!isLoading && withIcon && (
                             <Icon

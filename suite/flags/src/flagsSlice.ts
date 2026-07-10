@@ -18,6 +18,7 @@ export type FlagsState = {
     showSettingsDesktopAppPromoBanner: boolean;
     activateAssetsBannerClosed: boolean;
     stakeEthBannerClosed: boolean;
+    earnEthBannerClosed: boolean;
     stakeSolBannerClosed: boolean;
     stakeCardanoBannerClosed: boolean;
     stakeTronBannerClosed: boolean;
@@ -51,6 +52,7 @@ export const flagsInitialState: FlagsState = {
     showSettingsDesktopAppPromoBanner: true,
     activateAssetsBannerClosed: false,
     stakeEthBannerClosed: false,
+    earnEthBannerClosed: false,
     stakeSolBannerClosed: false,
     stakeCardanoBannerClosed: false,
     stakeTronBannerClosed: false,

@@ -1,7 +1,13 @@
 import { FormattedList } from 'react-intl';
 
 import { Translation } from '@suite/intl';
-import { CoinsIcon, HandCoinsIcon, LockSimpleIcon, PlusCircleIcon } from '@trezor/icons';
+import {
+    ArrowsDownUpIcon,
+    CoinsIcon,
+    HandCoinsIcon,
+    LockSimpleIcon,
+    PlusCircleIcon,
+} from '@trezor/icons';
 
 import {
     type EarnInANutshellHighlight,
@@ -12,14 +18,30 @@ interface YieldEarnInANutshellHighlightsProps {
     depositSymbol: string;
     vaultSymbol?: string;
     rewardsSymbols?: string[];
+    /** Set for wrapped-native vaults — the native coin can be deposited too. */
+    nativeSymbol?: string;
 }
 
 export const YieldEarnInANutshellHighlights = ({
     depositSymbol,
     vaultSymbol,
     rewardsSymbols,
+    nativeSymbol,
 }: YieldEarnInANutshellHighlightsProps) => {
     const highlights: EarnInANutshellHighlight[] = [
+        ...(nativeSymbol !== undefined
+            ? [
+                  {
+                      icon: ArrowsDownUpIcon,
+                      content: (
+                          <Translation
+                              id="TR_EARN_YIELD_NUTSHELL_DEPOSIT_EITHER"
+                              values={{ nativeSymbol, supplySymbol: depositSymbol }}
+                          />
+                      ),
+                  },
+              ]
+            : []),
         {
             icon: LockSimpleIcon,
             content: (

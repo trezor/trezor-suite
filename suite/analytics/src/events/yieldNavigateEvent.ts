@@ -7,6 +7,7 @@ type Attributes = {
     action: AttributeDef<EarnModalAction>;
     from: AttributeDef<
         | 'earn-dashboard'
+        | 'account-banner'
         | 'account-defi-tokens'
         | 'deposit-in-a-nutshell-modal'
         | 'deposit-legal-modal'
@@ -38,7 +39,10 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
             changelog: [{ version: '26.5.0', notes: 'added' }],
         },
         from: {
-            changelog: [{ version: '26.5.0', notes: 'added' }],
+            changelog: [
+                { version: '26.5.0', notes: 'added' },
+                { version: '26.7.0', notes: 'added `account-banner` value for the earn promo' },
+            ],
         },
         to: {
             changelog: [{ version: '26.5.0', notes: 'added' }],

@@ -8,6 +8,7 @@ import {
     type EarnProvider,
     type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
+import { getNetworkDisplaySymbol, isWrappedNativeToken } from '@suite-common/wallet-config';
 import { type YieldFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent, isStakingNetworkType } from '@suite-common/wallet-utils';
@@ -55,6 +56,9 @@ export const YieldEarnInANutshellModal = ({
 
     const depositSymbol = vault?.token.symbol ?? '';
     const vaultSymbol = vault?.outputToken?.symbol;
+    const isWrappedNativeVault =
+        !!vault && isWrappedNativeToken(account.symbol, vault.token.address);
+    const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
     const rewardsSymbols = vault?.rewardRate.components
         .filter(c => c.yieldSource === 'protocol_incentive')
         .map(c => c.token.symbol);
@@ -65,7 +69,11 @@ export const YieldEarnInANutshellModal = ({
         {
             processType: 'deposit',
             heading: <Translation id="TR_EARN_DEPOSITING_PROCESS" />,
-            badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 2 }} />,
+            badge: isWrappedNativeVault ? (
+                <Translation id="TR_TX_FEE_COUNT_UP_TO" values={{ count: 3 }} />
+            ) : (
+                <Translation id="TR_TX_FEE_COUNT" values={{ count: 2 }} />
+            ),
             content: (
                 <YieldDepositingInfo
                     apy={yieldApy}
@@ -73,6 +81,8 @@ export const YieldEarnInANutshellModal = ({
                     networkSymbol={account.symbol}
                     depositSymbol={depositSymbol}
                     vaultSymbol={vaultSymbol}
+                    showWrapStep={isWrappedNativeVault}
+                    nativeSymbol={nativeSymbol}
                 />
             ),
         },
@@ -80,7 +90,13 @@ export const YieldEarnInANutshellModal = ({
             processType: 'withdraw',
             heading: <Translation id="TR_EARN_WITHDRAWING_PROCESS" />,
             badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 1 }} />,
-            content: <YieldWithdrawingInfo depositSymbol={depositSymbol} />,
+            content: (
+                <YieldWithdrawingInfo
+                    depositSymbol={depositSymbol}
+                    showUnwrapHint={isWrappedNativeVault}
+                    nativeSymbol={nativeSymbol}
+                />
+            ),
         },
         ...(rewardsSymbols !== undefined && rewardsSymbols.length > 0
             ? [
@@ -149,6 +165,7 @@ export const YieldEarnInANutshellModal = ({
                 depositSymbol={depositSymbol}
                 vaultSymbol={vaultSymbol}
                 rewardsSymbols={rewardsSymbols}
+                nativeSymbol={isWrappedNativeVault ? nativeSymbol : undefined}
             />
             <Divider margin={{ top: 24, bottom: 16 }} />
             <EarnInANutshellProcesses items={processes} onItemToggle={handleProcessToggle} />

@@ -5,9 +5,15 @@ import { EarnInfoRow } from './EarnInfoRow';
 
 interface YieldWithdrawingInfoProps {
     depositSymbol: string;
+    showUnwrapHint?: boolean;
+    nativeSymbol?: string;
 }
 
-export const YieldWithdrawingInfo = ({ depositSymbol }: YieldWithdrawingInfoProps) => (
+export const YieldWithdrawingInfo = ({
+    depositSymbol,
+    showUnwrapHint = false,
+    nativeSymbol,
+}: YieldWithdrawingInfoProps) => (
     <StepList bulletGap={12} gap={16} bulletSize="small" titleGap={2}>
         <EarnInfoRow
             heading={<Translation id="TR_EARN_SIGN_WITHDRAWAL_TRANSACTION" />}
@@ -28,5 +34,16 @@ export const YieldWithdrawingInfo = ({ depositSymbol }: YieldWithdrawingInfoProp
             }
             content={{ text: <Translation id="TR_EARN_INSTANTLY" /> }}
         />
+        {showUnwrapHint && (
+            <EarnInfoRow
+                heading={
+                    <Translation
+                        id="TR_EARN_YIELD_NUTSHELL_UNWRAP_HINT"
+                        values={{ nativeSymbol, supplySymbol: depositSymbol }}
+                    />
+                }
+                subheading={<Translation id="TR_EARN_YIELD_NUTSHELL_UNWRAP_HINT_SUB" />}
+            />
+        )}
     </StepList>
 );

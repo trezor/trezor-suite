@@ -11042,6 +11042,11 @@ export const messages = defineMessages({
         id: 'TR_EARN_DEPOSITING_IN_A_NUTSHELL',
         defaultMessage: 'How stablecoin yield works',
     },
+    TR_EARN_YIELD_NUTSHELL_DEPOSIT_EITHER: {
+        id: 'TR_EARN_YIELD_NUTSHELL_DEPOSIT_EITHER',
+        defaultMessage:
+            'You can deposit {nativeSymbol} or {supplySymbol} — {nativeSymbol} is wrapped to {supplySymbol} automatically, 1:1.',
+    },
     TR_EARN_YIELD_NUTSHELL_DEPOSITED_AMOUNT: {
         id: 'TR_EARN_YIELD_NUTSHELL_DEPOSITED_AMOUNT',
         defaultMessage:
