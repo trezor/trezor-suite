@@ -2,23 +2,19 @@ import { useIntl } from 'react-intl';
 
 import { Translation, type TranslationKey, messages } from '@suite/intl';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { Column, H2, Modal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-import { getDeviceColorVariant } from '@trezor/device-utils';
-import { ConfirmOnDevicePill } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
 
-interface ConfirmActionProps {
+type ConfirmActionProps = {
     cancelable?: boolean;
     device: TrezorDevice;
     title?: TranslationKey;
     onCancel?: () => void;
     enableBackdropClick?: boolean;
-}
+};
 
 export const ConfirmActionModal = ({
     title,
@@ -42,19 +38,10 @@ export const ConfirmActionModal = ({
             data-testid="@suite/modal/confirm-action-on-device"
             canSwitchDevice
         >
-            <ConfirmOnDevicePill
-                title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                deviceModelInternal={getDeviceInternalModel(device)}
-                deviceUnitColor={getDeviceColorVariant(device)}
-                onCancel={cancelable ? handleCancel : undefined}
-            />
-            <Modal.ModalBase width={400}>
-                <Column alignItems="center" gap={16}>
+            <Modal.ModalBase width={400} onCancel={cancelable ? handleCancel : undefined}>
+                <Column alignItems="center" gap={16} padding={{ horizontal: 10, bottom: 24 }}>
                     <DeviceConfirmImage device={device} />
-                    <H2
-                        align="center"
-                        margin={{ left: spacings.md, right: spacings.md, bottom: spacings.md }}
-                    >
+                    <H2 align="center" textWrap="pretty">
                         <Translation id={title ?? 'TR_CONFIRM_ACTION_ON_YOUR'} />
                     </H2>
                 </Column>
