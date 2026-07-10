@@ -1,6 +1,7 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO, PROTO } from '@trezor/connect';
-import { BigNumber } from '@trezor/utils';
+import { CARDANO_DERIVATIONS } from '@trezor/connect-common';
+import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
 import { asAmountSubunit } from './AmountTypes';
 import * as fixtures from './__fixtures__/cardanoUtils';
@@ -35,12 +36,6 @@ describe('cardano utils', () => {
     it('basic test', () => {
         expect(getProtocolMagic(asNetworkSymbol('ada'))).toEqual(CARDANO.PROTOCOL_MAGICS.mainnet);
 
-        expect(getDerivationType('normal')).toEqual(1);
-        expect(getDerivationType('legacy')).toEqual(2);
-        expect(getDerivationType('ledger')).toEqual(0);
-        // TS does not allow this, but in runtime, the default case handles it
-        expect(getDerivationType(undefined as any)).toEqual(1);
-
         expect(getNetworkId()).toEqual(CARDANO.NETWORK_IDS.mainnet);
 
         expect(getAddressType()).toEqual(PROTO.CardanoAddressType.BASE);
@@ -59,6 +54,24 @@ describe('cardano utils', () => {
         expect(isCardanoTx({ networkType: 'cardano' }, {})).toBe(true);
         // @ts-expect-error params are partial
         expect(isCardanoTx({ networkType: 'bitcoin' }, {})).toBe(false);
+    });
+
+    describe('getDerivationType', () => {
+        // prepareNewAccountPayload passes this value on the derive path, so it has to be the very
+        // same one discovery uses, otherwise a fresh account gets a different key than the
+        // discovered ones. getDerivationType keeps its own copy of the mapping, so pin it to
+        // connect's CARDANO_DERIVATIONS to catch a drift between the two.
+        it.each(typedObjectKeys(CARDANO_DERIVATIONS))(
+            'matches the derivation discovery uses for %s',
+            accountType => {
+                expect(getDerivationType(accountType)).toBe(CARDANO_DERIVATIONS[accountType]);
+            },
+        );
+
+        it('falls back to ICARUS for an unknown account type', () => {
+            // TS does not allow this, but in runtime, the default case handles it
+            expect(getDerivationType(undefined as any)).toBe(CARDANO_DERIVATIONS.normal);
+        });
     });
 
     fixtures.getChangeAddressParameters.forEach(f => {
