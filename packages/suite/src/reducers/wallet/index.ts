@@ -14,6 +14,7 @@ import {
     preparePhishingReducer,
     prepareSendFormReducer,
     prepareStakeReducer,
+    prepareTokenInfoReducer,
     prepareTransactionsReducer,
     prepareWalletSettingsReducer,
     stablecoinYieldReducer,
@@ -37,9 +38,11 @@ export const stakeReducer = prepareStakeReducer(extraDependencies);
 export const sendFormReducer = prepareSendFormReducer(extraDependencies);
 export const tradingReducer = prepareTradingReducer(extraDependencies);
 export const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
+export const tokenInfoReducer = prepareTokenInfoReducer(extraDependencies);
 
 const WalletReducers = combineReducers({
     fiat: fiatRatesReducer,
+    tokenInfo: tokenInfoReducer,
     graph: graphReducer,
     transactions: transactionsReducer,
     phishing: phishingReducer,
