@@ -73,6 +73,12 @@ export type StablecoinYieldTxReviewState = {
 export type StablecoinYieldSessionState = {
     step: YieldFlowStepId;
     error: StablecoinYieldTranslationKey | null;
+    wrap: {
+        isSubmitting: boolean;
+        isPending: boolean;
+        /** Amount of native coin actually wrapped (display units); null = wrap skipped or not run. */
+        wrappedAmount: string | null;
+    };
     approval: {
         allowanceAmount: string | null;
         modalState: YieldApproveModalState | null;
@@ -113,6 +119,11 @@ type StablecoinYieldSessionActionPayload = {
 export const initialStablecoinYieldSessionState: StablecoinYieldSessionState = {
     step: 'approve',
     error: null,
+    wrap: {
+        isSubmitting: false,
+        isPending: false,
+        wrappedAmount: null,
+    },
     approval: {
         allowanceAmount: null,
         modalState: null,
@@ -156,6 +167,7 @@ const createInitialStablecoinYieldSessionState = (
 ): StablecoinYieldSessionState => ({
     ...initialStablecoinYieldSessionState,
     step: YIELD_FLOW_STEP_SEQUENCES[flowType][0],
+    wrap: { ...initialStablecoinYieldSessionState.wrap },
     approval: { ...initialStablecoinYieldSessionState.approval },
     action: { ...initialStablecoinYieldSessionState.action },
     result: {
@@ -318,6 +330,49 @@ export const stablecoinYieldSlice = createSlice({
                 session.step = 'approve';
             });
         },
+        enterWrapStep(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
+            withSession(state, action.payload, session => {
+                session.step = 'wrap';
+            });
+        },
+        startSubmittingWrap(
+            state,
+            action: PayloadAction<StablecoinYieldSessionActionPayload & { amount: string }>,
+        ) {
+            withSession(state, action.payload, session => {
+                session.wrap.isSubmitting = true;
+                // The total deposit amount the user confirmed, not just the wrapped part.
+                session.action.amount = action.payload.amount;
+                session.error = null;
+            });
+        },
+        finishSubmittingWrap(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
+            withSession(state, action.payload, session => {
+                session.wrap.isSubmitting = false;
+            });
+        },
+        skipWrapStep(
+            state,
+            action: PayloadAction<StablecoinYieldSessionActionPayload & { amount: string }>,
+        ) {
+            withSession(state, action.payload, session => {
+                session.action.amount = action.payload.amount;
+                // A wrap recorded earlier in this session stays recorded — only
+                // completeWrap writes a non-null wrappedAmount.
+                session.step = 'approve';
+            });
+        },
+        completeWrap(
+            state,
+            action: PayloadAction<StablecoinYieldSessionActionPayload & { wrappedAmount: string }>,
+        ) {
+            withSession(state, action.payload, session => {
+                session.wrap.isPending = false;
+                session.wrap.wrappedAmount = action.payload.wrappedAmount;
+                session.action.pendingTransaction = null;
+                session.step = 'approve';
+            });
+        },
         completeApproval(
             state,
             action: PayloadAction<
@@ -338,7 +393,10 @@ export const stablecoinYieldSlice = createSlice({
         },
         skipApprovalStep(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
             withSession(state, action.payload, session => {
-                session.step = getNextYieldFlowStep(action.payload.flowType, 'approve');
+                // Guarded so the allowance auto-skip cannot jump over an active wrap step.
+                if (session.step === 'approve') {
+                    session.step = getNextYieldFlowStep(action.payload.flowType, 'approve');
+                }
             });
         },
         revokeSuccess(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
@@ -407,6 +465,7 @@ export const stablecoinYieldSlice = createSlice({
                 session.action.pendingTransaction = action.payload.tx;
                 session.action.pendingReceiptAmount =
                     action.payload.receiptAmount ?? session.action.pendingReceiptAmount;
+                session.wrap.isPending = action.payload.tx.type === 'wrap';
             });
         },
         completeAction(
@@ -433,6 +492,7 @@ export const stablecoinYieldSlice = createSlice({
         transactionFailed(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
             withSession(state, action.payload, session => {
                 session.action.pendingTransaction = null;
+                session.wrap.isPending = false;
                 session.error = 'TR_EARN_YIELD_ERROR_TRANSACTION_FAILED';
             });
         },

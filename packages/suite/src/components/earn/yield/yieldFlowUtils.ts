@@ -76,9 +76,13 @@ export const getYieldFlowSteps = (
 ): Record<YieldFlowStepId, YieldFlowStepView> => {
     // Both annotations widen the per-flow tuples (and the filter's inferred type predicate)
     // so indexOf below accepts any step id.
-    const sequence: readonly YieldFlowStepId[] = YIELD_FLOW_STEP_SEQUENCES[flowType];
+    const baseSequence: readonly YieldFlowStepId[] = YIELD_FLOW_STEP_SEQUENCES[flowType];
+    // 'wrap' is a conditional deposit-only step that precedes the base sequence; it is not
+    // part of YIELD_FLOW_STEP_SEQUENCES, so it is stitched in here for state/indicator maths.
+    const sequence: readonly YieldFlowStepId[] =
+        flowType === 'deposit' ? ['wrap', ...baseSequence] : baseSequence;
     const effectiveListSteps: readonly YieldFlowStepId[] =
-        listSteps ?? sequence.filter(stepId => stepId !== 'complete');
+        listSteps ?? baseSequence.filter(stepId => stepId !== 'complete');
     const currentStepIndex = sequence.indexOf(currentStep);
 
     const getStepState = (stepIndex: number): StepListItemState => {
@@ -107,6 +111,7 @@ export const getYieldFlowSteps = (
     });
 
     return {
+        wrap: getStepView('wrap'),
         approve: getStepView('approve'),
         action: getStepView('action'),
         complete: getStepView('complete'),
