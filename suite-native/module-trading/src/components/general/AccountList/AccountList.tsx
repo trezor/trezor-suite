@@ -23,7 +23,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { AccountListAddressItem } from './AccountListAddressItem';
 import { AccountListFooter } from './AccountListFooter';
 import { AccountListItem } from './AccountListItem';
-import { AddressListEmptyComponent } from './AddressListEmptyComponent';
 import { NoAccountsComponent } from './NoAccountsComponent';
 import {
     type ReceiveAccountsListMode,
@@ -128,20 +127,12 @@ export const AccountList = ({
         <AccountListFooter hasTextualDivider={itemsCount > 0} onAddAccountTap={onAddAccountTap} />
     ) : null;
 
-    const filter = '';
-    const emptyComponent =
-        filter.length > 0 ? (
-            <AddressListEmptyComponent />
-        ) : (
-            <NoAccountsComponent isBottomRounded={isDeviceInViewOnlyMode} />
-        );
-
     return (
         <FlashList
             contentContainerStyle={applyStyle(contentContainerStyle, {
                 insetBottom,
             })}
-            ListEmptyComponent={emptyComponent}
+            ListEmptyComponent={<NoAccountsComponent isBottomRounded={isDeviceInViewOnlyMode} />}
             renderItem={internalRenderItem}
             ListFooterComponent={footer}
             data={internalData}
