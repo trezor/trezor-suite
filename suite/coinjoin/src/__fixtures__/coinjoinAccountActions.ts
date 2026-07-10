@@ -1,10 +1,10 @@
 import { goto } from '@suite/router';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { accountsActions } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
-import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
-import { type Account } from 'src/types/wallet';
+import * as COINJOIN from '../coinjoinConstants';
 
 const ACCOUNT_KEY_12345 = mockAccountKey({ descriptor: '12345' });
 

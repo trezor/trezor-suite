@@ -2,10 +2,10 @@ import { type ChangeEventHandler, type KeyboardEventHandler, type ReactNode, use
 
 import styled from 'styled-components';
 
+import { selectCurrentCoinjoinSession } from '@suite/coinjoin';
 import { Paragraph, Range, type RangeProps, Row } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectCurrentCoinjoinSession } from 'src/reducers/wallet/coinjoinReducer';
 
 import { SliderInput, type SliderInputProps } from './SliderInput';
 

@@ -1,5 +1,5 @@
 import { isAnyOf } from '@reduxjs/toolkit';
-import type { MiddlewareAPI } from 'redux';
+import type { AnyAction, Dispatch, MiddlewareAPI } from 'redux';
 
 import { lockDevice, selectIsDeviceOrUiLocked } from '@suite/locks';
 import { routerLocationChange, selectRouteName, selectSettingsBackRoute } from '@suite/router';
@@ -23,28 +23,36 @@ import { RoundPhase, SessionPhase } from '@trezor/coinjoin';
 import { DEVICE, UI_REQUEST } from '@trezor/connect';
 import { arrayDistinct, typedObjectKeys } from '@trezor/utils';
 
-import { SUITE } from 'src/actions/suite/constants';
-import * as storageActions from 'src/actions/suite/storageActions';
-import * as coinjoinAccountActions from 'src/actions/wallet/coinjoinAccountActions';
-import * as coinjoinClientActions from 'src/actions/wallet/coinjoinClientActions';
-import { COINJOIN } from 'src/actions/wallet/constants';
+import { type CoinjoinAccountAction } from './coinjoinAccountActions';
+import * as coinjoinAccountActions from './coinjoinAccountActions';
+import { type CoinjoinClientAction } from './coinjoinClientActions';
+import * as coinjoinClientActions from './coinjoinClientActions';
 import {
+    CLIENT_SESSION_PHASE,
     SESSION_ROUND_CHANGED,
     SESSION_TX_BROADCASTED,
-    SET_DEBUG_SETTINGS,
-} from 'src/actions/wallet/constants/coinjoinConstants';
+} from './coinjoinConstants';
 import {
+    type CoinjoinRootState,
     selectCoinjoinAccountByKey,
     selectCoinjoinSessionBlockerByAccountKey,
     selectIsAccountWithSessionInCriticalPhaseByAccountKey,
     selectIsAnySessionInCriticalPhase,
-} from 'src/reducers/wallet/coinjoinReducer';
-import { CoinjoinService } from 'src/services/coinjoin';
-import type { Action, AppState, Dispatch } from 'src/types/suite';
-import { isCoinjoinSupportedSymbol } from 'src/utils/wallet/coinjoinUtils';
+} from './coinjoinSelectors';
+import { CoinjoinService } from './coinjoinService';
+import { isCoinjoinSupportedSymbol } from './coinjoinUtils';
+
+// suite app lifecycle action types, referenced by literal to avoid a dependency on the suite app
+const SUITE = {
+    INIT: '@suite/init',
+    READY: '@suite/ready',
+    ONLINE_STATUS: '@suite/online-status',
+} as const;
+
+type Action = CoinjoinAccountAction | CoinjoinClientAction | AnyAction;
 
 export const coinjoinMiddleware =
-    (api: MiddlewareAPI<Dispatch, AppState>) =>
+    (api: MiddlewareAPI<Dispatch, CoinjoinRootState>) =>
     (next: Dispatch) =>
     (action: Action): Action => {
         // cancel discovery for each CoinjoinBackend
@@ -95,7 +103,7 @@ export const coinjoinMiddleware =
                 accountKeys,
                 round: { broadcastedTxDetails },
             } = action.payload;
-            accountKeys.forEach(accountKey => {
+            accountKeys.forEach((accountKey: string) => {
                 api.dispatch(
                     coinjoinAccountActions.createPendingTransaction(
                         accountKey as AccountKey,
@@ -283,11 +291,7 @@ export const coinjoinMiddleware =
             }
         }
 
-        if (action.type === SET_DEBUG_SETTINGS) {
-            api.dispatch(storageActions.saveCoinjoinDebugSettings());
-        }
-
-        if (action.type === COINJOIN.CLIENT_SESSION_PHASE) {
+        if (action.type === CLIENT_SESSION_PHASE) {
             const { accountKeys } = action.payload;
             const isAlreadyPaused = api
                 .getState()
@@ -295,7 +299,7 @@ export const coinjoinMiddleware =
                 ?.session?.paused;
 
             if (action.payload.phase === SessionPhase.CriticalError && !isAlreadyPaused) {
-                action.payload.accountKeys.forEach(key =>
+                action.payload.accountKeys.forEach((key: string) =>
                     api.dispatch(coinjoinClientActions.pauseCoinjoinSession(key as AccountKey)),
                 );
                 api.dispatch(addToast({ type: 'coinjoin-interrupted' }));

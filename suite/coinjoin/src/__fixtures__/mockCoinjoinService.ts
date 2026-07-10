@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 
-import type { CoinjoinSymbol } from 'src/services/coinjoin';
+import type { CoinjoinSymbol } from '../config';
 
 export const mockCoinjoinService = () => {
     const allowed = ['btc', 'test'];

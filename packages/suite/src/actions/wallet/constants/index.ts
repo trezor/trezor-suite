@@ -1,4 +1,5 @@
-import * as COINJOIN from './coinjoinConstants';
+import { COINJOIN } from '@suite/coinjoin';
+
 import * as GRAPH from './graphConstants';
 import * as RECEIVE from './receiveConstants';
 import * as SIGN_VERIFY from './signVerifyConstants';

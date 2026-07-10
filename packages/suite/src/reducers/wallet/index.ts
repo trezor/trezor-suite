@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 
 import { selectedAccountReducer } from '@suite/account';
+import { coinjoinReducer } from '@suite/coinjoin';
 import { receiveReducer } from '@suite/receive';
 import { prepareTradingReducer } from '@suite-common/trading';
 import {
@@ -22,7 +23,6 @@ import {
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import accountSearchReducer from './accountSearchReducer';
-import { coinjoinReducer } from './coinjoinReducer';
 import formDraftReducer from './formDraftReducer';
 import graphReducer from './graphReducer';
 

@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { getFirstSessionPhaseFromRoundPhase, selectSessionByAccountKey } from '@suite/coinjoin';
+import { type SessionPhase } from '@suite/coinjoin';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { SESSION_PHASE_TRANSITION_DELAY } from 'src/constants/suite/coinjoin';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectSessionByAccountKey } from 'src/reducers/wallet/coinjoinReducer';
-import { type SessionPhase } from 'src/types/wallet/coinjoin';
-import { getFirstSessionPhaseFromRoundPhase } from 'src/utils/wallet/coinjoinUtils';
 
 const checkExpiration = (lastChangeTimestamp: number) => {
     const currentTimestamp = Date.now();

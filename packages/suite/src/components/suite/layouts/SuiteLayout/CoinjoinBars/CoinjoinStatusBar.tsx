@@ -1,5 +1,7 @@
 import styled, { css } from 'styled-components';
 
+import { selectRoundsDurationInHours, selectSessionProgressByAccountKey } from '@suite/coinjoin';
+import { type CoinjoinSession } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { goto, selectRouterParams } from '@suite/router';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
@@ -13,11 +15,6 @@ import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import {
-    selectRoundsDurationInHours,
-    selectSessionProgressByAccountKey,
-} from 'src/reducers/wallet/coinjoinReducer';
-import { type CoinjoinSession } from 'src/types/wallet/coinjoin';
 
 const SPACING = 6;
 

@@ -1,7 +1,7 @@
 import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 
-import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
+import * as COINJOIN from '../coinjoinConstants';
 
 export const DEVICE = mockSuiteDevice({
     state: { staticSessionId: '1stTestnetAddress@device_id:0' },

@@ -1,5 +1,6 @@
 import '@suite-common/test-utils/src/globalOverrides';
 
+import { coinjoinReducer } from '@suite/coinjoin';
 import { initialRunCompleted, prepareFlagsReducer } from '@suite/flags';
 import { initialMetadataState, metadataReducer } from '@suite/metadata';
 import { receiveReducer } from '@suite/receive';
@@ -29,7 +30,6 @@ import { SETTINGS } from 'src/config/suite';
 import storageMiddleware from 'src/middlewares/wallet/storageMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { accountsReducer, fiatRatesReducer, transactionsReducer } from 'src/reducers/wallet';
-import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
 import graphReducer from 'src/reducers/wallet/graphReducer';
 import { db } from 'src/storage';
 import { extraDependencies } from 'src/support/extraDependencies';

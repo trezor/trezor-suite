@@ -1,0 +1,48 @@
+{
+    "name": "@suite/coinjoin",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "2.12.0",
+        "@suite-common/device": "workspace:*",
+        "@suite-common/message-system": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-constants": "workspace:*",
+        "@suite-common/suite-utils": "workspace:*",
+        "@suite-common/toast-notifications": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
+        "@suite/account": "workspace:*",
+        "@suite/locks": "workspace:*",
+        "@suite/modal": "workspace:*",
+        "@suite/router": "workspace:*",
+        "@suite/tor": "workspace:*",
+        "@trezor/blockchain-link": "workspace:*",
+        "@trezor/coinjoin": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/ipc-proxy": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "date-fns": "^4.1.0",
+        "immer": "11.1.5",
+        "redux": "^5.0.1"
+    },
+    "devDependencies": {
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/test-utils": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
+        "@trezor/eslint": "workspace:*"
+    }
+}

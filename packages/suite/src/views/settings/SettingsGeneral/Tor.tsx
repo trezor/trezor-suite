@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { selectCoinjoinAccounts } from '@suite/coinjoin';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { openDeferredModal, selectModalType } from '@suite/modal';
@@ -11,7 +12,6 @@ import { HELP_CENTER_TOR_URL } from '@trezor/urls';
 
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectCoinjoinAccounts } from 'src/reducers/wallet/coinjoinReducer';
 
 export const Tor = () => {
     const [hasTorError, setHasTorError] = useState(false);

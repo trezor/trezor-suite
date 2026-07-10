@@ -2,6 +2,7 @@ import type { Dispatch, PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 
 import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
+import { fixLoadedCoinjoinAccount } from '@suite/coinjoin';
 import type { FlagsState } from '@suite/flags';
 import { lockDevice } from '@suite/locks';
 import {
@@ -69,7 +70,6 @@ import { isDesktop } from '@trezor/env-utils';
 import { type StorageLoadAction } from 'src/actions/suite/storageActions';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
-import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
 import { createConnectInitHooks } from './createConnectInitHooks';
 import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseBondsThunk';

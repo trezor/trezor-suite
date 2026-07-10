@@ -4,18 +4,21 @@ import { selectedAccountReducer } from '@suite/account';
 import { locksReducer } from '@suite/locks';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
-
-import { accountsReducer } from 'src/reducers/wallet';
-import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
-import { CoinjoinService } from 'src/services/coinjoin/coinjoinService';
-import { extraDependencies } from 'src/support/extraDependencies';
+import {
+    configureMockStore,
+    extraDependenciesCommonMock,
+    initPreloadedState,
+    testMocks,
+} from '@suite-common/test-utils';
+import { prepareAccountsReducer } from '@suite-common/wallet-core';
 
 import * as fixtures from '../__fixtures__/coinjoinAccountActions';
 import * as coinjoinAccountActions from '../coinjoinAccountActions';
 import * as coinjoinClientActions from '../coinjoinClientActions';
+import { coinjoinReducer } from '../coinjoinReducer';
+import { CoinjoinService } from '../coinjoinService';
 
-jest.mock('src/services/coinjoin/coinjoinService', () => {
+jest.mock('../coinjoinService', () => {
     const mock = jest.requireActual('../__fixtures__/mockCoinjoinService');
 
     return mock.mockCoinjoinService();
@@ -36,12 +39,12 @@ const rootReducer = combineReducers({
         () => ({}),
     ),
     locks: locksReducer,
-    messageSystem: prepareMessageSystemReducer(extraDependencies),
+    messageSystem: prepareMessageSystemReducer(extraDependenciesCommonMock),
     device: createReducer({ devices: [DEVICE], selectedDevice: DEVICE }, () => ({})),
     modal: () => ({}),
     wallet: combineReducers({
         coinjoin: coinjoinReducer,
-        accounts: accountsReducer,
+        accounts: prepareAccountsReducer(extraDependenciesCommonMock),
         selectedAccount: selectedAccountReducer,
         blockchain: () => ({ btc: { blockHeight: 150 } }),
         transactions: () => ({ transactions: {} }),

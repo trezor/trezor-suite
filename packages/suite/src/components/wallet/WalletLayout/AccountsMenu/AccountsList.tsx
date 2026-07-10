@@ -1,4 +1,5 @@
 import { getDefaultAccountLabel } from '@suite/account';
+import { selectCoinjoinIsPreloading } from '@suite/coinjoin';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectAccountLabelsLegacy } from '@suite/metadata';
 import { type RouteParams, selectRouterParams } from '@suite/router';
@@ -11,7 +12,6 @@ import { accountSearchFn, getAccountTypeName } from '@suite-common/wallet-utils'
 import { Column } from '@trezor/components';
 
 import { useAccountSearch, useSelector } from 'src/hooks/suite';
-import { selectCoinjoinIsPreloading } from 'src/reducers/wallet/coinjoinReducer';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 import { type AccountItemType } from 'src/types/wallet';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';

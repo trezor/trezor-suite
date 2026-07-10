@@ -1,3 +1,5 @@
+import { type Dispatch } from '@reduxjs/toolkit';
+
 import { selectIsDeviceLocked } from '@suite/locks';
 import { openModal } from '@suite/modal';
 import { goto, selectRouteName } from '@suite/router';
@@ -20,7 +22,10 @@ import { type BroadcastedTransactionDetails, type ScanAccountProgress } from '@t
 import TrezorConnect from '@trezor/connect';
 import { promiseAllSequence } from '@trezor/utils';
 
+import * as coinjoinClientActions from './coinjoinClientActions';
+import * as COINJOIN from './coinjoinConstants';
 import {
+    type GetState,
     selectCoinjoinAccountByKey,
     selectCoinjoinAccounts,
     selectCoinjoinSessionBlockerByAccountKey,
@@ -31,24 +36,20 @@ import {
     selectIsNothingToAnonymizeByAccountKey,
     selectSessionByAccountKey,
     selectWeightedAnonymityByAccountKey,
-} from 'src/reducers/wallet/coinjoinReducer';
-import { COORDINATOR_FEE_RATE_MULTIPLIER, CoinjoinService } from 'src/services/coinjoin';
-import type { CoinjoinSymbol } from 'src/services/coinjoin';
-import { type Dispatch, type GetState } from 'src/types/suite';
+} from './coinjoinSelectors';
+import { CoinjoinService } from './coinjoinService';
 import {
     type CoinjoinAccount,
     type CoinjoinConfig,
     type CoinjoinDiscoveryCheckpoint,
     type CoinjoinSessionParameters,
-} from 'src/types/wallet/coinjoin';
+} from './coinjoinTypes';
 import {
     getAccountProgressHandle,
     getRegisterAccountParams,
     isCoinjoinSupportedSymbol,
-} from 'src/utils/wallet/coinjoinUtils';
-
-import * as coinjoinClientActions from './coinjoinClientActions';
-import * as COINJOIN from './constants/coinjoinConstants';
+} from './coinjoinUtils';
+import { COORDINATOR_FEE_RATE_MULTIPLIER, type CoinjoinSymbol } from './config';
 
 export const coinjoinAccountUpdateAnonymity = (accountKey: string, targetAnonymity: number) =>
     ({

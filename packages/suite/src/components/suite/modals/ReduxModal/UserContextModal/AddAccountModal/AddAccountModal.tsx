@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectIsPublic } from '@suite/coinjoin';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { goto, selectRouterApp } from '@suite/router';
@@ -29,7 +30,6 @@ import { arrayPartition } from '@trezor/utils';
 import { useAvailableNetworkSymbols } from 'src/components/wallet/WalletLayout/AccountsMenu/useAvailableNetworkSymbols';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useAccountSearch, useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsPublic } from 'src/reducers/wallet/coinjoinReducer';
 import { type TrezorDevice } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
 import { NetworkSettingsSearchInput } from 'src/views/settings/SettingsCoins/NetworkSettingsSearchInput';

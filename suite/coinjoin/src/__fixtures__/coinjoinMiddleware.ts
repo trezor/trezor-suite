@@ -1,17 +1,13 @@
 import { type RouterState, routerLocationChange } from '@suite/router';
 import { TorStatus, torActions } from '@suite/tor';
 import { accountsActions } from '@suite-common/wallet-core';
-import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { type Account, type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { type AnonymitySet } from '@trezor/blockchain-link';
 import { DEVICE, type StaticSessionId } from '@trezor/connect';
 
-import { SUITE } from 'src/actions/suite/constants';
-import { COINJOIN } from 'src/actions/wallet/constants';
-import { type SuiteState } from 'src/reducers/suite/suiteReducer';
-import { type CoinjoinState } from 'src/reducers/wallet/coinjoinReducer';
-import { type Account } from 'src/types/wallet';
-import { type CoinjoinAccount, type CoinjoinSession } from 'src/types/wallet/coinjoin';
+import * as COINJOIN from '../coinjoinConstants';
+import { type CoinjoinAccount, type CoinjoinSession, type CoinjoinState } from '../coinjoinTypes';
 
 const DEVICE_A = {
     available: true,
@@ -76,7 +72,7 @@ const DEFAULT_STATE = {
         devices: [DEVICE_A, DEVICE_B],
         selectedDevice: DEVICE_A,
     },
-    suite: {} as SuiteState,
+    suite: { online: true },
     tor: {
         torStatus: TorStatus.Enabled,
         torBootstrap: null,
@@ -294,7 +290,7 @@ export const fixtures = [
         description: 'interrupt all coinjoin sessions when Suite goes offline',
         state: DEFAULT_STATE,
         action: {
-            type: SUITE.ONLINE_STATUS,
+            type: '@suite/online-status',
             payload: false,
         },
         expectedActions: PAUSE_ALL_INTERRUPTED_SESSIONS_ACTIONS,
@@ -309,7 +305,7 @@ export const fixtures = [
             },
         ],
         action: {
-            type: SUITE.ONLINE_STATUS,
+            type: '@suite/online-status',
             payload: true,
         },
         expectedActions: RESTORE_SESSION_B_ACTIONS,
@@ -327,7 +323,7 @@ export const fixtures = [
             },
         ],
         action: {
-            type: SUITE.ONLINE_STATUS,
+            type: '@suite/online-status',
             payload: true,
         },
         expectedActions: [],

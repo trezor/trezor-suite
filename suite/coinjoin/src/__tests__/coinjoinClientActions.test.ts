@@ -5,20 +5,18 @@ import { locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
 import { TorStatus, torActions, torReducer } from '@suite/tor';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
-import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
-import { prepareWalletSettingsReducer } from '@suite-common/wallet-core';
+import {
+    configureMockStore,
+    extraDependenciesCommonMock,
+    initPreloadedState,
+    testMocks,
+} from '@suite-common/test-utils';
+import { prepareAccountsReducer, prepareWalletSettingsReducer } from '@suite-common/wallet-core';
 import '@suite-common/test-utils/src/globalOverrides';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { promiseAllSequence } from '@trezor/utils';
-
-import { coinjoinMiddleware } from 'src/middlewares/wallet/coinjoinMiddleware';
-import { accountsReducer } from 'src/reducers/wallet';
-import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
-import { CoinjoinService } from 'src/services/coinjoin/coinjoinService';
-import { db } from 'src/storage';
-import { extraDependencies } from 'src/support/extraDependencies';
 
 import * as fixtures from '../__fixtures__/coinjoinClientActions';
 import {
@@ -30,17 +28,20 @@ import {
     setDebugSettings,
     stopCoinjoinSession,
 } from '../coinjoinClientActions';
+import { coinjoinMiddleware } from '../coinjoinMiddleware';
+import { coinjoinReducer } from '../coinjoinReducer';
+import { CoinjoinService } from '../coinjoinService';
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
-jest.mock('src/services/coinjoin/coinjoinService', () => {
+jest.mock('../coinjoinService', () => {
     const mock = jest.requireActual('../__fixtures__/mockCoinjoinService');
 
     return mock.mockCoinjoinService();
 });
 
-const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
+const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
 
-const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
+const walletSettingsReducer = prepareWalletSettingsReducer(extraDependenciesCommonMock);
 
 const rootReducer = combineReducers({
     suite: createReducer({}, () => ({})),
@@ -55,7 +56,7 @@ const rootReducer = combineReducers({
     messageSystem: messageSystemReducer,
     wallet: combineReducers({
         coinjoin: coinjoinReducer,
-        accounts: accountsReducer,
+        accounts: prepareAccountsReducer(extraDependenciesCommonMock),
         selectedAccount: selectedAccountReducer,
         settings: walletSettingsReducer,
     }),
@@ -95,10 +96,6 @@ describe('coinjoinClientActions', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
-    beforeAll(async () => {
-        await db.getDB();
-    });
-
     fixtures.onCoinjoinRoundChanged.forEach(f => {
         it(`onCoinjoinRoundChanged: ${f.description}`, async () => {
             const store = initStore(f.state as Wallet);

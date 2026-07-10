@@ -1,10 +1,10 @@
 import { selectSelectedAccount } from '@suite/account';
+import { stopCoinjoinSession } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { ArrowsInIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
-import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 
