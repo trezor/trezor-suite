@@ -59,11 +59,13 @@
         {
             "path": "../../packages/blockchain-link-types"
         },
-        { "path": "../../coins/coins-solana" },
         { "path": "../../packages/connect-web" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/e2e-utils" },
         { "path": "../../packages/eslint" },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
         { "path": "../../packages/protobuf" },
         { "path": "../../packages/suite-data" },
         {

@@ -22,12 +22,14 @@
         {
             "path": "../../packages/blockchain-link-types"
         },
-        { "path": "../../coins/coins-solana" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
         },
         { "path": "../../packages/env-utils" },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
         { "path": "../../packages/react-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },

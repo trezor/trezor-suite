@@ -36,7 +36,9 @@
         {
             "path": "../../packages/blockchain-link-utils"
         },
-        { "path": "../../coins/coins-stellar" },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
         {
             "path": "../../packages/styles-native"
         },

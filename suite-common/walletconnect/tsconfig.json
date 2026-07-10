@@ -15,12 +15,14 @@
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
-        { "path": "../../coins/coins-stellar" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
         },
         { "path": "../../packages/env-utils" },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]
