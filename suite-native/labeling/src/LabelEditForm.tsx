@@ -1,9 +1,11 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 import { yup } from '@suite-common/validators';
 import { Button, type InputType, VStack } from '@suite-native/atoms';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+
+import { useSyncLabelForm } from './useSyncLabelForm';
 
 const labelValidationSchema = yup.object({
     label: yup.string().required(),
@@ -25,16 +27,15 @@ export const LabelEditForm = ({ label, onSubmit }: LabelEditFormParam) => {
     });
     const {
         handleSubmit,
-        reset,
-        formState: { isValid, isDirty },
+        formState: { isValid },
     } = form;
 
-    // Sync form when labels load asynchronously (e.g. after turning on Suite Sync).
-    useEffect(() => {
-        if (!isDirty) {
-            reset({ label: label ?? '' });
-        }
-    }, [isDirty, label, reset]);
+    const getResetValues = useCallback(
+        (newLabel: string | null): FormValues => ({ label: newLabel ?? '' }),
+        [],
+    );
+
+    useSyncLabelForm({ form, label, getResetValues });
 
     const onConfirm = handleSubmit((formValues: FormValues) => {
         onSubmit(formValues.label);
