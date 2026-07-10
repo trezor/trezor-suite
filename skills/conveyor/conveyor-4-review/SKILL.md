@@ -284,18 +284,21 @@ Keep the review status comment current (template below). It is the human's
 one-stop dashboard for "what did the agents find, what did they fix, what is left
 for me".
 
-**Locate it idempotently — exactly one, edited in place** (see CONVENTIONS "One
-dashboard comment"). Find your status comment by the `## 🤖 Review status` heading;
-**remember its comment id when you create it**, and on every later update **edit that
-same comment** — `gh api -X PATCH repos/<owner>/<repo>/issues/comments/<id> -F body=@file`.
-The intermediate `State: in-progress` dashboard and the final `passed` / `needs-human`
-dashboard are the **same comment updated**, never a second post. If zero match, create
-one; if more than one matches (a prior run double-posted), keep the newest and
-**delete the rest** (`gh api -X DELETE repos/.../issues/comments/<id>`). You always
-have `gh` here, so editing is a plain PATCH — **never** post a second `🤖 Review
-status` comment, and **never** claim you cannot edit it. A "this run is on the GitHub
-MCP / cannot edit a comment in place" note is **false** — do not write it; if a `gh`
-call ever truly fails, fix the call, do not double-post.
+**Locate it idempotently — exactly one, edited in place where you can** (see CONVENTIONS
+"One dashboard comment"). Find your status comment by the `## 🤖 Review status` heading
+and **remember its comment id when you create it**. **When `gh` / REST is available**, on
+every later update **edit that same comment** —
+`gh api -X PATCH repos/<owner>/<repo>/issues/comments/<id> -F body=@file` — so the
+intermediate `State: in-progress` dashboard and the final `passed` / `needs-human`
+dashboard are the **same comment updated**, never a second post; if more than one matches
+(a prior run double-posted), keep the newest and **delete the rest**
+(`gh api -X DELETE …/issues/comments/<id>`). **When the environment genuinely has no
+`gh` / REST** (some scheduled-routine cloud envs expose only a GitHub MCP that can append
+comments and set labels but cannot edit or delete them — see #28950): post **one**
+clearly-marked superseding dashboard and treat the `conveyor/review:*` **label as the
+authoritative state**; a later `gh`-capable run reconciles the duplicate. Report the path
+you took honestly — do not fake a PATCH you cannot make, and do not post a second comment
+when you can edit the first.
 
 ### 8. Freshness check (before any clean hand-off)
 

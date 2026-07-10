@@ -31,16 +31,21 @@ process steps — this file is the canonical *what/always*.
 
   </details>
   ```
-- **One dashboard comment, edited in place.** A station's status/dashboard comment
-  (the `## 🤖 …` one) is **a single comment you keep current by editing it** — record
-  its id when you create it and `gh api -X PATCH repos/<owner>/<repo>/issues/comments/<id> -F body=@file`
-  on every update (the `in-progress` state and the final state are the **same comment**,
-  not two posts). Find it by its heading; if a prior run left duplicates, keep the
-  newest and **delete the rest** (`gh api -X DELETE …/issues/comments/<id>`). You have
-  `gh`, so editing always works — **never** post a second dashboard, and **never** claim
-  you cannot edit it. A "this run is on the GitHub MCP, cannot edit in place" note is
-  **false** — do not invent it; if a `gh` call genuinely fails, fix the call, don't
-  double-post.
+- **One dashboard comment — edit in place where you can, a labelled fallback where you
+  can't.** A station's status/dashboard comment (the `## 🤖 …` one) is meant to be **a
+  single comment you keep current**. **When `gh` / REST is available** (interactive runs,
+  and routine envs that have it): record its id on creation and edit it —
+  `gh api -X PATCH repos/<owner>/<repo>/issues/comments/<id> -F body=@file` (the
+  `in-progress` state and the final state are the **same comment**, not two posts); find
+  it by its heading, and if a prior run left duplicates keep the newest and **delete the
+  rest** (`gh api -X DELETE …/issues/comments/<id>`). Do not post a fresh dashboard when
+  you can edit the existing one. **When the environment genuinely has no `gh` / REST** —
+  some scheduled-routine cloud envs expose only a GitHub MCP that can append comments and
+  set labels but **cannot edit or delete** them (see #28950): post **one** clearly-marked
+  superseding dashboard (`## 🤖 … — supersedes the prior dashboard`) and treat the
+  **lifecycle label as the authoritative belt state** (labels you can always set); a later
+  `gh`-capable run reconciles the duplicate. Report which path you took honestly — do not
+  fake a PATCH you cannot make, and do not claim you cannot edit when you can.
 ## Locking & pushes
 
 - The `*-in-progress` label is **advisory** — two agents can race the
