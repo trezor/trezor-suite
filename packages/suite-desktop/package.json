@@ -28,11 +28,11 @@
         "_______ DO NOT REMOVE DEPENDENCIES unless you are sure of consequences! _______": "In this package they have special meaning, see core.webpack.config"
     },
     "dependencies": {
-        "openpgp": "^6.3.0",
+        "openpgp": "^6.3.1",
         "usb": "^2.17.0"
     },
     "devDependencies": {
         "electron": "42.5.0",
-        "electron-builder": "26.11.1"
+        "electron-builder": "26.15.3"
     }
 }
