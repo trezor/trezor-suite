@@ -2,13 +2,14 @@ import { useMemo } from 'react';
 
 import { type EarnParams } from '@suite/router';
 import { type TokenDtoV2, type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol, isWrappedNativeToken } from '@suite-common/wallet-config';
 import {
     type YieldFlowDisplayToken,
     type YieldFlowToken,
     doTokensMatch,
     getConvertedOutputTokenBalanceToInputTokenAmount,
     getStablecoinYieldFlowKey,
+    getYieldDepositableBalance,
 } from '@suite-common/wallet-core';
 import type { Account, TokenInfoBranded } from '@suite-common/wallet-types';
 import { getApyPercent, getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
@@ -52,6 +53,10 @@ type UseResolvedYieldFlowDataResult = {
     depositedAmount: string;
     depositedSharesAmount: string;
     flowKey: string;
+    isWrappedNativeVaultToken: boolean;
+    nativeFormattedBalance: string;
+    /** Token balance plus, for wrapped-native vaults, the wrappable native balance minus a gas reserve. */
+    depositableBalance: string;
 };
 
 type UseResolvedYieldFlowDataProps = {
@@ -144,6 +149,15 @@ export const useResolvedYieldFlowData = ({
 
     const apy = vault.rewardRate.total != null ? getApyPercent(vault.rewardRate.total) : null;
 
+    const isWrappedNativeVaultToken = isWrappedNativeToken(account.symbol, resolvedContractAddress);
+    const nativeFormattedBalance = account.formattedBalance;
+    const depositableBalance = getYieldDepositableBalance({
+        networkSymbol: account.symbol,
+        nativeFormattedBalance,
+        vaultTokenAddress: resolvedContractAddress,
+        matchedTokenBalance: matchedToken?.balance,
+    });
+
     return {
         account,
         token,
@@ -152,5 +166,8 @@ export const useResolvedYieldFlowData = ({
         depositedAmount,
         depositedSharesAmount,
         flowKey,
+        isWrappedNativeVaultToken,
+        nativeFormattedBalance,
+        depositableBalance,
     };
 };

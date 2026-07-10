@@ -151,6 +151,16 @@ const transactionNotificationConfig: Record<
             },
         },
     },
+    'tx-yield-wrap': {
+        toastIcon: ArrowUpIcon,
+        intent: 'brand',
+        message: 'Wrapped from Ethereum #1',
+        amount: '0.5 ETH',
+        transaction: {
+            notificationType: 'tx-yield-wrap',
+            symbol: 'eth',
+        },
+    },
     'tx-yield-withdraw': {
         toastIcon: ArrowUpIcon,
         intent: 'brand',

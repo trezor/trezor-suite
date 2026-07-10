@@ -27,6 +27,7 @@ export type TransactionNotificationType =
     | 'tx-approved'
     | 'tx-revoked'
     | 'tx-yield-deposit'
+    | 'tx-yield-wrap'
     | 'tx-yield-withdraw'
     | 'tx-yield-claim';
 

@@ -6,7 +6,7 @@ import {
     type YieldFlowStepId,
     type YieldFlowType,
 } from '@suite-common/wallet-core';
-import { Column, Row, StepList, Text } from '@trezor/components';
+import { Column, Row, StepList, type StepListItemState, Text } from '@trezor/components';
 
 import { type YieldFlowStepView, getYieldFlowSteps } from '../yieldFlowUtils';
 
@@ -17,6 +17,8 @@ export type YieldFlowStepOf<TFlowType extends YieldFlowType> =
 export type YieldFlowStepDefinition = {
     /** Label on the title row next to the step number. */
     title?: ReactNode;
+    /** Overrides the sequence-derived display state (e.g. the conditional wrap step). */
+    state?: StepListItemState;
     /** Right side of the title row (e.g. a modify action); receives the view for state-dependent actions. */
     rightContent?: (view: YieldFlowStepView) => ReactNode;
     /**
@@ -33,7 +35,10 @@ export type YieldFlowStepDefinition = {
 type YieldFlowStepListProps<TFlowType extends YieldFlowType> = {
     flowType: TFlowType;
     currentStep: YieldFlowStepId;
-    steps: Record<YieldFlowStepOf<TFlowType>, YieldFlowStepDefinition>;
+    steps: Record<YieldFlowStepOf<TFlowType>, YieldFlowStepDefinition> &
+        Partial<Record<YieldFlowStepId, YieldFlowStepDefinition>>;
+    /** Overrides the sequence-derived list, e.g. to stitch in the conditional wrap step. */
+    listSteps?: readonly YieldFlowStepId[];
     /** Renders the steps as an ordered StepList; without it only the current step's content shows. */
     hasStepList?: boolean;
 };
@@ -42,12 +47,15 @@ export const YieldFlowStepList = <TFlowType extends YieldFlowType>({
     flowType,
     currentStep,
     steps,
+    listSteps: listStepsOverride,
     hasStepList = false,
 }: YieldFlowStepListProps<TFlowType>) => {
     // Widened — the prop is keyed by the flow's own steps, but we index it with generic step ids.
     const stepDefinitions: Partial<Record<YieldFlowStepId, YieldFlowStepDefinition>> = steps;
     const sequence: readonly YieldFlowStepId[] = YIELD_FLOW_STEP_SEQUENCES[flowType];
-    const listSteps = sequence.filter(stepId => stepDefinitions[stepId]?.isListItem !== false);
+    const listSteps =
+        listStepsOverride ??
+        sequence.filter(stepId => stepDefinitions[stepId]?.isListItem !== false);
     const views = getYieldFlowSteps(flowType, currentStep, listSteps);
 
     const renderStepContent = (stepId: YieldFlowStepId) => {
@@ -81,7 +89,7 @@ export const YieldFlowStepList = <TFlowType extends YieldFlowType>({
                 return (
                     <StepList.Item
                         key={stepId}
-                        state={view.state}
+                        state={definition?.state ?? view.state}
                         title={
                             <Column gap={8} width="100%">
                                 <Text

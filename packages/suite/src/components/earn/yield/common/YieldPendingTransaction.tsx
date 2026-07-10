@@ -14,6 +14,8 @@ type YieldPendingTransactionProps = {
 
 const getPendingTransactionLabel = (kind: YieldPendingTransactionState['type']): TranslationKey => {
     switch (kind) {
+        case 'wrap':
+            return 'TR_EARN_YIELD_PENDING_WRAP';
         case 'approve':
             return 'TR_EXCHANGE_APPROVAL_FORM_CONFIRMING_APPROVAL';
         case 'revoke':

@@ -36,7 +36,10 @@ const getPollIntervalMs = (blockTime: number | undefined): number => {
 };
 
 type ResolutionEventType =
-    | { type: 'deposit'; successType: 'approve-success' | 'revoke-success' | 'success' }
+    | {
+          type: 'deposit';
+          successType: 'approve-success' | 'revoke-success' | 'wrap-success' | 'success';
+      }
     | { type: 'withdraw'; operation: YieldWithdrawFlowType; successType: 'success' }
     | { type: 'claim'; successType: 'success' };
 
@@ -45,6 +48,8 @@ const getResolutionEventType = (
     flowType: YieldFlowType,
 ): ResolutionEventType | null => {
     switch (pendingTxType) {
+        case 'wrap':
+            return { type: 'deposit', successType: 'wrap-success' };
         case 'approve':
             return { type: 'deposit', successType: 'approve-success' };
         case 'revoke':
@@ -240,6 +245,21 @@ export const useYieldPendingTransactionTracking = ({
         if (resolution) {
             reportResolution(analytics, resolution, 'success', context);
             pendingStartRef.current = null;
+        }
+
+        if (pendingTransaction.type === 'wrap') {
+            // The confirming account update already refreshed the WETH balance,
+            // so allowance init in the approve step runs against fresh data.
+            dispatch(
+                stablecoinYieldActions.completeWrap({
+                    flowType,
+                    flowKey,
+                    wrappedAmount: pendingTransaction.amount,
+                }),
+            );
+            dispatch(stablecoinYieldActions.invalidateAllowance({ flowType, flowKey }));
+
+            return;
         }
 
         if (pendingTransaction.type === 'revoke') {

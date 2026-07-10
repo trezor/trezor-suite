@@ -5,15 +5,44 @@ type YieldActionStepWarningProps = {
     isInsufficientFunds?: boolean;
     isApprovalInsufficient?: boolean;
     isApproveOverBalance?: boolean;
+    isWrapInsufficient?: boolean;
+    tokenSymbol?: string;
     onModifyApproval?: () => void;
+    onWrapMore?: () => void;
 };
 
 export const YieldActionStepWarning = ({
     isInsufficientFunds = false,
     isApprovalInsufficient = false,
     isApproveOverBalance = false,
+    isWrapInsufficient = false,
+    tokenSymbol,
     onModifyApproval,
+    onWrapMore,
 }: YieldActionStepWarningProps) => {
+    if (isWrapInsufficient) {
+        return (
+            <Banner
+                intent="warning"
+                description={
+                    <Column gap={12}>
+                        <Text>
+                            <Translation
+                                id="TR_EARN_YIELD_WRAP_INSUFFICIENT"
+                                values={{ tokenSymbol }}
+                            />
+                        </Text>
+                        {onWrapMore && (
+                            <Button size="small" intent="warning" onClick={onWrapMore}>
+                                <Translation id="TR_EARN_YIELD_WRAP_MORE" />
+                            </Button>
+                        )}
+                    </Column>
+                }
+            />
+        );
+    }
+
     if (isApproveOverBalance) {
         return (
             <Banner

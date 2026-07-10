@@ -14,6 +14,8 @@ type Attributes = {
         | 'revoke-success'
         | 'modify-allowance'
         | 'deposit'
+        | 'wrap'
+        | 'wrap-success'
         | 'tx-simulation-modal'
         | 'success'
         | 'error'
@@ -46,6 +48,10 @@ export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
                 {
                     version: '26.5.2',
                     notes: 'added `approve-success`, `revoke-success`, `leftPending`, `tx-simulation-modal`, `firmware-upgrade-needed-modal` values',
+                },
+                {
+                    version: '26.7.0',
+                    notes: 'added `wrap`, `wrap-success` values for the ETH wrap step',
                 },
             ],
         },

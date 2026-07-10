@@ -8,6 +8,8 @@ import { openModal } from '@suite/modal';
 import { type EarnParams } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { WRAPPED_NATIVE_TOKEN_DECIMALS } from '@suite-common/wallet-config';
+import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import {
     type YieldAllowanceStatus,
     type YieldApproveModalState,
@@ -28,11 +30,13 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useCurrentRef } from '@trezor/react-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import {
     submitYieldDepositThunk,
     submitYieldWithdrawThunk,
+    submitYieldWrapThunk,
 } from 'src/actions/wallet/stablecoin-yield';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -88,8 +92,18 @@ export type UseYieldFlowResult = {
     isApprovalInsufficient: boolean;
     isSubmittingApprove: boolean;
     isSubmittingAction: boolean;
+    isWrapFlow: boolean;
+    isWrapInsufficient: boolean;
+    isWrapConfirmed: boolean;
+    isWrapReserveKept: boolean;
+    nativeBalance: string;
+    isSubmittingWrap: boolean;
     setAmountInput: (amount: string) => void;
     submitApprovalAction: () => void;
+    submitWrap: () => void;
+    enableWrapStep: () => void;
+    disableWrapStep: () => void;
+    goToWrapStep: () => void;
     submitAction: () => void;
     revokeAllowance: () => void;
     enterModifyApproval: () => void;
@@ -129,12 +143,37 @@ export const useYieldFlow = ({
     const methodsRef = useCurrentRef(methods);
     const initAllowancePromiseRef = useRef<{ abort: () => void } | null>(null);
 
-    const { token, receiptToken, apy, depositedAmount, depositedSharesAmount, flowKey } =
-        useResolvedYieldFlowData({
-            account,
-            routeParams,
-            vault,
-        });
+    const {
+        token,
+        receiptToken,
+        apy,
+        depositedAmount,
+        depositedSharesAmount,
+        flowKey,
+        isWrappedNativeVaultToken,
+        nativeFormattedBalance: nativeBalance,
+        depositableBalance,
+    } = useResolvedYieldFlowData({
+        account,
+        routeParams,
+        vault,
+    });
+
+    const isWrapFlow = flowType === 'deposit' && isWrappedNativeVaultToken;
+    const isWrapFlowRef = useCurrentRef(isWrapFlow);
+
+    const wethBalance = token?.balance ?? '0';
+    // Native ETH wrappable after keeping a reserve for the wrap/approve/deposit fees.
+    const wrapMaxAmount = BigNumber.max(
+        new BigNumber(nativeBalance || '0').minus(WETH_WRAP_GAS_RESERVE),
+        0,
+    ).toString();
+
+    // Wrap starts ON only when there is no WETH to deposit yet; a held WETH balance means
+    // the user can approve straight away.
+    const shouldDefaultWrapOn = !isAmountGreaterThan({ amount: wethBalance, threshold: '0' });
+    const wethBalanceRef = useCurrentRef(wethBalance);
+    const shouldDefaultWrapOnRef = useCurrentRef(shouldDefaultWrapOn);
     const allowanceFlowDataRef = useCurrentRef({
         account,
         vault,
@@ -151,7 +190,12 @@ export const useYieldFlow = ({
 
     const getMaxAmount = () => {
         if (flowType === 'deposit') {
-            return token?.balance ?? '';
+            if (!isWrapFlow) {
+                return token?.balance ?? '';
+            }
+
+            // Step 1 wraps native ETH (capped by the fee reserve); steps 2–3 deposit WETH.
+            return session.step === 'wrap' ? wrapMaxAmount : wethBalance;
         }
         if (isSharesInput) {
             return depositedSharesAmount;
@@ -174,12 +218,30 @@ export const useYieldFlow = ({
         dispatch(stablecoinYieldActions.initSession({ flowType, flowKey }));
         dispatch(stablecoinYieldActions.resetSession({ flowType, flowKey }));
 
-        methodsRef.current.reset({ amountInput: '' });
+        const isWrapFlowSession = flowType === 'deposit' && isWrapFlowRef.current;
+        const startsAtWrapStep = isWrapFlowSession && shouldDefaultWrapOnRef.current;
+
+        if (startsAtWrapStep) {
+            dispatch(stablecoinYieldActions.enterWrapStep({ flowType, flowKey }));
+        }
+
+        // Wrap OFF by default lands on the approve step prefilled with the held WETH balance.
+        methodsRef.current.reset({
+            amountInput: isWrapFlowSession && !startsAtWrapStep ? wethBalanceRef.current : '',
+        });
 
         return () => {
             dispatch(stablecoinYieldActions.disposeSession({ flowType, flowKey }));
         };
-    }, [flowKey, flowType, dispatch, methodsRef]);
+    }, [
+        flowKey,
+        flowType,
+        dispatch,
+        methodsRef,
+        isWrapFlowRef,
+        shouldDefaultWrapOnRef,
+        wethBalanceRef,
+    ]);
 
     const { allowanceStatus } = session.approval;
 
@@ -196,9 +258,14 @@ export const useYieldFlow = ({
             return;
         }
 
-        const { account, vault: currentVault, token, receiptToken } = allowanceFlowDataRef.current;
+        const {
+            account: currentAccount,
+            vault: currentVault,
+            token: currentToken,
+            receiptToken: currentReceiptToken,
+        } = allowanceFlowDataRef.current;
 
-        if (!token || !receiptToken || !currentVault) {
+        if (!currentToken || !currentReceiptToken || !currentVault) {
             return;
         }
 
@@ -206,7 +273,12 @@ export const useYieldFlow = ({
             initYieldAllowanceThunk({
                 flowKey,
                 flowType,
-                flowData: { account, vault: currentVault, token, receiptToken },
+                flowData: {
+                    account: currentAccount,
+                    vault: currentVault,
+                    token: currentToken,
+                    receiptToken: currentReceiptToken,
+                },
             }),
         );
 
@@ -218,7 +290,7 @@ export const useYieldFlow = ({
                     type: events.yieldInteractionEvent.name,
                     payload: {
                         element: 'allowance-error-banner',
-                        networkSymbol: token.networkSymbol,
+                        networkSymbol: currentToken.networkSymbol,
                         vaultId: currentVault.id,
                     },
                 });
@@ -252,6 +324,15 @@ export const useYieldFlow = ({
         const nextStep = session.step;
 
         if (prevStep !== null && prevStep !== nextStep) {
+            if (prevStep === 'wrap' && nextStep === 'approve') {
+                // Prefer the total the user committed to before wrapping (held WETH +
+                // wrapped amount) — the refreshed token balance may lag behind the wrap
+                // and would otherwise present a stale or unintended deposit amount.
+                methodsRef.current.reset({
+                    amountInput: session.action.amount ?? maxAmount,
+                });
+            }
+
             if (prevStep === 'approve' && nextStep === 'action') {
                 const actionAmount = session.action.amount ?? '';
                 const cappedAmount = isAmountGreaterThan({
@@ -313,6 +394,35 @@ export const useYieldFlow = ({
     const enterModifyApproval = useCallback(() => {
         dispatch(stablecoinYieldActions.enterModifyMode({ flowType, flowKey }));
     }, [dispatch, flowType, flowKey]);
+
+    const enableWrapStep = useCallback(() => {
+        dispatch(stablecoinYieldActions.enterWrapStep({ flowType, flowKey }));
+        methodsRef.current.reset({ amountInput: '' });
+    }, [dispatch, flowType, flowKey, methodsRef]);
+
+    const disableWrapStep = useCallback(() => {
+        dispatch(
+            stablecoinYieldActions.skipWrapStep({
+                flowType,
+                flowKey,
+                amount: wethBalanceRef.current,
+            }),
+        );
+        dispatch(stablecoinYieldActions.invalidateAllowance({ flowType, flowKey }));
+    }, [dispatch, flowType, flowKey, wethBalanceRef]);
+
+    const goToWrapStep = useCallback(() => {
+        const currentAmount = methodsRef.current.getValues('amountInput');
+        const shortfall = BigNumber.max(
+            new BigNumber(currentAmount || '0').minus(wethBalanceRef.current),
+            0,
+        )
+            .decimalPlaces(WRAPPED_NATIVE_TOKEN_DECIMALS, BigNumber.ROUND_UP)
+            .toString();
+
+        dispatch(stablecoinYieldActions.enterWrapStep({ flowType, flowKey }));
+        methodsRef.current.setValue('amountInput', shortfall);
+    }, [dispatch, flowType, flowKey, methodsRef, wethBalanceRef]);
 
     const setAmountInput = useCallback(
         (amount: string) => {
@@ -454,6 +564,51 @@ export const useYieldFlow = ({
         await submitApprove();
     }, [approvalAction, revokeAllowance, submitApprove]);
 
+    const submitWrap = useCallback(() => {
+        if (!token || !receiptToken) {
+            dispatch(
+                stablecoinYieldActions.setError({
+                    flowType,
+                    flowKey,
+                    error: 'TR_EARN_YIELD_ERROR_GENERIC',
+                }),
+            );
+
+            return;
+        }
+
+        if (!isDeviceConnected) {
+            openDeviceConnectionModal();
+
+            return;
+        }
+
+        const wrapAmount = methodsRef.current.getValues('amountInput');
+
+        void dispatch(
+            submitYieldWrapThunk({
+                flowKey,
+                flowData: { account, vault, token, receiptToken },
+                wrapAmount,
+                totalDepositAmount: new BigNumber(wrapAmount || '0')
+                    .plus(wethBalanceRef.current)
+                    .toString(),
+            }),
+        );
+    }, [
+        account,
+        flowKey,
+        flowType,
+        receiptToken,
+        dispatch,
+        token,
+        vault,
+        methodsRef,
+        wethBalanceRef,
+        isDeviceConnected,
+        openDeviceConnectionModal,
+    ]);
+
     const submitAction = useCallback(async () => {
         if (!isDeviceConnected) {
             openDeviceConnectionModal();
@@ -531,11 +686,31 @@ export const useYieldFlow = ({
         [dispatch, flowKey, flowType],
     );
 
+    // Past the wrap step (or with wrap OFF) the deposit amount can exceed the held WETH,
+    // which means the user needs to wrap more before approving.
+    const isWrapInsufficient =
+        isWrapFlow &&
+        session.step !== 'wrap' &&
+        isAmountGreaterThan({ amount: liveAmount, threshold: wethBalance });
+    const isWrapConfirmed = session.wrap.wrappedAmount !== null;
+
     const isAmountEmpty =
         !liveAmount || !isAmountGreaterThan({ amount: liveAmount, threshold: '0' });
     const allowanceAmount = session.approval.allowanceAmount ?? '0';
     const canRevokeAllowance = isAmountGreaterThan({ amount: allowanceAmount, threshold: '0' });
-    const isAmountTooHigh = isAmountGreaterThan({ amount: liveAmount, threshold: maxAmount });
+    // On the wrap step the cap keeps the gas reserve behind — wrapping the full native
+    // balance would leave nothing for the wrap fee itself. Past the wrap step the cap is
+    // the total depositable balance so amounts above the WETH balance surface "wrap
+    // more", not "too high".
+    const wrapFlowCap = session.step === 'wrap' ? wrapMaxAmount : depositableBalance;
+    const amountCap = isWrapFlow ? wrapFlowCap : maxAmount;
+    const isAmountTooHigh = isAmountGreaterThan({ amount: liveAmount, threshold: amountCap });
+    // The wrap Max keeps a fee reserve behind — surface that whenever the input sits at it.
+    const isWrapReserveKept =
+        isWrapFlow &&
+        session.step === 'wrap' &&
+        new BigNumber(wrapMaxAmount).gt(0) &&
+        liveAmount === wrapMaxAmount;
     const isAmountInvalidDecimals = !!methods.formState.errors.amountInput;
     const isApprovalInsufficient =
         !session.approval.isModifyMode &&
@@ -579,8 +754,18 @@ export const useYieldFlow = ({
             session.approval.allowanceStatus === 'loading' ||
             session.approval.modalState !== null,
         isSubmittingAction: session.action.isSubmitting,
+        isWrapFlow,
+        isWrapInsufficient,
+        isWrapReserveKept,
+        isWrapConfirmed,
+        nativeBalance,
+        isSubmittingWrap: session.wrap.isSubmitting,
         setAmountInput,
         submitApprovalAction,
+        submitWrap,
+        enableWrapStep,
+        disableWrapStep,
+        goToWrapStep,
         submitAction,
         revokeAllowance,
         enterModifyApproval,

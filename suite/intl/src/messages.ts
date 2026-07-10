@@ -3593,6 +3593,10 @@ export const messages = defineMessages({
         defaultMessage: '{count, plural, =0 {Fee} =1 {Fee} other {{count}× Fees}}',
         id: 'TR_TX_FEE_COUNT',
     },
+    TR_TX_FEE_COUNT_UP_TO: {
+        defaultMessage: '{count, plural, =1 {Up to 1× Fee} other {Up to {count}× Fees}}',
+        id: 'TR_TX_FEE_COUNT_UP_TO',
+    },
     TR_TX_FEE_INCLUDING_RENT: {
         defaultMessage: 'Network fee (including rent)',
         id: 'TR_TX_FEE_INCLUDING_RENT',
@@ -9784,11 +9788,11 @@ export const messages = defineMessages({
     },
     TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_TITLE: {
         id: 'TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_TITLE',
-        defaultMessage: 'Earn on your stablecoins',
+        defaultMessage: 'Earn on your stablecoins and ETH',
     },
     TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_DESCRIPTION: {
         id: 'TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_DESCRIPTION',
-        defaultMessage: 'Earn yield on USDC and USDT with Trezor-grade security.',
+        defaultMessage: 'Earn yield on USDC, USDT, and ETH with Trezor-grade security.',
     },
     TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_BUTTON: {
         id: 'TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_BUTTON',
@@ -10140,6 +10144,112 @@ export const messages = defineMessages({
     TR_EARN_STABLECOIN_YIELD_TITLE: {
         id: 'TR_EARN_STABLECOIN_YIELD_TITLE',
         defaultMessage: 'Stablecoin yield',
+    },
+    TR_EARN_YIELD_WRAP_STEP_TITLE: {
+        id: 'TR_EARN_YIELD_WRAP_STEP_TITLE',
+        defaultMessage: 'Wrap {nativeSymbol} to {tokenSymbol}',
+    },
+    TR_EARN_YIELD_WRAP_BUTTON: {
+        id: 'TR_EARN_YIELD_WRAP_BUTTON',
+        defaultMessage: 'Wrap {nativeSymbol}',
+    },
+    TR_EARN_YIELD_WRAP_INSUFFICIENT: {
+        id: 'TR_EARN_YIELD_WRAP_INSUFFICIENT',
+        defaultMessage: 'Amount exceeds your {tokenSymbol} balance.',
+    },
+    TR_EARN_YIELD_WRAP_RESERVE_KEPT: {
+        id: 'TR_EARN_YIELD_WRAP_RESERVE_KEPT',
+        defaultMessage:
+            "We've left {amount} {networkDisplaySymbol} in your account so you can pay for transaction fees.",
+    },
+    TR_EARN_YIELD_AMOUNT_TO_WRAP: {
+        id: 'TR_EARN_YIELD_AMOUNT_TO_WRAP',
+        defaultMessage: 'Amount to wrap',
+    },
+    TR_EARN_YIELD_WRAP_STEP_DESCRIPTION: {
+        id: 'TR_EARN_YIELD_WRAP_STEP_DESCRIPTION',
+        defaultMessage:
+            "Wrap the {nativeSymbol} you want to deposit — it's 1:1, and you can unwrap anytime.",
+    },
+    TR_EARN_YIELD_WRAP_RECEIVING: {
+        id: 'TR_EARN_YIELD_WRAP_RECEIVING',
+        defaultMessage: 'Receiving',
+    },
+    TR_EARN_YIELD_WRAP_MORE: {
+        id: 'TR_EARN_YIELD_WRAP_MORE',
+        defaultMessage: 'Wrap more',
+    },
+    TR_EARN_YIELD_PENDING_WRAP: {
+        id: 'TR_EARN_YIELD_PENDING_WRAP',
+        defaultMessage: 'Confirming wrap...',
+    },
+    TR_UNWRAP_TOKEN: {
+        id: 'TR_UNWRAP_TOKEN',
+        defaultMessage: 'Unwrap',
+    },
+    TR_UNWRAP_WETH_HEADING: {
+        id: 'TR_UNWRAP_WETH_HEADING',
+        defaultMessage: 'Unwrap {symbol}',
+    },
+    TR_UNWRAP_WETH_DESCRIPTION: {
+        id: 'TR_UNWRAP_WETH_DESCRIPTION',
+        defaultMessage:
+            '{symbol} converts back to {nativeSymbol} 1:1. A network fee paid in {nativeSymbol} applies.',
+    },
+    TR_UNWRAP_AMOUNT: {
+        id: 'TR_UNWRAP_AMOUNT',
+        defaultMessage: 'Amount to unwrap',
+    },
+    TR_UNWRAP_TO_NATIVE: {
+        id: 'TR_UNWRAP_TO_NATIVE',
+        defaultMessage: 'Unwrap to {symbol}',
+    },
+    TR_UNWRAP_LOW_ETH_FOR_FEE: {
+        id: 'TR_UNWRAP_LOW_ETH_FOR_FEE',
+        defaultMessage: 'You need a small amount of {symbol} to pay the network fee.',
+    },
+    TR_UNWRAP_OFFER_TEXT: {
+        id: 'TR_UNWRAP_OFFER_TEXT',
+        defaultMessage: 'You received {symbol}. You can unwrap it to {nativeSymbol} anytime.',
+    },
+    TR_EARN_YIELD_NUTSHELL_WRAP: {
+        id: 'TR_EARN_YIELD_NUTSHELL_WRAP',
+        defaultMessage: 'Wrap {nativeSymbol} to {supplySymbol}',
+    },
+    TR_EARN_YIELD_NUTSHELL_WRAP_SUB: {
+        id: 'TR_EARN_YIELD_NUTSHELL_WRAP_SUB',
+        defaultMessage:
+            "Only needed when you don't hold enough {supplySymbol} — converts {nativeSymbol} 1:1.",
+    },
+    TR_EARN_YIELD_NUTSHELL_UNWRAP_HINT: {
+        id: 'TR_EARN_YIELD_NUTSHELL_UNWRAP_HINT',
+        defaultMessage: 'Unwrap {supplySymbol} back to {nativeSymbol} anytime',
+    },
+    TR_EARN_YIELD_NUTSHELL_UNWRAP_HINT_SUB: {
+        id: 'TR_EARN_YIELD_NUTSHELL_UNWRAP_HINT_SUB',
+        defaultMessage: 'Optional separate transaction with a network fee.',
+    },
+    TR_EARN_STAKING_VS_YIELD_TITLE: {
+        id: 'TR_EARN_STAKING_VS_YIELD_TITLE',
+        defaultMessage: 'Staking vs. yield',
+    },
+    TR_EARN_STAKING_VS_YIELD_DESCRIPTION: {
+        id: 'TR_EARN_STAKING_VS_YIELD_DESCRIPTION',
+        defaultMessage:
+            'Staking locks your ETH to help secure the network and may involve waiting periods. Yield wraps ETH to WETH and lends it through a vault — withdrawals are instant and rates are variable. Each carries different risks.',
+    },
+    TR_STAKING_BANNER_ETH_EARN_TITLE: {
+        id: 'TR_STAKING_BANNER_ETH_EARN_TITLE',
+        defaultMessage: 'Earn on your {displaySymbol}: stake it or earn yield',
+    },
+    TR_STAKING_BANNER_ETH_EARN_TEXT: {
+        id: 'TR_STAKING_BANNER_ETH_EARN_TEXT',
+        defaultMessage:
+            'Stake {displaySymbol} for network rewards, or deposit it in a yield vault — your choice.',
+    },
+    TR_STAKING_BANNER_ETH_EARN_BUTTON: {
+        id: 'TR_STAKING_BANNER_ETH_EARN_BUTTON',
+        defaultMessage: 'Explore earning options',
     },
     TR_EARN_YIELD_PENDING_DEPOSIT: {
         id: 'TR_EARN_YIELD_PENDING_DEPOSIT',
@@ -11437,6 +11547,10 @@ export const messages = defineMessages({
     TOAST_TX_YIELD_DEPOSIT: {
         id: 'TOAST_TX_YIELD_DEPOSIT',
         defaultMessage: 'Deposit transaction from {account} has been broadcast',
+    },
+    TOAST_TX_YIELD_WRAP: {
+        id: 'TOAST_TX_YIELD_WRAP',
+        defaultMessage: 'Wrap transaction from {account} has been broadcast',
     },
     TOAST_TX_YIELD_WITHDRAW: {
         id: 'TOAST_TX_YIELD_WITHDRAW',
