@@ -17465,6 +17465,7 @@ __metadata:
     immer: "npm:11.1.5"
     jest-canvas-mock: "npm:^2.5.2"
     jest-watch-typeahead: "npm:3.0.1"
+    lottie-react: "npm:2.4.1"
     pako: "npm:^2.1.0"
     pdfmake: "npm:^0.3.7"
     polished: "npm:^4.3.1"

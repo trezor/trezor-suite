@@ -1,4 +1,4 @@
-import { memo, useMemo, useRef } from 'react';
+import { memo, useEffect, useMemo, useRef } from 'react';
 import { FreeFocusInside } from 'react-focus-lock';
 
 import type { LottieRef } from 'lottie-react';
@@ -12,20 +12,23 @@ import {
     TOOLTIP_DELAY_LONG,
     Tooltip,
 } from '@trezor/components';
-import { zIndices } from '@trezor/theme';
+import { borders, zIndices } from '@trezor/theme';
 
 import { useGuide } from 'src/hooks/guide';
 
 const MASCOT_SOURCE_COLOR = '#1E5736';
 
-const MASCOT_SIZE = 36;
+const MASCOT_SIZE = 32;
+
+// Session-scoped guard: the intro animation should play only once, on app load. Hovering replays the animation.
+let hasMascotIntroPlayed = false;
 
 const Wrapper = styled.div<{ $isGuideOpen: boolean }>`
     position: fixed;
     z-index: ${zIndices.guideButton};
     bottom: 16px;
     right: 16px;
-    border-radius: 12px;
+    border-radius: ${borders.radii.xs};
     backdrop-filter: blur(10px);
     transition: ${({ $isGuideOpen }) => ($isGuideOpen ? 'none' : 'all 0.3s ease 0.3s')};
     opacity: ${({ $isGuideOpen }) => ($isGuideOpen ? '0' : '1')};
@@ -35,12 +38,11 @@ const MascotButton = styled.button`
     display: flex;
     align-items: center;
     justify-content: center;
-    box-sizing: border-box;
     width: 44px;
     height: 44px;
     padding: 0;
     border: 0;
-    border-radius: 12px;
+    border-radius: ${borders.radii.sm};
     cursor: pointer;
     overflow: hidden;
     -webkit-app-region: no-drag;
@@ -79,6 +81,12 @@ export const GuideButton = memo(function GuideButton() {
     const lottieRef: LottieRef = useRef(null);
     const prefersReducedMotion = usePrefersReducedMotion();
 
+    const shouldAutoplayIntro = !prefersReducedMotion && !hasMascotIntroPlayed;
+
+    useEffect(() => {
+        hasMascotIntroPlayed = true;
+    }, []);
+
     const mascotColor = theme.variant === 'dark' ? theme.contentNeutral : theme.contentPrimary;
 
     const colorReplacements = useMemo(
@@ -116,7 +124,7 @@ export const GuideButton = memo(function GuideButton() {
                             type="MASCOT"
                             size={MASCOT_SIZE}
                             loop={false}
-                            autoplay={!prefersReducedMotion}
+                            autoplay={shouldAutoplayIntro}
                             lottieRef={lottieRef}
                             colorReplacements={colorReplacements}
                         />
