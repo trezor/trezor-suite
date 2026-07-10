@@ -15953,9 +15953,9 @@ __metadata:
   dependencies:
     "@noble/hashes": "npm:^2.0.1"
     "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/coins-ripple": "workspace:*"
     "@trezor/coins-solana": "workspace:*"
     "@trezor/coins-stellar": "workspace:*"
-    "@trezor/coins-xrpl": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -15971,9 +15971,9 @@ __metadata:
   dependencies:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
+    "@trezor/coins-ripple": "workspace:*"
     "@trezor/coins-solana": "workspace:*"
     "@trezor/coins-stellar": "workspace:*"
-    "@trezor/coins-xrpl": "workspace:*"
     "@trezor/e2e-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
@@ -16032,7 +16032,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/coins-solana@workspace:*, @trezor/coins-solana@workspace:coins/coins-solana":
+"@trezor/coins-ripple@workspace:*, @trezor/coins-ripple@workspace:coins/coins-ripple":
+  version: 0.0.0-use.local
+  resolution: "@trezor/coins-ripple@workspace:coins/coins-ripple"
+  dependencies:
+    xrpl: "npm:4.6.0"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/coins-solana@workspace:*, @trezor/coins-solana@workspace:networks/solana/network-solana-sdk":
   version: 0.0.0-use.local
   resolution: "@trezor/coins-solana@workspace:coins/coins-solana"
   dependencies:
@@ -16056,14 +16064,6 @@ __metadata:
   dependencies:
     "@stellar/stellar-sdk": "npm:14.5.0"
     "@trezor/utils": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
-"@trezor/coins-xrpl@workspace:*, @trezor/coins-xrpl@workspace:coins/coins-xrpl":
-  version: 0.0.0-use.local
-  resolution: "@trezor/coins-xrpl@workspace:coins/coins-xrpl"
-  dependencies:
-    xrpl: "npm:4.6.0"
   languageName: unknown
   linkType: soft
 
