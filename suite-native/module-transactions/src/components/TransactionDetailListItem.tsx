@@ -24,7 +24,7 @@ type TransactionDetailListItemProps = {
     tokenTransfer?: TypedTokenTransfer;
     isFirst?: boolean;
     isLast?: boolean;
-    onPress: () => void;
+    onPress?: () => void;
     isPhishingTransaction: boolean;
 };
 
@@ -51,7 +51,7 @@ export const TransactionDetailListItem = ({
     const navigation = useNavigation<TransactionDetailNavigation>();
 
     const handleNavigation = () => {
-        onPress();
+        onPress?.();
         navigation.navigate(RootStackRoutes.TransactionDetailStack, {
             screen: TransactionDetailStackRoutes.TransactionDetail,
             params: {

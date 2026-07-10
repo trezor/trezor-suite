@@ -2,10 +2,18 @@ import { type DeviceRootState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type CryptoBaseCurrencyPair,
+    type Timestamp,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
 
 import { type AccountsRootState } from '../../accounts/accountsReducer';
-import { selectTickerFromAccounts } from '../fiatRatesSelectors';
+import {
+    selectHistoricFiatRatesByTimestamp,
+    selectTickerFromAccounts,
+} from '../fiatRatesSelectors';
 import { type FiatRatesRootState } from '../fiatRatesTypes';
 
 const STANDARD_WALLET_SSID = 'standardWallet@device_id:0' as const;
@@ -92,5 +100,37 @@ describe('selectTickerFromAccounts', () => {
         expect(result.map(ticker => ticker.symbol)).toContain('xrp');
         expect(tokenIndexes.length).toBeGreaterThan(0);
         expect(Math.max(...nativeIndexes)).toBeLessThan(Math.min(...tokenIndexes));
+    });
+});
+
+describe('selectHistoricFiatRatesByTimestamp', () => {
+    const BTC_USD = 'btc-usd' as CryptoBaseCurrencyPair;
+    const HOUR_ALIGNED_TIMESTAMP = 1639706400 as Timestamp;
+    const HISTORIC_RATE = 48000;
+
+    const historicRatesState = {
+        wallet: {
+            fiat: {
+                historic: { [BTC_USD]: { [HOUR_ALIGNED_TIMESTAMP]: HISTORIC_RATE } },
+            },
+        },
+    } as unknown as FiatRatesRootState;
+
+    it('returns the historic rate for the timestamp rounded to the nearest past hour', () => {
+        const timestampWithinSameHour = (HOUR_ALIGNED_TIMESTAMP + 1800) as Timestamp;
+
+        expect(
+            selectHistoricFiatRatesByTimestamp(
+                historicRatesState,
+                BTC_USD,
+                timestampWithinSameHour,
+            ),
+        ).toBe(HISTORIC_RATE);
+    });
+
+    it('returns undefined for an undefined timestamp (e.g. a pending transaction without blockTime)', () => {
+        expect(
+            selectHistoricFiatRatesByTimestamp(historicRatesState, BTC_USD, undefined),
+        ).toBeUndefined();
     });
 });

@@ -41,8 +41,10 @@ export const selectFiatRatesByFiatRateKey = (
 export const selectHistoricFiatRatesByTimestamp = (
     state: FiatRatesRootState,
     fiatRateKey: CryptoBaseCurrencyPair,
-    timestamp: Timestamp,
+    timestamp: Timestamp | undefined,
 ): number | undefined => {
+    if (timestamp === undefined) return undefined;
+
     const roundedTimestamp = roundTimestampToNearestPastHour(timestamp);
 
     return state.wallet.fiat?.['historic']?.[fiatRateKey]?.[roundedTimestamp];
