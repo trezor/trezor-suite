@@ -22,6 +22,7 @@ import { type FirmwareUpdateState, prepareFirmwareReducer } from '@suite-common/
 import { type GeolocationState, geolocationReducer } from '@suite-common/geolocation';
 import { addLog } from '@suite-common/logger';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
+import { receiveReducer } from '@suite-common/receive';
 import {
     type ExtraDependencies,
     type ExtraDependenciesStatic,
@@ -99,6 +100,7 @@ export type AppState = SuiteReducersState & {
 const rootReducer = combineReducers({
     ...suiteReducers,
     onboarding: onboardingReducers,
+    receive: receiveReducer,
     wallet: walletReducers,
     recovery: recoveryReducer,
     firmware: firmwareReducer,

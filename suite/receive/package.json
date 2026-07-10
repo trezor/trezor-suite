@@ -7,7 +7,6 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "test:unit": "yarn g:jest",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build"
     },
@@ -15,6 +14,7 @@
         "@reduxjs/toolkit": "2.12.0",
         "@suite-common/address": "workspace:*",
         "@suite-common/device": "workspace:*",
+        "@suite-common/receive": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",

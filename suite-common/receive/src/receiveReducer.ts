@@ -19,9 +19,7 @@ export type ReceiveState = {
 };
 
 export type ReceiveRootState = {
-    wallet: {
-        receive: ReceiveState;
-    };
+    receive: ReceiveState;
 };
 
 type ReceiveActionPayload = {
@@ -125,18 +123,17 @@ const receiveSlice = createSlice({
     extraReducers: builder => {
         builder
             .addCase(accountsActions.removeAccount, (state, action) => {
-                action.payload.forEach(account => {
+                action.payload.forEach((account: { key: AccountKey }) => {
                     delete state.accounts[account.key];
                 });
             })
             .addCase('@storage/load', (state, action) => {
-                const actionWithPayload = action as AnyAction; // hack: to prevent dependency
+                const actionWithPayload = action as AnyAction;
 
-                // We need to transform array of { key, value } from storage to the Record
                 state.accounts = (
                     (actionWithPayload.payload?.receive ?? []) as {
                         key: string;
-                        value: any;
+                        value: ReceiveAccountState;
                     }[]
                 ).reduce<ReceiveState['accounts']>((accounts, { key, value }) => {
                     accounts[key as AccountKey] = value;
@@ -152,7 +149,7 @@ const selectReceiveAccountState = (state: ReceiveRootState, accountKey?: Account
         return emptyReceiveAccountState;
     }
 
-    return state.wallet.receive.accounts[accountKey] ?? emptyReceiveAccountState;
+    return state.receive.accounts[accountKey] ?? emptyReceiveAccountState;
 };
 
 export const selectReceiveRevealedAddresses = (state: ReceiveRootState, accountKey?: AccountKey) =>

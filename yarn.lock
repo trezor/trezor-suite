@@ -10722,6 +10722,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/receive@workspace:*, @suite-common/receive@workspace:suite-common/receive":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/receive@workspace:suite-common/receive"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/redux-utils@workspace:*, @suite-common/redux-utils@workspace:suite-common/redux-utils":
   version: 0.0.0-use.local
   resolution: "@suite-common/redux-utils@workspace:suite-common/redux-utils"
@@ -15060,6 +15071,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/address": "workspace:*"
     "@suite-common/device": "workspace:*"
+    "@suite-common/receive": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
@@ -17063,6 +17075,7 @@ __metadata:
     "@suite-common/mev": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/react-query": "workspace:*"
+    "@suite-common/receive": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/sentry": "workspace:*"
     "@suite-common/staking": "workspace:*"

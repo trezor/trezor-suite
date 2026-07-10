@@ -205,9 +205,7 @@ describe('receiveSlice', () => {
         );
 
         const loadedState = {
-            wallet: {
-                receive: state,
-            },
+            receive: state,
         };
 
         expect(selectReceiveRevealedAddresses(loadedState, bitcoinAccount.key)).toEqual([

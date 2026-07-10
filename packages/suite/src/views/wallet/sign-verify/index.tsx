@@ -3,7 +3,7 @@ import { type FieldError } from 'react-hook-form';
 
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import { selectReceiveRevealedAddresses } from '@suite/receive';
+import { selectReceiveRevealedAddresses } from '@suite-common/receive';
 import {
     Box,
     Button,

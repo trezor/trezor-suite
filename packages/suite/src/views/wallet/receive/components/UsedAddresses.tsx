@@ -3,14 +3,10 @@ import { useState } from 'react';
 import { Address, selectAddressLabelsForAccount } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
-import {
-    selectCurrentFreshAddress,
-    selectReceiveRevealedAddresses,
-    showAddressThunk,
-    useReceiveDisabled,
-} from '@suite/receive';
+import { showAddressThunk, useReceiveDisabled } from '@suite/receive';
 import { getUsedAddressesList } from '@suite-common/address';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
+import { selectCurrentFreshAddress, selectReceiveRevealedAddresses } from '@suite-common/receive';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
