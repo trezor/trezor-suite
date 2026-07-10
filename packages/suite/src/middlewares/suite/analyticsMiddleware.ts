@@ -2,6 +2,11 @@ import { isAnyOf } from '@reduxjs/toolkit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import {
+    selectAnonymityGainToReportByAccountKey,
+    selectCoinjoinAccountByKey,
+    updateLastAnonymityReportTimestamp,
+} from '@suite/coinjoin';
+import {
     anchorChange,
     routerLocationChange,
     selectRouteName,
@@ -35,12 +40,7 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { updateLastAnonymityReportTimestamp } from 'src/actions/wallet/coinjoinAccountActions';
 import { COINJOIN } from 'src/actions/wallet/constants';
-import {
-    selectAnonymityGainToReportByAccountKey,
-    selectCoinjoinAccountByKey,
-} from 'src/reducers/wallet/coinjoinReducer';
 import { type Action, type AppState } from 'src/types/suite';
 import {
     getSuiteReadyPayload,

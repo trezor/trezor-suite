@@ -1,15 +1,15 @@
 import { useEffect, useReducer } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
+import {
+    CoinjoinService,
+    getAccountProgressHandle,
+    isCoinjoinSupportedSymbol,
+} from '@suite/coinjoin';
 import { type TranslationKey } from '@suite/intl';
 import { type ScanProgressInfo } from '@trezor/coinjoin';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { CoinjoinService } from 'src/services/coinjoin';
-import {
-    getAccountProgressHandle,
-    isCoinjoinSupportedSymbol,
-} from 'src/utils/wallet/coinjoinUtils';
 
 const INIT_THRESHOLD = 0.05;
 const MEMPOOL_THRESHOLD = 0.85;

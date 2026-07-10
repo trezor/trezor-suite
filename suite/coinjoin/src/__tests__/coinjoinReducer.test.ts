@@ -1,19 +1,14 @@
-import type { Action } from 'src/types/suite';
-
 import { actionFixtures, selectorFixtures } from '../__fixtures__/coinjoinReducer';
-import {
-    type CoinjoinRootState,
-    type CoinjoinState,
-    coinjoinReducer,
-    selectRegisteredUtxosByAccountKey,
-} from '../coinjoinReducer';
+import { type CoinjoinAction, coinjoinReducer } from '../coinjoinReducer';
+import { type CoinjoinRootState, selectRegisteredUtxosByAccountKey } from '../coinjoinSelectors';
+import { type CoinjoinState } from '../coinjoinTypes';
 
 describe('Coinjoin reducer actions', () => {
     actionFixtures.forEach(f => {
         it(f.description, () => {
             let state = f.initialState as unknown as CoinjoinState;
             f.actions.forEach(a => {
-                state = coinjoinReducer(state, a as Action);
+                state = coinjoinReducer(state, a as CoinjoinAction);
             });
             expect(state).toEqual(f.result);
         });

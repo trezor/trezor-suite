@@ -2,6 +2,7 @@ import { type FieldValues } from 'react-hook-form';
 
 import type { DBSchema } from 'idb';
 
+import { type CoinjoinAccount, type CoinjoinDebugSettings } from '@suite/coinjoin';
 import { type DebugState } from '@suite/debug';
 import type { FlagsState } from '@suite/flags';
 import type { ReceiveAccountState } from '@suite/receive';
@@ -39,7 +40,6 @@ import { type FirmwareChannel } from '@trezor/connect-common/src/types/firmware'
 import type { BioAuthState } from 'src/reducers/bioAuth';
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
 import type { Account, WalletAccountTransaction } from 'src/types/wallet';
-import { type CoinjoinAccount, type CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
 
 import { type DesktopBluetoothDevice } from '../actions/bluetooth/DesktopBluetoothDevice';
 import { type GraphData } from '../types/wallet/graph';

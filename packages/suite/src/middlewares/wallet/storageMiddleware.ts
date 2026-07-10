@@ -1,6 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 import { type MiddlewareAPI } from 'redux';
 
+import { COINJOIN } from '@suite/coinjoin';
 import { debugActions } from '@suite/debug';
 import { featureUsed, feedbackDismissed, feedbackRequested } from '@suite/feature-feedback';
 import { setFlag } from '@suite/flags';
@@ -55,7 +56,6 @@ import { walletConnectActions } from '@suite-common/walletconnect';
 import { STORAGE, SUITE } from 'src/actions/suite/constants';
 import * as storageActions from 'src/actions/suite/storageActions';
 import { GRAPH } from 'src/actions/wallet/constants';
-import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 import { db } from 'src/storage';
 import type { AppState, Dispatch, Action as SuiteAction } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
@@ -472,6 +472,9 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     }
                     break;
                 }
+                case COINJOIN.SET_DEBUG_SETTINGS:
+                    api.dispatch(storageActions.saveCoinjoinDebugSettings());
+                    break;
                 case COINJOIN.CLIENT_PRISON_EVENT: {
                     const affectedAccounts = action.payload.map(inmate => inmate.accountKey);
                     const state = api.getState();

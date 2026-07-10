@@ -2,6 +2,11 @@ import { FormattedNumber } from 'react-intl';
 
 import styled from 'styled-components';
 
+import {
+    selectCurrentCoinjoinWheelStates,
+    selectCurrentSessionDeadlineInfo,
+    selectRoundsDurationInHours,
+} from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Icon, Spinner, Tooltip } from '@trezor/components';
@@ -11,11 +16,6 @@ import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
 import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import {
-    selectCurrentCoinjoinWheelStates,
-    selectCurrentSessionDeadlineInfo,
-    selectRoundsDurationInHours,
-} from 'src/reducers/wallet/coinjoinReducer';
 
 export const Container = styled.div<{ $isWide: boolean }>`
     width: ${({ $isWide }) => `calc(100% - ${$isWide ? 12 : 8}px)`};

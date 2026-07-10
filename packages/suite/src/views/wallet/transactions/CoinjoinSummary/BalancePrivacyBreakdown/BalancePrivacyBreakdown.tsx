@@ -1,16 +1,16 @@
 import styled, { useTheme } from 'styled-components';
 
 import { selectSelectedAccount } from '@suite/account';
+import {
+    selectCurrentCoinjoinBalanceBreakdown,
+    selectCurrentCoinjoinSession,
+} from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { isZero } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
 import { CheckIcon, PauseIcon, ShuffleIcon, XIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';
-import {
-    selectCurrentCoinjoinBalanceBreakdown,
-    selectCurrentCoinjoinSession,
-} from 'src/reducers/wallet/coinjoinReducer';
 
 import { CryptoAmountWithHeader } from './CryptoAmountWithHeader';
 

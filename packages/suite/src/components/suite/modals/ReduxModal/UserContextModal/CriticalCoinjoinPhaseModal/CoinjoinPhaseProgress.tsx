@@ -1,3 +1,4 @@
+import { type CoinjoinSession } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { RoundPhase } from '@trezor/coinjoin';
 import { Column, StepList, type StepListItemState } from '@trezor/components';
@@ -5,7 +6,6 @@ import { spacings } from '@trezor/theme';
 
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
-import { type CoinjoinSession } from 'src/types/wallet/coinjoin';
 
 type CoinjoinPhaseProgressProps = {
     roundPhase: RoundPhase;

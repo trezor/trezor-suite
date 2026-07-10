@@ -1,3 +1,5 @@
+import { type Dispatch } from '@reduxjs/toolkit';
+
 import { selectIsDeviceLocked } from '@suite/locks';
 import { closeModal, openModal } from '@suite/modal';
 import { selectDevices } from '@suite-common/device';
@@ -21,28 +23,23 @@ import TrezorConnect from '@trezor/connect';
 import { getOsName } from '@trezor/env-utils';
 import { arrayDistinct, arrayToDictionary, promiseAllSequence } from '@trezor/utils';
 
+import * as COINJOIN from './coinjoinConstants';
 import {
+    type GetState,
     selectCoinjoinAccounts,
     selectRoundsDurationInHours,
     selectRoundsLeftByAccountKey,
     selectRoundsNeededByAccountKey,
-} from 'src/reducers/wallet/coinjoinReducer';
-import type { CoinjoinSymbol } from 'src/services/coinjoin';
-import { CoinjoinService, getCoinjoinConfig } from 'src/services/coinjoin';
-import { type Dispatch, type GetState } from 'src/types/suite';
-import {
-    type CoinjoinAccount,
-    type CoinjoinDebugSettings,
-    EndRoundState,
-} from 'src/types/wallet/coinjoin';
+} from './coinjoinSelectors';
+import { CoinjoinService } from './coinjoinService';
+import { type CoinjoinAccount, type CoinjoinDebugSettings, EndRoundState } from './coinjoinTypes';
 import {
     getEstimatedTimePerRound,
     getSessionDeadline,
     isCoinjoinSupportedSymbol,
     prepareCoinjoinTransaction,
-} from 'src/utils/wallet/coinjoinUtils';
-
-import * as COINJOIN from './constants/coinjoinConstants';
+} from './coinjoinUtils';
+import { type CoinjoinSymbol, getCoinjoinConfig } from './config';
 
 const clientEnable = (symbol: Account['symbol']) =>
     ({

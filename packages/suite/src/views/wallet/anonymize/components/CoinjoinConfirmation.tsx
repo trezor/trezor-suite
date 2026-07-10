@@ -2,20 +2,20 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
+import {
+    selectCoinjoinClient,
+    selectStartCoinjoinSessionArguments,
+    startCoinjoinSession,
+} from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, H3, Note, Paragraph, Tooltip, variables } from '@trezor/components';
 import { CircuitryIcon, ClockIcon, LockKeyIcon } from '@trezor/icons';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import { startCoinjoinSession } from 'src/actions/wallet/coinjoinAccountActions';
 import { Error } from 'src/components/suite/Error';
 import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import {
-    selectCoinjoinClient,
-    selectStartCoinjoinSessionArguments,
-} from 'src/reducers/wallet/coinjoinReducer';
 
 import { Tile, type TileProps } from './Tile';
 

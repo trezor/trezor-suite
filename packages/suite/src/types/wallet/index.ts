@@ -1,3 +1,4 @@
+import { type CoinjoinAccountAction, type CoinjoinClientAction } from '@suite/coinjoin';
 import { type receiveActions } from '@suite/receive';
 import { type connectPopupActions } from '@suite-common/connect-popup';
 import { type tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
@@ -20,8 +21,6 @@ import {
     type tronStakeActions,
 } from '@suite-common/wallet-core';
 
-import { type CoinjoinAccountAction } from 'src/actions/wallet/coinjoinAccountActions';
-import { type CoinjoinClientAction } from 'src/actions/wallet/coinjoinClientActions';
 import { type GraphAction } from 'src/actions/wallet/graphActions';
 import { type SignVerifyAction } from 'src/actions/wallet/signVerifyActions';
 import { type accountSearchActions } from 'src/reducers/wallet/accountSearchReducer';

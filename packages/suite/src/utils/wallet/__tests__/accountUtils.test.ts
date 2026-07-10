@@ -1,8 +1,6 @@
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
 
-import { accountTitleCoinjoinFixture } from '../__fixtures__/coinjoinUtils';
 import * as accountUtils from '../accountUtils';
 
 describe('account utils', () => {
@@ -118,13 +116,5 @@ describe('account utils', () => {
                 },
             ),
         ).toBeNull();
-    });
-});
-
-describe('get title for coinjoin accounts', () => {
-    accountTitleCoinjoinFixture.forEach(fixture => {
-        it(fixture.symbol, () => {
-            expect(getTitleForCoinjoinAccount(fixture.symbol)).toBe(fixture.title);
-        });
     });
 });

@@ -167,6 +167,7 @@
             "path": "../../suite/authenticity-checks"
         },
         { "path": "../../suite/backup" },
+        { "path": "../../suite/coinjoin" },
         { "path": "../../suite/debug" },
         { "path": "../../suite/desktop-update" },
         { "path": "../../suite/device" },
@@ -214,7 +215,6 @@
         { "path": "../address-validator" },
         { "path": "../analytics-uploader" },
         { "path": "../asset-utils" },
-        { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
         { "path": "../blockchain-link-utils" },
         { "path": "../coinjoin" },
@@ -228,7 +228,6 @@
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
         { "path": "../icons" },
-        { "path": "../ipc-proxy" },
         { "path": "../product-components" },
         { "path": "../react-utils" },
         { "path": "../styles" },

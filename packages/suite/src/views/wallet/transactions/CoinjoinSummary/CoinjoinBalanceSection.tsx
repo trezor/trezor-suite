@@ -2,12 +2,12 @@ import { useMemo } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
+import { selectHasAnonymitySetError } from '@suite/coinjoin';
 import { selectHasAccountTransactionHistory } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Card, Column } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectHasAnonymitySetError } from 'src/reducers/wallet/coinjoinReducer';
 
 import { BalancePrivacyBreakdown } from './BalancePrivacyBreakdown/BalancePrivacyBreakdown';
 import { CoinjoinBalanceError, type CoinjoinBalanceErrorProps } from './CoinjoinBalanceError';

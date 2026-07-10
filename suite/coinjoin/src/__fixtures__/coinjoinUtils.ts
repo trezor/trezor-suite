@@ -1,10 +1,7 @@
-import { type TranslationKey } from '@suite/intl';
-import { type NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { type RoundPhase, type SessionPhase } from '@trezor/coinjoin';
 
-import { ANONYMITY_GAINS_HINDSIGHT_COUNT } from 'src/services/coinjoin';
-
 import type * as coinjoinUtils from '../coinjoinUtils';
+import { ANONYMITY_GAINS_HINDSIGHT_COUNT } from '../config';
 
 const baseUtxo = {
     txid: '1',
@@ -199,14 +196,4 @@ export const averageAnonymityGainsParams: Array<{
     { params: [2, [{ level: 1, timestamp: Date.now() }]], checkResult: x => x < 2 },
     { params: [2, [{ level: 2, timestamp: Date.now() }]], checkResult: x => x === 2 },
     { params: [2, undefined], checkResult: x => x === 2 },
-];
-
-export const accountTitleCoinjoinFixture: Array<{
-    symbol: NetworkSymbolExtended;
-    title: TranslationKey;
-}> = [
-    { symbol: 'btc', title: 'TR_NETWORK_COINJOIN_BITCOIN' },
-    { symbol: 'eth', title: 'TR_NETWORK_COINJOIN_BITCOIN' },
-    { symbol: 'test', title: 'TR_NETWORK_COINJOIN_BITCOIN_TESTNET' },
-    { symbol: 'regtest', title: 'TR_NETWORK_COINJOIN_BITCOIN_REGTEST' },
 ];

@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { AnimatePresence, type MotionProps, motion } from 'framer-motion';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { isCoinjoinSupportedSymbol } from '@suite/coinjoin';
 import { useDevice } from '@suite/device';
 import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
@@ -31,7 +32,6 @@ import { NetworkList } from 'src/components/suite/NetworkList/NetworkList';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
-import { isCoinjoinSupportedSymbol } from 'src/utils/wallet/coinjoinUtils';
 
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
 import { NetworkSettingsSearchInput } from './NetworkSettingsSearchInput';

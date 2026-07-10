@@ -5,35 +5,37 @@ import { locksReducer } from '@suite/locks';
 import { routerReducer } from '@suite/router';
 import { torReducer } from '@suite/tor';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
-import { configureMockStore, testMocks } from '@suite-common/test-utils';
+import {
+    configureMockStore,
+    extraDependenciesCommonMock,
+    testMocks,
+} from '@suite-common/test-utils';
+import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import '@suite-common/test-utils/src/globalOverrides';
 
-import { fixtures } from 'src/middlewares/wallet/__fixtures__/coinjoinMiddleware';
-import { coinjoinMiddleware } from 'src/middlewares/wallet/coinjoinMiddleware';
-import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { accountsReducer } from 'src/reducers/wallet';
-import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
-import { CoinjoinService } from 'src/services/coinjoin/coinjoinService';
-import { extraDependencies } from 'src/support/extraDependencies';
+import { fixtures } from '../__fixtures__/coinjoinMiddleware';
+import { coinjoinMiddleware } from '../coinjoinMiddleware';
+import { coinjoinReducer } from '../coinjoinReducer';
+import { CoinjoinService } from '../coinjoinService';
 
-jest.mock('src/services/coinjoin/coinjoinService', () => {
-    const mock = jest.requireActual('../../../actions/wallet/__fixtures__/mockCoinjoinService');
+jest.mock('../coinjoinService', () => {
+    const mock = jest.requireActual('../__fixtures__/mockCoinjoinService');
 
     return mock.mockCoinjoinService();
 });
 
-const messageSystem = prepareMessageSystemReducer(extraDependencies);
+const messageSystem = prepareMessageSystemReducer(extraDependenciesCommonMock);
 
 const rootReducer = combineReducers({
     device: createReducer({}, () => ({})),
     locks: locksReducer,
     messageSystem,
     router: routerReducer,
-    suite: suiteReducer,
+    suite: createReducer({ online: true }, () => ({})),
     tor: torReducer,
     discreetMode: createReducer({ isActive: false }, () => {}),
     wallet: combineReducers({
-        accounts: accountsReducer,
+        accounts: prepareAccountsReducer(extraDependenciesCommonMock),
         coinjoin: coinjoinReducer,
         selectedAccount: selectedAccountReducer,
     }),

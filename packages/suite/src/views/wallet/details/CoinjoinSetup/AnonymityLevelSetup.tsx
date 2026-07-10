@@ -3,11 +3,11 @@ import { useMemo, useState } from 'react';
 import { AnimatePresence, type MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import { coinjoinAccountUpdateAnonymity } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { Banner, Icon, motionEasing } from '@trezor/components';
 import { UserIcon, UsersFourIcon, UsersIcon, UsersThreeIcon } from '@trezor/icons';
 
-import { coinjoinAccountUpdateAnonymity } from 'src/actions/wallet/coinjoinAccountActions';
 import { AnonymityStatus } from 'src/constants/suite/coinjoin';
 import { useAnonymityStatus, useDispatch } from 'src/hooks/suite';
 

@@ -1,5 +1,12 @@
 import styled from 'styled-components';
 
+import { isCoinjoinSupportedSymbol, setDebugSettings } from '@suite/coinjoin';
+import {
+    COINJOIN_NETWORKS,
+    type CoinjoinClientInstance,
+    type CoinjoinServerEnvironment,
+    type CoinjoinSymbol,
+} from '@suite/coinjoin';
 import { useServices } from '@suite-common/dependency-injection';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { selectReloadAppDep } from '@suite-common/suite-types';
@@ -9,14 +16,7 @@ import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/pro
 import { spacings } from '@trezor/theme';
 import { typedObjectKeys } from '@trezor/utils';
 
-import { setDebugSettings } from 'src/actions/wallet/coinjoinClientActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { COINJOIN_NETWORKS, type CoinjoinSymbol } from 'src/services/coinjoin';
-import {
-    type CoinjoinClientInstance,
-    type CoinjoinServerEnvironment,
-} from 'src/types/wallet/coinjoin';
-import { isCoinjoinSupportedSymbol } from 'src/utils/wallet/coinjoinUtils';
 
 const CoordinatorVersionContainer = styled.div`
     display: flex;

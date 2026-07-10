@@ -16,18 +16,18 @@ import {
 import { BigNumber, isArrayMember } from '@trezor/utils';
 
 import {
+    type AnonymityGainPerRound,
+    type CoinjoinAccount,
+    type CoinjoinSessionParameters,
+} from './coinjoinTypes';
+import {
     ANONYMITY_GAINS_HINDSIGHT_COUNT,
     ANONYMITY_GAINS_HINDSIGHT_DAYS,
     ESTIMATED_MIN_ROUNDS_NEEDED,
     MAX_ROUNDS_ALLOWED,
     SKIP_ROUNDS_VALUE_WHEN_ENABLED,
-} from 'src/services/coinjoin/config';
-import type { CoinjoinSymbol } from 'src/services/coinjoin/config';
-import {
-    type AnonymityGainPerRound,
-    type CoinjoinAccount,
-    type CoinjoinSessionParameters,
-} from 'src/types/wallet/coinjoin';
+} from './config';
+import type { CoinjoinSymbol } from './config';
 
 export type CoinjoinBalanceBreakdown = {
     notAnonymized: string;

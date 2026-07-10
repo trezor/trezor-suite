@@ -4,6 +4,10 @@ import { FormProvider } from 'react-hook-form';
 import styled from 'styled-components';
 
 import { selectFullSelectedAccount } from '@suite/account';
+import {
+    selectRegisteredUtxosByAccountKey,
+    selectTargetAnonymityByAccountKey,
+} from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { selectIsMetadataProviderConnected } from '@suite/metadata';
 import { selectRouteName } from '@suite/router';
@@ -17,10 +21,6 @@ import { ConfirmEvmExplanationModal } from 'src/components/suite/modals/ConfirmE
 import { WalletLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
 import { SendContext, type UseSendFormProps, useSendForm } from 'src/hooks/wallet/useSendForm';
-import {
-    selectRegisteredUtxosByAccountKey,
-    selectTargetAnonymityByAccountKey,
-} from 'src/reducers/wallet/coinjoinReducer';
 import { selectIsSuiteOnline } from 'src/selectors/suite/suiteSelectors';
 
 import { Options } from './Options/Options';

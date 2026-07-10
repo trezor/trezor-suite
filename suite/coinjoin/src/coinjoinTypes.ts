@@ -1,7 +1,7 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 // @trezor/coinjoin package is meant to be imported dynamically
 // importing types is safe, but importing an enum thru index will bundle whole lib
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
     type CoinjoinClientVersion,
     type CoinjoinPrisonInmate,
@@ -16,7 +16,7 @@ import {
 } from '@trezor/coinjoin/src/enums';
 import { type PartialRecord } from '@trezor/type-utils';
 
-import type { CoinjoinNetworksConfig } from 'src/services/coinjoin';
+import type { CoinjoinNetworksConfig, CoinjoinServerEnvironment } from './config';
 
 export { EndRoundState, WabiSabiProtocolErrorCode };
 export type { RoundPhase, SessionPhase };
@@ -96,8 +96,6 @@ export interface CoinjoinAccount {
     agreedToLegalDocumentVersions?: CoinjoinLegalDocuments;
 }
 
-export type CoinjoinServerEnvironment = 'public' | 'staging' | 'localhost';
-
 export interface CoinjoinDebugSettings {
     coinjoinServerEnvironment?: PartialRecord<NetworkSymbol, CoinjoinServerEnvironment>;
     coinjoinConfigOverride?: PartialRecord<NetworkSymbol, Partial<CoinjoinNetworksConfig>>;
@@ -111,3 +109,11 @@ export type CoinjoinConfig = {
     maxFeePerVbyte?: number;
     legalDocumentsVersion: string;
 };
+
+export interface CoinjoinState {
+    accounts: CoinjoinAccount[];
+    clients: PartialRecord<Account['symbol'], CoinjoinClientInstance>;
+    isPreloading?: boolean;
+    debug?: CoinjoinDebugSettings;
+    config: CoinjoinConfig;
+}

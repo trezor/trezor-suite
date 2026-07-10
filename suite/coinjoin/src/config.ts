@@ -8,9 +8,8 @@ import {
 } from '@trezor/coinjoin/src/constants';
 import type { PartialRecord } from '@trezor/type-utils';
 
-import type { CoinjoinServerEnvironment } from 'src/types/wallet/coinjoin';
-
 export type CoinjoinSymbol = Extract<NetworkSymbol, 'btc' | 'test' | 'regtest'>;
+export type CoinjoinServerEnvironment = 'public' | 'staging' | 'localhost';
 export type CoinjoinNetworksConfig = CoinjoinBackendSettings &
     CoinjoinClientSettings & { blockbookUrls: string[] };
 

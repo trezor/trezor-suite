@@ -3,25 +3,23 @@ import { useCallback, useState } from 'react';
 import { lighten, rgba } from 'polished';
 import styled, { type DefaultTheme, css, keyframes } from 'styled-components';
 
+import {
+    coinjoinSessionAutostop,
+    selectCurrentCoinjoinWheelStates,
+    selectSessionProgressByAccountKey,
+    selectStartCoinjoinSessionArguments,
+    startCoinjoinSession,
+    stopCoinjoinSession,
+} from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Tooltip } from '@trezor/components';
 
-import {
-    coinjoinSessionAutostop,
-    startCoinjoinSession,
-} from 'src/actions/wallet/coinjoinAccountActions';
-import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
 import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import {
-    selectCurrentCoinjoinWheelStates,
-    selectSessionProgressByAccountKey,
-    selectStartCoinjoinSessionArguments,
-} from 'src/reducers/wallet/coinjoinReducer';
 
 import {
     CoinjoinProgressContent,
