@@ -87,10 +87,10 @@ const config = {
                 return getSourceFile(overrides[moduleName]);
             }
 
-            // @trezor/coins-* packages have exports paths defined in package.json
-            const coinsModuleMatch = moduleName.match(/^@trezor\/coins-([^/]+)\/([^/]+)$/);
-            if (coinsModuleMatch) {
-                const source = `${rootNodeModulesPath}/@trezor/coins-${coinsModuleMatch[1]}/src/${coinsModuleMatch[2]}/index.ts`;
+            // @trezor/network-* packages have exports paths defined in package.json
+            const networkModuleMatch = moduleName.match(/^@trezor\/network-([a-z]+)\/([^/]+)$/);
+            if (networkModuleMatch) {
+                const source = `${rootNodeModulesPath}/@trezor/network-${networkModuleMatch[1]}/src/${networkModuleMatch[2]}/index.ts`;
 
                 return getSourceFile(source);
             }
