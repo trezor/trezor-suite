@@ -16,7 +16,7 @@
     },
     "devDependencies": {
         "orval": "8.15.0",
-        "prettier": "^3.8.3"
+        "prettier": "^3.8.4"
     },
     "dependencies": {
         "zod": "4.3.6"

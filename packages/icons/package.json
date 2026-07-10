@@ -17,6 +17,6 @@
     "devDependencies": {
         "@svgr/cli": "^8.1.0",
         "@trezor/eslint": "workspace:*",
-        "prettier": "^3.8.3"
+        "prettier": "^3.8.4"
     }
 }
