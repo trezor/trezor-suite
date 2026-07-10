@@ -22,10 +22,10 @@ import {
     isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
-import solana from '@trezor/coins-solana/runtime';
-import type { Fee } from '@trezor/coins-solana/types';
 import TrezorConnect from '@trezor/connect';
 import { getSuiteVersion } from '@trezor/env-utils';
+import solana from '@trezor/network-solana/runtime';
+import type { Fee } from '@trezor/network-solana/types';
 import { BigNumber } from '@trezor/utils';
 
 import { STAKE_NATIVE_MODULE_PREFIX } from './constants';

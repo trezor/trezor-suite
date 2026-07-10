@@ -71,8 +71,8 @@
     "devDependencies": {
         "@trezor/blockchain-link": "workspace:^",
         "@trezor/blockchain-link-types": "workspace:^",
-        "@trezor/coins-cardano": "workspace:*",
         "@trezor/device-authenticity": "workspace:^",
+        "@trezor/network-cardano": "workspace:*",
         "@trezor/transport-common": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
         "@types/chrome": "^0.1.40",

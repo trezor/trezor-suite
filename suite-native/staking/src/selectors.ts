@@ -14,7 +14,7 @@ import {
     getUnstakingPeriodInDays,
     isStakingSymbol,
 } from '@suite-common/wallet-utils';
-import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
+import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 import { exhaustive } from '@trezor/type-utils';
 
 import {

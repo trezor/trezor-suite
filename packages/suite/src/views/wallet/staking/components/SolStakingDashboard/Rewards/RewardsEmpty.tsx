@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
-import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
 import { ArrowLineDownIcon } from '@trezor/icons';
+import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
 import { AccountExceptionLayout } from 'src/components/wallet';
 

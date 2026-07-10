@@ -1,5 +1,5 @@
-import type { types } from '@trezor/coins-cardano/types';
 import type { AccountUtxo, CardanoCertificate } from '@trezor/connect-common';
+import type { types } from '@trezor/network-cardano/types';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 const CARDANO_DEFAULT_TTL_OFFSET = 7200;

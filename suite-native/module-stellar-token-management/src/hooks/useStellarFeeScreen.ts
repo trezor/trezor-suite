@@ -39,7 +39,7 @@ import {
     selectFeeLevels,
     useFeesManagement,
 } from '@suite-native/transaction-management';
-import { STELLAR_BASE_RESERVE } from '@trezor/coins-stellar/constants';
+import { STELLAR_BASE_RESERVE } from '@trezor/network-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { getStellarTokenFormDraftKey, updateStellarTokenSelectedFeeLevelThunk } from '../thunks';

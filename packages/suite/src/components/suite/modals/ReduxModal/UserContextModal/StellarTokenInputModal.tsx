@@ -1,8 +1,8 @@
 import { useForm } from 'react-hook-form';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import stellar from '@trezor/coins-stellar/runtime';
 import { Button, Column, Input, Modal, Row, Text } from '@trezor/components';
+import stellar from '@trezor/network-stellar/runtime';
 import { spacings } from '@trezor/theme';
 
 type StellarTokenInputModalProps = {

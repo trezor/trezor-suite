@@ -1,7 +1,7 @@
 import type { TokenDetailByMint, Transaction } from '@trezor/blockchain-link-types';
-import { STELLAR_DECIMALS } from '@trezor/coins-stellar/constants';
-import type { IdentifiedTransaction } from '@trezor/coins-stellar/types';
 import { isCodesignBuild } from '@trezor/env-utils';
+import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
+import type { IdentifiedTransaction } from '@trezor/network-stellar/types';
 
 export const transformTransaction = (
     identifiedTx: IdentifiedTransaction,

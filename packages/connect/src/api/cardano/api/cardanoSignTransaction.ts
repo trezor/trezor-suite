@@ -2,7 +2,6 @@
 
 // allow for...of statements
 
-import cardano from '@trezor/coins-cardano/runtime';
 import {
     type CardanoAuxiliaryDataSupplement,
     CardanoSignTransactionExtended,
@@ -12,6 +11,7 @@ import {
     type PermissionRequest,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import cardano from '@trezor/network-cardano/runtime';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert, Type } from '@trezor/schema-utils';
 

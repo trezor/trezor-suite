@@ -1,4 +1,4 @@
-import { TOKEN_PROGRAM_PUBLIC_KEY } from '@trezor/coins-solana/constants';
+import { TOKEN_PROGRAM_PUBLIC_KEY } from '@trezor/network-solana/constants';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 const instructions = {

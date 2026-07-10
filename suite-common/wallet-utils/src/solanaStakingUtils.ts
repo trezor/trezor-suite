@@ -7,8 +7,8 @@ import {
     SOLANA_EPOCH_DAYS,
     StakeState,
     supportedSolanaNetworkSymbols,
-} from '@trezor/coins-solana/constants';
-import type { SupportedSolanaNetworkSymbols } from '@trezor/coins-solana/types';
+} from '@trezor/network-solana/constants';
+import type { SupportedSolanaNetworkSymbols } from '@trezor/network-solana/types';
 import { BigNumber, isArrayMember } from '@trezor/utils';
 
 import { formatNetworkAmount, networkAmountToSmallestUnit } from './amountUtils';
@@ -117,7 +117,7 @@ export type SolanaUnstakeAmountBounds = {
     closestHigher: string;
 };
 
-// Mirrors the stake account selection of `unstake` in @trezor/coins-solana/runtime/staking.ts:
+// Mirrors the stake account selection of `unstake` in @trezor/network-solana/runtime/staking.ts:
 // accounts are consumed whole in ASC order and the requested remainder is split off the next one,
 // which is only possible when both split legs stay above MIN_STAKE_DELEGATION.
 export const getSolanaUnstakeAmountBounds = (

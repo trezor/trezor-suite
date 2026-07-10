@@ -16,8 +16,8 @@
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
-        "@trezor/coins-stellar": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/network-stellar": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0"
     }

@@ -31,7 +31,7 @@ import {
     selectClaimableAmountByAccountKey,
 } from '@suite-native/staking';
 import { FeeSelector } from '@suite-native/transaction-management';
-import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/coins-solana/constants';
+import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { useComposeEarnFees } from '../hooks/useComposeEarnFees';

@@ -4,7 +4,7 @@ import {
     LUGANODES_TRON_SRS,
     P2P_ORG_TRON_SRS,
 } from '@suite-common/wallet-constants';
-import { EVERSTAKE_VOTER_PUBKEYS } from '@trezor/coins-solana/constants';
+import { EVERSTAKE_VOTER_PUBKEYS } from '@trezor/network-solana/constants';
 
 type StakingProviderId = 'everstake' | 'fivebinaries' | 'luganodes' | 'p2p.org';
 

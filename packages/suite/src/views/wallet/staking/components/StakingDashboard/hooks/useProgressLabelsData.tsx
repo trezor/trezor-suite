@@ -13,8 +13,8 @@ import {
     getTxStakeType,
     isPending,
 } from '@suite-common/wallet-utils';
-import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
 import { Column, Paragraph } from '@trezor/components';
+import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
 import { type ProgressLabelData } from '../components/ProgressLabels/types';
 

@@ -43,7 +43,7 @@ import {
     MIN_SOL_BALANCE_FOR_STAKING,
     MIN_SOL_FOR_WITHDRAWALS,
     SOLANA_EPOCH_DAYS,
-} from '@trezor/coins-solana/constants';
+} from '@trezor/network-solana/constants';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 

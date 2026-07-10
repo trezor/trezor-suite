@@ -10475,8 +10475,8 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
-    "@trezor/coins-stellar": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/network-stellar": "workspace:*"
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^4.1.0"
   languageName: unknown
@@ -10779,9 +10779,9 @@ __metadata:
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
-    "@trezor/coins-solana": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
+    "@trezor/network-solana": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     viem: "npm:^2.52.2"
@@ -11100,10 +11100,10 @@ __metadata:
     "@testing-library/react": "npm:^16.3.2"
     "@trezor/address-validator": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
-    "@trezor/coins-solana": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/network-solana": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -11171,8 +11171,8 @@ __metadata:
   dependencies:
     "@suite-common/earn-stablecoin-defs": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
-    "@trezor/coins-solana": "workspace:*"
     "@trezor/device-utils": "workspace:*"
+    "@trezor/network-solana": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
@@ -11220,12 +11220,12 @@ __metadata:
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
-    "@trezor/coins-solana": "workspace:*"
-    "@trezor/coins-stellar": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:^"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/network-solana": "workspace:*"
+    "@trezor/network-stellar": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -11271,10 +11271,10 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
-    "@trezor/coins-solana": "workspace:*"
-    "@trezor/coins-stellar": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
+    "@trezor/network-solana": "workspace:*"
+    "@trezor/network-stellar": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -11303,10 +11303,10 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
-    "@trezor/coins-stellar": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/network-stellar": "workspace:*"
     "@trezor/type-utils": "workspace:^"
     "@trezor/utils": "workspace:*"
     "@walletconnect/core": "npm:^2.23.9"
@@ -12992,9 +12992,9 @@ __metadata:
     "@suite-native/transaction-management": "workspace:*"
     "@suite-native/transactions": "workspace:*"
     "@suite-native/tx-simulation": "workspace:*"
-    "@trezor/coins-solana": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
+    "@trezor/network-solana": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/styles-native": "workspace:*"
@@ -13341,7 +13341,7 @@ __metadata:
     "@suite-native/transaction-management": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
-    "@trezor/coins-stellar": "workspace:*"
+    "@trezor/network-stellar": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/urls": "workspace:*"
@@ -13681,10 +13681,10 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
     "@suite-native/labeling": "workspace:*"
-    "@trezor/coins-solana": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/network-solana": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     react-redux: "npm:9.3.0"
@@ -15953,11 +15953,11 @@ __metadata:
   dependencies:
     "@noble/hashes": "npm:^2.0.1"
     "@trezor/blockchain-link-types": "workspace:*"
-    "@trezor/coins-ripple": "workspace:*"
-    "@trezor/coins-solana": "workspace:*"
-    "@trezor/coins-stellar": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/network-ripple": "workspace:*"
+    "@trezor/network-solana": "workspace:*"
+    "@trezor/network-stellar": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
   peerDependencies:
@@ -15971,12 +15971,12 @@ __metadata:
   dependencies:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
-    "@trezor/coins-ripple": "workspace:*"
-    "@trezor/coins-solana": "workspace:*"
-    "@trezor/coins-stellar": "workspace:*"
     "@trezor/e2e-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/network-ripple": "workspace:*"
+    "@trezor/network-solana": "workspace:*"
+    "@trezor/network-stellar": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
@@ -16020,50 +16020,6 @@ __metadata:
     node-fetch: "npm:^3.3.2"
     socks-proxy-agent: "npm:8.0.5"
     ws: "npm:^8.20.0"
-  languageName: unknown
-  linkType: soft
-
-"@trezor/coins-cardano@workspace:*, @trezor/coins-cardano@workspace:coins/coins-cardano":
-  version: 0.0.0-use.local
-  resolution: "@trezor/coins-cardano@workspace:coins/coins-cardano"
-  dependencies:
-    "@fivebinaries/coin-selection": "npm:3.0.0"
-    cbor: "npm:^10.0.12"
-  languageName: unknown
-  linkType: soft
-
-"@trezor/coins-ripple@workspace:*, @trezor/coins-ripple@workspace:coins/coins-ripple":
-  version: 0.0.0-use.local
-  resolution: "@trezor/coins-ripple@workspace:coins/coins-ripple"
-  dependencies:
-    xrpl: "npm:4.6.0"
-  languageName: unknown
-  linkType: soft
-
-"@trezor/coins-solana@workspace:*, @trezor/coins-solana@workspace:networks/solana/network-solana-sdk":
-  version: 0.0.0-use.local
-  resolution: "@trezor/coins-solana@workspace:coins/coins-solana"
-  dependencies:
-    "@solana-program/compute-budget": "npm:^0.15.0"
-    "@solana-program/memo": "npm:^0.11.1"
-    "@solana-program/stake": "npm:^0.6.1"
-    "@solana-program/system": "npm:^0.12.2"
-    "@solana-program/token": "npm:^0.13.0"
-    "@solana-program/token-2022": "npm:^0.9.0"
-    "@solana/kit": "npm:^6.9.0"
-    "@solana/rpc-api": "npm:^6.9.0"
-    "@solana/rpc-types": "npm:^6.9.0"
-    "@trezor/type-utils": "workspace:*"
-    "@trezor/utils": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
-"@trezor/coins-stellar@workspace:*, @trezor/coins-stellar@workspace:coins/coins-stellar":
-  version: 0.0.0-use.local
-  resolution: "@trezor/coins-stellar@workspace:coins/coins-stellar"
-  dependencies:
-    "@stellar/stellar-sdk": "npm:14.5.0"
-    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -16131,9 +16087,9 @@ __metadata:
   dependencies:
     "@trezor/blockchain-link": "workspace:^"
     "@trezor/blockchain-link-types": "workspace:^"
-    "@trezor/coins-cardano": "workspace:*"
     "@trezor/device-authenticity": "workspace:^"
     "@trezor/device-utils": "workspace:*"
+    "@trezor/network-cardano": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:^"
     "@trezor/schema-utils": "workspace:*"
@@ -16349,15 +16305,15 @@ __metadata:
     "@scure/bip39": "npm:^1.5.1"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
-    "@trezor/coins-cardano": "workspace:*"
-    "@trezor/coins-solana": "workspace:*"
-    "@trezor/coins-stellar": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/connect-data": "workspace:*"
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/device-authenticity": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/network-cardano": "workspace:*"
+    "@trezor/network-solana": "workspace:*"
+    "@trezor/network-stellar": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:*"
     "@trezor/schema-utils": "workspace:*"
@@ -16499,6 +16455,50 @@ __metadata:
 "@trezor/ipc-proxy@workspace:*, @trezor/ipc-proxy@workspace:packages/ipc-proxy":
   version: 0.0.0-use.local
   resolution: "@trezor/ipc-proxy@workspace:packages/ipc-proxy"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-cardano@workspace:*, @trezor/network-cardano@workspace:networks/cardano/network-cardano":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-cardano@workspace:networks/cardano/network-cardano"
+  dependencies:
+    "@fivebinaries/coin-selection": "npm:3.0.0"
+    cbor: "npm:^10.0.12"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-ripple@workspace:*, @trezor/network-ripple@workspace:networks/ripple/network-ripple":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-ripple@workspace:networks/ripple/network-ripple"
+  dependencies:
+    xrpl: "npm:4.6.0"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-solana@workspace:*, @trezor/network-solana@workspace:networks/solana/network-solana":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-solana@workspace:networks/solana/network-solana"
+  dependencies:
+    "@solana-program/compute-budget": "npm:^0.15.0"
+    "@solana-program/memo": "npm:^0.11.1"
+    "@solana-program/stake": "npm:^0.6.1"
+    "@solana-program/system": "npm:^0.12.2"
+    "@solana-program/token": "npm:^0.13.0"
+    "@solana-program/token-2022": "npm:^0.9.0"
+    "@solana/kit": "npm:^6.9.0"
+    "@solana/rpc-api": "npm:^6.9.0"
+    "@solana/rpc-types": "npm:^6.9.0"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-stellar@workspace:*, @trezor/network-stellar@workspace:networks/stellar/network-stellar":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-stellar@workspace:networks/stellar/network-stellar"
+  dependencies:
+    "@stellar/stellar-sdk": "npm:14.5.0"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -16919,11 +16919,11 @@ __metadata:
     "@suite/router-config": "workspace:*"
     "@suite/settings": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:^"
-    "@trezor/coins-solana": "workspace:*"
     "@trezor/connect-web": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/e2e-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/network-solana": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/suite-data": "workspace:*"
     "@trezor/suite-desktop": "workspace:*"
@@ -17109,8 +17109,6 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/coinjoin": "workspace:*"
-    "@trezor/coins-solana": "workspace:*"
-    "@trezor/coins-stellar": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:^"
@@ -17120,6 +17118,8 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/icons": "workspace:*"
+    "@trezor/network-solana": "workspace:*"
+    "@trezor/network-stellar": "workspace:*"
     "@trezor/product-components": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/styles": "workspace:*"

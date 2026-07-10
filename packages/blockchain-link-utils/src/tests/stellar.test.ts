@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { identifyTransaction } from '@trezor/coins-stellar';
-import type { RawStellarTransaction } from '@trezor/coins-stellar/types';
+import { identifyTransaction } from '@trezor/network-stellar';
+import type { RawStellarTransaction } from '@trezor/network-stellar/types';
 
 import { transformTransaction } from '../stellar';
 import { fixtures } from './fixtures/stellar';

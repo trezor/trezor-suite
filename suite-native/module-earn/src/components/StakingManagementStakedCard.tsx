@@ -15,7 +15,7 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import { selectApy, selectStakedBalanceByAccountKey, useSelector } from '@suite-native/staking';
-import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
+import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
 

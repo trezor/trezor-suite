@@ -6,7 +6,7 @@ import {
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
-import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
+import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
 import { getDaysToAddToPool } from '../utils/ethereumStaking';
 

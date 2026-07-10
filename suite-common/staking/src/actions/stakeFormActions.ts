@@ -12,8 +12,8 @@ import {
     convertAmountSubunitsToUnits,
     getExternalComposeOutput,
 } from '@suite-common/wallet-utils';
-import type { EstimatedFee } from '@trezor/coins-solana/types';
 import { type FeeLevel } from '@trezor/connect';
+import type { EstimatedFee } from '@trezor/network-solana/types';
 import { BigNumber } from '@trezor/utils';
 
 type StakingParams = {

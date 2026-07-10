@@ -25,10 +25,10 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/device-mutex": "workspace:*",
         "@suite-native/labeling": "workspace:*",
-        "@trezor/coins-solana": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
+        "@trezor/network-solana": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react-redux": "9.3.0"

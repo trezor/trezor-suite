@@ -28,7 +28,6 @@ import {
     createAccountKey,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/coins-solana/constants';
 import TrezorConnect, {
     type AccountAddress,
     type AccountAddresses,
@@ -40,6 +39,7 @@ import TrezorConnect, {
     type StaticSessionId,
     type TokenInfo,
 } from '@trezor/connect';
+import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/network-solana/constants';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_ADDRESSES_URL, HELP_CENTER_TAPROOT_URL } from '@trezor/urls';
 import { BigNumber, arrayDistinct, bufferUtils, typedObjectKeys } from '@trezor/utils';

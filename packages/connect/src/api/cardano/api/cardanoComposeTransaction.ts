@@ -1,10 +1,10 @@
-import cardano from '@trezor/coins-cardano/runtime';
 import { type PermissionRequest } from '@trezor/connect-common';
 import {
     type CardanoComposeTransactionParams,
     CardanoComposeTransactionParamsSchema,
     type PrecomposedTransactionCardano,
 } from '@trezor/connect-common/src/types/api/cardano/cardanoComposeTransaction';
+import cardano from '@trezor/network-cardano/runtime';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';

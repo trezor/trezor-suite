@@ -6,10 +6,10 @@ import type {
     TokenDetailByMint,
 } from '@trezor/blockchain-link-types';
 import * as utils from '@trezor/blockchain-link-utils/src/stellar';
-import { STELLAR_BASE_RESERVE, STELLAR_DECIMALS } from '@trezor/coins-stellar/constants';
-import stellar from '@trezor/coins-stellar/runtime';
-import type { StellarAPI } from '@trezor/coins-stellar/types';
 import { getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
+import { STELLAR_BASE_RESERVE, STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
+import stellar from '@trezor/network-stellar/runtime';
+import type { StellarAPI } from '@trezor/network-stellar/types';
 import { type IntervalId } from '@trezor/type-utils';
 import { BigNumber, createLazy } from '@trezor/utils';
 
