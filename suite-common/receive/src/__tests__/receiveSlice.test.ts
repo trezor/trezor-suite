@@ -9,7 +9,7 @@ import {
     receiveReducer,
     selectCurrentFreshAddress,
     selectReceiveRevealedAddresses,
-} from '../receiveReducer';
+} from '../receiveSlice';
 
 const bitcoinAccount = mockWalletAccount({ symbol: 'btc' });
 const ethereumAccount = mockWalletAccount({ symbol: 'eth' }, networkSpecificDefaultEthereum);

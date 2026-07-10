@@ -7,4 +7,4 @@ export {
     type ReceiveAccountState,
     type ReceiveRootState,
     type ReceiveState,
-} from './receiveReducer';
+} from './receiveSlice';
