@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useWatch } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -20,7 +20,11 @@ import { Box, Button, type InputType, VStack } from '@suite-native/atoms';
 import { featureUsed } from '@suite-native/feature-feedback';
 import { Form, TextInputField } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { type CombinedLabelingState, selectIsLabellingAllowed } from '@suite-native/labeling';
+import {
+    type CombinedLabelingState,
+    selectIsLabellingAllowed,
+    useSyncLabelForm,
+} from '@suite-native/labeling';
 import { useSuiteSyncErrorHandler } from '@suite-native/suite-sync';
 
 type AccountRenameFormProps = {
@@ -57,6 +61,13 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
     const hasErrors = Object.keys(errors).length > 0;
 
     const accountLabelLength = useWatch({ control, name: 'accountLabel' })?.length ?? 0;
+
+    const getResetValues = useCallback(
+        (newLabel: string | null): AccountFormValues => ({ accountLabel: newLabel ?? '' }),
+        [],
+    );
+
+    useSyncLabelForm({ form, label: accountLabel, getResetValues });
 
     useEffect(() => {
         // Focus account label input field and open keyboard on the first render.
