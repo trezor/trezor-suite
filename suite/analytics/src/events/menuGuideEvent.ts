@@ -11,8 +11,8 @@ export const menuGuideEvent: EventDef<Attributes, EventType.MenuGuide> = {
     changelog: [
         { version: '1.11.0', notes: 'added' },
         {
-            version: '?',
-            notes: 'Entry point changed to the mascot-style Help & Support button; description updated from "Guide"/lifebuoy wording',
+            version: '26.8.0',
+            notes: 'Replaced lifebuoy icon with mascot animation',
         },
     ],
 

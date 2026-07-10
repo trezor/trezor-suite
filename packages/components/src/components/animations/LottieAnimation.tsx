@@ -21,6 +21,10 @@ const lottieFiles: Record<LottieType, string> = {
     MASCOT: 'trezor_mascot',
 };
 
+// Cache fetched animation JSON per type so remounting a component (e.g. on navigation)
+// reuses the already-loaded data instead of refetching and flashing an empty frame.
+const animationDataCache: Partial<Record<LottieType, LottieOptions['animationData']>> = {};
+
 type LottieAnimationProps = {
     size?: number;
     type: LottieType;
@@ -41,9 +45,18 @@ export const LottieAnimation = ({
     colorReplacements,
     ...props
 }: LottieAnimationProps) => {
-    const [rawAnimationData, setRawAnimationData] = useState<LottieOptions['animationData']>();
+    const [rawAnimationData, setRawAnimationData] = useState<LottieOptions['animationData']>(
+        () => animationDataCache[type],
+    );
 
     useEffect(() => {
+        const cached = animationDataCache[type];
+        if (cached) {
+            setRawAnimationData(cached);
+
+            return;
+        }
+
         const abortController = new AbortController();
 
         const loadAnimation = async (animationPath: string) => {
@@ -54,6 +67,7 @@ export const LottieAnimation = ({
                     })
                 ).json();
 
+                animationDataCache[type] = animation;
                 setRawAnimationData(animation);
             } catch {
                 // do not need to handle error
