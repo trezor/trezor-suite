@@ -332,9 +332,11 @@ mid-transition leaves an extra findable label, never zero.
   `conveyor/human:needs-approval` and GitHub's **CODEOWNERS** auto-requests the owning
   reviewer — the required single approval, which the author cannot give. When no
   CODEOWNERS entry matches these files, the belt falls back to requesting the
-  `## Team` reviewer. (Mechanised by the `conveyor-human-handoff` Action template +
-  the belt's human-review fallback — see the README.) Do **not** `@`-mention or
-  request a reviewer yourself here; the request is owned by that handoff, at the flip.
+  `## Team` reviewer. The label swap itself is done by the `conveyor-human-handoff`
+  Action on the flip **or**, if that Action isn't installed, by the belt when it sees a
+  non-draft `conveyor/review:passed` PR (see the README) — either way it becomes
+  `conveyor/human:needs-approval`, so the flip is never stranded. Do **not** `@`-mention
+  or request a reviewer yourself here; the request is owned by that handoff, at the flip.
 - **Parked** (open findings remain): add `conveyor/review:needs-human`, then remove
   `conveyor/review:in-progress`. `conveyor/review:needs-human` is hands-off for other agents until a
   human resolves the open findings (then re-run `conveyor-4-review` to continue).

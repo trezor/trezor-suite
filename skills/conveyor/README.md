@@ -346,6 +346,11 @@ reviewer (skipping the author). The label swap and the note are done by the
 `conveyor-human-handoff` GitHub Action — a template in
 [`workflows/`](workflows/conveyor-human-handoff.yml), installed as its own small PR; it is
 pure GitHub mechanics (no agent, no tokens, so it never touches the routine run budget).
+**Until that Action is installed, the belt does the swap itself:** its human-review step
+detects a `conveyor/review:passed` PR that is **no longer a draft** (Conveyor PRs open as
+drafts, so not-draft means a human flipped it) and performs the same handoff — relabel to
+`conveyor/human:needs-approval` plus the reviewer backstop. So the flip is never stranded,
+Action or not; a human never touches a `conveyor/*` label.
 
 ## Feedback loop — improving Conveyor from use
 
