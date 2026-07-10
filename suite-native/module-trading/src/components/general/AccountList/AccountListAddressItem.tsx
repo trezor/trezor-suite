@@ -1,6 +1,4 @@
-import { useSelector } from 'react-redux';
-
-import { type SuiteSyncDataRootState, selectSuiteSyncAddressLabel } from '@suite-common/suite-sync';
+import { AddressLabel } from '@suite-native/address';
 import { Text } from '@suite-native/atoms';
 import { AddressFormatter } from '@suite-native/formatters';
 import { type ReceiveAccount } from '@suite-native/trading-types';
@@ -25,16 +23,6 @@ export const AccountListAddressItem = ({
     const { applyStyle } = useNativeStyles();
     const { address } = receiveAccount;
 
-    const addressLabel = useSelector((state: SuiteSyncDataRootState) =>
-        address
-            ? selectSuiteSyncAddressLabel(
-                  state,
-                  receiveAccount.account.deviceState,
-                  address.address,
-              )
-            : null,
-    );
-
     if (!address) {
         return null;
     }
@@ -42,7 +30,13 @@ export const AccountListAddressItem = ({
     return (
         <AccountListBaseItem
             receiveAccount={receiveAccount}
-            label={addressLabel ?? <AddressFormatter value={address.address} format="full" />}
+            label={
+                <AddressLabel
+                    address={address.address}
+                    deviceStaticSessionId={receiveAccount.account.deviceState}
+                    fallback={<AddressFormatter value={address.address} format="full" />}
+                />
+            }
             isAddressDetail={true}
             info={
                 <Text variant="body-sm" style={applyStyle(labelTextStyle)}>
