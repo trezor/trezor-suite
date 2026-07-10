@@ -97,10 +97,7 @@ const prepareEthereumStakingContext = (
 
     const account = selectAccountByKey(state, accountKey);
     if (account?.networkType !== 'ethereum') {
-        return failed(
-            'Ethereum account not found.',
-            `Ethereum account not found for key ${accountKey}`,
-        );
+        return failed('Ethereum account not found.');
     }
 
     const { chainId } = getNetwork(account.symbol);
@@ -120,7 +117,7 @@ const prepareEthereumStakingContext = (
     if (!variant) {
         return failed(
             `Compose draft for ${stakeType} is missing.`,
-            `Form draft '${getFormDraftKey(stakeType, accountKey)}' is missing or incomplete.`,
+            `Compose draft for ${stakeType} is missing or incomplete.`,
         );
     }
 

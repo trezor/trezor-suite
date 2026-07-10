@@ -29,7 +29,7 @@ export const signStakeTransactionNativeThunk = createThunk<
     const account = selectAccountByKey(thunkApi.getState() as AccountsRootState, accountKey);
 
     if (!account) {
-        console.error(`${LOG_PREFIX}: Account not found for key ${accountKey}`);
+        console.error(`${LOG_PREFIX}: Account not found.`);
 
         return thunkApi.rejectWithValue({
             error: 'sign-transaction-failed',
@@ -74,7 +74,7 @@ export const pushStakeTransactionNativeThunk = createThunk<
     const account = selectAccountByKey(getState() as AccountsRootState, accountKey);
 
     if (!account) {
-        console.error(`${PUSH_LOG_PREFIX}: Account not found for key ${accountKey}`);
+        console.error(`${PUSH_LOG_PREFIX}: Account not found.`);
 
         return rejectWithValue({
             error: 'sign-transaction-failed',
@@ -93,8 +93,9 @@ export const pushStakeTransactionNativeThunk = createThunk<
     );
 
     if (pushSendFormTransactionThunk.rejected.match(pushAction)) {
-        const message = pushAction.payload?.metadata.error.message;
-        console.error(`${PUSH_LOG_PREFIX}: Push transaction failed: ${message}`);
+        console.error(
+            `${PUSH_LOG_PREFIX}: Push transaction failed with code: ${pushAction.payload?.error}`,
+        );
 
         return rejectWithValue(pushAction.payload);
     }
