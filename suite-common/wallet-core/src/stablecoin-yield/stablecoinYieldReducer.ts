@@ -68,6 +68,9 @@ export type StablecoinYieldTxReviewState = {
     availableRewards?: YieldClaimReward[];
     serializedTx?: StablecoinYieldSerializedTx;
     accountKey?: AccountKey;
+    flowKey?: string;
+    flowType?: YieldFlowType;
+    createdTimestamp?: number;
 };
 
 export type StablecoinYieldSessionState = {
@@ -141,6 +144,9 @@ export const initialStablecoinYieldTxReviewState: StablecoinYieldTxReviewState =
     availableRewards: undefined,
     serializedTx: undefined,
     accountKey: undefined,
+    flowKey: undefined,
+    flowType: undefined,
+    createdTimestamp: undefined,
 };
 
 export const initialStablecoinYieldState: StablecoinYieldState = {
@@ -311,7 +317,8 @@ export const stablecoinYieldSlice = createSlice({
             withSession(state, action.payload, session => {
                 session.approval.isModifyMode = true;
                 session.approval.modalState = null;
-                session.action.pendingTransaction = null;
+                // The pendingTransaction is intentionally preserved — an in-flight action tx must
+                // stay tracked so its confirmation is still processed into `completeAction`.
                 session.action.review = null;
                 session.error = null;
                 session.action.amount = action.payload.amount ?? session.action.amount;
@@ -438,17 +445,22 @@ export const stablecoinYieldSlice = createSlice({
         },
         storePrecomposedTransaction(
             state,
-            action: PayloadAction<{
-                precomposedTx: PrecomposedTransactionFinal;
-                precomposedForm: FormState;
-                availableRewards?: YieldClaimReward[];
-                accountKey: AccountKey;
-            }>,
+            action: PayloadAction<
+                StablecoinYieldSessionActionPayload & {
+                    precomposedTx: PrecomposedTransactionFinal;
+                    precomposedForm: FormState;
+                    availableRewards?: YieldClaimReward[];
+                    accountKey: AccountKey;
+                }
+            >,
         ) {
             state.txReview.precomposedTx = action.payload.precomposedTx;
             state.txReview.precomposedForm = action.payload.precomposedForm;
             state.txReview.availableRewards = action.payload.availableRewards;
             state.txReview.accountKey = action.payload.accountKey;
+            state.txReview.flowKey = action.payload.flowKey;
+            state.txReview.flowType = action.payload.flowType;
+            state.txReview.createdTimestamp = new Date().getTime();
             state.txReview.serializedTx = undefined;
         },
         storeSignedTransaction(
@@ -463,6 +475,9 @@ export const stablecoinYieldSlice = createSlice({
             state.txReview.availableRewards = undefined;
             state.txReview.serializedTx = undefined;
             state.txReview.accountKey = undefined;
+            state.txReview.flowKey = undefined;
+            state.txReview.flowType = undefined;
+            state.txReview.createdTimestamp = undefined;
         },
     },
     extraReducers: builder => {

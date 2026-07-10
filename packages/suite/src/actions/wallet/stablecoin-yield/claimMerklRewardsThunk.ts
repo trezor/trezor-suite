@@ -203,6 +203,8 @@ export const claimMerklRewardsThunk = createThunk(
                     precomposedForm: formState,
                     availableRewards,
                     accountKey: account.key,
+                    flowKey,
+                    flowType: 'claim',
                 }),
             );
 

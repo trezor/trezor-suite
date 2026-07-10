@@ -281,6 +281,29 @@ export const buildYieldUnsignedTransaction = ({
     };
 };
 
+type YieldTxReviewFlowIdentity = {
+    accountKey?: AccountKey;
+    flowKey?: string;
+    flowType?: YieldFlowType;
+    createdTimestamp?: number;
+};
+
+type YieldTxReviewFlowMatchParams = {
+    accountKey: AccountKey;
+    flowKey: string;
+    flowType: YieldFlowType;
+    notBefore?: number;
+};
+
+export const isYieldTxReviewForFlow = (
+    txReview: YieldTxReviewFlowIdentity,
+    { accountKey, flowKey, flowType, notBefore }: YieldTxReviewFlowMatchParams,
+) =>
+    txReview.accountKey === accountKey &&
+    txReview.flowKey === flowKey &&
+    txReview.flowType === flowType &&
+    (notBefore === undefined || (txReview.createdTimestamp ?? 0) >= notBefore);
+
 export const splitYieldPendingTransaction = (
     pendingTransaction: YieldPendingTransactionState | null,
     actionKind: YieldFlowType,

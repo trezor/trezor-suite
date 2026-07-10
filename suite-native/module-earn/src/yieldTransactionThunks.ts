@@ -5,6 +5,7 @@ import {
     type YieldFlowDisplayToken,
     type YieldFlowResolvedData,
     type YieldPositionFlowType,
+    isYieldTxReviewForFlow,
     selectAddressDisplayType,
     selectStablecoinYieldSession,
     selectStablecoinYieldTxReview,
@@ -101,6 +102,8 @@ export const signYieldActionReviewThunk = createThunk<
                 precomposedTx: precomposedTransaction,
                 precomposedForm: formState,
                 accountKey: flowData.account.key,
+                flowKey,
+                flowType,
             }),
         );
 
@@ -127,7 +130,11 @@ export const signYieldActionReviewThunk = createThunk<
         const currentTxReview = selectStablecoinYieldTxReview(getState());
 
         if (
-            currentTxReview.accountKey !== flowData.account.key ||
+            !isYieldTxReviewForFlow(currentTxReview, {
+                accountKey: flowData.account.key,
+                flowKey,
+                flowType,
+            }) ||
             currentTxReview.precomposedForm !== formState ||
             currentTxReview.precomposedTx !== precomposedTransaction
         ) {
@@ -158,13 +165,23 @@ export const pushYieldActionReviewThunk = createThunk<
     `${YIELD_TRANSACTION_THUNK_PREFIX}/pushActionReview`,
     async ({ flowData, flowKey, flowType }, { dispatch, getState, rejectWithValue }) => {
         const session = selectStablecoinYieldSession(getState(), flowType, flowKey);
-        const { precomposedForm, precomposedTx, serializedTx } =
-            selectStablecoinYieldTxReview(getState());
+        const txReview = selectStablecoinYieldTxReview(getState());
+        const { precomposedForm, precomposedTx, serializedTx } = txReview;
         const {
             action: { review },
         } = session;
 
-        if (review?.type !== flowType || !serializedTx || !precomposedForm || !precomposedTx) {
+        if (
+            review?.type !== flowType ||
+            !isYieldTxReviewForFlow(txReview, {
+                accountKey: flowData.account.key,
+                flowKey,
+                flowType,
+            }) ||
+            !serializedTx ||
+            !precomposedForm ||
+            !precomposedTx
+        ) {
             return rejectWithValue({
                 error: 'push-transaction-failed',
                 message: 'Transaction not found.',

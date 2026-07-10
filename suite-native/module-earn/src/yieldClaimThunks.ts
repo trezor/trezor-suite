@@ -3,6 +3,7 @@ import { buildClaimTransactionReview } from '@suite-common/earn-stablecoin/src/s
 import { createThunk } from '@suite-common/redux-utils';
 import {
     formDraftActions,
+    isYieldTxReviewForFlow,
     selectAddressDisplayType,
     selectDeepCopyOfFormDraft,
     selectStablecoinYieldSession,
@@ -125,6 +126,8 @@ export const signYieldClaimReviewThunk = createThunk<
                 precomposedForm: formState,
                 availableRewards,
                 accountKey: account.key,
+                flowKey,
+                flowType: 'claim',
             }),
         );
 
@@ -151,7 +154,11 @@ export const signYieldClaimReviewThunk = createThunk<
         const currentTxReview = selectStablecoinYieldTxReview(getState());
 
         if (
-            currentTxReview.accountKey !== account.key ||
+            !isYieldTxReviewForFlow(currentTxReview, {
+                accountKey: account.key,
+                flowKey,
+                flowType: 'claim',
+            }) ||
             currentTxReview.precomposedForm !== formState ||
             currentTxReview.precomposedTx !== precomposedTransaction
         ) {
@@ -190,7 +197,11 @@ export const pushYieldClaimReviewThunk = createThunk<
 
         if (
             review?.type !== 'claim' ||
-            txReview.accountKey !== account.key ||
+            !isYieldTxReviewForFlow(txReview, {
+                accountKey: account.key,
+                flowKey,
+                flowType: 'claim',
+            }) ||
             !serializedTx ||
             !precomposedForm ||
             !precomposedTx

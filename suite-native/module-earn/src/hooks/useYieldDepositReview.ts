@@ -8,6 +8,7 @@ import { selectIsDeviceConnected } from '@suite-common/device';
 import {
     type StablecoinYieldRootState,
     type YieldFlowResolvedData,
+    isYieldTxReviewForFlow,
     selectStablecoinYieldTxReview,
 } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
@@ -61,7 +62,16 @@ export const useYieldDepositReview = ({
     const txReview = useSelector((state: StablecoinYieldRootState) =>
         selectStablecoinYieldTxReview(state),
     );
-    const isDepositSigned = txReview.accountKey === flowData.account.key && !!txReview.serializedTx;
+    // A leftover signed tx from a previous review of the same account must not appear
+    // as signed here, hence the flow identity and `notBefore` guard.
+    const [reviewOpenedAt] = useState(() => Date.now());
+    const isDepositSigned =
+        isYieldTxReviewForFlow(txReview, {
+            accountKey: flowData.account.key,
+            flowKey,
+            flowType: 'deposit',
+            notBefore: reviewOpenedAt,
+        }) && !!txReview.serializedTx;
     const depositStatus: YieldReviewStatus =
         depositActionStatus === 'idle' && isDepositSigned ? 'signed' : depositActionStatus;
     const { leaveReviewFromDeviceCancel, markReviewNavigationSuccess } =

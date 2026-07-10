@@ -1,3 +1,6 @@
+import type { FormState, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+
 import {
     type StablecoinYieldState,
     getStablecoinYieldSessionKey,
@@ -5,7 +8,7 @@ import {
     stablecoinYieldActions,
     stablecoinYieldReducer,
 } from '../stablecoinYieldReducer';
-import type { YieldFlowType } from '../stablecoinYieldTypes';
+import type { YieldFlowType, YieldPendingTransactionState } from '../stablecoinYieldTypes';
 
 const FLOW_KEY = 'account-key:yield-id:0xtoken';
 
@@ -125,6 +128,87 @@ describe('stablecoinYieldReducer', () => {
             );
 
             expect(getSession(state, 'deposit')?.step).toBe('approve');
+        });
+
+        it('preserves the in-flight pending transaction when entering modify mode', () => {
+            const pendingTransaction: YieldPendingTransactionState = {
+                type: 'deposit',
+                txid: '0xpendingtxid',
+                amount: '100',
+            };
+            const state = stablecoinYieldReducer(
+                stablecoinYieldReducer(
+                    initSession('deposit'),
+                    stablecoinYieldActions.setPendingTx({
+                        flowType: 'deposit',
+                        flowKey: FLOW_KEY,
+                        tx: pendingTransaction,
+                    }),
+                ),
+                stablecoinYieldActions.enterModifyMode({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.action.pendingTransaction).toEqual(
+                pendingTransaction,
+            );
+        });
+    });
+
+    describe('txReview', () => {
+        const ACCOUNT_KEY = mockAccountKey({
+            symbol: 'eth',
+            descriptor: '0xfffffffffffffffffffffffffffffffffffffffe',
+            deviceStaticSessionId: '1stTestnetAddress@device_id:0',
+        });
+        const precomposedForm = { selectedFee: 'custom' } as unknown as FormState;
+        const precomposedTx = { type: 'final', fee: '1' } as unknown as PrecomposedTransactionFinal;
+        const serializedTx = { tx: '0xsignedtx', symbol: 'eth' } as const;
+
+        const storePrecomposed = (state: StablecoinYieldState) =>
+            stablecoinYieldReducer(
+                state,
+                stablecoinYieldActions.storePrecomposedTransaction({
+                    precomposedTx,
+                    precomposedForm,
+                    accountKey: ACCOUNT_KEY,
+                    flowKey: FLOW_KEY,
+                    flowType: 'deposit',
+                }),
+            );
+
+        it('tags the precomposed transaction with the flow identity and timestamp', () => {
+            const before = new Date().getTime();
+            const state = storePrecomposed(initialStablecoinYieldState);
+
+            expect(state.txReview.accountKey).toBe(ACCOUNT_KEY);
+            expect(state.txReview.flowKey).toBe(FLOW_KEY);
+            expect(state.txReview.flowType).toBe('deposit');
+            expect(state.txReview.createdTimestamp).toBeGreaterThanOrEqual(before);
+            expect(state.txReview.serializedTx).toBeUndefined();
+        });
+
+        it('clears the flow identity when the transaction is discarded', () => {
+            const state = stablecoinYieldReducer(
+                stablecoinYieldReducer(
+                    storePrecomposed(initialStablecoinYieldState),
+                    stablecoinYieldActions.storeSignedTransaction({ serializedTx }),
+                ),
+                stablecoinYieldActions.discardTransaction(),
+            );
+
+            expect(state.txReview).toEqual({
+                precomposedTx: undefined,
+                precomposedForm: undefined,
+                availableRewards: undefined,
+                serializedTx: undefined,
+                accountKey: undefined,
+                flowKey: undefined,
+                flowType: undefined,
+                createdTimestamp: undefined,
+            });
         });
     });
 });
