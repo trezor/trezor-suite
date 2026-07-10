@@ -15,6 +15,7 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import {
+    selectCanClaimByAccountKey,
     selectClaimableAmountByAccountKey,
     useSelector as useNativeStakingSelector,
 } from '@suite-native/staking';
@@ -50,6 +51,10 @@ export const StakeClaimableCard = ({ accountKey }: StakeClaimableCardProps) => {
         useNativeStakingSelector(state => selectClaimableAmountByAccountKey(state, accountKey)) ??
         '0';
 
+    const canClaim = useNativeStakingSelector(state =>
+        selectCanClaimByAccountKey(state, accountKey),
+    );
+
     const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(symbol);
 
     const handlePress = useCallback(() => {
@@ -63,6 +68,7 @@ export const StakeClaimableCard = ({ accountKey }: StakeClaimableCardProps) => {
     if (
         !symbol ||
         !isPositiveBalance(claimableAmount) ||
+        !canClaim ||
         !isSupportedStakingNetworkSymbol(symbol)
     ) {
         return null;

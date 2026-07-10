@@ -136,6 +136,7 @@ export const ClaimReviewScreen = () => {
                         onPress={handleReviewAndSign}
                         isDisabled={
                             !claimFormState ||
+                            !canClaimInstantly ||
                             isInsufficientFeeBalance ||
                             isFeeUnavailable ||
                             isPrecomposeError ||
