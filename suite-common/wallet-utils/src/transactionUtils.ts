@@ -100,7 +100,15 @@ export const isTransactionBumpable = (
     networkFeatures: NetworkFeature[] | undefined,
 ) => !!tx.rbfParams && !!networkFeatures?.includes('rbf') && !tx.deadline && tx.type !== 'joint';
 
-export type EvmNonceInfo = { confirmedNonce: number; nextNonce: number; pendingNonces: number[] };
+export type EvmNonceInfo = {
+    confirmedNonce: number;
+    nextNonce: number;
+    pendingNonces: number[];
+    // The account's own locally-known confirmed nonces. Exposed so a 'superseded' reading can be
+    // corroborated against a real confirmed tx at that nonce (see getPendingEvmNonceStatus) rather
+    // than inferred from a scalar confirmedNonce that can transiently run ahead of the tx list.
+    confirmedNonces: number[];
+};
 
 const getOwnEvmNonceSets = (transactions: WalletAccountTransaction[]) => {
     const ownNonceTxs = transactions.filter(isSentTransaction);
@@ -166,7 +174,12 @@ export const getEvmNonceInfo = (
     let nextNonce = confirmedNonce;
     while (pendingNonceSet.has(nextNonce)) nextNonce += 1;
 
-    return { confirmedNonce, nextNonce, pendingNonces: [...pendingNonceSet] };
+    return {
+        confirmedNonce,
+        nextNonce,
+        pendingNonces: [...pendingNonceSet],
+        confirmedNonces: [...confirmedNonces],
+    };
 };
 
 /**
@@ -174,19 +187,34 @@ export const getEvmNonceInfo = (
  * live from the backend). Skips `getEvmNonceInfo`'s local-data reconciliation entirely — that
  * logic exists only to compensate for an unreliable `account.misc.nonce`, and applying it here
  * would let a single bad locally-known nonce override a correct backend answer. The only local
- * adjustment still needed is walking forward past the account's own contiguous pending txs, since
- * those are what a new send must avoid colliding with.
+ * adjustment still needed is walking forward past the account's own contiguous txs, since those are
+ * what a new send must avoid colliding with.
+ *
+ * The walk advances over both pending and locally-confirmed nonces. Advancing over pending covers
+ * the queue a new send must skip; advancing over confirmed bridges the brief window while a tx is
+ * confirming, when the tx list has already recorded it as confirmed but the backend `confirmedNonce`
+ * hasn't caught up yet (fetchAndUpdateAccountThunk updates the tx list before it re-fetches
+ * account.misc.nonce). Without bridging that just-confirmed slot, `nextNonce` would momentarily lag,
+ * making the higher still-pending txs read as a nonce gap and flash a false warning in the tx list.
+ * The walk stays contiguous from `confirmedNonce`, so an isolated bad/outlier local nonce can't
+ * inflate the result the way `getEvmNonceInfo`'s global-max floor would (a non-contiguous nonce is
+ * never reached).
  */
 export const getEvmNonceInfoFromConfirmedNonce = (
     confirmedNonce: number,
     transactions: WalletAccountTransaction[],
 ): EvmNonceInfo => {
-    const { pendingNonceSet } = getOwnEvmNonceSets(transactions);
+    const { confirmedNonces, pendingNonceSet } = getOwnEvmNonceSets(transactions);
 
     let nextNonce = confirmedNonce;
-    while (pendingNonceSet.has(nextNonce)) nextNonce += 1;
+    while (pendingNonceSet.has(nextNonce) || confirmedNonces.has(nextNonce)) nextNonce += 1;
 
-    return { confirmedNonce, nextNonce, pendingNonces: [...pendingNonceSet] };
+    return {
+        confirmedNonce,
+        nextNonce,
+        pendingNonces: [...pendingNonceSet],
+        confirmedNonces: [...confirmedNonces],
+    };
 };
 
 export type PendingEvmNonceStatus = 'ok' | 'superseded' | 'gap';
@@ -194,14 +222,26 @@ export type PendingEvmNonceStatus = 'ok' | 'superseded' | 'gap';
 /**
  * Whether an already-pending transaction's own nonce is stuck, given the account's bounds from
  * `getEvmNonceInfo`. Used by the transaction list and its detail modal to grey out/warn about a
- * pending tx that can never confirm. Deliberately ignores `pendingNonces` — a pending tx's own
- * nonce is trivially a member of that set, which would otherwise always read as a "replacement".
+ * pending tx that can never confirm.
+ *
+ * `superseded` requires *positive* corroboration: a locally-known confirmed tx must actually exist at
+ * that nonce (`confirmedNonces`). The scalar `confirmedNonce` is fetched live from the backend (see
+ * useEvmNonceInfo) and can transiently run ahead of Suite's own tx list — most visibly right after
+ * sending, when the backend already counts the just-broadcast nonce while that tx hasn't landed in
+ * `selectAccountTransactions` yet. Inferring supersession from `nonce < confirmedNonce` alone flashes
+ * a false "nonce already used" warning at a tx that is actually fine. Keying off a real confirmed tx
+ * at the nonce avoids that: during the transient nothing is confirmed there, so it stays `ok` and the
+ * list catches up; only a genuine confirmed tx occupying the slot reports `superseded`.
  */
 export const getPendingEvmNonceStatus = (
     nonce: number,
-    { confirmedNonce, nextNonce }: Pick<EvmNonceInfo, 'confirmedNonce' | 'nextNonce'>,
+    {
+        confirmedNonce,
+        nextNonce,
+        confirmedNonces,
+    }: Pick<EvmNonceInfo, 'confirmedNonce' | 'nextNonce' | 'confirmedNonces'>,
 ): PendingEvmNonceStatus => {
-    if (nonce < confirmedNonce) return 'superseded'; // already mined under another tx/txid
+    if (nonce < confirmedNonce && confirmedNonces.includes(nonce)) return 'superseded'; // slot taken by a confirmed tx
     if (nonce > nextNonce) return 'gap'; // a lower nonce is still missing
 
     return 'ok';
