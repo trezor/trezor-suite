@@ -1,9 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/StellarSignTransaction.js
 
-import stellar from '@trezor/coins-stellar/runtime';
 import { StellarSignTransaction as StellarSignTransactionSchema } from '@trezor/connect-common';
 import type { PermissionRequest, StellarOperation } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import stellar from '@trezor/network-stellar/runtime';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';

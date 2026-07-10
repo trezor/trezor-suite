@@ -7,6 +7,7 @@ import type {
     TokenTransfer,
     Transaction,
 } from '@trezor/blockchain-link-types/src';
+import { isCodesignBuild } from '@trezor/env-utils';
 import {
     ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY,
     COMPUTE_BUDGET_PROGRAM_ID,
@@ -19,7 +20,7 @@ import {
     WSOL_MINT,
     tokenProgramNames,
     tokenProgramsInfo,
-} from '@trezor/coins-solana/constants';
+} from '@trezor/network-solana/constants';
 import type {
     AccountInfo,
     Address,
@@ -30,8 +31,7 @@ import type {
     SolanaTokenAccountInfo,
     SolanaValidParsedTxWithMeta,
     TokenProgramName,
-} from '@trezor/coins-solana/types';
-import { isCodesignBuild } from '@trezor/env-utils';
+} from '@trezor/network-solana/types';
 import { arrayPartition, isArrayMember, isNotNullOrUndefined } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 

@@ -1,6 +1,6 @@
 import { RoundedIcon, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
+import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
 export const SolanaStakingRewardsEmptyState = () => (
     <VStack marginTop="sp24" marginHorizontal="sp16" spacing="sp16" alignItems="center">

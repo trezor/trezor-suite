@@ -8,8 +8,8 @@ import {
     isTestnet,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import stellar from '@trezor/coins-stellar/runtime';
 import TrezorConnect from '@trezor/connect';
+import stellar from '@trezor/network-stellar/runtime';
 import { StellarAssetType } from '@trezor/protobuf/src/definitions';
 
 import { selectRawNetworkFeeInfo } from '../fees/feesReducer';

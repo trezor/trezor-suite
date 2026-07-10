@@ -1,5 +1,5 @@
 {
-    "name": "@trezor/coins-ripple",
+    "name": "@trezor/network-ripple",
     "version": "10.0.0-alpha.1",
     "license": "MIT",
     "sideEffects": false,

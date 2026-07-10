@@ -12,9 +12,9 @@ import {
     getOutputTxAmount,
     getSolanaDeactivatedRentReserves,
 } from '@suite-common/wallet-utils';
-import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/coins-solana/constants';
 import { Banner } from '@trezor/components';
 import { getSuiteVersion } from '@trezor/env-utils';
+import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/constants';
 
 interface SolanaStakingLimitBannerProps {
     account: Account;

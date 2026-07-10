@@ -13,8 +13,8 @@ import {
 } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
-import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
 import { Column, Flex, Grid } from '@trezor/components';
+import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 import { useCurrentRef } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 

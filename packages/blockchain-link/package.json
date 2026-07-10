@@ -77,10 +77,10 @@
     "dependencies": {
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
-        "@trezor/coins-ripple": "workspace:*",
-        "@trezor/coins-solana": "workspace:*",
-        "@trezor/coins-stellar": "workspace:*",
         "@trezor/env-utils": "workspace:*",
+        "@trezor/network-ripple": "workspace:*",
+        "@trezor/network-solana": "workspace:*",
+        "@trezor/network-stellar": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
         "@trezor/websocket-client": "workspace:*",

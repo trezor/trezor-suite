@@ -54,7 +54,7 @@ const solanaTxShim = {
     addSignature: jest.fn(),
 };
 
-jest.mock('@trezor/coins-solana/runtime', () => ({
+jest.mock('@trezor/network-solana/runtime', () => ({
     __esModule: true,
     default: () =>
         Promise.resolve({

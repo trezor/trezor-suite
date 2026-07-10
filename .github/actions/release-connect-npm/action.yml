@@ -32,7 +32,7 @@ inputs:
       - crypto-utils
       - device-utils
       - device-authenticity
-      - coins-solana
+      - network-solana
       - connect
       - connect-web
       - connect-webextension

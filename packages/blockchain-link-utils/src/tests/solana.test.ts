@@ -2,7 +2,7 @@ import { type TokenTransfer, type Transaction } from '@trezor/blockchain-link-ty
 import type {
     ParsedTransactionWithMeta,
     SolanaValidParsedTxWithMeta,
-} from '@trezor/coins-solana/types';
+} from '@trezor/network-solana/types';
 
 import {
     type ApiTokenAccount,

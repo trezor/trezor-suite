@@ -1,7 +1,7 @@
 import { WALLET_SDK_SOURCE } from '@suite-common/wallet-constants';
 import { type Account } from '@suite-common/wallet-types';
-import { StakeState } from '@trezor/coins-solana/constants';
-import solana from '@trezor/coins-solana/runtime';
+import { StakeState } from '@trezor/network-solana/constants';
+import solana from '@trezor/network-solana/runtime';
 import { BigNumber } from '@trezor/utils';
 
 import { getSolanaStakingAccountsByStatus } from './solanaStakingUtils';

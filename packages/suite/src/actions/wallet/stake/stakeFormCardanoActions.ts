@@ -43,8 +43,8 @@ import {
     subunitsToUnits,
     validateCardanoDrep,
 } from '@suite-common/wallet-utils';
-import type { EstimatedFee } from '@trezor/coins-solana/types'; // TODO should be Cardano instead?
 import TrezorConnect, { type FeeLevel, PROTO } from '@trezor/connect';
+import type { EstimatedFee } from '@trezor/network-solana/types'; // TODO should be Cardano instead?
 import { BigNumber } from '@trezor/utils';
 
 import { type Dispatch, type GetState } from 'src/types/suite';

@@ -34,7 +34,7 @@
         "@suite-native/transaction-management": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
-        "@trezor/coins-stellar": "workspace:*",
+        "@trezor/network-stellar": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",

@@ -11,9 +11,9 @@ import {
     type StakeFormState,
 } from '@suite-common/wallet-types';
 import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
-import solana from '@trezor/coins-solana/runtime';
 import TrezorConnect from '@trezor/connect';
 import { getSuiteVersion } from '@trezor/env-utils';
+import solana from '@trezor/network-solana/runtime';
 
 import { type Dispatch, type GetState } from 'src/types/suite';
 

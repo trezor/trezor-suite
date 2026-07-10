@@ -23,8 +23,8 @@ import {
 } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
-import { SOL_COMPUTE_UNIT_LIMIT } from '@trezor/coins-solana/constants';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
+import { SOL_COMPUTE_UNIT_LIMIT } from '@trezor/network-solana/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';

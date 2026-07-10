@@ -24,7 +24,7 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import { FeeSelector } from '@suite-native/transaction-management';
-import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/coins-solana/constants';
+import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/constants';
 
 import { EarnOutputFields } from '../components/EarnOutputFields';
 import { UnstakeCanClaimAlert } from '../components/UnstakeCanClaimAlert';

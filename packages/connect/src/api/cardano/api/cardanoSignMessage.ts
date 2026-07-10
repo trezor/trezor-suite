@@ -1,4 +1,3 @@
-import cardano from '@trezor/coins-cardano/runtime';
 import {
     CARDANO,
     type CardanoMessageHeaders,
@@ -7,6 +6,7 @@ import {
     type PermissionRequest,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import cardano from '@trezor/network-cardano/runtime';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 

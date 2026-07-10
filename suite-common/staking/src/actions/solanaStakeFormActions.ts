@@ -11,21 +11,21 @@ import {
     isSupportedSolStakingNetworkSymbol,
     networkAmountToSmallestUnit,
 } from '@suite-common/wallet-utils';
+import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import {
     MIN_SOL_AMOUNT_FOR_STAKING,
     MIN_SOL_BALANCE_FOR_STAKING,
     MIN_SOL_FOR_WITHDRAWALS,
     SOL_STAKING_OPERATION_FEE,
-} from '@trezor/coins-solana/constants';
-import solana from '@trezor/coins-solana/runtime';
+} from '@trezor/network-solana/constants';
+import solana from '@trezor/network-solana/runtime';
 import type {
     EstimatedFee,
     Fee,
     PrepareStakeSolTxResponse,
     SolanaTxMeta,
     SupportedSolanaNetworkSymbols,
-} from '@trezor/coins-solana/types';
-import TrezorConnect, { type FeeLevel } from '@trezor/connect';
+} from '@trezor/network-solana/types';
 import { BigNumber } from '@trezor/utils';
 
 import { calculate, composeStakingTransaction } from './stakeFormActions';

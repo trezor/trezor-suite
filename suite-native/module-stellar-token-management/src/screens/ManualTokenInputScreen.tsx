@@ -17,7 +17,7 @@ import {
     type StellarManageTokenStackParamList,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
-import stellar from '@trezor/coins-stellar/runtime';
+import stellar from '@trezor/network-stellar/runtime';
 
 import { composeStellarTrustlineFeesThunk } from '../thunks';
 

@@ -13,7 +13,7 @@ import {
     type TokenTransfer,
 } from '@trezor/blockchain-link-types';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
-import stellar from '@trezor/coins-stellar/runtime';
+import stellar from '@trezor/network-stellar/runtime';
 
 export const getContractAddressForNetworkSymbol = (
     symbol: NetworkSymbolExtended,

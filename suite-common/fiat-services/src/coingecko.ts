@@ -2,7 +2,7 @@ import { getNetwork, networks } from '@suite-common/wallet-config';
 import { type HistoricRates, type TickerId } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
-import stellar from '@trezor/coins-stellar/runtime';
+import stellar from '@trezor/network-stellar/runtime';
 
 import { fetchUrl } from './fetch';
 import { RateLimiter } from './limiter';

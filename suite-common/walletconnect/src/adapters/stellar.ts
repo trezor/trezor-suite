@@ -7,8 +7,8 @@ import { createThunk } from '@suite-common/redux-utils';
 import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import loadStellar from '@trezor/coins-stellar/runtime';
 import TrezorConnect, { type CallMethodResponse } from '@trezor/connect';
+import loadStellar from '@trezor/network-stellar/runtime';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
 import { selectSessionByTopic } from '../walletConnectReducer';

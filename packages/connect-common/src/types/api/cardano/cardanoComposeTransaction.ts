@@ -1,5 +1,5 @@
 import type { Utxo as AccountUtxo } from '@trezor/blockchain-link-types';
-import type { CardanoAddressParameters, types } from '@trezor/coins-cardano/types';
+import type { CardanoAddressParameters, types } from '@trezor/network-cardano/types';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';

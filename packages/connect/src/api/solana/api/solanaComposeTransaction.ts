@@ -1,8 +1,8 @@
-import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/coins-solana/constants';
-import solana from '@trezor/coins-solana/runtime';
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 import { SolanaComposeTransaction as SolanaComposeTransactionSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/network-solana/constants';
+import solana from '@trezor/network-solana/runtime';
 import { Assert } from '@trezor/schema-utils';
 
 import { assertBackendSupported, initBlockchain } from '../../../backend/BlockchainLink';

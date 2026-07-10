@@ -12,7 +12,7 @@ import {
     renderHookWithStoreProvider,
     waitFor,
 } from '@suite-native/test-utils-store';
-import { STELLAR_BASE_RESERVE } from '@trezor/coins-stellar/constants';
+import { STELLAR_BASE_RESERVE } from '@trezor/network-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { useStellarFeeScreen } from '../useStellarFeeScreen';

@@ -20,9 +20,9 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account, type FormState } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
-import { STELLAR_BASE_RESERVE } from '@trezor/coins-stellar/constants';
 import { Banner, Button, Column, Modal, Row, Text } from '@trezor/components';
 import { SpinnerIcon, WarningIcon } from '@trezor/icons';
+import { STELLAR_BASE_RESERVE } from '@trezor/network-stellar/constants';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 

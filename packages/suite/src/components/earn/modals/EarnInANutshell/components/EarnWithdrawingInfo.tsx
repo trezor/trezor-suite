@@ -6,8 +6,8 @@ import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectEthValidatorsQueue } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
-import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
 import { StepList } from '@trezor/components';
+import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
 import { useSelector } from 'src/hooks/suite';
 
