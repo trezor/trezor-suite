@@ -1,4 +1,4 @@
-import { ImageBackground } from 'react-native';
+import { ImageBackground, StyleSheet } from 'react-native';
 import { useDispatch } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
@@ -16,12 +16,15 @@ const BANNER_HEIGHT = 160;
 
 const containerStyle = prepareNativeStyle(utils => ({
     height: BANNER_HEIGHT,
+    padding: utils.spacings.sp12,
     borderRadius: utils.borders.radii.r16,
-    paddingLeft: utils.spacings.sp16,
-    paddingTop: utils.spacings.sp12,
-    paddingRight: utils.spacings.sp12,
-    paddingBottom: utils.spacings.sp16,
     overflow: 'hidden',
+}));
+
+const overlayStyle = prepareNativeStyle(() => ({
+    ...StyleSheet.absoluteFill,
+    backgroundColor: '#000000',
+    opacity: 0.1,
 }));
 
 export const OnboardingFeedbackBanner = () => {
@@ -55,22 +58,24 @@ export const OnboardingFeedbackBanner = () => {
             style={applyStyle(containerStyle)}
             fadeDuration={0}
         >
+            <Box style={applyStyle(overlayStyle)} />
             <HStack flex={1}>
                 <VStack flex={1} justifyContent="space-between" paddingTop="sp4">
-                    <VStack spacing="sp4">
+                    <Box>
                         <Text variant="headline-sm" color="contentOnDarkPrimary">
                             <Translation id="moduleHome.emptyState.onboardingFeedbackBanner.title" />
                         </Text>
-                        <Text variant="body-md" color="contentOnDarkNeutral">
+                        <Text variant="body-sm" color="contentOnDarkNeutral">
                             <Translation id="moduleHome.emptyState.onboardingFeedbackBanner.subtitle" />
                         </Text>
-                    </VStack>
+                    </Box>
                     <HStack>
                         <Button
                             size="medium"
                             intent="neutral"
                             onPress={handleGiveFeedback}
                             testID="@home/onboarding-feedback-banner/give-feedback"
+                            iconRight="arrowLineUpRight"
                         >
                             <Translation id="moduleHome.emptyState.onboardingFeedbackBanner.button" />
                         </Button>
