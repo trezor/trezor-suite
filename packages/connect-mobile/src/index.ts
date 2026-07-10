@@ -1,10 +1,11 @@
+import { connectPublicCallableMethods } from '@trezor/connect-common/src/callableMethods';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { corsValidator, parseManifest } from '@trezor/connect-common/src/data';
 import {
     DEEPLINK_VERSION,
     DEFAULT_DOMAIN_MAJOR_VER,
 } from '@trezor/connect-common/src/data/version';
-import { type CallMethodPayload } from '@trezor/connect-common/src/events';
+import { type CallMethodPayload, createErrorMessage } from '@trezor/connect-common/src/events';
 import { factoryPublic } from '@trezor/connect-common/src/factory';
 import type { ConnectMobileSettings, Manifest } from '@trezor/connect-common/src/types';
 import type { TrezorConnectCore } from '@trezor/connect-common/src/types/api';
@@ -12,7 +13,12 @@ import {
     type CancelParams,
     normalizeCancelParams,
 } from '@trezor/connect-common/src/utils/cancelParams';
-import { createDeferredManager, getWeakRandomUUID, removeTrailingSlashes } from '@trezor/utils';
+import {
+    createDeferredManager,
+    getWeakRandomUUID,
+    isArrayMember,
+    removeTrailingSlashes,
+} from '@trezor/utils';
 
 type BuildUrlParams = {
     method: string;
@@ -97,6 +103,17 @@ export class TrezorConnectDeeplink implements TrezorConnectCore<ConnectMobileSet
     }
 
     public call(params: CallMethodPayload) {
+        if (!isArrayMember(params.method, connectPublicCallableMethods)) {
+            return Promise.resolve(
+                createErrorMessage(
+                    ERRORS.TypedError(
+                        'Method_InvalidPackage',
+                        `'${params.method}' is not part of TrezorConnect public API`,
+                    ),
+                ),
+            );
+        }
+
         const { promise, promiseId } = this.messages.create();
         const { method, ...restParams } = params;
 

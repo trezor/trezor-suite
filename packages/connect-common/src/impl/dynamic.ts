@@ -1,5 +1,6 @@
-import { getSynchronize } from '@trezor/utils';
+import { getSynchronize, isArrayMember } from '@trezor/utils';
 
+import { connectPublicCallableMethods } from '../callableMethods';
 import { ERRORS } from '../constants';
 import { parseManifest, parseVersion } from '../data/connectSettings';
 import { type CallMethodPayload, createErrorMessage } from '../events';
@@ -96,6 +97,17 @@ export class TrezorConnectDynamic implements TrezorConnectCore<ConnectDynamicSet
     }
 
     public async call(params: CallMethodPayload) {
+        if (!isArrayMember(params.method, connectPublicCallableMethods)) {
+            return Promise.resolve(
+                createErrorMessage(
+                    ERRORS.TypedError(
+                        'Method_InvalidPackage',
+                        `'${params.method}' is not part of TrezorConnect public API`,
+                    ),
+                ),
+            );
+        }
+
         try {
             // Edge case - if there are simultaneous calls, we only want to call `handleBeforeCall` once
             if (this.callPending === 0) {
