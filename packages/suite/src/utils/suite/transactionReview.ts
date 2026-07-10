@@ -92,10 +92,6 @@ export const getTransactionReviewModalActionTranslation = ({
         return { id: 'TR_CANCEL_TX_BUTTON' };
     }
 
-    if (isSending) {
-        return { id: 'TR_CONFIRMING_TX' };
-    }
-
     if (routeName === 'earn-yield-deposit') {
         return { id: 'TR_EARN_YIELD_DEPOSIT' };
     }
@@ -132,6 +128,10 @@ export const getTransactionReviewModalActionTranslation = ({
 
     if (precomposedForm.tronStaking?.kind === 'vote') {
         return { id: 'TR_EARN_TRON_VOTE' };
+    }
+
+    if (isSending) {
+        return { id: 'TR_CONFIRMING_TX' };
     }
 
     return { id: 'SEND_TRANSACTION' };
