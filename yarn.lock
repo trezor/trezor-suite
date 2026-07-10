@@ -5953,72 +5953,72 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nx/nx-darwin-arm64@npm:22.7.4":
-  version: 22.7.4
-  resolution: "@nx/nx-darwin-arm64@npm:22.7.4"
+"@nx/nx-darwin-arm64@npm:23.0.0":
+  version: 23.0.0
+  resolution: "@nx/nx-darwin-arm64@npm:23.0.0"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@nx/nx-darwin-x64@npm:22.7.4":
-  version: 22.7.4
-  resolution: "@nx/nx-darwin-x64@npm:22.7.4"
+"@nx/nx-darwin-x64@npm:23.0.0":
+  version: 23.0.0
+  resolution: "@nx/nx-darwin-x64@npm:23.0.0"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@nx/nx-freebsd-x64@npm:22.7.4":
-  version: 22.7.4
-  resolution: "@nx/nx-freebsd-x64@npm:22.7.4"
+"@nx/nx-freebsd-x64@npm:23.0.0":
+  version: 23.0.0
+  resolution: "@nx/nx-freebsd-x64@npm:23.0.0"
   conditions: os=freebsd & cpu=x64
   languageName: node
   linkType: hard
 
-"@nx/nx-linux-arm-gnueabihf@npm:22.7.4":
-  version: 22.7.4
-  resolution: "@nx/nx-linux-arm-gnueabihf@npm:22.7.4"
+"@nx/nx-linux-arm-gnueabihf@npm:23.0.0":
+  version: 23.0.0
+  resolution: "@nx/nx-linux-arm-gnueabihf@npm:23.0.0"
   conditions: os=linux & cpu=arm
   languageName: node
   linkType: hard
 
-"@nx/nx-linux-arm64-gnu@npm:22.7.4":
-  version: 22.7.4
-  resolution: "@nx/nx-linux-arm64-gnu@npm:22.7.4"
+"@nx/nx-linux-arm64-gnu@npm:23.0.0":
+  version: 23.0.0
+  resolution: "@nx/nx-linux-arm64-gnu@npm:23.0.0"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@nx/nx-linux-arm64-musl@npm:22.7.4":
-  version: 22.7.4
-  resolution: "@nx/nx-linux-arm64-musl@npm:22.7.4"
+"@nx/nx-linux-arm64-musl@npm:23.0.0":
+  version: 23.0.0
+  resolution: "@nx/nx-linux-arm64-musl@npm:23.0.0"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@nx/nx-linux-x64-gnu@npm:22.7.4":
-  version: 22.7.4
-  resolution: "@nx/nx-linux-x64-gnu@npm:22.7.4"
+"@nx/nx-linux-x64-gnu@npm:23.0.0":
+  version: 23.0.0
+  resolution: "@nx/nx-linux-x64-gnu@npm:23.0.0"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@nx/nx-linux-x64-musl@npm:22.7.4":
-  version: 22.7.4
-  resolution: "@nx/nx-linux-x64-musl@npm:22.7.4"
+"@nx/nx-linux-x64-musl@npm:23.0.0":
+  version: 23.0.0
+  resolution: "@nx/nx-linux-x64-musl@npm:23.0.0"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@nx/nx-win32-arm64-msvc@npm:22.7.4":
-  version: 22.7.4
-  resolution: "@nx/nx-win32-arm64-msvc@npm:22.7.4"
+"@nx/nx-win32-arm64-msvc@npm:23.0.0":
+  version: 23.0.0
+  resolution: "@nx/nx-win32-arm64-msvc@npm:23.0.0"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@nx/nx-win32-x64-msvc@npm:22.7.4":
-  version: 22.7.4
-  resolution: "@nx/nx-win32-x64-msvc@npm:22.7.4"
+"@nx/nx-win32-x64-msvc@npm:23.0.0":
+  version: 23.0.0
+  resolution: "@nx/nx-win32-x64-msvc@npm:23.0.0"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -10705,7 +10705,7 @@ __metadata:
   resolution: "@suite-common/earn-stablecoin-defs@workspace:suite-common/earn-stablecoin-defs"
   dependencies:
     orval: "npm:8.15.0"
-    prettier: "npm:^3.8.3"
+    prettier: "npm:^3.8.4"
     zod: "npm:4.3.6"
   languageName: unknown
   linkType: soft
@@ -10737,7 +10737,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     orval: "npm:8.15.0"
-    prettier: "npm:^3.8.3"
+    prettier: "npm:^3.8.4"
     zod: "npm:4.3.6"
   languageName: unknown
   linkType: soft
@@ -10884,7 +10884,7 @@ __metadata:
   dependencies:
     chalk: "npm:^5.6.2"
     fantasticon: "npm:4.1.0"
-    prettier: "npm:^3.8.3"
+    prettier: "npm:^3.8.4"
     sharp: "npm:^0.34.2"
     svgo: "npm:^4.0.1"
   languageName: unknown
@@ -10895,7 +10895,7 @@ __metadata:
   resolution: "@suite-common/illustrations@workspace:suite-common/illustrations"
   dependencies:
     chalk: "npm:^5.6.2"
-    prettier: "npm:^3.8.3"
+    prettier: "npm:^3.8.4"
     svgo: "npm:^4.0.1"
   languageName: unknown
   linkType: soft
@@ -14737,7 +14737,7 @@ __metadata:
     "@trezor/styles-native": "workspace:*"
     expo: "npm:~56.0.6"
     expo-video: "npm:~56.1.2"
-    prettier: "npm:^3.8.3"
+    prettier: "npm:^3.8.4"
     react: "npm:19.2.3"
     react-native: "npm:0.85.3"
     react-native-reanimated: "npm:4.3.1"
@@ -16768,7 +16768,7 @@ __metadata:
   dependencies:
     "@svgr/cli": "npm:^8.1.0"
     "@trezor/eslint": "workspace:*"
-    prettier: "npm:^3.8.3"
+    prettier: "npm:^3.8.4"
     react: "npm:19.2.3"
   languageName: unknown
   linkType: soft
@@ -16938,11 +16938,11 @@ __metadata:
     cross-fetch: "npm:^4.1.0"
     fs-extra: "npm:^11.3.1"
     minimatch: "npm:^10.2.4"
-    prettier: "npm:^3.8.3"
+    prettier: "npm:^3.8.4"
     rollup: "npm:^4.60.1"
     rollup-plugin-dts: "npm:^6.4.1"
     semver: "npm:^7.7.1"
-    sort-package-json: "npm:^3.6.1"
+    sort-package-json: "npm:^4.0.0"
     tsx: "npm:^4.21.0"
     yargs: "npm:^18.0.0"
   languageName: unknown
@@ -31594,7 +31594,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"isexe@npm:^2.0.0":
+"isexe@npm:2.0.0, isexe@npm:^2.0.0":
   version: 2.0.0
   resolution: "isexe@npm:2.0.0"
   checksum: 10/7c9f715c03aff08f35e98b1fadae1b9267b38f0615d501824f9743f3aab99ef10e303ce7db3f186763a0b70a19de5791ebfc854ff884d5a8c4d92211f642ec92
@@ -33280,10 +33280,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonc-parser@npm:3.2.0":
-  version: 3.2.0
-  resolution: "jsonc-parser@npm:3.2.0"
-  checksum: 10/bd68b902e5f9394f01da97921f49c5084b2dc03a0c5b4fdb2a429f8d6f292686c1bf87badaeb0a8148d024192a88f5ad2e57b2918ba43fe25cf15f3371db64d4
+"jsonc-parser@npm:3.3.1, jsonc-parser@npm:^3.2.0":
+  version: 3.3.1
+  resolution: "jsonc-parser@npm:3.3.1"
+  checksum: 10/9b0dc391f20b47378f843ef1e877e73ec652a5bdc3c5fa1f36af0f119a55091d147a86c1ee86a232296f55c929bba174538c2bf0312610e0817a22de131cc3f4
   languageName: node
   linkType: hard
 
@@ -33291,13 +33291,6 @@ __metadata:
   version: 2.3.1
   resolution: "jsonc-parser@npm:2.3.1"
   checksum: 10/a152a04049571e66cc065f0f5d5206f27242852b3e54d0d11a1303bb607cfdb144dce406bab215257b0c879fe1678e4f7f0eb9f21d813c149bfdaa84631f9feb
-  languageName: node
-  linkType: hard
-
-"jsonc-parser@npm:^3.2.0":
-  version: 3.2.1
-  resolution: "jsonc-parser@npm:3.2.1"
-  checksum: 10/fe2df6f39e21653781d52cae20c5b9e0ab62461918d97f9430b216cea9b6500efc1d8b42c6584cc0a7548b4c996055e9cdc39f09b9782fa6957af2f45306c530
   languageName: node
   linkType: hard
 
@@ -37753,25 +37746,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nx@npm:^22.7.4":
-  version: 22.7.4
-  resolution: "nx@npm:22.7.4"
+"nx@npm:23.0.0":
+  version: 23.0.0
+  resolution: "nx@npm:23.0.0"
   dependencies:
     "@emnapi/core": "npm:1.4.5"
     "@emnapi/runtime": "npm:1.4.5"
     "@emnapi/wasi-threads": "npm:1.0.4"
     "@jest/diff-sequences": "npm:30.0.1"
     "@napi-rs/wasm-runtime": "npm:0.2.4"
-    "@nx/nx-darwin-arm64": "npm:22.7.4"
-    "@nx/nx-darwin-x64": "npm:22.7.4"
-    "@nx/nx-freebsd-x64": "npm:22.7.4"
-    "@nx/nx-linux-arm-gnueabihf": "npm:22.7.4"
-    "@nx/nx-linux-arm64-gnu": "npm:22.7.4"
-    "@nx/nx-linux-arm64-musl": "npm:22.7.4"
-    "@nx/nx-linux-x64-gnu": "npm:22.7.4"
-    "@nx/nx-linux-x64-musl": "npm:22.7.4"
-    "@nx/nx-win32-arm64-msvc": "npm:22.7.4"
-    "@nx/nx-win32-x64-msvc": "npm:22.7.4"
+    "@nx/nx-darwin-arm64": "npm:23.0.0"
+    "@nx/nx-darwin-x64": "npm:23.0.0"
+    "@nx/nx-freebsd-x64": "npm:23.0.0"
+    "@nx/nx-linux-arm-gnueabihf": "npm:23.0.0"
+    "@nx/nx-linux-arm64-gnu": "npm:23.0.0"
+    "@nx/nx-linux-arm64-musl": "npm:23.0.0"
+    "@nx/nx-linux-x64-gnu": "npm:23.0.0"
+    "@nx/nx-linux-x64-musl": "npm:23.0.0"
+    "@nx/nx-win32-arm64-msvc": "npm:23.0.0"
+    "@nx/nx-win32-x64-msvc": "npm:23.0.0"
     "@tybys/wasm-util": "npm:0.9.0"
     "@yarnpkg/lockfile": "npm:1.1.0"
     "@zkochan/js-yaml": "npm:0.0.7"
@@ -37833,8 +37826,9 @@ __metadata:
     is-interactive: "npm:1.0.0"
     is-unicode-supported: "npm:0.1.0"
     is-wsl: "npm:2.2.0"
+    isexe: "npm:2.0.0"
     json5: "npm:2.2.3"
-    jsonc-parser: "npm:3.2.0"
+    jsonc-parser: "npm:3.3.1"
     lines-and-columns: "npm:2.0.3"
     log-symbols: "npm:4.1.0"
     math-intrinsics: "npm:1.1.0"
@@ -37847,7 +37841,7 @@ __metadata:
     once: "npm:1.4.0"
     onetime: "npm:5.1.2"
     open: "npm:8.4.2"
-    ora: "npm:5.3.0"
+    ora: "npm:5.4.1"
     path-key: "npm:3.1.1"
     picocolors: "npm:1.1.1"
     proxy-from-env: "npm:2.1.0"
@@ -37865,12 +37859,12 @@ __metadata:
     strip-bom: "npm:3.0.0"
     supports-color: "npm:7.2.0"
     tar-stream: "npm:2.2.0"
-    tmp: "npm:0.2.4"
-    tree-kill: "npm:1.2.2"
+    tmp: "npm:0.2.6"
     tsconfig-paths: "npm:4.2.0"
     tslib: "npm:2.8.1"
     util-deprecate: "npm:1.0.2"
     wcwidth: "npm:1.0.1"
+    which: "npm:3.0.1"
     wrap-ansi: "npm:7.0.0"
     wrappy: "npm:1.0.2"
     y18n: "npm:5.0.8"
@@ -37909,7 +37903,7 @@ __metadata:
   bin:
     nx: ./dist/bin/nx.js
     nx-cloud: ./dist/bin/nx-cloud.js
-  checksum: 10/22b7f64704d2358def4be30a8ea887e3f499741e971863fb0802da628f48965e93865b9bcf035cf049f110d5368961275a2af1f2cfbfe6dfc942ee50c9044e78
+  checksum: 10/445745c8a4d271bf41c955e04abe6eb4c23d0a0cf52c15314f11a9d2fa5df4214ef42eeac67a772635de6a35ac120330bbeda058c5a235a28827dbe200fca388
   languageName: node
   linkType: hard
 
@@ -38243,19 +38237,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ora@npm:5.3.0":
-  version: 5.3.0
-  resolution: "ora@npm:5.3.0"
+"ora@npm:5.4.1, ora@npm:^5.1.0, ora@npm:^5.4.1":
+  version: 5.4.1
+  resolution: "ora@npm:5.4.1"
   dependencies:
-    bl: "npm:^4.0.3"
+    bl: "npm:^4.1.0"
     chalk: "npm:^4.1.0"
     cli-cursor: "npm:^3.1.0"
     cli-spinners: "npm:^2.5.0"
     is-interactive: "npm:^1.0.0"
-    log-symbols: "npm:^4.0.0"
+    is-unicode-supported: "npm:^0.1.0"
+    log-symbols: "npm:^4.1.0"
     strip-ansi: "npm:^6.0.0"
     wcwidth: "npm:^1.0.1"
-  checksum: 10/989a075b596c297acfee647010e555709bd657dedd9eee9ff99d923cbc65c68b6189c2c9ea58167675b101433509f87d1674a84047c7b766babab15d9220f1d5
+  checksum: 10/8d071828f40090a8e1c6e8f350c6eb065808e9ab2b3e57fa37e0d5ae78cb46dac00117c8f12c3c8b8da2923454afbd8265e08c10b69881170c5b269f451e7fef
   languageName: node
   linkType: hard
 
@@ -38270,23 +38265,6 @@ __metadata:
     strip-ansi: "npm:^5.2.0"
     wcwidth: "npm:^1.0.1"
   checksum: 10/c8ea1fe255fe9739673c0df6e9bc454061aded80372f2018be93336e16ca0988cc4181e4ddd971cb8062f2f12eb922ef2fec9742979f3c8bcac2b51346e35f45
-  languageName: node
-  linkType: hard
-
-"ora@npm:^5.1.0, ora@npm:^5.4.1":
-  version: 5.4.1
-  resolution: "ora@npm:5.4.1"
-  dependencies:
-    bl: "npm:^4.1.0"
-    chalk: "npm:^4.1.0"
-    cli-cursor: "npm:^3.1.0"
-    cli-spinners: "npm:^2.5.0"
-    is-interactive: "npm:^1.0.0"
-    is-unicode-supported: "npm:^0.1.0"
-    log-symbols: "npm:^4.1.0"
-    strip-ansi: "npm:^6.0.0"
-    wcwidth: "npm:^1.0.1"
-  checksum: 10/8d071828f40090a8e1c6e8f350c6eb065808e9ab2b3e57fa37e0d5ae78cb46dac00117c8f12c3c8b8da2923454afbd8265e08c10b69881170c5b269f451e7fef
   languageName: node
   linkType: hard
 
@@ -39570,12 +39548,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^3.8.3":
-  version: 3.8.3
-  resolution: "prettier@npm:3.8.3"
+"prettier@npm:^3.8.4":
+  version: 3.8.4
+  resolution: "prettier@npm:3.8.4"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 10/4b3b12cbb29e4c96bed936e5d070167552500c18d37676fb3e0caae6199c42860662608e4dc116230698f6e2bb0267ef2548158224c92d40f188d309d72fdd6f
+  checksum: 10/54684a3cc6689238692b29fab541c01934af7677be94c02293ba49981a1ac121c8bebe2a865f0c3b963e99d208f847c53aed354cc0ce8750e2d45791d64506c5
   languageName: node
   linkType: hard
 
@@ -43299,9 +43277,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sort-package-json@npm:^3.6.1":
-  version: 3.6.1
-  resolution: "sort-package-json@npm:3.6.1"
+"sort-package-json@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "sort-package-json@npm:4.0.0"
   dependencies:
     detect-indent: "npm:^7.0.2"
     detect-newline: "npm:^4.0.1"
@@ -43312,7 +43290,7 @@ __metadata:
     tinyglobby: "npm:^0.2.15"
   bin:
     sort-package-json: cli.js
-  checksum: 10/e4bcf8432b570143e94b6b302fc941fd0b564e8f9f423bc55ae469c81e6f84c35e456f024d8d186a2ec6ca120407444e6ceb5a5f0feb7c877c159ef716f651ed
+  checksum: 10/82c1fea3d4cfdc4cbba794fcff189e1f1b969840b4d6fe32b4b6e5442862882227e5ae9e285cc4436b0be5c9ad96c96d79b5c7d8d126eec5860ee9596f585fed
   languageName: node
   linkType: hard
 
@@ -44823,10 +44801,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tmp@npm:0.2.4":
-  version: 0.2.4
-  resolution: "tmp@npm:0.2.4"
-  checksum: 10/6fa6c4e6749824e51cb45f0b050090f0fec6b037cfd327d328ebaf3eae80b7e1a53c6651f9bc36f1fa80cf367ec9dc05067fc1a14034fcfbba96d3a2aaa5c732
+"tmp@npm:0.2.6":
+  version: 0.2.6
+  resolution: "tmp@npm:0.2.6"
+  checksum: 10/4ba072821d65f6ec0ae680dd49261bcc66c96a5a463c80ca040747256238aaad68ad5db7aa8367dd1554d22aa77c2988bdb1c5556ecfc4df105f5b73206b7d9b
   languageName: node
   linkType: hard
 
@@ -45003,8 +44981,8 @@ __metadata:
     jest-environment-node: "npm:^29.7.0"
     jest-expo: "npm:~56.0.4"
     node-gyp: "npm:12.2.0"
-    nx: "npm:^22.7.4"
-    prettier: "npm:^3.8.3"
+    nx: "npm:23.0.0"
+    prettier: "npm:^3.8.4"
     rimraf: "npm:^6.1.2"
     ts-node: "npm:^10.9.2"
     tslib: "npm:^2.6.2"
@@ -47467,6 +47445,17 @@ __metadata:
     gopd: "npm:^1.2.0"
     has-tostringtag: "npm:^1.0.2"
   checksum: 10/12be30fb88567f9863186bee1777f11bea09dd59ed8b3ce4afa7dd5cade75e2f4cc56191a2da165113cc7cf79987ba021dac1e22b5b62aa7e5c56949f2469a68
+  languageName: node
+  linkType: hard
+
+"which@npm:3.0.1":
+  version: 3.0.1
+  resolution: "which@npm:3.0.1"
+  dependencies:
+    isexe: "npm:^2.0.0"
+  bin:
+    node-which: bin/which.js
+  checksum: 10/adf720fe9d84be2d9190458194f814b5e9015ae4b88711b150f30d0f4d0b646544794b86f02c7ebeec1db2029bc3e83a7ff156f542d7521447e5496543e26890
   languageName: node
   linkType: hard
 
