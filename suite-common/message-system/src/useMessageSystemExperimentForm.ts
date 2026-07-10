@@ -1,57 +1,53 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type Action, type Category } from '@suite-common/suite-types';
+import { type Experiments } from '@suite-common/suite-types';
 
 import { parseAndValidateJsonForm } from './messageSystemFormCore';
 import { selectMessageSystemConfig } from './messageSystemSelectors';
-import { getDefaultActionByCategory } from './messageSystemUtils';
-import { validateMessageForm } from './messageSystemValidation';
+import { getDefaultExperiment } from './messageSystemUtils';
+import { validateExperimentForm } from './messageSystemValidation';
 
-type UseMessageSystemMessageFormArgs = {
+type UseMessageSystemExperimentFormArgs = {
     // Maps a raw yup error message (e.g. the 'TR_REQUIRED_FIELD' key) to a display string.
     formatFieldError?: (message: string) => string;
 };
 
-export const useMessageSystemMessageForm = ({
+export const useMessageSystemExperimentForm = ({
     formatFieldError,
-}: UseMessageSystemMessageFormArgs = {}) => {
+}: UseMessageSystemExperimentFormArgs = {}) => {
     const config = useSelector(selectMessageSystemConfig);
     const [formData, setFormData] = useState<string>(() =>
-        JSON.stringify(getDefaultActionByCategory('banner'), null, 2),
+        JSON.stringify(getDefaultExperiment(), null, 2),
     );
-    const messageIds = useMemo(
-        () => new Set(config?.actions.map(action => action.message.id)),
+    const experimentIds = useMemo(
+        () => new Set(config?.experiments?.map(experiment => experiment.experiment.id)),
         [config],
     );
 
     const { parsedData, validationErrors } = useMemo(
         () =>
-            parseAndValidateJsonForm<Action, ReturnType<typeof validateMessageForm>>({
+            parseAndValidateJsonForm<Experiments, ReturnType<typeof validateExperimentForm>>({
                 formData,
-                validate: validateMessageForm,
+                validate: validateExperimentForm,
                 getDuplicateIdError: validated =>
-                    messageIds.has(validated.message.id)
+                    experimentIds.has(validated.experiment.id)
                         ? {
-                              field: 'message.id',
-                              message: `must be unique. “${validated.message.id}” is already in use.`,
+                              field: 'experiment.id',
+                              message: `must be unique. “${validated.experiment.id}” is already in use.`,
                           }
                         : null,
                 formatFieldError,
             }),
-        [formData, formatFieldError, messageIds],
+        [formData, formatFieldError, experimentIds],
     );
 
     const formatJSON = useCallback(() => {
         setFormData(JSON.stringify(parsedData, null, 2));
     }, [parsedData]);
 
-    const applyPreset = useCallback((category: Category) => {
-        setFormData(JSON.stringify(getDefaultActionByCategory(category), null, 2));
-    }, []);
-
-    const resetForm = useCallback(() => {
-        setFormData(JSON.stringify(getDefaultActionByCategory('banner'), null, 2));
+    const applyPreset = useCallback(() => {
+        setFormData(JSON.stringify(getDefaultExperiment(), null, 2));
     }, []);
 
     return {
@@ -63,6 +59,6 @@ export const useMessageSystemMessageForm = ({
         canFormat: parsedData !== null,
         formatJSON,
         applyPreset,
-        resetForm,
+        resetForm: applyPreset,
     };
 };
