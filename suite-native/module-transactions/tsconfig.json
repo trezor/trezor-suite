@@ -6,9 +6,6 @@
             "path": "../../suite-common/dependency-injection"
         },
         {
-            "path": "../../suite-common/discreet-mode"
-        },
-        {
             "path": "../../suite-common/formatters"
         },
         {

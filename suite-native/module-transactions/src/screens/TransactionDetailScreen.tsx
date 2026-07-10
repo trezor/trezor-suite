@@ -4,8 +4,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation, usePreventRemove } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
-import { useFormatters } from '@suite-common/formatters';
 import {
     type AccountsRootState,
     createTargets,
@@ -27,6 +25,7 @@ import { useTransactionDetails } from '@suite-native/transaction-management';
 import {
     InstantStakeBanner,
     TransactionName,
+    UnstakeTransactionDetailTitle,
     getUnstakeTxAmount,
     useFetchMissingTransactionFiatRates,
 } from '@suite-native/transactions';
@@ -40,8 +39,6 @@ export const TransactionDetailScreen = ({
     const { askForRating } = useInAppRating();
     const navigation = useNavigation();
     const { analytics } = useServices(selectNativeAnalyticsDep);
-    const { CryptoAmountFormatter: cryptoAmountFormatter } = useFormatters();
-    const { isDiscreetMode } = useDiscreetMode();
     const { txid, accountKey, tokenContract, closeActionType = 'back', source } = route.params;
 
     const { transaction, isPending, tokenTransfer, openInBlockchain } = useTransactionDetails({
@@ -77,16 +74,6 @@ export const TransactionDetailScreen = ({
 
     const unstakeAmount = getUnstakeTxAmount(transaction);
     const isUnstakeTransaction = unstakeAmount !== undefined;
-    const formattedUnstakeAmount = isUnstakeTransaction
-        ? cryptoAmountFormatter.format(unstakeAmount, {
-              symbol: transaction.symbol,
-              isBalance: false,
-              isEllipsisAppended: false,
-          })
-        : '';
-    const displayedUnstakeAmount = isDiscreetMode
-        ? redactNumericalSubstring(formattedUnstakeAmount)
-        : formattedUnstakeAmount;
 
     const handleOpenBlockchain = () => {
         analytics.report({
@@ -104,34 +91,35 @@ export const TransactionDetailScreen = ({
                     closeActionType={closeActionType}
                     customContent={
                         <HStack spacing="sp8" alignItems="center" justifyContent="center">
-                            {!isUnstakeTransaction && (
-                                <CryptoIconWithNetwork
+                            {isUnstakeTransaction ? (
+                                <UnstakeTransactionDetailTitle
+                                    unstakeAmount={unstakeAmount}
                                     symbol={transaction.symbol}
-                                    contractAddress={tokenTransfer?.contract}
+                                    variant="body-md-strong"
                                 />
+                            ) : (
+                                <>
+                                    <CryptoIconWithNetwork
+                                        symbol={transaction.symbol}
+                                        contractAddress={tokenTransfer?.contract}
+                                    />
+                                    <Text variant="body-md-strong">
+                                        <Translation
+                                            id="transactions.detail.header"
+                                            values={{
+                                                transactionType: () => (
+                                                    <TransactionName
+                                                        key={transaction.txid}
+                                                        transaction={transaction}
+                                                        isPending={isPending}
+                                                        variant="body-md-strong"
+                                                    />
+                                                ),
+                                            }}
+                                        />
+                                    </Text>
+                                </>
                             )}
-                            <Text variant="body-md-strong">
-                                {isUnstakeTransaction ? (
-                                    <Translation
-                                        id="transactions.detail.unstakeHeader"
-                                        values={{ amount: displayedUnstakeAmount }}
-                                    />
-                                ) : (
-                                    <Translation
-                                        id="transactions.detail.header"
-                                        values={{
-                                            transactionType: () => (
-                                                <TransactionName
-                                                    key={transaction.txid}
-                                                    transaction={transaction}
-                                                    isPending={isPending}
-                                                    variant="body-md-strong"
-                                                />
-                                            ),
-                                        }}
-                                    />
-                                )}
-                            </Text>
                         </HStack>
                     }
                 />
