@@ -3,9 +3,6 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import type { DexApprovalType, ExchangeTrade } from 'invity-api';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { goto } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     TRADING_EXCHANGE_FORM,
     TRADING_EXCHANGE_FORM_CEX,
@@ -67,7 +64,6 @@ import { useTradingFormAccount } from './useTradingFormAccount';
 import { useTradingReceiveAddress } from './useTradingReceiveAddress';
 
 export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const type = 'exchange';
     const dispatch = useDispatch();
     const quotesRequest = useSelector(selectTradingExchangeQuotesRequest);
@@ -117,7 +113,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const values = useWatch({ control }) as TradingExchangeFormProps;
     const { provider } = values;
     const {
-        rateType,
         exchangeType,
         sendCryptoSelect,
         receiveCryptoSelect,
@@ -222,42 +217,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         setShowReserveBanner,
         receiveAddress: tradingReceiveAddress.receiveAddress,
     });
-
-    const selectQuote = async (quote: ExchangeTrade) => {
-        const quoteProvider =
-            exchangeInfo?.providerInfos && quote.exchange
-                ? exchangeInfo?.providerInfos[quote.exchange]
-                : null;
-
-        analytics.report({
-            type: events.tradeExchangeEvent.name,
-            payload: {
-                action: 'continue',
-                step: 'exchange-form',
-                sendCryptoLabel: sendCryptoSelect?.displaySymbol,
-                sendCryptoNetworkSymbol: sendCryptoSelect?.networkSymbol,
-                sendCryptoContractAddress: sendCryptoSelect?.contractAddress ?? undefined,
-                receiveCryptoLabel: receiveCryptoSelect?.displaySymbol,
-                receiveCryptoNetworkSymbol: receiveCryptoSelect?.networkSymbol,
-                receiveCryptoContractAddress: receiveCryptoSelect?.contractAddress ?? undefined,
-                exchangeType,
-                exchangeName: quoteProvider?.companyName,
-                rateType,
-                fractionButton: helpers.fractionButton
-                    ? `${(100 / helpers.fractionButton).toString()}%`
-                    : undefined,
-            },
-        });
-
-        await dispatch(
-            exchangeThunks.selectQuoteThunk({
-                quote,
-                nextStep: () => {
-                    dispatch(goto({ routeName: 'wallet-trading-exchange-confirm' }));
-                },
-            }),
-        );
-    };
 
     const confirmTrade = async ({
         receiveAddress: confirmReceiveAddress,
@@ -513,7 +472,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         setAmountLimits,
         onQuoteSelected,
         verifyAddress,
-        selectQuote,
         confirmTrade,
         approveTransaction,
         revokeApproval,
