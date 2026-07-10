@@ -11,11 +11,15 @@ import { type SuiteSyncDataRootState, type WalletData } from '../suiteSyncDataRe
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<SuiteSyncDataRootState>();
 
-export const selectWalletById = (
-    state: SuiteSyncDataRootState,
-    walletDescriptor: WalletDescriptor | null,
-): WalletData | null =>
-    walletDescriptor !== null ? (state.suiteSyncData.wallets[walletDescriptor] ?? null) : null;
+export const selectWalletById = createMemoizedSelector(
+    [
+        (state: SuiteSyncDataRootState) => state.suiteSyncData.wallets,
+        (_state: SuiteSyncDataRootState, walletDescriptor: WalletDescriptor | null) =>
+            walletDescriptor,
+    ],
+    (wallets, walletDescriptor): WalletData | null =>
+        walletDescriptor !== null ? (wallets[walletDescriptor] ?? null) : null,
+);
 
 export const selectAllAccountsForWallet = createMemoizedSelector(
     [(state, walletDescriptor) => selectWalletById(state, walletDescriptor)],
