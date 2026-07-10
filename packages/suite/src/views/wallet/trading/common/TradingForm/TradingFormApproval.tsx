@@ -18,6 +18,7 @@ import { WarningIcon } from '@trezor/icons';
 import { PendingTransactionInfo } from '@trezor/product-components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
+import { selectExchangeQuoteThunk } from 'src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAllowanceContext } from 'src/hooks/wallet/allowance';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -42,7 +43,7 @@ export const TradingFormApproval = () => {
     const { tx, state: allowanceState } = useAllowanceContext();
 
     const {
-        selectQuote,
+        watch,
         approveTransaction,
         revokeApproval,
         refreshQuotes,
@@ -53,9 +54,12 @@ export const TradingFormApproval = () => {
         isComposing,
         form: {
             state: { isFormLoading, isFormInvalid },
+            helpers,
         },
         account,
     } = context;
+
+    const { exchangeType, rateType } = watch();
 
     const getCryptoInfo = useTradingExchangeCryptoAndProviderInfo();
 
@@ -146,7 +150,14 @@ export const TradingFormApproval = () => {
             return;
         }
 
-        selectQuote(selectedQuote);
+        dispatch(
+            selectExchangeQuoteThunk({
+                quote: selectedQuote,
+                exchangeType,
+                rateType,
+                fractionButton: helpers.fractionButton,
+            }),
+        );
     };
 
     const onRefreshClick = async () => {

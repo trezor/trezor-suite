@@ -11,6 +11,7 @@ import {
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { Button } from '@trezor/components';
 
+import { selectExchangeQuoteThunk } from 'src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingStellarActivation } from 'src/hooks/wallet/trading/useTradingStellarActivation';
@@ -34,12 +35,12 @@ export const TradingFormOfferExchangeActions = () => {
         setIsLoadingQuote,
         confirmTrade,
         isComposing,
-        form: { state },
+        form: { state, helpers },
     } = context;
 
     const modalControls = useReceiveAddressModalControls();
 
-    const { outputs, sendCryptoSelect, receiveCryptoSelect } = watch();
+    const { outputs, sendCryptoSelect, receiveCryptoSelect, exchangeType, rateType } = watch();
     const { amount, tokenAddress } = getTradingFirstOutput(outputs);
     const areSatsUsed = !!shouldSendInSats;
 
@@ -118,7 +119,14 @@ export const TradingFormOfferExchangeActions = () => {
 
             if (!newTrade) return;
 
-            context.selectQuote(newTrade);
+            dispatch(
+                selectExchangeQuoteThunk({
+                    quote: newTrade,
+                    exchangeType,
+                    rateType,
+                    fractionButton: helpers.fractionButton,
+                }),
+            );
         } catch {
             // error already logged by confirmTrade thunk
         }
