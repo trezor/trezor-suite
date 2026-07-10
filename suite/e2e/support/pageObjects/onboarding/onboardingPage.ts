@@ -44,6 +44,8 @@ export class OnboardingPage {
     readonly deviceCompromisedModal: Locator;
     readonly pairingInputAtIndex = (index: number) =>
         this.page.getByTestId('@modal/thp-paring').locator('input').nth(index);
+    readonly onboardingFeedbackBanner: Locator;
+    readonly onboardingFeedbackBannerCTAButton: Locator;
 
     constructor(
         public page: Page,
@@ -82,6 +84,12 @@ export class OnboardingPage {
         this.finalButton = this.page.getByTestId('@onboarding/final-button');
         this.continueAtYourOwnRiskButton = this.page.getByTestId('@continue-to-suite');
         this.deviceCompromisedModal = this.page.getByTestId('@device-compromised');
+        this.onboardingFeedbackBanner = this.page.getByTestId(
+            '@dashboard/onboarding-feedback-banner',
+        );
+        this.onboardingFeedbackBannerCTAButton = this.page.getByTestId(
+            '@dashboard/onboarding-feedback-banner/button',
+        );
     }
 
     @step()
