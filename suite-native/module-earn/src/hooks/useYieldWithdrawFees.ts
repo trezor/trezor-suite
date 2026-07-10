@@ -241,7 +241,9 @@ const composeYieldWithdrawTransaction = async ({
     });
 
     const [{ nonce }, estimatedFee] = await Promise.all([
-        dispatch(ethereumGetCurrentNonceThunk({ selectedAccount: account })).unwrap(),
+        dispatch(
+            ethereumGetCurrentNonceThunk({ selectedAccount: account, fetchConfirmedNonce: true }),
+        ).unwrap(),
         TrezorConnect.blockchainEstimateFee({
             coin: account.symbol,
             identity: getAccountIdentity(account),
