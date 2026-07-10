@@ -133,6 +133,8 @@ const prepareSignedClaimReview = (store: ReturnType<typeof buildStore>) => {
             precomposedTx: precomposedTransaction,
             precomposedForm,
             accountKey: account.key,
+            flowKey: account.key,
+            flowType: 'claim',
         }),
     );
     store.dispatch(
@@ -211,6 +213,38 @@ describe('pushYieldClaimReviewThunk', () => {
             serializedTx: undefined,
             accountKey: undefined,
         });
+    });
+
+    it('rejects the push when the signed tx belongs to a different flow key', async () => {
+        const store = buildStore();
+        prepareSignedClaimReview(store);
+
+        const otherFlowKey = 'other-flow-key';
+        store.dispatch(
+            stablecoinYieldActions.initSession({ flowType: 'claim', flowKey: otherFlowKey }),
+        );
+        store.dispatch(
+            stablecoinYieldActions.storeActionReviewData({
+                flowType: 'claim',
+                flowKey: otherFlowKey,
+                rewards,
+                unsignedTransaction,
+            }),
+        );
+
+        const action = await store.dispatch(
+            pushYieldClaimReviewThunk({
+                account,
+                flowKey: otherFlowKey,
+            }) as any,
+        );
+
+        expect(isRejected(action)).toBe(true);
+        expect(action.payload).toEqual({
+            error: 'push-transaction-failed',
+            message: 'Transaction not found.',
+        });
+        expect(pushTransactionMock).not.toHaveBeenCalled();
     });
 
     it('maps replacement push failure to pending conflict and clears review tx state', async () => {

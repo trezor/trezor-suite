@@ -7,6 +7,7 @@ import { isRejected } from '@reduxjs/toolkit';
 import { selectIsDeviceConnected } from '@suite-common/device';
 import {
     type StablecoinYieldRootState,
+    isYieldTxReviewForFlow,
     selectStablecoinYieldTxReview,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -58,7 +59,16 @@ export const useYieldClaimReview = ({
     const txReview = useSelector((state: StablecoinYieldRootState) =>
         selectStablecoinYieldTxReview(state),
     );
-    const isClaimSigned = txReview.accountKey === account.key && !!txReview.serializedTx;
+    // A leftover signed tx from a previous review of the same account must not appear
+    // as signed here, hence the flow identity and `notBefore` guard.
+    const [reviewOpenedAt] = useState(() => Date.now());
+    const isClaimSigned =
+        isYieldTxReviewForFlow(txReview, {
+            accountKey: account.key,
+            flowKey,
+            flowType: 'claim',
+            notBefore: reviewOpenedAt,
+        }) && !!txReview.serializedTx;
     const claimStatus: YieldReviewStatus =
         claimActionStatus === 'idle' && isClaimSigned ? 'signed' : claimActionStatus;
     const { leaveReviewFromDeviceCancel, markReviewNavigationSuccess } =

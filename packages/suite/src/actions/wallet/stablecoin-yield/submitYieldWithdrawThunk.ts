@@ -78,6 +78,8 @@ export const submitYieldWithdrawThunk = createThunk(
                 amount,
                 token: reviewToken,
                 unsignedTransaction,
+                flowKey,
+                flowType,
                 dispatch,
                 getState,
                 selectedFee,

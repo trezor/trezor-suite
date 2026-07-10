@@ -11,6 +11,7 @@ import {
     type YieldFlowDisplayToken,
     type YieldFlowResolvedData,
     type YieldWithdrawFlowType,
+    isYieldTxReviewForFlow,
     selectFormDraft,
     selectStablecoinYieldTxReview,
 } from '@suite-common/wallet-core';
@@ -78,8 +79,16 @@ export const useYieldWithdrawReview = ({
         selectFormDraft<FormState>(state, formDraftKey),
     );
     const selectedFee = useMemo(() => getSelectedEvmFeeFromFormDraft(formDraft), [formDraft]);
+    // A leftover signed tx from a previous review of the same account must not appear
+    // as signed here, hence the flow identity and `notBefore` guard.
+    const [reviewOpenedAt] = useState(() => Date.now());
     const isWithdrawSigned =
-        txReview.accountKey === flowData.account.key && !!txReview.serializedTx;
+        isYieldTxReviewForFlow(txReview, {
+            accountKey: flowData.account.key,
+            flowKey,
+            flowType,
+            notBefore: reviewOpenedAt,
+        }) && !!txReview.serializedTx;
     const withdrawStatus: YieldReviewStatus =
         withdrawActionStatus === 'idle' && isWithdrawSigned ? 'signed' : withdrawActionStatus;
     const { leaveReviewFromDeviceCancel, markReviewNavigationSuccess } =
