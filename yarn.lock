@@ -13769,7 +13769,6 @@ __metadata:
     "@react-navigation/native": "npm:7.1.28"
     "@react-navigation/native-stack": "npm:7.12.0"
     "@suite-common/dependency-injection": "workspace:*"
-    "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"

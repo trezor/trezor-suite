@@ -2,6 +2,7 @@ export * from './components/InstantStakeBanner';
 export * from './components/TransactionList';
 export * from './components/TransactionIcon';
 export * from './components/TransactionName';
+export * from './components/UnstakeTransactionDetailTitle';
 export * from './components/TransactionOutputLabel';
 export * from './components/TransactionOutputLabelEditable';
 export * from './components/TokenTransferListItem';

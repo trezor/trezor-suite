@@ -10,6 +10,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { getUnstakeTxAmount } from '../utils';
+import { UnstakeTransactionDetailTitle } from './UnstakeTransactionDetailTitle';
 
 type TransactionNameProps = {
     transaction: WalletAccountTransaction;
@@ -187,22 +188,12 @@ export const TransactionName = ({ transaction, isPending, variant }: Transaction
     const unstakeAmount = getUnstakeTxAmount(transaction);
 
     if (unstakeAmount !== undefined && !isPending) {
-        const formattedUnstakeAmount = cryptoAmountFormatter.format(unstakeAmount, {
-            symbol: transaction.symbol,
-            isBalance: false,
-            isEllipsisAppended: false,
-        });
-        const displayedUnstakeAmount = isDiscreetMode
-            ? redactNumericalSubstring(formattedUnstakeAmount)
-            : formattedUnstakeAmount;
-
         return (
-            <Text variant={variant}>
-                <Translation
-                    id="transactions.detail.unstakeHeader"
-                    values={{ amount: displayedUnstakeAmount }}
-                />
-            </Text>
+            <UnstakeTransactionDetailTitle
+                unstakeAmount={unstakeAmount}
+                symbol={transaction.symbol}
+                variant={variant}
+            />
         );
     }
 
