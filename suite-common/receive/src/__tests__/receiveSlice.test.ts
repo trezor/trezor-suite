@@ -8,7 +8,7 @@ import {
     receiveActions,
     receiveReducer,
     selectCurrentFreshAddress,
-    selectReceiveRevealedAddresses,
+    selectTouchedAddresses,
 } from '../receiveSlice';
 
 const bitcoinAccount = mockWalletAccount({ symbol: 'btc' });
@@ -42,7 +42,7 @@ describe('receiveSlice', () => {
 
         expect(state.accounts).toEqual({
             [bitcoinAccount.key]: {
-                revealedAddresses: [
+                touchedAddresses: [
                     {
                         path: 'btc-path',
                         address: 'btc-address',
@@ -56,7 +56,40 @@ describe('receiveSlice', () => {
         });
     });
 
-    it('stores fresh and revealed addresses per account', () => {
+    it('loads persisted accounts with touched addresses on @storage/load', () => {
+        const state = receiveReducer(undefined, {
+            type: '@storage/load',
+            payload: {
+                receive: [
+                    {
+                        key: bitcoinAccount.key,
+                        value: {
+                            touchedAddresses: [
+                                {
+                                    path: 'btc-path',
+                                    address: 'btc-address',
+                                },
+                            ],
+                        },
+                    },
+                ],
+            },
+        });
+
+        expect(state.accounts).toEqual({
+            [bitcoinAccount.key]: {
+                touchedAddresses: [
+                    {
+                        path: 'btc-path',
+                        address: 'btc-address',
+                    },
+                ],
+                currentFreshAddress: undefined,
+            },
+        });
+    });
+
+    it('stores fresh and touched addresses per account', () => {
         let state = receiveReducer(undefined, { type: 'test-init' });
 
         state = receiveReducer(
@@ -85,7 +118,7 @@ describe('receiveSlice', () => {
         );
 
         expect(state.accounts[bitcoinAccount.key]).toEqual({
-            revealedAddresses: [
+            touchedAddresses: [
                 {
                     path: 'used-btc',
                     address: 'btc-used-address',
@@ -94,7 +127,7 @@ describe('receiveSlice', () => {
             currentFreshAddress: undefined,
         });
         expect(state.accounts[ethereumAccount.key]).toEqual({
-            revealedAddresses: [],
+            touchedAddresses: [],
             currentFreshAddress: {
                 path: 'fresh-eth',
                 address: 'eth-fresh-address',
@@ -102,7 +135,7 @@ describe('receiveSlice', () => {
         });
     });
 
-    it('keeps an existing revealed address only once', () => {
+    it('keeps an existing touched address only once', () => {
         let state = receiveReducer(undefined, { type: 'test-init' });
 
         state = receiveReducer(
@@ -110,7 +143,7 @@ describe('receiveSlice', () => {
             receiveActions.showAddress(bitcoinAccount.key, 'path-1', 'address-1'),
         );
 
-        expect(state.accounts[bitcoinAccount.key]?.revealedAddresses).toEqual([
+        expect(state.accounts[bitcoinAccount.key]?.touchedAddresses).toEqual([
             {
                 path: 'path-1',
                 address: 'address-1',
@@ -122,7 +155,7 @@ describe('receiveSlice', () => {
             receiveActions.showAddress(bitcoinAccount.key, 'path-1', 'address-1'),
         );
 
-        expect(state.accounts[bitcoinAccount.key]?.revealedAddresses).toEqual([
+        expect(state.accounts[bitcoinAccount.key]?.touchedAddresses).toEqual([
             {
                 path: 'path-1',
                 address: 'address-1',
@@ -143,7 +176,7 @@ describe('receiveSlice', () => {
         );
 
         expect(state.accounts[bitcoinAccount.key]).toEqual({
-            revealedAddresses: [
+            touchedAddresses: [
                 {
                     path: 'btc-path',
                     address: 'btc-address',
@@ -152,7 +185,7 @@ describe('receiveSlice', () => {
             currentFreshAddress: undefined,
         });
         expect(state.accounts[ethereumAccount.key]).toEqual({
-            revealedAddresses: [
+            touchedAddresses: [
                 {
                     path: 'eth-path',
                     address: 'eth-address',
@@ -165,7 +198,7 @@ describe('receiveSlice', () => {
 
         expect(state.accounts[bitcoinAccount.key]).toBeUndefined();
         expect(state.accounts[ethereumAccount.key]).toEqual({
-            revealedAddresses: [
+            touchedAddresses: [
                 {
                     path: 'eth-path',
                     address: 'eth-address',
@@ -197,14 +230,14 @@ describe('receiveSlice', () => {
             receive: state,
         };
 
-        expect(selectReceiveRevealedAddresses(loadedState, bitcoinAccount.key)).toEqual([
+        expect(selectTouchedAddresses(loadedState, bitcoinAccount.key)).toEqual([
             {
                 path: 'btc-path',
                 address: 'btc-address',
             },
         ]);
         expect(selectCurrentFreshAddress(loadedState, bitcoinAccount.key)).toBeUndefined();
-        expect(selectReceiveRevealedAddresses(loadedState)).toEqual([]);
+        expect(selectTouchedAddresses(loadedState)).toEqual([]);
         expect(selectCurrentFreshAddress(loadedState)).toBeUndefined();
     });
 });
