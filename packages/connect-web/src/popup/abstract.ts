@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
-import { type CoreEventMessage, DEVICE_EVENT, POPUP } from '@trezor/connect-common/src/events';
+import { type CoreEventMessage, POPUP } from '@trezor/connect-common/src/events';
 import {
     type AbstractMessageChannel,
     type Message,
@@ -130,8 +130,6 @@ export abstract class Popup extends EventEmitter {
         } else if (message.type === POPUP.CLOSED) {
             await this.close();
             this.handlePopupClosed();
-        } else if (message.event === DEVICE_EVENT) {
-            this.emit(DEVICE_EVENT, message);
         }
     }
 
