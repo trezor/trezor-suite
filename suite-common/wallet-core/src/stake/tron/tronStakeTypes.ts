@@ -13,6 +13,7 @@ export type TronStakeStepId = (typeof TRON_FLOW_STEPS)[TronFlow][number];
 
 export type TronStakeErrorKind =
     | 'compose-failed'
+    | 'report-failed'
     | 'sign-failed'
     | 'broadcast-failed'
     | 'confirmation-failed'

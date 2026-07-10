@@ -7,6 +7,7 @@ import { type VoteThunkArguments, composeTronVoteFeeLevelsThunk } from './compos
 import { buildVoteContract, buildVoteReviewForm, getTotalVotes } from './voteContract';
 import { addFakePendingTronTxThunk } from '../../../../transactions/transactionsThunks';
 import { TRON_STAKE_MODULE } from '../../shared/constants';
+import { reportTronStakeTxId } from '../../shared/reportTronStakeTxId';
 import { signTronContract } from '../../shared/signTronContract';
 import { tronStakeActions } from '../../tronStakeReducer';
 import { type TronFlow } from '../../tronStakeTypes';
@@ -127,6 +128,20 @@ export const submitTronVoteThunk = createThunk<void, SubmitVoteThunkArguments>(
                         accountKey,
                         flow,
                         error: { kind: 'cancelled' },
+                    }),
+                );
+
+                return;
+            }
+
+            const isReported = await reportTronStakeTxId(signResult.txid, 'vote');
+
+            if (!isReported) {
+                dispatch(
+                    tronStakeActions.submitFinished({
+                        accountKey,
+                        flow,
+                        error: { kind: 'report-failed' },
                     }),
                 );
 

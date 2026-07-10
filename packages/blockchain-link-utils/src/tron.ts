@@ -23,6 +23,9 @@ export const tronAddressToBytes = (address: string): Uint8Array | null => {
     return payload;
 };
 
+export const tronTxIdFromRawData = (rawDataHex: string): string =>
+    bytesToHex(sha256(hexToBytes(rawDataHex)));
+
 export const tronAddressToHex = (address: string): string | null => {
     const bytes = tronAddressToBytes(address);
 

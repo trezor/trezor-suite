@@ -153,13 +153,16 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
         const { signature } = message;
 
         let serializedTx: string | undefined;
+        let rawDataHex: string | undefined;
         try {
-            const rawData = encodeTronContractRawData(this.params.contract, this.params.tx);
-            serializedTx = encodeBroadcastTransaction(bytesToHex(rawData), signature);
+            rawDataHex = bytesToHex(
+                encodeTronContractRawData(this.params.contract, this.params.tx),
+            );
+            serializedTx = encodeBroadcastTransaction(rawDataHex, signature);
         } catch {
             // unsupported contract type
         }
 
-        return { signature, serializedTx };
+        return { signature, serializedTx, rawDataHex };
     }
 }

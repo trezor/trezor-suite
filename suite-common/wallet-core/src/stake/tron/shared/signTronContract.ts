@@ -1,6 +1,7 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
+import { tronUtils } from '@trezor/blockchain-link-utils';
 import TrezorConnect from '@trezor/connect';
 
 import { type TronClaimContract } from '../actions/claim/claimContract';
@@ -17,7 +18,7 @@ type TronStakeContract =
     | TronWithdrawContract
     | TronClaimContract;
 
-type SignTronContractResult = { serializedTx: string } | { error: TronStakeError };
+type SignTronContractResult = { serializedTx: string; txid: string } | { error: TronStakeError };
 
 export const signTronContract = async ({
     account,
@@ -76,9 +77,12 @@ export const signTronContract = async ({
         return { error: { kind: 'sign-failed', message: signed.error.message } };
     }
 
-    if (!signed.payload.serializedTx) {
+    if (!signed.payload.serializedTx || !signed.payload.rawDataHex) {
         return { error: { kind: 'sign-failed', message: 'Failed to serialize transaction.' } };
     }
 
-    return { serializedTx: signed.payload.serializedTx };
+    return {
+        serializedTx: signed.payload.serializedTx,
+        txid: tronUtils.tronTxIdFromRawData(signed.payload.rawDataHex),
+    };
 };

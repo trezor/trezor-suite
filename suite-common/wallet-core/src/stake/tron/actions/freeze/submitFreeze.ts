@@ -9,6 +9,7 @@ import { type FreezeThunkArguments, composeTronFreezeFeeLevelsThunk } from './co
 import { buildFreezeContract, buildFreezeReviewForm } from './freezeContract';
 import { addFakePendingTronTxThunk } from '../../../../transactions/transactionsThunks';
 import { TRON_STAKE_MODULE } from '../../shared/constants';
+import { reportTronStakeTxId } from '../../shared/reportTronStakeTxId';
 import { signTronContract } from '../../shared/signTronContract';
 import { tronStakeActions } from '../../tronStakeReducer';
 import { type TronFlow } from '../../tronStakeTypes';
@@ -111,6 +112,20 @@ export const submitTronFreezeThunk = createThunk<void, SubmitFreezeThunkArgument
                         accountKey,
                         flow,
                         error: { kind: 'cancelled' },
+                    }),
+                );
+
+                return;
+            }
+
+            const isReported = await reportTronStakeTxId(signResult.txid, 'freeze');
+
+            if (!isReported) {
+                dispatch(
+                    tronStakeActions.submitFinished({
+                        accountKey,
+                        flow,
+                        error: { kind: 'report-failed' },
                     }),
                 );
 

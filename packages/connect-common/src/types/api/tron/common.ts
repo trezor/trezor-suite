@@ -141,6 +141,7 @@ export type TronSignedTx = Static<typeof TronSignedTx>;
 export const TronSignedTx = Type.Object({
     signature: Type.String(),
     serializedTx: Type.Optional(Type.String()),
+    rawDataHex: Type.Optional(Type.String()),
 });
 
 export type TronComposeTransaction = Static<typeof TronComposeTransaction>;

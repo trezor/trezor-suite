@@ -105,7 +105,7 @@ export const TransactionReviewModalBottomContent = ({
         });
 
     const handleSend = () => {
-        if (networkType === 'solana' || networkType === 'stellar') {
+        if (networkType === 'solana' || networkType === 'stellar' || networkType === 'tron') {
             onSend(true);
         }
 
