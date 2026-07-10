@@ -5,7 +5,7 @@ type AccountAddress = NonNullable<Account['addresses']>['used'][number];
 
 type GetUsedAddressesListParams = {
     account: Account;
-    revealedAddresses: ReceiveInfo[];
+    touchedAddresses: ReceiveInfo[];
     pendingAddresses: string[];
     addressLabels: Record<string, string | null>;
     currentFreshAddress?: {
@@ -15,7 +15,7 @@ type GetUsedAddressesListParams = {
 
 export const getUsedAddressesList = ({
     account,
-    revealedAddresses,
+    touchedAddresses,
     pendingAddresses,
     addressLabels,
     currentFreshAddress,
@@ -24,7 +24,7 @@ export const getUsedAddressesList = ({
     const unused = account.addresses?.unused ?? [];
 
     const isUnusedAddressExplicitlyUsed = (addr: AccountAddress) =>
-        revealedAddresses.some(revealedAddress => revealedAddress.path === addr.path) ||
+        touchedAddresses.some(touchedAddress => touchedAddress.path === addr.path) ||
         pendingAddresses.includes(addr.address) ||
         !!addressLabels[addr.address];
 
@@ -34,7 +34,7 @@ export const getUsedAddressesList = ({
         ),
     );
 
-    const revealed = unused.reduce<AccountAddress[]>((result, addr) => {
+    const touched = unused.reduce<AccountAddress[]>((result, addr) => {
         const isExplicitlyUsed = isUnusedAddressExplicitlyUsed(addr);
         const isLowerThanUsedAddress = usedLikeAddresses.some(
             usedAddress => comparePath(addr.path, usedAddress.path) < 0,
@@ -47,7 +47,7 @@ export const getUsedAddressesList = ({
     }, []);
 
     return used
-        .concat(revealed)
+        .concat(touched)
         .sort(
             (firstAddress, secondAddress) =>
                 comparePath(firstAddress.path, secondAddress.path) * -1,

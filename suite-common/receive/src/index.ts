@@ -2,7 +2,7 @@ export {
     receiveActions,
     receiveReducer,
     selectCurrentFreshAddress,
-    selectReceiveRevealedAddresses,
+    selectTouchedAddresses,
     type CurrentFreshAddress,
     type ReceiveAccountState,
     type ReceiveRootState,

@@ -11,7 +11,7 @@ import {
     type ReceiveRootState,
     receiveActions,
     selectCurrentFreshAddress,
-    selectReceiveRevealedAddresses,
+    selectTouchedAddresses,
 } from '@suite-common/receive';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
@@ -95,8 +95,8 @@ export const FreshAddress = ({
     const isAccountUtxoBased = useSelector((state: AccountsRootState) =>
         selectIsAccountUtxoBased(state, account.key),
     );
-    const revealedAddresses = useSelector((state: ReceiveRootState) =>
-        selectReceiveRevealedAddresses(state, account.key),
+    const touchedAddresses = useSelector((state: ReceiveRootState) =>
+        selectTouchedAddresses(state, account.key),
     );
     const currentFreshAddress = useSelector((state: ReceiveRootState) =>
         selectCurrentFreshAddress(state, account.key),
@@ -111,7 +111,7 @@ export const FreshAddress = ({
 
     useEffect(() => {
         const alreadyUsedAddressesExceptCurrentFresh = labeledAddresses
-            .concat(revealedAddresses)
+            .concat(touchedAddresses)
             .filter(address => address.path !== currentFreshAddress?.path);
 
         const firstFreshAddress = getFirstFreshAddress(
@@ -137,7 +137,7 @@ export const FreshAddress = ({
         );
     }, [
         account,
-        revealedAddresses,
+        touchedAddresses,
         currentFreshAddress,
         dispatch,
         isAccountUtxoBased,

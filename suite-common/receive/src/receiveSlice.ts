@@ -10,7 +10,7 @@ export type CurrentFreshAddress = {
 };
 
 export type ReceiveAccountState = {
-    revealedAddresses: ReceiveInfo[];
+    touchedAddresses: ReceiveInfo[];
     currentFreshAddress?: CurrentFreshAddress;
 };
 
@@ -33,12 +33,18 @@ type SetCurrentFreshAddressPayload = {
     currentFreshAddress?: CurrentFreshAddress;
 };
 
+type PersistedReceiveAccountState = {
+    touchedAddresses?: ReceiveInfo[];
+    revealedAddresses?: ReceiveInfo[];
+    currentFreshAddress?: CurrentFreshAddress;
+};
+
 const receiveInitialState: ReceiveState = {
     accounts: {},
 };
 
 const emptyReceiveAccountState: ReceiveAccountState = {
-    revealedAddresses: [],
+    touchedAddresses: [],
     currentFreshAddress: undefined,
 };
 
@@ -50,17 +56,17 @@ const getReceiveAccountState = (state: ReceiveState, accountKey: AccountKey) => 
     }
 
     state.accounts[accountKey] = {
-        revealedAddresses: [],
+        touchedAddresses: [],
         currentFreshAddress: undefined,
     };
 
     return state.accounts[accountKey];
 };
 
-const markAddressRevealed = (draft: ReceiveAccountState, path: string, address: string) => {
-    const receiveInfo = draft.revealedAddresses.find(receive => receive.address === address);
+const markAddressTouched = (draft: ReceiveAccountState, path: string, address: string) => {
+    const receiveInfo = draft.touchedAddresses.find(receive => receive.address === address);
     if (!receiveInfo) {
-        draft.revealedAddresses.unshift({
+        draft.touchedAddresses.unshift({
             path,
             address,
         });
@@ -77,7 +83,7 @@ export const receiveSlice = createSlice({
             reducer: (state, action: PayloadAction<ReceiveActionPayload>) => {
                 const accountState = getReceiveAccountState(state, action.payload.accountKey);
 
-                markAddressRevealed(accountState, action.payload.path, action.payload.address);
+                markAddressTouched(accountState, action.payload.path, action.payload.address);
             },
             prepare: (accountKey: AccountKey, path: string, address: string) => ({
                 payload: { accountKey, path, address },
@@ -102,11 +108,14 @@ export const receiveSlice = createSlice({
                 state.accounts = (
                     (actionWithPayload.payload?.receive ?? []) as {
                         key: string;
-                        value: ReceiveAccountState;
+                        value: PersistedReceiveAccountState;
                     }[]
                 ).reduce<ReceiveState['accounts']>((accounts, { key, value }) => {
+                    const touchedAddresses =
+                        value.touchedAddresses ?? value.revealedAddresses ?? [];
+
                     accounts[key as AccountKey] = {
-                        revealedAddresses: value.revealedAddresses.map(({ path, address }) => ({
+                        touchedAddresses: touchedAddresses.map(({ path, address }) => ({
                             path,
                             address,
                         })),
@@ -127,8 +136,8 @@ const selectReceiveAccountState = (state: ReceiveRootState, accountKey?: Account
     return state.receive.accounts[accountKey] ?? emptyReceiveAccountState;
 };
 
-export const selectReceiveRevealedAddresses = (state: ReceiveRootState, accountKey?: AccountKey) =>
-    selectReceiveAccountState(state, accountKey).revealedAddresses;
+export const selectTouchedAddresses = (state: ReceiveRootState, accountKey?: AccountKey) =>
+    selectReceiveAccountState(state, accountKey).touchedAddresses;
 
 export const selectCurrentFreshAddress = (state: ReceiveRootState, accountKey?: AccountKey) =>
     selectReceiveAccountState(state, accountKey).currentFreshAddress;

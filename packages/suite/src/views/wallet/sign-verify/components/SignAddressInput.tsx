@@ -23,17 +23,17 @@ const formatOptionLabel = (option: AddressItem) => (
 
 type SignAddressInputProps = {
     account?: Account;
-    revealedAddresses: ReceiveInfo[];
+    touchedAddresses: ReceiveInfo[];
 } & SelectProps;
 
 export const SignAddressInput = ({
     account,
-    revealedAddresses,
+    touchedAddresses,
     value,
     onChange,
     ...selectProps
 }: SignAddressInputProps) => {
-    const { getValue, groupedOptions } = useSignAddressOptions(account, revealedAddresses);
+    const { getValue, groupedOptions } = useSignAddressOptions(account, touchedAddresses);
 
     return (
         <Select

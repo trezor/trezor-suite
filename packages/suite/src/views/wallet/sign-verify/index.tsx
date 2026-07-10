@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { type FieldError } from 'react-hook-form';
 
+import { selectFullSelectedAccount } from '@suite/account';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import { selectReceiveRevealedAddresses } from '@suite-common/receive';
+import { type ReceiveRootState, selectTouchedAddresses } from '@suite-common/receive';
 import {
     Box,
     Button,
@@ -40,9 +41,9 @@ const SignVerify = () => {
     const [page, setPage] = useState<'sign' | 'verify'>('sign');
     const [isCompleted, setIsCompleted] = useState(false);
 
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const revealedAddresses = useSelector(state =>
-        selectReceiveRevealedAddresses(state, selectedAccount.account?.key),
+    const selectedAccount = useSelector(selectFullSelectedAccount);
+    const touchedAddresses = useSelector((state: ReceiveRootState) =>
+        selectTouchedAddresses(state, selectedAccount.account?.key),
     );
     const dispatch = useDispatch();
 
@@ -203,7 +204,7 @@ const SignVerify = () => {
                                             name="path"
                                             label={<Translation id="TR_ADDRESS" />}
                                             account={selectedAccount.account}
-                                            revealedAddresses={revealedAddresses}
+                                            touchedAddresses={touchedAddresses}
                                             hasError={!!formErrors.path}
                                             bottomText={pathError || null}
                                             data-testid="@sign-verify/sign-address"
