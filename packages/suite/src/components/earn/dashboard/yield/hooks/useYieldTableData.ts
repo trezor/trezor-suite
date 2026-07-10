@@ -5,6 +5,7 @@ import { type NetworkSymbol, getNetworkByYieldXyzId } from '@suite-common/wallet
 import {
     doTokensMatch,
     getConvertedOutputTokenBalanceToInputTokenAmount,
+    getYieldDepositableBalance,
     selectDeviceSupportedNetworks,
 } from '@suite-common/wallet-core';
 import { type Account, type TokenInfoBranded, toTokenSymbol } from '@suite-common/wallet-types';
@@ -84,7 +85,13 @@ const getYieldOpportunityData = ({
         outputTokenBalance: matchedOutputToken?.balance,
         pricePerShareState: vault.state?.pricePerShareState,
     });
-    const additionalDepositAmount = matchedInputToken?.balance ?? '0';
+    // For wrapped-native vaults the native balance counts in (it can be wrapped on deposit).
+    const additionalDepositAmount = getYieldDepositableBalance({
+        networkSymbol,
+        nativeFormattedBalance: account.formattedBalance,
+        vaultTokenAddress: vault.token.address,
+        matchedTokenBalance: matchedInputToken?.balance,
+    });
     const hasRewardsData =
         new BigNumber(depositedAmount).gt(0) || new BigNumber(additionalDepositAmount).gt(0);
 
@@ -154,7 +161,8 @@ export const useYieldTableData = ({
         const noBalanceOpportunities: YieldAccountOpportunity[] = [];
 
         allOpportunities.forEach(opportunity => {
-            const hasMatchedInputToken = opportunity.matchedInputToken !== undefined;
+            // A depositable balance without a matched token can only come from the
+            // wrappable native balance of a wrapped-native vault.
             const hasDepositableBalance = new BigNumber(opportunity.additionalDepositAmount).gt(0);
 
             if (opportunity.hasVaultPosition) {
@@ -163,7 +171,7 @@ export const useYieldTableData = ({
                 return;
             }
 
-            if (hasMatchedInputToken && hasDepositableBalance) {
+            if (hasDepositableBalance) {
                 depositableOpportunities.push(opportunity);
 
                 return;
