@@ -11,6 +11,7 @@ import {
 import { Box, Button, Column, Divider, Row, SvgImage, Tooltip } from '@trezor/components';
 import { isWeb } from '@trezor/env-utils';
 import { UsersFilledIcon } from '@trezor/icons';
+import { QrCode } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 import {
     SUITE_MOBILE_APP_STORE,
@@ -19,7 +20,6 @@ import {
     SUITE_URL,
 } from '@trezor/urls';
 
-import { QrCode } from 'src/components/suite';
 import { useGuide } from 'src/hooks/guide';
 import { useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';

@@ -33,7 +33,6 @@ import { StatusLight } from './StatusLight';
 import { AmountUnitSwitchWrapper } from './AmountUnitSwitchWrapper';
 import { TorLoader } from './TorLoader/TorLoader';
 import { CountdownTimer } from './CountdownTimer';
-import { QrCode } from './QrCode';
 import { CoinBalance } from './CoinBalance';
 import { Preloader } from './Preloader/Preloader';
 import { TrafficLightDraggableWindowHeader } from '@suite/macos';
@@ -73,7 +72,6 @@ export {
     AmountUnitSwitchWrapper,
     TorLoader,
     CountdownTimer,
-    QrCode,
     CoinBalance,
     Preloader,
     TrafficLightDraggableWindowHeader,
