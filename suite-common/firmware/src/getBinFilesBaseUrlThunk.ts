@@ -1,13 +1,14 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { isDesktop, resolveConnectPath } from '@trezor/env-utils';
 
 import { FIRMWARE_MODULE_PREFIX } from './firmwareActions';
 
 /**
- * Get URL for firmware binaries, which may be local (suite desktop) or remote (suite web)
+ * Get URL for firmware binaries, which may be local (suite desktop) or remote (suite web/native).
+ * The remote base URL is injected via the composition root; on desktop it is undefined and the
+ * local bin dir is resolved from the (desktop-only) handshake state instead.
  */
 export const getBinFilesBaseUrlThunk = createThunk(
     `${FIRMWARE_MODULE_PREFIX}/getBinFilesBaseUrlThunk`,
     (_params, { getState, extra }) =>
-        isDesktop() ? extra.selectors.selectDesktopBinDir(getState()) : resolveConnectPath('data'),
+        extra.services.binFilesBaseUrl ?? extra.selectors.selectDesktopBinDir(getState()),
 );
