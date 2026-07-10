@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
+import { AccountLabel } from '@suite-native/accounts';
 import { AccountTypeDecisionBottomSheet, useAddCoinAccount } from '@suite-native/add-coin-account';
 import { Translation } from '@suite-native/intl';
 import {
@@ -16,9 +17,28 @@ import {
     selectBuySelectedReceiveAccount,
     selectExchangeSelectedReceiveAccount,
 } from '@suite-native/trading-state';
+import { type ReceiveAccount } from '@suite-native/trading-types';
 
 import { AccountList } from '../components/general/AccountList/AccountList';
 import { type ReceiveAccountsListMode } from '../hooks/general/useReceiveAccountsListData';
+
+const HeaderTitle = ({
+    pickerMode,
+    selectedReceiveAccount,
+}: {
+    pickerMode: ReceiveAccountsListMode;
+    selectedReceiveAccount: ReceiveAccount | undefined;
+}) => {
+    if (pickerMode === 'account') {
+        return <Translation id="moduleTrading.accountScreen.titleStep1" />;
+    }
+
+    if (selectedReceiveAccount?.account) {
+        return <AccountLabel account={selectedReceiveAccount.account} />;
+    }
+
+    return selectedReceiveAccount?.account.accountLabel;
+};
 
 export const TradingReceiveAccountsPickerScreen = () => {
     const {
@@ -50,15 +70,20 @@ export const TradingReceiveAccountsPickerScreen = () => {
 
     const handleAddAccountConfirmTap = () => handleAccountTypeConfirmation(flowType);
 
-    const title =
-        pickerMode === 'account' ? (
-            <Translation id="moduleTrading.accountScreen.titleStep1" />
-        ) : (
-            selectedReceiveAccount?.account.accountLabel
-        );
-
     return (
-        <Screen header={<ScreenHeader title={title} closeActionType="back" />}>
+        <Screen
+            header={
+                <ScreenHeader
+                    title={
+                        <HeaderTitle
+                            pickerMode={pickerMode}
+                            selectedReceiveAccount={selectedReceiveAccount}
+                        />
+                    }
+                    closeActionType="back"
+                />
+            }
+        >
             <AccountList
                 symbol={symbol}
                 pickerMode={pickerMode}
