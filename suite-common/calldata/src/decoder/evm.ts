@@ -41,7 +41,8 @@ export const createEvmDecoder = <const T extends Abi>(abi: T): Decoder<T> => {
         ) as `0x${string}`;
         try {
             const { args } = decodeFunctionData({ abi, data: normalized });
-            const values = (args as readonly unknown[]).map((v, i) => {
+            // viem returns `args: undefined` for zero-input functions (e.g. `deposit()`).
+            const values = ((args ?? []) as readonly unknown[]).map((v, i) => {
                 const { inputs } = fn;
                 // @ts-expect-error: noUncheckedIndexedAccess
                 const inputIndexed: AbiFunction['inputs'][number] = inputs[i];

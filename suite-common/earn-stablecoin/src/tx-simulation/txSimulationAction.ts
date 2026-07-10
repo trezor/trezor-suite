@@ -4,6 +4,7 @@ import { UnsignedEvmTransactionForSigningSchema } from '@suite-common/earn-stabl
 import { evmHexString } from '@suite-common/schemas/src/evm';
 import {
     getNetwork,
+    getWrappedNativeAddress,
     networkSymbolCollection,
     networksCollection,
 } from '@suite-common/wallet-config';
@@ -28,7 +29,13 @@ const claimUnsignedTxBase = {
 
 const stablecoinYieldTxSimulationParams = z.discriminatedUnion('flow', [
     z.strictObject({
-        flow: z.union([z.literal('deposit'), z.literal('withdraw'), z.literal('redeem')]),
+        flow: z.union([
+            z.literal('deposit'),
+            z.literal('withdraw'),
+            z.literal('redeem'),
+            z.literal('wrap'),
+            z.literal('unwrap'),
+        ]),
         account: partialAccount,
         unsignedTx: z.string(),
     }),
@@ -51,13 +58,75 @@ const stablecoinYieldTxSimulationParams = z.discriminatedUnion('flow', [
 
 export type StablecoinYieldTxSimulationParams = z.infer<typeof stablecoinYieldTxSimulationParams>;
 
+const WETH_DEPOSIT_CALLDATA = '0xd0e30db0';
+const WETH_WITHDRAW_SELECTOR = '0x2e1a7d4d';
+const WETH_WITHDRAW_CALLDATA_LENGTH = 74;
+
+function assertWethUnsignedTx({
+    flow,
+    account,
+    to,
+    data,
+    value,
+    chainId,
+}: {
+    flow: 'wrap' | 'unwrap';
+    account: StablecoinYieldTxSimulationParams['account'];
+    to: string;
+    data: string;
+    value: string;
+    chainId: number;
+}) {
+    const wethAddress = getWrappedNativeAddress(account.symbol);
+
+    if (!wethAddress || to.toLowerCase() !== wethAddress) {
+        throw new Error(
+            `WETH ${flow} transaction must target the canonical wrapped-native contract.`,
+        );
+    }
+
+    const network = getNetwork(account.symbol);
+
+    if (chainId !== network.chainId) {
+        throw new Error(
+            `WETH ${flow} transaction chainId ${chainId} does not match account network chainId ${network.chainId}.`,
+        );
+    }
+
+    const calldata = data.toLowerCase();
+
+    if (flow === 'wrap') {
+        if (calldata !== WETH_DEPOSIT_CALLDATA) {
+            throw new Error('WETH wrap transaction must call deposit().');
+        }
+        if (BigInt(value) === 0n) {
+            throw new Error('WETH wrap transaction must carry a non-zero value.');
+        }
+    } else {
+        if (
+            !calldata.startsWith(WETH_WITHDRAW_SELECTOR) ||
+            calldata.length !== WETH_WITHDRAW_CALLDATA_LENGTH
+        ) {
+            throw new Error('WETH unwrap transaction must call withdraw(wad).');
+        }
+        if (BigInt(`0x${calldata.slice(WETH_WITHDRAW_SELECTOR.length)}`) === 0n) {
+            throw new Error('WETH unwrap transaction must withdraw a non-zero amount.');
+        }
+        if (BigInt(value) !== 0n) {
+            throw new Error('WETH unwrap transaction must not carry a value.');
+        }
+    }
+}
+
 function composeUnsignedEvmTx(
     params: StablecoinYieldTxSimulationParams,
 ): EthereumSignTransaction['transaction'] {
     switch (params.flow) {
         case 'deposit':
         case 'redeem':
-        case 'withdraw': {
+        case 'withdraw':
+        case 'wrap':
+        case 'unwrap': {
             const {
                 to,
                 value = '0x0',
@@ -68,6 +137,17 @@ function composeUnsignedEvmTx(
                 maxPriorityFeePerGas = '0x0',
                 nonce,
             } = UnsignedEvmTransactionForSigningSchema.parse(JSON.parse(params.unsignedTx));
+
+            if (params.flow === 'wrap' || params.flow === 'unwrap') {
+                assertWethUnsignedTx({
+                    flow: params.flow,
+                    account: params.account,
+                    to,
+                    data,
+                    value,
+                    chainId,
+                });
+            }
 
             return {
                 to,

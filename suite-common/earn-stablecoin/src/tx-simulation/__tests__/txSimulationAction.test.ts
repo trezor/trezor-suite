@@ -119,4 +119,109 @@ describe('composeStablecoinYieldTxSimulationAction', () => {
             ),
         ).toBeNull();
     });
+
+    const WETH_MAINNET = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+
+    const wethUnsignedTx = (overrides: Record<string, unknown> = {}) =>
+        JSON.stringify({
+            from: account.descriptor,
+            to: WETH_MAINNET,
+            data: '0xd0e30db0',
+            value: '0x2386f26fc10000',
+            chainId: 1,
+            gasLimit: '0xea60',
+            maxFeePerGas: '0x77359400',
+            maxPriorityFeePerGas: '0x3b9aca00',
+            nonce: '0x7',
+            ...overrides,
+        });
+
+    it('accepts a wrap transaction targeting the canonical WETH contract', () => {
+        const result = composeStablecoinYieldTxSimulationAction(
+            { flow: 'wrap', account, unsignedTx: wethUnsignedTx() },
+            sourceOrigin,
+        );
+
+        expect(result?.action.payload.transaction.to).toBe(WETH_MAINNET);
+    });
+
+    it('rejects a wrap transaction targeting a different contract', () => {
+        expect(
+            composeStablecoinYieldTxSimulationAction(
+                {
+                    flow: 'wrap',
+                    account,
+                    unsignedTx: wethUnsignedTx({
+                        to: '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae',
+                    }),
+                },
+                sourceOrigin,
+            ),
+        ).toBeNull();
+    });
+
+    it('rejects a wrap transaction with a mismatched chainId', () => {
+        expect(
+            composeStablecoinYieldTxSimulationAction(
+                { flow: 'wrap', account, unsignedTx: wethUnsignedTx({ chainId: 137 }) },
+                sourceOrigin,
+            ),
+        ).toBeNull();
+    });
+
+    it('rejects a wrap transaction without a value', () => {
+        expect(
+            composeStablecoinYieldTxSimulationAction(
+                { flow: 'wrap', account, unsignedTx: wethUnsignedTx({ value: '0x0' }) },
+                sourceOrigin,
+            ),
+        ).toBeNull();
+    });
+
+    it('accepts an unwrap transaction calling withdraw without a value', () => {
+        const result = composeStablecoinYieldTxSimulationAction(
+            {
+                flow: 'unwrap',
+                account,
+                unsignedTx: wethUnsignedTx({
+                    data: `0x2e1a7d4d${'de0b6b3a7640000'.padStart(64, '0')}`,
+                    value: '0x0',
+                }),
+            },
+            sourceOrigin,
+        );
+
+        expect(result?.action.payload.transaction.to).toBe(WETH_MAINNET);
+    });
+
+    it('rejects an unwrap transaction carrying a value', () => {
+        expect(
+            composeStablecoinYieldTxSimulationAction(
+                {
+                    flow: 'unwrap',
+                    account,
+                    unsignedTx: wethUnsignedTx({
+                        data: `0x2e1a7d4d${'de0b6b3a7640000'.padStart(64, '0')}`,
+                    }),
+                },
+                sourceOrigin,
+            ),
+        ).toBeNull();
+    });
+
+    it('rejects an unwrap transaction withdrawing a zero amount', () => {
+        expect(
+            composeStablecoinYieldTxSimulationAction(
+                {
+                    flow: 'unwrap',
+                    account,
+                    unsignedTx: wethUnsignedTx({
+                        data: `0x2e1a7d4d${'0'.repeat(64)}`,
+                        value: '0x0',
+                    }),
+                },
+                sourceOrigin,
+            ),
+        ).toBeNull();
+    });
 });

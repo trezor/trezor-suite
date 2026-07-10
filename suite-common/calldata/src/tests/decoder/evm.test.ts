@@ -56,6 +56,12 @@ describe('createEvmDecoder', () => {
         });
     });
 
+    it('decodes zero-input functions to an empty object', () => {
+        const depositDecode = createEvmDecoder(EVM_ABI.weth.deposit);
+        // `deposit()` calldata is just the 4-byte selector, no arguments.
+        expect(depositDecode('0xd0e30db0')).toEqual({});
+    });
+
     it('lowercases addresses inside address[] params', () => {
         const arrayDecode = createEvmDecoder(EVM_ABI.distributor.claim);
         const calldata = buildClaim(

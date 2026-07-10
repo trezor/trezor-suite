@@ -6,7 +6,9 @@ import {
     buildYieldDepositCalldata,
     buildYieldUnsignedTransaction,
     buildYieldWithdrawCalldata,
+    buildYieldWrapTransactionData,
     getNextYieldFlowStep,
+    getYieldDepositableBalance,
     splitYieldPendingTransaction,
 } from '../stablecoinYieldUtils';
 
@@ -88,6 +90,29 @@ describe('stablecoinYieldUtils', () => {
         });
     });
 
+    describe('buildYieldWrapTransactionData', () => {
+        it('builds the WETH deposit selector and the wrapped amount as value', () => {
+            expect(
+                buildYieldWrapTransactionData({
+                    wrapAmount: '1.5',
+                    decimals: 18,
+                }),
+            ).toEqual({
+                data: '0xd0e30db0',
+                value: '0x14d1120d7b160000',
+            });
+        });
+
+        it('throws for a zero wrap amount', () => {
+            expect(() =>
+                buildYieldWrapTransactionData({
+                    wrapAmount: '0',
+                    decimals: 18,
+                }),
+            ).toThrow();
+        });
+    });
+
     describe('getNextYieldFlowStep', () => {
         it('advances deposit through approve → action → complete', () => {
             expect(getNextYieldFlowStep('deposit', 'approve')).toBe('action');
@@ -162,6 +187,26 @@ describe('stablecoinYieldUtils', () => {
                 actionPendingTransaction: undefined,
             });
         });
+
+        it('classifies a wrap tx as the wrap tx', () => {
+            const wrapTx = mockPendingTx('wrap');
+
+            expect(splitYieldPendingTransaction(wrapTx, 'deposit')).toEqual({
+                approvalPendingTransaction: undefined,
+                actionPendingTransaction: undefined,
+                wrapPendingTransaction: wrapTx,
+            });
+        });
+
+        it('does not mark an approval as a wrap transaction', () => {
+            const approveTx = mockPendingTx('approve');
+
+            expect(splitYieldPendingTransaction(approveTx, 'deposit')).toEqual({
+                approvalPendingTransaction: approveTx,
+                actionPendingTransaction: undefined,
+                wrapPendingTransaction: undefined,
+            });
+        });
     });
 
     describe('buildYieldDepositCalldata', () => {
@@ -200,6 +245,20 @@ describe('stablecoinYieldUtils', () => {
             nonce: 7,
             to: VAULT_ADDRESS,
         };
+
+        it('passes a custom value through', () => {
+            expect(
+                buildYieldUnsignedTransaction({
+                    ...commonParams,
+                    feeLevel: {
+                        feePerUnit: '5',
+                    },
+                    value: '0x14d1120d7b160000',
+                }),
+            ).toMatchObject({
+                value: '0x14d1120d7b160000',
+            });
+        });
 
         it('builds legacy fee fields', () => {
             expect(
@@ -263,6 +322,77 @@ describe('stablecoinYieldUtils', () => {
             maxFeePerGas: '0x165a0bc00',
             maxPriorityFeePerGas: '0x3b9aca00',
             type: 'eip1559',
+        });
+    });
+
+    describe('getYieldDepositableBalance', () => {
+        const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+        const USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+
+        it('returns only the matched token balance for a non-wrapped-native vault', () => {
+            expect(
+                getYieldDepositableBalance({
+                    networkSymbol: 'eth',
+                    nativeFormattedBalance: '5',
+                    vaultTokenAddress: USDC_ADDRESS,
+                    matchedTokenBalance: '100',
+                }),
+            ).toBe('100');
+        });
+
+        it('returns zero for a non-wrapped-native vault without a matched token', () => {
+            expect(
+                getYieldDepositableBalance({
+                    networkSymbol: 'eth',
+                    nativeFormattedBalance: '5',
+                    vaultTokenAddress: USDC_ADDRESS,
+                    matchedTokenBalance: null,
+                }),
+            ).toBe('0');
+        });
+
+        it('adds the native balance minus the gas reserve for a wrapped-native vault', () => {
+            expect(
+                getYieldDepositableBalance({
+                    networkSymbol: 'eth',
+                    nativeFormattedBalance: '0.2',
+                    vaultTokenAddress: WETH_ADDRESS,
+                    matchedTokenBalance: '1.5',
+                }),
+            ).toBe('1.699');
+        });
+
+        it('ignores native balance below the gas reserve', () => {
+            expect(
+                getYieldDepositableBalance({
+                    networkSymbol: 'eth',
+                    nativeFormattedBalance: '0.0005',
+                    vaultTokenAddress: WETH_ADDRESS,
+                    matchedTokenBalance: '1',
+                }),
+            ).toBe('1');
+        });
+
+        it('returns the spendable native balance when no token is matched', () => {
+            expect(
+                getYieldDepositableBalance({
+                    networkSymbol: 'eth',
+                    nativeFormattedBalance: '1',
+                    vaultTokenAddress: WETH_ADDRESS,
+                    matchedTokenBalance: undefined,
+                }),
+            ).toBe('0.999');
+        });
+
+        it('returns zero when there is no balance at all', () => {
+            expect(
+                getYieldDepositableBalance({
+                    networkSymbol: 'eth',
+                    nativeFormattedBalance: '0',
+                    vaultTokenAddress: WETH_ADDRESS,
+                    matchedTokenBalance: undefined,
+                }),
+            ).toBe('0');
         });
     });
 });

@@ -1,6 +1,7 @@
 import { Calldata, type EvmAddress } from '@suite-common/calldata';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, isWrappedNativeToken } from '@suite-common/wallet-config';
+import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import { type AccountKey, type EvmSelectedFee } from '@suite-common/wallet-types';
 import {
     asAmountUnit,
@@ -94,11 +95,49 @@ type BuildYieldUnsignedTransactionParams = {
     gasLimit: string;
     nonce: number;
     to: string;
+    value?: string;
+};
+
+type BuildYieldWrapTransactionDataParams = {
+    wrapAmount: string;
+    decimals: number;
 };
 
 type BuildEvmFeeFieldsParams = {
     feeLevel: EvmFeeLevel;
     gasLimit: string;
+};
+
+type GetYieldDepositableBalanceParams = {
+    networkSymbol: NetworkSymbol;
+    /** Native coin balance in display units — account.formattedBalance, NOT account.balance (wei). */
+    nativeFormattedBalance: string;
+    vaultTokenAddress?: string | null;
+    matchedTokenBalance?: string | null;
+};
+
+/**
+ * Balance available for a yield deposit. For wrapped-native vaults (WETH) the
+ * native balance can be wrapped, so it counts in after a gas reserve is kept.
+ */
+export const getYieldDepositableBalance = ({
+    networkSymbol,
+    nativeFormattedBalance,
+    vaultTokenAddress,
+    matchedTokenBalance,
+}: GetYieldDepositableBalanceParams): string => {
+    const tokenBalance = matchedTokenBalance ?? '0';
+
+    if (!isWrappedNativeToken(networkSymbol, vaultTokenAddress)) {
+        return tokenBalance;
+    }
+
+    const spendableNativeBalance = BigNumber.max(
+        0,
+        new BigNumber(nativeFormattedBalance || '0').minus(WETH_WRAP_GAS_RESERVE),
+    );
+
+    return new BigNumber(tokenBalance).plus(spendableNativeBalance).toString();
 };
 
 export const getStablecoinYieldFlowKey = ({
@@ -207,6 +246,38 @@ export const buildYieldDepositCalldata = ({
     return builderResult.data;
 };
 
+/**
+ * Calldata and value for wrapping the native coin via WETH deposit(). The
+ * wrapped amount travels in the transaction value, the calldata is only the
+ * function selector.
+ */
+export const buildYieldWrapTransactionData = ({
+    wrapAmount,
+    decimals,
+}: BuildYieldWrapTransactionDataParams) => {
+    const wrapAmountSubunits = unitsToSubunits({
+        value: asAmountUnit(new BigNumber(wrapAmount)),
+        decimals,
+    });
+
+    if (wrapAmountSubunits.lte(0)) {
+        throw new Error('Wrap amount must be greater than zero.');
+    }
+
+    const builderResult = Calldata.evm.weth.deposit.encode({});
+
+    if (!builderResult.isValid || !builderResult.data) {
+        const issues = builderResult.errors.map(issue => issue.code).join(', ');
+
+        throw new Error(`Failed to encode wrap calldata${issues ? `: ${issues}` : '.'}`);
+    }
+
+    return {
+        data: builderResult.data,
+        value: fromIntegerString(wrapAmountSubunits.toFixed(0)).toHex(),
+    };
+};
+
 export const buildEvmFeeFields = ({ feeLevel, gasLimit }: BuildEvmFeeFieldsParams) => {
     const commonFields = {
         gasLimit: fromIntegerString(gasLimit).toHex(),
@@ -254,13 +325,14 @@ export const buildYieldUnsignedTransaction = ({
     gasLimit,
     nonce,
     to,
+    value,
 }: BuildYieldUnsignedTransactionParams) => {
     const feeFields = buildEvmFeeFields({ feeLevel, gasLimit });
     const commonFields = {
         from,
         to,
         data,
-        value: '0x0',
+        value: value ?? '0x0',
         nonce,
         chainId,
         gasLimit: feeFields.gasLimit,
@@ -292,6 +364,8 @@ export const splitYieldPendingTransaction = (
         approvalPendingTransaction: isApprovalPending ? pendingTransaction : undefined,
         actionPendingTransaction:
             pendingTransaction?.type === actionKind ? pendingTransaction : undefined,
+        wrapPendingTransaction:
+            pendingTransaction?.type === 'wrap' ? pendingTransaction : undefined,
     };
 };
 
