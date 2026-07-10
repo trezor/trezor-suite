@@ -9,7 +9,7 @@ import {
     selectAccountByKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { AppTabsRoutes, RootStackRoutes } from '@suite-native/navigation';
+import { AppTabsRoutes, RootStackRoutes, useDisableIOSGesture } from '@suite-native/navigation';
 import {
     type TransactionReviewOutputsState,
     selectIsTransactionReviewInProgress,
@@ -36,6 +36,8 @@ export const useEarnReviewBackNavigation = (
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const showReviewCancellationAlert = useShowReviewCancellationAlert();
+
+    useDisableIOSGesture();
 
     const isCancellationAlertVisibleRef = useRef(false);
 
