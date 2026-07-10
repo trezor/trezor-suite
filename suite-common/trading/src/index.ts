@@ -12,6 +12,7 @@ export * from './hooks/useProviderMetadataChangeEffect';
 export * from './hooks/useTradingFiatValues';
 export * from './hooks/useExchangeFiatDeviation';
 export * from './hooks/useApprovalStep';
+export * from './hooks/useTradingExchangeWatchApproval';
 export * from './hooks/useTradingRefetchScheduler';
 export {
     type TransactionStatus,

@@ -66,7 +66,7 @@ describe('Footer', () => {
         const { getByText } = renderFooter({ currentProviderMetadata: exchangeCexdirect });
 
         expect(getByText(/Cexdirect/)).toBeOnTheScreen();
-        await userEvent.press(getByText('Trezor’s Terms of Use'));
+        await userEvent.press(getByText('Terms apply'));
 
         expect(mockOpenLink).toHaveBeenCalledTimes(1);
         expect(mockOpenLink).toHaveBeenCalled();
