@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { type ProviderConfirmationStatus } from '@suite-native/trading-types';
 
@@ -29,9 +30,22 @@ describe('ProviderConfirmationStatusInfo', () => {
     );
 
     it.each<[string, ProviderConfirmationStatus]>([
-        ['Provider is confirming your sell', 'window_closed_incomplete'],
-        ['Waiting for the provider’s receive address', 'window_closed_with_success'],
-        ['Your sell couldn’t be completed', 'confirmation_failed'],
+        [
+            getTranslation('moduleTrading.tradingSellPreviewScreen.providerStatus.confirming'),
+            'window_closed_incomplete',
+        ],
+        [
+            getTranslation(
+                'moduleTrading.tradingSellPreviewScreen.providerStatus.waitingForAddress',
+            ),
+            'window_closed_with_success',
+        ],
+        [
+            getTranslation(
+                'moduleTrading.tradingSellPreviewScreen.providerStatus.cannotBeCompletedAlert.title',
+            ),
+            'confirmation_failed',
+        ],
     ])(
         'should render "%s" when providerConfirmationStatus is [%s]',
         (expectedTitle, providerConfirmationStatus) => {
