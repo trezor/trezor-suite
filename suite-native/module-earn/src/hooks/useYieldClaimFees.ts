@@ -208,7 +208,10 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
                     data: claimCalldata,
                 });
                 const nonceTask = dispatch(
-                    ethereumGetCurrentNonceThunk({ selectedAccount: claimAccount }),
+                    ethereumGetCurrentNonceThunk({
+                        selectedAccount: claimAccount,
+                        fetchConfirmedNonce: true,
+                    }),
                 ).unwrap();
 
                 const [gasLimit, { nonce }] = await Promise.all([gasLimitTask, nonceTask]);
