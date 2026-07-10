@@ -1,3 +1,4 @@
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { accountsActions } from '@suite-common/wallet-core';
 import {
     mockWalletAccount,
@@ -5,19 +6,20 @@ import {
 } from '@suite-common/wallet-types/mocks';
 
 import {
+    prepareReceiveReducer,
     receiveActions,
-    receiveReducer,
     selectCurrentFreshAddress,
     selectTouchedAddresses,
 } from '../receiveSlice';
 
 const bitcoinAccount = mockWalletAccount({ symbol: 'btc' });
 const ethereumAccount = mockWalletAccount({ symbol: 'eth' }, networkSpecificDefaultEthereum);
+const receiveReducer = prepareReceiveReducer(extraDependenciesCommonMock);
 
 describe('receiveSlice', () => {
     it('loads persisted accounts and strips legacy verification flag on @storage/load', () => {
         const state = receiveReducer(undefined, {
-            type: '@storage/load',
+            type: extraDependenciesCommonMock.actionTypes.storageLoad,
             payload: {
                 receive: [
                     {
@@ -58,7 +60,7 @@ describe('receiveSlice', () => {
 
     it('loads persisted accounts with touched addresses on @storage/load', () => {
         const state = receiveReducer(undefined, {
-            type: '@storage/load',
+            type: extraDependenciesCommonMock.actionTypes.storageLoad,
             payload: {
                 receive: [
                     {

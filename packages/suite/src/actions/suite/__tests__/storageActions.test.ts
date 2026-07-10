@@ -7,7 +7,7 @@ import { suiteSettingsInitialState } from '@suite/settings';
 import { suiteSyncSlice } from '@suite/suite-sync';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
 import { asEncryptedHex } from '@suite-common/platform-encryption';
-import { receiveReducer } from '@suite-common/receive';
+import { prepareReceiveReducer } from '@suite-common/receive';
 import { setSuiteSyncOwner } from '@suite-common/suite-sync';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -48,6 +48,7 @@ const sendFormReducer = prepareSendFormReducer(extraDependencies);
 const walletSettingsReducer = discoveryActions.prepareWalletSettingsReducer(extraDependencies);
 const quotaManagerSliceReducer = suiteSyncQuotaManagerSlice.prepareReducer(extraDependencies);
 const suiteSyncReducer = suiteSyncSlice.prepareReducer(extraDependencies);
+const receiveReducer = prepareReceiveReducer(extraDependencies);
 
 // TODO: add method in suite-storage for deleting all stored data (done as a static method on SuiteDB), call it after each test
 // TODO: test deleting device instances on parent device forget
@@ -104,6 +105,7 @@ type PartialState = Pick<
     | 'suiteSyncQuotaManager'
     | 'flags'
     | 'metadata'
+    | 'receive'
 > & {
     wallet: Partial<
         Pick<

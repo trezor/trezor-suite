@@ -1,6 +1,6 @@
-import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction } from '@reduxjs/toolkit';
 
-import { type AnyAction } from '@suite-common/redux-utils';
+import { type AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import { accountsActions } from '@suite-common/wallet-core';
 import { type AccountKey, type ReceiveInfo } from '@suite-common/wallet-types';
 
@@ -39,7 +39,7 @@ type PersistedReceiveAccountState = {
     currentFreshAddress?: CurrentFreshAddress;
 };
 
-const receiveInitialState: ReceiveState = {
+export const receiveInitialState: ReceiveState = {
     accounts: {},
 };
 
@@ -75,7 +75,7 @@ const markAddressTouched = (draft: ReceiveAccountState, path: string, address: s
     draft.currentFreshAddress = undefined;
 };
 
-export const receiveSlice = createSlice({
+export const receiveSlice = createSliceWithExtraDeps({
     name: 'receive',
     initialState: receiveInitialState,
     reducers: {
@@ -95,14 +95,14 @@ export const receiveSlice = createSlice({
             accountState.currentFreshAddress = action.payload.currentFreshAddress;
         },
     },
-    extraReducers: builder => {
+    extraReducers: (builder, extra) => {
         builder
             .addCase(accountsActions.removeAccount, (state, action) => {
                 action.payload.forEach((account: { key: AccountKey }) => {
                     delete state.accounts[account.key];
                 });
             })
-            .addCase('@storage/load', (state, action) => {
+            .addCase(extra.actionTypes.storageLoad, (state, action) => {
                 const actionWithPayload = action as AnyAction;
 
                 state.accounts = (
@@ -143,4 +143,4 @@ export const selectCurrentFreshAddress = (state: ReceiveRootState, accountKey?: 
     selectReceiveAccountState(state, accountKey).currentFreshAddress;
 
 export const receiveActions = receiveSlice.actions;
-export const receiveReducer = receiveSlice.reducer;
+export const prepareReceiveReducer = receiveSlice.prepareReducer;
