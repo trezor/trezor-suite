@@ -5,6 +5,7 @@ export { RotateDeviceImage } from './components/RotateDeviceImage/RotateDeviceIm
 export { TrezorLogo } from './components/TrezorLogo/TrezorLogo';
 export { PasswordStrengthIndicator } from './components/PasswordStrengthIndicator/PasswordStrengthIndicator';
 export { CoinLogo, type CoinLogoType } from './components/CoinLogo/CoinLogo';
+export { QrCode, type QrCodeProps } from './components/QrCode/QrCode';
 export { isCryptoIconSymbol as isCoinSymbol } from '@suite-common/icons/src/iconUtils';
 export { AssetShareIndicator } from './components/AssetShareIndicator/AssetShareIndicator';
 export * from './components/TokenIconSet/TokenIconSet';

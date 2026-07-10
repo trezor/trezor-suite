@@ -43,10 +43,9 @@ import {
     WarningFilledIcon,
     WarningIcon,
 } from '@trezor/icons';
-import { CoinLogo, ConfirmOnDevicePill } from '@trezor/product-components';
+import { CoinLogo, ConfirmOnDevicePill, QrCode } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { QrCode } from 'src/components/suite/QrCode';
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { type ThunkAction } from 'src/types/suite';

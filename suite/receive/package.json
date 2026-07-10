@@ -30,6 +30,7 @@
         "@suite/labeling": "workspace:*",
         "@suite/modal": "workspace:*",
         "@trezor/components": "workspace:*",
+        "@trezor/product-components": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "19.2.3",
         "react-redux": "9.3.0",
