@@ -52,6 +52,8 @@ export const SendHeader = () => {
     const locktimeEnabled = enabledFormOptions.includes('bitcoinLocktime');
     const broadcastEnabled = enabledFormOptions.includes('broadcast');
     const dataEnabled = enabledFormOptions.includes('transactionData');
+    const nonceEditEnabled = enabledFormOptions.includes('ethereumNonce');
+    const destinationTagEnabled = enabledFormOptions.includes('destinationTag');
     const token = watch('outputs.0.token');
 
     useEffect(() => {
@@ -62,7 +64,6 @@ export const SendHeader = () => {
         }
     }, [networkType, dataEnabled, token, toggleOption, resetDefaultValue]);
 
-    const nonceEditEnabled = enabledFormOptions.includes('ethereumNonce');
     const options: Array<DropdownMenuItemProps> = [
         {
             'data-testid': '@send/header-dropdown/import',
@@ -86,7 +87,7 @@ export const SendHeader = () => {
                 if (broadcastEnabled) toggleOption('broadcast');
             },
             label: <Translation id="LOCKTIME_ADD" />,
-            isDisabled: !!locktimeEnabled,
+            isDisabled: locktimeEnabled,
             isHidden: networkType !== 'bitcoin',
         },
         {
@@ -96,7 +97,7 @@ export const SendHeader = () => {
             },
             closeOnClick: true,
             label: <Translation id="DATA_ADD" />,
-            isDisabled: networkType === 'tron' && !!token,
+            isDisabled: dataEnabled || (networkType === 'tron' && !!token),
             isHidden: networkType !== 'ethereum' && networkType !== 'tron',
         },
         {
@@ -106,6 +107,7 @@ export const SendHeader = () => {
             },
             closeOnClick: true,
             label: <Translation id={networkType === 'tron' ? 'TR_TRON_NOTE_ADD' : 'MEMO_SWITCH'} />,
+            isDisabled: destinationTagEnabled,
             isHidden: networkType !== 'tron' && networkType !== 'solana',
         },
         {
@@ -132,7 +134,7 @@ export const SendHeader = () => {
                     }
                 />
             ),
-            isDisabled: !!locktimeEnabled,
+            isDisabled: locktimeEnabled,
             isHidden: !BROADCAST_SUPPORTED_NETWORK_TYPES.includes(networkType),
         },
         {
