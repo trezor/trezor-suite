@@ -1,4 +1,5 @@
-import { type ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
+import { Pressable } from 'react-native';
 
 import {
     Box,
@@ -18,6 +19,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 export type YieldCompleteSummaryRow = {
     key: string;
     label: ReactNode;
+    onPress?: () => void;
 } & (
     | {
           value: ReactNode;
@@ -121,19 +123,20 @@ export const YieldCompleteScreenContent = ({
                         }
 
                         return (
-                            <HStack
-                                key={row.key}
-                                spacing="sp16"
-                                style={applyStyle(summaryRowStyle, {
-                                    hasBorder: index > 0,
-                                    hasContent: false,
-                                })}
-                            >
-                                <Text variant="body-md">{row.label}</Text>
-                                <Box flexShrink={1} alignItems="flex-end">
-                                    {row.value}
-                                </Box>
-                            </HStack>
+                            <Pressable onPress={row.onPress} key={row.key}>
+                                <HStack
+                                    spacing="sp16"
+                                    style={applyStyle(summaryRowStyle, {
+                                        hasBorder: index > 0,
+                                        hasContent: false,
+                                    })}
+                                >
+                                    <Text variant="body-md">{row.label}</Text>
+                                    <Box flexShrink={1} alignItems="flex-end">
+                                        {row.value}
+                                    </Box>
+                                </HStack>
+                            </Pressable>
                         );
                     })}
                 </Card>

@@ -1,5 +1,5 @@
 export { AccountsStackNavigator } from './navigation/AccountsStackNavigator';
 export { AccountAssetsScreen } from './screens/AccountAssetsScreen';
-export { AccountSettingsScreen } from './screens/AccountSettingsScreen';
 export { AccountDetailScreen } from './screens/AccountDetailScreen';
+export { AccountSettingsScreen } from './screens/AccountSettingsScreen';
 export { AccountsScreen } from './screens/AccountsScreen';

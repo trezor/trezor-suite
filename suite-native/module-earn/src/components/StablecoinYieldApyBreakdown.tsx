@@ -10,15 +10,39 @@ import { type TokenAddress } from '@suite-common/wallet-types';
 import { getApyPercent } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork, Icon, cryptoIconSizes } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 
-import { getApyBreakdownDescriptionKey } from '../utils';
+const getApyBreakdownDescriptionKey = (
+    yieldSource: RewardDtoV2['yieldSource'],
+): TxKeyPath | null => {
+    switch (yieldSource) {
+        case 'protocol_incentive':
+            return 'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.manualCompound';
+        default:
+            return 'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.autoCompounded';
+    }
+};
 
-type StablecoinYieldApyBreakdownProps = {
-    networkSymbol: NetworkSymbol;
-    rewards: RewardDtoV2[];
-    underlyingToken: TokenDtoV2 | undefined;
-    tokenSymbol: string;
+const getRateTranslationId = (yieldSource: RewardDtoV2['yieldSource']): TxKeyPath | null => {
+    switch (yieldSource) {
+        case 'lending':
+            return 'earn.apyAbbr';
+        case 'protocol_incentive':
+        case 'campaign_incentive':
+            return 'earn.aprAbbr';
+        default:
+            return null;
+    }
+};
+
+const isAprReward = (reward: RewardDtoV2): boolean => {
+    const ratePercent = getApyPercent(reward.rate);
+
+    return (
+        getRateTranslationId(reward.yieldSource) === 'earn.apyAbbr' &&
+        ratePercent !== null &&
+        ratePercent > 0
+    );
 };
 
 type RewardRowProps = {
@@ -31,6 +55,8 @@ const RewardRow = ({ reward, networkSymbol, tokenSymbol }: RewardRowProps) => {
     const rewardRatePercent = getApyPercent(reward.rate);
     const rewardSymbol = reward.token.symbol || reward.token.name || '';
     const descriptionKey = getApyBreakdownDescriptionKey(reward.yieldSource);
+
+    const rateTranslationId = getRateTranslationId(reward.yieldSource);
 
     return (
         <HStack spacing="sp8" alignItems="center">
@@ -46,8 +72,14 @@ const RewardRow = ({ reward, networkSymbol, tokenSymbol }: RewardRowProps) => {
                             <Text variant="body-md">{rewardSymbol}</Text>
                         </HStack>
                         {rewardRatePercent !== null && rewardRatePercent > 0 && (
-                            <Text variant="body-md" color="contentPrimary">
+                            <Text variant="body-md" color="contentBrand">
                                 +{rewardRatePercent.toFixed(2)}%
+                                {rateTranslationId && (
+                                    <>
+                                        {' '}
+                                        <Translation id={rateTranslationId} />
+                                    </>
+                                )}
                             </Text>
                         )}
                     </HStack>
@@ -64,6 +96,13 @@ const RewardRow = ({ reward, networkSymbol, tokenSymbol }: RewardRowProps) => {
     );
 };
 
+type StablecoinYieldApyBreakdownProps = {
+    networkSymbol: NetworkSymbol;
+    rewards: RewardDtoV2[];
+    underlyingToken: TokenDtoV2 | undefined;
+    tokenSymbol: string;
+};
+
 export const StablecoinYieldApyBreakdown = ({
     networkSymbol,
     rewards,
@@ -74,6 +113,8 @@ export const StablecoinYieldApyBreakdown = ({
         () => sortRewardsByUnderlyingToken(rewards, underlyingToken),
         [rewards, underlyingToken],
     );
+
+    const hasAprReward = !!sortedRewards.some(isAprReward);
 
     return (
         <Box testID="@account-detail/stablecoin-yield/apy-breakdown-sheet">
@@ -89,7 +130,13 @@ export const StablecoinYieldApyBreakdown = ({
                 <HStack spacing="sp8" alignItems="center">
                     <Icon name="arrowsDownUp" size="medium" color="contentSecondary" />
                     <Text variant="body-md" color="contentSecondary">
-                        <Translation id="moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.footer" />
+                        <Translation
+                            id={
+                                hasAprReward
+                                    ? 'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.footerApyApr'
+                                    : 'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.footerApy'
+                            }
+                        />
                     </Text>
                 </HStack>
             </VStack>
