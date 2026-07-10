@@ -1,8 +1,9 @@
 export {
     receiveActions,
-    receiveReducer,
+    receiveInitialState,
     selectCurrentFreshAddress,
     selectTouchedAddresses,
+    prepareReceiveReducer,
     type CurrentFreshAddress,
     type ReceiveAccountState,
     type ReceiveRootState,

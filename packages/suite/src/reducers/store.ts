@@ -22,7 +22,7 @@ import { type FirmwareUpdateState, prepareFirmwareReducer } from '@suite-common/
 import { type GeolocationState, geolocationReducer } from '@suite-common/geolocation';
 import { addLog } from '@suite-common/logger';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
-import { receiveReducer } from '@suite-common/receive';
+import { type ReceiveState, prepareReceiveReducer } from '@suite-common/receive';
 import {
     type ExtraDependencies,
     type ExtraDependenciesStatic,
@@ -78,9 +78,11 @@ const bluetoothReducer = bluetoothSlice.prepareReducer(extraDependencies);
 const thpReducer = prepareThpReducer(extraDependencies);
 const suiteSyncReducer = suiteSyncSlice.prepareReducer(extraDependencies);
 const suiteSyncQuotaManagerReducer = suiteSyncQuotaManagerSlice.prepareReducer(extraDependencies);
+const receiveReducer = prepareReceiveReducer(extraDependencies);
 
 export type AppState = SuiteReducersState & {
     onboarding: OnboardingState;
+    receive: ReceiveState;
     wallet: WalletState;
     recovery: RecoveryState;
     firmware: FirmwareUpdateState;

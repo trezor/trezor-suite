@@ -16,5 +16,8 @@
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*"
+    },
+    "devDependencies": {
+        "@suite-common/test-utils": "workspace:*"
     }
 }
