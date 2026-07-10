@@ -93,6 +93,7 @@ export { yieldNavigateEvent } from './yieldNavigateEvent';
 export { yieldDepositEvent } from './yieldDepositEvent';
 export { yieldWithdrawEvent } from './yieldWithdrawEvent';
 export { yieldClaimEvent } from './yieldClaimEvent';
+export { wethUnwrapEvent } from './wethUnwrapEvent';
 export { suiteReadyEvent } from './suiteReadyEvent';
 export { switchDeviceEjectEvent } from './switchDeviceEjectEvent';
 export { switchDeviceForgetEvent } from './switchDeviceForgetEvent';

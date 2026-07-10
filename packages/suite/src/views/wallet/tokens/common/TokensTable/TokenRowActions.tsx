@@ -27,7 +27,7 @@ import {
     toTokenCryptoId,
     tradingActions,
 } from '@suite-common/trading';
-import { type Explorer, type Network } from '@suite-common/wallet-config';
+import { type Explorer, type Network, isWrappedNativeToken } from '@suite-common/wallet-config';
 import { selectExplorer, sendFormActions } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -50,6 +50,7 @@ import {
     ArrowDownIcon,
     ArrowUpIcon,
     ArrowUpRightIcon,
+    ArrowsDownUpIcon,
     CurrencyCircleDollarIcon,
     EyeIcon,
     EyeSlashIcon,
@@ -145,7 +146,7 @@ const TokenRowBasicActions = ({
         if (!availableVault) return;
 
         const yieldId = availableVault.id;
-        const contractAddress = availableVault.token.address;
+        const vaultTokenAddress = availableVault.token.address;
 
         analytics.report({
             type: events.yieldNavigateEvent.name,
@@ -164,7 +165,7 @@ const TokenRowBasicActions = ({
                 params: getEarnRouteParams({
                     account,
                     yieldId,
-                    contractAddress,
+                    contractAddress: vaultTokenAddress,
                 }),
             }),
         );
@@ -174,7 +175,7 @@ const TokenRowBasicActions = ({
         if (!availableVault) return;
 
         const yieldId = availableVault.id;
-        const contractAddress = availableVault.token.address;
+        const vaultTokenAddress = availableVault.token.address;
 
         analytics.report({
             type: events.yieldNavigateEvent.name,
@@ -193,13 +194,16 @@ const TokenRowBasicActions = ({
                 params: getEarnRouteParams({
                     account,
                     yieldId,
-                    contractAddress,
+                    contractAddress: vaultTokenAddress,
                 }),
             }),
         );
     };
 
-    const onTradeButtonClick = (type: TradingType, ...[payload]: Parameters<typeof goto>) => {
+    const onTradeButtonClick = (
+        tradingType: TradingType,
+        ...[payload]: Parameters<typeof goto>
+    ) => {
         dispatch(
             tradingActions.setTradingFromPrefilledAccount(
                 getTradingPrefilledFromAccountData(account, tokenCryptoId),
@@ -212,7 +216,7 @@ const TokenRowBasicActions = ({
             type: events.tradeNavigateEvent.name,
             payload: {
                 action: 'navigate',
-                type,
+                type: tradingType,
                 from: 'account/tokens',
                 networkSymbol: account.symbol,
                 contractAddress: token.contract,
@@ -303,10 +307,26 @@ const TokenRowBasicActions = ({
         setShowDeactivateModal(true);
     };
 
+    const isWrappedNative = isWrappedNativeToken(account.symbol, token.contract);
+
+    const onUnwrapButtonClick = () => {
+        analytics.report({
+            type: events.wethUnwrapEvent.name,
+            payload: {
+                type: 'unwrap-form-modal',
+                action: 'continue',
+                networkSymbol: account.symbol,
+                source: 'tokens-table',
+            },
+        });
+
+        dispatch(openModal({ type: 'unwrap-weth', account }));
+    };
+
     const TokenAddressItem = ({
         label,
         address,
-        type,
+        type: addressType,
     }: {
         label: ReactNode;
         address: string;
@@ -322,7 +342,7 @@ const TokenRowBasicActions = ({
                     onCopy={() => {
                         dispatch(
                             shouldShowCopyAddressModal
-                                ? showCopyAddressModal(address, type)
+                                ? showCopyAddressModal(address, addressType)
                                 : copyAddressToClipboard(address),
                         );
                     }}
@@ -413,6 +433,13 @@ const TokenRowBasicActions = ({
                             (tokenStatusType === TokenManagementAction.HIDE
                                 ? !isBelowTablet
                                 : true),
+                    },
+                    {
+                        label: <Translation id="TR_UNWRAP_TOKEN" />,
+                        icon: ArrowsDownUpIcon,
+                        onClick: onUnwrapButtonClick,
+                        isDisabled: token.balance === '0',
+                        isHidden: !isWrappedNative || !!isUnverifiedTable,
                     },
                     {
                         label: <Translation id="TR_EARN_YIELD_DEPOSIT" />,

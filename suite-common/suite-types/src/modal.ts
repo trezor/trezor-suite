@@ -190,6 +190,11 @@ export type UserContextPayload =
           account: Account;
       }
     | {
+          type: 'unwrap-weth';
+          account: Account;
+          prefillAmount?: string;
+      }
+    | {
           type: 'earn-provider-consent';
           flow: EarnFlow;
           provider: EarnProvider;

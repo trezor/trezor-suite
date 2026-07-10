@@ -19,6 +19,7 @@ export const YieldWithdrawForm = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const {
+        account,
         vault,
         token,
         receiptToken,
@@ -187,6 +188,7 @@ export const YieldWithdrawForm = () => {
                                     input={completedInput}
                                     output={completedOutput}
                                     vaultId={vault.id}
+                                    account={account}
                                 />
                             ),
                         },

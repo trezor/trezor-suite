@@ -26,11 +26,9 @@ import { AddTokenModal } from './AddTokenModal';
 import type { ReduxModalProps } from '../ReduxModalProps';
 import { AdvancedCoinSettingsModal } from './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
 import { ApplicationLogModal } from './ApplicationLogModal';
-import { BackgroundGalleryModal } from './BackgroundGalleryModal';
-import { PinInvalidModal } from '../DeviceContextModal/PinInvalidModal';
-import { TransactionReviewModal } from '../TransactionReviewModal/TransactionReviewModal';
 import { UnhideTokenModal } from '../UnhideTokenModal';
 import { AutoStartBeforeQuitModal } from './AutoStartBeforeQuitModal';
+import { BackgroundGalleryModal } from './BackgroundGalleryModal';
 import { CancelCoinjoinModal } from './CancelCoinjoinModal';
 import { CoinjoinSuccessModal } from './CoinjoinSuccessModal';
 import { ConfirmUnverifiedAddressModal } from './ConfirmUnverifiedAddressModal';
@@ -54,8 +52,11 @@ import { RequestEnableTorModal } from './RequestEnableTorModal';
 import { SafetyChecksModal } from './SafetyChecksModal';
 import { StakeChangeDelegateModal } from './StakeChangeDelegateModal/StakeChangeDelegateModal';
 import { TorLoadingModal } from './TorLoadingModal';
+import { PinInvalidModal } from '../DeviceContextModal/PinInvalidModal';
+import { TransactionReviewModal } from '../TransactionReviewModal/TransactionReviewModal';
 import { TxDetailModal } from './TxDetailModal/TxDetailModal';
 import { UnecoCoinjoinModal } from './UnecoCoinjoinModal';
+import { UnwrapWethModal } from './UnwrapWethModal/UnwrapWethModal';
 import { WalletConnectProposalModal } from './WalletConnectProposalModal';
 import { WalletConnectSwitchAccountModal } from './WalletConnectSwitchAccountModal';
 import { WipeDeviceSuccessModal } from './WipeDeviceSuccessModal';
@@ -165,6 +166,14 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
             return <UnstakeModal onCancel={onCancel} account={payload.account} />;
         case 'claim':
             return <EarnClaimModal onCancel={onCancel} account={payload.account} />;
+        case 'unwrap-weth':
+            return (
+                <UnwrapWethModal
+                    onCancel={onCancel}
+                    account={payload.account}
+                    prefillAmount={payload.prefillAmount}
+                />
+            );
         case 'change-delegate':
             return <StakeChangeDelegateModal onCancel={onCancel} />;
         case 'copy-address':

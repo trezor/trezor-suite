@@ -16,6 +16,8 @@ type Attributes = {
         | 'insufficient-funds-banner'
         | 'allowance-error-banner'
         | 'allowance-retry'
+        | 'unwrap-offer'
+        | 'staking-vs-yield-tooltip'
     >;
     value?: AttributeDef<string>;
     networkSymbol?: AttributeDef<string>;
@@ -31,7 +33,13 @@ export const yieldInteractionEvent: EventDef<Attributes, EventType.YieldInteract
     attributes: {
         element: {
             description: 'Which UI element the user interacted with',
-            changelog: [{ version: '26.5.2', notes: 'added' }],
+            changelog: [
+                { version: '26.5.2', notes: 'added' },
+                {
+                    version: '26.7.0',
+                    notes: 'added `unwrap-offer`, `staking-vs-yield-tooltip` values',
+                },
+            ],
         },
         value: {
             description:

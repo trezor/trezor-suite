@@ -113,6 +113,7 @@ export enum EventType {
     YieldDeposit = 'yield/deposit',
     YieldWithdraw = 'yield/withdraw',
     YieldClaim = 'yield/claim',
+    YieldWethUnwrap = 'yield/weth-unwrap',
     // eslint-disable-next-line local-rules/analytics-event-name
     SuiteReady = 'suite-ready',
     // eslint-disable-next-line local-rules/analytics-event-name
