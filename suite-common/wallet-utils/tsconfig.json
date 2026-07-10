@@ -20,10 +20,14 @@
         {
             "path": "../../packages/blockchain-link-utils"
         },
-        { "path": "../../coins/coins-solana" },
-        { "path": "../../coins/coins-stellar" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" }

@@ -10,7 +10,7 @@
     },
     "workspaces": {
         "packages": [
-            "coins/*",
+            "networks/*/*",
             "packages/*",
             "packages/connect-examples/*",
             "suite-native/*",

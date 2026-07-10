@@ -79,9 +79,11 @@
         { "path": "../transaction-management" },
         { "path": "../transactions" },
         { "path": "../tx-simulation" },
-        { "path": "../../coins/coins-solana" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
         { "path": "../../packages/react-utils" },
         {
             "path": "../../packages/styles-native"

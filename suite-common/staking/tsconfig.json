@@ -8,10 +8,12 @@
         { "path": "../wallet-constants" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
-        { "path": "../../coins/coins-solana" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
+        },
+        {
+            "path": "../../networks/solana/network-solana"
         },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }

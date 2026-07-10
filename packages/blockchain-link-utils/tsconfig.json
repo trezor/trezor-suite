@@ -2,10 +2,16 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../../coins/coins-ripple" },
-        { "path": "../../coins/coins-solana" },
-        { "path": "../../coins/coins-stellar" },
         { "path": "../env-utils" },
+        {
+            "path": "../../networks/ripple/network-ripple"
+        },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
         { "path": "../utils" },
         { "path": "../blockchain-link-types" },
         { "path": "../eslint" },

@@ -12,14 +12,20 @@
     "references": [
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
-        { "path": "../../coins/coins-cardano" },
-        { "path": "../../coins/coins-solana" },
-        { "path": "../../coins/coins-stellar" },
         { "path": "../connect-common" },
         { "path": "../connect-data" },
         { "path": "../crypto-utils" },
         { "path": "../device-authenticity" },
         { "path": "../device-utils" },
+        {
+            "path": "../../networks/cardano/network-cardano"
+        },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
         { "path": "../protobuf" },
         { "path": "../protocol" },
         { "path": "../schema-utils" },
