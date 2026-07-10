@@ -183,7 +183,6 @@ describe(getUsedAddressesList.name, () => {
                 {
                     address: revealed.address,
                     path: revealed.path,
-                    isVerified: true,
                 },
             ],
             pendingAddresses: [pending.address],

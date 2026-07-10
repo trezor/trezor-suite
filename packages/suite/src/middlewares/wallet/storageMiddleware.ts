@@ -108,11 +108,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             }
 
             if (
-                isAnyOf(
-                    receiveActions.showAddress,
-                    receiveActions.showUnverifiedAddress,
-                    receiveActions.setCurrentFreshAddress,
-                )(action)
+                isAnyOf(receiveActions.showAddress, receiveActions.setCurrentFreshAddress)(action)
             ) {
                 api.dispatch(storageActions.saveAccountReceive(action.payload.accountKey));
             }
