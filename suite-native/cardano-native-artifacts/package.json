@@ -1,0 +1,7 @@
+{
+    "name": "@suite-native/cardano-native-artifacts",
+    "version": "1.0.0",
+    "private": true,
+    "license": "MIT",
+    "sideEffects": false
+}
