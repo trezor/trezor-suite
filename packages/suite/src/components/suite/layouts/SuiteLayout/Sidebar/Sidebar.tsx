@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { selectShouldDisplayDeviceCompromised } from '@suite/authenticity-checks';
 import { TrafficLightOffset } from '@suite/macos';
 import { suiteSettingsActions } from '@suite/settings';
-import { selectDevicesCount, selectSelectedDevice } from '@suite-common/device';
+import { selectSelectedDevice } from '@suite-common/device';
 import { Box, Icon, ResizableBox } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { TrezorLogoIcon } from '@trezor/icons';
@@ -62,9 +62,9 @@ type WalletSwitcherProps = {
 };
 
 const WalletSwitcher = ({ isCollapsed }: WalletSwitcherProps) => {
-    const devicesCount = useSelector(selectDevicesCount);
+    const selectedDevice = useSelector(selectSelectedDevice);
 
-    if (devicesCount > 0) {
+    if (selectedDevice) {
         return <DeviceSelector />;
     }
 
