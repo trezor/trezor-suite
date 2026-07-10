@@ -7,7 +7,6 @@ import { Box, Text, type TextProps } from '@suite-native/atoms';
 type EvmTxSimulationAssetAmountProps = {
     fiatAmount?: BaseCurrencyAmount;
     fiatSign?: ReactNode;
-    isInline?: boolean;
     summary?: string;
     summaryColor: TextProps['color'];
 };
@@ -15,7 +14,6 @@ type EvmTxSimulationAssetAmountProps = {
 export const EvmTxSimulationAssetAmount = ({
     fiatAmount,
     fiatSign,
-    isInline,
     summary,
     summaryColor,
 }: EvmTxSimulationAssetAmountProps) => {
@@ -24,9 +22,7 @@ export const EvmTxSimulationAssetAmount = ({
     return (
         <>
             <Box flex={1}>
-                <Text color={summaryColor} numberOfLines={isInline ? 1 : undefined}>
-                    {summary}
-                </Text>
+                <Text color={summaryColor}>{summary}</Text>
             </Box>
             {!!fiatAmount && (
                 <Text color="contentSecondary">
