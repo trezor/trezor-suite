@@ -94,7 +94,9 @@ Always run:
 - **Architecture lens.** Does the approach fit the codebase? Coupling, shared
   code blast radius, data flow, failure modes, security/privacy/signing
   implications (hardware wallet — take this seriously), test surface, backward
-  compatibility. Read the actual code for the affected areas; do not theorize.
+  compatibility. Read the actual code for the affected areas; do not theorize, and
+  **cite what you read as clickable permalinks** pinned to the base SHA you read
+  (see CONVENTIONS "Cite code as a clickable permalink"), not bare `path:line` text.
   **Load project learnings** (`.github/conveyor-learnings.md`, see CONVENTIONS) for
   those areas and apply any that are relevant (annotate `Applied prior learning:`
   in the status comment).

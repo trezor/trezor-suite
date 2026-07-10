@@ -165,8 +165,9 @@ the adversarial pass missed on PR #28820 — a retry recursing on an unchanged
 `this.port` — while it correctly checked resolve-safety. Check *both*.)
 
 **Cite the line or flag it UNVERIFIED.** No "probably handled / likely tested" —
-every claim that something is safe/handled/tested must cite `file:line` or the test
-name, else label it UNVERIFIED; "looks fine" is **not** a finding. Attach a 1-10
+every claim that something is safe/handled/tested must cite `file:line` (as a clickable
+permalink pinned to the reviewed SHA — see CONVENTIONS "Cite code as a clickable
+permalink") or the test name, else label it UNVERIFIED; "looks fine" is **not** a finding. Attach a 1-10
 **confidence** to each finding and gate the display: ≥7 shown normally, 5-6 shown
 with a "verify" caveat, 3-4 collapsed unless it would be a P0. This kills
 hallucinated all-clears and low-signal noise before it reaches the human gate.

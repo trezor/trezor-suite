@@ -16,6 +16,17 @@ process steps — this file is the canonical *what/always*.
   soft-wrap. Hard breaks belong only inside code blocks. (These SKILL.md files are
   hard-wrapped for editing convenience — do **not** copy that wrapping into the
   text you produce.)
+- **Cite code as a clickable permalink.** Whenever you write a `path:line` (or
+  `path:line-range`) reference in prose — a status/lens comment, a review finding, a PR
+  description — make it a **GitHub blob permalink** so it clicks straight to the code,
+  with the `path:line` as the visible link text:
+  `[connectPopupTypes.ts:11](https://github.com/<owner>/<repo>/blob/<sha>/<full/path>#L11)`
+  (a range is `#L11-L20`). **Pin a commit SHA, not a branch** — a branch ref moves and the
+  link drifts off the cited line. On a PR use the reviewed SHA (the `Reviewed at:` one);
+  on an issue-stage plan, pin the base SHA the lens actually read (`git rev-parse
+  origin/develop`). Plain `path:line` text does **not** auto-link on GitHub — always wrap
+  it. (Inline review comments posted on the diff are already anchored — this is for the
+  prose citations elsewhere.)
 - **One comment, not many — collapse the detail.** When a step produces several
   sections (per-lens findings, per-area notes, multiple reviews), post them as **one**
   comment with each section in a **collapsed** `<details>` block — never one comment
