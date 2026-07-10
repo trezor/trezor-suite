@@ -4,6 +4,7 @@
     "references": [
         { "path": "../../suite-common/address" },
         { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/receive" },
         {
             "path": "../../suite-common/redux-utils"
         },

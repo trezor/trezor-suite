@@ -1,10 +1,9 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
 import { openModal } from '@suite/modal';
+import { receiveActions } from '@suite-common/receive';
 import { type UserContextPayload } from '@suite-common/suite-types';
 import { type AccountKey } from '@suite-common/wallet-types';
-
-import { receiveActions } from './receiveReducer';
 
 type OpenAddressModalParams = Pick<
     Extract<UserContextPayload, { type: 'address' }>,

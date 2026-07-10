@@ -7,6 +7,12 @@ import { ReadMoreLink } from '@suite/external-links';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import { getFirstFreshAddress } from '@suite-common/address';
+import {
+    type ReceiveRootState,
+    receiveActions,
+    selectCurrentFreshAddress,
+    selectReceiveRevealedAddresses,
+} from '@suite-common/receive';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -23,12 +29,6 @@ import {
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import {
-    type ReceiveRootState,
-    receiveActions,
-    selectCurrentFreshAddress,
-    selectReceiveRevealedAddresses,
-} from './receiveReducer';
 import { showAddressThunk } from './showAddressThunk';
 import { useReceiveDisabled } from './useReceiveDisabled';
 

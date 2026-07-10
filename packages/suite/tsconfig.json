@@ -85,6 +85,7 @@
         {
             "path": "../../suite-common/react-query"
         },
+        { "path": "../../suite-common/receive" },
         {
             "path": "../../suite-common/redux-utils"
         },

@@ -5,7 +5,6 @@ import type { DBSchema } from 'idb';
 import { type CoinjoinAccount, type CoinjoinDebugSettings } from '@suite/coinjoin';
 import { type DebugState } from '@suite/debug';
 import type { FlagsState } from '@suite/flags';
-import type { ReceiveAccountState } from '@suite/receive';
 import type { SuiteSettingsState } from '@suite/settings';
 import { type DesktopSuiteSyncState } from '@suite/suite-sync';
 import { type AnalyticsState } from '@suite-common/analytics-redux';
@@ -15,6 +14,7 @@ import { type FeatureFeedbackState } from '@suite-common/feedback';
 import type { MessageState } from '@suite-common/message-system';
 import type { MetadataState } from '@suite-common/metadata-types';
 import { type EncryptedHex } from '@suite-common/platform-encryption';
+import type { ReceiveAccountState } from '@suite-common/receive';
 import type { SuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import type {

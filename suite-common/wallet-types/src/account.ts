@@ -228,7 +228,7 @@ export type WalletParams =
 export interface ReceiveInfo {
     path: string;
     address: string;
-    isVerified: boolean;
+    isVerified?: boolean;
 }
 
 export interface StakingPoolExtended extends StakingPool {

@@ -2,7 +2,6 @@ import { type Reducer, type UnknownAction, combineReducers } from 'redux';
 
 import { selectedAccountReducer } from '@suite/account';
 import { type CoinjoinAction, type CoinjoinState, coinjoinReducer } from '@suite/coinjoin';
-import { type ReceiveState, receiveReducer } from '@suite/receive';
 import { type TradingState, prepareTradingReducer } from '@suite-common/trading';
 import {
     type AccountsState,
@@ -64,7 +63,6 @@ export type WalletState = {
     discovery: Discovery;
     accounts: AccountsState;
     selectedAccount: SelectedAccountStatus;
-    receive: ReceiveState;
     fees: FeesState;
     blockchain: BlockchainNetworks;
     explorer: ExplorerConfig;
@@ -91,7 +89,6 @@ export const walletReducers: Reducer<
     discovery: discoveryReducer,
     accounts: accountsReducer,
     selectedAccount: selectedAccountReducer,
-    receive: receiveReducer,
     fees: feesReducer,
     blockchain: blockchainReducer,
     explorer: explorerReducer,

@@ -6,7 +6,6 @@ import { debugActions } from '@suite/debug';
 import { featureUsed, feedbackDismissed, feedbackRequested } from '@suite/feature-feedback';
 import { setFlag } from '@suite/flags';
 import { METADATA, metadataActions } from '@suite/metadata';
-import { receiveActions } from '@suite/receive';
 import { suiteSettingsActions } from '@suite/settings';
 import { dismissUnsupportedDeviceBanner } from '@suite/suite-sync';
 import { analyticsActions } from '@suite-common/analytics-redux';
@@ -22,6 +21,7 @@ import {
 import { discreetModeActions } from '@suite-common/discreet-mode';
 import { firmwareActions } from '@suite-common/firmware';
 import { messageSystemActions } from '@suite-common/message-system';
+import { receiveActions } from '@suite-common/receive';
 import {
     setSuiteSyncOwner,
     setSuiteSyncRelayUrl,
