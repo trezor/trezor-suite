@@ -1,11 +1,7 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import { getFirstFreshAddress } from '@suite-common/address';
-import {
-    type DeviceRootState,
-    selectDeviceStaticSessionId,
-    selectIsPortfolioTrackerDevice,
-} from '@suite-common/device';
+import { type DeviceRootState, selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import {
     createWeakMapSelector,
     returnStableArrayIfEmpty,
@@ -13,8 +9,8 @@ import {
 } from '@suite-common/redux-utils';
 import {
     type SuiteSyncDataRootState,
-    selectAccountsWithSuiteSyncLabel,
     selectSuiteSyncAccountLabel,
+    selectVisibleDeviceAccountsWithSuiteSyncLabel,
 } from '@suite-common/suite-sync';
 import {
     type SimpleTokenStructure,
@@ -116,21 +112,11 @@ export const selectAccountLabel = (
     return account?.accountLabel ?? null;
 };
 
-const selectVisibleAccountsWithLabel = createMemoizedSelector(
-    [
-        (state: NativeAccountsRootState) => state,
-        selectVisibleDeviceAccounts,
-        selectDeviceStaticSessionId,
-    ],
-    (state, accounts, deviceStaticSessionId) =>
-        selectAccountsWithSuiteSyncLabel(state, accounts, deviceStaticSessionId),
-);
-
 // TODO: It searches for filterValue even in tokens without fiat rates.
 // These are currently hidden in UI, but they should be made accessible in some way.
 const selectFilteredDeviceAccounts = createMemoizedSelector(
     [
-        selectVisibleAccountsWithLabel,
+        selectVisibleDeviceAccountsWithSuiteSyncLabel,
         (_state: NativeAccountsRootState, filterValue: string) => filterValue,
         (_state: NativeAccountsRootState, _filterValue: string, isSendFlow: boolean = false) =>
             isSendFlow,
@@ -230,7 +216,7 @@ const createNetworkFilterOption = weakMapMemoize(
 
 export const selectNetworkFilterOptions = createMemoizedSelector(
     [
-        selectVisibleAccountsWithLabel,
+        selectVisibleDeviceAccountsWithSuiteSyncLabel,
         (_state: NativeAccountsRootState, isSendFlow: boolean = false) => isSendFlow,
     ],
     (accounts, isSendFlow) => {

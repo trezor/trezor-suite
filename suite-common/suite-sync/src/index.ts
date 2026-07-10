@@ -52,6 +52,7 @@ export {
 } from './data/wallet/suiteSyncWalletSelectors';
 export {
     selectAccountsWithSuiteSyncLabel,
+    selectVisibleDeviceAccountsWithSuiteSyncLabel,
     type AccountWithSuiteSyncLabel,
 } from './data/account/selectAccountsWithSuiteSyncLabel';
 export { selectSuiteSyncAccountLabel } from './data/account/selectSuiteSyncAccountLabel';
