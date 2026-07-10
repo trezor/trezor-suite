@@ -366,6 +366,8 @@ export const splitYieldPendingTransaction = (
             pendingTransaction?.type === actionKind ? pendingTransaction : undefined,
         wrapPendingTransaction:
             pendingTransaction?.type === 'wrap' ? pendingTransaction : undefined,
+        unwrapPendingTransaction:
+            pendingTransaction?.type === 'unwrap' ? pendingTransaction : undefined,
     };
 };
 

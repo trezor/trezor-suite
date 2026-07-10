@@ -14,7 +14,8 @@ export type ComposeYieldEvmTransactionParams = {
     data: string;
     value?: string;
     backupGasLimit: string;
-    vaultChainId?: number;
+    /** When given (even null), it must equal the account network's chainId. */
+    vaultChainId?: number | null;
     dispatch: Dispatch;
     getState: () => AppState;
 };

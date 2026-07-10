@@ -19,7 +19,7 @@ import {
     type YieldPendingTransactionState,
     type YieldPositionFlowType,
 } from './stablecoinYieldTypes';
-import { getNextYieldFlowStep } from './stablecoinYieldUtils';
+import { getNextYieldFlowStep, isYieldWithdrawFlow } from './stablecoinYieldUtils';
 import { transactionsActions } from '../transactions/transactionsActions';
 
 // Message ids must exist in the desktop `suite/intl` messages — the desktop app renders
@@ -79,6 +79,14 @@ export type StablecoinYieldSessionState = {
         /** Amount of native coin actually wrapped (display units); null = wrap skipped or not run. */
         wrappedAmount: string | null;
     };
+    unwrap: {
+        /** "Receive as ETH" — chain an unwrap step after a wrapped-native withdrawal. */
+        isEnabled: boolean;
+        isSubmitting: boolean;
+        isPending: boolean;
+        /** Amount actually unwrapped (display units); null = unwrap skipped or not run. */
+        unwrappedAmount: string | null;
+    };
     approval: {
         allowanceAmount: string | null;
         modalState: YieldApproveModalState | null;
@@ -124,6 +132,12 @@ export const initialStablecoinYieldSessionState: StablecoinYieldSessionState = {
         isPending: false,
         wrappedAmount: null,
     },
+    unwrap: {
+        isEnabled: false,
+        isSubmitting: false,
+        isPending: false,
+        unwrappedAmount: null,
+    },
     approval: {
         allowanceAmount: null,
         modalState: null,
@@ -168,6 +182,7 @@ const createInitialStablecoinYieldSessionState = (
     ...initialStablecoinYieldSessionState,
     step: YIELD_FLOW_STEP_SEQUENCES[flowType][0],
     wrap: { ...initialStablecoinYieldSessionState.wrap },
+    unwrap: { ...initialStablecoinYieldSessionState.unwrap },
     approval: { ...initialStablecoinYieldSessionState.approval },
     action: { ...initialStablecoinYieldSessionState.action },
     result: {
@@ -373,6 +388,43 @@ export const stablecoinYieldSlice = createSlice({
                 session.step = 'approve';
             });
         },
+        setUnwrapEnabled(
+            state,
+            action: PayloadAction<StablecoinYieldSessionActionPayload & { isEnabled: boolean }>,
+        ) {
+            withSession(state, action.payload, session => {
+                session.unwrap.isEnabled = action.payload.isEnabled;
+                // Turning the toggle off on the unwrap step skips it — the withdrawal
+                // is already complete at that point.
+                if (!action.payload.isEnabled && session.step === 'unwrap') {
+                    session.step = 'complete';
+                }
+            });
+        },
+        startSubmittingUnwrap(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
+            withSession(state, action.payload, session => {
+                session.unwrap.isSubmitting = true;
+                session.error = null;
+            });
+        },
+        finishSubmittingUnwrap(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
+            withSession(state, action.payload, session => {
+                session.unwrap.isSubmitting = false;
+            });
+        },
+        completeUnwrap(
+            state,
+            action: PayloadAction<
+                StablecoinYieldSessionActionPayload & { unwrappedAmount: string }
+            >,
+        ) {
+            withSession(state, action.payload, session => {
+                session.unwrap.isPending = false;
+                session.unwrap.unwrappedAmount = action.payload.unwrappedAmount;
+                session.action.pendingTransaction = null;
+                session.step = 'complete';
+            });
+        },
         completeApproval(
             state,
             action: PayloadAction<
@@ -466,6 +518,7 @@ export const stablecoinYieldSlice = createSlice({
                 session.action.pendingReceiptAmount =
                     action.payload.receiptAmount ?? session.action.pendingReceiptAmount;
                 session.wrap.isPending = action.payload.tx.type === 'wrap';
+                session.unwrap.isPending = action.payload.tx.type === 'unwrap';
             });
         },
         completeAction(
@@ -486,13 +539,19 @@ export const stablecoinYieldSlice = createSlice({
 
                 session.action.pendingTransaction = null;
                 session.action.review = null;
-                session.step = getNextYieldFlowStep(action.payload.flowType, 'action');
+                // A wrapped-native withdrawal with "Receive as ETH" on chains the unwrap
+                // step in before completion.
+                session.step =
+                    isYieldWithdrawFlow(action.payload.flowType) && session.unwrap.isEnabled
+                        ? 'unwrap'
+                        : getNextYieldFlowStep(action.payload.flowType, 'action');
             });
         },
         transactionFailed(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
             withSession(state, action.payload, session => {
                 session.action.pendingTransaction = null;
                 session.wrap.isPending = false;
+                session.unwrap.isPending = false;
                 session.error = 'TR_EARN_YIELD_ERROR_TRANSACTION_FAILED';
             });
         },

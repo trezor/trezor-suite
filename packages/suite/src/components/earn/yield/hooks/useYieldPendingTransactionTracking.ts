@@ -40,7 +40,11 @@ type ResolutionEventType =
           type: 'deposit';
           successType: 'approve-success' | 'revoke-success' | 'wrap-success' | 'success';
       }
-    | { type: 'withdraw'; operation: YieldWithdrawFlowType; successType: 'success' }
+    | {
+          type: 'withdraw';
+          operation: YieldWithdrawFlowType;
+          successType: 'success' | 'unwrap-success';
+      }
     | { type: 'claim'; successType: 'success' };
 
 const getResolutionEventType = (
@@ -50,6 +54,10 @@ const getResolutionEventType = (
     switch (pendingTxType) {
         case 'wrap':
             return { type: 'deposit', successType: 'wrap-success' };
+        case 'unwrap':
+            return flowType === 'withdraw' || flowType === 'redeem'
+                ? { type: 'withdraw', operation: flowType, successType: 'unwrap-success' }
+                : null;
         case 'approve':
             return { type: 'deposit', successType: 'approve-success' };
         case 'revoke':
@@ -258,6 +266,18 @@ export const useYieldPendingTransactionTracking = ({
                 }),
             );
             dispatch(stablecoinYieldActions.invalidateAllowance({ flowType, flowKey }));
+
+            return;
+        }
+
+        if (pendingTransaction.type === 'unwrap') {
+            dispatch(
+                stablecoinYieldActions.completeUnwrap({
+                    flowType,
+                    flowKey,
+                    unwrappedAmount: pendingTransaction.amount,
+                }),
+            );
 
             return;
         }

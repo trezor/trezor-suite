@@ -310,4 +310,180 @@ describe('stablecoinYieldReducer', () => {
             expect(getSession(state, 'deposit')?.action.pendingTransaction?.txid).toBe('0xdef');
         });
     });
+
+    describe('unwrap step', () => {
+        it('initializes the withdraw session with the unwrap sub-state', () => {
+            const state = initSession('withdraw');
+
+            expect(getSession(state, 'withdraw')?.unwrap).toEqual({
+                isEnabled: false,
+                isSubmitting: false,
+                isPending: false,
+                unwrappedAmount: null,
+            });
+        });
+
+        it.each(['withdraw', 'redeem'] as const)(
+            'chains the unwrap step in when %s completes with unwrap enabled',
+            flowType => {
+                let state = stablecoinYieldReducer(
+                    initSession(flowType),
+                    stablecoinYieldActions.setUnwrapEnabled({
+                        flowType,
+                        flowKey: FLOW_KEY,
+                        isEnabled: true,
+                    }),
+                );
+
+                state = stablecoinYieldReducer(
+                    state,
+                    stablecoinYieldActions.completeAction({
+                        flowType,
+                        flowKey: FLOW_KEY,
+                        amount: '1.2',
+                    }),
+                );
+
+                expect(getSession(state, flowType)?.step).toBe('unwrap');
+                expect(getSession(state, flowType)?.result.completedAmount).toBe('1.2');
+            },
+        );
+
+        it('completes withdraw without the unwrap step when unwrap is disabled', () => {
+            const state = stablecoinYieldReducer(
+                initSession('withdraw'),
+                stablecoinYieldActions.completeAction({
+                    flowType: 'withdraw',
+                    flowKey: FLOW_KEY,
+                    amount: '1.2',
+                }),
+            );
+
+            expect(getSession(state, 'withdraw')?.step).toBe('complete');
+        });
+
+        it('does not chain the unwrap step into deposit completion', () => {
+            let state = stablecoinYieldReducer(
+                initSession('deposit'),
+                stablecoinYieldActions.setUnwrapEnabled({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    isEnabled: true,
+                }),
+            );
+
+            state = stablecoinYieldReducer(
+                state,
+                stablecoinYieldActions.completeAction({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    amount: '100',
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.step).toBe('complete');
+        });
+
+        it('skips the active unwrap step when the toggle is turned off', () => {
+            let state = stablecoinYieldReducer(
+                initSession('withdraw'),
+                stablecoinYieldActions.setUnwrapEnabled({
+                    flowType: 'withdraw',
+                    flowKey: FLOW_KEY,
+                    isEnabled: true,
+                }),
+            );
+            state = stablecoinYieldReducer(
+                state,
+                stablecoinYieldActions.completeAction({
+                    flowType: 'withdraw',
+                    flowKey: FLOW_KEY,
+                    amount: '1.2',
+                }),
+            );
+            state = stablecoinYieldReducer(
+                state,
+                stablecoinYieldActions.setUnwrapEnabled({
+                    flowType: 'withdraw',
+                    flowKey: FLOW_KEY,
+                    isEnabled: false,
+                }),
+            );
+
+            expect(getSession(state, 'withdraw')?.step).toBe('complete');
+            expect(getSession(state, 'withdraw')?.unwrap.unwrappedAmount).toBe(null);
+        });
+
+        it('starts and finishes submitting the unwrap', () => {
+            let state = stablecoinYieldReducer(
+                initSession('withdraw'),
+                stablecoinYieldActions.startSubmittingUnwrap({
+                    flowType: 'withdraw',
+                    flowKey: FLOW_KEY,
+                }),
+            );
+
+            expect(getSession(state, 'withdraw')?.unwrap.isSubmitting).toBe(true);
+            expect(getSession(state, 'withdraw')?.error).toBe(null);
+
+            state = stablecoinYieldReducer(
+                state,
+                stablecoinYieldActions.finishSubmittingUnwrap({
+                    flowType: 'withdraw',
+                    flowKey: FLOW_KEY,
+                }),
+            );
+
+            expect(getSession(state, 'withdraw')?.unwrap.isSubmitting).toBe(false);
+        });
+
+        it('tracks the pending unwrap transaction and completes to the final step', () => {
+            let state = stablecoinYieldReducer(
+                initSession('withdraw'),
+                stablecoinYieldActions.setPendingTx({
+                    flowType: 'withdraw',
+                    flowKey: FLOW_KEY,
+                    tx: { type: 'unwrap', txid: '0xabc', amount: '1.2' },
+                }),
+            );
+
+            expect(getSession(state, 'withdraw')?.unwrap.isPending).toBe(true);
+
+            state = stablecoinYieldReducer(
+                state,
+                stablecoinYieldActions.completeUnwrap({
+                    flowType: 'withdraw',
+                    flowKey: FLOW_KEY,
+                    unwrappedAmount: '1.2',
+                }),
+            );
+
+            expect(getSession(state, 'withdraw')?.step).toBe('complete');
+            expect(getSession(state, 'withdraw')?.unwrap.isPending).toBe(false);
+            expect(getSession(state, 'withdraw')?.unwrap.unwrappedAmount).toBe('1.2');
+            expect(getSession(state, 'withdraw')?.action.pendingTransaction).toBe(null);
+        });
+
+        it('clears the pending unwrap flag when the transaction fails', () => {
+            let state = stablecoinYieldReducer(
+                initSession('withdraw'),
+                stablecoinYieldActions.setPendingTx({
+                    flowType: 'withdraw',
+                    flowKey: FLOW_KEY,
+                    tx: { type: 'unwrap', txid: '0xabc', amount: '1.2' },
+                }),
+            );
+
+            state = stablecoinYieldReducer(
+                state,
+                stablecoinYieldActions.transactionFailed({
+                    flowType: 'withdraw',
+                    flowKey: FLOW_KEY,
+                }),
+            );
+
+            expect(getSession(state, 'withdraw')?.unwrap.isPending).toBe(false);
+            expect(getSession(state, 'withdraw')?.action.pendingTransaction).toBe(null);
+        });
+    });
 });

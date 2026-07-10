@@ -17,6 +17,7 @@ type Attributes = {
         | 'allowance-error-banner'
         | 'allowance-retry'
         | 'unwrap-offer'
+        | 'receive-as-native-toggle'
         | 'staking-vs-yield-tooltip'
     >;
     value?: AttributeDef<string>;
@@ -37,7 +38,7 @@ export const yieldInteractionEvent: EventDef<Attributes, EventType.YieldInteract
                 { version: '26.5.2', notes: 'added' },
                 {
                     version: '26.7.0',
-                    notes: 'added `unwrap-offer`, `staking-vs-yield-tooltip` values',
+                    notes: 'added `unwrap-offer`, `receive-as-native-toggle`, `staking-vs-yield-tooltip` values',
                 },
             ],
         },

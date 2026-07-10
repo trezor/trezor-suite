@@ -77,10 +77,20 @@ export const getYieldFlowSteps = (
     // Both annotations widen the per-flow tuples (and the filter's inferred type predicate)
     // so indexOf below accepts any step id.
     const baseSequence: readonly YieldFlowStepId[] = YIELD_FLOW_STEP_SEQUENCES[flowType];
-    // 'wrap' is a conditional deposit-only step that precedes the base sequence; it is not
-    // part of YIELD_FLOW_STEP_SEQUENCES, so it is stitched in here for state/indicator maths.
-    const sequence: readonly YieldFlowStepId[] =
-        flowType === 'deposit' ? ['wrap', ...baseSequence] : baseSequence;
+    // 'wrap' and 'unwrap' are conditional steps that are not part of
+    // YIELD_FLOW_STEP_SEQUENCES; they are stitched in here for state/indicator maths —
+    // wrap precedes the deposit sequence, unwrap slots in before a withdrawal completes.
+    const getStitchedSequence = (): readonly YieldFlowStepId[] => {
+        if (flowType === 'deposit') {
+            return ['wrap', ...baseSequence];
+        }
+        if (flowType === 'withdraw' || flowType === 'redeem') {
+            return ['action', 'unwrap', 'complete'];
+        }
+
+        return baseSequence;
+    };
+    const sequence = getStitchedSequence();
     const effectiveListSteps: readonly YieldFlowStepId[] =
         listSteps ?? baseSequence.filter(stepId => stepId !== 'complete');
     const currentStepIndex = sequence.indexOf(currentStep);
@@ -114,6 +124,7 @@ export const getYieldFlowSteps = (
         wrap: getStepView('wrap'),
         approve: getStepView('approve'),
         action: getStepView('action'),
+        unwrap: getStepView('unwrap'),
         complete: getStepView('complete'),
     };
 };

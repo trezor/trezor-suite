@@ -7,6 +7,8 @@ type Attributes = {
     action: AttributeDef<EarnModalAction>;
     type: AttributeDef<
         | 'withdraw'
+        | 'unwrap'
+        | 'unwrap-success'
         | 'tx-simulation-modal'
         | 'success'
         | 'error'
@@ -36,6 +38,10 @@ export const yieldWithdrawEvent: EventDef<Attributes, EventType.YieldWithdraw> =
                 {
                     version: '26.5.2',
                     notes: 'added `leftPending`, `tx-simulation-modal`, `firmware-upgrade-needed-modal` values',
+                },
+                {
+                    version: '26.7.0',
+                    notes: 'added `unwrap`, `unwrap-success` values for the chained WETH unwrap step',
                 },
             ],
         },

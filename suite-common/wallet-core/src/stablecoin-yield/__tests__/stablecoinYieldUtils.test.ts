@@ -207,6 +207,17 @@ describe('stablecoinYieldUtils', () => {
                 wrapPendingTransaction: undefined,
             });
         });
+
+        it('classifies an unwrap tx as the unwrap tx', () => {
+            const unwrapTx = mockPendingTx('unwrap');
+
+            expect(splitYieldPendingTransaction(unwrapTx, 'withdraw')).toEqual({
+                approvalPendingTransaction: undefined,
+                actionPendingTransaction: undefined,
+                wrapPendingTransaction: undefined,
+                unwrapPendingTransaction: unwrapTx,
+            });
+        });
     });
 
     describe('buildYieldDepositCalldata', () => {

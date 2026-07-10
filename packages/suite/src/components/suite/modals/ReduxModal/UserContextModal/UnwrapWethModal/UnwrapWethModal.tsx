@@ -121,7 +121,10 @@ export const UnwrapWethModal = ({ account, prefillAmount, onCancel }: UnwrapWeth
                         isDeviceCompromised
                     }
                 >
-                    <Translation id="TR_UNWRAP_TO_NATIVE" values={{ symbol: nativeSymbol }} />
+                    <Translation
+                        id="TR_EARN_YIELD_UNWRAP_BUTTON"
+                        values={{ nativeSymbol, tokenSymbol: wethSymbol }}
+                    />
                 </Button>
             }
         >

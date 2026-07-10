@@ -161,6 +161,16 @@ const transactionNotificationConfig: Record<
             symbol: 'eth',
         },
     },
+    'tx-yield-unwrap': {
+        toastIcon: ArrowDownIcon,
+        intent: 'brand',
+        message: 'Unwrapped from Ethereum #1',
+        amount: '0.5 WETH',
+        transaction: {
+            notificationType: 'tx-yield-unwrap',
+            symbol: 'eth',
+        },
+    },
     'tx-yield-withdraw': {
         toastIcon: ArrowUpIcon,
         intent: 'brand',

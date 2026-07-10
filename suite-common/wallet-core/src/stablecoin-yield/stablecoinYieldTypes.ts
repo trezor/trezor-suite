@@ -4,7 +4,7 @@ import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
 
 export const YIELD_FLOW_TYPES = ['deposit', 'withdraw', 'redeem', 'claim'] as const;
-export const YIELD_FLOW_STEPS = ['wrap', 'approve', 'action', 'complete'] as const;
+export const YIELD_FLOW_STEPS = ['wrap', 'approve', 'action', 'unwrap', 'complete'] as const;
 
 export type YieldFlowType = (typeof YIELD_FLOW_TYPES)[number];
 export type YieldPositionFlowType = Exclude<YieldFlowType, 'claim'>;
@@ -68,7 +68,7 @@ export type YieldApproveModalState = {
 };
 
 export type YieldPendingTransactionState = {
-    type: 'wrap' | 'approve' | 'revoke' | 'deposit' | 'withdraw' | 'redeem' | 'claim';
+    type: 'wrap' | 'approve' | 'revoke' | 'deposit' | 'withdraw' | 'redeem' | 'claim' | 'unwrap';
     txid: string;
     amount: string;
     fee?: string;

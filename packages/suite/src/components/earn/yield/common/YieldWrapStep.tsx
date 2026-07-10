@@ -6,12 +6,12 @@ import type {
     YieldFlowDisplayToken,
     YieldPendingTransactionState,
 } from '@suite-common/wallet-core';
-import { Banner, Button, Card, Column, Row, Text } from '@trezor/components';
+import { Banner, Button, Column, Text } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
 import { YieldAmountCard } from './YieldAmountCard';
 import { YieldPendingTransaction } from './YieldPendingTransaction';
-import { YieldTokenValue } from './YieldTokenValue';
+import { YieldReceivingCard } from './YieldReceivingCard';
 
 export type YieldWrapStepProps = {
     token: YieldFlowDisplayToken;
@@ -78,28 +78,7 @@ export const YieldWrapStep = ({
             />
         )}
 
-        {!pendingTransaction && (
-            <Card paddingType="none">
-                <Row
-                    justifyContent="space-between"
-                    alignItems="center"
-                    gap={16}
-                    padding={{ vertical: 16, horizontal: 20 }}
-                >
-                    <Text typographyStyle="body-md" intent="neutral" priority="secondary">
-                        <Translation id="TR_EARN_YIELD_WRAP_RECEIVING" />
-                    </Text>
-                    <YieldTokenValue
-                        token={{
-                            symbol: token.symbol,
-                            networkSymbol: token.networkSymbol,
-                            contractAddress: token.contractAddress ?? null,
-                        }}
-                        amount={wrapAmount}
-                    />
-                </Row>
-            </Card>
-        )}
+        {!pendingTransaction && <YieldReceivingCard token={token} amount={wrapAmount} />}
 
         <Button
             size="large"

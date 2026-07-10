@@ -35,6 +35,7 @@ import { BigNumber } from '@trezor/utils';
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import {
     submitYieldDepositThunk,
+    submitYieldUnwrapThunk,
     submitYieldWithdrawThunk,
     submitYieldWrapThunk,
 } from 'src/actions/wallet/stablecoin-yield';
@@ -98,12 +99,18 @@ export type UseYieldFlowResult = {
     isWrapReserveKept: boolean;
     nativeBalance: string;
     isSubmittingWrap: boolean;
+    isUnwrapFlow: boolean;
+    isUnwrapEnabled: boolean;
+    isSubmittingUnwrap: boolean;
+    unwrappedAmount: string | null;
     setAmountInput: (amount: string) => void;
     submitApprovalAction: () => void;
     submitWrap: () => void;
     enableWrapStep: () => void;
     disableWrapStep: () => void;
     goToWrapStep: () => void;
+    setUnwrapEnabled: (isEnabled: boolean) => void;
+    submitUnwrap: (unwrapAmount: string) => void;
     submitAction: () => void;
     revokeAllowance: () => void;
     enterModifyApproval: () => void;
@@ -161,6 +168,9 @@ export const useYieldFlow = ({
 
     const isWrapFlow = flowType === 'deposit' && isWrappedNativeVaultToken;
     const isWrapFlowRef = useCurrentRef(isWrapFlow);
+
+    const isUnwrapFlow = isYieldWithdrawFlow(flowType) && isWrappedNativeVaultToken;
+    const isUnwrapFlowRef = useCurrentRef(isUnwrapFlow);
 
     const wethBalance = token?.balance ?? '0';
     // Native ETH wrappable after keeping a reserve for the wrap/approve/deposit fees.
@@ -225,6 +235,14 @@ export const useYieldFlow = ({
             dispatch(stablecoinYieldActions.enterWrapStep({ flowType, flowKey }));
         }
 
+        // Wrapped-native withdrawals receive the native coin by default — the chained
+        // unwrap step can be opted out via the "Receive as ETH" toggle.
+        if (isUnwrapFlowRef.current) {
+            dispatch(
+                stablecoinYieldActions.setUnwrapEnabled({ flowType, flowKey, isEnabled: true }),
+            );
+        }
+
         // Wrap OFF by default lands on the approve step prefilled with the held WETH balance.
         methodsRef.current.reset({
             amountInput: isWrapFlowSession && !startsAtWrapStep ? wethBalanceRef.current : '',
@@ -239,6 +257,7 @@ export const useYieldFlow = ({
         dispatch,
         methodsRef,
         isWrapFlowRef,
+        isUnwrapFlowRef,
         shouldDefaultWrapOnRef,
         wethBalanceRef,
     ]);
@@ -609,6 +628,55 @@ export const useYieldFlow = ({
         openDeviceConnectionModal,
     ]);
 
+    const setUnwrapEnabled = useCallback(
+        (isEnabled: boolean) => {
+            dispatch(stablecoinYieldActions.setUnwrapEnabled({ flowType, flowKey, isEnabled }));
+        },
+        [dispatch, flowType, flowKey],
+    );
+
+    const submitUnwrap = useCallback(
+        (unwrapAmount: string) => {
+            if (!isYieldWithdrawFlow(flowType) || !token || !receiptToken) {
+                dispatch(
+                    stablecoinYieldActions.setError({
+                        flowType,
+                        flowKey,
+                        error: 'TR_EARN_YIELD_ERROR_GENERIC',
+                    }),
+                );
+
+                return;
+            }
+
+            if (!isDeviceConnected) {
+                openDeviceConnectionModal();
+
+                return;
+            }
+
+            void dispatch(
+                submitYieldUnwrapThunk({
+                    flowKey,
+                    flowType,
+                    flowData: { account, vault, token, receiptToken },
+                    unwrapAmount,
+                }),
+            );
+        },
+        [
+            account,
+            flowKey,
+            flowType,
+            receiptToken,
+            dispatch,
+            token,
+            vault,
+            isDeviceConnected,
+            openDeviceConnectionModal,
+        ],
+    );
+
     const submitAction = useCallback(async () => {
         if (!isDeviceConnected) {
             openDeviceConnectionModal();
@@ -760,12 +828,18 @@ export const useYieldFlow = ({
         isWrapConfirmed,
         nativeBalance,
         isSubmittingWrap: session.wrap.isSubmitting,
+        isUnwrapFlow,
+        isUnwrapEnabled: session.unwrap.isEnabled,
+        isSubmittingUnwrap: session.unwrap.isSubmitting,
+        unwrappedAmount: session.unwrap.unwrappedAmount,
         setAmountInput,
         submitApprovalAction,
         submitWrap,
         enableWrapStep,
         disableWrapStep,
         goToWrapStep,
+        setUnwrapEnabled,
+        submitUnwrap,
         submitAction,
         revokeAllowance,
         enterModifyApproval,

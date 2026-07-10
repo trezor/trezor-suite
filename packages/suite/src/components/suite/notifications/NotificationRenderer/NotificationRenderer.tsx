@@ -638,6 +638,20 @@ export const NotificationRenderer = ({
                 />
             );
 
+        case 'tx-yield-unwrap':
+            return (
+                <TransactionRenderer
+                    render={render}
+                    notification={notification}
+                    icon="arrowDown"
+                    variant="success"
+                    message="TOAST_TX_YIELD_UNWRAP"
+                    messageValues={{
+                        account: notification.descriptor,
+                    }}
+                />
+            );
+
         case 'tx-yield-withdraw':
             return (
                 <TransactionRenderer

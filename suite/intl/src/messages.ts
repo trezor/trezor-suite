@@ -10177,10 +10177,10 @@ export const messages = defineMessages({
     TR_EARN_YIELD_WRAP_STEP_DESCRIPTION: {
         id: 'TR_EARN_YIELD_WRAP_STEP_DESCRIPTION',
         defaultMessage:
-            "Wrap the {nativeSymbol} you want to deposit — it's 1:1, and you can unwrap anytime.",
+            "Wrap the {nativeSymbol} you want to deposit — it's 1:1, and you can unwrap anytime during the withdraw process or from the Tokens tab.",
     },
-    TR_EARN_YIELD_WRAP_RECEIVING: {
-        id: 'TR_EARN_YIELD_WRAP_RECEIVING',
+    TR_EARN_YIELD_RECEIVING: {
+        id: 'TR_EARN_YIELD_RECEIVING',
         defaultMessage: 'Receiving',
     },
     TR_EARN_YIELD_WRAP_MORE: {
@@ -10190,6 +10190,23 @@ export const messages = defineMessages({
     TR_EARN_YIELD_PENDING_WRAP: {
         id: 'TR_EARN_YIELD_PENDING_WRAP',
         defaultMessage: 'Confirming wrap...',
+    },
+    TR_EARN_YIELD_PENDING_UNWRAP: {
+        id: 'TR_EARN_YIELD_PENDING_UNWRAP',
+        defaultMessage: 'Confirming unwrap...',
+    },
+    TR_EARN_YIELD_RECEIVE_AS_NATIVE: {
+        id: 'TR_EARN_YIELD_RECEIVE_AS_NATIVE',
+        defaultMessage: 'Receive as {nativeSymbol}',
+    },
+    TR_EARN_YIELD_UNWRAP_STEP_DESCRIPTION: {
+        id: 'TR_EARN_YIELD_UNWRAP_STEP_DESCRIPTION',
+        defaultMessage:
+            'Confirm to unwrap your withdrawn {amount} and receive {nativeSymbol}. You can also keep {tokenSymbol} and unwrap anytime later from the Tokens tab.',
+    },
+    TR_EARN_YIELD_UNWRAP_BUTTON: {
+        id: 'TR_EARN_YIELD_UNWRAP_BUTTON',
+        defaultMessage: 'Unwrap {nativeSymbol} from {tokenSymbol}',
     },
     TR_UNWRAP_TOKEN: {
         id: 'TR_UNWRAP_TOKEN',
@@ -10201,24 +10218,15 @@ export const messages = defineMessages({
     },
     TR_UNWRAP_WETH_DESCRIPTION: {
         id: 'TR_UNWRAP_WETH_DESCRIPTION',
-        defaultMessage:
-            '{symbol} converts back to {nativeSymbol} 1:1. A network fee paid in {nativeSymbol} applies.',
+        defaultMessage: '{symbol} converts back to {nativeSymbol} 1:1.',
     },
     TR_UNWRAP_AMOUNT: {
         id: 'TR_UNWRAP_AMOUNT',
         defaultMessage: 'Amount to unwrap',
     },
-    TR_UNWRAP_TO_NATIVE: {
-        id: 'TR_UNWRAP_TO_NATIVE',
-        defaultMessage: 'Unwrap to {symbol}',
-    },
     TR_UNWRAP_LOW_ETH_FOR_FEE: {
         id: 'TR_UNWRAP_LOW_ETH_FOR_FEE',
         defaultMessage: 'You need a small amount of {symbol} to pay the network fee.',
-    },
-    TR_UNWRAP_OFFER_TEXT: {
-        id: 'TR_UNWRAP_OFFER_TEXT',
-        defaultMessage: 'You received {symbol}. You can unwrap it to {nativeSymbol} anytime.',
     },
     TR_EARN_YIELD_NUTSHELL_WRAP: {
         id: 'TR_EARN_YIELD_NUTSHELL_WRAP',
@@ -11564,6 +11572,10 @@ export const messages = defineMessages({
     TOAST_TX_YIELD_WRAP: {
         id: 'TOAST_TX_YIELD_WRAP',
         defaultMessage: 'Wrap transaction from {account} has been broadcast',
+    },
+    TOAST_TX_YIELD_UNWRAP: {
+        id: 'TOAST_TX_YIELD_UNWRAP',
+        defaultMessage: 'Unwrap transaction from {account} has been broadcast',
     },
     TOAST_TX_YIELD_WITHDRAW: {
         id: 'TOAST_TX_YIELD_WITHDRAW',

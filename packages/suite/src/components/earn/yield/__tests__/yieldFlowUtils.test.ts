@@ -7,6 +7,7 @@ describe('yieldFlowUtils', () => {
                 wrap: { state: 'done', indicator: { index: 0, total: 2 } },
                 approve: { state: 'active', indicator: { index: 1, total: 2 } },
                 action: { state: 'pending', indicator: { index: 2, total: 2 } },
+                unwrap: { state: 'done', indicator: { index: 0, total: 2 } },
                 complete: { state: 'pending', indicator: { index: 0, total: 2 } },
             });
         });
@@ -16,6 +17,7 @@ describe('yieldFlowUtils', () => {
                 wrap: { state: 'done', indicator: { index: 0, total: 2 } },
                 approve: { state: 'done', indicator: { index: 1, total: 2 } },
                 action: { state: 'active', indicator: { index: 2, total: 2 } },
+                unwrap: { state: 'done', indicator: { index: 0, total: 2 } },
                 complete: { state: 'pending', indicator: { index: 0, total: 2 } },
             });
         });
@@ -25,6 +27,7 @@ describe('yieldFlowUtils', () => {
                 wrap: { state: 'done', indicator: { index: 0, total: 2 } },
                 approve: { state: 'done', indicator: { index: 1, total: 2 } },
                 action: { state: 'done', indicator: { index: 2, total: 2 } },
+                unwrap: { state: 'done', indicator: { index: 0, total: 2 } },
                 complete: { state: 'active', indicator: { index: 0, total: 2 } },
             });
         });
@@ -34,7 +37,18 @@ describe('yieldFlowUtils', () => {
                 wrap: { state: 'active', indicator: { index: 1, total: 3 } },
                 approve: { state: 'pending', indicator: { index: 2, total: 3 } },
                 action: { state: 'pending', indicator: { index: 3, total: 3 } },
+                unwrap: { state: 'done', indicator: { index: 0, total: 3 } },
                 complete: { state: 'pending', indicator: { index: 0, total: 3 } },
+            });
+        });
+
+        it('describes the unwrap step as the trailing step of a wrapped-native withdrawal', () => {
+            expect(getYieldFlowSteps('withdraw', 'unwrap', ['action', 'unwrap'])).toEqual({
+                wrap: { state: 'done', indicator: { index: 0, total: 2 } },
+                approve: { state: 'done', indicator: { index: 0, total: 2 } },
+                action: { state: 'done', indicator: { index: 1, total: 2 } },
+                unwrap: { state: 'active', indicator: { index: 2, total: 2 } },
+                complete: { state: 'pending', indicator: { index: 0, total: 2 } },
             });
         });
 
@@ -45,6 +59,7 @@ describe('yieldFlowUtils', () => {
                 wrap: { state: 'done', indicator: { index: 0, total: 3 } },
                 approve: { state: 'active', indicator: { index: 1, total: 3 } },
                 action: { state: 'pending', indicator: { index: 2, total: 3 } },
+                unwrap: { state: 'done', indicator: { index: 0, total: 3 } },
                 complete: { state: 'pending', indicator: { index: 3, total: 3 } },
             });
         });
@@ -54,6 +69,7 @@ describe('yieldFlowUtils', () => {
                 wrap: { state: 'done', indicator: { index: 0, total: 1 } },
                 approve: { state: 'done', indicator: { index: 0, total: 1 } },
                 action: { state: 'active', indicator: { index: 1, total: 1 } },
+                unwrap: { state: 'pending', indicator: { index: 0, total: 1 } },
                 complete: { state: 'pending', indicator: { index: 0, total: 1 } },
             });
         });
