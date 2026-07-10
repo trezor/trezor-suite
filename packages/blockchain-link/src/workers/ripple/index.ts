@@ -7,8 +7,8 @@ import type {
     SubscriptionAccountInfo,
 } from '@trezor/blockchain-link-types';
 import * as utils from '@trezor/blockchain-link-utils/src/ripple';
-import xrpl from '@trezor/coins-xrpl/runtime';
-import type { LedgerStream, TransactionStream, XrplAPI } from '@trezor/coins-xrpl/types';
+import xrpl from '@trezor/coins-ripple/runtime';
+import type { LedgerStream, TransactionStream, XrplAPI } from '@trezor/coins-ripple/types';
 import { getSuiteVersion } from '@trezor/env-utils';
 import { type TimerId } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
