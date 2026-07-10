@@ -48,6 +48,7 @@
         },
         { "path": "../accounts" },
         { "path": "../add-coin-account" },
+        { "path": "../address" },
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
