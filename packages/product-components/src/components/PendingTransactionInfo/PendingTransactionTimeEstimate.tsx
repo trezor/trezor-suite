@@ -1,6 +1,7 @@
 import { FormattedNumber } from 'react-intl';
 
-import { Icon, Paragraph, Row } from '@trezor/components';
+import { Note } from '@trezor/components';
+import { ClockIcon } from '@trezor/icons';
 
 /**
  * Rough default estimate of how long a just-broadcast transaction stays pending,
@@ -18,18 +19,14 @@ export const PendingTransactionTimeEstimate = ({
     const isInMinutes = seconds >= 60;
 
     return (
-        <Row gap={4} alignItems="center">
-            <Icon name="clock" size={16} intent="neutral" priority="secondary" />
-
-            <Paragraph typographyStyle="body-md" intent="neutral" priority="secondary">
-                ~
-                <FormattedNumber
-                    value={isInMinutes ? Math.round(seconds / 60) : seconds}
-                    style="unit"
-                    unit={isInMinutes ? 'minute' : 'second'}
-                    unitDisplay="narrow"
-                />
-            </Paragraph>
-        </Row>
+        <Note icon={ClockIcon}>
+            ~
+            <FormattedNumber
+                value={isInMinutes ? Math.round(seconds / 60) : seconds}
+                style="unit"
+                unit={isInMinutes ? 'minute' : 'second'}
+                unitDisplay="narrow"
+            />
+        </Note>
     );
 };
