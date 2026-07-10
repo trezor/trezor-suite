@@ -35,8 +35,13 @@ export const getNpmRemoteGreatestVersion = async (moduleName: string) => {
     }
 };
 
-export const getTrezorPackageDir = (packageName: string) =>
-    path.join(ROOT, packageName.startsWith('coins-') ? 'coins' : 'packages', packageName);
+export const getTrezorPackageDir = (packageName: string) => {
+    const networkMatch = packageName.match(/^network-([^-]+)(-(.+))?$/);
+
+    return networkMatch
+        ? path.join(ROOT, 'networks', networkMatch[1]!, packageName)
+        : path.join(ROOT, 'packages', packageName);
+};
 
 export const getTrezorDependencies = async (packageNameWithoutTrezorPrefix: string) => {
     const packageJsonPath = path.join(

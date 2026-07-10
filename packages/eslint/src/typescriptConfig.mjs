@@ -8,8 +8,8 @@ const buildArtifactPatterns = {
         'Import from the package root instead. Deep paths into "lib/" or "libDev/" target build artifacts that may not exist or may diverge from the workspace source.',
 };
 
-const coinsPackagePatterns = {
-    regex: '^@trezor/coins-[a-z]+$',
+const networksPackagePattern = {
+    regex: '^@trezor/network-[a-z]+$',
     message: 'Import from /constants, /runtime or /types subpath.',
 };
 
@@ -48,7 +48,7 @@ const suiteInternalPatterns = {
 export const restrictedImportsPatterns = [
     buildArtifactPatterns,
     suiteInternalPatterns,
-    coinsPackagePatterns,
+    networksPackagePattern,
     ...connectDeepImportPatterns,
 ];
 
@@ -72,7 +72,7 @@ export const typescriptConfig = [
                     paths: [{ name: '.' }, { name: '..' }, { name: '../..' }],
                     patterns: [
                         buildArtifactPatterns,
-                        coinsPackagePatterns,
+                        networksPackagePattern,
                         ...connectDeepImportPatterns,
                     ],
                 },
