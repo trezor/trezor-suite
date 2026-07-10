@@ -9,8 +9,15 @@ const WRAPPED_NATIVE_TOKEN_CONTRACT: Partial<Record<NetworkSymbol, `0x${string}`
 // metadata coming from a remote API or account token info.
 export const WRAPPED_NATIVE_TOKEN_DECIMALS = 18;
 
+const WRAPPED_NATIVE_TOKEN_SYMBOL: Partial<Record<NetworkSymbol, string>> = {
+    eth: 'WETH',
+};
+
 export const getWrappedNativeAddress = (networkSymbol: NetworkSymbol) =>
     WRAPPED_NATIVE_TOKEN_CONTRACT[networkSymbol];
+
+export const getWrappedNativeSymbol = (networkSymbol: NetworkSymbol) =>
+    WRAPPED_NATIVE_TOKEN_SYMBOL[networkSymbol];
 
 export const isWrappedNativeToken = (
     networkSymbol: NetworkSymbol,

@@ -3645,6 +3645,14 @@ export const messages = defineMessages({
         defaultMessage: 'Swap from {fromSymbol} to {toSymbol}',
         id: 'TR_SWAP_TRANSACTION',
     },
+    TR_TX_WRAP_NATIVE: {
+        defaultMessage: 'Wrapped {fromSymbol} to {toSymbol}',
+        id: 'TR_TX_WRAP_NATIVE',
+    },
+    TR_TX_UNWRAP_NATIVE: {
+        defaultMessage: 'Unwrapped {fromSymbol} to {toSymbol}',
+        id: 'TR_TX_UNWRAP_NATIVE',
+    },
     TR_UNKNOWN_ERROR_SEE_CONSOLE: {
         defaultMessage: 'Unknown error. See console logs for details.',
         id: 'TR_UNKNOWN_ERROR_SEE_CONSOLE',

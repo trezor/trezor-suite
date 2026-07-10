@@ -38,3 +38,4 @@ export * from './feeUnitUtils';
 export * from './stellarTokens';
 export * from './tronUtils';
 export * from './tronStakingUtils';
+export * from './wrappedNativeTokenUtils';

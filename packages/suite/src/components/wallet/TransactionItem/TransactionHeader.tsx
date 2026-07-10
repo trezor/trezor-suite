@@ -1,6 +1,10 @@
 import { Translation, useTranslation } from '@suite/intl';
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
-import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    getNetworkDisplaySymbol,
+    getWrappedNativeSymbol,
+    isNetworkSymbol,
+} from '@suite-common/wallet-config';
 import { type TronTxContractType } from '@suite-common/wallet-constants';
 import { type StakeType } from '@suite-common/wallet-types';
 import {
@@ -8,11 +12,14 @@ import {
     isCardanoStakingTx,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
+    isUnwrapNativeTx,
+    isWrapNativeTx,
 } from '@suite-common/wallet-utils';
 import { type AccountTransaction } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { UnstakingTxAmount } from 'src/components/suite/UnstakingTxAmount';
+import { UnwrapTxAmount } from 'src/components/suite/UnwrapTxAmount';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
@@ -126,6 +133,28 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
 
     if (isPending && (transaction.ethereumSpecific || transaction.cardanoSpecific)) {
         return <Translation id="TR_UNCONFIRMED_TX_LONG" />;
+    }
+
+    const wrappedNativeSymbol = getWrappedNativeSymbol(transaction.symbol);
+    if (
+        wrappedNativeSymbol &&
+        transaction.type !== 'failed' &&
+        (isWrapNativeTx(transaction) || isUnwrapNativeTx(transaction))
+    ) {
+        const isWrap = isWrapNativeTx(transaction);
+        const displaySymbol = getNetworkDisplaySymbol(transaction.symbol);
+
+        return (
+            <>
+                <BlurUrls
+                    text={translationString(isWrap ? 'TR_TX_WRAP_NATIVE' : 'TR_TX_UNWRAP_NATIVE', {
+                        fromSymbol: isWrap ? displaySymbol : wrappedNativeSymbol,
+                        toSymbol: isWrap ? wrappedNativeSymbol : displaySymbol,
+                    })}
+                />
+                {!isWrap && <UnwrapTxAmount transaction={transaction} />}
+            </>
+        );
     }
 
     if (
