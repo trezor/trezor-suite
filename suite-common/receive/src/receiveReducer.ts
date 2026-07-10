@@ -57,64 +57,33 @@ const getReceiveAccountState = (state: ReceiveState, accountKey: AccountKey) => 
     return state.accounts[accountKey];
 };
 
-const markAddressVerified = (draft: ReceiveAccountState, path: string, address: string) => {
+const markAddressRevealed = (draft: ReceiveAccountState, path: string, address: string) => {
     const receiveInfo = draft.revealedAddresses.find(receive => receive.address === address);
-    if (receiveInfo) {
-        receiveInfo.isVerified = true;
-    } else {
+    if (!receiveInfo) {
         draft.revealedAddresses.unshift({
             path,
             address,
-            isVerified: true,
         });
     }
 
     draft.currentFreshAddress = undefined;
 };
 
-const markAddressUnverified = (draft: ReceiveAccountState, path: string, address: string) => {
-    const receiveInfo = draft.revealedAddresses.find(receive => receive.address === address);
-    if (receiveInfo) {
-        receiveInfo.isVerified = false;
-    } else {
-        draft.revealedAddresses.unshift({
-            path,
-            address,
-            isVerified: false,
-        });
-    }
-
-    draft.currentFreshAddress = undefined;
-};
-
-const receiveSlice = createSlice({
+export const receiveSlice = createSlice({
     name: 'receive',
     initialState: receiveInitialState,
     reducers: {
         showAddress: {
-            reducer: (state: ReceiveState, action: PayloadAction<ReceiveActionPayload>) => {
+            reducer: (state, action: PayloadAction<ReceiveActionPayload>) => {
                 const accountState = getReceiveAccountState(state, action.payload.accountKey);
 
-                markAddressVerified(accountState, action.payload.path, action.payload.address);
+                markAddressRevealed(accountState, action.payload.path, action.payload.address);
             },
             prepare: (accountKey: AccountKey, path: string, address: string) => ({
                 payload: { accountKey, path, address },
             }),
         },
-        showUnverifiedAddress: {
-            reducer: (state: ReceiveState, action: PayloadAction<ReceiveActionPayload>) => {
-                const accountState = getReceiveAccountState(state, action.payload.accountKey);
-
-                markAddressUnverified(accountState, action.payload.path, action.payload.address);
-            },
-            prepare: (accountKey: AccountKey, path: string, address: string) => ({
-                payload: { accountKey, path, address },
-            }),
-        },
-        setCurrentFreshAddress: (
-            state: ReceiveState,
-            action: PayloadAction<SetCurrentFreshAddressPayload>,
-        ) => {
+        setCurrentFreshAddress: (state, action: PayloadAction<SetCurrentFreshAddressPayload>) => {
             const accountState = getReceiveAccountState(state, action.payload.accountKey);
 
             accountState.currentFreshAddress = action.payload.currentFreshAddress;
@@ -136,7 +105,13 @@ const receiveSlice = createSlice({
                         value: ReceiveAccountState;
                     }[]
                 ).reduce<ReceiveState['accounts']>((accounts, { key, value }) => {
-                    accounts[key as AccountKey] = value;
+                    accounts[key as AccountKey] = {
+                        revealedAddresses: value.revealedAddresses.map(({ path, address }) => ({
+                            path,
+                            address,
+                        })),
+                        currentFreshAddress: value.currentFreshAddress,
+                    };
 
                     return accounts;
                 }, {});

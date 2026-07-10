@@ -21,13 +21,5 @@ export const openAddressModal = (params: OpenAddressModalParams) => (dispatch: D
             isConfirmed: params.isConfirmed,
         }),
     );
-    dispatch(
-        params.isConfirmed
-            ? receiveActions.showAddress(params.accountKey, params.addressPath, params.value)
-            : receiveActions.showUnverifiedAddress(
-                  params.accountKey,
-                  params.addressPath,
-                  params.value,
-              ),
-    );
+    dispatch(receiveActions.showAddress(params.accountKey, params.addressPath, params.value));
 };
