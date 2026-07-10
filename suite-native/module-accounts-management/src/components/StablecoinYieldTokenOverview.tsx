@@ -25,6 +25,7 @@ import { TokenAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
+    StablecoinYieldApyBreakdown,
     useResolvedYieldFlowData,
     useStablecoinYieldFirmwareUpdateAlert,
 } from '@suite-native/module-earn';
@@ -34,8 +35,12 @@ import {
     type StackNavigationProps,
     YieldStackRoutes,
 } from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { StablecoinYieldApyBreakdown } from './StablecoinYieldApyBreakdown';
+const abbrStyle = prepareNativeStyle(() => ({
+    borderStyle: 'dotted',
+    borderBottomWidth: 1,
+}));
 
 type StablecoinYieldTokenOverviewProps = {
     accountKey: AccountKey;
@@ -51,6 +56,7 @@ export const StablecoinYieldTokenOverview = ({
     const navigation = useNavigation<NavigationProps>();
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
+    const { applyStyle } = useNativeStyles();
     const { isFirmwareSupported, showFirmwareUpdateAlert } =
         useStablecoinYieldFirmwareUpdateAlert();
     const { account, apy, resolutionStatus, depositedSharesAmount, vault } =
@@ -177,7 +183,7 @@ export const StablecoinYieldTokenOverview = ({
                             <Text variant="body-sm" color="contentSecondary">
                                 <Translation id="moduleAccounts.accountDetail.stablecoinYield.apy" />
                             </Text>
-                            <Text variant="body-sm" color={apyColor}>
+                            <Text variant="body-sm" color={apyColor} style={applyStyle(abbrStyle)}>
                                 {apyValue}
                             </Text>
                         </HStack>

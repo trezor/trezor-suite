@@ -8,9 +8,6 @@
         },
         { "path": "../../suite-common/device" },
         {
-            "path": "../../suite-common/earn-stablecoin-api"
-        },
-        {
             "path": "../../suite-common/fiat-services"
         },
         { "path": "../../suite-common/graph" },

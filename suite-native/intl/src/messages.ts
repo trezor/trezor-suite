@@ -1961,7 +1961,8 @@ export const messages = {
                     autoCompounded: 'Automatically added and compounded.',
                     manualCompound:
                         'Claim manually, then swap to {tokenSymbol} and deposit to compound.',
-                    footer: 'APY may change over time.',
+                    footerApy: 'APY may change over time.',
+                    footerApyApr: 'APY and APR rates can change over time.',
                 },
             },
         },
@@ -3143,6 +3144,8 @@ export const messages = {
         rewardsPerEpoch: 'Next estimated reward',
         apy: 'Annual Percentage Yield',
         apr: 'Annual Percentage Return',
+        apyAbbr: 'APY',
+        aprAbbr: 'APR',
         tron: {
             votes: 'Votes',
             allVotesUsed: 'All {count} votes used',
