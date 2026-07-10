@@ -15,6 +15,7 @@ import { Box, Button, Column, IconButton, Row, Text } from '@trezor/components';
 import { CaretLeftIcon, InfoIcon } from '@trezor/icons';
 import { AssetLogo } from '@trezor/product-components';
 
+import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useDispatch } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
@@ -129,14 +130,28 @@ export const YieldPageHeader = ({
                             >
                                 {vaultName}
                             </Text>
-                            <AccountLabel
-                                account={account}
-                                showAccountTypeBadge
-                                accountTypeBadgeSize="small"
-                                intent="neutral"
-                                priority="secondary"
-                                typographyStyle="body-sm"
-                            />
+                            <Row alignItems="center" gap={4}>
+                                <AccountLabel
+                                    account={account}
+                                    showAccountTypeBadge
+                                    accountTypeBadgeSize="small"
+                                    intent="neutral"
+                                    priority="secondary"
+                                    typographyStyle="body-sm"
+                                />
+                                <Text
+                                    typographyStyle="body-sm"
+                                    intent="neutral"
+                                    priority="secondary"
+                                >
+                                    {'· '}
+                                    <FormattedCryptoAmount
+                                        value={account.formattedBalance}
+                                        symbol={account.symbol}
+                                        isBalance
+                                    />
+                                </Text>
+                            </Row>
                         </Column>
                     </Row>
                 ) : (
