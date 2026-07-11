@@ -16743,6 +16743,8 @@ __metadata:
 "@trezor/protocol@workspace:*, @trezor/protocol@workspace:^, @trezor/protocol@workspace:packages/protocol":
   version: 0.0.0-use.local
   resolution: "@trezor/protocol@workspace:packages/protocol"
+  dependencies:
+    "@trezor/type-utils": "workspace:*"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
