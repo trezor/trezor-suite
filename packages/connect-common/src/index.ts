@@ -20,19 +20,17 @@ export * from './utils/urlUtils';
 export { getSerializedPath, getSlip44ByPath, validatePath } from './utils/pathUtils';
 export { connectCallableMethods } from './callableMethods';
 
-// THP key brands — re-exported from @trezor/protocol for public reach, so consumers
-// can construct branded key material without reaching into @trezor/protocol directly.
-export {
-    asHostStaticKey,
-    asHostStaticKeyHex,
-    asHostStaticPublicKey,
-    asHostStaticPublicKeyHex,
-    asTrezorStaticPublicKey,
-    asThpCredentialId,
-    type HostStaticKey,
-    type HostStaticKeyHex,
-    type HostStaticPublicKey,
-    type HostStaticPublicKeyHex,
-    type TrezorStaticPublicKey,
-    type ThpCredentialId,
+// THP key brand types — re-exported from @trezor/protocol for public reach. Kept
+// type-only on purpose: a value re-export of the `asX()` helpers would pull the
+// `@trezor/protocol` barrel (and its Node `crypto`-dependent THP handshake code)
+// into browser bundles that import the connect-common barrel. Consumers that need
+// to construct branded values import the `asX()` helpers from `@trezor/protocol`
+// directly (a Node context).
+export type {
+    HostStaticKey,
+    HostStaticKeyHex,
+    HostStaticPublicKey,
+    HostStaticPublicKeyHex,
+    TrezorStaticPublicKey,
+    ThpCredentialId,
 } from '@trezor/protocol';
