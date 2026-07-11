@@ -5,6 +5,7 @@ import { type TimerId } from '@trezor/type-utils';
 
 import { stakeDataActions } from './stakeDataSlice';
 import { type StakeRootState } from './stakeReducerTypes';
+import { selectStake } from './stakeSelectors';
 import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
 const STAKE_MODULE = '@common/wallet-core/stake';
@@ -30,7 +31,7 @@ export const initStakeDataThunk = createThunk(
         if (isBtcOnly) return;
 
         // because fetch only happens every 5 minutes we fetch according all devices in case a device is changed within those 5 minutes
-        const needsRefetch = stakingDataNeedsRefetch(getState());
+        const needsRefetch = stakingDataNeedsRefetch(selectStake(getState()).data);
 
         if (!needsRefetch) return;
 
