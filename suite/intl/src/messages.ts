@@ -1570,9 +1570,17 @@ export const messages = defineMessages({
         defaultMessage: 'Unable to connect. Wait a moment and try again.',
         id: 'TR_BACKEND_DISCONNECTED',
     },
+    TR_BACKEND_DISCONNECTED_RECONNECTING: {
+        defaultMessage:
+            'Unable to connect. Wait a moment and try again. Reconnecting in {time} sec...',
+        description:
+            'Banner shown when a blockchain backend is disconnected and an automatic reconnect countdown is running',
+        id: 'TR_BACKEND_DISCONNECTED_RECONNECTING',
+    },
     TR_BACKEND_RECONNECTING: {
         defaultMessage: 'Reconnecting in {time} sec...',
-        description: 'Should start with dot, continuation of TR_BACKEND_DISCONNECTED',
+        description:
+            'Backend row subtitle in debug settings while a reconnect countdown is running',
         id: 'TR_BACKEND_RECONNECTING',
     },
     TR_HOMESCREEN_GALLERY: {
