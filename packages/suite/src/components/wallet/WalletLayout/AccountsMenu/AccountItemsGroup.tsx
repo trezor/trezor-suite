@@ -25,6 +25,7 @@ const Section = styled.div<{ $selected?: boolean; $isSidebarCollapsed?: boolean 
 
     outline: 1px solid
         ${({ theme, $selected }) => ($selected ? theme.elementBorderNeutralSofter : 'transparent')};
+    outline-offset: -1px;
     padding: ${spacingsPx.xxs};
     margin: 0 -${spacingsPx.xxs};
 
