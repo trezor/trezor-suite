@@ -25,10 +25,8 @@ import {
 import TrezorConnect from '@trezor/connect';
 
 import { type EarnFormDraftPrefix } from '../types';
-import { handleEarnReviewError } from '../utils';
 import { useEarnSelectedPrecomposedTransaction } from './useEarnSelectedPrecomposedTransaction';
-import { useShowDeviceDisconnectedDuringEarnReviewAlert } from './useShowDeviceDisconnectedDuringEarnReviewAlert';
-import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
+import { useHandleEarnReviewError } from './useHandleEarnReviewError';
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes>;
 
@@ -55,9 +53,7 @@ export const useEarnTxValidityFlow = ({
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
     const precomposedTransaction = useEarnSelectedPrecomposedTransaction(stakeType, accountKey);
 
-    const showDeviceDisconnectedAlert = useShowDeviceDisconnectedDuringEarnReviewAlert();
-    const { showPushTransactionFailedAlert, showPendingTransactionConflictAlert } =
-        useShowPushTransactionFailedDuringReviewAlert(stakeType);
+    const handleReviewError = useHandleEarnReviewError(stakeType, navigation);
 
     const handleRetry = useCallback(async () => {
         if (!precomposedTransaction) return;
@@ -95,23 +91,14 @@ export const useEarnTxValidityFlow = ({
 
         if (!isRejected(response)) return;
 
-        handleEarnReviewError({
-            payload: response.payload,
-            navigation,
-            showPushTransactionFailedAlert,
-            showPendingTransactionConflictAlert,
-            showDeviceDisconnectedAlert,
-        });
+        handleReviewError(response.payload);
     }, [
         accountKey,
         stakeType,
         precomposedTransaction,
         dispatch,
-        navigation,
+        handleReviewError,
         revealConfirmOnTrezorSheet,
-        showDeviceDisconnectedAlert,
-        showPendingTransactionConflictAlert,
-        showPushTransactionFailedAlert,
     ]);
 
     const handleCancel = useCallback(() => {

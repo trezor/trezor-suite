@@ -48,6 +48,7 @@ import {
     type PrepareStakeEthTxParams,
     type PrepareUnstakeEthTxParams,
     type StakeTxBaseArgs,
+    type VerifyEthereumStakingLiveStateParams,
 } from '../types';
 
 const encodeCalldata = <D extends string>(
@@ -140,6 +141,107 @@ export const verifyEthereumStakingCalldata = ({
     }
 
     return { isValid: false, issues: [{ code: 'SIGNATURE_MISMATCH', field: null }] };
+};
+
+export type EthereumStakingPoolLiveState = {
+    autocompoundBalance?: string | number;
+    withdrawTotalAmount?: string | number;
+    claimableAmount?: string | number;
+};
+
+export type EthereumStakingLiveStateValidation =
+    | { isValid: true }
+    | { isValid: false; error: string };
+
+const VALID_LIVE_STATE: EthereumStakingLiveStateValidation = { isValid: true };
+
+const invalidLiveState = (error: string): EthereumStakingLiveStateValidation => ({
+    isValid: false,
+    error,
+});
+
+export const validateEthereumUnstakeLiveState = (
+    stakingPool: EthereumStakingPoolLiveState | undefined,
+    amount: string,
+): EthereumStakingLiveStateValidation => {
+    const { autocompoundBalance } = stakingPool ?? {};
+    if (!autocompoundBalance) {
+        return invalidLiveState('Failed to get the autocompound balance');
+    }
+
+    const balance = fromWei(`${autocompoundBalance}`).toEther('bignumber');
+    if (balance.lt(amount)) {
+        return invalidLiveState(`Max Amount For Unstake ${balance}`);
+    }
+
+    return VALID_LIVE_STATE;
+};
+
+export const validateEthereumClaimLiveState = (
+    stakingPool: EthereumStakingPoolLiveState | undefined,
+): EthereumStakingLiveStateValidation => {
+    const { withdrawTotalAmount, claimableAmount } = stakingPool ?? {};
+    if (!withdrawTotalAmount || !claimableAmount) {
+        return invalidLiveState('Failed to get the claimable or withdraw total amount');
+    }
+
+    const requested = fromWei(`${withdrawTotalAmount}`).toEther('bignumber');
+    const readyForClaim = fromWei(`${claimableAmount}`).toEther('bignumber');
+    if (requested.isZero()) {
+        return invalidLiveState('No amount requested for unstake');
+    }
+    if (!readyForClaim.eq(requested)) {
+        return invalidLiveState('Unstake request not filled yet');
+    }
+
+    return VALID_LIVE_STATE;
+};
+
+export const getUnstakeAmountFromCalldata = (calldata: string): string | null => {
+    const decoded = Calldata.evm.everstake.unstake.decode(calldata);
+    if (!decoded) {
+        return null;
+    }
+
+    return fromWei(`${decoded.value}`).toEther();
+};
+
+export const verifyEthereumStakingLiveState = async ({
+    stakeType,
+    from,
+    symbol,
+    identity,
+    amount,
+}: VerifyEthereumStakingLiveStateParams): Promise<EthereumStakingLiveStateValidation> => {
+    if (stakeType === 'stake') {
+        return VALID_LIVE_STATE;
+    }
+
+    const accountInfo = await TrezorConnect.getAccountInfo({
+        coin: symbol,
+        identity,
+        details: 'tokenBalances',
+        descriptor: from,
+    });
+    if (!accountInfo.success) {
+        return invalidLiveState(accountInfo.error.message);
+    }
+
+    const stakingPool = accountInfo.payload?.misc?.stakingPools?.[0];
+
+    if (stakeType === 'unstake') {
+        if (!amount) {
+            return invalidLiveState('Missing unstake amount for live-state validation');
+        }
+
+        return validateEthereumUnstakeLiveState(stakingPool, amount);
+    }
+
+    if (stakeType === 'claim') {
+        return validateEthereumClaimLiveState(stakingPool);
+    }
+
+    return invalidLiveState(`Unsupported stake type: ${stakeType}`);
 };
 
 export const getEthNetworkForWalletSdk = (
@@ -241,14 +343,12 @@ export const unstake = async ({
             throw new Error(accountInfo.error.message);
         }
 
-        const { autocompoundBalance } = accountInfo.payload?.misc?.stakingPools?.[0] ?? {};
-        if (!autocompoundBalance) {
-            throw new Error('Failed to get the autocompound balance');
-        }
-
-        const balance = fromWei(autocompoundBalance).toEther('bignumber');
-        if (balance.lt(amount)) {
-            throw new Error(`Max Amount For Unstake ${balance}`);
+        const validation = validateEthereumUnstakeLiveState(
+            accountInfo.payload?.misc?.stakingPools?.[0],
+            amount,
+        );
+        if (!validation.isValid) {
+            throw new Error(validation.error);
         }
 
         const UINT16_MAX = 65535;
@@ -309,18 +409,12 @@ export const claimWithdrawRequest = async ({
             throw new Error(accountInfo.error.message);
         }
 
-        const { withdrawTotalAmount, claimableAmount } =
-            accountInfo.payload?.misc?.stakingPools?.[0] ?? {};
-        if (!withdrawTotalAmount || !claimableAmount) {
-            throw new Error('Failed to get the claimable or withdraw total amount');
+        const validation = validateEthereumClaimLiveState(
+            accountInfo.payload?.misc?.stakingPools?.[0],
+        );
+        if (!validation.isValid) {
+            throw new Error(validation.error);
         }
-
-        const requested = fromWei(withdrawTotalAmount).toEther('bignumber');
-        const readyForClaim = fromWei(claimableAmount).toEther('bignumber');
-        if (requested.isZero()) {
-            throw new Error('No amount requested for unstake');
-        }
-        if (!readyForClaim.eq(requested)) throw new Error('Unstake request not filled yet');
 
         const { addressContractAccounting } =
             getEthNetworkAddresses(symbol) ??

@@ -37,6 +37,8 @@ import {
     unstakeFixture,
 } from './__fixtures__/ethereumStaking';
 import {
+    buildStakeData,
+    buildUnstakeData,
     claimWithdrawRequest,
     getAdjustedGasLimitConsumption,
     getChangedInternalTx,
@@ -47,10 +49,14 @@ import {
     getInstantStakeType,
     getStakeFormsDefaultValues,
     getStakeTxGasLimit,
+    getUnstakeAmountFromCalldata,
     simulateUnstake,
     stake,
     transformTx,
     unstake,
+    validateEthereumClaimLiveState,
+    validateEthereumUnstakeLiveState,
+    verifyEthereumStakingLiveState,
 } from './ethereumStaking';
 
 describe('transformTx', () => {
@@ -274,5 +280,195 @@ describe('simulateUnstake', () => {
             const result = await simulateUnstake(test.args as SimulateUnstakeArgs);
             expect(result).toEqual(test.result);
         });
+    });
+});
+
+describe('validateEthereumUnstakeLiveState', () => {
+    it('is valid when the autocompound balance covers the requested amount', () => {
+        expect(
+            validateEthereumUnstakeLiveState({ autocompoundBalance: '2000000000000000000' }, '1.5'),
+        ).toEqual({ isValid: true });
+    });
+
+    it('is invalid when the autocompound balance is missing', () => {
+        expect(validateEthereumUnstakeLiveState({}, '1.5')).toEqual({
+            isValid: false,
+            error: 'Failed to get the autocompound balance',
+        });
+        expect(validateEthereumUnstakeLiveState(undefined, '1.5')).toEqual({
+            isValid: false,
+            error: 'Failed to get the autocompound balance',
+        });
+    });
+
+    it('is invalid when the requested amount exceeds the live balance', () => {
+        expect(
+            validateEthereumUnstakeLiveState({ autocompoundBalance: '100000000000000' }, '0.1'),
+        ).toEqual({ isValid: false, error: 'Max Amount For Unstake 0.0001' });
+    });
+});
+
+describe('validateEthereumClaimLiveState', () => {
+    it('is valid when the withdraw request is fully filled', () => {
+        expect(
+            validateEthereumClaimLiveState({
+                withdrawTotalAmount: '100000000000000000',
+                claimableAmount: '100000000000000000',
+            }),
+        ).toEqual({ isValid: true });
+    });
+
+    it('is invalid when the withdraw or claimable amount is missing', () => {
+        expect(
+            validateEthereumClaimLiveState({ withdrawTotalAmount: '100000000000000000' }),
+        ).toEqual({
+            isValid: false,
+            error: 'Failed to get the claimable or withdraw total amount',
+        });
+    });
+
+    it('is invalid when nothing has been requested for unstake', () => {
+        expect(
+            validateEthereumClaimLiveState({ withdrawTotalAmount: '0', claimableAmount: '0' }),
+        ).toEqual({ isValid: false, error: 'No amount requested for unstake' });
+    });
+
+    it('is invalid when the withdraw request is not fully filled yet', () => {
+        expect(
+            validateEthereumClaimLiveState({
+                withdrawTotalAmount: '200000000000000000',
+                claimableAmount: '100000000000000000',
+            }),
+        ).toEqual({ isValid: false, error: 'Unstake request not filled yet' });
+    });
+});
+
+describe('getUnstakeAmountFromCalldata', () => {
+    it('recovers the ether amount encoded in unstake calldata', () => {
+        expect(getUnstakeAmountFromCalldata(buildUnstakeData('1500000000000000000', 5))).toBe(
+            '1.5',
+        );
+    });
+
+    it('returns null for calldata that is not an unstake call', () => {
+        expect(getUnstakeAmountFromCalldata(buildStakeData())).toBeNull();
+        expect(getUnstakeAmountFromCalldata('0x1234')).toBeNull();
+    });
+});
+
+describe('verifyEthereumStakingLiveState', () => {
+    const mockAccountInfo = (accountInfo: Record<string, any>) =>
+        jest
+            .spyOn(TrezorConnect, 'getAccountInfo')
+            .mockImplementation(() => Promise.resolve(accountInfo as AccountInfoResult));
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    it('is valid for stake without fetching account info', async () => {
+        const spy = mockAccountInfo({ success: true, payload: {} });
+        spy.mockClear();
+
+        const result = await verifyEthereumStakingLiveState({
+            stakeType: 'stake',
+            from: '0xabc',
+            symbol: 'eth',
+        });
+
+        expect(result).toEqual({ isValid: true });
+        expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('is valid for unstake when the live balance still covers the amount', async () => {
+        mockAccountInfo({
+            success: true,
+            payload: {
+                misc: { stakingPools: [{ autocompoundBalance: '2000000000000000000' }] },
+            },
+        });
+
+        const result = await verifyEthereumStakingLiveState({
+            stakeType: 'unstake',
+            from: '0xabc',
+            symbol: 'eth',
+            amount: '1.5',
+        });
+
+        expect(result).toEqual({ isValid: true });
+    });
+
+    it('is invalid for unstake when the live balance dropped below the amount', async () => {
+        mockAccountInfo({
+            success: true,
+            payload: {
+                misc: { stakingPools: [{ autocompoundBalance: '100000000000000' }] },
+            },
+        });
+
+        const result = await verifyEthereumStakingLiveState({
+            stakeType: 'unstake',
+            from: '0xabc',
+            symbol: 'eth',
+            amount: '0.1',
+        });
+
+        expect(result).toEqual({ isValid: false, error: 'Max Amount For Unstake 0.0001' });
+    });
+
+    it('is invalid for unstake when the amount is not provided', async () => {
+        mockAccountInfo({
+            success: true,
+            payload: {
+                misc: { stakingPools: [{ autocompoundBalance: '2000000000000000000' }] },
+            },
+        });
+
+        const result = await verifyEthereumStakingLiveState({
+            stakeType: 'unstake',
+            from: '0xabc',
+            symbol: 'eth',
+        });
+
+        expect(result).toEqual({
+            isValid: false,
+            error: 'Missing unstake amount for live-state validation',
+        });
+    });
+
+    it('is invalid for claim when the withdraw request is not yet filled', async () => {
+        mockAccountInfo({
+            success: true,
+            payload: {
+                misc: {
+                    stakingPools: [
+                        {
+                            withdrawTotalAmount: '200000000000000000',
+                            claimableAmount: '100000000000000000',
+                        },
+                    ],
+                },
+            },
+        });
+
+        const result = await verifyEthereumStakingLiveState({
+            stakeType: 'claim',
+            from: '0xabc',
+            symbol: 'eth',
+        });
+
+        expect(result).toEqual({ isValid: false, error: 'Unstake request not filled yet' });
+    });
+
+    it('is invalid when account info cannot be fetched', async () => {
+        mockAccountInfo({ success: false, error: { message: 'Account info error' } });
+
+        const result = await verifyEthereumStakingLiveState({
+            stakeType: 'claim',
+            from: '0xabc',
+            symbol: 'eth',
+        });
+
+        expect(result).toEqual({ isValid: false, error: 'Account info error' });
     });
 });

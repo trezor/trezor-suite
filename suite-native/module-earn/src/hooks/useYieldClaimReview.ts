@@ -23,8 +23,9 @@ import {
     type YieldReviewSigningResult,
     type YieldReviewStatus,
 } from '../types';
-import { handleEarnReviewError, isUserCancelledSignError } from '../utils';
+import { isUserCancelledSignError } from '../utils';
 import { pushYieldClaimReviewThunk, signYieldClaimReviewThunk } from '../yieldClaimThunks';
+import { useHandleEarnReviewError } from './useHandleEarnReviewError';
 import { useShowDeviceDisconnectedDuringEarnReviewAlert } from './useShowDeviceDisconnectedDuringEarnReviewAlert';
 import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
 import { useYieldActionReviewBackNavigation } from './useYieldActionReviewBackNavigation';
@@ -52,10 +53,9 @@ export const useYieldClaimReview = ({
 }: UseYieldClaimReviewParams): UseYieldClaimReviewResult => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
-    const { showPendingTransactionConflictAlert, showPushTransactionFailedAlert } =
-        useShowPushTransactionFailedDuringReviewAlert('yield-claim');
+    const { showReviewAlert } = useShowPushTransactionFailedDuringReviewAlert('yield-claim');
     const showDeviceDisconnectedAlert = useShowDeviceDisconnectedDuringEarnReviewAlert();
-
+    const handleReviewError = useHandleEarnReviewError('yield-claim', navigation);
     const { reportError: reportClaimError, reportCancel: reportClaimCancel } =
         useYieldReviewAnalytics({
             flow: 'claim',
@@ -118,15 +118,9 @@ export const useYieldClaimReview = ({
 
         if (!deviceAccessResponse.success) {
             reportClaimError('submit-failed');
-            handleEarnReviewError({
-                payload: {
-                    error: 'sign-transaction-failed',
-                    message: 'Prioritized device access failed.',
-                },
-                navigation,
-                showPushTransactionFailedAlert,
-                showPendingTransactionConflictAlert,
-                showDeviceDisconnectedAlert,
+            handleReviewError({
+                error: 'sign-transaction-failed',
+                message: 'Prioritized device access failed.',
             });
 
             return 'failed';
@@ -143,13 +137,7 @@ export const useYieldClaimReview = ({
 
         if (isSignRejected) {
             reportClaimError('submit-failed');
-            handleEarnReviewError({
-                payload: signResponse.payload,
-                navigation,
-                showPushTransactionFailedAlert,
-                showPendingTransactionConflictAlert,
-                showDeviceDisconnectedAlert,
-            });
+            handleReviewError(signResponse.payload);
 
             return 'failed';
         }
@@ -160,13 +148,11 @@ export const useYieldClaimReview = ({
         claimStatus,
         dispatch,
         flowKey,
+        handleReviewError,
         isDeviceConnected,
-        navigation,
         reportClaimCancel,
         reportClaimError,
         showDeviceDisconnectedAlert,
-        showPendingTransactionConflictAlert,
-        showPushTransactionFailedAlert,
     ]);
 
     const handleClaimSubmitted = useCallback(async () => {
@@ -190,12 +176,12 @@ export const useYieldClaimReview = ({
             reportClaimError('push-failed');
 
             if (pushResponse.payload?.error === 'push-transaction-pending-conflict') {
-                showPendingTransactionConflictAlert();
+                showReviewAlert('pendingConflict');
 
                 return;
             }
 
-            showPushTransactionFailedAlert();
+            showReviewAlert('pushFailed');
 
             return;
         }
@@ -210,8 +196,7 @@ export const useYieldClaimReview = ({
         markReviewNavigationSuccess,
         navigation,
         reportClaimError,
-        showPendingTransactionConflictAlert,
-        showPushTransactionFailedAlert,
+        showReviewAlert,
     ]);
 
     return {

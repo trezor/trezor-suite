@@ -49,7 +49,10 @@ export const Calldata = {
         },
         everstake: {
             stake: { encode: buildStake },
-            unstake: { encode: buildUnstake },
+            unstake: {
+                encode: buildUnstake,
+                decode: createEvmDecoder(EVM_ABI.everstake.unstake),
+            },
             claimWithdrawRequest: { encode: buildClaimWithdrawRequest },
         },
         weth: {
