@@ -37,8 +37,8 @@
         "style-loader": "^4.0.0",
         "ts-node": "^10.9.2",
         "tsx": "^4.21.0",
-        "webpack": "5.107.2",
-        "webpack-cli": "^7.0.2"
+        "webpack": "5.108.1",
+        "webpack-cli": "^7.0.3"
     },
     "nx": {
         "targets": {
