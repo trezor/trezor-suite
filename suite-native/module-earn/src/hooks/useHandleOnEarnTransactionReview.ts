@@ -19,11 +19,9 @@ import {
 } from '@suite-native/staking';
 
 import { type EarnFormDraftPrefix } from '../types';
-import { handleEarnReviewError } from '../utils';
 import { useEarnReviewBackNavigation } from './useEarnReviewBackNavigation';
 import { useEarnSelectedPrecomposedTransaction } from './useEarnSelectedPrecomposedTransaction';
-import { useShowDeviceDisconnectedDuringEarnReviewAlert } from './useShowDeviceDisconnectedDuringEarnReviewAlert';
-import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
+import { useHandleEarnReviewError } from './useHandleEarnReviewError';
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes>;
 
@@ -43,9 +41,7 @@ export const useHandleOnEarnTransactionReview = ({
 
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
-    const showDeviceDisconnectedAlert = useShowDeviceDisconnectedDuringEarnReviewAlert();
-    const { showPushTransactionFailedAlert, showPendingTransactionConflictAlert } =
-        useShowPushTransactionFailedDuringReviewAlert(stakeType);
+    const handleReviewError = useHandleEarnReviewError(stakeType, navigation);
     const precomposedTransaction = useEarnSelectedPrecomposedTransaction(stakeType, accountKey);
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
@@ -68,25 +64,10 @@ export const useHandleOnEarnTransactionReview = ({
             return true;
         }
 
-        handleEarnReviewError({
-            payload: response.payload,
-            navigation,
-            showPushTransactionFailedAlert,
-            showPendingTransactionConflictAlert,
-            showDeviceDisconnectedAlert,
-        });
+        handleReviewError(response.payload);
 
         return false;
-    }, [
-        accountKey,
-        dispatch,
-        navigation,
-        precomposedTransaction,
-        showDeviceDisconnectedAlert,
-        showPendingTransactionConflictAlert,
-        showPushTransactionFailedAlert,
-        stakeType,
-    ]);
+    }, [accountKey, dispatch, handleReviewError, precomposedTransaction, stakeType]);
 
     const handlePush = useCallback(async (): Promise<string | undefined> => {
         const response = await dispatch(pushStakeTransactionNativeThunk({ accountKey }));
@@ -104,27 +85,11 @@ export const useHandleOnEarnTransactionReview = ({
         }
 
         if (isRejected(response)) {
-            handleEarnReviewError({
-                payload: response.payload,
-                navigation,
-                showPushTransactionFailedAlert,
-                showPendingTransactionConflictAlert,
-                showDeviceDisconnectedAlert,
-            });
+            handleReviewError(response.payload);
         }
 
         return undefined;
-    }, [
-        accountKey,
-        analytics,
-        dispatch,
-        navigation,
-        networkSymbol,
-        showDeviceDisconnectedAlert,
-        showPendingTransactionConflictAlert,
-        showPushTransactionFailedAlert,
-        stakeType,
-    ]);
+    }, [accountKey, analytics, dispatch, handleReviewError, networkSymbol, stakeType]);
 
     return { handleSign, handlePush, closeReview, markReviewNavigationSuccess };
 };

@@ -13,7 +13,7 @@ import {
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
-type ReviewFormType =
+export type ReviewFormType =
     | 'stake'
     | 'unstake'
     | 'claim'
@@ -22,6 +22,8 @@ type ReviewFormType =
     | 'yield-revoke'
     | 'yield-withdraw'
     | 'yield-claim';
+
+export type ReviewAlertKind = 'pushFailed' | 'pendingConflict' | 'signFailed';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     AppTabsParamList,
@@ -38,7 +40,7 @@ type AlertKeys = {
 type AlertTranslationKeys = {
     pushFailed: AlertKeys;
     pendingConflict: AlertKeys;
-    signFailed?: AlertKeys;
+    signFailed: AlertKeys;
 };
 
 const translationKeys = {
@@ -57,6 +59,13 @@ const translationKeys = {
             primaryButton:
                 'earn.earnTransactionDataReviewScreen.pendingTransactionConflictAlert.primaryButton',
         },
+        signFailed: {
+            title: 'earn.earnTransactionDataReviewScreen.signTransactionFailedAlert.title',
+            description:
+                'earn.earnTransactionDataReviewScreen.signTransactionFailedAlert.description',
+            primaryButton:
+                'earn.earnTransactionDataReviewScreen.signTransactionFailedAlert.primaryButton',
+        },
     },
     unstake: {
         pushFailed: {
@@ -72,6 +81,13 @@ const translationKeys = {
                 'earn.unstakeTransactionDataReviewScreen.pendingTransactionConflictAlert.description',
             primaryButton:
                 'earn.unstakeTransactionDataReviewScreen.pendingTransactionConflictAlert.primaryButton',
+        },
+        signFailed: {
+            title: 'earn.unstakeTransactionDataReviewScreen.signTransactionFailedAlert.title',
+            description:
+                'earn.unstakeTransactionDataReviewScreen.signTransactionFailedAlert.description',
+            primaryButton:
+                'earn.unstakeTransactionDataReviewScreen.signTransactionFailedAlert.primaryButton',
         },
     },
     claim: {
@@ -89,8 +105,20 @@ const translationKeys = {
             primaryButton:
                 'earn.claimTransactionDataReviewScreen.pendingTransactionConflictAlert.primaryButton',
         },
+        signFailed: {
+            title: 'earn.claimTransactionDataReviewScreen.signTransactionFailedAlert.title',
+            description:
+                'earn.claimTransactionDataReviewScreen.signTransactionFailedAlert.description',
+            primaryButton:
+                'earn.claimTransactionDataReviewScreen.signTransactionFailedAlert.primaryButton',
+        },
     },
     'yield-approval': {
+        signFailed: {
+            title: 'earn.yieldReview.alerts.approval.signTransactionFailed.title',
+            description: 'earn.yieldReview.alerts.approval.signTransactionFailed.description',
+            primaryButton: 'earn.yieldReview.alerts.primaryButton',
+        },
         pushFailed: {
             title: 'earn.yieldReview.alerts.approval.pushTransactionFailed.title',
             description: 'earn.yieldReview.alerts.approval.pushTransactionFailed.description',
@@ -120,6 +148,11 @@ const translationKeys = {
         },
     },
     'yield-revoke': {
+        signFailed: {
+            title: 'earn.yieldReview.alerts.revoke.signTransactionFailed.title',
+            description: 'earn.yieldReview.alerts.revoke.signTransactionFailed.description',
+            primaryButton: 'earn.yieldReview.alerts.primaryButton',
+        },
         pushFailed: {
             title: 'earn.yieldReview.alerts.revoke.pushTransactionFailed.title',
             description: 'earn.yieldReview.alerts.revoke.pushTransactionFailed.description',
@@ -179,47 +212,20 @@ export const useShowPushTransactionFailedDuringReviewAlert = (formType: ReviewFo
         });
     }, [navigation]);
 
-    const showPushTransactionFailedAlert = useCallback(
-        () =>
+    const showReviewAlert = useCallback(
+        (kind: ReviewAlertKind) => {
+            const alertKeys = keys[kind];
+
             showAlert({
-                title: <Translation id={keys.pushFailed.title} />,
-                description: <Translation id={keys.pushFailed.description} />,
-                primaryButtonTitle: <Translation id={keys.pushFailed.primaryButton} />,
+                title: <Translation id={alertKeys.title} />,
+                description: <Translation id={alertKeys.description} />,
+                primaryButtonTitle: <Translation id={alertKeys.primaryButton} />,
                 primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
                 onPressPrimaryButton: handleGoHome,
-            }),
+            });
+        },
         [handleGoHome, keys, showAlert],
     );
 
-    const showPendingTransactionConflictAlert = useCallback(
-        () =>
-            showAlert({
-                title: <Translation id={keys.pendingConflict.title} />,
-                description: <Translation id={keys.pendingConflict.description} />,
-                primaryButtonTitle: <Translation id={keys.pendingConflict.primaryButton} />,
-                primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
-                onPressPrimaryButton: handleGoHome,
-            }),
-        [handleGoHome, keys, showAlert],
-    );
-
-    const showSignTransactionFailedAlert = useCallback(() => {
-        if (!keys.signFailed) {
-            return;
-        }
-
-        showAlert({
-            title: <Translation id={keys.signFailed.title} />,
-            description: <Translation id={keys.signFailed.description} />,
-            primaryButtonTitle: <Translation id={keys.signFailed.primaryButton} />,
-            primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
-            onPressPrimaryButton: handleGoHome,
-        });
-    }, [handleGoHome, keys, showAlert]);
-
-    return {
-        showPendingTransactionConflictAlert,
-        showPushTransactionFailedAlert,
-        showSignTransactionFailedAlert,
-    };
+    return { showReviewAlert };
 };

@@ -28,7 +28,8 @@ import {
     type YieldReviewSigningResult,
     type YieldReviewStatus,
 } from '../types';
-import { handleEarnReviewError, isUserCancelledSignError } from '../utils';
+import { isUserCancelledSignError } from '../utils';
+import { useHandleEarnReviewError } from './useHandleEarnReviewError';
 import { useShowDeviceDisconnectedDuringEarnReviewAlert } from './useShowDeviceDisconnectedDuringEarnReviewAlert';
 import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
 import { useYieldActionReviewBackNavigation } from './useYieldActionReviewBackNavigation';
@@ -66,10 +67,9 @@ export const useYieldWithdrawReview = ({
 }: UseYieldWithdrawReviewParams): UseYieldWithdrawReviewResult => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
-    const { showPendingTransactionConflictAlert, showPushTransactionFailedAlert } =
-        useShowPushTransactionFailedDuringReviewAlert('yield-withdraw');
+    const { showReviewAlert } = useShowPushTransactionFailedDuringReviewAlert('yield-withdraw');
     const showDeviceDisconnectedAlert = useShowDeviceDisconnectedDuringEarnReviewAlert();
-
+    const handleReviewError = useHandleEarnReviewError('yield-withdraw', navigation);
     const { reportError: reportWithdrawError, reportCancel: reportWithdrawCancel } =
         useYieldReviewAnalytics({
             flow: 'withdraw',
@@ -143,15 +143,9 @@ export const useYieldWithdrawReview = ({
 
         if (!deviceAccessResponse.success) {
             reportWithdrawError('submit-failed');
-            handleEarnReviewError({
-                payload: {
-                    error: 'sign-transaction-failed',
-                    message: 'Prioritized device access failed.',
-                },
-                navigation,
-                showPushTransactionFailedAlert,
-                showPendingTransactionConflictAlert,
-                showDeviceDisconnectedAlert,
+            handleReviewError({
+                error: 'sign-transaction-failed',
+                message: 'Prioritized device access failed.',
             });
 
             return 'failed';
@@ -168,13 +162,7 @@ export const useYieldWithdrawReview = ({
 
         if (isSignRejected) {
             reportWithdrawError('submit-failed');
-            handleEarnReviewError({
-                payload: signResponse.payload,
-                navigation,
-                showPushTransactionFailedAlert,
-                showPendingTransactionConflictAlert,
-                showDeviceDisconnectedAlert,
-            });
+            handleReviewError(signResponse.payload);
 
             return 'failed';
         }
@@ -185,15 +173,13 @@ export const useYieldWithdrawReview = ({
         flowData,
         flowKey,
         flowType,
+        handleReviewError,
         isDeviceConnected,
-        navigation,
         reportWithdrawCancel,
         reportWithdrawError,
         reviewToken,
         selectedFee,
         showDeviceDisconnectedAlert,
-        showPendingTransactionConflictAlert,
-        showPushTransactionFailedAlert,
         withdrawStatus,
     ]);
 
@@ -219,12 +205,12 @@ export const useYieldWithdrawReview = ({
             reportWithdrawError('push-failed');
 
             if (pushResponse.payload?.error === 'push-transaction-pending-conflict') {
-                showPendingTransactionConflictAlert();
+                showReviewAlert('pendingConflict');
 
                 return;
             }
 
-            showPushTransactionFailedAlert();
+            showReviewAlert('pushFailed');
 
             return;
         }
@@ -239,8 +225,7 @@ export const useYieldWithdrawReview = ({
         markReviewNavigationSuccess,
         navigation,
         reportWithdrawError,
-        showPendingTransactionConflictAlert,
-        showPushTransactionFailedAlert,
+        showReviewAlert,
         withdrawStatus,
     ]);
 

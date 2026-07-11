@@ -41,48 +41,46 @@ export const isUserCancelledSignError = (
     payload?.message === 'tx-cancelled' ||
     (!!payload?.errorCode && USER_CANCELLED_ERROR_CODES.some(code => code === payload.errorCode));
 
-type HandleEarnReviewErrorProps = {
-    payload: { error?: string; errorCode?: string; message?: string } | undefined;
-    navigation: { pop: () => void };
-    showPushTransactionFailedAlert: () => void;
-    showPendingTransactionConflictAlert: () => void;
-    showDeviceDisconnectedAlert: () => void;
-};
+export type EarnReviewErrorPayload =
+    | { error?: string; errorCode?: string; message?: string }
+    | undefined;
 
-export const handleEarnReviewError = ({
-    payload,
-    navigation,
-    showPushTransactionFailedAlert,
-    showPendingTransactionConflictAlert,
-    showDeviceDisconnectedAlert,
-}: HandleEarnReviewErrorProps) => {
+export type EarnReviewErrorReaction =
+    | 'none'
+    | 'popScreen'
+    | 'pendingConflict'
+    | 'pushFailed'
+    | 'signFailed'
+    | 'deviceDisconnected';
+
+export const getEarnReviewErrorReaction = (
+    payload: EarnReviewErrorPayload,
+): EarnReviewErrorReaction => {
     if (payload?.error === 'sign-transaction-timeout') {
-        return;
+        return 'none';
     }
 
     if (payload?.message === 'tx-cancelled') {
-        return;
+        return 'none';
     }
 
     if (payload?.error === 'push-transaction-pending-conflict') {
-        showPendingTransactionConflictAlert();
-
-        return;
+        return 'pendingConflict';
     }
 
     if (payload?.error === 'push-transaction-failed') {
-        showPushTransactionFailedAlert();
+        return 'pushFailed';
+    }
 
-        return;
+    if (payload?.error === 'stake-live-state-invalid') {
+        return 'signFailed';
     }
 
     const errorCode = payload?.errorCode;
 
     if (USER_CANCELLED_ERROR_CODES.some(code => code === errorCode)) {
-        navigation.pop();
-
-        return;
+        return 'popScreen';
     }
 
-    showDeviceDisconnectedAlert();
+    return 'deviceDisconnected';
 };
