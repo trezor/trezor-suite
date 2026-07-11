@@ -1,21 +1,30 @@
+import { asHostStaticKeyHex, asThpCredentialId, asTrezorStaticPublicKey } from '../messages';
 import { findKnownPairingCredentials } from './pairing';
 
 describe('pairing', () => {
     it('findKnownPairingCredentials', () => {
         const knownCredentials = [
             {
-                host_static_key: '0007070707070707070707070707070707070707070707070707070707070747',
-                trezor_static_public_key:
+                host_static_key: asHostStaticKeyHex(
+                    '0007070707070707070707070707070707070707070707070707070707070747',
+                ),
+                trezor_static_public_key: asTrezorStaticPublicKey(
                     '1317c99c16fce04935782ed250cf0cacb12216f739cea55257258a2ff9440763',
-                credential:
+                ),
+                credential: asThpCredentialId(
                     '0a0f0a0d5472657a6f72436f6e6e6563741220f69918996c0afa1045b3625d06e7e816b0c4c4bd3902dfd4cad068b3f2425ec8',
+                ),
             },
             {
-                host_static_key: '0007070707070707070707070707070707070707070707070707070707070747',
-                trezor_static_public_key:
+                host_static_key: asHostStaticKeyHex(
+                    '0007070707070707070707070707070707070707070707070707070707070747',
+                ),
+                trezor_static_public_key: asTrezorStaticPublicKey(
                     '2bcdbc9fd7949c3f37aa80a53801f52ec554facfe76118030926294250fd6838',
-                credential:
+                ),
+                credential: asThpCredentialId(
                     '0a110a0d5472657a6f72436f6e6e65637410011220b97509ef252b07dcc70071c9d13dd70746d8a9fb671765049ca74e58b9058d6b',
+                ),
             },
         ];
 

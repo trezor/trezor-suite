@@ -1,3 +1,5 @@
+import { asHostStaticKeyHex, asThpCredentialId, asTrezorStaticPublicKey } from '@trezor/protocol';
+
 import type { ConnectSettings, ThpSettings } from '../types/settings';
 
 export const parseThpSettings = ({ manifest, thp }: Partial<ConnectSettings>): ThpSettings => {
@@ -30,7 +32,15 @@ export const parseThpSettings = ({ manifest, thp }: Partial<ConnectSettings>): T
                 typeof k.host_static_key === 'string' &&
                 typeof k.trezor_static_public_key === 'string'
             ) {
-                return k;
+                // Re-apply the brands at this untrusted-shape boundary (decision 6):
+                // the rehydrated credential is a plain object at runtime, so brand its
+                // key fields as they cross back into the typed settings.
+                return {
+                    ...k,
+                    credential: asThpCredentialId(k.credential),
+                    host_static_key: asHostStaticKeyHex(k.host_static_key),
+                    trezor_static_public_key: asTrezorStaticPublicKey(k.trezor_static_public_key),
+                };
             }
 
             return [];

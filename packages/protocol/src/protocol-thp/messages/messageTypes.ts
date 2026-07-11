@@ -2,6 +2,13 @@
 // not defined in the firmware proto files.
 // created and maintained manually
 
+import type {
+    HostStaticKey,
+    HostStaticKeyHex,
+    HostStaticPublicKey,
+    ThpCredentialId,
+    TrezorStaticPublicKey,
+} from './brands';
 import type * as PROTO from './protobufTypes';
 
 export type ThpError = {
@@ -86,15 +93,20 @@ export type ThpHandshakeCredentials = {
     codeEntryChallenge: Buffer;
     trezorEncryptedStaticPubkey: Buffer;
     hostEncryptedStaticPubkey: Buffer;
-    staticKey: Buffer;
-    hostStaticPublicKey: Buffer;
+    staticKey: HostStaticKey;
+    hostStaticPublicKey: HostStaticPublicKey;
     hostKey: Buffer;
     trezorKey: Buffer;
     trezorCpacePublicKey: Buffer;
 };
 
+// The `credential` and `trezor_static_public_key` fields are inherited (as bare
+// `string`) from the generated `PROTO.ThpCredentialResponse`; the intersection
+// below narrows them to their branded forms without touching the generated file.
 export type ThpCredentials = PROTO.ThpCredentialResponse & {
-    host_static_key: string;
+    credential: ThpCredentialId;
+    trezor_static_public_key: TrezorStaticPublicKey;
+    host_static_key: HostStaticKeyHex;
     autoconnect?: boolean;
 };
 

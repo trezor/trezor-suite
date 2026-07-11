@@ -239,13 +239,25 @@ export const getThpCredentials = async (device: IDevice, autoconnect = false) =>
 
     const credentials = await thpCall(device, 'ThpCredentialRequest', {
         autoconnect,
-        host_static_public_key: thpState.handshakeCredentials.hostStaticPublicKey.toString('hex'),
+        host_static_public_key: protocolThp.asHostStaticPublicKeyHex(
+            thpState.handshakeCredentials.hostStaticPublicKey.toString('hex'),
+        ),
         credential: thpState.pairingCredentials[0]?.credential,
     });
 
-    const host_static_key = thpState.handshakeCredentials.staticKey.toString('hex');
+    const host_static_key = protocolThp.asHostStaticKeyHex(
+        thpState.handshakeCredentials.staticKey.toString('hex'),
+    );
 
-    return { ...credentials.message, autoconnect, host_static_key };
+    return {
+        ...credentials.message,
+        credential: protocolThp.asThpCredentialId(credentials.message.credential),
+        trezor_static_public_key: protocolThp.asTrezorStaticPublicKey(
+            credentials.message.trezor_static_public_key,
+        ),
+        autoconnect,
+        host_static_key,
+    };
 };
 
 export const thpPairingEnd = async (device: IDevice) => {

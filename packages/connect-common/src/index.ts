@@ -19,3 +19,20 @@ export * from './utils/debug';
 export * from './utils/urlUtils';
 export { getSerializedPath, getSlip44ByPath, validatePath } from './utils/pathUtils';
 export { connectCallableMethods } from './callableMethods';
+
+// THP key brands — re-exported from @trezor/protocol for public reach, so consumers
+// can construct branded key material without reaching into @trezor/protocol directly.
+export {
+    asHostStaticKey,
+    asHostStaticKeyHex,
+    asHostStaticPublicKey,
+    asHostStaticPublicKeyHex,
+    asTrezorStaticPublicKey,
+    asThpCredentialId,
+    type HostStaticKey,
+    type HostStaticKeyHex,
+    type HostStaticPublicKey,
+    type HostStaticPublicKeyHex,
+    type TrezorStaticPublicKey,
+    type ThpCredentialId,
+} from '@trezor/protocol';

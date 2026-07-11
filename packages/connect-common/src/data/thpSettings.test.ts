@@ -1,3 +1,5 @@
+import { asHostStaticKeyHex, asThpCredentialId, asTrezorStaticPublicKey } from '@trezor/protocol';
+
 import { parseThpSettings } from './thpSettings';
 
 describe('data/thpSettings', () => {
@@ -33,15 +35,15 @@ describe('data/thpSettings', () => {
             thp: {
                 knownCredentials: [
                     {
-                        credential: '0000',
-                        host_static_key: '7777',
-                        trezor_static_public_key: '1111',
+                        credential: asThpCredentialId('0000'),
+                        host_static_key: asHostStaticKeyHex('7777'),
+                        trezor_static_public_key: asTrezorStaticPublicKey('1111'),
                         autoconnect: true,
                     },
                     {
-                        credential: '0101',
-                        host_static_key: '7777',
-                        trezor_static_public_key: '0202',
+                        credential: asThpCredentialId('0101'),
+                        host_static_key: asHostStaticKeyHex('7777'),
+                        trezor_static_public_key: asTrezorStaticPublicKey('0202'),
                     },
                 ],
                 pairingMethods,

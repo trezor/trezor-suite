@@ -4,6 +4,8 @@ import {
     type ThpHandshakeCredentials,
     type ThpMessageSyncBit,
     ThpPairingMethod,
+    asHostStaticKey,
+    asHostStaticPublicKey,
 } from './messages';
 
 export type ThpStateSerialized = {
@@ -242,8 +244,8 @@ export class ThpState {
                 codeEntryChallenge: Buffer.alloc(0),
                 trezorEncryptedStaticPubkey: Buffer.alloc(0),
                 hostEncryptedStaticPubkey: Buffer.alloc(0),
-                staticKey: Buffer.alloc(0),
-                hostStaticPublicKey: Buffer.alloc(0),
+                staticKey: asHostStaticKey(Buffer.alloc(0)),
+                hostStaticPublicKey: asHostStaticPublicKey(Buffer.alloc(0)),
                 hostKey: Buffer.alloc(0),
                 trezorKey: Buffer.alloc(0),
                 trezorCpacePublicKey: Buffer.alloc(0),

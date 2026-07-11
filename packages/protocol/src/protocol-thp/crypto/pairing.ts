@@ -9,6 +9,8 @@ import {
     type ThpHandshakeCredentials,
     type ThpHandshakeInitResponse,
     ThpPairingMethod,
+    asHostStaticKey,
+    asHostStaticPublicKey,
 } from '../messages';
 
 const getProtocolName = () =>
@@ -130,9 +132,11 @@ export const handleHandshakeInit = ({
     // NOTE: This logic is deprecated and zero keypair should never be used, source:
     // https://satoshilabs.slack.com/archives/C078GRAK58U/p1740132971826629?thread_ts=1739181741.870599&cid=C078GRAK58Us
 
-    const staticKey = credentials?.host_static_key
-        ? Buffer.from(credentials.host_static_key, 'hex')
-        : randomBytes(32);
+    const staticKey = asHostStaticKey(
+        credentials?.host_static_key
+            ? Buffer.from(credentials.host_static_key, 'hex')
+            : randomBytes(32),
+    );
     const hostStaticKeys = getCurve25519KeyPair(staticKey);
     // 12. Set encrypted_host_static_pubkey = AES-GCM-ENCRYPT(key=k, IV=0^95 || 1, ad=h, plaintext=temp_host_static_pubkey).
     aes = aesgcm(k, iv1);
@@ -179,7 +183,13 @@ export const handleHandshakeInit = ({
         allCredentials,
         encryptedPayload,
         staticKey,
-        hostStaticKeys,
+        // Brand-origin for the host static keypair (decision 2): the shared
+        // `getCurve25519KeyPair` return stays unbranded so ephemeral keypairs are
+        // out of scope; the brand is applied here, at the static-key return.
+        hostStaticKeys: {
+            publicKey: asHostStaticPublicKey(hostStaticKeys.publicKey),
+            privateKey: asHostStaticKey(hostStaticKeys.privateKey),
+        },
     };
 };
 
