@@ -8,5 +8,5 @@
         "target": "es2022",
         "lib": ["es2022", "esnext"]
     },
-    "references": []
+    "references": [{ "path": "../type-utils" }]
 }
