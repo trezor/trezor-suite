@@ -417,11 +417,16 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
     if (!startOfTimeFrameDate) {
         // if startOfTimeFrameDate is not provided, it means we want to show all available data
         // so we need to find the oldest date balance movement in all accounts
-        startOfTimeFrameDate = pipe(
+        const oldestBalanceMovementTimestamp = findOldestBalanceMovementTimestamp(
             accountsWithBalanceHistoryFlattened,
-            findOldestBalanceMovementTimestamp,
-            fromUnixTime,
         );
+
+        // findOldestBalanceMovementTimestamp returns Infinity when there are no balance movements
+        // at all (Math.min of an empty list). Anchor the range to the end of the time frame so the
+        // no-movements branch below fires with a valid start date instead of an Invalid Date.
+        startOfTimeFrameDate = Number.isFinite(oldestBalanceMovementTimestamp)
+            ? fromUnixTime(oldestBalanceMovementTimestamp)
+            : new Date(endOfTimeFrameDate);
 
         // if there were no balance movements at all,
         // findOldestBalanceMovementTimestamp resulted with start date being the same as end date
