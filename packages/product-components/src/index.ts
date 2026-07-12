@@ -1,65 +1,46 @@
-export { SearchAsset } from './components/SearchAsset/SearchAsset';
-export { ConfirmOnDevicePill } from './components/ConfirmOnDevice/ConfirmOnDevicePill';
-export { mapTrezorModelToFilledIcon, mapTrezorModelToIcon } from './utils/mapTrezorModelToIcon';
-export { RotateDeviceImage } from './components/RotateDeviceImage/RotateDeviceImage';
-export { TrezorLogo } from './components/TrezorLogo/TrezorLogo';
-export { PasswordStrengthIndicator } from './components/PasswordStrengthIndicator/PasswordStrengthIndicator';
-export { CoinLogo, type CoinLogoType } from './components/CoinLogo/CoinLogo';
-export { QrCode, type QrCodeProps } from './components/QrCode/QrCode';
-export { isCryptoIconSymbol as isCoinSymbol } from '@suite-common/icons/src/iconUtils';
-export { AssetShareIndicator } from './components/AssetShareIndicator/AssetShareIndicator';
-export * from './components/TokenIconSet/TokenIconSet';
-export * from './components/NetworkIconSet/NetworkIconSet';
-export { NetworkIcon, type NetworkIconProps } from './components/NetworkIcon/NetworkIcon';
-export { NumberInput } from './components/NumberInput/NumberInput';
-export { InputWithOptions } from './components/InputWithOptions/InputWithOptions';
-export { EditableText, type EditableTextProps } from './components/EditableText/EditableText';
-export * from './components/JsonlReader/JsonlReader';
+export {
+    isCryptoIconSymbol as isCoinSymbol,
+    isNetworkIconSymbol as isNetworkSymbolWithIcon,
+} from '@suite-common/icons/src/iconUtils';
 export { CardList, type CardListProps } from '@trezor/components';
-export { FeeRate } from './components/FeeRate/FeeRate';
+export { AssetLogo } from './components/AssetLogo/AssetLogo';
+export { shouldShowNetworkIcon } from './components/AssetLogo/assetLogoUtils';
+export {
+    allowedAssetLogoSizes,
+    AssetLogoWithId,
+    type AssetLogoProps,
+    type AssetLogoSize,
+    type AssetLogoWithIdProps,
+} from './components/AssetLogo/AssetLogoWithId';
+export { AssetShareIndicator } from './components/AssetShareIndicator/AssetShareIndicator';
+export { CoinLogo, type CoinLogoType } from './components/CoinLogo/CoinLogo';
+export { ConfirmOnDevicePill } from './components/ConfirmOnDevice/ConfirmOnDevicePill';
+export { DataAnalytics } from './components/DataAnalytics';
 export {
     DeviceAnimation,
     type DeviceAnimationProps,
 } from './components/DeviceAnimation/DeviceAnimation';
-export { type ModelFor, type ColorsFor } from './components/DeviceAnimation/deviceAnimationConfig';
+export { type ColorsFor, type ModelFor } from './components/DeviceAnimation/deviceAnimationConfig';
 export { DeviceWithScene } from './components/DeviceWithScene/DeviceWithScene';
-export { getModelFrontColor, getLargeModelImagePath } from './utils/getModelFrontColor';
-export { DataAnalytics } from './components/DataAnalytics';
-export { AssetLogo } from './components/AssetLogo/AssetLogo';
-export { AssetLogoWithId } from './components/AssetLogo/AssetLogoWithId';
-export {
-    type AssetLogoProps,
-    type AssetLogoWithIdProps,
-    type AssetLogoSize,
-    allowedAssetLogoSizes,
-} from './components/AssetLogo/AssetLogoWithId';
-export { shouldShowNetworkIcon } from './components/AssetLogo/assetLogoUtils';
-export { isNetworkIconSymbol as isNetworkSymbolWithIcon } from '@suite-common/icons/src/iconUtils';
-export * from './components/TopAssets/TopAssets';
-export { ExchangeInfoNotification } from './components/Notifications/ExchangeInfoNotification';
-export { TransactionNotification } from './components/Notifications/TransactionNotification';
-export type { TransactionNotificationProps } from './components/Notifications/TransactionNotification';
-export type { TransactionNotificationType } from './components/Notifications/notificationsTypes';
-export { ActionButton } from './components/Settings/ActionButton';
-export { ActionColumn } from './components/Settings/ActionColumn';
-export { ActionSelect } from './components/Settings/ActionSelect';
-export { OutlineHighlight, type Offset } from './components/Settings/OutlineHighlight';
-export { SectionItem } from './components/Settings/SectionItem';
-export { SettingsRequirementBanner } from './components/Settings/SettingsRequirementBanner';
-export { SettingsSection } from './components/Settings/SettingsSection';
-export { TextColumn } from './components/Settings/TextColumn';
-export { StepCard } from './components/StepCard/StepCard';
-export { FeedbackCard, type FeedbackCardProps } from './components/FeedbackCard/FeedbackCard';
-export { SidebarBanner } from './components/SidebarBanner/SidebarBanner';
 export { DropZone, type DropZoneProps } from './components/DropZone/DropZone';
+export { EditableText, type EditableTextProps } from './components/EditableText/EditableText';
 export {
     EmojiRatingSelector,
     type EmojiRatingSelectorProps,
 } from './components/EmojiRatingSelector/EmojiRatingSelector';
-export { QuickActionButton } from './components/QuickActionButton/QuickActionButton';
+export { FeedbackCard, type FeedbackCardProps } from './components/FeedbackCard/FeedbackCard';
+export { FeeRate } from './components/FeeRate/FeeRate';
+export { InputWithOptions } from './components/InputWithOptions/InputWithOptions';
+export * from './components/JsonlReader/JsonlReader';
 export { LastUpdateTooltip } from './components/LastUpdateTooltip/LastUpdateTooltip';
-export { RelativeTime } from './components/RelativeTime/RelativeTime';
-export { TooltipRow } from './components/TooltipRow/TooltipRow';
+export { NetworkIcon, type NetworkIconProps } from './components/NetworkIcon/NetworkIcon';
+export * from './components/NetworkIconSet/NetworkIconSet';
+export { ExchangeInfoNotification } from './components/Notifications/ExchangeInfoNotification';
+export type { TransactionNotificationType } from './components/Notifications/notificationsTypes';
+export { TransactionNotification } from './components/Notifications/TransactionNotification';
+export type { TransactionNotificationProps } from './components/Notifications/TransactionNotification';
+export { NumberInput } from './components/NumberInput/NumberInput';
+export { PasswordStrengthIndicator } from './components/PasswordStrengthIndicator/PasswordStrengthIndicator';
 export {
     PendingTransactionInfo,
     type PendingTransactionInfoProps,
@@ -69,3 +50,55 @@ export {
     PendingTransactionTimeEstimate,
     type PendingTransactionTimeEstimateProps,
 } from './components/PendingTransactionInfo/PendingTransactionTimeEstimate';
+export { QrCode, QrCode, type QrCodeProps, type QrCodeProps } from './components/QrCode/QrCode';
+export {
+    QuickActionButton,
+    QuickActionButton,
+} from './components/QuickActionButton/QuickActionButton';
+export { RelativeTime, RelativeTime } from './components/RelativeTime/RelativeTime';
+export {
+    RotateDeviceImage,
+    RotateDeviceImage,
+} from './components/RotateDeviceImage/RotateDeviceImage';
+export { SearchAsset, SearchAsset } from './components/SearchAsset/SearchAsset';
+export { ActionButton, ActionButton } from './components/Settings/ActionButton';
+export { ActionColumn, ActionColumn } from './components/Settings/ActionColumn';
+export { ActionSelect, ActionSelect } from './components/Settings/ActionSelect';
+export {
+    OutlineHighlight,
+    OutlineHighlight,
+    type Offset,
+    type Offset,
+} from './components/Settings/OutlineHighlight';
+export { SectionItem, SectionItem } from './components/Settings/SectionItem';
+export {
+    SettingsRequirementBanner,
+    SettingsRequirementBanner,
+} from './components/Settings/SettingsRequirementBanner';
+export { SettingsSection, SettingsSection } from './components/Settings/SettingsSection';
+export { TextColumn, TextColumn } from './components/Settings/TextColumn';
+export { SidebarBanner, SidebarBanner } from './components/SidebarBanner/SidebarBanner';
+export { StepCard, StepCard } from './components/StepCard/StepCard';
+export { TokenIcon, TokenIcon } from './components/TokenIcon/TokenIcon';
+export {
+    allowedTokenIconSizes,
+    type TokenIconProps,
+    type TokenIconSize,
+} from './components/TokenIcon/tokenIconTypes';
+export { shouldShowNetworkIcon } from './components/TokenIcon/tokenIconUtils';
+export * from './components/TokenIconSet/TokenIconSet';
+export { TooltipRow, TooltipRow } from './components/TooltipRow/TooltipRow';
+export * from './components/TopAssets/TopAssets';
+export { TrezorLogo, TrezorLogo } from './components/TrezorLogo/TrezorLogo';
+export {
+    getLargeModelImagePath,
+    getLargeModelImagePath,
+    getModelFrontColor,
+    getModelFrontColor,
+} from './utils/getModelFrontColor';
+export {
+    mapTrezorModelToFilledIcon,
+    mapTrezorModelToFilledIcon,
+    mapTrezorModelToIcon,
+    mapTrezorModelToIcon,
+} from './utils/mapTrezorModelToIcon';
