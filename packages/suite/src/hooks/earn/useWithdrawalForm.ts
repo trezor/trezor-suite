@@ -206,6 +206,12 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
 
     const onCryptoAmountChange = useCallback(
         async (amount: string) => {
+            setValue(CRYPTO_INPUT, amount, {
+                shouldDirty: true,
+                shouldValidate: true,
+            });
+            setValue(OUTPUT_AMOUNT, amount || '', { shouldDirty: true, shouldValidate: true });
+
             if (currentRate) {
                 const fiatValue = toFiatCurrency({ amount, rate: currentRate?.rate })?.toFixed(
                     2,
@@ -217,11 +223,6 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
                 });
             }
 
-            setValue(CRYPTO_INPUT, amount, {
-                shouldDirty: true,
-                shouldValidate: true,
-            });
-            setValue(OUTPUT_AMOUNT, amount || '', { shouldDirty: true, shouldValidate: true });
             await composeRequest(CRYPTO_INPUT);
         },
         [composeRequest, currentRate, setValue],
