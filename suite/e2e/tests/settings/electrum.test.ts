@@ -24,7 +24,7 @@ test.describe(
                     priority: TestPriority.High,
                 }),
             },
-            async ({ page, dashboardPage, assetsSection, settingsPage, walletPage }) => {
+            async ({ dashboardPage, assetsSection, settingsPage, walletPage }) => {
                 test.info().annotations.push({
                     type: 'dependency',
                     description:
@@ -33,12 +33,13 @@ test.describe(
                 const electrumUrl = '127.0.0.1:50001:t';
 
                 await settingsPage.toggleTestnetNetworks();
-                await settingsPage.navigateTo('coins');
-                await settingsPage.coinsTab.openNetworkAdvanceSettings('regtest');
-                await settingsPage.coinsTab.changeBackend('electrum', electrumUrl);
+                await settingsPage.changeNetworks({
+                    enableNetworks: [
+                        { symbol: 'regtest', backend: { type: 'electrum', url: electrumUrl } },
+                    ],
+                });
 
                 await dashboardPage.navigateTo();
-                await page.discoveryShouldFinish();
                 await expect(
                     walletPage.balanceOfAccount({ symbol: 'regtest', atIndex: 0 }),
                 ).toBeVisible();

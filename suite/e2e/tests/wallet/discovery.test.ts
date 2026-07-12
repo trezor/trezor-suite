@@ -31,10 +31,10 @@ test.describe('Discovery', { tag: ['@T3W1', '@T3T1'] }, () => {
         walletPage,
     }) => {
         await test.step('Activate coins', async () => {
-            await settingsPage.navigateTo('coins');
-            for (const coin of coinsToActivate) {
-                await settingsPage.coinsTab.enableNetwork(coin);
-            }
+            await settingsPage.changeNetworks({
+                enableNetworks: coinsToActivate,
+                skipActivation: true,
+            });
         });
 
         await test.step('Trigger discovery and reload after random delay', async () => {

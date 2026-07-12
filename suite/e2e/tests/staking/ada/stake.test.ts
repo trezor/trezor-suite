@@ -17,39 +17,34 @@ const finalBalanceFormatted = toADA(finalBalance);
 test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic' } });
 
-    test.beforeEach(
-        async ({ page, onboardingPage, dashboardPage, settingsPage, blockbookMock }) => {
-            await test.step('Mock Cardano pool address', async () => {
-                await page.route(/\/staking\/v1\/\?networks=/, async route => {
-                    const response = await route.fetch();
-                    const body = await response.json();
-                    const adaData = body.data?.find(
-                        (item: { symbol: string }) => item.symbol === 'ada',
-                    );
-                    if (adaData) {
-                        adaData.pools = [
-                            { apy: 3.9, saturation: 50, id: EXPECTED_CARDANO_POOL_ID },
-                        ];
-                    }
-                    await route.fulfill({ body: JSON.stringify(body) });
-                });
+    test.beforeEach(async ({ page, onboardingPage, settingsPage, blockbookMock }) => {
+        await test.step('Mock Cardano pool address', async () => {
+            await page.route(/\/staking\/v1\/\?networks=/, async route => {
+                const response = await route.fetch();
+                const body = await response.json();
+                const adaData = body.data?.find(
+                    (item: { symbol: string }) => item.symbol === 'ada',
+                );
+                if (adaData) {
+                    adaData.pools = [{ apy: 3.9, saturation: 50, id: EXPECTED_CARDANO_POOL_ID }];
+                }
+                await route.fulfill({ body: JSON.stringify(body) });
             });
+        });
 
-            await onboardingPage.completeOnboarding();
+        await onboardingPage.completeOnboarding();
 
-            await test.step('Enable Cardano and set mocked backend', async () => {
-                await settingsPage.navigateTo('coins');
-                await blockbookMock.start('ada', 'blockfrost');
+        await test.step('Enable Cardano and set mocked backend', async () => {
+            await settingsPage.navigateTo('coins');
+            await blockbookMock.start('ada', 'blockfrost');
 
-                await settingsPage.coinsTab.enableNetwork('ada');
-                await settingsPage.coinsTab.openNetworkAdvanceSettings('ada');
-                await settingsPage.coinsTab.changeBackend('blockfrost', blockbookMock.url);
-
-                await dashboardPage.dashboardMenuButton.click();
-                await page.discoveryShouldFinish();
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    { symbol: 'ada', backend: { type: 'blockfrost', url: blockbookMock.url } },
+                ],
             });
-        },
-    );
+        });
+    });
 
     test(
         'Stake Cardano',

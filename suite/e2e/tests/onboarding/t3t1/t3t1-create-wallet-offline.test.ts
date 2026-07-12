@@ -76,9 +76,10 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1'] }, 
             });
 
             await test.step('Enable Bitcoin so discovery can be attempted', async () => {
-                await settingsPage.navigateTo('coins');
-                await settingsPage.coinsTab.enableNetwork('btc');
-                await settingsPage.coinsTab.activateCoinsButton.click();
+                await settingsPage.changeNetworks({
+                    enableNetworks: ['btc'],
+                    skipDiscovery: true,
+                });
                 await dashboardPage.navigateTo();
             });
 
