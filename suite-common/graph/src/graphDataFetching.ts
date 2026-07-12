@@ -428,7 +428,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
         // use 1 year into past and return zeroes for the range
         if (startOfTimeFrameDate.getTime() === endOfTimeFrameDate.getTime()) {
             const startDate = startOfTimeFrameDate;
-            startDate.setDate(startDate.getHours() - 8760);
+            startDate.setHours(startDate.getHours() - 8760);
 
             return [
                 ...getTimestampsInTimeFrame(startDate, endOfTimeFrameDate, numberOfPoints - 1),
