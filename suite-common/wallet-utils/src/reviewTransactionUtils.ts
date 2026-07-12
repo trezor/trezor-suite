@@ -278,7 +278,6 @@ const constructOldFlow = ({
                         token: precomposedTx.token,
                     },
                 );
-                outputs.push();
             }
         });
     } else {
