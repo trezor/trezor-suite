@@ -162,6 +162,29 @@ export const getStakingLimitsByNetworkSymbol = (
     }
 };
 
+interface GetMaxStakeAmount {
+    balance: string;
+    symbol: NetworkSymbol | undefined;
+}
+
+export const getMaxStakeAmount = ({ balance, symbol }: GetMaxStakeAmount): string => {
+    const limits = getStakingLimitsByNetworkSymbol(symbol);
+    if (!limits) return '0';
+
+    const balanceBN = new BigNumber(balance);
+
+    const balanceMinusFeeBuffer = BigNumber.max(
+        balanceBN.minus(limits.MIN_BALANCE_FOR_FEE_BUFFER),
+        0,
+    );
+
+    const maxAmount = balanceMinusFeeBuffer.gt(limits.MIN_BALANCE_FOR_STAKING)
+        ? BigNumber.max(balanceBN.minus(limits.MIN_FOR_WITHDRAWALS), 0)
+        : balanceMinusFeeBuffer;
+
+    return BigNumber.min(maxAmount, limits.MAX_AMOUNT_FOR_STAKING).toFixed();
+};
+
 export const getStakingDataForNetwork = (
     account?: Account,
 ): Omit<StakingPoolExtended, 'contract' | 'name'> | undefined => {
