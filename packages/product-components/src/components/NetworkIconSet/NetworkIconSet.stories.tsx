@@ -7,7 +7,7 @@ import {
     NetworkIconSet as NetworkIconSetComponent,
     type NetworkIconSetProps,
 } from './NetworkIconSet';
-import { allowedAssetLogoSizes } from '../AssetLogo/AssetLogoWithId';
+import { allowedTokenIconSizes } from '../TokenIcon/TokenIcon';
 
 const NETWORK_1: NetworkSymbol = 'btc';
 const NETWORK_2: NetworkSymbol = 'eth';
@@ -50,7 +50,7 @@ export const NetworkIconSet: StoryObj<NetworkIconSetProps> = {
             },
         },
         size: {
-            options: allowedAssetLogoSizes,
+            options: allowedTokenIconSizes,
             control: {
                 type: 'select',
             },

@@ -23,7 +23,7 @@ import type {
     TradingType,
 } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
-import { type AssetLogoProps } from '@trezor/product-components';
+import { type TokenIconProps } from '@trezor/product-components';
 
 export type TradingTradeBuySellType = Exclude<TradingType, TradingExchangeType>;
 export type TradingTradeSellExchangeType = Exclude<TradingType, TradingBuyType>;
@@ -73,8 +73,8 @@ export interface TradingCryptoListProps {
 export type TradingCoinLogoProps = {
     cryptoId: CryptoId;
     className?: string;
-    size?: AssetLogoProps['size'];
-} & Pick<AssetLogoProps, 'showNetworkIcon' | 'margin'>;
+    size?: TokenIconProps['size'];
+} & Pick<TokenIconProps, 'showNetworkIcon' | 'margin'>;
 
 export interface TradingGetAmountLabelsProps {
     type: TradingType;
