@@ -3,7 +3,7 @@ import { type TronResourceType } from '@suite-common/wallet-types';
 import { getResourceGain } from '@suite-common/wallet-utils';
 import { Card, Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { CheckCircleFilledIcon } from '@trezor/icons';
-import { CoinLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
@@ -60,7 +60,7 @@ export const TronStakeSummaryCard = () => {
 
                 <TronStakeInfoRow label={<Translation id="TR_EARN_TRON_SUPPLIED" />}>
                     <Row alignItems="center" gap={8}>
-                        <CoinLogo symbol={account.symbol} size={24} />
+                        <TokenIcon symbol={account.symbol} size={24} />
                         <Column gap={2} alignItems="flex-end">
                             <Text typographyStyle="body-md-strong">
                                 <FormattedCryptoAmount value={amount} symbol={account.symbol} />

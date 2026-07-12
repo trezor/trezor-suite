@@ -9,7 +9,7 @@ import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Button, Card, Flex, InfoItem, Row, Text } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
-import { CoinLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -128,7 +128,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                         gap={isBelowMobile ? spacings.md : spacings.xxxl}
                     >
                         <Row gap={spacings.sm}>
-                            <CoinLogo size={40} symbol={account.symbol} type="tokenWithNetwork" />
+                            <TokenIcon size={40} symbol={account.symbol} showNetworkIcon />
                             <InfoItem
                                 label={getNetworkDisplaySymbolName(account.symbol)}
                                 typographyStyle="body-md-strong"

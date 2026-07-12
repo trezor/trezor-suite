@@ -14,7 +14,7 @@ import {
 import { asAmountUnit, getFee, unitsToSubunits } from '@suite-common/wallet-utils';
 import { Box, IconButton, Note, Row, Text } from '@trezor/components';
 import { BroadcastIcon, ClockIcon, ComputerTowerIcon, InfoIcon, ReceiptIcon } from '@trezor/icons';
-import { CoinLogo, FeeRate } from '@trezor/product-components';
+import { FeeRate, TokenIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
@@ -84,7 +84,7 @@ export const TransactionReviewSummary = ({
             <Row justifyContent="space-between">
                 <Row columnGap={spacings.md} rowGap={spacings.xxs} flexWrap="wrap">
                     <Row gap={spacings.xxs}>
-                        <CoinLogo size={16} symbol={symbol} />
+                        <TokenIcon size={16} symbol={symbol} />
                         <AccountLabel
                             account={account}
                             showAccountTypeBadge

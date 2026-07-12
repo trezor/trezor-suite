@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import type { YieldFlowDisplayToken } from '@suite-common/wallet-core';
 import { Card, IconButton, Row, Text } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
-import { AssetLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 
 import { ApprovedAmountValue } from './ApprovedAmountValue';
 
@@ -30,7 +30,7 @@ export const YieldApprovedAmountCard = ({
                     <Translation id="TR_EARN_YIELD_APPROVED_AMOUNT" />
                 </Text>
                 <Row alignItems="center" gap={8}>
-                    <AssetLogo
+                    <TokenIcon
                         size={20}
                         symbol={token.networkSymbol}
                         contractAddress={token.contractAddress ?? null}

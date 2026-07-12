@@ -7,7 +7,7 @@ import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { blockchainActions, selectCustomBackends } from '@suite-common/wallet-core';
 import { Banner, Button, Card, Column, H3, Modal, Paragraph, Row } from '@trezor/components';
 import { GearIcon, TorBrowserIcon } from '@trezor/icons';
-import { CoinLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -86,7 +86,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                         <Column gap={spacings.xxl} hasDivider>
                             {onionBackends.map(({ symbol, urls }) => (
                                 <Row key={symbol} gap={spacings.md}>
-                                    <CoinLogo symbol={symbol} />
+                                    <TokenIcon symbol={symbol} />
                                     <Column>
                                         <Paragraph>{getNetwork(symbol).name}</Paragraph>
                                         <Paragraph

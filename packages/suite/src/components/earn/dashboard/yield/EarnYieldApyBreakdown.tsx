@@ -8,7 +8,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { getApyPercent } from '@suite-common/wallet-utils';
 import { Column, Icon, Row, Text } from '@trezor/components';
 import { ChartLineIcon } from '@trezor/icons';
-import { AssetLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 
 type EarnYieldApyBreakdownProps = {
     rewards: RewardDtoV2[];
@@ -87,7 +87,7 @@ export const EarnYieldApyBreakdown = ({
 
                 return (
                     <Row key={index} gap={8} alignItems="center">
-                        <AssetLogo
+                        <TokenIcon
                             placeholder={reward.token.symbol || reward.token.name || 'token'}
                             symbol={networkSymbol}
                             contractAddress={reward.token.address}

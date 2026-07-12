@@ -21,7 +21,7 @@ import {
     Text,
 } from '@trezor/components';
 import { ArrowRightIcon, CaretDownIcon, WarningIcon } from '@trezor/icons';
-import { AssetLogo, NetworkIcon } from '@trezor/product-components';
+import { NetworkIcon, TokenIcon } from '@trezor/product-components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
@@ -165,7 +165,7 @@ export const RevokeModal = (props: RevokeModalProps) => {
                                     <Translation id="TR_APPROVAL_LIMIT" />
                                 </Text>
                                 <Row gap={8}>
-                                    <AssetLogo
+                                    <TokenIcon
                                         symbol={account.symbol}
                                         contractAddress={token.contract}
                                         size={20}

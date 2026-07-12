@@ -11,7 +11,7 @@ import type { Item, MenuItem, PageItem } from 'nextra/normalize-pages';
 import styled from 'styled-components';
 
 import { Select } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
 import { arrayPartition } from '@trezor/utils';
 
@@ -180,7 +180,7 @@ export function Menu({
                     formatOptionLabel={option => (
                         <Option>
                             {coinSymbols[option.value] && (
-                                <CoinLogo size={20} symbol={coinSymbols[option.value]} />
+                                <TokenIcon size={20} symbol={coinSymbols[option.value]} />
                             )}
                             <Label>{option.label}</Label>
                         </Option>

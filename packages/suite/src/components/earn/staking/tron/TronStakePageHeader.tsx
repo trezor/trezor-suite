@@ -8,7 +8,7 @@ import { selectTronStakeSession } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Box, Button, Column, IconButton, Row, Text } from '@trezor/components';
 import { CaretLeftIcon, InfoIcon } from '@trezor/icons';
-import { CoinLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
@@ -99,7 +99,7 @@ export const TronStakePageHeader = ({ account }: TronStakePageHeaderProps) => {
                 />
                 {account ? (
                     <Row alignItems="center" gap={12} overflow="hidden">
-                        <CoinLogo symbol={account.symbol} size={32} />
+                        <TokenIcon symbol={account.symbol} size={32} />
                         <Column gap={2} overflow="hidden">
                             <Text
                                 typographyStyle="body-md-strong"

@@ -4,7 +4,7 @@ import { selectAccountIsStakingActive, selectBaseCurrency } from '@suite-common/
 import { isTestnet } from '@suite-common/wallet-utils';
 import { Column, Icon, Paragraph, Row, Skeleton, Text } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
-import { CoinLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 
 import { AmountUnitSwitchWrapper, FormattedCryptoAmount } from 'src/components/suite';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
@@ -24,7 +24,11 @@ const AccountOverviewBalanceSkeleton = ({
     <Column gap={4}>
         <Skeleton width={100} height={50} animate={animate} />
         <Row gap={4}>
-            {symbol ? <CoinLogo size={16} symbol={symbol} /> : <Skeleton type="circle" size={20} />}
+            {symbol ? (
+                <TokenIcon size={16} symbol={symbol} />
+            ) : (
+                <Skeleton type="circle" size={20} />
+            )}
             <Skeleton height={20} animate={animate} />
         </Row>
     </Column>

@@ -6,7 +6,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, isUtxoBased } from '@suite-common/wallet-utils';
 import { CardList, Column, Icon, Row, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
-import { CoinLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 
 import { CoinBalance, HiddenPlaceholder } from 'src/components/suite';
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
@@ -35,7 +35,7 @@ export const ReceiveAccountItem = ({ account, onAccountSelect }: ReceiveAccountI
     return (
         <CardList.Item onClick={() => onAccountSelect(account)}>
             <Row gap={12}>
-                <CoinLogo size={24} symbol={account.symbol} />
+                <TokenIcon size={24} symbol={account.symbol} />
 
                 <Column>
                     <Text maxWidth={200} as="div">

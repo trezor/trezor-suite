@@ -20,7 +20,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { Banner, Card, Column, IconButton, Link, Row, Text } from '@trezor/components';
 import { CaretDownIcon } from '@trezor/icons';
-import { AssetLogo, CoinLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
@@ -114,7 +114,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                 <Row justifyContent="space-between" height={64}>
                     <Row justifyContent="flex-start" gap={spacings.sm}>
                         {selectedToken ? (
-                            <AssetLogo
+                            <TokenIcon
                                 symbol={account.symbol}
                                 contractAddress={selectedToken?.contract}
                                 size={24}
@@ -123,7 +123,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                 shouldTryToFetch={isTokenKnown}
                             />
                         ) : (
-                            <CoinLogo symbol={account.symbol} size={40} type="tokenWithNetwork" />
+                            <TokenIcon symbol={account.symbol} size={40} showNetworkIcon />
                         )}
                         <Column alignItems="flex-start">
                             <Row justifyContent="flex-start">

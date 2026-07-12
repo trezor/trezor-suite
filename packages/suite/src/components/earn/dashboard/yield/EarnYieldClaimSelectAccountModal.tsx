@@ -9,7 +9,7 @@ import { useFormatters } from '@suite-common/formatters';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { compareAccountsByCoin } from '@suite-common/wallet-utils';
 import { CardList, Column, Modal, Row, Text, Tooltip } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -73,11 +73,7 @@ export const EarnYieldClaimSelectAccountModal = ({
                         onClick={() => handleOnSelect(accountRewards)}
                     >
                         <Row gap={16} flex="1" overflow="hidden">
-                            <CoinLogo
-                                symbol={accountRewards.account.symbol}
-                                size={32}
-                                type="token"
-                            />
+                            <TokenIcon symbol={accountRewards.account.symbol} size={32} />
                             <Column flex="1" overflow="hidden" gap={2} alignItems="flex-start">
                                 <AccountLabel
                                     account={accountRewards.account}

@@ -6,7 +6,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, isUtxoBased } from '@suite-common/wallet-utils';
 import { Column, Icon, Row, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
-import { CoinLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 
 import { CoinBalance, HiddenPlaceholder } from 'src/components/suite';
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
@@ -63,7 +63,7 @@ export const TradingReceiveAccountSuiteOption = ({
             onClick={onOptionClick}
         >
             <Row gap={12}>
-                <CoinLogo size={24} symbol={account.symbol} />
+                <TokenIcon size={24} symbol={account.symbol} />
 
                 <Column>
                     <Text

@@ -9,7 +9,7 @@ import { Labeling } from '@suite/labeling';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, H2, Row, Text, motionEasing } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 
 import { AmountUnitSwitchWrapper } from 'src/components/suite/AmountUnitSwitchWrapper';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
@@ -103,7 +103,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
     return (
         <DetailsContainer initial={false} animate={controls}>
             <Row gap={4} overflow="hidden">
-                <CoinLogo size={40} symbol={symbol} type="token" />
+                <TokenIcon size={40} symbol={symbol} />
                 <Column
                     overflow="hidden"
                     // To accommodate the labeling component

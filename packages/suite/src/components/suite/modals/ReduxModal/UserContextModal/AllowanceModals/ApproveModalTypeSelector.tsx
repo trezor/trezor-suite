@@ -18,7 +18,7 @@ import {
     Text,
 } from '@trezor/components';
 import { CaretDownIcon, WarningIcon } from '@trezor/icons';
-import { AssetLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 import { zIndices } from '@trezor/theme';
 
 import type { AllowanceModalProvider } from './AllowanceModalProviderInfo';
@@ -99,7 +99,7 @@ export const ApproveModalTypeSelector = ({
         <CardList.Item key={type} onClick={() => handleSelect(type)} width="100%">
             <Column gap={4} flex="1" alignItems="flex-start">
                 <Row gap={8}>
-                    <AssetLogo
+                    <TokenIcon
                         symbol={networkSymbol}
                         contractAddress={token.contract}
                         size={20}
@@ -127,7 +127,7 @@ export const ApproveModalTypeSelector = ({
                         />
                     </Text>
                     <Row gap={8}>
-                        <AssetLogo
+                        <TokenIcon
                             symbol={networkSymbol}
                             contractAddress={token.contract}
                             size={20}

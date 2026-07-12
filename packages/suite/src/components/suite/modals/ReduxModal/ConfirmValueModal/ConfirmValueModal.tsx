@@ -1,5 +1,11 @@
 import { type ReactNode, useEffect, useState } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { getDeviceInternalModel } from '@suite-common/suite-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { AccountLabel } from '@suite/account';
 import { Address, selectAddressLabel } from '@suite/address';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -9,12 +15,6 @@ import { Labeling } from '@suite/labeling';
 import { selectIsMetadataEnabled } from '@suite/metadata';
 import { MODAL_CONTEXT_USER } from '@suite/modal';
 import { selectDesktopSuiteSyncInteraction } from '@suite/suite-sync';
-import { useServices } from '@suite-common/dependency-injection';
-import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import { getDeviceInternalModel } from '@suite-common/suite-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
 import {
     Banner,
     Box,
@@ -43,7 +43,7 @@ import {
     WarningFilledIcon,
     WarningIcon,
 } from '@trezor/icons';
-import { CoinLogo, ConfirmOnDevicePill, QrCode } from '@trezor/product-components';
+import { ConfirmOnDevicePill, QrCode, TokenIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { useGuideOpenNode } from 'src/hooks/guide';
@@ -146,7 +146,7 @@ export const ConfirmValueModal = ({
                 description={
                     account && (
                         <Row gap={spacings.xxs}>
-                            <CoinLogo size={16} symbol={account.symbol} />
+                            <TokenIcon size={16} symbol={account.symbol} />
                             <AccountLabel
                                 account={account}
                                 accountTypeBadgeSize="small"
