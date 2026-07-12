@@ -1,4 +1,5 @@
 import { type CoinInfo, type PermissionRequest } from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import {
     type AddressSelection,
     SelectAccount as SelectAccountSchema,
@@ -21,6 +22,23 @@ export default class SelectAccount extends AbstractMethod<'selectAccount', Param
         const { payload } = message;
 
         Assert(SelectAccountSchema, payload);
+
+        // The schema can't express the cross-field `minCount <= maxCount`, so reject an inverted
+        // bound here — otherwise the picker opens with a Connect button that can never enable.
+        // Narrow first: Assert lets an optional field be `null`, and `typeof null === 'object'`.
+        const { selectionType } = payload;
+        const bounds =
+            typeof selectionType === 'object' && selectionType !== null ? selectionType : undefined;
+        if (
+            bounds?.minCount !== undefined &&
+            bounds.maxCount !== undefined &&
+            bounds.minCount > bounds.maxCount
+        ) {
+            throw ERRORS.TypedError(
+                'Method_InvalidParameter',
+                'selectionType.minCount cannot be greater than selectionType.maxCount',
+            );
+        }
 
         const coinInfo = getCoinInfoOrThrow(payload.coin);
 

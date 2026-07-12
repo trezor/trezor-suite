@@ -26,11 +26,12 @@ export const CustomAccountType = Type.Object({
     label: Type.String(),
 });
 
-// Bounds for a 'multi'-style selection. minCount defaults to 1; maxCount defaults to unbounded.
+// Bounds for a 'multi'-style selection: whole numbers ≥ 1 (minCount defaults to 1, maxCount to
+// unbounded, so `{}` ≡ multi). Cross-field `minCount <= maxCount` is enforced in the constructor.
 export type MultiSelectBounds = Static<typeof MultiSelectBounds>;
 export const MultiSelectBounds = Type.Object({
-    minCount: Type.Optional(Type.Number({ minimum: 1 })),
-    maxCount: Type.Optional(Type.Number({ minimum: 1 })),
+    minCount: Type.Optional(Type.Integer({ minimum: 1 })),
+    maxCount: Type.Optional(Type.Integer({ minimum: 1 })),
 });
 
 export type SelectionType = Static<typeof SelectionType>;
