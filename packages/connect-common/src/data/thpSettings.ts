@@ -30,13 +30,8 @@ export const parseThpSettings = ({ manifest, thp }: Partial<ConnectSettings>): T
                 typeof k.host_static_key === 'string' &&
                 typeof k.trezor_static_public_key === 'string'
             ) {
-                // `k` is already typed `ThpCredentials` (its key fields carry the brands),
-                // so it crosses back into the typed settings as-is. We deliberately do NOT
-                // import the `asX()` value helpers here: this module is reachable from the
-                // browser (connect-webextension service worker), and pulling them from the
-                // `@trezor/protocol` barrel would drag the Node `crypto`-dependent THP
-                // handshake code into that bundle. Branding is nominal/compile-time only,
-                // so the runtime value is identical either way.
+                // `k` is already typed `ThpCredentials` (branded key fields), so it
+                // re-enters the typed settings as-is — no `asX()` re-branding needed.
                 return k;
             }
 

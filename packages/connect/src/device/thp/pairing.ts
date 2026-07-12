@@ -239,9 +239,7 @@ export const getThpCredentials = async (device: IDevice, autoconnect = false) =>
 
     const credentials = await thpCall(device, 'ThpCredentialRequest', {
         autoconnect,
-        host_static_public_key: protocolThp.asHostStaticPublicKeyHex(
-            thpState.handshakeCredentials.hostStaticPublicKey.toString('hex'),
-        ),
+        host_static_public_key: thpState.handshakeCredentials.hostStaticPublicKey.toString('hex'),
         credential: thpState.pairingCredentials[0]?.credential,
     });
 

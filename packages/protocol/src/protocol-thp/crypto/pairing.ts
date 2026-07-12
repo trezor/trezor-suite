@@ -183,9 +183,6 @@ export const handleHandshakeInit = ({
         allCredentials,
         encryptedPayload,
         staticKey,
-        // Brand-origin for the host static keypair (decision 2): the shared
-        // `getCurve25519KeyPair` return stays unbranded so ephemeral keypairs are
-        // out of scope; the brand is applied here, at the static-key return.
         hostStaticKeys: {
             publicKey: asHostStaticPublicKey(hostStaticKeys.publicKey),
             privateKey: asHostStaticKey(hostStaticKeys.privateKey),
