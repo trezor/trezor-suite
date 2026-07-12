@@ -26,24 +26,22 @@ export const EarnWithdrawalFeesBanner = ({ accountKey, symbol }: EarnWithdrawalF
 
     const { displaySymbol } = getNetwork(symbol);
     const formattedBalance = formatNetworkAmount(account.availableBalance, symbol);
-    const maxStakeAmount = new BigNumber(formattedBalance).minus(limits.MIN_BALANCE_FOR_FEE_BUFFER);
 
     const isVisible =
         !hasError &&
         !!amountValue &&
-        new BigNumber(amountValue).gte(maxStakeAmount) &&
-        maxStakeAmount.gt(0);
+        new BigNumber(formattedBalance).minus(amountValue).lt(limits.MIN_FOR_WITHDRAWALS);
 
     if (!isVisible) return null;
 
     return (
         <InlineAlertBox
-            intent="info"
+            intent="warning"
             title={
                 <Translation
-                    id="earn.earnFormScreen.withdrawalFeesBanner"
+                    id="earn.earnFormScreen.withdrawalFeesRecommendation"
                     values={{
-                        amount: limits.MIN_BALANCE_FOR_FEE_BUFFER.toString(),
+                        amount: limits.MIN_FOR_WITHDRAWALS.toString(),
                         displaySymbol,
                     }}
                 />

@@ -11,7 +11,7 @@ import { type AccountKey, type StakeType } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
     getDecimalsForBaseCurrency,
-    getStakingLimitsByNetworkSymbol,
+    getMaxStakeAmount,
 } from '@suite-common/wallet-utils';
 import { HStack, Switch, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
@@ -64,20 +64,9 @@ export const EarnMaxButton = ({
             return stakedBalance ?? '0';
         }
 
-        const limits = getStakingLimitsByNetworkSymbol(symbol);
         const availableAmount = formatNetworkAmount(account!.availableBalance, symbol);
-        const buffer = limits?.MIN_BALANCE_FOR_FEE_BUFFER ?? 0;
 
-        const balanceMinusBuffer = BigNumber.max(new BigNumber(availableAmount).minus(buffer), 0);
-
-        if (
-            limits?.MAX_AMOUNT_FOR_STAKING &&
-            balanceMinusBuffer.gt(limits.MAX_AMOUNT_FOR_STAKING)
-        ) {
-            return limits.MAX_AMOUNT_FOR_STAKING.toFixed();
-        }
-
-        return balanceMinusBuffer.toFixed();
+        return getMaxStakeAmount({ balance: availableAmount, symbol });
     };
 
     const setMaxAmount = () => {
