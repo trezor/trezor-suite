@@ -40,3 +40,16 @@ export const assetsFixtureSingleAsset: AssetFiatBalance[] = [
         fiatBalance: asBaseCurrencyAmount(new BigNumber('98.26')),
     },
 ];
+
+// A NaN fiat balance must not poison the total nor produce a NaN percentage for itself
+// or for the other (valid) assets.
+export const assetsFixtureWithNaNBalance: AssetFiatBalance[] = [
+    {
+        symbol: 'btc',
+        fiatBalance: asBaseCurrencyAmount(new BigNumber(NaN)),
+    },
+    {
+        symbol: 'eth',
+        fiatBalance: asBaseCurrencyAmount(new BigNumber('50')),
+    },
+];
