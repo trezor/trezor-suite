@@ -23,18 +23,16 @@ test.describe('Doge Send', { tag: ['@T3W1', '@T3T1'] }, () => {
     const feeAmount = '0.01450643';
     const totalAmount = '115,568,568,500.01450643';
 
-    test.beforeEach(
-        async ({ page, onboardingPage, settingsPage, dashboardPage, blockbookMock }) => {
-            await blockbookMock.start('doge');
-            await onboardingPage.completeOnboarding();
-            await settingsPage.navigateTo('coins');
-            await settingsPage.coinsTab.enableNetwork('doge');
-            await settingsPage.coinsTab.openNetworkAdvanceSettings('doge');
-            await settingsPage.coinsTab.changeBackend('blockbook', blockbookMock.url);
-            await dashboardPage.navigateTo();
-            await page.discoveryShouldFinish();
-        },
-    );
+    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock }) => {
+        await blockbookMock.start('doge');
+        await onboardingPage.completeOnboarding();
+        await settingsPage.navigateTo('coins');
+        await settingsPage.changeNetworks({
+            enableNetworks: [
+                { symbol: 'doge', backend: { type: 'blockbook', url: blockbookMock.url } },
+            ],
+        });
+    });
 
     test('Cannot send amount exceeding MAX_SAFE_INTEGER', async ({
         page,

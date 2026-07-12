@@ -18,48 +18,44 @@ const finalBalanceFormatted = toADA(finalBalance);
 test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic' } });
 
-    test.beforeEach(
-        async ({ page, onboardingPage, dashboardPage, settingsPage, blockbookMock }) => {
-            await onboardingPage.completeOnboarding();
+    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock }) => {
+        await onboardingPage.completeOnboarding();
 
-            await test.step('Enable Cardano and set mocked backend', async () => {
-                await settingsPage.navigateTo('coins');
-                await blockbookMock.start('ada', 'blockfrost');
-                // staked account with too small rewards for claiming
-                blockbookMock.updateAccountState({
-                    availableBalance: startingBalance.toString(),
-                    balance: (startingBalance + tooSmallRewardAmount).toString(),
-                    misc: {
-                        staking: {
-                            address: 'stake1uytalm0k75njyj7v8z580ajs09v5v4lz6yp9akh8cgty43qunjqys',
-                            rewards: tooSmallRewardAmount.toString(),
-                            isActive: true,
-                            poolId: 'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj',
-                            drep: {
-                                drep_id:
-                                    'drep1yt8p080ajks6zdnxd9z6a6q60p9sm9j5rl7tc63mfna8r6cnp4wr3',
-                                hex: '22ce179dfd95a1a136666945aee81a784b0d96541ffcbc6a3b4cfa71eb',
-                                amount: startingBalance.toString(),
-                                active: true,
-                                active_epoch: 573,
-                                has_script: false,
-                                retired: false,
-                                expired: false,
-                                last_active_epoch: 601,
-                            },
+        await test.step('Enable Cardano and set mocked backend', async () => {
+            await settingsPage.navigateTo('coins');
+            await blockbookMock.start('ada', 'blockfrost');
+            // staked account with too small rewards for claiming
+            blockbookMock.updateAccountState({
+                availableBalance: startingBalance.toString(),
+                balance: (startingBalance + tooSmallRewardAmount).toString(),
+                misc: {
+                    staking: {
+                        address: 'stake1uytalm0k75njyj7v8z580ajs09v5v4lz6yp9akh8cgty43qunjqys',
+                        rewards: tooSmallRewardAmount.toString(),
+                        isActive: true,
+                        poolId: 'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj',
+                        drep: {
+                            drep_id: 'drep1yt8p080ajks6zdnxd9z6a6q60p9sm9j5rl7tc63mfna8r6cnp4wr3',
+                            hex: '22ce179dfd95a1a136666945aee81a784b0d96541ffcbc6a3b4cfa71eb',
+                            amount: startingBalance.toString(),
+                            active: true,
+                            active_epoch: 573,
+                            has_script: false,
+                            retired: false,
+                            expired: false,
+                            last_active_epoch: 601,
                         },
                     },
-                });
-
-                await settingsPage.coinsTab.enableNetwork('ada');
-                await settingsPage.coinsTab.openNetworkAdvanceSettings('ada');
-                await settingsPage.coinsTab.changeBackend('blockfrost', blockbookMock.url);
-
-                await dashboardPage.dashboardMenuButton.click();
-                await page.discoveryShouldFinish();
+                },
             });
-        },
-    );
+
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    { symbol: 'ada', backend: { type: 'blockfrost', url: blockbookMock.url } },
+                ],
+            });
+        });
+    });
 
     test(
         'Claim rewards from Cardano staking',

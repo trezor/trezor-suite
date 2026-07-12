@@ -26,7 +26,11 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
         solanaStakingMock.setEpoch(solStakingAccountSecond.activationEpoch);
         solanaStakingMock.setSimulatedTransaction(solSimulateStakeMoreTransaction);
         await onboardingPage.completeOnboarding();
-        await settingsPage.enableNetworkWithCustomBackend('sol', 'solana', solanaStakingMock.url);
+        await settingsPage.changeNetworks({
+            enableNetworks: [
+                { symbol: 'sol', backend: { type: 'solana', url: solanaStakingMock.url } },
+            ],
+        });
     });
 
     test(

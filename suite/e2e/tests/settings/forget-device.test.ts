@@ -235,13 +235,10 @@ test.describe('Device Settings - Forget TS7', { tag: ['@T3W1'] }, () => {
             const coins: NetworkSymbol[] = ['eth', 'ada', 'sol'];
 
             await test.step('Enable few coins', async () => {
-                await settingsPage.navigateTo('coins');
-
-                for (const coin of coins) {
-                    await settingsPage.coinsTab.enableNetwork(coin);
-                }
-
-                await settingsPage.coinsTab.activateCoinsButton.click();
+                await settingsPage.changeNetworks({
+                    enableNetworks: coins,
+                    skipDiscovery: true,
+                });
             });
 
             await test.step('Verify "Forget" button is disabled', async () => {

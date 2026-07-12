@@ -12,8 +12,10 @@ test.describe('Without device', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await settingsPage.toggleDebugModeInSettings();
 
                 await settingsPage.toggleTestnetNetworks();
-                await settingsPage.navigateTo('coins');
-                await settingsPage.coinsTab.enableNetwork('regtest');
+                await settingsPage.changeNetworks({
+                    enableNetworks: ['regtest'],
+                    skipActivation: true,
+                });
 
                 await trezorUserEnv.sendToAddressAndMineBlock({
                     address: ADDRESS_INDEX_1,

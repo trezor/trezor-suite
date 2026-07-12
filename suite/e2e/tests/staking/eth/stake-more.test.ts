@@ -14,74 +14,71 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
         },
     });
 
-    test.beforeEach(
-        async ({ page, dashboardPage, onboardingPage, settingsPage, blockbookMock }) => {
-            await page.context().route('**/staking/v1**', async route => {
-                await route.fulfill({
-                    status: 200,
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    json: {
-                        data: [
-                            {
-                                symbol: 'eth',
-                                stats: {
-                                    apy: 1,
-                                    nextRewardPayout: 1,
-                                },
-                                validators: {
-                                    activationTime: 0,
-                                    addingDelay: 60 * 60 * 24,
-                                },
+    test.beforeEach(async ({ page, onboardingPage, settingsPage, blockbookMock }) => {
+        await page.context().route('**/staking/v1**', async route => {
+            await route.fulfill({
+                status: 200,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                json: {
+                    data: [
+                        {
+                            symbol: 'eth',
+                            stats: {
+                                apy: 1,
+                                nextRewardPayout: 1,
                             },
-                        ],
-                        errors: [],
-                    } satisfies StakingBatch,
-                });
+                            validators: {
+                                activationTime: 0,
+                                addingDelay: 60 * 60 * 24,
+                            },
+                        },
+                    ],
+                    errors: [],
+                } satisfies StakingBatch,
             });
+        });
 
-            await page.context().route('**/eth/validators-queue**', async route => {
-                await route.fulfill({
-                    status: 200,
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    json: {
-                        activationTime: 0,
-                        addingDelay: 60 * 60 * 24,
-                    } satisfies EthValidatorsQueue,
-                });
+        await page.context().route('**/eth/validators-queue**', async route => {
+            await route.fulfill({
+                status: 200,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                json: {
+                    activationTime: 0,
+                    addingDelay: 60 * 60 * 24,
+                } satisfies EthValidatorsQueue,
             });
+        });
 
-            await onboardingPage.completeOnboarding();
-            await settingsPage.navigateTo('coins');
-            await blockbookMock.start('eth');
+        await onboardingPage.completeOnboarding();
+        await settingsPage.navigateTo('coins');
+        await blockbookMock.start('eth');
 
-            await settingsPage.coinsTab.enableNetwork('eth');
-            await settingsPage.coinsTab.openNetworkAdvanceSettings('eth');
-            await settingsPage.coinsTab.changeBackend('blockbook', blockbookMock.url);
+        await settingsPage.changeNetworks({
+            enableNetworks: [
+                { symbol: 'eth', backend: { type: 'blockbook', url: blockbookMock.url } },
+            ],
+        });
 
-            await dashboardPage.dashboardMenuButton.click();
-            await page.discoveryShouldFinish();
-
-            blockbookMock.updateAccountState({
-                stakingPools: [
-                    {
-                        contract: '0x624087DD1904ab122A32878Ce9e933C7071F53B9',
-                        name: 'Everstake',
-                        pendingBalance: '0', //sets to zero
-                        pendingDepositedBalance: '0', //sets to zero
-                        depositedBalance: '3000000000000000000000',
-                        withdrawTotalAmount: '0',
-                        claimableAmount: '0',
-                        restakedReward: '234000000000000000000',
-                        autocompoundBalance: '3234000000000000000000',
-                    },
-                ],
-            });
-        },
-    );
+        blockbookMock.updateAccountState({
+            stakingPools: [
+                {
+                    contract: '0x624087DD1904ab122A32878Ce9e933C7071F53B9',
+                    name: 'Everstake',
+                    pendingBalance: '0', //sets to zero
+                    pendingDepositedBalance: '0', //sets to zero
+                    depositedBalance: '3000000000000000000000',
+                    withdrawTotalAmount: '0',
+                    claimableAmount: '0',
+                    restakedReward: '234000000000000000000',
+                    autocompoundBalance: '3234000000000000000000',
+                },
+            ],
+        });
+    });
 
     test(
         'stake on ETH account',

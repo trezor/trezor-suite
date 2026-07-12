@@ -37,6 +37,10 @@ const backgroundImageButton = {
     nyancat: '@modal/gallery/bw_64x128/nyancat',
 };
 
+export type NetworkToEnable =
+    | NetworkSymbol
+    | { symbol: NetworkSymbol; backend: { type: BackendType; url: string } };
+
 export class SettingsPage {
     private readonly TIMES_CLICK_TO_SET_DEBUG_MODE = 5;
     readonly deviceTab: DeviceTab;
@@ -257,34 +261,31 @@ export class SettingsPage {
 
     @step()
     async changeNetworks(options: {
-        enableNetworks: NetworkSymbol[];
+        enableNetworks: NetworkToEnable[];
         disableNetworks?: NetworkSymbol[];
+        skipActivation?: boolean;
+        skipDiscovery?: boolean;
     }) {
         await this.navigateTo('coins');
-        for (const network of options.enableNetworks) {
-            await this.coinsTab.enableNetwork(network);
+        for (const entry of options.enableNetworks) {
+            const inputWithCustomBackend = typeof entry !== 'string';
+            const symbol = inputWithCustomBackend ? entry.symbol : entry;
+            await this.coinsTab.enableNetwork(symbol);
+            if (inputWithCustomBackend) {
+                await this.coinsTab.openNetworkAdvanceSettings(symbol);
+                await this.coinsTab.changeBackend(entry.backend.type, entry.backend.url);
+                await expect(this.coinsTab.modal).toBeHidden();
+            }
         }
 
         for (const network of options.disableNetworks ?? []) {
             await this.coinsTab.disableNetwork(network);
         }
 
+        if (options.skipActivation) return;
         await this.coinsTab.activateCoinsButton.click();
-        await this.page.discoveryShouldFinish();
-    }
 
-    @step()
-    async enableNetworkWithCustomBackend(
-        symbol: NetworkSymbol,
-        backendType: BackendType,
-        backendUrl: string,
-    ) {
-        await this.navigateTo('coins');
-        await this.coinsTab.enableNetwork(symbol);
-        await this.coinsTab.openNetworkAdvanceSettings(symbol);
-        await this.coinsTab.changeBackend(backendType, backendUrl);
-        await expect(this.coinsTab.modal).toBeHidden();
-        await this.coinsTab.activateCoinsButton.click();
+        if (options.skipDiscovery) return;
         await this.page.discoveryShouldFinish();
     }
 
