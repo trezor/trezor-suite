@@ -382,4 +382,16 @@ describe(findOldestBalanceMovementTimestamp.name, () => {
 
         expect(findOldestBalanceMovementTimestamp(balanceHistory)).toBe(2);
     });
+
+    it('returns a non-finite value when there are no balance movements at all', () => {
+        // Math.min of an empty list is Infinity; callers must guard for it (fromUnixTime(Infinity)
+        // is an Invalid Date) rather than assume a real timestamp is returned.
+        const noMovements: AccountWithBalanceHistory[] = [
+            { symbol: 'btc', descriptor: 'awdawd', balanceHistory: [] },
+            { symbol: 'eth', descriptor: 'awdawd', balanceHistory: [] },
+        ];
+
+        expect(Number.isFinite(findOldestBalanceMovementTimestamp(noMovements))).toBe(false);
+        expect(Number.isFinite(findOldestBalanceMovementTimestamp([]))).toBe(false);
+    });
 });
