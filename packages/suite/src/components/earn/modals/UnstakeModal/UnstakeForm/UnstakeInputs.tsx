@@ -19,6 +19,7 @@ import {
     validateFiatLimits,
     validateMin,
     validateSolanaUnstakeAmount,
+    validateSolanaUnstakeFiatAmount,
 } from 'src/utils/suite/validation';
 
 export const UnstakeInputs = () => {
@@ -69,6 +70,11 @@ export const UnstakeInputs = () => {
                 localCurrency: baseCurrencyCode,
                 formatter: CryptoAmountFormatter,
                 fiatFormatter: BaseCurrencyAmountFormatter,
+                decimals: network.decimals,
+                rate: currentRate?.rate,
+            }),
+            solanaUnstakeAmount: validateSolanaUnstakeFiatAmount(translationString, {
+                account,
                 decimals: network.decimals,
                 rate: currentRate?.rate,
             }),

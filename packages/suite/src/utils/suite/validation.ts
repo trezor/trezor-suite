@@ -14,6 +14,7 @@ import {
     isDecimalsValid,
     isInteger,
     networkAmountToSmallestUnit,
+    toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
@@ -148,16 +149,50 @@ export const validateSolanaUnstakeAmount =
 
         const symbol = getNetworkDisplaySymbol(account.symbol);
 
+        // the fiat approximations are only rendered in the rich <Translation> banner
         return bounds.closestLower
             ? translationString('TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT', {
                   lower: bounds.closestLower,
                   higher: bounds.closestHigher,
                   symbol,
+                  lowerFiat: '',
+                  higherFiat: '',
               })
             : translationString('TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT_HIGHER_ONLY', {
                   higher: bounds.closestHigher,
                   symbol,
+                  higherFiat: '',
               });
+    };
+
+interface ValidateSolanaUnstakeFiatAmountOptions {
+    account: Account;
+    decimals: number;
+    rate?: number;
+}
+
+export const validateSolanaUnstakeFiatAmount =
+    (
+        translationString: TranslationFunction,
+        { account, decimals, rate }: ValidateSolanaUnstakeFiatAmountOptions,
+    ) =>
+    (value: string, formValues?: { outputs?: { amount?: string }[] }) => {
+        if (!value) return;
+
+        const cryptoAmount = fromBaseCurrencyToCryptoUnit({ fiatAmount: value, rate })?.toFixed(
+            decimals,
+        );
+        if (!cryptoAmount) return;
+
+        const outputAmount = formValues?.outputs?.[0]?.amount;
+        const isFiatOfOutputAmount =
+            !!outputAmount &&
+            toFiatCurrency({ amount: outputAmount, rate })?.toFixed(2, BigNumber.ROUND_FLOOR) ===
+                value;
+
+        return validateSolanaUnstakeAmount(translationString, { account })(
+            isFiatOfOutputAmount ? outputAmount : cryptoAmount,
+        );
     };
 
 interface ValidateFiatLimitsOptions {
