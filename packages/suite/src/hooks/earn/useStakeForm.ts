@@ -17,6 +17,7 @@ import {
     fromWei,
     getConvertedOrDefaultFeeInfo,
     getFiatRateKey,
+    getMaxStakeAmount,
     getStakingLimitsByNetworkSymbol,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
@@ -286,27 +287,24 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
     );
 
     const setMax = useCallback(async () => {
-        if (amountLimits == null || stakingLimits == null) {
+        if (stakingLimits == null) {
             return;
         }
 
         setValue('setMaxOutputId', 0, { shouldDirty: true });
         clearErrors([FIAT_INPUT, CRYPTO_INPUT]);
 
-        let amount = new BigNumber(amountLimits.maxCrypto ?? '');
+        const amount = getMaxStakeAmount({
+            balance: account.formattedBalance,
+            symbol: account.symbol,
+        });
 
-        if (amount.gt(stakingLimits.MIN_BALANCE_FOR_STAKING)) {
-            amount = new BigNumber(account.formattedBalance).minus(
-                stakingLimits.MIN_FOR_WITHDRAWALS,
-            );
-        }
+        setValue(CRYPTO_INPUT, amount, { shouldDirty: true, shouldValidate: true });
 
-        setValue(CRYPTO_INPUT, amount.toString(), { shouldDirty: true, shouldValidate: true });
-
-        await onCryptoAmountChange(amount.toString(), 'max');
+        await onCryptoAmountChange(amount, 'max');
     }, [
         account.formattedBalance,
-        amountLimits,
+        account.symbol,
         clearErrors,
         onCryptoAmountChange,
         setValue,
