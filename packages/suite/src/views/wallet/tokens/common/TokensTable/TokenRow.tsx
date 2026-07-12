@@ -11,7 +11,7 @@ import { getUnusedAddressFromAccount } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row, Table, Text } from '@trezor/components';
-import { AssetLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import {
@@ -66,7 +66,7 @@ export const TokenRow = ({
             <Table.Row isCollapsed={isCollapsed}>
                 <Table.Cell>
                     <Row gap={spacings.xs}>
-                        <AssetLogo
+                        <TokenIcon
                             placeholder={token.name || token.symbol || 'token'}
                             symbol={account.symbol}
                             contractAddress={token.contract}

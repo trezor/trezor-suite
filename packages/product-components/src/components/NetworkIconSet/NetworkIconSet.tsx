@@ -3,8 +3,8 @@ import { useMemo } from 'react';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Tooltip } from '@trezor/components';
 
-import { CoinLogo } from '../CoinLogo/CoinLogo';
 import { type CommonIconSetProps, IconSetBase, IconWrapper } from '../IconSet/IconSetBase';
+import { TokenIcon } from '../TokenIcon/TokenIcon';
 
 export type NetworkIconSetProps = CommonIconSetProps & {
     networks: NetworkSymbol[];
@@ -30,7 +30,7 @@ export const NetworkIconSet = ({
         return visibleNetworks.map(network => (
             <IconWrapper key={network} $size={size} $gap={gap} $length={length}>
                 <Tooltip content={getNetwork(network).name} isActive={hasTooltip}>
-                    <CoinLogo size={size} symbol={network} />
+                    <TokenIcon size={size} symbol={network} />
                 </Tooltip>
             </IconWrapper>
         ));

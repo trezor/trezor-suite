@@ -8,7 +8,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { type SelectedAccountLoaded, type StellarTokenInfo } from '@suite-common/wallet-types';
 import { getStellarInactiveTokens } from '@suite-common/wallet-utils';
 import { Button, Card, Row, Table, Text, Tooltip } from '@trezor/components';
-import { AssetLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { Loading } from 'src/components/suite';
@@ -131,7 +131,7 @@ export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTo
                         <Table.Row key={token.contract}>
                             <Table.Cell>
                                 <Row gap={spacings.xs}>
-                                    <AssetLogo
+                                    <TokenIcon
                                         placeholder={token.name || token.symbol || ''}
                                         symbol={account.symbol}
                                         contractAddress={token.contract}

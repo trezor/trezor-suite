@@ -1,13 +1,13 @@
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
-import { AssetLogo, shouldShowNetworkIcon } from '@trezor/product-components';
+import { TokenIcon, shouldShowNetworkIcon } from '@trezor/product-components';
 
 import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
+import { AssetDetails } from '../AssetDetails';
 import { ItemClickableContainer } from '../ItemClickableContainer';
 import { AssetAmount } from './AssetAmount';
-import { AssetDetails } from '../AssetDetails';
 
 export type AssetRowTokenProps = {
     token: TokensWithRates;
@@ -33,7 +33,7 @@ export function AssetRowToken({
             isDisabled={!onClick}
         >
             <Row data-testid={dataTestId} gap={12} overflow="hidden" flex="1" minWidth={0}>
-                <AssetLogo
+                <TokenIcon
                     size={40}
                     symbol={account.symbol}
                     contractAddress={token.contract}

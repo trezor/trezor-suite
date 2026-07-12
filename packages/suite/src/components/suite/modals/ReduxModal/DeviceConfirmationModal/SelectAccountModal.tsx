@@ -7,7 +7,7 @@ import { selectAccounts } from '@suite-common/wallet-core';
 import { Card, Column, Icon, Modal, Row, Skeleton, SubTabs, Table } from '@trezor/components';
 import { type UiRequestSelectAccount } from '@trezor/connect';
 import { CaretRightIcon } from '@trezor/icons';
-import { CoinLogo, isNetworkSymbolWithIcon } from '@trezor/product-components';
+import { NetworkIcon, isNetworkSymbolWithIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
@@ -120,9 +120,8 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
                                             <Table.Cell>
                                                 <Row gap={spacings.sm}>
                                                     {isNetworkSymbolWithIcon(symbol) && (
-                                                        <CoinLogo
-                                                            type="network"
-                                                            symbol={symbol}
+                                                        <NetworkIcon
+                                                            networkSymbol={symbol}
                                                             size={24}
                                                         />
                                                     )}

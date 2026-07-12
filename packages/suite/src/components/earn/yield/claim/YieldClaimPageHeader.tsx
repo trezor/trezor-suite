@@ -6,7 +6,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { type Account } from '@suite-common/wallet-types';
 import { IconButton, Row } from '@trezor/components';
 import { CaretLeftIcon } from '@trezor/icons';
-import { CoinLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
@@ -48,7 +48,7 @@ export const YieldClaimPageHeader = ({ account }: YieldClaimPageHeaderProps) => 
                 />
                 {account ? (
                     <Row gap={12} alignItems="center" flex="1" overflow="hidden">
-                        <CoinLogo symbol={account.symbol} type="token" size={32} />
+                        <TokenIcon symbol={account.symbol} size={32} />
                         <AccountLabel
                             account={account}
                             showAccountTypeBadge

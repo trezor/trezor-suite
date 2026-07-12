@@ -7,7 +7,7 @@ import { cryptoIdToNetworkSymbolAndContractAddress, useTradingAssets } from '@su
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
-import { AssetLogo, CoinLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 
 import { BaseCurrencyValue } from 'src/components/suite';
 import { type TradingPayGetLabelType } from 'src/types/trading/trading';
@@ -99,9 +99,9 @@ export const TradingInfoItem = ({
                     <Row padding={16} gap={8} justifyContent="space-between">
                         <Row gap={8} alignItems="center">
                             {isNativeToken ? (
-                                <CoinLogo size={40} symbol={symbol} type="tokenWithNetwork" />
+                                <TokenIcon size={40} symbol={symbol} showNetworkIcon />
                             ) : (
-                                <AssetLogo
+                                <TokenIcon
                                     size={40}
                                     symbol={networkSymbol}
                                     contractAddress={contractAddress}

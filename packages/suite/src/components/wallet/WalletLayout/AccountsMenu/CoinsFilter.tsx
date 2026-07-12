@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { getNetwork } from '@suite-common/wallet-config';
 import { TOOLTIP_DELAY_NORMAL, Tooltip, motionEasing } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
+import { NetworkIcon } from '@trezor/product-components';
 import { borders, spacingsPx } from '@trezor/theme';
 
 import { useAccountSearch } from 'src/hooks/suite';
@@ -93,10 +93,9 @@ export const CoinsFilter = () => {
                                         toggleCoinFilter(networkSymbol);
                                     }}
                                 >
-                                    <CoinLogo
+                                    <NetworkIcon
                                         data-testid={`@account-menu/filter/${networkSymbol}`}
-                                        symbol={networkSymbol}
-                                        type="network"
+                                        networkSymbol={networkSymbol}
                                         size={16}
                                     />
                                 </CoinLogoWrapper>

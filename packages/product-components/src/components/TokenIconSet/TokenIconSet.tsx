@@ -2,9 +2,8 @@ import { useMemo } from 'react';
 
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 
-import { AssetLogo } from '../AssetLogo/AssetLogo';
-import { CoinLogo } from '../CoinLogo/CoinLogo';
 import { type CommonIconSetProps, IconSetBase, IconWrapper } from '../IconSet/IconSetBase';
+import { TokenIcon } from '../TokenIcon/TokenIcon';
 
 export type TokenIconSetToken = {
     contract?: string | null;
@@ -38,7 +37,7 @@ export const TokenIconSet = ({
             return (
                 <IconWrapper key={key} $size={size} $gap={gap} $length={length}>
                     {token.contract ? (
-                        <AssetLogo
+                        <TokenIcon
                             size={size}
                             symbol={symbol}
                             contractAddress={token.contract ?? null}
@@ -48,7 +47,7 @@ export const TokenIconSet = ({
                             isBordered={false}
                         />
                     ) : (
-                        <CoinLogo size={size} symbol={nativeCoinSymbol} type="token" />
+                        <TokenIcon size={size} symbol={nativeCoinSymbol} />
                     )}
                 </IconWrapper>
             );

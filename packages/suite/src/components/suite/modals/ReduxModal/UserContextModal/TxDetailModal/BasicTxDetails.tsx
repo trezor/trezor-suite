@@ -33,7 +33,7 @@ import {
     TagIcon,
     WarningIcon,
 } from '@trezor/icons';
-import { CoinLogo, FeeRate } from '@trezor/product-components';
+import { FeeRate, TokenIcon } from '@trezor/product-components';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
@@ -105,7 +105,7 @@ export const BasicTxDetails = ({
         <Card>
             <Row gap={spacings.sm}>
                 <IconWrapper>
-                    <CoinLogo symbol={tx.symbol} size={48} type="tokenWithNetwork" />
+                    <TokenIcon symbol={tx.symbol} size={48} showNetworkIcon />
                     <NestedIconWrapper>
                         <Icon
                             size={14}
