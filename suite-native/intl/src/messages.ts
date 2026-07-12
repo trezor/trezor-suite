@@ -2665,8 +2665,8 @@ export const messages = {
             amountLabel: 'Amount',
             stakeMaxButton: 'Stake max',
             unstakeMaxButton: 'Unstake max',
-            withdrawalFeesBanner:
-                "We've left {amount} {displaySymbol} in your account so you can pay withdrawal fees.",
+            withdrawalFeesRecommendation:
+                "It's recommended to leave {amount} {displaySymbol} so you can pay for withdrawal fees.",
             insufficientBalanceBanner:
                 'Not enough {displaySymbol}. Staking requires at least {minAmount} {displaySymbol} plus network fees.',
             insufficientBalanceBannerButton: 'Buy {displaySymbol}',
