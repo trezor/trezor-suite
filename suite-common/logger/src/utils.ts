@@ -159,16 +159,19 @@ export const redactDiscovery = (
 };
 
 export const redactAction = (action: LogEntry): LogEntry => {
-    let payload: LogEntry['payload'];
-
     if (accountsActions.updateSelectedAccount.match(action)) {
-        payload = {
-            ...action.payload,
-            account: redactAccount(action.payload?.account),
-            network: undefined,
-            discovery: undefined,
+        return {
+            ...action,
+            payload: {
+                ...action.payload,
+                account: redactAccount(action.payload?.account),
+                network: undefined,
+                discovery: undefined,
+            },
         };
     }
+
+    let payload: LogEntry['payload'];
 
     switch (action.type) {
         case accountsActions.createAccount.type:
