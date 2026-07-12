@@ -7,6 +7,7 @@ import { Banner, Card, Column, InfoItem, Link, Tooltip } from '@trezor/component
 import { BigNumber } from '@trezor/utils';
 
 import { getStakingHelpCenterLink } from 'src/components/earn/utils/getStakingHelpCenterLink';
+import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { SolanaStakingLimitBanner } from 'src/components/suite/modals/ReduxModal/UserContextModal/SolanaStakingLimitBanner';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useWithdrawalFormContext } from 'src/hooks/earn/useWithdrawalForm';
@@ -51,6 +52,11 @@ export const UnstakeForm = () => {
 
     const renderClickableUnstakeAmount = (amount: string) => (
         <Link onClick={() => onCryptoAmountChange(amount)}>{amount}</Link>
+    );
+    const renderUnstakeAmountFiat = (amount: string) => (
+        <BaseCurrencyValue amount={amount} symbol={account.symbol} showApproximationIndicator>
+            {({ value }) => (value ? <>&nbsp;({value})</> : null)}
+        </BaseCurrencyValue>
     );
     const shouldShowInstantWithdrawalEthAmount =
         approximatedInstantEthAmount && BigNumber(approximatedInstantEthAmount).gt(0);
@@ -108,8 +114,16 @@ export const UnstakeForm = () => {
                                                         higher: renderClickableUnstakeAmount(
                                                             unstakeAmountBounds.closestHigher,
                                                         ),
+                                                        higherFiat: renderUnstakeAmountFiat(
+                                                            unstakeAmountBounds.closestHigher,
+                                                        ),
                                                         lower: unstakeAmountBounds.closestLower
                                                             ? renderClickableUnstakeAmount(
+                                                                  unstakeAmountBounds.closestLower,
+                                                              )
+                                                            : undefined,
+                                                        lowerFiat: unstakeAmountBounds.closestLower
+                                                            ? renderUnstakeAmountFiat(
                                                                   unstakeAmountBounds.closestLower,
                                                               )
                                                             : undefined,

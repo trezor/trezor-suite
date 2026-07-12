@@ -11475,12 +11475,12 @@ export const messages = defineMessages({
     TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT: {
         id: 'TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT',
         defaultMessage:
-            "Due to recent Solana blockchain changes, this amount can't be unstaked. Try {higher} {symbol} or more, or {lower} {symbol} or less.",
+            "Due to recent Solana blockchain changes, this amount can't be unstaked. Try {higher} {symbol}{higherFiat} or more, or {lower} {symbol}{lowerFiat} or less.",
     },
     TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT_HIGHER_ONLY: {
         id: 'TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT_HIGHER_ONLY',
         defaultMessage:
-            "Due to recent Solana blockchain changes, this amount can't be unstaked. Try {higher} {symbol} or more.",
+            "Due to recent Solana blockchain changes, this amount can't be unstaked. Try {higher} {symbol}{higherFiat} or more.",
     },
     TR_STAKE_FIND_OUT_MORE: {
         id: 'TR_STAKE_FIND_OUT_MORE',
