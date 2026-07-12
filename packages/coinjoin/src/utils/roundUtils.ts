@@ -275,7 +275,7 @@ export const getBroadcastedTxDetails = ({
         hex: tx.toHex(),
         hash: tx.getHash().toString('hex'),
         txid: tx.getId(),
-        size: tx.weight(),
+        size: tx.byteLength(),
         vsize: tx.virtualSize(),
     };
 };
