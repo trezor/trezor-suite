@@ -3,7 +3,7 @@ import { type Meta, type StoryObj } from '@storybook/react';
 import { spacingsNew } from '@trezor/theme';
 
 import { TokenIconSet as TokenIconSetComponent, type TokenIconSetProps } from './TokenIconSet';
-import { allowedAssetLogoSizes } from '../AssetLogo/AssetLogoWithId';
+import { allowedTokenIconSizes } from '../TokenIcon/TokenIcon';
 
 const getToken = (contract: string, symbol: string, decimals: number) => ({
     contract,
@@ -52,7 +52,7 @@ export const TokenIconSet: StoryObj<TokenIconSetProps> = {
             },
         },
         size: {
-            options: allowedAssetLogoSizes,
+            options: allowedTokenIconSizes,
             control: {
                 type: 'select',
             },

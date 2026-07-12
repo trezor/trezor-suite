@@ -5,14 +5,17 @@ import styled, { css } from 'styled-components';
 import { Text } from '@trezor/components';
 import { type SpacingValuesNew, type TypographyStyle, borders } from '@trezor/theme';
 
-import { type AssetLogoSize } from '../AssetLogo/AssetLogoWithId';
+import { type TokenIconSize } from '../TokenIcon/TokenIcon';
 
-const mapSizeToTypographyStyle = (size: AssetLogoSize): TypographyStyle => {
-    const typographyStyleMap: Record<AssetLogoSize, TypographyStyle> = {
+const mapSizeToTypographyStyle = (size: TokenIconSize): TypographyStyle => {
+    const typographyStyleMap: Record<TokenIconSize, TypographyStyle> = {
+        16: 'body-xs',
         20: 'body-xs',
         24: 'body-xs',
         32: 'body-sm',
         40: 'body-md',
+        48: 'body-md',
+        64: 'body-md',
     };
 
     return typographyStyleMap[size];
@@ -20,7 +23,7 @@ const mapSizeToTypographyStyle = (size: AssetLogoSize): TypographyStyle => {
 
 const Container = styled.div<{
     $length: number;
-    $size: AssetLogoSize;
+    $size: TokenIconSize;
     $gap: SpacingValuesNew;
     $maxVisibleIcons: number;
     $isCountVisible: boolean;
@@ -80,7 +83,7 @@ export const IconWrapper = styled.div<{ $size: number; $gap: number; $length: nu
 `;
 
 const CountContainer = styled.div<{
-    $size: AssetLogoSize;
+    $size: TokenIconSize;
     $gap: SpacingValuesNew;
     $length: number;
 }>`
@@ -99,7 +102,7 @@ const CountContainer = styled.div<{
 `;
 
 export type CommonIconSetProps = {
-    size: AssetLogoSize;
+    size: TokenIconSize;
     gap: SpacingValuesNew;
     /** Maximum number of icons to show. When `null`, all icons are shown. @default 3 */
     maxVisibleIcons?: number | null;

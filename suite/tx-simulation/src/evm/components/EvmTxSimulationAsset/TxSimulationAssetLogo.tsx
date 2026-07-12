@@ -2,13 +2,13 @@ import { type EvmAssetDiff, type EvmAssetExposure } from '@suite-common/tx-simul
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { IconCircle } from '@trezor/components';
 import { CoinsIcon } from '@trezor/icons';
-import { type AssetLogoSize, TokenIcon, isCoinSymbol } from '@trezor/product-components';
+import { TokenIcon, type TokenIconSize, isCoinSymbol } from '@trezor/product-components';
 
 interface TxSimulationAssetLogoProps {
     asset?: EvmAssetDiff['asset'] | EvmAssetExposure['asset'];
     assetType?: EvmAssetDiff['asset_type'] | EvmAssetExposure['asset_type'];
     network: Network;
-    size?: AssetLogoSize;
+    size?: TokenIconSize;
 }
 
 export function TxSimulationAssetLogo({
