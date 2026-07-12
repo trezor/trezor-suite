@@ -49,7 +49,10 @@ const result = await TrezorConnect.selectAccount(params);
 - **`single`** (default) — the user picks exactly one account.
 - **`multi`** — the user picks any number of accounts.
 - **An object (`{ minCount, maxCount }`)** — the user picks a bounded number of accounts;
-  `minCount` defaults to `1`, `maxCount` defaults to unbounded.
+  `minCount` defaults to `1`, `maxCount` defaults to unbounded. Both bounds must be whole numbers
+  ≥ 1 (a fractional or out-of-range bound is rejected by parameter validation), and `minCount` may
+  not be greater than `maxCount` — an inverted bound is rejected with `Method_InvalidParameter`. An
+  empty object `{}` (both omitted) is equivalent to `multi`.
 
 The result is always an array, even for a `single` selection (mirrors `eth_requestAccounts`), so
 the response shape doesn't depend on what `selectionType` resolves to.
