@@ -5,7 +5,7 @@ import type { CryptoId } from 'invity-api';
 import { cryptoIdToNetworkSymbolAndContractAddress } from '@suite-common/trading';
 import type { Account } from '@suite-common/wallet-types';
 import { HStack } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 
 import { NetworkAndAccountCard } from './NetworkAndAccountCard';
 import { TradeInfoRow } from './TradeInfoRow';
@@ -35,7 +35,7 @@ export const TradeSideCard = ({
             <TradeInfoRow>
                 <HStack justifyContent="space-between" alignItems="center" flex={1}>
                     <HStack alignItems="center">
-                        <CryptoIcon
+                        <TokenIcon
                             symbol={symbol}
                             contractAddress={contractAddress}
                             size="extraSmall"

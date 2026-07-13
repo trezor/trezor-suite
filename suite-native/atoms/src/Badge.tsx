@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
-import { CryptoIcon, Icon, type IconName, type IconSize, icons } from '@suite-native/icons';
+import { Icon, type IconName, type IconSize, TokenIcon, icons } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
@@ -81,7 +81,7 @@ export const Badge = ({
 
     const getCryptoIcon = (iconInput: IconType) =>
         isNetworkSymbol(iconInput) ? (
-            <CryptoIcon symbol={iconInput} size={size === 'small' ? 'extraSmall' : 'small'} />
+            <TokenIcon symbol={iconInput} size={size === 'small' ? 'extraSmall' : 'small'} />
         ) : null;
 
     const getBadgeIcon = (iconInput: IconType) =>

@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { type Account, type TokenInfoBranded } from '@suite-common/wallet-types';
 import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
-import { CryptoIconWithNetwork } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 import { type TokensRootState, getTokenName, selectAccountTokenSymbol } from '@suite-native/tokens';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
@@ -39,7 +39,11 @@ export const AccountsListTokenItem = ({
             isLast={isLast}
             onPress={onSelectAccount}
             icon={
-                <CryptoIconWithNetwork symbol={account.symbol} contractAddress={token.contract} />
+                <TokenIcon
+                    symbol={account.symbol}
+                    contractAddress={token.contract}
+                    showNetworkIcon
+                />
             }
             title={getTokenName(token.name)}
             mainValue={

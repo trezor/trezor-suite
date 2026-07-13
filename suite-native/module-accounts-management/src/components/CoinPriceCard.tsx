@@ -5,7 +5,7 @@ import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-commo
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Box, Card, PriceChangeBadge, Text } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
-import { CryptoIconWithNetwork } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -82,7 +82,7 @@ export const CoinPriceCard = ({ accountKey, tokenContract }: CoinPriceCardProps)
         <Card style={applyStyle(cardStyle)}>
             <Box flexDirection="row" alignItems="center" flex={1}>
                 <Box marginRight="sp16">
-                    <CryptoIconWithNetwork symbol={symbol} contractAddress={tokenContract} />
+                    <TokenIcon symbol={symbol} contractAddress={tokenContract} showNetworkIcon />
                 </Box>
                 <Box style={applyStyle(cardContentStyle)}>
                     <Text variant="body-xs" color="contentSecondary">

@@ -39,20 +39,22 @@ const iconStyle = prepareNativeStyle<{ width: number; height: number }>(
     }),
 );
 
-const networkWrapperStyle = prepareNativeStyle<{ size: TokenIconSize }>((utils, { size }) => ({
-    position: 'absolute',
-    right: 0,
-    bottom: 0,
-    borderWidth: utils.borders.widths.small,
-    borderColor: utils.colors.borderNeutral,
-    borderRadius: networkIconSizes[size] / 3,
-}));
+const networkWrapperStyle = prepareNativeStyle<{ size: TokenIconSize | number }>(
+    (utils, { size }) => ({
+        position: 'absolute',
+        right: 0,
+        bottom: 0,
+        borderWidth: utils.borders.widths.small,
+        borderColor: utils.colors.borderNeutral,
+        borderRadius: typeof size === 'number' ? size : networkIconSizes[size] / 3,
+    }),
+);
 
 interface TokenIconProps {
     symbol: NetworkSymbol | NetworkDisplaySymbol;
     contractAddress?: string;
     showNetworkIcon?: boolean;
-    size?: TokenIconSize;
+    size?: TokenIconSize | number;
 }
 
 const TokenIconComponent = ({ symbol, contractAddress, size = 'small' }: TokenIconProps) => {
@@ -160,9 +162,10 @@ export const TokenIcon = ({
     const shouldShowNetwork = showForNativeToken || contractAddress;
 
     const iconSymbol = contractAddress ? symbol : displaySymbol;
+    const iconSize = typeof size === 'number' ? size : tokenIconSizes[size];
 
     return (
-        <View style={{ width: tokenIconSizes[size], height: tokenIconSizes[size] }}>
+        <View style={{ width: iconSize, height: iconSize }}>
             <TokenIconComponent
                 symbol={iconSymbol}
                 contractAddress={contractAddress}
@@ -170,7 +173,7 @@ export const TokenIcon = ({
                 size={size}
             />
             {shouldShowNetwork && (
-                <View style={applyStyle(networkWrapperStyle, { size })}>
+                <View style={applyStyle(networkWrapperStyle, { size: iconSize })}>
                     <NetworkIcon symbol={symbol} size={size} />
                 </View>
             )}

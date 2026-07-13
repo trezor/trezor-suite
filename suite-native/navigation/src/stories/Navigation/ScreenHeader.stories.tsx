@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react-native';
 
 import { HStack, IconButton, Text } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 
 import { ScreenHeader as ScreenHeaderComponent } from '../../components/ScreenHeader';
 
 const ScreenHeaderCustomContent = () => (
     <HStack alignItems="center">
-        <CryptoIcon symbol="btc" size="small" />
+        <TokenIcon symbol="btc" size="small" />
         <Text variant="body-md-strong" adjustsFontSizeToFit numberOfLines={1}>
             Bitcoin #1
         </Text>
