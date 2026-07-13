@@ -88,6 +88,9 @@ export const getIframeInstance = () => {
                 if (newInstance.parentNode) {
                     newInstance.parentNode.removeChild(newInstance);
                 }
+                // Clear the rejected deferred, otherwise the `if (initPromise)` guard above would
+                // keep returning this same rejected promise and the iframe would never be recreated.
+                initPromise = undefined;
                 // Propagate TypedError to caller.
                 throw error;
             });
