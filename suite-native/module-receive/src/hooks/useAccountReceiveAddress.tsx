@@ -1,20 +1,12 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { selectIsDeviceInViewOnlyMode, selectIsPortfolioTrackerDevice } from '@suite-common/device';
-import {
-    type AccountsRootState,
-    type TransactionsRootState,
-    confirmAddressOnDeviceThunk,
-    selectAccountNetworkSymbol,
-} from '@suite-common/wallet-core';
+import { type TransactionsRootState, confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { type NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
 import { useAlert } from '@suite-native/alerts';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
@@ -23,26 +15,17 @@ import TrezorConnect from '@trezor/connect';
 // Note: Unused for now as we are redoing the whole receive flow as part of https://github.com/trezor/trezor-suite/issues/29732
 export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const dispatch = useDispatch();
-    const [isReceiveApproved, setIsReceiveApproved] = useState(false);
-    const [isUnverifiedAddressRevealed, setIsUnverifiedAddressRevealed] = useState(false);
-    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
-    const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const navigation = useNavigation();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
     const { showToast } = useToast();
 
     const { showAlert } = useAlert();
 
-    const symbol = useSelector((state: AccountsRootState) =>
-        selectAccountNetworkSymbol(state, accountKey),
-    );
     const freshAddress = useSelector((state: NativeAccountsRootState & TransactionsRootState) =>
         selectFreshAccountAddress(state, accountKey),
     );
 
     const handleCancel = useCallback(() => {
         TrezorConnect.cancel();
-        setIsUnverifiedAddressRevealed(false);
     }, []);
 
     const verifyAddressOnDevice = useCallback(async (): Promise<boolean> => {
@@ -125,43 +108,8 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
         return false;
     }, [accountKey, dispatch, freshAddress, handleCancel, navigation, showAlert, showToast]);
 
-    const handleShowAddress = useCallback(async () => {
-        if (isPortfolioTrackerDevice) {
-            if (symbol) {
-                analytics.report({
-                    type: events.createReceiveAddressShowAddressEvent.name,
-                    payload: { assetSymbol: symbol },
-                });
-                setIsReceiveApproved(true);
-            }
-        } else if (isDeviceInViewOnlyMode) {
-            // If device is remembered,
-            // no verification should happen and we display the receive address straight away.
-            setIsUnverifiedAddressRevealed(true);
-            setIsReceiveApproved(true);
-        } else {
-            setIsUnverifiedAddressRevealed(true);
-            const wasVerificationSuccessful = await verifyAddressOnDevice();
-
-            if (wasVerificationSuccessful) {
-                analytics.report({ type: events.receiveAddressConfirmOnTrezorEvent.name });
-                setIsReceiveApproved(true);
-            } else {
-                setIsUnverifiedAddressRevealed(false);
-            }
-        }
-    }, [
-        analytics,
-        isDeviceInViewOnlyMode,
-        isPortfolioTrackerDevice,
-        symbol,
-        verifyAddressOnDevice,
-    ]);
-
     return {
         address: freshAddress?.address,
-        isReceiveApproved,
-        isUnverifiedAddressRevealed,
-        handleShowAddress,
+        verifyAddressOnDevice,
     };
 };
