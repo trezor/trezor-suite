@@ -48,6 +48,7 @@ type UnresolvedYieldFlowData = {
     vault: YieldDtoV2 | null;
     vaultTokenName: string | null;
     vaultTokenSymbol: string | null;
+    vaultName: string | null;
 };
 
 type YieldFlowDataResolved = {
@@ -65,6 +66,7 @@ type YieldFlowDataResolved = {
     vault: YieldDtoV2;
     vaultTokenName: string;
     vaultTokenSymbol: string;
+    vaultName: string;
 };
 
 export type ResolvedYieldFlowData = UnresolvedYieldFlowData | YieldFlowDataResolved;
@@ -93,6 +95,7 @@ const defaultFlowData: ResolvedYieldFlowData = {
     vault: null,
     vaultTokenName: null,
     vaultTokenSymbol: null,
+    vaultName: null,
 };
 
 export const resolveYieldFlowData = ({
@@ -130,6 +133,7 @@ export const resolveYieldFlowData = ({
     const providerName = capitalizeFirstLetter(vault.providerId);
     const vaultTokenName = vault.outputToken?.name;
     const vaultTokenSymbol = vault.outputToken.symbol;
+    const vaultName = vault.metadata.name ?? vaultTokenName;
     const bonusRewardToken = getBonusRewardToken(vault.rewardRate.components, vault.token);
     const resolvedVaultData = {
         apy,
@@ -139,6 +143,7 @@ export const resolveYieldFlowData = ({
         vault,
         vaultTokenName,
         vaultTokenSymbol,
+        vaultName,
     };
 
     if (!network) {

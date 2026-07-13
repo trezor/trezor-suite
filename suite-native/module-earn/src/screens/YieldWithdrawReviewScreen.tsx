@@ -43,7 +43,7 @@ const isYieldWithdrawScreenReview = (
 export const YieldWithdrawReviewScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
-    const { flowData, flowKey, resolutionStatus, vaultTokenName } = useResolvedYieldFlowData(
+    const { flowData, flowKey, resolutionStatus, vaultName } = useResolvedYieldFlowData(
         route.params,
     );
     const device = useSelector(selectSelectedDevice);
@@ -55,6 +55,7 @@ export const YieldWithdrawReviewScreen = () => {
     const formDraft = useSelector((state: FormDraftRootState) =>
         formDraftKey ? selectFormDraft<FormState>(state, formDraftKey) : undefined,
     );
+
     const actionReview = session?.action.review;
     const review = useMemo(
         () => (isYieldWithdrawScreenReview(actionReview, flowType) ? actionReview : null),
@@ -69,14 +70,7 @@ export const YieldWithdrawReviewScreen = () => {
     }, [flowData, flowType]);
     const selectedFee = useMemo(() => getSelectedEvmFeeFromFormDraft(formDraft), [formDraft]);
     const preview = useMemo(() => {
-        if (
-            !review ||
-            !device ||
-            !flowData ||
-            !reviewToken ||
-            !selectedFee ||
-            vaultTokenName === null
-        ) {
+        if (!review || !device || !flowData || !reviewToken || !selectedFee || vaultName === null) {
             return null;
         }
 
@@ -87,9 +81,9 @@ export const YieldWithdrawReviewScreen = () => {
             reviewToken,
             selectedFee,
             type: 'withdraw',
-            vaultName: vaultTokenName,
+            vaultName,
         });
-    }, [device, flowData, review, reviewToken, selectedFee, vaultTokenName]);
+    }, [device, flowData, review, reviewToken, selectedFee, vaultName]);
 
     useEffect(() => {
         if (resolutionStatus !== 'resolved') {
