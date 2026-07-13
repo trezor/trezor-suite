@@ -2682,7 +2682,10 @@ export const messages = {
             validation: {
                 amountIsZero: 'Amount must be greater than 0.',
                 amountExceedsMax: 'The amount exceeds the maximum allowed value of {maxAmount}.',
-                amountBelowMin: 'The minimum amount to unstake is {minAmount} {networkSymbol}.',
+                invalidUnstakeAmount:
+                    "Due to recent Solana blockchain changes, this amount can't be unstaked.\n\nTry {higher} or more\n\nor {lower} or less",
+                invalidUnstakeAmountHigherOnly:
+                    "Due to recent Solana blockchain changes, this amount can't be unstaked.\n\nTry {higher} or more",
                 insufficientBalance: 'You don’t have enough staked balance to unstake this amount.',
                 tooManyDecimals: 'Too many decimals places.',
             },
