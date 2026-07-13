@@ -220,7 +220,7 @@ export const getChainId = (network: Network) => {
     return [];
 };
 
-export const getNamespace = (accounts: Account[]) => {
+export const getNamespace = (accounts: Account[]): Record<string, WalletConnectNamespace> => {
     const bip122 = {
         chains: [],
         accounts: [],
@@ -244,6 +244,10 @@ export const getNamespace = (accounts: Account[]) => {
             bip122.accounts.push(`${network.caipId}:${firstAddress}`);
         }
     });
+
+    if (bip122.chains.length === 0) {
+        return {};
+    }
 
     return { bip122 };
 };
