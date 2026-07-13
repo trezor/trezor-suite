@@ -9,11 +9,11 @@ import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/sta
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectEthValidatorsQueue } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { getStakingHelpCenterLink } from '@suite-common/wallet-utils';
 import { Banner, Card, Checkbox, Column, Modal } from '@trezor/components';
 import { ClockIcon, HandIcon } from '@trezor/icons';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
-import { getStakingHelpCenterLink } from 'src/components/earn/utils/getStakingHelpCenterLink';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 

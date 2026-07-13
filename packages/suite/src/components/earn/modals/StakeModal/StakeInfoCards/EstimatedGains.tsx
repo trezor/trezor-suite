@@ -4,9 +4,9 @@ import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { calculateGains, getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { selectPoolStatsApy } from '@suite-common/wallet-core';
+import { getStakingHelpCenterLink } from '@suite-common/wallet-utils';
 import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
 
-import { getStakingHelpCenterLink } from 'src/components/earn/utils/getStakingHelpCenterLink';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { useStakeFormContext } from 'src/hooks/earn/useStakeForm';
