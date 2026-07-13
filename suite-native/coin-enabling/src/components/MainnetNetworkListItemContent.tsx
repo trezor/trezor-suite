@@ -30,7 +30,6 @@ export const MainnetNetworkListItemContent = ({
             <Box>
                 <VStack justifyContent="flex-start" flex={1}>
                     <NetworkIcon symbol={symbol} size="extraLarge" />
-
                     <Box paddingLeft="sp12">
                         <RepresentativeAssetsConnectorSvg />
                     </Box>
@@ -51,7 +50,6 @@ export const MainnetNetworkListItemContent = ({
                     </HStack>
                     <Divider style={applyStyle(dividerStyle)} />
                 </VStack>
-
                 <HStack spacing="sp12" justifyContent="space-between" alignItems="center">
                     <CryptoIconSet symbol={symbol} />
                     <NetworkBackendsButton symbol={symbol} />
