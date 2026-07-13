@@ -72,7 +72,7 @@ export const messages = {
     },
     icons: {
         networkIconHint: 'Network Icon',
-        cryptoIconHint: 'Crypto Icon',
+        tokenIconHint: 'Token Icon',
     },
     messageSystem: {
         killswitch: {
