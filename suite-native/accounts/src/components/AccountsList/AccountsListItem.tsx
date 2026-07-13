@@ -35,15 +35,9 @@ type AccountListItemProps = {
     isFirst?: boolean;
     isLast?: boolean;
     showDivider?: boolean;
-    isCryptoBalancePrimary?: boolean;
     titleLabel?: React.ReactNode;
     cryptoAmount?: string;
 };
-
-const CRYPTO_PRIMARY_BALANCE_TEXT_PROPS = [
-    { variant: 'body-md-strong' as const, color: 'contentPrimary' as const },
-    { variant: 'body-sm' as const, color: 'contentSecondary' as const },
-];
 
 const TokenBadge = React.memo(({ accountKey }: { accountKey: AccountKey }) => {
     const numberOfTokens = useSelector((state: NativeAccountsRootState) =>
@@ -67,7 +61,6 @@ const AccountsListItemComponent = ({
     isFirst = false,
     isLast = false,
     showDivider = false,
-    isCryptoBalancePrimary = false,
     titleLabel,
     cryptoAmount,
 }: AccountListItemProps) => {
@@ -105,13 +98,8 @@ const AccountsListItemComponent = ({
 
     const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
     const shouldShowAccountLabel = !isNetworkSupportingTokens || !isNativeCoinOnly;
-    const shouldShowTokenBadge =
-        accountHasKnownTokensWithBalance && !isNativeCoinOnly && !isCryptoBalancePrimary;
-    const shouldShowStakingBadge =
-        accountHasStaking && !isNativeCoinOnly && !isCryptoBalancePrimary;
-    const [primaryBalanceTextProps, secondaryBalanceTextProps] = isCryptoBalancePrimary
-        ? CRYPTO_PRIMARY_BALANCE_TEXT_PROPS
-        : [undefined, undefined];
+    const shouldShowTokenBadge = accountHasKnownTokensWithBalance && !isNativeCoinOnly;
+    const shouldShowStakingBadge = accountHasStaking && !isNativeCoinOnly;
     const balanceValue = cryptoAmount ?? account.formattedBalance;
     const fiatBalanceValue =
         shouldShowTokenBadge && fiatBalance !== undefined ? (
@@ -119,14 +107,12 @@ const AccountsListItemComponent = ({
                 numberOfLines={1}
                 adjustsFontSizeToFit
                 value={fiatBalance}
-                {...secondaryBalanceTextProps}
             />
         ) : (
             <CryptoToFiatAmountFormatter
                 value={balanceValue}
                 isBalance={true}
                 symbol={account.symbol}
-                {...secondaryBalanceTextProps}
             />
         );
     const cryptoBalanceValue = (
@@ -135,14 +121,10 @@ const AccountsListItemComponent = ({
             symbol={account.symbol}
             numberOfLines={1}
             adjustsFontSizeToFit
-            {...primaryBalanceTextProps}
         />
     );
 
     const isFailed = isAccountFailed(account);
-    const [primaryBalanceValue, secondaryBalanceValue] = isCryptoBalancePrimary
-        ? [cryptoBalanceValue, fiatBalanceValue]
-        : [fiatBalanceValue, cryptoBalanceValue];
 
     const getTitle = () => {
         if (titleLabel) {
@@ -185,10 +167,10 @@ const AccountsListItemComponent = ({
                 isFailed ? (
                     <Icon name="warning" color="contentWarning" size="medium" />
                 ) : (
-                    primaryBalanceValue
+                    fiatBalanceValue
                 )
             }
-            secondaryValue={isFailed ? undefined : secondaryBalanceValue}
+            secondaryValue={isFailed ? undefined : cryptoBalanceValue}
         />
     );
 };
