@@ -20,6 +20,7 @@ import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
 
+// Note: Unused for now as we are redoing the whole receive flow as part of https://github.com/trezor/trezor-suite/issues/29732
 export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const dispatch = useDispatch();
     const [isReceiveApproved, setIsReceiveApproved] = useState(false);

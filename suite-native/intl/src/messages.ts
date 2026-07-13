@@ -969,50 +969,9 @@ export const messages = {
             "When sending {coinSymbol} to Trezor, your online exchange may require a memo/destination tag, but Trezor doesn't. Enter any random number to proceed. <link>Learn more</link>",
         receiveAddressCard: {
             alert: {
-                success: 'The receive address has been confirmed on your Trezor.',
                 longCardanoAddress:
                     "This Cardano (ADA) address is too long to fit on your Trezor's screen. Scroll on both screens to view and confirm it.",
                 token: 'Your receive address is your {networkName} address',
-            },
-            unverifiedWarning: {
-                portfolioTracker: {
-                    title: 'receive address',
-                    subtitle:
-                        'For added security, connect your Trezor to verify the receive address.',
-                },
-                viewOnly: {
-                    title: 'Verify the receive address on your Trezor',
-                    subtitle:
-                        'To prevent phishing attacks, verify the receive address on your Trezor.',
-                },
-            },
-            viewOnlyWarning: {
-                title: 'Receive address can’t be verified',
-                description: 'To confirm the receive address, connect your Trezor.',
-                primaryButton: 'Continue without verifying',
-                secondaryButton: 'Back',
-            },
-            deviceHint: {
-                description:
-                    'Verify that this receive address matches the address on your Trezor exactly.',
-            },
-            showAddress: {
-                button: 'Show full address',
-                buttonTracker: 'Show address',
-                learnMore: 'Learn more about verifying addresses',
-            },
-        },
-        bottomSheets: {
-            addressMismatch: {
-                title: "Address doesn't match?",
-                description:
-                    'The receive address shown on the app should match the one on your Trezor device.',
-                remember: 'Keep in mind:',
-                trustDevice:
-                    "Always trust your Trezor's screen, it never lies. Your mobile may be vulnerable to hacks and security breaches.",
-                contactSupport:
-                    'For any security concerns about your app or device, contact Trezor Support.',
-                reportIssueButton: 'Report security issue',
             },
         },
         deviceCompromisedScreen: {
