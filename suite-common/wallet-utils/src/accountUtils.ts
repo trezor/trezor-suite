@@ -1092,13 +1092,12 @@ export const accountEqualTo = (a: Account) => (b: Account) =>
     (() => {
         // if the accounts seem equal but the descriptors are different
         if (a.descriptor !== b.descriptor) {
-            const { deviceState, symbol, accountType, index } = a;
+            const { symbol, accountType, index } = a;
+            // do not log deviceState or descriptors: they are confidential and would leak into Sentry breadcrumbs
             console.warn('Potentially equal accounts with different descriptors!', {
-                deviceState,
                 symbol,
                 accountType,
                 index,
-                descriptors: [a.descriptor, b.descriptor],
             });
         }
 
