@@ -26,7 +26,7 @@ export const TransactionsEmptyState = ({ accountKey }: { accountKey: AccountKey 
 
     const handleReceive = () => {
         navigation.navigate(RootStackRoutes.ReceiveStack, {
-            screen: ReceiveStackRoutes.ReceiveAccount,
+            screen: ReceiveStackRoutes.ReceiveAddress,
             params: {
                 accountKey,
                 closeActionType: 'close',

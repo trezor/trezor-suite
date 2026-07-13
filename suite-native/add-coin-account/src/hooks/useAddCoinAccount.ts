@@ -216,7 +216,7 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
                 break;
             case 'home':
                 navigation.replace(RootStackRoutes.ReceiveStack, {
-                    screen: ReceiveStackRoutes.ReceiveAccount,
+                    screen: ReceiveStackRoutes.ReceiveAddress,
                     params: {
                         networkSymbol: symbol,
                         accountType,
@@ -235,7 +235,7 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
                 break;
             case 'receive':
                 navigation.navigate(RootStackRoutes.ReceiveStack, {
-                    screen: ReceiveStackRoutes.ReceiveAccount,
+                    screen: ReceiveStackRoutes.ReceiveAddress,
                     params: {
                         networkSymbol: symbol,
                         accountType,
