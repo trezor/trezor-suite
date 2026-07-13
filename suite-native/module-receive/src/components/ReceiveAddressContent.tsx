@@ -2,24 +2,17 @@ import { useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
 
-import { getDisplaySymbol } from '@suite-common/wallet-config';
-import {
-    type AccountsRootState,
-    type TransactionsRootState,
-    selectAccountByKey,
-} from '@suite-common/wallet-core';
+import { type TransactionsRootState } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { type NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
 import { AddressQRCodeActions } from '@suite-native/address';
-import { ErrorMessage, InlineAlertBox, ScreenFooterGradient, VStack } from '@suite-native/atoms';
+import { ErrorMessage, ScreenFooterGradient, VStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
-import { Link } from '@suite-native/link';
 import { type CloseActionType, Screen } from '@suite-native/navigation';
-import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
-import { HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL } from '@trezor/urls';
 
 import { ReceiveAddressCard } from './ReceiveAddressCard';
+import { ReceiveDestinationTagInfo } from './ReceiveDestinationTagInfo';
 import { ReceiveScreenHeader } from './ReceiveScreenHeader';
 import { ReceiveBlockedDeviceCompromisedScreen } from '../screens/ReceiveBlockedDeviceCompromisedScreen';
 
@@ -34,15 +27,10 @@ export const ReceiveAddressContent = ({
     tokenContract,
     closeActionType,
 }: ReceiveAddressContentProps) => {
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
-    );
     const freshAddress = useSelector((state: NativeAccountsRootState & TransactionsRootState) =>
         selectFreshAccountAddress(state, accountKey),
     );
-    const tokenSymbol = useSelector((state: TokensRootState) =>
-        selectAccountTokenSymbol(state, accountKey, tokenContract),
-    );
+
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
         selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
     );
@@ -51,12 +39,9 @@ export const ReceiveAddressContent = ({
         return <ReceiveBlockedDeviceCompromisedScreen />;
     }
 
-    if (G.isNullable(account) || G.isNullable(freshAddress)) {
+    if (G.isNullable(freshAddress)) {
         return <ErrorMessage errorMessage={<Translation id="generic.unknownError" />} />;
     }
-
-    const showDestinationTagInfo =
-        account.networkType === 'ripple' || account.networkType === 'stellar';
 
     return (
         <Screen
@@ -79,37 +64,11 @@ export const ReceiveAddressContent = ({
         >
             <VStack marginTop="sp8" spacing="sp16" flex={1}>
                 <ReceiveAddressCard
-                    accountDescriptor={account.descriptor}
-                    symbol={account.symbol}
+                    accountKey={accountKey}
                     address={freshAddress.address}
-                    deviceStaticSessionId={account.deviceState}
                     isTokenAddress={!!tokenContract}
                 />
-                {showDestinationTagInfo && (
-                    <InlineAlertBox
-                        intent="info"
-                        title={
-                            <Translation
-                                id="moduleReceive.destinationTag"
-                                values={{
-                                    link: chunk => (
-                                        <Link
-                                            label={chunk}
-                                            textVariant="body-xs"
-                                            href={
-                                                HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL
-                                            }
-                                            isUnderlined
-                                            textColor="contentPrimary"
-                                            textPressedColor="contentSecondary"
-                                        />
-                                    ),
-                                    coinSymbol: tokenSymbol ?? getDisplaySymbol(account.symbol),
-                                }}
-                            />
-                        }
-                    />
-                )}
+                <ReceiveDestinationTagInfo accountKey={accountKey} tokenContract={tokenContract} />
             </VStack>
         </Screen>
     );

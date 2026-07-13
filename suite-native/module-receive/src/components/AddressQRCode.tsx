@@ -52,14 +52,16 @@ export const AddressQRCode = ({
 
     return (
         <VStack spacing="sp24" flex={1}>
-            <Card style={applyStyle(cardStyle)}>
-                <QRCode
-                    data={address}
-                    size={RECEIVE_QR_CODE_SIZE}
-                    paddingHorizontal="sp24"
-                    paddingVertical="sp16"
-                />
-            </Card>
+            <Pressable onLongPress={handleCopyAddress}>
+                <Card style={applyStyle(cardStyle)}>
+                    <QRCode
+                        data={address}
+                        size={RECEIVE_QR_CODE_SIZE}
+                        paddingHorizontal="sp24"
+                        paddingVertical="sp16"
+                    />
+                </Card>
+            </Pressable>
             <VStack spacing="sp8" alignItems="center" justifyContent="center" flex={1}>
                 {showLabelEdit && (
                     <AddressLabelEditable
