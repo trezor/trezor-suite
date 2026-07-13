@@ -45,7 +45,7 @@ export const TradingReceiveAddress = () => {
                 alignItems="center"
                 justifyContent="space-between"
                 padding={{
-                    vertical: selectedAccount && receiveAddress ? 12 : 16,
+                    vertical: selectedAccount && receiveAddress ? 20 : 16,
                     horizontal: 20,
                 }}
             >
@@ -61,28 +61,19 @@ export const TradingReceiveAddress = () => {
                 <Row gap={16}>
                     <Column alignItems="flex-end">
                         {selectedAccount && receiveAddress ? (
-                            <>
-                                <Text
-                                    typographyStyle="body-md"
-                                    as="div"
-                                    data-testid="@trading/selected-receive-account"
-                                    ellipsisLineCount={1}
-                                    maxWidth={200}
-                                >
-                                    <AccountLabeling
-                                        account={selectedAccount}
-                                        accountTypeBadgeSize="small"
-                                        showAccountTypeBadge
-                                    />
-                                </Text>
-                                <Address
-                                    value={receiveAddress}
-                                    typographyStyle="body-sm"
-                                    intent="neutral"
-                                    priority="secondary"
-                                    isTruncated
+                            <Text
+                                typographyStyle="body-md"
+                                as="div"
+                                data-testid="@trading/selected-receive-account"
+                                ellipsisLineCount={1}
+                                maxWidth={200}
+                            >
+                                <AccountLabeling
+                                    account={selectedAccount}
+                                    accountTypeBadgeSize="small"
+                                    showAccountTypeBadge
                                 />
-                            </>
+                            </Text>
                         ) : (
                             <>
                                 {receiveAddress ? (
