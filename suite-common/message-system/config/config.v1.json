@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-06-23T12:00:00+00:00",
-    "sequence": 147,
+    "timestamp": "2026-07-13T12:00:00+00:00",
+    "sequence": 148,
     "actions": [
         {
             "conditions": [
@@ -1726,6 +1726,62 @@
                         "flag": false
                     }
                 ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "tor": true
+                        }
+                    ],
+                    "environment": {
+                        "desktop": "<26.3.1",
+                        "mobile": "!",
+                        "web": "!"
+                    }
+                }
+            ],
+            "message": {
+                "id": "8155b6f1-d8da-45d5-83b3-0d8663a130d0",
+                "priority": 95,
+                "dismissible": false,
+                "variant": "warning",
+                "category": "banner",
+                "content": {
+                    "en": "Tor release included in this app will stop working on September 1st, 2026. Update Trezor Suite to continue using Tor.",
+                    "es": "La versión de Tor incluida en esta aplicación dejará de funcionar el 1 de septiembre de 2026. Actualiza Trezor Suite para seguir usando Tor.",
+                    "cs": "Verze Tor obsažená v této aplikaci přestane fungovat 1. září 2026. Aktualizujte Trezor Suite, abyste mohli Tor nadále používat.",
+                    "ru": "Версия Tor, включённая в это приложение, перестанет работать 1 сентября 2026 года. Обновите Trezor Suite, чтобы продолжить использовать Tor.",
+                    "ja": "このアプリに含まれるTorのバージョンは2026年9月1日に動作を停止します。Torを引き続き使用するには、Trezor Suiteをアップデートしてください。",
+                    "hu": "Az alkalmazásban lévő Tor verzió 2026. szeptember 1-jén leáll. Frissítse a Trezor Suite-ot a Tor további használatához.",
+                    "it": "La versione di Tor inclusa in questa app smetterà di funzionare il 1° settembre 2026. Aggiorna Trezor Suite per continuare a usare Tor.",
+                    "fr": "La version de Tor incluse dans cette application cessera de fonctionner le 1er septembre 2026. Mettez à jour Trezor Suite pour continuer à utiliser Tor.",
+                    "de": "Die in dieser App enthaltene Tor-Version funktioniert ab dem 1. September 2026 nicht mehr. Aktualisiere Trezor Suite, um Tor weiterhin nutzen zu können.",
+                    "tr": "Bu uygulamadaki Tor sürümü 1 Eylül 2026'da çalışmayı durduracak. Tor'u kullanmaya devam etmek için Trezor Suite'i güncelleyin.",
+                    "pt": "A versão do Tor incluída neste aplicativo deixará de funcionar em 1º de setembro de 2026. Atualize o Trezor Suite para continuar usando o Tor.",
+                    "uk": "Версія Tor, що входить до цього додатку, перестане працювати 1 вересня 2026 року. Оновіть Trezor Suite, щоб продовжити використовувати Tor."
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "settings-index",
+                    "anchor": "@general-settings/version-with-update",
+                    "label": {
+                        "en": "Update Trezor Suite",
+                        "es": "Actualizar Trezor Suite",
+                        "cs": "Aktualizovat Trezor Suite",
+                        "ru": "Обновить Trezor Suite",
+                        "ja": "Trezor Suiteのアップデート",
+                        "hu": "Frissítés Trezor Suite",
+                        "it": "Aggiorna Trezor Suite",
+                        "fr": "Mettre à jour Trezor Suite",
+                        "de": "Trezor Suite aktualisieren",
+                        "tr": "Trezor Suite'i Güncelle",
+                        "pt": "Atualizar Trezor Suite",
+                        "uk": "Оновити Trezor Suite"
+                    }
+                }
             }
         }
     ],
