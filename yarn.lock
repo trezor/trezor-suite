@@ -3424,11 +3424,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/config-plugins@npm:^56.0.8, @expo/config-plugins@npm:~56.0.8":
-  version: 56.0.8
-  resolution: "@expo/config-plugins@npm:56.0.8"
+"@expo/config-plugins@npm:^56.0.9, @expo/config-plugins@npm:~56.0.8":
+  version: 56.0.9
+  resolution: "@expo/config-plugins@npm:56.0.9"
   dependencies:
-    "@expo/config-types": "npm:^56.0.5"
+    "@expo/config-types": "npm:^56.0.6"
     "@expo/json-file": "npm:~10.2.0"
     "@expo/plist": "npm:^0.7.0"
     "@expo/require-utils": "npm:^56.1.3"
@@ -3441,14 +3441,14 @@ __metadata:
     slugify: "npm:^1.6.6"
     xcode: "npm:^3.0.1"
     xml2js: "npm:0.6.0"
-  checksum: 10/767194838bdda6c55f3b4b57171cc8b2216509e6d315214f9a4a4df7374ff9ffb68ea0f662fae1a51d9fb9718af169f611365c66250e6d85e38bccaf0b3d702e
+  checksum: 10/79c33d88e136183a91a45d2aa9804dd98c7afac252aa3f61718943ff992bcf6c60c8ff373b20a7357951fd28a0ed75acde1181617d9d403d079b79b4a36e1f28
   languageName: node
   linkType: hard
 
-"@expo/config-types@npm:^56.0.5":
-  version: 56.0.5
-  resolution: "@expo/config-types@npm:56.0.5"
-  checksum: 10/91e29a5c04d4a65f54c9f6ac7afe669e36467cad7ad5daa9c34afa0834402840d587b0cffa9443b3074a6e5a483c7f32db14cbbe3867376c3564323e448ef83e
+"@expo/config-types@npm:^56.0.5, @expo/config-types@npm:^56.0.6":
+  version: 56.0.6
+  resolution: "@expo/config-types@npm:56.0.6"
+  checksum: 10/365737f23f583dbf1b4133852e0451793701ba513cac1b4e8dfa97ccc4eb982cb76a8729890087382eb67957d84e6f72522e363c4a6c14aaa71053fadd1eefd4
   languageName: node
   linkType: hard
 
@@ -11605,7 +11605,7 @@ __metadata:
     expo-camera: "npm:~56.0.7"
     expo-clipboard: "npm:~56.0.3"
     expo-dev-client: "npm:~56.0.16"
-    expo-file-system: "npm:~56.0.7"
+    expo-file-system: "npm:~56.0.8"
     expo-haptics: "npm:~56.0.3"
     expo-image: "npm:~56.0.9"
     expo-image-picker: "npm:~56.0.14"
@@ -11615,7 +11615,7 @@ __metadata:
     expo-localization: "npm:~56.0.6"
     expo-mcp: "npm:^0.2.4"
     expo-secure-store: "npm:~56.0.4"
-    expo-sharing: "npm:~56.0.14"
+    expo-sharing: "npm:~56.0.18"
     expo-splash-screen: "npm:~56.0.10"
     expo-status-bar: "npm:~56.0.4"
     expo-system-ui: "npm:~56.0.5"
@@ -11641,7 +11641,7 @@ __metadata:
     react-native-keyboard-controller: "npm:1.20.7"
     react-native-launch-arguments: "npm:^4.1.1"
     react-native-mmkv: "npm:~4.3.1"
-    react-native-nitro-modules: "npm:^0.35.7"
+    react-native-nitro-modules: "npm:^0.35.10"
     react-native-performance: "npm:^5.1.4"
     react-native-permissions: "npm:5.4.4"
     react-native-quick-crypto: "npm:1.1.5"
@@ -11797,8 +11797,8 @@ __metadata:
     "@trezor/device-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    expo-file-system: "npm:~56.0.7"
-    expo-sharing: "npm:~56.0.14"
+    expo-file-system: "npm:~56.0.8"
+    expo-sharing: "npm:~56.0.18"
     react: "npm:19.2.3"
     react-native: "npm:0.85.3"
     react-redux: "npm:9.3.0"
@@ -12339,8 +12339,8 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    expo-file-system: "npm:~56.0.7"
-    expo-sharing: "npm:~56.0.14"
+    expo-file-system: "npm:~56.0.8"
+    expo-sharing: "npm:~56.0.18"
     react: "npm:19.2.3"
     react-native: "npm:0.85.3"
     react-redux: "npm:9.3.0"
@@ -13838,7 +13838,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     expo: "npm:~56.0.6"
-    expo-sqlite: "npm:~55.0.16"
+    expo-sqlite: "npm:~56.0.5"
     react: "npm:19.2.3"
     react-native: "npm:0.85.3"
     react-redux: "npm:9.3.0"
@@ -27020,13 +27020,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-file-system@npm:~56.0.7":
-  version: 56.0.7
-  resolution: "expo-file-system@npm:56.0.7"
+"expo-file-system@npm:~56.0.7, expo-file-system@npm:~56.0.8":
+  version: 56.0.8
+  resolution: "expo-file-system@npm:56.0.8"
   peerDependencies:
     expo: "*"
     react-native: "*"
-  checksum: 10/c8074d7f7bd8c1c542eb4e3af20151f153d3ee684b80952402c3aef9a1a1f7c02b10f0b822e9ab6383217c90ec3beebaa02d567817126c31a79a5595f2cc1d96
+  checksum: 10/a5a930d2a43f32ffafba69f2d5d953c148d584aaf5091b7703c6465af5a3324713dc55020eae289307070352346ba403c5137daabcc76412a1f4ea275d2d2cc4
   languageName: node
   linkType: hard
 
@@ -27259,18 +27259,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-sharing@npm:~56.0.14":
-  version: 56.0.16
-  resolution: "expo-sharing@npm:56.0.16"
+"expo-sharing@npm:~56.0.18":
+  version: 56.0.18
+  resolution: "expo-sharing@npm:56.0.18"
   dependencies:
-    "@expo/config-plugins": "npm:^56.0.8"
-    "@expo/config-types": "npm:^56.0.5"
+    "@expo/config-plugins": "npm:^56.0.9"
+    "@expo/config-types": "npm:^56.0.6"
     "@expo/plist": "npm:^0.7.0"
   peerDependencies:
     expo: "*"
     react: "*"
     react-native: "*"
-  checksum: 10/7a4de1160a89bf1a73c8d7cb271a7bded540ae6952c4d145ea408a886d350ad75d3291312918cdb1a5080cf6ecb01998034dbf9c3343fab4719c1c774590a55e
+  checksum: 10/4db4e511d10393d2684189c4904bd22ef3c80887416aaa35c8d17c2d4a053cbf866e5d5116b1bd94c28cd5c9a086f8c3af080023ac6f262ab5ffcde51c0e632d
   languageName: node
   linkType: hard
 
@@ -27287,16 +27287,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-sqlite@npm:~55.0.16":
-  version: 55.0.16
-  resolution: "expo-sqlite@npm:55.0.16"
+"expo-sqlite@npm:~56.0.5":
+  version: 56.0.5
+  resolution: "expo-sqlite@npm:56.0.5"
   dependencies:
     await-lock: "npm:^2.2.2"
   peerDependencies:
     expo: "*"
     react: "*"
     react-native: "*"
-  checksum: 10/9e3beef346093d47afb86f58c5343aa84183f0148fe88cb4bf595ca2c720034d66fee32320abbea125c4344e22abc57d7a2f745dcec88b346f321ecfa3b67527
+  checksum: 10/f8bfa6d2a0ae6e6a9b179d27e218a878dbfa00b5f901e5d32e7454a5f3e9e7839dcb3d7dd5a96946e544b56ca5d0255877657a0c7cb9150251a51d051b8d7272
   languageName: node
   linkType: hard
 
@@ -40076,13 +40076,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-nitro-modules@npm:^0.35.7":
-  version: 0.35.7
-  resolution: "react-native-nitro-modules@npm:0.35.7"
+"react-native-nitro-modules@npm:^0.35.10":
+  version: 0.35.10
+  resolution: "react-native-nitro-modules@npm:0.35.10"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 10/2f553fac0c95150f1801d93048b419250db759fea9d27f9393197f2a03fa716588e38119b76d823e9fb5673d7c21b618c1a9f39d33e18ceaa2e67a9b6b1549eb
+  checksum: 10/b0600cea67c37ca10e47d3f80ad9fef5c24451a5b5e7a2f92ca81e0e51279323371f8bd42a3ce82e6bf1c5fffe53409644ee5c49fe6ccab09e41977ce8e28884
   languageName: node
   linkType: hard
 
