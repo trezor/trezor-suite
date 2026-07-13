@@ -156,5 +156,6 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         storageLoadBioAuth: notImplementedReducer('storageLoadBioAuth'),
         storageLoadFlags: notImplementedReducer('storageLoadFlags'),
         storageLoadSuiteSettings: notImplementedReducer('storageLoadSuiteSettings'),
+        storageLoadReceiveAccounts: notImplementedReducer('storageLoadReceiveAccounts'),
     },
 };

@@ -152,6 +152,7 @@ export type ExtraDependenciesStatic = {
         storageLoadBioAuth: StorageLoadReducer;
         storageLoadFlags: StorageLoadReducer;
         storageLoadSuiteSettings: StorageLoadReducer;
+        storageLoadReceiveAccounts: StorageLoadReducer;
     };
 };
 

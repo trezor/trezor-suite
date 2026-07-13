@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { type FieldError } from 'react-hook-form';
 
-import { selectFullSelectedAccount } from '@suite/account';
+import { selectFullSelectedAccount, selectSelectedAccountKey } from '@suite/account';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { type ReceiveRootState, selectTouchedAddresses } from '@suite-common/receive';
@@ -42,8 +42,9 @@ const SignVerify = () => {
     const [isCompleted, setIsCompleted] = useState(false);
 
     const selectedAccount = useSelector(selectFullSelectedAccount);
+    const selectedAccountKey = useSelector(selectSelectedAccountKey);
     const touchedAddresses = useSelector((state: ReceiveRootState) =>
-        selectTouchedAddresses(state, selectedAccount.account?.key),
+        selectTouchedAddresses(state, selectedAccountKey),
     );
     const dispatch = useDispatch();
 
