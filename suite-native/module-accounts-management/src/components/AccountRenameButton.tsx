@@ -18,12 +18,10 @@ export const AccountRenameButton = ({ accountKey }: AccountRenameModalProps) => 
     const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
     const { handleAddLabel, isInProgress } = useTurnOnSuiteSyncGuard();
 
+    if (!isLabellingAllowed) return null;
+
     const handleTriggerAccountRename = () => {
-        if (isLabellingAllowed) {
-            handleAddLabel(openModal);
-        } else {
-            openModal();
-        }
+        handleAddLabel(openModal);
     };
 
     return (
