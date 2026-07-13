@@ -42,12 +42,20 @@ export const TransactionDetailScreen = ({
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const { CryptoAmountFormatter: cryptoAmountFormatter } = useFormatters();
     const { isDiscreetMode } = useDiscreetMode();
-    const { txid, accountKey, tokenContract, closeActionType = 'back', source } = route.params;
+    const {
+        txid,
+        accountKey,
+        tokenContract,
+        closeActionType = 'back',
+        source,
+        allowFetchFallback,
+    } = route.params;
 
     const { transaction, isPending, tokenTransfer, openInBlockchain } = useTransactionDetails({
         accountKey,
         txid,
         tokenContract,
+        allowFetchFallback,
     });
 
     usePreventRemove(source === 'send', ({ data }) => {

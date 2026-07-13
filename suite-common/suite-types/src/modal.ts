@@ -66,6 +66,7 @@ export type UserContextPayload =
           descriptor: Account['descriptor'];
           symbol: Account['symbol'];
           deviceState: Account['deviceState'];
+          allowFetchFallback?: boolean;
           flow: 'detail' | 'bump-fee' | 'cancel-transaction';
       }
     | {

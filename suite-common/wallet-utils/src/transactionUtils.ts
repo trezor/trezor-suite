@@ -20,7 +20,7 @@ import {
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode, TokenStandard } from '@trezor/blockchain-link-types';
-import {
+import TrezorConnect, {
     type AccountAddress,
     type AccountTransaction,
     type InternalTransfer,
@@ -28,7 +28,13 @@ import {
     type TokenTransfer,
 } from '@trezor/connect';
 import { type Branded } from '@trezor/type-utils';
-import { BigNumber, arrayPartition, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
+import {
+    BigNumber,
+    arrayPartition,
+    isNotNullOrUndefined,
+    typedObjectKeys,
+    unique,
+} from '@trezor/utils';
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
 import { isCardanoStakingTx } from './cardanoStakingUtils';
@@ -1110,3 +1116,25 @@ export const getTxValidityTimeoutInMs = (networkType?: NetworkType) => {
 
     return 0;
 };
+
+const fetchAccountTransactions = async (account: Account, txids: string[]) => {
+    if (!txids.length) return [];
+
+    const response = await TrezorConnect.blockchainGetTransactions({
+        coin: account.symbol,
+        txs: unique(txids),
+        descriptor: account.descriptor,
+    });
+
+    if (!response.success) return [];
+
+    return response.payload.map(tx => enhanceTransaction(tx, account));
+};
+
+export const fetchUtxoTransactionsForAccount = (account: Account) =>
+    fetchAccountTransactions(account, account.utxo?.map(({ txid }) => txid) ?? []).then(txs =>
+        Object.fromEntries(txs.map(tx => [tx.txid, tx])),
+    );
+
+export const fetchTransactionForAccount = (txid: string, account: Account) =>
+    fetchAccountTransactions(account, [txid]).then(([tx]) => tx);

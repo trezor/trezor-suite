@@ -1,16 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { type TextInput } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { useFilteredUtxos } from '@suite-common/transaction-search';
-import {
-    type AccountsRootState,
-    fetchUtxoTransactionsForAccountThunk,
-    selectAccountByKey,
-} from '@suite-common/wallet-core';
-import { isSameUtxo } from '@suite-common/wallet-utils';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { fetchUtxoTransactionsForAccount, isSameUtxo } from '@suite-common/wallet-utils';
 import { SearchInput, SearchInputWithCancel, Text, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import {
@@ -20,6 +16,7 @@ import {
     type StackProps,
 } from '@suite-native/navigation';
 import { type Utxo } from '@trezor/blockchain-link-types';
+import { useAsyncMemo } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { SendUtxoScreenFooter } from '../components/CoinControl/SendUtxoScreenFooter';
@@ -31,7 +28,6 @@ export const SendUtxoScreen = ({
     route: { params },
 }: StackProps<SendStackParamList, SendStackRoutes.SendUtxo>) => {
     const { accountKey, amount } = params;
-    const dispatch = useDispatch();
 
     const { translate } = useTranslate();
     const navigation = useNavigation();
@@ -48,18 +44,11 @@ export const SendUtxoScreen = ({
     );
     const filteredUtxos = useFilteredUtxos(account?.utxo ?? [], searchQuery);
 
-    // we need to fetch all transactions for the account to have the additional UTXOs data available
-    useEffect(() => {
-        const promise = dispatch(
-            fetchUtxoTransactionsForAccountThunk({
-                accountKey,
-            }),
-        );
-
-        return () => {
-            promise.abort();
-        };
-    }, [accountKey, dispatch]);
+    // fetch transactions referenced by UTXOs so we can show additional UTXO data (e.g., timestamp)
+    const utxoTxs = useAsyncMemo(
+        () => (account ? fetchUtxoTransactionsForAccount(account) : Promise.resolve(undefined)),
+        [account],
+    );
 
     const handleUtxoSelect = (utxo: Utxo) => {
         const exists = tempSelectedUtxos.some(selected => isSameUtxo(selected, utxo));
@@ -131,6 +120,7 @@ export const SendUtxoScreen = ({
                     <UtxoList
                         deviceStaticSessionId={account.deviceState}
                         utxos={filteredUtxos}
+                        utxoTxs={utxoTxs}
                         selectedUtxos={tempSelectedUtxos}
                         onUtxoToggle={handleUtxoSelect}
                         accountKey={accountKey}

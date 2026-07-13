@@ -544,6 +544,7 @@ export type TransactionDetailStackParamList = {
         closeActionType?: CloseActionType;
         tokenContract?: TokenAddress;
         source?: 'send';
+        allowFetchFallback?: boolean;
     };
     [TransactionDetailStackRoutes.TransactionDetailOverview]: {
         txid: string;

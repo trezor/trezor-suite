@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { FlashList } from '@shopify/flash-list';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountKey } from '@suite-common/wallet-types';
+import type { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { isSameUtxo } from '@suite-common/wallet-utils';
 import { Box } from '@suite-native/atoms';
 import { type Utxo } from '@trezor/blockchain-link-types';
@@ -22,6 +22,7 @@ type UtxoListProps = {
     deviceStaticSessionId: StaticSessionId;
     accountKey: AccountKey;
     utxos: Utxo[];
+    utxoTxs?: { [txid: string]: WalletAccountTransaction };
     selectedUtxos: Utxo[];
     onUtxoToggle: (utxo: Utxo) => void;
     symbol: NetworkSymbol;
@@ -31,6 +32,7 @@ export const UtxoList = ({
     deviceStaticSessionId,
     accountKey,
     utxos,
+    utxoTxs = {},
     selectedUtxos,
     onUtxoToggle,
     symbol,
@@ -49,11 +51,12 @@ export const UtxoList = ({
                 onToggle={onUtxoToggle}
                 accountKey={accountKey}
                 utxo={item}
+                utxoTx={utxoTxs[item.txid]}
                 symbol={symbol}
                 deviceStaticSessionId={deviceStaticSessionId}
             />
         ),
-        [accountKey, onUtxoToggle, symbol, isSelected, deviceStaticSessionId],
+        [accountKey, onUtxoToggle, symbol, isSelected, deviceStaticSessionId, utxoTxs],
     );
 
     const rowSeparator = useCallback(() => <Box style={applyStyle(spacerStyle)} />, [applyStyle]);
