@@ -12,7 +12,7 @@ export type CryptoIconSetProps = {
     symbol: NetworkSymbol;
 };
 
-const ICON_SIZE = 20;
+const ICON_SIZE = 24;
 const RING_WIDTH = 2;
 const ICONS_OVERLAP = 8;
 
@@ -22,7 +22,7 @@ const bubbleStyle = prepareNativeStyle<{ isFirst: boolean; zIndex: number }>(
         justifyContent: 'center',
         width: ICON_SIZE + RING_WIDTH * 2,
         height: ICON_SIZE + RING_WIDTH * 2,
-        marginLeft: isFirst ? 0 : -ICONS_OVERLAP,
+        marginLeft: isFirst ? -RING_WIDTH : -ICONS_OVERLAP,
         borderRadius: utils.borders.radii.round,
         backgroundColor: utils.colors.surfaceFillRaised,
         zIndex,
@@ -34,7 +34,7 @@ const countStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
     height: ICON_SIZE + RING_WIDTH * 2,
     marginLeft: -ICONS_OVERLAP + utils.spacings.sp2,
-    paddingHorizontal: utils.spacings.sp4,
+    paddingHorizontal: utils.spacings.sp6,
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.colors.elementFillNeutralSofter,
     zIndex: 0,
