@@ -130,7 +130,7 @@ export const Button = ({
                 {(iconRight || buttonProps.target === '_blank') && (
                     <Icon as={iconRight ?? ArrowLineUpRightIcon} {...iconProps} />
                 )}
-                {shortcut?.length && (
+                {!!shortcut?.length && (
                     <Text as="div" color={colorToken}>
                         <ShortcutBadge shortcut={shortcut} />
                     </Text>
