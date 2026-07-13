@@ -11,7 +11,11 @@ import {
 } from '@suite-common/wallet-core';
 
 import { composeYieldWithdrawTransaction } from './composeYieldWithdrawTransaction';
-import { getYieldErrorTranslationKey, sendYieldTransaction } from './signingHelpers';
+import {
+    getYieldErrorTranslationKey,
+    getYieldSubmitErrorAnalyticsMessage,
+    sendYieldTransaction,
+} from './signingHelpers';
 
 type SubmitYieldWithdrawPayload = {
     flowKey: string;
@@ -153,7 +157,7 @@ export const submitYieldWithdrawThunk = createThunk(
             );
         } catch (error) {
             console.error(error);
-            reportSubmitError();
+            reportSubmitError(getYieldSubmitErrorAnalyticsMessage(error));
             dispatch(
                 stablecoinYieldActions.setError({
                     flowType,

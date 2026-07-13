@@ -13,7 +13,11 @@ import {
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
 
-import { getYieldErrorTranslationKey, sendYieldTransaction } from './signingHelpers';
+import {
+    getYieldErrorTranslationKey,
+    getYieldSubmitErrorAnalyticsMessage,
+    sendYieldTransaction,
+} from './signingHelpers';
 
 type SubmitYieldDepositPayload = {
     flowKey: string;
@@ -156,7 +160,7 @@ export const submitYieldDepositThunk = createThunk(
                     action: 'continue',
                     networkSymbol: flowData.account.symbol,
                     vaultId: flowData.vault.id,
-                    errorMessage: 'submit-failed',
+                    errorMessage: getYieldSubmitErrorAnalyticsMessage(error),
                 },
             });
             dispatch(

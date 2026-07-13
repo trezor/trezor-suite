@@ -19,6 +19,10 @@ import TrezorConnect from '@trezor/connect';
 
 import type { AppState, Dispatch } from 'src/types/suite';
 
+// Marks failures of the final broadcast — the transaction is already signed at that point,
+// which deserves a more specific message than the generic one.
+export const PUSH_TRANSACTION_FAILED_CAUSE = 'PushTransactionFailed';
+
 export const getYieldErrorTranslationKey = (error: unknown) => {
     if (!(error instanceof Error)) {
         return 'TR_EARN_YIELD_ERROR_GENERIC';
@@ -31,8 +35,17 @@ export const getYieldErrorTranslationKey = (error: unknown) => {
         return 'TR_EARN_YIELD_ERROR_PASSPHRASE_INCORRECT';
     }
 
+    if (error.cause === PUSH_TRANSACTION_FAILED_CAUSE) {
+        return 'TR_EARN_YIELD_ERROR_PUSH_FAILED';
+    }
+
     return 'TR_EARN_YIELD_ERROR_GENERIC';
 };
+
+export const getYieldSubmitErrorAnalyticsMessage = (error: unknown) =>
+    error instanceof Error && error.cause === PUSH_TRANSACTION_FAILED_CAUSE
+        ? 'push-failed'
+        : 'submit-failed';
 
 export type SendYieldTransactionParams = {
     account: Account;
@@ -148,7 +161,9 @@ export const sendYieldTransaction = async ({
         dispatch(closeModal());
 
         if (!pushResponse.success) {
-            throw new Error(`${pushResponse.error.code}: ${pushResponse.error.message}`);
+            throw new Error(`${pushResponse.error.code}: ${pushResponse.error.message}`, {
+                cause: PUSH_TRANSACTION_FAILED_CAUSE,
+            });
         }
 
         dispatch(

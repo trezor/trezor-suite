@@ -28,6 +28,7 @@ export type StablecoinYieldTranslationKey =
     | 'TR_EARN_YIELD_ERROR_FEE_ESTIMATION'
     | 'TR_EARN_YIELD_ERROR_GENERIC'
     | 'TR_EARN_YIELD_ERROR_PASSPHRASE_INCORRECT'
+    | 'TR_EARN_YIELD_ERROR_PUSH_FAILED'
     | 'TR_EARN_YIELD_ERROR_TRANSACTION_FAILED';
 
 type StablecoinYieldSerializedTx = {
