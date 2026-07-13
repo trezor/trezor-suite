@@ -73,7 +73,7 @@ export const onSubmit = () => async (dispatch: Dispatch, getState: GetState) => 
     if (typeof connectMethod !== 'function') {
         dispatch(
             onResponse({
-                error: `Method "${connectMethod}" not found in TrezorConnect`,
+                error: `Method "${method.name}" not found in TrezorConnect`,
             }),
         );
 
