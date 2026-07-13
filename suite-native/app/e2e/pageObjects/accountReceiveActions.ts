@@ -7,16 +7,6 @@ class AccountReceiveActions {
         await waitForVisible(by.id('@screen/ReceiveAddress'));
     }
 
-    async tapShowAddressButton() {
-        const showAddressButton = element(by.id('@receive/show-address-button'));
-
-        await waitForVisible(showAddressButton);
-        await showAddressButton.tap();
-
-        // button should be hidden after tap
-        await waitFor(showAddressButton).not.toBeVisible().withTimeout(30000);
-    }
-
     async verifyReceiveAddress(address: string) {
         const receiveAddressText = element(by.id('@receive/confirmed-receive-address'));
 
