@@ -79,7 +79,10 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
                 const account = { ...action.payload, accountLabel, history };
 
                 if (state.some(accountEqualTo(account))) {
-                    console.warn('Duplicated account found, updating instead: ', account);
+                    console.warn(
+                        // do not log the whole account: descriptor/addresses/balance are confidential and would leak into Sentry breadcrumbs
+                        `Duplicated account found, updating instead (symbol: ${account.symbol}, type: ${account.accountType}, index: ${account.index})`,
+                    );
                     update(state, account);
                 } else {
                     // Keep the state sorted by coin so that consumers get the canonical order for free.
