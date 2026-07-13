@@ -38,10 +38,12 @@ export const useField = ({
     const transformedValue = G.isString(value) ? valueTransformer(value) : '';
 
     const errorMessage = error?.message;
+    const errorType = error?.type;
     const hasError = !!error;
 
     return {
         errorMessage,
+        errorType,
         hasError,
         isDirty,
         isTouched,
