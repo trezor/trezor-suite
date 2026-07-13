@@ -38,7 +38,7 @@ describe('Receive [@androidOnly @T3T1 @T3W1]', () => {
         await onAccountReceive.tapShowAddressButton();
         await TrezorUserEnvLink.pressYes();
         await onAccountReceive.verifyReceiveAddress(
-            'bc1q s9al wrln 4e28 se4t q2nc 8dnn vskg 83qe xuj7 s9',
+            'bc1q czeu 64q3 86jv rdd7 ks8g m3t9 jfwa rs83 xlma n6',
         );
     });
 });
