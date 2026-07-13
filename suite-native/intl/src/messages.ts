@@ -2688,9 +2688,9 @@ export const messages = {
                 amountIsZero: 'Amount must be greater than 0.',
                 amountExceedsMax: 'The amount exceeds the maximum allowed value of {maxAmount}.',
                 invalidUnstakeAmount:
-                    "Due to recent Solana blockchain changes, this amount can't be unstaked.\n\nTry {higher} or more\n\nor {lower} or less",
+                    "Due to recent Solana blockchain changes, this amount can't be unstaked.\n\nTry {higher}{higherFiat},\n\nor {lower}{lowerFiat}.",
                 invalidUnstakeAmountHigherOnly:
-                    "Due to recent Solana blockchain changes, this amount can't be unstaked.\n\nTry {higher} or more",
+                    "Due to recent Solana blockchain changes, this amount can't be unstaked.\n\nTry {higher}{higherFiat}.",
                 insufficientBalance: 'You don’t have enough staked balance to unstake this amount.',
                 tooManyDecimals: 'Too many decimals places.',
             },

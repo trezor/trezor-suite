@@ -1,14 +1,18 @@
 import { yup } from '@suite-common/validators';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import {
+    getSolanaUnstakeAmountBounds,
     getStakingLimitsByNetworkSymbol,
     isDecimalsValid,
-    isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import { type Translate } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
 
+export const SOLANA_UNSTAKE_AMOUNT_BOUNDS_ERROR = 'solana-unstake-amount-bounds';
+
 export type UnstakeFormContext = {
+    account?: Account;
     symbol?: NetworkSymbol;
     stakedBalance?: string;
     decimals?: number;
@@ -51,25 +55,27 @@ export const unstakeFormValidationSchema = yup.object({
 
             return true;
         })
-        .test('min-amount', 'Amount is below the minimum.', function (value) {
-            const { symbol, translate } = this.options.context as UnstakeFormContext;
+        .test(SOLANA_UNSTAKE_AMOUNT_BOUNDS_ERROR, 'Amount cannot be unstaked.', function (value) {
+            const { account, translate } = this.options.context as UnstakeFormContext;
 
-            // Solana can't split off an unstake below its minimum delegation; other networks have no such floor.
-            if (!value || !symbol || !isSupportedSolStakingNetworkSymbol(symbol)) return true;
+            if (!value || !account) return true;
 
-            const limits = getStakingLimitsByNetworkSymbol(symbol);
-            if (!limits) return true;
+            const bounds = getSolanaUnstakeAmountBounds(account, value);
+            if (!bounds) return true;
 
-            if (new BigNumber(value).lt(limits.MIN_AMOUNT_FOR_STAKING)) {
-                return this.createError({
-                    message: translate('earn.unstakeFormScreen.validation.amountBelowMin', {
-                        minAmount: limits.MIN_AMOUNT_FOR_STAKING.toString(),
-                        networkSymbol: getNetworkDisplaySymbol(symbol),
-                    }),
-                });
-            }
+            const symbol = getNetworkDisplaySymbol(account.symbol);
+            const messageId = bounds.closestLower
+                ? 'earn.unstakeFormScreen.validation.invalidUnstakeAmount'
+                : 'earn.unstakeFormScreen.validation.invalidUnstakeAmountHigherOnly';
 
-            return true;
+            return this.createError({
+                message: translate(messageId, {
+                    higher: `${bounds.closestHigher} ${symbol}`,
+                    lower: bounds.closestLower ? `${bounds.closestLower} ${symbol}` : undefined,
+                    higherFiat: '',
+                    lowerFiat: '',
+                }),
+            });
         })
         .test('is-higher-than-staked', "You don't have enough staked balance.", function (value) {
             const { stakedBalance, translate } = this.options.context as UnstakeFormContext;

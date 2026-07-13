@@ -27,6 +27,7 @@ import { FeeSelector } from '@suite-native/transaction-management';
 import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/constants';
 
 import { EarnOutputFields } from '../components/EarnOutputFields';
+import { SolanaUnstakeAmountBoundsAlert } from '../components/SolanaUnstakeAmountBoundsAlert';
 import { UnstakeCanClaimAlert } from '../components/UnstakeCanClaimAlert';
 import { UnstakeFlowScreenHeader } from '../components/UnstakeFlowScreenHeader';
 import { UnstakingTimelineCard } from '../components/UnstakingTimelineCard';
@@ -70,6 +71,7 @@ export const UnstakeFlowScreen = () => {
 
     const {
         form,
+        account,
         amountValue,
         stakedBalance,
         canClaim,
@@ -150,8 +152,8 @@ export const UnstakeFlowScreen = () => {
                 <UnstakingTimelineCard accountKey={accountKey} />
             </Box>
 
-            <Box marginTop="sp16">
-                <Form form={form}>
+            <Form form={form}>
+                <Box marginTop="sp16">
                     <EarnOutputFields
                         accountKey={accountKey}
                         maxButtonVariant="unstake"
@@ -159,8 +161,11 @@ export const UnstakeFlowScreen = () => {
                         unstakeInstantAmount={approximatedInstantEthAmount}
                         onCurrencyChange={handleCurrencyChange}
                     />
-                </Form>
-            </Box>
+                </Box>
+                <Box marginTop="sp16">
+                    <SolanaUnstakeAmountBoundsAlert account={account} amountValue={amountValue} />
+                </Box>
+            </Form>
             {showNetworkFeeWarning && (
                 <Box marginTop="sp16">
                     <InlineAlertBox

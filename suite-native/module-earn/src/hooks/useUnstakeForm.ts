@@ -50,6 +50,7 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
         validation: unstakeFormValidationSchema,
         mode: 'onTouched',
         context: {
+            account,
             symbol: account?.symbol,
             stakedBalance,
             decimals: network?.decimals,
@@ -107,6 +108,7 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
 
     return {
         form,
+        account,
         amountValue,
         stakedBalance,
         canClaim,
