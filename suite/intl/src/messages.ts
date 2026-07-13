@@ -10211,6 +10211,11 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_ERROR_GENERIC',
         defaultMessage: 'Something went wrong. Try again.',
     },
+    TR_EARN_YIELD_ERROR_PUSH_FAILED: {
+        id: 'TR_EARN_YIELD_ERROR_PUSH_FAILED',
+        defaultMessage:
+            "The transaction was signed but couldn't be sent to the network. Try again.",
+    },
     TR_EARN_YIELD_ERROR_PASSPHRASE_INCORRECT: {
         id: 'TR_EARN_YIELD_ERROR_PASSPHRASE_INCORRECT',
         defaultMessage: 'Passphrase is incorrect. Try again.',

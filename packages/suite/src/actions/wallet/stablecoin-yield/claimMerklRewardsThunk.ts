@@ -25,7 +25,11 @@ import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types'
 import { getAccountIdentity, getMevProtectedTxData } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
-import { getYieldErrorTranslationKey } from './signingHelpers';
+import {
+    PUSH_TRANSACTION_FAILED_CAUSE,
+    getYieldErrorTranslationKey,
+    getYieldSubmitErrorAnalyticsMessage,
+} from './signingHelpers';
 
 type ClaimMerklReward = YieldAccountsRewards[number]['rewards'][number];
 
@@ -254,7 +258,9 @@ export const claimMerklRewardsThunk = createThunk(
                 dispatch(closeModal());
 
                 if (!pushResponse.success) {
-                    throw new Error(pushResponse.error.message);
+                    throw new Error(pushResponse.error.message, {
+                        cause: PUSH_TRANSACTION_FAILED_CAUSE,
+                    });
                 }
 
                 dispatch(
@@ -293,7 +299,7 @@ export const claimMerklRewardsThunk = createThunk(
             }
         } catch (error) {
             console.error(error);
-            reportSubmitError();
+            reportSubmitError(getYieldSubmitErrorAnalyticsMessage(error));
             dispatch(
                 stablecoinYieldActions.setError({
                     flowType: 'claim',
