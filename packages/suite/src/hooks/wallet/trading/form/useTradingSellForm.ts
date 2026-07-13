@@ -197,19 +197,16 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
             },
         });
 
-        const nextStep = async () => {
-            let isRedirecting = false;
+        const nextStep = () => {
+            dispatch(goto({ routeName: 'wallet-trading-sell-confirm' }));
 
-            // empty quoteId means the partner requests login first, requestTrade to get login screen
+            // Empty quoteId means the partner requests login first; keep the UI moving
+            // to confirm while the partner request continues in the background.
             if (
                 (sellInfo && sellUtils.needToRegisterOrVerifyBankAccount({ quote, sellInfo })) ||
                 !quote.quoteId
             ) {
-                ({ isRedirecting } = await handleSellTrade(quote));
-            }
-
-            if (!isRedirecting) {
-                dispatch(goto({ routeName: 'wallet-trading-sell-confirm' }));
+                void handleSellTrade(quote);
             }
         };
 
