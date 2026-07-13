@@ -202,7 +202,7 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
             >
                 <Column gap={spacings.md}>
                     {content}
-                    {visibleItems?.length && (
+                    {!!visibleItems?.length && (
                         <MenuList ref={ref}>
                             {visibleItems?.map((item, index) => (
                                 <MenuItem
