@@ -13,10 +13,9 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account, type BaseCurrencyAmount } from '@suite-common/wallet-types';
 
-import { type StablecoinYieldClaimSummary, type StablecoinYieldEarnItem } from '../types';
+import { type StablecoinYieldClaimSummary } from '../types';
 import {
     buildStablecoinYieldClaimSummaries,
-    getActiveStablecoinYieldClaimAccounts,
     getTotalFiatClaimableAmount,
 } from '../utils/stablecoinYieldClaimSummaryUtils';
 
@@ -30,29 +29,16 @@ export type StablecoinYieldClaimSummariesState = {
 };
 
 type UseStablecoinYieldClaimSummariesProps = {
-    activeItems: StablecoinYieldEarnItem[];
     accounts: Account[];
 };
 
 export const useStablecoinYieldClaimSummaries = ({
-    activeItems,
     accounts,
 }: UseStablecoinYieldClaimSummariesProps): StablecoinYieldClaimSummariesState => {
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const fiatCurrency = useSelector(selectBaseCurrency);
 
-    const activeClaimAccounts = useMemo(
-        () =>
-            getActiveStablecoinYieldClaimAccounts({
-                activeItems,
-                accounts,
-            }),
-        [accounts, activeItems],
-    );
-
-    const merklRewardsQueryEntries = useGetMerklRewardsQueryEntries(activeClaimAccounts, {
-        skipEmptyAccountCheck: true,
-    });
+    const merklRewardsQueryEntries = useGetMerklRewardsQueryEntries(accounts);
 
     const {
         data: chainsRewards,
@@ -75,10 +61,10 @@ export const useStablecoinYieldClaimSummaries = ({
     const stablecoinYieldClaimSummaries = useMemo(
         () =>
             buildStablecoinYieldClaimSummaries({
-                activeAccounts: activeClaimAccounts,
+                accounts,
                 chainsRewardsWithFiat,
             }),
-        [activeClaimAccounts, chainsRewardsWithFiat],
+        [accounts, chainsRewardsWithFiat],
     );
     const totalFiatClaimableAmount = useMemo(
         () => getTotalFiatClaimableAmount(stablecoinYieldClaimSummaries),
