@@ -457,6 +457,22 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<void, { page: 
         const call = selectConnectPopupCall(getState());
         if (!device || call?.state !== 'select-account') return;
 
+        // Keep the picker's two load layers from stepping on each other (see #29662):
+        //  - loadingKey dedups an *identical* load. The concrete double-dispatch is the cold-cache
+        //    manual drill-in: a nav thunk resets `candidates` to [] AND dispatches a load, while the
+        //    auto-load effect ALSO fires one because `candidates === []`. Both target the same view,
+        //    so the second is a no-op here — the expensive device round-trip runs only once.
+        //  - loadEpoch resolves the write race for loads of *different* views that legitimately
+        //    overlap (page/tab/phase/account changed mid-load): each stamps a fresh epoch and, after
+        //    every await below, bails once a newer load supersedes it, so a stale load can never
+        //    paint over the current view.
+        // Both are stamped synchronously (before any await) so a same-tick re-dispatch sees them.
+        const loadingKey = `${call.manualPhase ?? ''}:${call.selectedAccountTypeKey}:${call.manualAccountIndex ?? ''}:${page}`;
+        if (call.loadingKey === loadingKey) return;
+
+        const startedEpoch = (call.loadEpoch ?? 0) + 1;
+        dispatch(connectPopupActions.updateSelectAccount({ loadingKey, loadEpoch: startedEpoch }));
+
         // Populates one page of the picker's account-index list. Used for every mode except UTXO
         // `addressSelection: 'manual'`'s address phase (see loadManualAddressPage below), which
         // browses one chosen account's existing addresses instead of paging through BIP44 account
@@ -571,12 +587,14 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<void, { page: 
                     device: activeDevice,
                 });
 
-                // bail if the user navigated to another page/tab or closed the picker meanwhile
+                // bail if the user navigated to another page/tab, this load was superseded by a
+                // newer one of the same page, or the picker closed meanwhile
                 const current = selectConnectPopupCall(getState());
                 if (
                     current?.state !== 'select-account' ||
                     current.page !== page ||
-                    current.selectedAccountTypeKey !== selectedAccountTypeKey
+                    current.selectedAccountTypeKey !== selectedAccountTypeKey ||
+                    current.loadEpoch !== startedEpoch
                 )
                     return;
 
@@ -633,7 +651,9 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<void, { page: 
                 return (
                     current?.state === 'select-account' &&
                     current.selectedAccountTypeKey === selectedAccountTypeKey &&
-                    current.manualAccountIndex === manualAccountIndex
+                    current.manualAccountIndex === manualAccountIndex &&
+                    // superseded by a newer load of the same page — its candidates must not land
+                    current.loadEpoch === startedEpoch
                 );
             };
 
@@ -742,12 +762,30 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<void, { page: 
             paintPage(result.accountInfo.addresses?.used ?? []);
         }
 
-        if (call.options.addressSelection === 'manual' && call.manualPhase === 'address') {
-            await loadManualAddressPage(device, call.manualAccountIndex ?? 0);
-        } else if (call.options.addressSelection === 'manual') {
-            await loadAccountIndexPage(device, false);
-        } else {
-            await loadAccountIndexPage(device, true);
+        try {
+            if (call.options.addressSelection === 'manual' && call.manualPhase === 'address') {
+                await loadManualAddressPage(device, call.manualAccountIndex ?? 0);
+            } else if (call.options.addressSelection === 'manual') {
+                await loadAccountIndexPage(device, false);
+            } else {
+                await loadAccountIndexPage(device, true);
+            }
+        } finally {
+            // Release the dedup slot once this load settles — but only if this load still owns it.
+            // Matching loadingKey alone is not enough: rapid re-navigation can re-enter the *same*
+            // view (hence the same key) with a newer load still in flight (drill X → Y → X, or
+            // drill → back → drill the same account), and this older load must not clear that newer
+            // load's slot — that would re-open the dedup window and let the redundant device call
+            // slip back in. loadEpoch is monotonic and unique per load, so it pins the clear to the
+            // load that most recently stamped the key.
+            const current = selectConnectPopupCall(getState());
+            if (
+                current?.state === 'select-account' &&
+                current.loadingKey === loadingKey &&
+                current.loadEpoch === startedEpoch
+            ) {
+                dispatch(connectPopupActions.updateSelectAccount({ loadingKey: undefined }));
+            }
         }
     },
 );

@@ -209,6 +209,18 @@ type ConnectPopupCallLoaded = {
           // false while selecting, true once the selection has been sent to the app; in the
           // exported phase the modal stays open so the user can keep verifying on device.
           exported: boolean;
+          // Two guards keep the picker's page loads from stepping on each other, at different
+          // layers (see connectPopupLoadSelectAccountPageThunk):
+          //  - loadingKey dedups loads of the *same* view (phase/tab/account/page): a second one is
+          //    a no-op, so an identical device round-trip is never issued twice. It is the key of
+          //    the currently running load, cleared when that load settles.
+          //  - loadEpoch resolves the write race between loads of *different* views that overlap
+          //    (page/tab/phase/account changed mid-load): each load stamps a fresh epoch and, after
+          //    every await, bails when a newer load has superseded it — dimension-agnostic
+          //    latest-wins, so a stale load can never paint over the current view.
+          // Both are transient activeCall state, undefined until the first load runs. See #29662.
+          loadingKey?: string;
+          loadEpoch?: number;
       }
     | {
           method: CallMethodKeys;
