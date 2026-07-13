@@ -35,13 +35,13 @@ import { useTradingBuyHandleChange } from 'src/hooks/wallet/trading/form/common/
 import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';
 import { useTradingBuyFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormDefaultValues';
 import { useTradingBuyFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormRedirectValues';
+import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { type Dispatch } from 'src/types/suite';
 import { type TradingBuyFormContextProps } from 'src/types/trading/tradingForm';
 
 import { useTradingClearStaleQuotes } from './common/useTradingClearStaleQuotes';
 import { useTradingFiatValues } from './common/useTradingFiatValues';
-import { useTradingInitializer } from './common/useTradingInitializer';
 import { useTradingFormAccount } from './useTradingFormAccount';
 import { useTradingReceiveAddress } from './useTradingReceiveAddress';
 
@@ -58,7 +58,7 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
 
     const verifiedAddress = useSelector(selectTradingVerifiedAddress);
 
-    const { device } = useTradingInitializer();
+    useServerEnvironment();
 
     const { account, cryptoId } = useTradingFormAccount(type);
 
@@ -79,8 +79,7 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
           };
     useTradingFiatValues(fiatTradingValuesParams);
 
-    const { defaultValues, defaultSubdivision, defaultCountry, defaultCurrency } =
-        useTradingBuyFormDefaultValues(cryptoId, buyInfo);
+    const { defaultValues } = useTradingBuyFormDefaultValues(cryptoId, buyInfo);
     const redirectValues = useTradingBuyFormRedirectValues(isFromRedirect, quotesRequest);
     const methods = useForm<TradingBuyFormProps>({
         mode: 'onChange',
@@ -266,14 +265,10 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
         ...methods,
         methods,
         account,
-        defaultCountry,
-        defaultSubdivision,
-        defaultCurrency,
         buyInfo,
         amountLimits,
         network,
         cryptoInputValue: values.cryptoInput,
-        device,
         verifiedAddress,
         quotes: quotesByPaymentMethod,
         quotesRequest,

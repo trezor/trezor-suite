@@ -35,11 +35,11 @@ import { useTradingFormActions } from 'src/hooks/wallet/trading/form/common/useT
 import { useTradingSellHandleChange } from 'src/hooks/wallet/trading/form/common/useTradingSellHandleChange';
 import { useTradingSellFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingSellFormDefaultValues';
 import { useTradingSellFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingSellFormRedirectValues';
+import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { type TradingSellFormContextProps } from 'src/types/trading/tradingForm';
 
 import { useTradingClearStaleQuotes } from './common/useTradingClearStaleQuotes';
-import { useTradingInitializer } from './common/useTradingInitializer';
 import { useTradingFormAccount } from './useTradingFormAccount';
 
 export const useTradingSellForm = (): TradingSellFormContextProps => {
@@ -60,7 +60,7 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
     const trade = useSelector(selectTradingSellActiveTrade);
     const account = useSelector(state => selectTradingSendAccount(state, type));
 
-    const { device } = useTradingInitializer();
+    useServerEnvironment();
 
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
 
@@ -69,13 +69,12 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const localCurrencyOption = { value: baseCurrencyCode, label: baseCurrencyCode.toUpperCase() };
 
-    const { defaultValues, defaultCountry, defaultSubdivision, defaultCurrency } =
-        useTradingSellFormDefaultValues(
-            accountKey,
-            cryptoId,
-            sellInfo?.country,
-            sellInfo?.countrySubdivision,
-        );
+    const { defaultValues } = useTradingSellFormDefaultValues(
+        accountKey,
+        cryptoId,
+        sellInfo?.country,
+        sellInfo?.countrySubdivision,
+    );
     const redirectValues = useTradingSellFormRedirectValues(isFromRedirect, quotesRequest);
     const shouldResetOnInitialSellInfoLoad = useRef(!sellInfo);
     const methods = useForm<TradingSellFormProps>({
@@ -230,9 +229,6 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
         ...methods,
         methods,
         account,
-        defaultCountry,
-        defaultSubdivision,
-        defaultCurrency,
         sellInfo,
         quotesRequest,
         quotes: quotesByPaymentMethod,
@@ -243,7 +239,6 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
         isComposing,
         amountLimits,
         network,
-        device,
         selectedQuote,
         shouldSendInSats,
         trade,

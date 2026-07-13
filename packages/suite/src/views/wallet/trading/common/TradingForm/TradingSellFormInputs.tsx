@@ -51,7 +51,6 @@ export const TradingSellFormInputs = () => {
         shouldSendInSats,
         changeFeeLevel,
         showReserveBanner,
-        defaultCountry,
     } = context;
 
     const { getValues } = useFormContext<TradingSellFormProps>();
@@ -87,8 +86,7 @@ export const TradingSellFormInputs = () => {
         [onCryptoCurrencyChangeRef],
     );
 
-    const selectedCountry = countrySelect ?? defaultCountry;
-    const countryRequiresSubdivision = isCountrySubdivisionRequired(selectedCountry?.value);
+    const countryRequiresSubdivision = isCountrySubdivisionRequired(countrySelect?.value);
 
     return (
         <Column gap={20}>
@@ -141,7 +139,7 @@ export const TradingSellFormInputs = () => {
                 {countryRequiresSubdivision && (
                     <TradingFormInputCountrySubdivision
                         label="TR_TRADING_COUNTRY_SUBDIVISION"
-                        country={selectedCountry}
+                        country={countrySelect}
                     />
                 )}
                 {!!quotes.length && (

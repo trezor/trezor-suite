@@ -1,3 +1,5 @@
+import { useDevice } from '@suite/device';
+
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     isTradingExchangeContext,
@@ -6,7 +8,7 @@ import {
 
 export const useTradingDeviceDisconnected = () => {
     const context = useTradingFormContext();
-    const { device } = context;
+    const { device } = useDevice();
 
     const isSellOrExchangeContext =
         isTradingSellContext(context) || isTradingExchangeContext(context);

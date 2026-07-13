@@ -81,10 +81,5 @@ export const useTradingSellFormDefaultValues = (
         [defaultFormState, defaultAsset, defaultCountry, defaultSubdivision],
     );
 
-    return {
-        defaultValues,
-        defaultCountry,
-        defaultSubdivision,
-        defaultCurrency,
-    };
+    return { defaultValues };
 };

@@ -1,8 +1,4 @@
-import {
-    type CryptoId,
-    type ExchangeTrade,
-    type ExchangeTradeQuoteRequest,
-} from 'invity-api';
+import { type CryptoId, type ExchangeTrade, type ExchangeTradeQuoteRequest } from 'invity-api';
 
 import { configureMockStore } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';

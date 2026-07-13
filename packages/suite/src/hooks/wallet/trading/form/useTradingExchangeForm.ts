@@ -34,10 +34,7 @@ import {
     tradingThunks,
 } from '@suite-common/trading';
 import { getNetwork, isAccountBasedNetwork } from '@suite-common/wallet-config';
-import {
-    ETHEREUM_ADJUST_GAS_LIMIT,
-    updateFeeInfoThunk,
-} from '@suite-common/wallet-core';
+import { ETHEREUM_ADJUST_GAS_LIMIT, updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useCurrentRef } from '@trezor/react-utils';
 
@@ -50,6 +47,7 @@ import { useTradingExchangeQuotesFilter } from 'src/hooks/wallet/trading/form/co
 import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
 import { useTradingFormActions } from 'src/hooks/wallet/trading/form/common/useTradingFormActions';
 import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingExchangeFormDefaultValues';
+import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { type Dispatch } from 'src/types/suite';
 import {
@@ -59,7 +57,6 @@ import {
 
 import { useTradingClearStaleQuotes } from './common/useTradingClearStaleQuotes';
 import { useTradingExchangeTradeRequest } from './common/useTradingExchangeTradeRequest';
-import { useTradingInitializer } from './common/useTradingInitializer';
 import { useTradingFormAccount } from './useTradingFormAccount';
 import { useTradingReceiveAddress } from './useTradingReceiveAddress';
 
@@ -88,7 +85,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const [isScheduledQuotesRefresh, setIsScheduledQuotesRefresh] = useState(false);
     const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
 
-    const { device } = useTradingInitializer();
+    useServerEnvironment();
 
     const [isApproval, setIsApproval] = useState<boolean>(false);
     const [isLoadingQuote, setIsLoadingQuote] = useState<boolean>(false);
@@ -99,10 +96,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const network = getNetwork(account.symbol);
 
-    const { defaultCurrency, defaultValues } = useTradingExchangeFormDefaultValues(
-        accountKey,
-        cryptoId,
-    );
+    const { defaultValues } = useTradingExchangeFormDefaultValues(accountKey, cryptoId);
 
     const methods = useForm<TradingExchangeFormProps>({
         mode: 'onChange',
@@ -447,7 +441,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
             helpers,
         },
         methods,
-        device,
         exchangeInfo,
         quotes,
         dexQuotes,
@@ -455,7 +448,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         quotesRequest,
         isComposing,
         composedLevels,
-        defaultCurrency,
         feeInfo,
         amountLimits,
         network,

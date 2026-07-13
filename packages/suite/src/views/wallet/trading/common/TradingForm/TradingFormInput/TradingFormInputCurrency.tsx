@@ -34,7 +34,7 @@ export const TradingFormInputCurrency = ({
     isClean = false,
 }: TradingFormInputCurrencyProps) => {
     const context = useTradingFormContext();
-    const { control, setAmountLimits, defaultCurrency } = context;
+    const { control, setAmountLimits } = context;
     const name = isTradingBuyContext(context)
         ? TRADING_FORM_FIAT_CURRENCY_SELECT
         : TRADING_FORM_OUTPUT_CURRENCY;
@@ -75,7 +75,6 @@ export const TradingFormInputCurrency = ({
     return (
         <Controller
             name={name}
-            defaultValue={defaultCurrency}
             control={control as Control<TradingAllFormProps>}
             render={({ field: { onChange, value } }) => (
                 <CurrencyPicker
