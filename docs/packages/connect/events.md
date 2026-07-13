@@ -1,5 +1,7 @@
 # Events
 
+> **Note:** In version 10 the event API (`on`, `off`, `removeAllListeners`) is available only in the `@trezor/connect` package (in-process Core, used by Trezor Suite). The thin packages `@trezor/connect-web`, `@trezor/connect-webextension` and `@trezor/connect-mobile` do not expose it — the host Core does not forward events to them.
+
 ## Handling events
 
 Once user grants permission for hosting page to communicate with API TrezorConnect will emits events
