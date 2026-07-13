@@ -1,26 +1,43 @@
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { type AccountDescriptor } from '@suite-common/wallet-types';
-import { InlineAlertBox, type InlineAlertBoxProps, VStack } from '@suite-native/atoms';
+import { useSelector } from 'react-redux';
+
+import { getNetwork } from '@suite-common/wallet-config';
+import {
+    type AccountsRootState,
+    selectAccountDescriptor,
+    selectAccountDeviceState,
+    selectAccountNetworkSymbol,
+} from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { Box, InlineAlertBox, type InlineAlertBoxProps, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import type { StaticSessionId } from '@trezor/connect';
 
 import { AddressQRCode } from './AddressQRCode';
 
 type ReceiveAddressCardProps = {
+    accountKey: AccountKey;
     address: string;
-    deviceStaticSessionId: StaticSessionId;
-    accountDescriptor: AccountDescriptor;
-    symbol: NetworkSymbol;
     isTokenAddress?: boolean;
 };
 
 export const ReceiveAddressCard = ({
-    accountDescriptor,
+    accountKey,
     address,
-    deviceStaticSessionId,
-    symbol,
     isTokenAddress = false,
 }: ReceiveAddressCardProps) => {
+    const accountDescriptor = useSelector((state: AccountsRootState) =>
+        selectAccountDescriptor(state, accountKey),
+    );
+    const deviceStaticSessionId = useSelector((state: AccountsRootState) =>
+        selectAccountDeviceState(state, accountKey),
+    );
+    const symbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    );
+
+    if (!accountDescriptor || !deviceStaticSessionId || !symbol) {
+        return null;
+    }
+
     const { name: networkName } = getNetwork(symbol);
 
     const getCardAlertProps = (): InlineAlertBoxProps | undefined => {
@@ -58,7 +75,11 @@ export const ReceiveAddressCard = ({
                 networkSymbol={symbol}
                 showLabelEdit={!isTokenAddress}
             />
-            {cardAlertProps && <InlineAlertBox {...cardAlertProps} />}
+            {cardAlertProps && (
+                <Box marginBottom="sp4">
+                    <InlineAlertBox {...cardAlertProps} />
+                </Box>
+            )}
         </VStack>
     );
 };
