@@ -20,12 +20,9 @@
         { "path": "../atoms" },
         { "path": "../clipboard" },
         { "path": "../feature-feedback" },
-        { "path": "../formatters" },
         { "path": "../intl" },
         { "path": "../labeling" },
-        { "path": "../qr-code" },
         { "path": "../suite-sync" },
-        { "path": "../../packages/connect" },
-        { "path": "../../packages/styles-native" }
+        { "path": "../../packages/connect" }
     ]
 }
