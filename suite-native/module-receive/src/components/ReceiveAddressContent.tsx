@@ -10,7 +10,8 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { type NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
-import { ErrorMessage, InlineAlertBox, VStack } from '@suite-native/atoms';
+import { AddressQRCodeActions } from '@suite-native/address';
+import { ErrorMessage, InlineAlertBox, ScreenFooterGradient, VStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
@@ -66,8 +67,24 @@ export const ReceiveAddressContent = ({
                     closeActionType={closeActionType}
                 />
             }
+            footer={
+                <>
+                    <ScreenFooterGradient />
+                    <VStack paddingHorizontal="sp16" paddingTop="sp8" paddingBottom="sp16">
+                        <AddressQRCodeActions address={freshAddress.address} />
+                    </VStack>
+                </>
+            }
+            noBottomPadding
         >
             <VStack marginTop="sp8" spacing="sp16" flex={1}>
+                <ReceiveAddressCard
+                    accountDescriptor={account.descriptor}
+                    symbol={account.symbol}
+                    address={freshAddress.address}
+                    deviceStaticSessionId={account.deviceState}
+                    isTokenAddress={!!tokenContract}
+                />
                 {showDestinationTagInfo && (
                     <InlineAlertBox
                         intent="info"
@@ -93,13 +110,6 @@ export const ReceiveAddressContent = ({
                         }
                     />
                 )}
-                <ReceiveAddressCard
-                    accountDescriptor={account.descriptor}
-                    symbol={account.symbol}
-                    address={freshAddress.address}
-                    deviceStaticSessionId={account.deviceState}
-                    isTokenAddress={!!tokenContract}
-                />
             </VStack>
         </Screen>
     );
