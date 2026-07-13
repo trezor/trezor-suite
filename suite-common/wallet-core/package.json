@@ -14,7 +14,7 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "2.12.0",
-        "@sentry/core": "10.53.1",
+        "@sentry/core": "10.62.0",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/bluetooth": "workspace:*",
         "@suite-common/calldata": "workspace:*",

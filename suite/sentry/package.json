@@ -11,8 +11,8 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@sentry/browser": "10.53.1",
-        "@sentry/core": "10.53.1",
+        "@sentry/browser": "10.62.0",
+        "@sentry/core": "10.62.0",
         "@suite-common/sentry": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
