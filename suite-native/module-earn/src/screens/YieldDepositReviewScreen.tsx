@@ -27,13 +27,14 @@ type NavigationProps = StackNavigationProps<
 export const YieldDepositReviewScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
-    const { flowData, flowKey, resolutionStatus, vaultTokenName } = useResolvedYieldFlowData(
+    const { flowData, flowKey, resolutionStatus, vaultName } = useResolvedYieldFlowData(
         route.params,
     );
     const device = useSelector(selectSelectedDevice);
     const session = useSelector((state: StablecoinYieldRootState) =>
         selectStablecoinYieldSessionByFlowKey(state, 'deposit', flowKey),
     );
+
     const actionReview = session?.action.review;
     const review = useMemo(
         () =>
@@ -46,7 +47,7 @@ export const YieldDepositReviewScreen = () => {
         [actionReview],
     );
     const preview = useMemo(() => {
-        if (!review || !device || !flowData || vaultTokenName === null) {
+        if (!review || !device || !flowData || vaultName === null) {
             return null;
         }
 
@@ -55,9 +56,9 @@ export const YieldDepositReviewScreen = () => {
             flowData,
             review,
             type: 'deposit',
-            vaultName: vaultTokenName,
+            vaultName,
         });
-    }, [device, flowData, review, vaultTokenName]);
+    }, [device, flowData, review, vaultName]);
 
     useEffect(() => {
         if (resolutionStatus !== 'resolved') {
