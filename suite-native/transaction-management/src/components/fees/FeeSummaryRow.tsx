@@ -48,7 +48,7 @@ export const FeeSummaryRow = ({
                     testID="@transactionManagement/fee-crypto-amount"
                 />
                 <HStack spacing="sp2" alignItems="center" justifyContent="flex-end">
-                    {!areFeesLoading && (
+                    {!areFeesLoading && fee !== null && (
                         <Text variant="body-sm" color="contentSecondary">
                             ≈
                         </Text>
