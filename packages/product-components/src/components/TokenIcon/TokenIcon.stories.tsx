@@ -2,12 +2,12 @@ import { type Meta, type StoryObj } from '@storybook/react';
 
 import { getFramePropsStory } from '@trezor/components';
 
+import { TokenIcon as TokenIconComponent } from './TokenIcon';
 import {
-    TokenIcon as TokenIconComponent,
     type TokenIconProps,
     allowedTokenIconFrameProps,
     allowedTokenIconSizes,
-} from './TokenIcon';
+} from './tokenIconTypes';
 
 const NETWORK_SYMBOLS = [
     'btc',

@@ -7,7 +7,8 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { motionEasing } from '@trezor/components';
 import { coinsColors } from '@trezor/theme';
 
-import { TokenIcon, type TokenIconProps } from '../TokenIcon/TokenIcon';
+import { TokenIcon } from '../TokenIcon/TokenIcon';
+import { type TokenIconProps } from '../TokenIcon/tokenIconTypes';
 
 const Container = styled.div`
     position: relative;

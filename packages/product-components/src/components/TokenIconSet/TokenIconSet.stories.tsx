@@ -3,7 +3,7 @@ import { type Meta, type StoryObj } from '@storybook/react';
 import { spacingsNew } from '@trezor/theme';
 
 import { TokenIconSet as TokenIconSetComponent, type TokenIconSetProps } from './TokenIconSet';
-import { allowedTokenIconSizes } from '../TokenIcon/TokenIcon';
+import { allowedTokenIconSizes } from '../TokenIcon/tokenIconTypes';
 
 const getToken = (contract: string, symbol: string, decimals: number) => ({
     contract,
