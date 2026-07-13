@@ -25,15 +25,15 @@ const representativeAssets: Partial<Record<NetworkSymbol, readonly Representativ
         { symbol: 'BNB' },
         { symbol: 'USDT', contract: '0x55d398326f99059ff775485246999027b3197955' },
         { symbol: 'CAKE', contract: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82' },
-        { symbol: 'XRP', contract: '0x1d2f0da169ceb9fc7b3144628db156f3f6c60dbe' },
-        { symbol: 'BTCB', contract: '0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c' },
+        { symbol: 'ETH', contract: '0x2170ed0880ac9a755fd29b2688956bd959f933f8' },
+        { symbol: 'USDC', contract: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d' },
     ],
     arb: [
         { symbol: 'ARB', contract: '0x912ce59144191c1204e64559fe8253a0e49e6548' },
+        { symbol: 'ETH' },
         { symbol: 'USDC', contract: '0xaf88d065e77c8cc2239327c5edb3a432268e5831' },
         { symbol: 'GMX', contract: '0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a' },
         { symbol: 'LINK', contract: '0xf97f4df75117a78c1a5a0dbb814af92458539fb4' },
-        { symbol: 'WETH', contract: '0x82af49447d8a07e3bd95bd0d56f35241523fbab1' },
     ],
     base: [
         { symbol: 'ETH' },
@@ -44,16 +44,16 @@ const representativeAssets: Partial<Record<NetworkSymbol, readonly Representativ
     ],
     op: [
         { symbol: 'OP', contract: '0x4200000000000000000000000000000000000042' },
+        { symbol: 'ETH' },
         { symbol: 'USDC', contract: '0x0b2c639c533813f4aa9d7837caf62653d097ff85' },
         { symbol: 'SNX', contract: '0x8700daec35af8ff88c16bdf0418774cb3d7599b4' },
         { symbol: 'VELO', contract: '0x9560e827af36c94d2ac33a39bce1fe78631088db' },
-        { symbol: 'WETH', contract: '0x4200000000000000000000000000000000000006' },
     ],
     avax: [
         { symbol: 'AVAX' },
         { symbol: 'USDC', contract: '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e' },
         { symbol: 'JOE', contract: '0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd' },
-        { symbol: 'BTC.b', contract: '0x152b9d0fdc40c096757f570a51e494bd4b943e50' },
+        { symbol: 'WETH.e', contract: '0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB' },
         { symbol: 'QI', contract: '0x8729438eb15e2c8b576fcc6aecda6a148776c0f5' },
     ],
     sol: [
