@@ -30,8 +30,6 @@ export const parseThpSettings = ({ manifest, thp }: Partial<ConnectSettings>): T
                 typeof k.host_static_key === 'string' &&
                 typeof k.trezor_static_public_key === 'string'
             ) {
-                // `k` is already typed `ThpCredentials` (branded key fields), so it
-                // re-enters the typed settings as-is — no `asX()` re-branding needed.
                 return k;
             }
 
