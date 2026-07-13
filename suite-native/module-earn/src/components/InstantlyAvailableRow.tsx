@@ -5,7 +5,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter } from '@suite-native/formatters';
-import { CryptoIcon, Icon } from '@suite-native/icons';
+import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
 
@@ -46,7 +46,7 @@ export const InstantlyAvailableRow = ({
                     <Icon name="info" color="contentTertiary" size="medium" />
                 </HStack>
                 <HStack alignItems="center" spacing="sp4">
-                    <CryptoIcon symbol={account.symbol} size="extraSmall" />
+                    <TokenIcon symbol={account.symbol} size="extraSmall" />
                     <CryptoAmountFormatter
                         decimals={2}
                         value={approximatedAmount}

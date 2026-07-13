@@ -1,6 +1,6 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Card, HStack, PressableOpacity, Text } from '@suite-native/atoms';
-import { CryptoIcon, Icon } from '@suite-native/icons';
+import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
 type YieldDepositApprovedAmountCardProps = {
@@ -26,7 +26,7 @@ export const YieldDepositApprovedAmountCard = ({
                 <Translation id="earn.yieldDepositFlowScreen.approvedAmount" />
             </Text>
             <HStack alignItems="center" spacing="sp8">
-                <CryptoIcon symbol={networkSymbol} contractAddress={tokenContract} size={20} />
+                <TokenIcon symbol={networkSymbol} contractAddress={tokenContract} size={20} />
                 <Text variant="body-sm-strong" numberOfLines={1}>
                     {isApprovedAmountUnlimited ? (
                         <Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.title" />

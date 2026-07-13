@@ -6,7 +6,7 @@ import {
     Button,
     TitleHeader,
 } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -56,7 +56,7 @@ export const EnableNetworkForEarnBottomSheet = ({
             {symbol ? (
                 <Box alignItems="center" paddingHorizontal="sp16">
                     <StakingPromoRingIcon symbol={symbol}>
-                        <CryptoIcon symbol={symbol} size="large" />
+                        <TokenIcon symbol={symbol} size="large" />
                     </StakingPromoRingIcon>
                     <TitleHeader
                         titleVariant="headline-sm"

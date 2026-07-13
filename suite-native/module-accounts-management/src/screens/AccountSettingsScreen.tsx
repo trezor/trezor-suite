@@ -14,7 +14,7 @@ import {
 import { AccountLabel } from '@suite-native/accounts';
 import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Bip329ManageLabelsCard } from '@suite-native/bip329';
-import { CryptoIcon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -50,7 +50,7 @@ const AccountDetailSettingsRow = ({ title, children }: AccountDetailSettingsRowP
 const CryptoNameWithIcon = ({ symbol }: { symbol: NetworkSymbol }) => (
     <HStack spacing="sp8" flexDirection="row" alignItems="center" justifyContent="flex-end">
         <Text variant="body-sm">{networks[symbol].name}</Text>
-        <CryptoIcon symbol={symbol} size="extraSmall" />
+        <TokenIcon symbol={symbol} size="extraSmall" />
     </HStack>
 );
 

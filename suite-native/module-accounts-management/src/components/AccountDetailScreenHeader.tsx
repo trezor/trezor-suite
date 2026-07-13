@@ -5,7 +5,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { isStakingSymbol } from '@suite-common/wallet-utils';
 import { AccountLabel } from '@suite-native/accounts';
 import { HStack, IconButton, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
-import { CryptoIconWithNetwork } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 import {
     type AccountsStackParamList,
     type RootStackParamList,
@@ -30,7 +30,7 @@ type AccountDetailNavigationProps = StackToStackCompositeNavigationProps<
 
 const AccountDetailScreenHeaderContent = ({ account }: AccountDetailScreenHeaderProps) => (
     <HStack alignItems="center" flexShrink={1}>
-        <CryptoIconWithNetwork symbol={account.symbol} size="small" />
+        <TokenIcon symbol={account.symbol} size="small" showNetworkIcon />
         <VStack spacing={0} flexShrink={1}>
             <Text variant="body-md-strong" numberOfLines={1} ellipsizeMode="tail">
                 {getNetworkDisplaySymbolName(account.symbol)}

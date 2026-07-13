@@ -5,7 +5,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { InlineAlertBox, Text, VStack } from '@suite-native/atoms';
-import { CryptoIconWithNetwork } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 
@@ -41,10 +41,11 @@ export const TokenOfNetworkAlertBody = ({
 
     return (
         <VStack spacing="sp24">
-            <CryptoIconWithNetwork
+            <TokenIcon
                 symbol={symbol}
                 contractAddress={tokenContract}
                 size="extraLarge"
+                showNetworkIcon
             />
             <Text variant="headline-sm">
                 <Translation

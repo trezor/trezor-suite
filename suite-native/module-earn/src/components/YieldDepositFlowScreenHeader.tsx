@@ -1,7 +1,7 @@
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { HStack, IconButton, Text, VStack } from '@suite-native/atoms';
-import { CryptoIconWithNetwork } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 import { ScreenHeader } from '@suite-native/navigation';
 
 type YieldDepositFlowScreenHeaderProps = {
@@ -27,10 +27,11 @@ export const YieldDepositFlowScreenHeader = ({
             closeAction={closeAction}
             customContent={
                 <HStack spacing="sp8" alignItems="center" flexShrink={1}>
-                    <CryptoIconWithNetwork
+                    <TokenIcon
                         symbol={account.symbol}
                         contractAddress={tokenContract}
                         size="small"
+                        showNetworkIcon
                     />
                     <VStack spacing={0} flexShrink={1}>
                         <Text variant="body-md" numberOfLines={1} ellipsizeMode="tail">

@@ -3,7 +3,7 @@ import { type ReactNode } from 'react';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldFlowCompleteRewardItem } from '@suite-common/wallet-core';
 import { HStack, Text, VStack } from '@suite-native/atoms';
-import { CryptoIcon, Icon } from '@suite-native/icons';
+import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
 import { YieldClaimRewardRow, getYieldClaimRewardFiatAmount } from './YieldClaimRewardRow';
@@ -53,7 +53,7 @@ export const getYieldDepositCompleteRows = ({
         label: <Translation id="earn.yieldCompleteScreen.deposited" />,
         value: (
             <HStack spacing="sp4" alignItems="center" flexShrink={1}>
-                <CryptoIcon
+                <TokenIcon
                     symbol={accountSymbol}
                     contractAddress={sentTokenContract}
                     size="extraSmall"
@@ -69,7 +69,7 @@ export const getYieldDepositCompleteRows = ({
         label: <Translation id="earn.yieldCompleteScreen.received" />,
         value: (
             <HStack spacing="sp4" alignItems="center" flexShrink={1}>
-                <CryptoIcon
+                <TokenIcon
                     symbol={accountSymbol}
                     contractAddress={receivedTokenContract}
                     size="extraSmall"
@@ -103,7 +103,7 @@ export const getYieldWithdrawCompleteRows = ({
         label: <Translation id="earn.yieldCompleteScreen.received" />,
         value: (
             <HStack spacing="sp4" alignItems="center" flexShrink={1}>
-                <CryptoIcon
+                <TokenIcon
                     symbol={accountSymbol}
                     contractAddress={receivedTokenContract}
                     size="extraSmall"
@@ -121,7 +121,7 @@ export const getYieldWithdrawCompleteRows = ({
                   label: <Translation id="earn.yieldCompleteScreen.sent" />,
                   value: (
                       <HStack spacing="sp4" alignItems="center" flexShrink={1}>
-                          <CryptoIcon
+                          <TokenIcon
                               symbol={accountSymbol}
                               contractAddress={withdrawalTokenContract}
                               size="extraSmall"

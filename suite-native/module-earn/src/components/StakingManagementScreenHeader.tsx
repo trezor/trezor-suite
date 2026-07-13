@@ -3,7 +3,7 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 import { AccountLabel } from '@suite-native/accounts';
 import { Box, HStack, Text } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -33,7 +33,7 @@ export const StakingManagementScreenHeader = () => {
         <ScreenHeader
             customContent={
                 <HStack spacing="sp12" style={applyStyle(headerStyle)}>
-                    <CryptoIcon symbol={networkSymbol} size="small" />
+                    <TokenIcon symbol={networkSymbol} size="small" />
                     <Box style={applyStyle(textColumnStyle)}>
                         <Text variant="body-md-strong" ellipsizeMode="tail" numberOfLines={1}>
                             <Translation id="earn.stakingDetailScreen.title" />

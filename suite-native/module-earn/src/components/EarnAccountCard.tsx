@@ -10,7 +10,7 @@ import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { isApyAvailable, isSupportedStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { AccountTypeBadge } from '@suite-native/accounts';
 import { Box, Card, PressableOpacity, Text, VStack } from '@suite-native/atoms';
-import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
+import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     selectApy,
@@ -24,10 +24,10 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { CRYPTO_BALANCE_DECIMALS } from '../constants';
-import { EarnClaimAlert } from './EarnClaimAlert';
-import { EarnTronVotingAlert } from './EarnTronVotingAlert';
 import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
 import { type EarnDepositsCardActiveItem } from '../types';
+import { EarnClaimAlert } from './EarnClaimAlert';
+import { EarnTronVotingAlert } from './EarnTronVotingAlert';
 
 const itemCardStyle = prepareNativeStyle(utils => ({
     marginBottom: utils.spacings.sp16,
@@ -135,10 +135,11 @@ export const EarnAccountCard = ({ item, onPress, onClaimPress }: EarnAccountCard
         <Card borderColor="borderNeutral" noPadding style={applyStyle(itemCardStyle)}>
             <PressableOpacity onPress={onPress} style={applyStyle(rowStyle)}>
                 <Box marginRight="sp12">
-                    <CryptoIconWithNetwork
+                    <TokenIcon
                         symbol={symbol}
                         contractAddress={contractAddress}
                         size="extraSmall"
+                        showNetworkIcon
                     />
                 </Box>
 

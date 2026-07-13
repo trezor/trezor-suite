@@ -22,11 +22,9 @@ import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type CSSColor } from '@trezor/theme';
 
-import { type CryptoIconSize } from './CryptoIcon';
-
 interface NetworkIconProps {
     symbol: NetworkSymbol;
-    size?: CryptoIconSize | number;
+    size?: NetworkIconSize | number;
 }
 
 export const networkIconSizes = {
@@ -36,6 +34,8 @@ export const networkIconSizes = {
     large: 18,
     extraLarge: 24,
 } as const;
+
+export type NetworkIconSize = keyof typeof networkIconSizes;
 
 const iconStyle = prepareNativeStyle<{ width: number; height: number }>((_, { width, height }) => ({
     width,

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Box, CardDivider, HStack, PressableOpacity, Text } from '@suite-native/atoms';
-import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
+import { Icon, TokenIcon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type EarnDepositsCardRow as EarnDepositsCardRowType } from '../types';
@@ -74,7 +74,7 @@ export const EarnDepositsCardRow = React.memo(({ row, onPress }: EarnDepositsCar
                                 key={`${getRowItemIconKey(item)}-${index}`}
                                 style={applyStyle(rowIconWrapperStyle, { index })}
                             >
-                                <CryptoIconWithNetwork
+                                <TokenIcon
                                     symbol={
                                         item.type === 'staking' ? item.symbol : item.networkSymbol
                                     }
@@ -84,6 +84,7 @@ export const EarnDepositsCardRow = React.memo(({ row, onPress }: EarnDepositsCar
                                             : undefined
                                     }
                                     size="extraSmall"
+                                    showNetworkIcon
                                 />
                             </Box>
                         ))}

@@ -9,7 +9,7 @@ import {
     TokenAmountFormatter,
     TokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
-import { CryptoIcon, Icon } from '@suite-native/icons';
+import { Icon, TokenIcon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { CRYPTO_BALANCE_DECIMALS } from '../constants';
@@ -55,7 +55,7 @@ export const ChooseAccountItem = ({ account, balanceData, onPress }: ChooseAccou
         <Card borderColor="borderNeutral" noPadding style={applyStyle(itemCardStyle)}>
             <PressableOpacity onPress={handlePress} style={applyStyle(rowStyle)}>
                 <Box marginRight="sp12">
-                    <CryptoIcon symbol={account.symbol} />
+                    <TokenIcon symbol={account.symbol} />
                 </Box>
 
                 <Box style={applyStyle(labelStyle)}>

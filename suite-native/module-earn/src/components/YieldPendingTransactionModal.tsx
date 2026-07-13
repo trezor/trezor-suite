@@ -26,7 +26,7 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
-import { CryptoIcon, Icon, NetworkIcon } from '@suite-native/icons';
+import { Icon, NetworkIcon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -210,7 +210,7 @@ export const YieldPendingTransactionModal = ({
                                 alignItems="center"
                                 style={applyStyle(valueStyle)}
                             >
-                                <CryptoIcon
+                                <TokenIcon
                                     symbol={accountSymbol}
                                     contractAddress={vaultTokenContract}
                                     size="extraSmall"
@@ -236,7 +236,7 @@ export const YieldPendingTransactionModal = ({
                                     alignItems="center"
                                     style={applyStyle(valueStyle)}
                                 >
-                                    <CryptoIcon
+                                    <TokenIcon
                                         symbol={accountSymbol}
                                         contractAddress={amountTokenContract}
                                         size="extraSmall"

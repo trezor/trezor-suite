@@ -6,7 +6,7 @@ import {
 } from '@suite-common/trading';
 import { findToken, isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { HStack, Text } from '@suite-native/atoms';
-import { CryptoIcon, Icon } from '@suite-native/icons';
+import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { TradeInfoRow } from '@suite-native/trading-atoms';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
@@ -38,7 +38,7 @@ export const RevokeLimitInfoRow = () => {
             </Text>
             <HStack alignItems="center">
                 {!!network?.symbol && (
-                    <CryptoIcon
+                    <TokenIcon
                         symbol={network.symbol}
                         contractAddress={contractAddress}
                         size="extraSmall"

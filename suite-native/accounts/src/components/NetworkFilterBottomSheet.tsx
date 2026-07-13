@@ -14,7 +14,7 @@ import {
     Text,
     VStack,
 } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 
 import { type NativeAccountsRootState, selectNetworkFilterOptions } from '../selectors';
@@ -92,7 +92,7 @@ export const NetworkFilterBottomSheet = forwardRef(
                         <PressableOpacity key={symbol} onPress={() => handleSelectNetwork(symbol)}>
                             <Card noShadow>
                                 <HStack alignItems="center" spacing="sp16">
-                                    <CryptoIcon symbol={symbol} />
+                                    <TokenIcon symbol={symbol} />
                                     <VStack flex={1} spacing={0}>
                                         <Text variant="body-md-strong">
                                             {getNetwork(symbol).name}

@@ -35,7 +35,7 @@ import {
     TokenAmountFormatter,
     TokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
-import { CryptoIcon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     type TokensRootState as NativeTokensRootState,
@@ -160,7 +160,7 @@ export const TokenSettingsBottomSheet = forwardRef(
                                 }
                             >
                                 <HStack alignItems="center" spacing="sp8">
-                                    <CryptoIcon symbol={symbol} size="tiny" />
+                                    <TokenIcon symbol={symbol} size="tiny" />
                                     <Text variant="body-sm">{networkName}</Text>
                                 </HStack>
                             </DetailRow>

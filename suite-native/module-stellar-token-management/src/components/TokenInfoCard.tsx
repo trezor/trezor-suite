@@ -2,7 +2,7 @@ import { Pressable } from 'react-native';
 
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
-import { CryptoIcon, Icon } from '@suite-native/icons';
+import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -42,7 +42,7 @@ export const TokenInfoCard = ({
                     <HStack alignItems="center" spacing="sp12">
                         <VStack spacing="sp8" alignItems="flex-end">
                             <HStack alignItems="center" spacing="sp8">
-                                <CryptoIcon
+                                <TokenIcon
                                     symbol="xlm"
                                     contractAddress={iconContractAddress}
                                     size="extraSmall"
