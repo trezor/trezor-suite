@@ -4,7 +4,7 @@ import { waitForVisible } from '../support/utils';
 
 class AccountReceiveActions {
     async waitForScreen() {
-        await waitForVisible(by.id('@screen/ReceiveAccount'));
+        await waitForVisible(by.id('@screen/ReceiveAddress'));
     }
 
     async tapShowAddressButton() {

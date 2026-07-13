@@ -28,7 +28,7 @@ export const AccountsListEmptyPlaceholder = ({
 
     const isReceiveRoute =
         route.name === ReceiveStackRoutes.ReceiveAccounts ||
-        route.name === ReceiveStackRoutes.ReceiveAccount;
+        route.name === ReceiveStackRoutes.ReceiveAddress;
 
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
