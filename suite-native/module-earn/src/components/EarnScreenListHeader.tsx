@@ -29,7 +29,11 @@ export const EarnScreenListHeader = ({
     isStablecoinYieldLoading,
     isStablecoinYieldClaimSummariesLoading,
 }: EarnScreenListHeaderProps) => {
-    if (stakingActiveItems.length === 0 && stablecoinYieldActiveItems.length === 0) {
+    if (
+        stakingActiveItems.length === 0 &&
+        stablecoinYieldActiveItems.length === 0 &&
+        stablecoinYieldClaimSummaries.length === 0
+    ) {
         return null;
     }
 

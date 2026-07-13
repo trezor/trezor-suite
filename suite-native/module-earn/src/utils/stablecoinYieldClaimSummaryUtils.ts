@@ -13,16 +13,10 @@ import {
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { type StablecoinYieldClaimSummary, type StablecoinYieldEarnItem } from '../types';
-import { hasPositiveContractTokenBalance } from './contractTokenBalanceUtils';
-
-type GetActiveStablecoinYieldClaimAccountsParams = {
-    activeItems: StablecoinYieldEarnItem[];
-    accounts: Account[];
-};
+import { type StablecoinYieldClaimSummary } from '../types';
 
 type BuildStablecoinYieldClaimSummariesParams = {
-    activeAccounts: Account[];
+    accounts: Account[];
     chainsRewardsWithFiat: ChainRewardsWithFiat[];
 };
 
@@ -113,34 +107,6 @@ const getStablecoinYieldAccountRewardsFromMap = (
     };
 };
 
-export const getActiveStablecoinYieldClaimAccounts = ({
-    activeItems,
-    accounts,
-}: GetActiveStablecoinYieldClaimAccountsParams): Account[] => {
-    const accountsByKey = new Map(accounts.map(account => [account.key, account]));
-    const activeAccountsByKey = new Map<Account['key'], Account>();
-
-    for (const item of activeItems) {
-        if (item.accountKey === null) {
-            continue;
-        }
-
-        const account = accountsByKey.get(item.accountKey);
-
-        if (!account) {
-            continue;
-        }
-
-        if (!hasPositiveContractTokenBalance(account, item.receiptTokenContract)) {
-            continue;
-        }
-
-        activeAccountsByKey.set(item.accountKey, account);
-    }
-
-    return Array.from(activeAccountsByKey.values());
-};
-
 export const getStablecoinYieldAccountRewards = ({
     account,
     chainsRewardsWithFiat,
@@ -172,12 +138,12 @@ export const getStablecoinYieldClaimRewardsSnapshot = ({
     }));
 
 export const buildStablecoinYieldClaimSummaries = ({
-    activeAccounts,
+    accounts,
     chainsRewardsWithFiat,
 }: BuildStablecoinYieldClaimSummariesParams): StablecoinYieldClaimSummary[] => {
     const chainsRewardsByAccountKey = getChainsRewardsByAccountKey(chainsRewardsWithFiat);
 
-    return activeAccounts.flatMap(account => {
+    return accounts.flatMap(account => {
         const accountRewards = getStablecoinYieldAccountRewardsFromMap(
             account,
             chainsRewardsByAccountKey,

@@ -188,7 +188,6 @@ export const useStablecoinYieldListData = () => {
     }, [accounts, yieldOpportunities, isLoading, isError]);
 
     const stablecoinYieldClaimSummariesState = useStablecoinYieldClaimSummaries({
-        activeItems: listData.activeItems,
         accounts,
     });
 
