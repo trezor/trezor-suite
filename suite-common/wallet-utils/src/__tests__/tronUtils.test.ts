@@ -1,7 +1,7 @@
 import { type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import { type TronAccountExtraData } from '@trezor/blockchain-link-types';
 
-import { calculateTronFeeBreakdown } from '../tronUtils';
+import { calculateTronFeeBreakdown, computeBandwidthFeeLevel } from '../tronUtils';
 
 const makeTrc20Tx = (overrides: Record<string, unknown> = {}): GeneralPrecomposedTransaction =>
     ({
@@ -38,6 +38,58 @@ const makeTronResources = (
     totalBandwidthLimit: 0,
     totalBandwidthWeight: 0,
     ...overrides,
+});
+
+describe(computeBandwidthFeeLevel.name, () => {
+    it('returns zero fee when free bandwidth covers the transaction', () => {
+        const result = computeBandwidthFeeLevel({
+            availableStakedBandwidth: 0,
+            availableFreeBandwidth: 300,
+            bytes: 300,
+        });
+        expect(result.feePerTx).toBe('0');
+    });
+
+    it('charges the per-byte price when no bandwidth covers the transaction', () => {
+        const result = computeBandwidthFeeLevel({
+            availableStakedBandwidth: 0,
+            availableFreeBandwidth: 0,
+            bytes: 300,
+        });
+        expect(result.feePerTx).toBe('300000');
+    });
+
+    it('new account: free bandwidth is not accepted — charges the flat create-account fee', () => {
+        // The network refuses free bandwidth for account-creating transfers and burns
+        // the flat 0.1 TRX `getCreateAccountFee` instead of the per-byte price.
+        const result = computeBandwidthFeeLevel({
+            availableStakedBandwidth: 0,
+            availableFreeBandwidth: 600,
+            bytes: 300,
+            isNewAccount: true,
+        });
+        expect(result.feePerTx).toBe('100000');
+    });
+
+    it('new account: staked bandwidth covers the transaction — zero fee', () => {
+        const result = computeBandwidthFeeLevel({
+            availableStakedBandwidth: 300,
+            availableFreeBandwidth: 0,
+            bytes: 300,
+            isNewAccount: true,
+        });
+        expect(result.feePerTx).toBe('0');
+    });
+
+    it('new account: insufficient staked bandwidth — charges the flat create-account fee', () => {
+        const result = computeBandwidthFeeLevel({
+            availableStakedBandwidth: 100,
+            availableFreeBandwidth: 0,
+            bytes: 300,
+            isNewAccount: true,
+        });
+        expect(result.feePerTx).toBe('100000');
+    });
 });
 
 describe(calculateTronFeeBreakdown.name, () => {
@@ -132,6 +184,36 @@ describe(calculateTronFeeBreakdown.name, () => {
         );
         expect(result?.trxBurned.toString()).toBe('0.01');
         expect(result?.coveredEnergy.toNumber()).toBe(1000);
+    });
+
+    it('native TRX to new account: free bandwidth is not accepted — burns create-account fee', () => {
+        // Tx: bandwidth: 300, activates the recipient account
+        // Account: free bandwidth: 300, staked bandwidth: 0
+        // Expected: trxBurned: 0.1 TRX (flat create-account fee), coveredBandwidth: 0
+        const tx = {
+            ...makeNativeTrxTx(),
+            accountActivationFee: '1000000',
+        } as GeneralPrecomposedTransaction;
+        const result = calculateTronFeeBreakdown(tx, makeTronResources(), 'trx');
+        expect(result?.trxBurned.toString()).toBe('0.1');
+        expect(result?.coveredBandwidth.toNumber()).toBe(0);
+    });
+
+    it('native TRX to new account: staked bandwidth covers — 0 TRX burned', () => {
+        // Tx: bandwidth: 300, activates the recipient account
+        // Account: free bandwidth: 0, staked bandwidth: 300
+        // Expected: trxBurned: 0 TRX, coveredBandwidth: 300
+        const tx = {
+            ...makeNativeTrxTx(),
+            accountActivationFee: '1000000',
+        } as GeneralPrecomposedTransaction;
+        const result = calculateTronFeeBreakdown(
+            tx,
+            makeTronResources({ availableFreeBandwidth: 0, availableStakedBandwidth: 300 }),
+            'trx',
+        );
+        expect(result?.trxBurned.toNumber()).toBe(0);
+        expect(result?.coveredBandwidth.toNumber()).toBe(300);
     });
 
     it('native TRX with memo: adds 1 TRX memo fee on top of bandwidth', () => {
