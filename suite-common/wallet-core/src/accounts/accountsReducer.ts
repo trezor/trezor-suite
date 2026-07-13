@@ -39,7 +39,8 @@ const update = (state: Account[], account: Account) => {
         }
     } else {
         console.warn(
-            `Tried to update account that does not exist: ${account.descriptor} (symbol: ${account.symbol})`,
+            // do not log the descriptor: it is confidential and would leak into Sentry breadcrumbs
+            `Tried to update account that does not exist (symbol: ${account.symbol}, type: ${account.accountType}, index: ${account.index})`,
         );
     }
 };
