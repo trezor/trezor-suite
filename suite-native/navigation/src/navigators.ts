@@ -171,7 +171,7 @@ export type SettingsStackParamList = {
 
 export type ReceiveStackParamList = {
     [ReceiveStackRoutes.ReceiveAccounts]: undefined;
-    [ReceiveStackRoutes.ReceiveAccount]: AccountDetailParams;
+    [ReceiveStackRoutes.ReceiveAddress]: AccountDetailParams;
 };
 
 export type SendStackParamList = {

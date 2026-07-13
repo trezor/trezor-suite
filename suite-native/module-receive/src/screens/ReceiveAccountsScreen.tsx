@@ -41,7 +41,7 @@ export const ReceiveAccountsScreen = () => {
             },
         });
 
-        navigation.navigate(ReceiveStackRoutes.ReceiveAccount, {
+        navigation.navigate(ReceiveStackRoutes.ReceiveAddress, {
             accountKey: account.key,
             tokenContract: tokenAddress,
             closeActionType: 'back',
