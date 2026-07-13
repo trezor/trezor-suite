@@ -1,11 +1,10 @@
-import Animated, { Layout } from 'react-native-reanimated';
-
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type AccountDescriptor } from '@suite-common/wallet-types';
-import { AddressQRCode } from '@suite-native/address';
-import { Box, Card, type InlineAlertBoxProps } from '@suite-native/atoms';
+import { InlineAlertBox, type InlineAlertBoxProps, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import type { StaticSessionId } from '@trezor/connect';
+
+import { AddressQRCode } from './AddressQRCode';
 
 type ReceiveAddressCardProps = {
     address: string;
@@ -51,18 +50,15 @@ export const ReceiveAddressCard = ({
     const cardAlertProps = getCardAlertProps();
 
     return (
-        <Animated.View layout={Layout}>
-            <Card alertProps={cardAlertProps}>
-                <Box paddingVertical="sp8">
-                    <AddressQRCode
-                        accountDescriptor={accountDescriptor}
-                        address={address}
-                        deviceStaticSessionId={deviceStaticSessionId}
-                        networkSymbol={symbol}
-                        showLabelEdit={!isTokenAddress}
-                    />
-                </Box>
-            </Card>
-        </Animated.View>
+        <VStack spacing="sp16" flex={1}>
+            <AddressQRCode
+                accountDescriptor={accountDescriptor}
+                address={address}
+                deviceStaticSessionId={deviceStaticSessionId}
+                networkSymbol={symbol}
+                showLabelEdit={!isTokenAddress}
+            />
+            {cardAlertProps && <InlineAlertBox {...cardAlertProps} />}
+        </VStack>
     );
 };
