@@ -162,6 +162,67 @@ export const actionFixtures = [
             ],
         },
     },
+    {
+        description: 'addTxCandidate adds a candidate for a new roundId',
+        initialState: {
+            ...initialState,
+            accounts: [account],
+        },
+        actions: [
+            {
+                type: COINJOIN.SESSION_TX_CANDIDATE,
+                payload: { accountKey: 'A', roundId: '00' },
+            },
+        ],
+        result: {
+            ...initialState,
+            accounts: [{ ...account, transactionCandidates: [{ roundId: '00' }] }],
+        },
+    },
+    {
+        description: 'addTxCandidate deduplicates a repeated roundId',
+        initialState: {
+            ...initialState,
+            accounts: [account],
+        },
+        actions: [
+            {
+                type: COINJOIN.SESSION_TX_CANDIDATE,
+                payload: { accountKey: 'A', roundId: '00' },
+            },
+            {
+                type: COINJOIN.SESSION_TX_CANDIDATE,
+                payload: { accountKey: 'A', roundId: '00' },
+            },
+        ],
+        result: {
+            ...initialState,
+            accounts: [{ ...account, transactionCandidates: [{ roundId: '00' }] }],
+        },
+    },
+    {
+        description: 'addTxCandidate keeps candidates with distinct roundIds',
+        initialState: {
+            ...initialState,
+            accounts: [account],
+        },
+        actions: [
+            {
+                type: COINJOIN.SESSION_TX_CANDIDATE,
+                payload: { accountKey: 'A', roundId: '00' },
+            },
+            {
+                type: COINJOIN.SESSION_TX_CANDIDATE,
+                payload: { accountKey: 'A', roundId: '11' },
+            },
+        ],
+        result: {
+            ...initialState,
+            accounts: [
+                { ...account, transactionCandidates: [{ roundId: '00' }, { roundId: '11' }] },
+            ],
+        },
+    },
 ];
 
 export const selectorFixtures = [
