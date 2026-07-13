@@ -187,9 +187,10 @@ export const TradingExchangeFormInputs = () => {
                     />
                 </TradingFormSection>
             </TradingFormCard>
+
             {receiveCryptoSelect && (
                 <TradingFormCard>
-                    {receiveCryptoSelect && !isLoading && <TradingReceiveAddress />}
+                    {!isLoading && <TradingReceiveAddress />}
                     {!!quotes.length && (
                         <TradingFormFees
                             feeInfo={feeInfo}
