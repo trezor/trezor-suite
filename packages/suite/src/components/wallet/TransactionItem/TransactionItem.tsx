@@ -147,6 +147,8 @@ export const TransactionItem = memo(
                     symbol: transaction.symbol,
                     deviceState: transaction.deviceState,
                     flow,
+                    // The tx list is the only entry point that reflects a cancel; enable the button here.
+                    showCancelButton: true,
                 }),
             );
         };

@@ -41,6 +41,7 @@ type TxDetailModalProps = {
     symbol: Account['symbol'];
     deviceState: Account['deviceState'];
     flow: 'detail' | 'bump-fee' | 'cancel-transaction';
+    showCancelButton?: boolean;
     onCancel: () => void;
 };
 
@@ -50,6 +51,7 @@ export const TxDetailModal = ({
     symbol,
     deviceState,
     flow,
+    showCancelButton,
     onCancel,
 }: TxDetailModalProps) => {
     const [section, setSection] = useState<TxDetailModalProps['flow']>(flow);
@@ -158,8 +160,13 @@ export const TxDetailModal = ({
 
     const canReplaceTransaction = hasRbfParams(tx) && isTransactionBumpable(tx, networkFeatures);
 
+    // Cancel is only offered from the account transaction list (which reflects the cancel once
+    // it's broadcast). Other entry points open this modal without `showCancelButton`, so the
+    // Cancel button stays hidden there. Bump-fee is intentionally not gated this way.
     const canCancelTransaction =
-        isTransactionCancellable(tx, isPending(tx), networkFeatures) && !isNonceStuck;
+        isTransactionCancellable(tx, isPending(tx), networkFeatures) &&
+        !isNonceStuck &&
+        !!showCancelButton;
 
     if (section === 'bump-fee' && canReplaceTransaction && !isNonceStuck) {
         return (
