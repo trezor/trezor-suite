@@ -5,6 +5,8 @@ import { inspect } from 'node:util';
 
 export type CapturedToast = { testId: string; intent: string; text: string };
 
+export type Watcher = { stop: () => void };
+
 const formatError = (error: unknown): string => {
     if (error instanceof Error) {
         let output = error.stack || `${error.name}: ${error.message}`;
@@ -68,13 +70,13 @@ const isToastIgnored = (toast: CapturedToast, ignoreToastErrors: string[]): bool
 
 export const jsExceptionWatcher = async (
     { page, ignoreJSExceptions }: { page: Page; ignoreJSExceptions: string[] },
-    use: () => Promise<void>,
+    use: (watcher: Watcher) => Promise<void>,
     testInfo: TestInfo,
 ) => {
     const errors: Error[] = [];
     const ignored: Error[] = [];
 
-    page.on('pageerror', (error: Error) => {
+    const onPageError = (error: Error) => {
         const message = error?.message || '';
 
         if (isExceptionIgnored(message, ignoreJSExceptions)) {
@@ -82,9 +84,10 @@ export const jsExceptionWatcher = async (
         } else {
             errors.push(error);
         }
-    });
+    };
+    page.on('pageerror', onPageError);
 
-    await use();
+    await use({ stop: () => page.off('pageerror', onPageError) });
 
     if (ignored.length > 0) {
         testInfo.annotations.push({
@@ -102,13 +105,16 @@ export const jsExceptionWatcher = async (
 
 export const toastErrorWatcher = async (
     { page, ignoreToastErrors }: { page: Page; ignoreToastErrors: string[] },
-    use: () => Promise<void>,
+    use: (watcher: Watcher) => Promise<void>,
     testInfo: TestInfo,
 ) => {
     const captured: CapturedToast[] = [];
+    let recording = true;
 
     await page.exposeFunction('__reportToast', (toast: CapturedToast) => {
-        captured.push(toast);
+        if (recording) {
+            captured.push(toast);
+        }
     });
 
     // Inject into the already-loaded page so the observer is active for the whole test.
@@ -116,7 +122,11 @@ export const toastErrorWatcher = async (
     // Register for any subsequent full navigations within the test.
     await page.addInitScript(installToastObserver);
 
-    await use();
+    await use({
+        stop: () => {
+            recording = false;
+        },
+    });
 
     const unexpected = captured.filter(toast => !isToastIgnored(toast, ignoreToastErrors));
 

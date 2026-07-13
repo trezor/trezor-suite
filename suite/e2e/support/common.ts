@@ -78,10 +78,11 @@ export const formatEvmAddress = (address: string) => {
 export const formatAddressWithNewlines = (address: string) =>
     formatEvmAddress(address).replace(REGEXP_ADDRESS_CHUNKS, '$1\n');
 
-// This function is used to override automatic fixtures that we want to skip in specific tests.
+// This overrides any auto fixture in tests that opt out of it; the skipped value is undefined, so
+// consumers of an optional fixture must guard against it (e.g. watcher?.stop()).
 /* eslint-disable react-hooks/rules-of-hooks */
-export async function skipFixture({}, use: (r: void) => Promise<void>) {
-    await use();
+export async function skipFixture<T = void>({}, use: (fixture: T | undefined) => Promise<void>) {
+    await use(undefined);
 }
 /* eslint-enable react-hooks/rules-of-hooks */
 

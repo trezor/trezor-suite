@@ -10,7 +10,7 @@ import { getUrl, isDesktopProject } from '../common';
 import { currentsTest } from './currentsFixture';
 import { enhancePage } from './enhancePage';
 import { PlaywrightTarget, SuiteTestOptions } from './suiteTestOptions';
-import { jsExceptionWatcher, toastErrorWatcher } from './watchers';
+import { Watcher, jsExceptionWatcher, toastErrorWatcher } from './watchers';
 import { DeviceFixture } from '../device';
 import { wipeAndRestartEvoluServer } from '../helpers/evoluClient';
 import { electronSetup, electronTeardown, trezorUserEnvStuckProtection, webSetup } from '../setup';
@@ -30,8 +30,8 @@ type SuiteBaseFixture = {
     trezorUserEnv: TrezorUserEnv;
     electronApp: ElectronApplication | undefined;
     page: Page;
-    jsExceptionWatcher: void;
-    toastErrorWatcher: void;
+    jsExceptionWatcher: Watcher | undefined;
+    toastErrorWatcher: Watcher | undefined;
     coverageMapCollector: void;
 };
 
@@ -101,7 +101,16 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
             });
 
             if (!model || !firmwareVersion) {
-                await use(undefined as unknown as DeviceFixture);
+                await use(
+                    new Proxy({} as DeviceFixture, {
+                        get(_target, prop) {
+                            throw new Error(
+                                `"device" fixture is unavailable: this test set no model/firmwareVersion. ` +
+                                    `Tag it with a device model before using device.${String(prop)}.`,
+                            );
+                        },
+                    }),
+                );
 
                 return;
             }
@@ -185,5 +194,15 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
         { auto: true },
     ],
 });
+
+// Stopping our watchers right after test, so we don't collect irrelevant errors caused by teardown phase
+suiteBaseTest.afterEach(
+    async ({ jsExceptionWatcher: jsWatcher, toastErrorWatcher: toastWatcher }) => {
+        await suiteBaseTest.step('Stopping watchers', () => {
+            jsWatcher?.stop();
+            toastWatcher?.stop();
+        });
+    },
+);
 
 export { suiteBaseTest };
