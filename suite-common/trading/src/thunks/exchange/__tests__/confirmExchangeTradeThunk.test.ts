@@ -446,6 +446,60 @@ describe('confirmExchangeTradeThunk', () => {
         expect(!!response).toBeFalsy();
     });
 
+    it('should keep a failed approvalFlow trade with orderId on the form instead of routing to detail', async () => {
+        const {
+            store,
+            returnUrl,
+            receiveAddress,
+            account,
+            trade,
+            mockProcessResponseData,
+            mockNextStep,
+            mockTriggerAnalyticsTradeConfirmation,
+        } = getMocks();
+
+        const mockResponse = {
+            status: 'ERROR',
+            orderId: 'orderId',
+            error: 'Server error',
+        };
+        const tradeResponse = { ...trade, ...mockResponse } as ExchangeTrade;
+
+        invityAPI.doExchangeTrade = () => Promise.resolve(tradeResponse);
+
+        const response = await store
+            .dispatch(
+                exchangeThunks.confirmTradeThunk({
+                    returnUrl,
+                    receiveAddress,
+                    account,
+                    trade,
+                    approvalFlow: true,
+                    nextStep: mockNextStep,
+                    triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
+                    processResponseData: mockProcessResponseData,
+                }),
+            )
+            .unwrap();
+
+        const { trading } = store.getState().wallet;
+        const { exchange } = trading;
+
+        const toastAction = store
+            .getActions()
+            .find(action => action.type === 'mockedLogErrorThunk');
+
+        expect(toastAction?.payload).toEqual({
+            tradingType: 'exchange',
+            errorMessage: { code: 'unknown', message: 'Server error' },
+        });
+        expect(exchange.transactionId).toBeUndefined();
+        expect(exchange.selectedQuote).toEqual(tradeResponse);
+        expect(mockNextStep).not.toHaveBeenCalled();
+        expect(trading.trades).toEqual([]);
+        expect(!!response).toBeFalsy();
+    });
+
     describe('should return true from confirmation for approval and sign transaction', () => {
         it.each([
             [

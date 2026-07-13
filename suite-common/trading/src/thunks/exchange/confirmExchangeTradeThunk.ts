@@ -113,7 +113,10 @@ export const confirmExchangeTradeThunk = createThunk(
         ) {
             dispatch(tradingExchangeActions.saveSelectedQuote(response));
 
-            if (response.status === 'ERROR' && response.orderId) {
+            const shouldRouteFailedTradeToDetail =
+                !approvalFlow && response.status === 'ERROR' && !!response.orderId;
+
+            if (shouldRouteFailedTradeToDetail) {
                 dispatch(
                     tradingActions.saveTrade({
                         tradeType: 'exchange',
