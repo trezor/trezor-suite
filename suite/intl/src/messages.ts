@@ -5600,7 +5600,7 @@ export const messages = defineMessages({
     TR_TRON_VOTE_CONSENT_MODAL_BANNER_2_TEXT: {
         id: 'TR_TRON_VOTE_CONSENT_MODAL_BANNER_2_TEXT',
         defaultMessage:
-            'Use Trezor Suite to securely delegate your voting rights to {representativeName}. Enjoy competitive rewards, rely on a trusted Super Representative, and keep full ownership of your TRX at all times.',
+            'Use Trezor Suite to securely delegate your voting rights to {representativeName}. Enjoy competitive rewards, rely on a trusted Super Representative, and keep full ownership of your TRX at all times. To process your staking and votes correctly, transaction IDs are shared with Trezor.',
     },
     TR_TRON_BANDWIDTH: {
         id: 'TR_TRON_BANDWIDTH',
