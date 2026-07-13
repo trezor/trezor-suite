@@ -23,6 +23,7 @@ import { FeeSelector } from '@suite-native/transaction-management';
 
 import { YieldClaimFlowFooter } from '../components/YieldClaimFlowFooter';
 import { YieldClaimRewardsCard } from '../components/YieldClaimRewardsCard';
+import { YieldFeeEstimationErrorAlert } from '../components/YieldFeeEstimationErrorAlert';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { YieldTxSimulationBottomSheet } from '../components/YieldTxSimulationBottomSheet';
 import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransactionFailureAlert';
@@ -198,14 +199,18 @@ export const YieldClaimScreen = () => {
                         isLoading={isClaimRewardsLoading}
                     />
 
-                    <FeeSelector
-                        accountKey={account.key}
-                        updateThunk={claimFee.updateFeeLevelThunk}
-                        selectedFee={claimFee.selectedFee}
-                        selectedFeePerUnit={claimFee.formDraft?.feePerUnit}
-                        formDraft={claimFee.formDraft}
-                        formDraftKey={claimFee.formDraftKey}
-                    />
+                    {claimFee.hasFeeEstimationError ? (
+                        <YieldFeeEstimationErrorAlert onRetry={claimFee.retryFeeEstimation} />
+                    ) : (
+                        <FeeSelector
+                            accountKey={account.key}
+                            updateThunk={claimFee.updateFeeLevelThunk}
+                            selectedFee={claimFee.selectedFee}
+                            selectedFeePerUnit={claimFee.formDraft?.feePerUnit}
+                            formDraft={claimFee.formDraft}
+                            formDraftKey={claimFee.formDraftKey}
+                        />
+                    )}
 
                     {shouldShowFeeWarning && (
                         <FullAlertBox

@@ -44,6 +44,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { YieldDepositFlowScreenHeader } from '../components/YieldDepositFlowScreenHeader';
 import { YieldDepositInfoBottomSheet } from '../components/YieldDepositInfoBottomSheet';
+import { YieldFeeEstimationErrorAlert } from '../components/YieldFeeEstimationErrorAlert';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { YieldWithdrawWarning } from '../components/YieldWithdrawWarning';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
@@ -154,9 +155,11 @@ export const YieldWithdrawScreen = () => {
         fee: withdrawFee,
         formDraft: withdrawFeeFormDraft,
         formDraftKey: withdrawFeeFormDraftKey,
+        hasFeeEstimationError,
         isComposingWithdrawFee,
         isFeeUnavailable,
         preparedAction,
+        retryFeeEstimation,
         selectedFee: selectedWithdrawFee,
         updateFeeLevelThunk: updateWithdrawFeeLevelThunk,
     } = useYieldWithdrawFees({
@@ -542,6 +545,10 @@ export const YieldWithdrawScreen = () => {
                         )}
                     </VStack>
                 </Card>
+
+                {hasFeeEstimationError && (
+                    <YieldFeeEstimationErrorAlert onRetry={retryFeeEstimation} />
+                )}
 
                 {isWithdrawReviewReady && (
                     <FeeSelector

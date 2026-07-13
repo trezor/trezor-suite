@@ -1,7 +1,6 @@
 import { asEvmAddress } from '@suite-common/calldata';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
-import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     asAmountUnit,
     getAccountIdentity,
@@ -9,12 +8,11 @@ import {
     tokenSupportsIncreasingAllowance,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
-import TrezorConnect from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
-import { getApprovalRequestAmount, setYieldGenericError } from './stablecoinYieldApprovalThunks';
+import { getApprovalRequestAmount } from './stablecoinYieldApprovalThunks';
 import { STABLECOIN_YIELD_PREFIX } from './stablecoinYieldConstants';
-import { stablecoinYieldActions } from './stablecoinYieldReducer';
+import { estimateYieldFeeLevel } from './stablecoinYieldFeeEstimation';
 import type { YieldFlowResolvedData } from './stablecoinYieldTypes';
 import {
     buildYieldDepositCalldata,
@@ -33,7 +31,13 @@ export type YieldDepositErrorReason =
     | 'missing-deposit-params'
     | 'vault-chain-mismatch'
     | 'missing-fee-level'
+    | 'fee-estimation-failed'
     | 'compose-failed';
+
+export const getYieldDepositErrorTranslationKey = (reason: YieldDepositErrorReason) =>
+    reason === 'fee-estimation-failed'
+        ? ('TR_EARN_YIELD_ERROR_FEE_ESTIMATION' as const)
+        : ('TR_EARN_YIELD_ERROR_GENERIC' as const);
 
 export type PrepareYieldDepositResult =
     | {
@@ -55,12 +59,6 @@ export type PrepareYieldDepositResult =
       };
 
 type ComposeYieldDepositTransactionPayload = {
-    flowData: YieldFlowResolvedData;
-    amount: string;
-};
-
-type PrepareYieldDepositPayload = {
-    flowKey: string;
     flowData: YieldFlowResolvedData;
     amount: string;
 };
@@ -124,30 +122,25 @@ export const composeYieldDepositTransactionThunk = createThunk<
             receiverAddress: ownerAddress,
         });
 
-        const [{ nonce }, estimatedFee] = await Promise.all([
+        const [{ nonce }, estimatedFeeLevel] = await Promise.all([
             dispatch(
                 ethereumGetCurrentNonceThunk({
                     selectedAccount: account,
                     fetchConfirmedNonce: true,
                 }),
             ).unwrap(),
-            TrezorConnect.blockchainEstimateFee({
+            estimateYieldFeeLevel({
                 coin: account.symbol,
                 identity: getAccountIdentity(account),
-                request: {
-                    blocks: [2],
-                    specific: {
-                        from: account.descriptor,
-                        to: spender,
-                        data: calldata,
-                        value: '0x0',
-                    },
-                },
+                from: account.descriptor,
+                to: spender,
+                data: calldata,
             }),
         ]);
-        const estimatedGasLimit = estimatedFee.success
-            ? estimatedFee.payload.levels[0]?.feeLimit
-            : undefined;
+
+        if (!estimatedFeeLevel.success) {
+            return { type: 'error', reason: 'fee-estimation-failed' } as const;
+        }
 
         const feeInfo = getConvertedOrDefaultFeeInfo({
             networkType: account.networkType,
@@ -166,7 +159,7 @@ export const composeYieldDepositTransactionThunk = createThunk<
                 data: calldata,
                 feeLevel: normalLevel,
                 from: account.descriptor,
-                gasLimit: estimatedGasLimit ?? ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
+                gasLimit: estimatedFeeLevel.payload.feeLimit,
                 nonce: Number(nonce),
                 to: spender,
             }),
@@ -186,36 +179,5 @@ export const composeYieldDepositTransactionThunk = createThunk<
             unsignedTransaction,
             receiptAmount,
         };
-    },
-);
-
-export const prepareYieldDepositThunk = createThunk<
-    PrepareYieldDepositResult,
-    PrepareYieldDepositPayload,
-    void
->(
-    `${YIELD_DEPOSIT_THUNK_PREFIX}/prepareDeposit`,
-    async ({ flowKey, flowData, amount }, { dispatch }) => {
-        const flowType = 'deposit' as const;
-
-        dispatch(stablecoinYieldActions.startSubmittingAction({ flowType, flowKey, amount }));
-
-        try {
-            const result = await dispatch(
-                composeYieldDepositTransactionThunk({ flowData, amount }),
-            ).unwrap();
-
-            if (result.type === 'error') {
-                setYieldGenericError({ dispatch, flowType, flowKey });
-            }
-
-            return result;
-        } catch {
-            setYieldGenericError({ dispatch, flowType, flowKey });
-
-            return { type: 'error', reason: 'compose-failed' } as const;
-        } finally {
-            dispatch(stablecoinYieldActions.finishSubmittingAction({ flowType, flowKey }));
-        }
     },
 );

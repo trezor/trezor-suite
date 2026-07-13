@@ -9,71 +9,29 @@ import {
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin/src/tx-simulation';
 import { type YieldAccountsRewards } from '@suite-common/earn-stablecoin-api';
 import { createThunk } from '@suite-common/redux-utils';
-import { type EvmHexString } from '@suite-common/schemas/src/evm';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import {
-    type NetworkSymbol,
-    getEarnYieldClaimContractAddress,
-    getNetwork,
-} from '@suite-common/wallet-config';
-import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
+import { getEarnYieldClaimContractAddress, getNetwork } from '@suite-common/wallet-config';
 import {
     STABLECOIN_YIELD_PREFIX,
+    type YieldEstimatedFeeLevel,
+    estimateYieldFeeLevel,
     selectAddressDisplayType,
     selectIsMevProtectionEnabled,
     stablecoinYieldActions,
     synchronizeSentTransactionThunk,
 } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
-import {
-    type Account,
-    type AccountDescriptor,
-    AddressDisplayOptions,
-} from '@suite-common/wallet-types';
+import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getAccountIdentity, getMevProtectedTxData } from '@suite-common/wallet-utils';
-import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 
 import { getYieldErrorTranslationKey } from './signingHelpers';
 
 type ClaimMerklReward = YieldAccountsRewards[number]['rewards'][number];
 
-interface GetEstimatedClaimFeeParams {
-    networkSymbol: NetworkSymbol;
-    from: AccountDescriptor;
-    to: EvmHexString;
-    data: EvmHexString;
-    deviceState: StaticSessionId;
-    value?: EvmHexString;
-}
+const getClaimFee = (feeLevel: YieldEstimatedFeeLevel) => {
+    const gasLimit = feeLevel.feeLimit;
 
-async function getEstimatedFee({
-    networkSymbol,
-    from,
-    to,
-    data,
-    deviceState,
-    value = '0x0',
-}: GetEstimatedClaimFeeParams) {
-    const estimatedFee = await TrezorConnect.blockchainEstimateFee({
-        coin: networkSymbol,
-        identity: deviceState,
-        request: {
-            blocks: [2],
-            specific: { from, to, data, value },
-        },
-    });
-
-    if (!estimatedFee.success) {
-        throw new Error('Failed to estimate fee for claim transaction.');
-    }
-
-    const feeLevel = estimatedFee.payload.levels[0];
-
-    if (!feeLevel) {
-        throw new Error('No fee level available.');
-    }
-
-    const gasLimit = feeLevel.feeLimit ?? ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT;
     const eip1559MediumFee = feeLevel.eip1559?.medium;
 
     if (eip1559MediumFee?.maxFeePerGas && eip1559MediumFee?.maxPriorityFeePerGas) {
@@ -89,7 +47,7 @@ async function getEstimatedFee({
         gasPrice: feeLevel.feePerUnit,
         gasLimit,
     };
-}
+};
 
 type ClaimMerklRewardsParams = {
     account: Account;
@@ -126,6 +84,18 @@ export const claimMerklRewardsThunk = createThunk(
             throw new Error('Merkl.xyz contract address not found for network.');
         }
 
+        const reportSubmitError = (errorMessage = 'submit-failed') =>
+            asTypedDesktopAnalytics(extra.services.analytics).report({
+                type: events.yieldClaimEvent.name,
+                payload: {
+                    type: 'error',
+                    action: 'continue',
+                    networkSymbol: account.symbol,
+                    rewardCount: rewards.length,
+                    errorMessage,
+                },
+            });
+
         dispatch(
             stablecoinYieldActions.startSubmittingAction({
                 flowType: 'claim',
@@ -140,9 +110,9 @@ export const claimMerklRewardsThunk = createThunk(
                 rewards,
             });
 
-            const estimatedFeeTask = getEstimatedFee({
-                networkSymbol: account.symbol,
-                deviceState: account.deviceState,
+            const estimatedFeeLevelTask = estimateYieldFeeLevel({
+                coin: account.symbol,
+                identity: account.deviceState,
                 from: account.descriptor,
                 to: merklXyzContractAddress,
                 data: claimCalldata,
@@ -155,13 +125,29 @@ export const claimMerklRewardsThunk = createThunk(
                 }),
             ).unwrap();
 
-            const [estimatedFee, { nonce }] = await Promise.all([estimatedFeeTask, nonceTask]);
+            const [estimatedFeeLevel, { nonce }] = await Promise.all([
+                estimatedFeeLevelTask,
+                nonceTask,
+            ]);
+
+            if (!estimatedFeeLevel.success) {
+                reportSubmitError(estimatedFeeLevel.error);
+                dispatch(
+                    stablecoinYieldActions.setError({
+                        flowType: 'claim',
+                        flowKey,
+                        error: 'TR_EARN_YIELD_ERROR_FEE_ESTIMATION',
+                    }),
+                );
+
+                return;
+            }
 
             const unsignedClaimTx = buildUnsignedClaimTransaction({
                 contractAddress: merklXyzContractAddress,
                 data: claimCalldata,
                 chainId: network.chainId,
-                fee: estimatedFee,
+                fee: getClaimFee(estimatedFeeLevel.payload),
                 nonce,
             });
 
@@ -302,24 +288,12 @@ export const claimMerklRewardsThunk = createThunk(
                 );
 
                 return pushResponse.payload;
-                // eslint-disable-next-line no-useless-catch
-            } catch (error) {
-                throw error;
             } finally {
                 dispatch(stablecoinYieldActions.discardTransaction());
             }
         } catch (error) {
             console.error(error);
-            asTypedDesktopAnalytics(extra.services.analytics).report({
-                type: events.yieldClaimEvent.name,
-                payload: {
-                    type: 'error',
-                    action: 'continue',
-                    networkSymbol: account.symbol,
-                    rewardCount: rewards.length,
-                    errorMessage: 'submit-failed',
-                },
-            });
+            reportSubmitError();
             dispatch(
                 stablecoinYieldActions.setError({
                     flowType: 'claim',

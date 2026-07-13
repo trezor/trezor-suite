@@ -8,10 +8,10 @@ import {
 import type { UnsignedClaimTransaction } from '@suite-common/earn-stablecoin/src/signing';
 import { type EvmHexString } from '@suite-common/schemas/src/evm';
 import { getEarnYieldClaimContractAddress, getNetwork } from '@suite-common/wallet-config';
-import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     type FeesRootState,
     type FormDraftRootState,
+    estimateYieldFeeLevel,
     ethereumGetCurrentNonceThunk,
     formDraftActions,
     selectConvertedNetworkFeeInfo,
@@ -29,10 +29,10 @@ import {
     selectFeeLevels,
     transactionManagementActions,
 } from '@suite-native/transaction-management';
-import TrezorConnect from '@trezor/connect';
 import { useDebounce } from '@trezor/react-utils';
 
 import { buildEarnComposeFormState } from '../utils';
+import { useYieldFeeEstimationError } from './useYieldFeeEstimationError';
 import { type StablecoinYieldAccountRewards } from '../utils/stablecoinYieldClaimSummaryUtils';
 import { buildYieldClaimFeeLevels, getYieldClaimFee } from '../utils/yieldClaimFeeUtils';
 import {
@@ -68,36 +68,6 @@ type PrepareClaimFeeParams = {
     rewards: StablecoinYieldAccountRewards['rewards'];
 };
 
-const getEstimatedClaimGasLimit = async ({
-    account,
-    contractAddress,
-    data,
-}: {
-    account: AccountWithNetworkType<'ethereum'>;
-    contractAddress: EvmHexString;
-    data: EvmHexString;
-}) => {
-    const estimatedFee = await TrezorConnect.blockchainEstimateFee({
-        coin: account.symbol,
-        identity: account.deviceState,
-        request: {
-            blocks: [2],
-            specific: {
-                from: account.descriptor,
-                to: contractAddress,
-                data,
-                value: '0x0',
-            },
-        },
-    });
-
-    if (!estimatedFee.success) {
-        throw new Error('Failed to estimate fee for claim transaction.');
-    }
-
-    return estimatedFee.payload.levels[0]?.feeLimit ?? ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT;
-};
-
 const getClaimFormDraft = ({
     claimCalldata,
     contractAddress,
@@ -119,6 +89,12 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
     const requestIdRef = useRef(0);
     const [baseContext, setBaseContext] = useState<ClaimFeeBaseContext | null>(null);
     const [isPreparingClaimFee, setIsPreparingClaimFee] = useState(false);
+    const {
+        feeEstimationRetryKey,
+        hasFeeEstimationError,
+        retryFeeEstimation,
+        setHasFeeEstimationError,
+    } = useYieldFeeEstimationError();
     const account = accountRewards?.account;
     const accountKey = account?.key;
     const claimFormDraftKey = useMemo(
@@ -202,9 +178,11 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
             }
 
             try {
-                const gasLimitTask = getEstimatedClaimGasLimit({
-                    account: claimAccount,
-                    contractAddress,
+                const feeLevelTask = estimateYieldFeeLevel({
+                    coin: claimAccount.symbol,
+                    identity: claimAccount.deviceState,
+                    from: claimAccount.descriptor,
+                    to: contractAddress,
                     data: claimCalldata,
                 });
                 const nonceTask = dispatch(
@@ -214,9 +192,16 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
                     }),
                 ).unwrap();
 
-                const [gasLimit, { nonce }] = await Promise.all([gasLimitTask, nonceTask]);
+                const [feeLevel, { nonce }] = await Promise.all([feeLevelTask, nonceTask]);
 
                 if (requestId !== requestIdRef.current) {
+                    return;
+                }
+
+                if (!feeLevel.success) {
+                    setHasFeeEstimationError(true);
+                    clearClaimFeeState();
+
                     return;
                 }
 
@@ -229,7 +214,7 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
                     availableBalance: claimAccount.availableBalance,
                     feeInfo,
                     formDraft: claimFormDraft,
-                    gasLimit,
+                    gasLimit: feeLevel.payload.feeLimit,
                 });
 
                 dispatch(
@@ -256,12 +241,14 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
                 }
             }
         },
-        [claimFormDraftKey, clearClaimFeeState, dispatch, feeInfo],
+        [claimFormDraftKey, clearClaimFeeState, dispatch, feeInfo, setHasFeeEstimationError],
     );
 
     useEffect(() => {
         const requestId = requestIdRef.current + 1;
         requestIdRef.current = requestId;
+
+        setHasFeeEstimationError(false);
 
         if (!prepareClaimFeeParams) {
             clearClaimFeeState();
@@ -272,7 +259,14 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
         setBaseContext(null);
         setIsPreparingClaimFee(true);
         void debounce(() => void prepareClaimFee(prepareClaimFeeParams, requestId));
-    }, [clearClaimFeeState, debounce, prepareClaimFee, prepareClaimFeeParams]);
+    }, [
+        clearClaimFeeState,
+        debounce,
+        feeEstimationRetryKey,
+        prepareClaimFee,
+        prepareClaimFeeParams,
+        setHasFeeEstimationError,
+    ]);
 
     useEffect(
         () => () => {
@@ -309,9 +303,11 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
         feePreview,
         formDraft,
         formDraftKey: claimFormDraftKey,
+        hasFeeEstimationError,
         isFeeUnavailable,
         isPreparingClaimFee: !!prepareClaimFeeParams && isPreparingClaimFee,
         preparedAction,
+        retryFeeEstimation,
         selectedFee,
         updateFeeLevelThunk: updateYieldClaimSelectedFeeLevelThunk,
     };

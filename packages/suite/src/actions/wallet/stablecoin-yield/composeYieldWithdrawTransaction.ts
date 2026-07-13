@@ -1,19 +1,19 @@
 import { asEvmAddress } from '@suite-common/calldata';
 import { getYieldVault } from '@suite-common/earn-stablecoin-api';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
-import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
+    type YieldFeeEstimationError,
     type YieldFlowResolvedData,
     type YieldWithdrawFlowType,
     buildYieldUnsignedTransaction,
     buildYieldWithdrawCalldata,
+    estimateYieldFeeLevel,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
-import TrezorConnect from '@trezor/connect';
+import { type Result, err, ok } from '@trezor/type-utils';
 
 import type { AppState, Dispatch } from 'src/types/suite';
 
@@ -33,7 +33,7 @@ export const composeYieldWithdrawTransaction = async ({
     flowType,
     dispatch,
     getState,
-}: ComposeYieldWithdrawTransactionParams): Promise<string> => {
+}: ComposeYieldWithdrawTransactionParams): Promise<Result<string, YieldFeeEstimationError>> => {
     const { vault } = flowData;
 
     const { address: vaultAddress } = await getYieldVault({
@@ -67,31 +67,21 @@ export const composeYieldWithdrawTransaction = async ({
         ethereumGetCurrentNonceThunk({ selectedAccount: account, fetchConfirmedNonce: true }),
     ).unwrap();
 
-    const estimatedFeeTask = TrezorConnect.blockchainEstimateFee({
+    const estimatedFeeTask = estimateYieldFeeLevel({
         coin: account.symbol,
         identity: getAccountIdentity(account),
-        request: {
-            blocks: [2],
-            specific: {
-                from: account.descriptor,
-                to: vaultAddress,
-                data: calldata,
-                value: '0x0',
-            },
-        },
+        from: account.descriptor,
+        to: vaultAddress,
+        data: calldata,
     });
 
-    const [{ nonce }, estimatedFee] = await Promise.all([nonceTask, estimatedFeeTask]);
+    const [{ nonce }, estimatedFeeLevel] = await Promise.all([nonceTask, estimatedFeeTask]);
 
-    const estimatedGasLimit = estimatedFee.success
-        ? estimatedFee.payload.levels[0]?.feeLimit
-        : undefined;
-
-    if (!estimatedGasLimit) {
-        dispatch(notificationsActions.addToast({ type: 'estimated-fee-error' }));
+    if (!estimatedFeeLevel.success) {
+        return err(estimatedFeeLevel.error);
     }
 
-    const gasLimit = estimatedGasLimit ?? ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT;
+    const gasLimit = estimatedFeeLevel.payload.feeLimit;
 
     const feeInfo = getConvertedOrDefaultFeeInfo({
         networkType: account.networkType,
@@ -113,5 +103,5 @@ export const composeYieldWithdrawTransaction = async ({
         to: vaultAddress,
     });
 
-    return JSON.stringify(unsignedTx);
+    return ok(JSON.stringify(unsignedTx));
 };
