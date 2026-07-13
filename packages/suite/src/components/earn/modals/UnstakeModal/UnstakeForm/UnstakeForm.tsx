@@ -2,11 +2,14 @@ import { FormProvider } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
 import { getDisplaySymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { getSolanaUnstakeAmountBounds, getStakingDataForNetwork } from '@suite-common/wallet-utils';
+import {
+    getSolanaUnstakeAmountBounds,
+    getStakingDataForNetwork,
+    getStakingHelpCenterLink,
+} from '@suite-common/wallet-utils';
 import { Banner, Card, Column, InfoItem, Link, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { getStakingHelpCenterLink } from 'src/components/earn/utils/getStakingHelpCenterLink';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { SolanaStakingLimitBanner } from 'src/components/suite/modals/ReduxModal/UserContextModal/SolanaStakingLimitBanner';
 import { Fees } from 'src/components/wallet/Fees/Fees';
