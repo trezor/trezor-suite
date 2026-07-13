@@ -1,6 +1,8 @@
 import '@suite-common/test-utils/src/globalOverrides';
 import { type IDBPDatabase, deleteDB, openDB } from 'idb';
 
+import { type AccountKey } from '@suite-common/wallet-types';
+
 import { type SuiteDBSchema } from 'src/storage/definitions';
 
 import migration from '../26.8.0';
@@ -23,6 +25,7 @@ const createSeedDb = async () => {
         upgrade(upgradeDb) {
             upgradeDb.createObjectStore('accounts');
             upgradeDb.createObjectStore('historicRates');
+            upgradeDb.createObjectStore('receive');
         },
     });
 
@@ -66,6 +69,47 @@ describe('migration 26.8.0', () => {
         expect(await migratedDb.get('historicRates', 'account-1')).toEqual({
             'eth-usd': { 1700000000: 2000 },
             [`eth-${USDT_CONTRACT}-usd`]: { 1700000000: 1 },
+        });
+
+        migratedDb.close();
+    });
+
+    test('renames receive revealed addresses to touched addresses', async () => {
+        const db = await createSeedDb();
+        const accountKey = 'btc-account-key' as AccountKey;
+
+        await db.put(
+            'receive',
+            {
+                revealedAddresses: [
+                    {
+                        path: 'btc-path',
+                        address: 'btc-address',
+                        isVerified: true,
+                    },
+                ],
+                currentFreshAddress: {
+                    path: 'fresh-btc-path',
+                    address: 'fresh-btc-address',
+                },
+            },
+            accountKey,
+        );
+        db.close();
+
+        const migratedDb = await runMigration();
+
+        expect(await migratedDb.get('receive', accountKey)).toEqual({
+            touchedAddresses: [
+                {
+                    path: 'btc-path',
+                    address: 'btc-address',
+                },
+            ],
+            currentFreshAddress: {
+                path: 'fresh-btc-path',
+                address: 'fresh-btc-address',
+            },
         });
 
         migratedDb.close();

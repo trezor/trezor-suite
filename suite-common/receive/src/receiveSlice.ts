@@ -1,6 +1,6 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
-import { type AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import { createSliceWithExtraDeps, createWeakMapSelector } from '@suite-common/redux-utils';
 import { accountsActions } from '@suite-common/wallet-core';
 import { type AccountKey, type ReceiveInfo } from '@suite-common/wallet-types';
 
@@ -30,12 +30,6 @@ type ReceiveActionPayload = {
 
 type SetCurrentFreshAddressPayload = {
     accountKey: AccountKey;
-    currentFreshAddress?: CurrentFreshAddress;
-};
-
-type PersistedReceiveAccountState = {
-    touchedAddresses?: ReceiveInfo[];
-    revealedAddresses?: ReceiveInfo[];
     currentFreshAddress?: CurrentFreshAddress;
 };
 
@@ -79,15 +73,10 @@ export const receiveSlice = createSliceWithExtraDeps({
     name: 'receive',
     initialState: receiveInitialState,
     reducers: {
-        showAddress: {
-            reducer: (state, action: PayloadAction<ReceiveActionPayload>) => {
-                const accountState = getReceiveAccountState(state, action.payload.accountKey);
+        showAddress: (state, action: PayloadAction<ReceiveActionPayload>) => {
+            const accountState = getReceiveAccountState(state, action.payload.accountKey);
 
-                markAddressTouched(accountState, action.payload.path, action.payload.address);
-            },
-            prepare: (accountKey: AccountKey, path: string, address: string) => ({
-                payload: { accountKey, path, address },
-            }),
+            markAddressTouched(accountState, action.payload.path, action.payload.address);
         },
         setCurrentFreshAddress: (state, action: PayloadAction<SetCurrentFreshAddressPayload>) => {
             const accountState = getReceiveAccountState(state, action.payload.accountKey);
@@ -102,45 +91,24 @@ export const receiveSlice = createSliceWithExtraDeps({
                     delete state.accounts[account.key];
                 });
             })
-            .addCase(extra.actionTypes.storageLoad, (state, action) => {
-                const actionWithPayload = action as AnyAction;
-
-                state.accounts = (
-                    (actionWithPayload.payload?.receive ?? []) as {
-                        key: string;
-                        value: PersistedReceiveAccountState;
-                    }[]
-                ).reduce<ReceiveState['accounts']>((accounts, { key, value }) => {
-                    const touchedAddresses =
-                        value.touchedAddresses ?? value.revealedAddresses ?? [];
-
-                    accounts[key as AccountKey] = {
-                        touchedAddresses: touchedAddresses.map(({ path, address }) => ({
-                            path,
-                            address,
-                        })),
-                        currentFreshAddress: value.currentFreshAddress,
-                    };
-
-                    return accounts;
-                }, {});
-            });
+            .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadReceiveAccounts);
     },
 });
 
-const selectReceiveAccountState = (state: ReceiveRootState, accountKey?: AccountKey) => {
-    if (!accountKey) {
-        return emptyReceiveAccountState;
-    }
+const createMemoizedSelector = createWeakMapSelector.withTypes<ReceiveRootState>();
 
-    return state.receive.accounts[accountKey] ?? emptyReceiveAccountState;
-};
+const selectReceiveAccountState = (state: ReceiveRootState, accountKey?: AccountKey) =>
+    accountKey ? state.receive.accounts[accountKey] : undefined;
 
-export const selectTouchedAddresses = (state: ReceiveRootState, accountKey?: AccountKey) =>
-    selectReceiveAccountState(state, accountKey).touchedAddresses;
+export const selectTouchedAddresses = createMemoizedSelector(
+    [selectReceiveAccountState],
+    accountState => accountState?.touchedAddresses ?? emptyReceiveAccountState.touchedAddresses,
+);
 
-export const selectCurrentFreshAddress = (state: ReceiveRootState, accountKey?: AccountKey) =>
-    selectReceiveAccountState(state, accountKey).currentFreshAddress;
+export const selectCurrentFreshAddress = createMemoizedSelector(
+    [selectReceiveAccountState],
+    accountState => accountState?.currentFreshAddress,
+);
 
 export const receiveActions = receiveSlice.actions;
 export const prepareReceiveReducer = receiveSlice.prepareReducer;

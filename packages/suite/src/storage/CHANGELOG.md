@@ -3,6 +3,8 @@
 ## 26.8.0
 
 - remove inaccurate historic ERC4626 fiat rates from storage
+- rename receive `revealedAddresses` to `touchedAddresses`
+- remove `isVerified` flag from receive address entries
 
 ## 26.6.0
 
