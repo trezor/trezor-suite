@@ -113,12 +113,30 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                 'two sources of referential transactions were passed. payload.refTxs have precedence',
             );
         }
+        const options = enhanceSignTx(
+            {
+                lock_time: payload.locktime,
+                timestamp: payload.timestamp,
+                version: payload.version,
+                expiry: payload.expiry,
+                overwintered: payload.overwintered,
+                version_group_id: payload.versionGroupId,
+                branch_id: payload.branchId,
+                amount_unit: payload.amountUnit,
+                serialize: payload.serialize,
+                coinjoin_request: payload.coinjoinRequest,
+                chunkify: typeof payload.chunkify === 'boolean' ? payload.chunkify : false,
+            },
+            coinInfo,
+        );
+
         const refTxs = validateReferencedTransactions({
             transactions: payload.refTxs || payload.account?.transactions,
             inputs,
             outputs,
             coinInfo,
             addresses: payload.account?.addresses,
+            version: options.version,
         });
 
         const outputsWithAmount = outputs.filter(
@@ -149,22 +167,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             paymentRequests,
             refTxs,
             addresses: payload.account ? payload.account.addresses : undefined,
-            options: enhanceSignTx(
-                {
-                    lock_time: payload.locktime,
-                    timestamp: payload.timestamp,
-                    version: payload.version,
-                    expiry: payload.expiry,
-                    overwintered: payload.overwintered,
-                    version_group_id: payload.versionGroupId,
-                    branch_id: payload.branchId,
-                    amount_unit: payload.amountUnit,
-                    serialize: payload.serialize,
-                    coinjoin_request: payload.coinjoinRequest,
-                    chunkify: typeof payload.chunkify === 'boolean' ? payload.chunkify : false,
-                },
-                coinInfo,
-            ),
+            options,
             coinInfo,
             identity: payload.identity,
             push: typeof payload.push === 'boolean' ? payload.push : false,
