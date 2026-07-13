@@ -3812,7 +3812,7 @@ export const messages = defineMessages({
     },
     ETHEREUM_NONCE_IS_NOT_INTEGER: {
         id: 'ETHEREUM_NONCE_IS_NOT_INTEGER',
-        defaultMessage: 'Nonce must be a non-negative integer',
+        defaultMessage: 'Nonce must be zero or a positive whole number',
     },
     ETHEREUM_NONCE_IS_TOO_LOW: {
         id: 'ETHEREUM_NONCE_IS_TOO_LOW',
@@ -7528,7 +7528,7 @@ export const messages = defineMessages({
     TR_CANCEL_TX_NOTICE_EVM: {
         id: 'TR_CANCEL_TX_NOTICE_EVM',
         defaultMessage:
-            'Canceling creates a zero-value transaction with a higher gas fee to replace the pending one. Cancellation is not guaranteed — the original transaction may still be confirmed.',
+            'Canceling creates a zero-value transaction with a higher gas fee to replace the pending one. Cancellation is not guaranteed and the original transaction may still be confirmed.',
     },
     TR_CANCEL_TX_ORIGINAL_FEE: {
         id: 'TR_CANCEL_TX_ORIGINAL_FEE',
@@ -8005,7 +8005,7 @@ export const messages = defineMessages({
     },
     TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER: {
         id: 'TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER',
-        defaultMessage: 'Trezor Suite Guide',
+        defaultMessage: 'Help & Support',
     },
     TR_GUIDE_VIEW_HEADLINES_SUPPORT_FEEDBACK_SELECTION: {
         id: 'TR_GUIDE_VIEW_HEADLINES_SUPPORT_FEEDBACK_SELECTION',
@@ -11484,12 +11484,12 @@ export const messages = defineMessages({
     TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT: {
         id: 'TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT',
         defaultMessage:
-            "Due to recent Solana blockchain changes, this amount can't be unstaked. Try {higher} {symbol} or more, or {lower} {symbol} or less.",
+            "Due to recent Solana blockchain changes, this amount can't be unstaked. Try {higher} {symbol}{higherFiat}, or {lower} {symbol}{lowerFiat}.",
     },
     TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT_HIGHER_ONLY: {
         id: 'TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT_HIGHER_ONLY',
         defaultMessage:
-            "Due to recent Solana blockchain changes, this amount can't be unstaked. Try {higher} {symbol} or more.",
+            "Due to recent Solana blockchain changes, this amount can't be unstaked. Try {higher} {symbol}{higherFiat}.",
     },
     TR_STAKE_FIND_OUT_MORE: {
         id: 'TR_STAKE_FIND_OUT_MORE',
@@ -12502,7 +12502,7 @@ export const messages = defineMessages({
     },
     TR_CONNECT_SELECT_ACCOUNT_PICK_ACCOUNT_DESCRIPTION: {
         id: 'TR_CONNECT_SELECT_ACCOUNT_PICK_ACCOUNT_DESCRIPTION',
-        defaultMessage: 'Choose which account to pick an address from.',
+        defaultMessage: 'Choose an account to pick an address from.',
     },
     TR_CONNECT_SELECT_ACCOUNT_CONFIRM: {
         id: 'TR_CONNECT_SELECT_ACCOUNT_CONFIRM',
