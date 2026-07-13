@@ -316,7 +316,7 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
         return null;
     }
     async readAndConfirmSingleShamirMnemonicEmu() {
-        await new Promise(resolve => setTimeout(resolve, EMU_RACE_CONDITION_WORKAROUND_DELAY));
+        await resolveAfter(EMU_RACE_CONDITION_WORKAROUND_DELAY);
         await this.client.send({ type: 'emulator-read-and-confirm-single-shamir-mnemonic' });
 
         return null;

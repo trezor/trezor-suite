@@ -1,6 +1,6 @@
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 
-import { test } from '../../../support/fixtures';
+import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 test.describe('Onboarding - create wallet', { tag: ['@T3T1'] }, () => {
@@ -23,36 +23,37 @@ test.describe('Onboarding - create wallet', { tag: ['@T3T1'] }, () => {
             }),
         },
         async ({ device, onboardingPage, devicePrompt, analyticsSection }) => {
-            await analyticsSection.passThroughAnalytics();
-
-            // Device onboarding steps
-            await onboardingPage.firmware.continueThroughFirmware();
-            await onboardingPage.tutorial.skip();
-
-            // Select backup type (no device interaction, just navigates to SecurityStep)
-            await onboardingPage.createWalletButton.click();
-            await onboardingPage.selectSeedType('shamir-advanced');
-
-            // SecurityStep: check backup seed cards, create wallet + backup on device, continue
-            // In the new atomic flow, wallet creation and backup happen together
-            const shares = 3;
-            const threshold = 2;
-            await onboardingPage.backup.passThroughShamirBackup({
-                shares,
-                threshold,
-                deviceConfirmations: 3,
+            await test.step('Device onboarding steps', async () => {
+                await analyticsSection.passThroughAnalytics();
+                await onboardingPage.firmware.continueThroughFirmware();
+                await onboardingPage.tutorial.skip();
             });
 
-            // Set PIN
-            await onboardingPage.pin.setPinButton.click();
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await device.pressYes();
-            await device.inputPin('12');
-            await device.inputPin('12');
+            await test.step('Select backup type and create wallet with backup', async () => {
+                await onboardingPage.createWalletButton.click();
+                await onboardingPage.selectSeedType('shamir-advanced');
 
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await device.pressYes();
-            await onboardingPage.finalButton.click();
+                await onboardingPage.backup.passThroughShamirBackup({
+                    shares: 3,
+                    threshold: 2,
+                    deviceConfirmations: 3,
+                });
+            });
+
+            await test.step('Set PIN', async () => {
+                await onboardingPage.pin.setPinButton.click();
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await device.pressYes();
+                await device.inputPin('12');
+                await device.inputPin('12');
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await device.pressYes();
+            });
+
+            await test.step('Finish wallet creation', async () => {
+                await onboardingPage.finalButton.click();
+                await expect(onboardingPage.suiteLoadedIndicator).toBeVisible({ timeout: 30_000 });
+            });
         },
     );
 });

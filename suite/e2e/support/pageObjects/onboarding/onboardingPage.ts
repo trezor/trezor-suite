@@ -93,7 +93,7 @@ export class OnboardingPage {
             '@dashboard/onboarding-feedback-banner/button',
         );
         this.walletBackupTypeCard = this.page.getByTestId('@onboarding/wallet-backup-type');
-        this.thpPairingModal = this.page.getByTestId('@modal/thp-paring');
+        this.thpPairingModal = this.page.getByTestId('@modal/thp-pairing');
     }
 
     @step()
