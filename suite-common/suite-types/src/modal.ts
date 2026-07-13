@@ -67,6 +67,10 @@ export type UserContextPayload =
           symbol: Account['symbol'];
           deviceState: Account['deviceState'];
           flow: 'detail' | 'bump-fee' | 'cancel-transaction';
+          // Cancel is only offered from the account tx list; other entry points (trade detail,
+          // trading approval, earn, notifications, coin control) can't reflect a cancel, so they
+          // leave this unset and the Cancel button stays hidden.
+          showCancelButton?: boolean;
       }
     | {
           type: 'review-transaction';
