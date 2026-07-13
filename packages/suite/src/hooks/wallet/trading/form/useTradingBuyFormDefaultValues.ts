@@ -68,11 +68,5 @@ export const useTradingBuyFormDefaultValues = (
         [defaultCountry, defaultCrypto, defaultCurrency, defaultSubdivision],
     );
 
-    return {
-        defaultValues,
-        defaultCountry,
-        defaultSubdivision,
-        defaultCurrency,
-        suggestedFiatCurrency,
-    };
+    return { defaultValues };
 };

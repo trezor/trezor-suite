@@ -25,12 +25,9 @@ import type {
     TradingBuyInfoSelector,
     TradingBuyType,
     TradingComposedTransactionInfo,
-    TradingCountryOption,
-    TradingCountrySubdivisionOption,
     TradingExchangeFormProps,
     TradingExchangeInfoSelector,
     TradingExchangeType,
-    TradingFiatCurrencyOption,
     TradingPaymentMethodType,
     TradingSellFormProps,
     TradingSellInfoSelector,
@@ -53,7 +50,7 @@ import { type FeeLevel } from '@trezor/connect';
 
 import { type useTradingReceiveAddress } from 'src/hooks/wallet/trading/form/useTradingReceiveAddress';
 import { type AppState } from 'src/reducers/store';
-import { type Dispatch, type GetState, type TrezorDevice } from 'src/types/suite';
+import { type Dispatch, type GetState } from 'src/types/suite';
 import {
     type TradingGetCryptoQuoteAmountProps,
     type TradingGetProvidersInfoProps,
@@ -65,10 +62,6 @@ import { type AmountLimitProps, type CryptoAmountLimitProps } from 'src/utils/su
 
 export interface TradingBuyFormDefaultValuesProps {
     defaultValues: TradingBuyFormProps;
-    defaultCountry: TradingCountryOption;
-    defaultCurrency: TradingFiatCurrencyOption;
-    suggestedFiatCurrency: FiatCurrencyCode;
-    defaultSubdivision: TradingCountrySubdivisionOption | undefined;
 }
 
 export type TradingBuySellFormProps = TradingBuyFormProps | TradingSellFormProps;
@@ -80,14 +73,10 @@ export type TradingAllFormProps =
 
 export interface TradingSellFormDefaultValuesProps {
     defaultValues: TradingSellFormProps;
-    defaultCountry: TradingCountryOption;
-    defaultCurrency: TradingFiatCurrencyOption;
-    defaultSubdivision: TradingCountrySubdivisionOption | undefined;
 }
 
 export interface TradingExchangeFormDefaultValuesProps {
     defaultValues: TradingExchangeFormProps;
-    defaultCurrency: TradingFiatCurrencyOption;
 }
 
 interface TradingFormStateProps {
@@ -99,15 +88,11 @@ interface TradingFormStateProps {
 }
 
 interface TradingCommonFormProps {
-    device: TrezorDevice | undefined;
     account: Account;
     network: Network;
 }
 
 interface TradingCommonFormBuySellProps {
-    defaultCountry: TradingCountryOption;
-    defaultSubdivision: TradingCountrySubdivisionOption | undefined;
-    defaultCurrency: TradingFiatCurrencyOption;
     amountLimits?: AmountLimitProps;
 }
 
@@ -201,7 +186,6 @@ export interface TradingExchangeFormContextProps
     feeInfo: FeeInfo;
 
     exchangeInfo?: TradingExchangeInfoSelector;
-    defaultCurrency: TradingFiatCurrencyOption;
     amountLimits?: CryptoAmountLimitProps;
     isComposing: boolean;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;

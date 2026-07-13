@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import { useDevice } from '@suite/device';
 import {
     TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
@@ -38,7 +39,8 @@ export const TradingBuyFormInputs = () => {
     const buySupportedCryptoIds = useSelector(selectTradingBuySupportedCryptoIds);
     const quotes = useSelector(selectTradingBuyQuotes);
 
-    const { device, setAmountLimits, getValues, defaultCountry, setValue } = context;
+    const { device } = useDevice();
+    const { setAmountLimits, getValues, setValue } = context;
     const {
         [TRADING_FORM_CRYPTO_CURRENCY_SELECT]: cryptoSelect,
         [TRADING_FORM_CRYPTO_INPUT]: cryptoInput,
@@ -64,8 +66,7 @@ export const TradingBuyFormInputs = () => {
         [dispatch, setAmountLimitsRef, setValueRef],
     );
 
-    const selectedCountry = countrySelect ?? defaultCountry;
-    const countryRequiresSubdivision = isCountrySubdivisionRequired(selectedCountry?.value);
+    const countryRequiresSubdivision = isCountrySubdivisionRequired(countrySelect?.value);
 
     return (
         <Column gap={16}>
@@ -108,10 +109,10 @@ export const TradingBuyFormInputs = () => {
             <TradingFormCard>
                 {cryptoSelect && <TradingReceiveAddress />}
                 <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
-                {selectedCountry && countryRequiresSubdivision && (
+                {countrySelect && countryRequiresSubdivision && (
                     <TradingFormInputCountrySubdivision
                         label="TR_TRADING_COUNTRY_SUBDIVISION"
-                        country={selectedCountry}
+                        country={countrySelect}
                     />
                 )}
                 {!!quotes.length && (

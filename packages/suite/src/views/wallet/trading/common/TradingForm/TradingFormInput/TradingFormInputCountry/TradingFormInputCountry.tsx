@@ -28,15 +28,13 @@ export const TradingFormInputCountry = ({
 }: TradingFormInputCountryProps) => {
     const { translationString } = useTranslation();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { control, defaultCountry } = useTradingFormContext<TradingTradeBuySellType>();
+    const { control } = useTradingFormContext<TradingTradeBuySellType>();
     const getCountryName = useGetCountryName();
 
-    const countryValue = useWatch({
+    const country = useWatch({
         control: control as Control<TradingBuySellFormProps>,
         name: TRADING_FORM_COUNTRY_SELECT,
     });
-
-    const country = countryValue ?? defaultCountry;
 
     const countryFlag = getCountryFlag(country?.value);
     const countryName = getCountryName(country);

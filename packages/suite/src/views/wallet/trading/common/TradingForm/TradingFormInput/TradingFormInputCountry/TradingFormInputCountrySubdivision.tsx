@@ -10,8 +10,6 @@ import { GhostContainer, Icon, Row, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 
 import { FakeSelect } from 'src/components/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { type TradingTradeBuySellType } from 'src/types/trading/trading';
 import { type TradingFormInputDefaultProps } from 'src/types/trading/tradingForm';
 
 import { CountrySubdivisionSelectModal } from './CountrySubdivisionSelectModal';
@@ -28,21 +26,22 @@ export const TradingFormInputCountrySubdivision = ({
 }: TradingFormInputCountrySubdivisionProps) => {
     const { translationString } = useTranslation();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { defaultSubdivision } = useTradingFormContext<TradingTradeBuySellType>();
 
     const subdivisionValue = useWatch({ name: TRADING_FORM_COUNTRY_SUBDIVISION_SELECT });
 
-    const subdivisionLabel = useMemo(() => {
-        const resolvedLabel = subdivisionValue?.label ?? defaultSubdivision?.label;
-
-        return resolvedLabel ?? <Translation id="TR_TRADING_COUNTRY_SUBDIVISION_NOT_SELECTED" />;
-    }, [subdivisionValue, defaultSubdivision]);
+    const subdivisionLabel = useMemo(
+        () =>
+            subdivisionValue?.label ?? (
+                <Translation id="TR_TRADING_COUNTRY_SUBDIVISION_NOT_SELECTED" />
+            ),
+        [subdivisionValue],
+    );
 
     return (
         <>
             {renderInput && (
                 <FakeSelect
-                    value={subdivisionValue?.label ?? defaultSubdivision?.label ?? ''}
+                    value={subdivisionValue?.label ?? ''}
                     placeholder={label ? translationString(label) : undefined}
                     onClick={() => setIsModalOpen(true)}
                     data-testid="@trading/form/country-subdivision-select"

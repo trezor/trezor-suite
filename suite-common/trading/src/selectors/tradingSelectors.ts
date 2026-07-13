@@ -717,33 +717,36 @@ export const selectIsTradingNetworkFeeMissing = (
     return fee === undefined || fee === '';
 };
 
-export const selectTradingAccountAccordingActiveSection =
-    createMemoizedSelectorWithDeviceAndAccounts(
-        [
-            selectTradingExchange,
-            selectTradingSell,
-            selectTradingBuy,
-            ({ wallet }) => wallet.accounts,
-            (_: TradingRootState, activeSection: TradingType) => activeSection,
-            (_: TradingRootState, __: TradingType, selectedAccount: SelectedAccountStatus) =>
-                selectedAccount,
-        ],
-        (tradingExchange, tradingSell, tradingBuy, accounts, activeSection, selectedAccount) => {
-            const tradingSectionMap = {
-                buy: tradingBuy.tradingAccountKey,
-                sell: tradingSell.tradingAccountKey,
-                exchange: tradingExchange.tradingAccountKey,
-            };
+export const selectTradingAccountAccordingActiveSection: (
+    state: TradingRootStateWithDeviceAndAccounts,
+    activeSection: TradingType,
+    selectedAccount: SelectedAccountStatus,
+) => Account | undefined = createMemoizedSelectorWithDeviceAndAccounts(
+    [
+        selectTradingExchange,
+        selectTradingSell,
+        selectTradingBuy,
+        ({ wallet }) => wallet.accounts,
+        (_: TradingRootState, activeSection: TradingType) => activeSection,
+        (_: TradingRootState, __: TradingType, selectedAccount: SelectedAccountStatus) =>
+            selectedAccount,
+    ],
+    (tradingExchange, tradingSell, tradingBuy, accounts, activeSection, selectedAccount) => {
+        const tradingSectionMap = {
+            buy: tradingBuy.tradingAccountKey,
+            sell: tradingSell.tradingAccountKey,
+            exchange: tradingExchange.tradingAccountKey,
+        };
 
-            const tradingAccountKey = tradingSectionMap[activeSection];
+        const tradingAccountKey = tradingSectionMap[activeSection];
 
-            const account = tradingAccountKey
-                ? accounts.find(acc => acc.key === tradingAccountKey)
-                : null;
+        const account = tradingAccountKey
+            ? accounts.find(acc => acc.key === tradingAccountKey)
+            : null;
 
-            return account ?? selectedAccount.account; // TODO: trading - delete selectedAccount and set tradingAccountKey on desktop
-        },
-    );
+        return account ?? selectedAccount.account; // TODO: trading - delete selectedAccount and set tradingAccountKey on desktop
+    },
+);
 
 export const selectValidTradingBuyQuotes = createMemoizedSelector(
     [selectTradingBuyQuotes],

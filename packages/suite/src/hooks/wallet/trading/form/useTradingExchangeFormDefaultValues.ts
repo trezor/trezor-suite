@@ -81,5 +81,5 @@ export const useTradingExchangeFormDefaultValues = (accountKey: AccountKey, cryp
         [defaultAsset, defaultFormState],
     );
 
-    return { defaultValues, defaultCurrency };
+    return { defaultValues };
 };
