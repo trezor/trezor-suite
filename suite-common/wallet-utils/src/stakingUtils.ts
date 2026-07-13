@@ -45,6 +45,11 @@ import {
     SOLANA_EPOCH_DAYS,
 } from '@trezor/network-solana/constants';
 import { exhaustive } from '@trezor/type-utils';
+import {
+    HELP_CENTER_ADA_STAKING,
+    HELP_CENTER_ETH_STAKING,
+    HELP_CENTER_SOL_STAKING,
+} from '@trezor/urls';
 import { BigNumber } from '@trezor/utils';
 
 import { asAmountSubunit } from './AmountTypes';
@@ -271,6 +276,19 @@ export const getUnstakingPeriodInDays = (
     const unstakingPeriodInSeconds = new BigNumber(withdrawTime).plus(exitTime).toNumber();
 
     return secondsToDays(unstakingPeriodInSeconds);
+};
+
+export const getStakingHelpCenterLink = (networkType?: NetworkType) => {
+    switch (networkType) {
+        case 'ethereum':
+            return HELP_CENTER_ETH_STAKING;
+        case 'solana':
+            return HELP_CENTER_SOL_STAKING;
+        case 'cardano':
+            return HELP_CENTER_ADA_STAKING;
+        default:
+            return undefined;
+    }
 };
 
 export const getOutputTxAmount = (composedLevels?: PrecomposedLevels) => {
