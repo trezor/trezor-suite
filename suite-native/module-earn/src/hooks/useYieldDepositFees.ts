@@ -28,6 +28,7 @@ import { deepEqual } from '@trezor/utils';
 
 import { updateEarnSelectedFeeLevelThunk } from './useComposeEarnFees';
 import { type ResolvedYieldFlowData } from './useResolvedYieldFlowData';
+import { useYieldFeeEstimationError } from './useYieldFeeEstimationError';
 import { getYieldDepositFormDraftKey } from '../utils/yieldDepositUtils';
 import {
     buildYieldDepositFeeDraftState,
@@ -81,6 +82,12 @@ export const useYieldDepositFees = ({
     const [baseActionContext, setBaseActionContext] =
         useState<BaseYieldDepositActionContext | null>(null);
     const [isPreparingDepositFee, setIsPreparingDepositFee] = useState(false);
+    const {
+        feeEstimationRetryKey,
+        hasFeeEstimationError,
+        retryFeeEstimation,
+        setHasFeeEstimationError,
+    } = useYieldFeeEstimationError();
 
     const formDraftKey = useMemo(
         () => (flowKey ? getYieldDepositFormDraftKey(flowKey) : ''),
@@ -154,6 +161,10 @@ export const useYieldDepositFees = ({
                 }
 
                 if (result.type !== 'action-ready') {
+                    if (result.type === 'error' && result.reason === 'fee-estimation-failed') {
+                        setHasFeeEstimationError(true);
+                    }
+
                     clearDepositFeeState();
 
                     return;
@@ -182,7 +193,7 @@ export const useYieldDepositFees = ({
                 }
             }
         },
-        [clearDepositFeeState, dispatch],
+        [clearDepositFeeState, dispatch, setHasFeeEstimationError],
     );
 
     const depositFeeDraftState = useMemo(() => {
@@ -298,6 +309,8 @@ export const useYieldDepositFees = ({
         const requestId = requestIdRef.current + 1;
         requestIdRef.current = requestId;
 
+        setHasFeeEstimationError(false);
+
         if (!composeDepositBaseActionParams) {
             setBaseActionContext(null);
             setIsPreparingDepositFee(false);
@@ -318,8 +331,10 @@ export const useYieldDepositFees = ({
         clearDepositFeeStore,
         composeDepositBaseActionParams,
         debounce,
+        feeEstimationRetryKey,
         hasInvalidDepositContext,
         prepareDepositBaseAction,
+        setHasFeeEstimationError,
     ]);
 
     useEffect(
@@ -334,10 +349,12 @@ export const useYieldDepositFees = ({
         feePreview: preparedAction?.feePreview ?? null,
         formDraft,
         formDraftKey,
+        hasFeeEstimationError,
         isDepositFeeReady,
         isFeeUnavailable,
         isPreparingDepositFee: isCurrentDepositFeePreparing,
         preparedAction,
+        retryFeeEstimation,
         selectedFee,
         updateFeeLevelThunk: updateEarnSelectedFeeLevelThunk,
     };

@@ -2505,6 +2505,8 @@ export const messages = {
         staking: 'Staking',
         stablecoinYield: 'Stablecoin yield',
         poweredBy: 'Powered by',
+        feeEstimationFailed:
+            "The network fee couldn't be estimated, so the transaction can't be prepared. Try again later.",
         stakingOperatedByProviders: 'Staking is operated by independent providers',
         portfolioTracker: {
             alert: {

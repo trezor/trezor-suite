@@ -19,12 +19,20 @@ import TrezorConnect from '@trezor/connect';
 
 import type { AppState, Dispatch } from 'src/types/suite';
 
-export const getYieldErrorTranslationKey = (error: unknown) =>
-    error instanceof Error &&
-    (error.cause === 'Device_InvalidState' || // incorrect passphrase submitted
-        error.cause === 'Method_Interrupted') // passphrase modal closed
-        ? 'TR_EARN_YIELD_ERROR_PASSPHRASE_INCORRECT'
-        : 'TR_EARN_YIELD_ERROR_GENERIC';
+export const getYieldErrorTranslationKey = (error: unknown) => {
+    if (!(error instanceof Error)) {
+        return 'TR_EARN_YIELD_ERROR_GENERIC';
+    }
+
+    if (
+        error.cause === 'Device_InvalidState' || // incorrect passphrase submitted
+        error.cause === 'Method_Interrupted' // passphrase modal closed
+    ) {
+        return 'TR_EARN_YIELD_ERROR_PASSPHRASE_INCORRECT';
+    }
+
+    return 'TR_EARN_YIELD_ERROR_GENERIC';
+};
 
 export type SendYieldTransactionParams = {
     account: Account;

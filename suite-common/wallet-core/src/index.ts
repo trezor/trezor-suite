@@ -71,6 +71,7 @@ export * from './stablecoin-yield/stablecoinYieldApprovalThunks';
 export * from './stablecoin-yield/stablecoinYieldConstants';
 export * from './stablecoin-yield/stablecoinYieldDepositThunks';
 export * from './stablecoin-yield/stablecoinYieldDeviceUtils';
+export * from './stablecoin-yield/stablecoinYieldFeeEstimation';
 export * from './stablecoin-yield/stablecoinYieldTypes';
 export * from './stablecoin-yield/stablecoinYieldUtils';
 export * from './stake/tron/tronStakeReducer';

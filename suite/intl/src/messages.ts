@@ -10202,6 +10202,11 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_DASHBOARD_DEPOSITED',
         defaultMessage: '{amount} {displaySymbol} deposited',
     },
+    TR_EARN_YIELD_ERROR_FEE_ESTIMATION: {
+        id: 'TR_EARN_YIELD_ERROR_FEE_ESTIMATION',
+        defaultMessage:
+            "We couldn't estimate the network fee, so the transaction wasn't created. Try again.",
+    },
     TR_EARN_YIELD_ERROR_GENERIC: {
         id: 'TR_EARN_YIELD_ERROR_GENERIC',
         defaultMessage: 'Something went wrong. Try again.',

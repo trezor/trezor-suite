@@ -30,6 +30,7 @@ import { YieldDepositFlowFooter } from '../components/YieldDepositFlowFooter';
 import { YieldDepositFlowScreenHeader } from '../components/YieldDepositFlowScreenHeader';
 import { YieldDepositInfoBottomSheet } from '../components/YieldDepositInfoBottomSheet';
 import { YieldDepositStepCard } from '../components/YieldDepositStepCard';
+import { YieldFeeEstimationErrorAlert } from '../components/YieldFeeEstimationErrorAlert';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { YieldTxSimulationBottomSheet } from '../components/YieldTxSimulationBottomSheet';
 import { useRefreshYieldDepositAllowanceOnIdle } from '../hooks/useRefreshYieldDepositAllowanceOnIdle';
@@ -322,15 +323,21 @@ export const YieldDepositScreen = () => {
 
                     {shouldShowDepositFee && (
                         <Box paddingHorizontal="sp16">
-                            <FeeSelector
-                                accountKey={account.key}
-                                tokenContract={route.params.tokenContract}
-                                updateThunk={depositFee.updateFeeLevelThunk}
-                                selectedFee={depositFee.selectedFee}
-                                selectedFeePerUnit={depositFee.formDraft?.feePerUnit}
-                                formDraft={depositFee.formDraft}
-                                formDraftKey={depositFee.formDraftKey}
-                            />
+                            {depositFee.hasFeeEstimationError ? (
+                                <YieldFeeEstimationErrorAlert
+                                    onRetry={depositFee.retryFeeEstimation}
+                                />
+                            ) : (
+                                <FeeSelector
+                                    accountKey={account.key}
+                                    tokenContract={route.params.tokenContract}
+                                    updateThunk={depositFee.updateFeeLevelThunk}
+                                    selectedFee={depositFee.selectedFee}
+                                    selectedFeePerUnit={depositFee.formDraft?.feePerUnit}
+                                    formDraft={depositFee.formDraft}
+                                    formDraftKey={depositFee.formDraftKey}
+                                />
+                            )}
                         </Box>
                     )}
                 </VStack>

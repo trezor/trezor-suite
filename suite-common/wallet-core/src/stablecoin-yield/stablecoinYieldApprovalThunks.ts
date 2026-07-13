@@ -10,7 +10,10 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import { STABLECOIN_YIELD_PREFIX } from './stablecoinYieldConstants';
-import { stablecoinYieldActions } from './stablecoinYieldReducer';
+import {
+    type StablecoinYieldTranslationKey,
+    stablecoinYieldActions,
+} from './stablecoinYieldReducer';
 import { selectStablecoinYieldSession } from './stablecoinYieldSelectors';
 import type { YieldFlowResolvedData, YieldPositionFlowType } from './stablecoinYieldTypes';
 import { getAllowanceSpender, getWithdrawRequestAmount } from './stablecoinYieldUtils';
@@ -41,8 +44,9 @@ type InitYieldAllowancePayload = YieldSessionDataPayload & {
     shouldSkipApprovalStep?: boolean;
 };
 
-type SetYieldGenericErrorParams = YieldSessionPayload & {
+type SetYieldErrorParams = YieldSessionPayload & {
     dispatch: Dispatch;
+    error?: StablecoinYieldTranslationKey;
 };
 
 type GetApprovalContractAddressParams = {
@@ -69,16 +73,17 @@ type OpenYieldRevokeModalParams = YieldSessionDataPayload & {
     spender: string | null;
 };
 
-export const setYieldGenericError = ({
+export const setYieldError = ({
     dispatch,
     flowType,
     flowKey,
-}: SetYieldGenericErrorParams) => {
+    error = YIELD_GENERIC_ERROR,
+}: SetYieldErrorParams) => {
     dispatch(
         stablecoinYieldActions.setError({
             flowType,
             flowKey,
-            error: YIELD_GENERIC_ERROR,
+            error,
         }),
     );
 };
@@ -129,7 +134,7 @@ export const openYieldApproveModal = ({
     const contractAddress = getApprovalContractAddress({ flowType, flowData });
 
     if (!contractAddress) {
-        setYieldGenericError({ dispatch, flowType, flowKey });
+        setYieldError({ dispatch, flowType, flowKey });
 
         return false;
     }
@@ -161,7 +166,7 @@ export const openYieldRevokeModal = ({
     spender,
 }: OpenYieldRevokeModalParams) => {
     if (!spender) {
-        setYieldGenericError({ dispatch, flowType, flowKey });
+        setYieldError({ dispatch, flowType, flowKey });
 
         return false;
     }
@@ -305,7 +310,7 @@ export const submitYieldApproveThunk = createThunk(
         });
 
         if (!requestAmount) {
-            setYieldGenericError({ dispatch, flowType, flowKey });
+            setYieldError({ dispatch, flowType, flowKey });
 
             return;
         }
@@ -317,7 +322,7 @@ export const submitYieldApproveThunk = createThunk(
             const tokenContractAddress = flowData.token.contractAddress;
 
             if (!spender || !tokenContractAddress) {
-                setYieldGenericError({ dispatch, flowType, flowKey });
+                setYieldError({ dispatch, flowType, flowKey });
 
                 return;
             }
@@ -364,7 +369,7 @@ export const submitYieldApproveThunk = createThunk(
                 txType: 'approve',
             });
         } catch {
-            setYieldGenericError({ dispatch, flowType, flowKey });
+            setYieldError({ dispatch, flowType, flowKey });
         } finally {
             dispatch(stablecoinYieldActions.finishSubmittingApproval({ flowType, flowKey }));
         }

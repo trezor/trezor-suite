@@ -7,8 +7,9 @@ import {
     STABLECOIN_YIELD_PREFIX,
     type YieldFlowResolvedData,
     composeYieldDepositTransactionThunk,
+    getYieldDepositErrorTranslationKey,
     openYieldApproveModal,
-    setYieldGenericError,
+    setYieldError,
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
 
@@ -36,7 +37,12 @@ export const submitYieldDepositThunk = createThunk(
             ).unwrap();
 
             if (result.type === 'error') {
-                setYieldGenericError({ dispatch, flowType, flowKey });
+                setYieldError({
+                    dispatch,
+                    flowType,
+                    flowKey,
+                    error: getYieldDepositErrorTranslationKey(result.reason),
+                });
 
                 return;
             }
