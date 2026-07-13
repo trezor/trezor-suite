@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { Image } from 'expo-image';
 
@@ -15,9 +15,9 @@ import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
 import { useTranslate } from '@suite-native/intl';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import { useAsyncMemo } from '@trezor/react-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { CryptoIconPlaceholder } from './CryptoIconPlaceholder';
+import { MAX_FONT_SIZE_MULTIPLIER } from './Icon';
 import { NetworkIcon, networkIconSizes } from './NetworkIcon';
 
 export const tokenIconSizes = {
@@ -49,6 +49,40 @@ const networkWrapperStyle = prepareNativeStyle<{ size: TokenIconSize | number }>
         borderRadius: typeof size === 'number' ? size : networkIconSizes[size] / 3,
     }),
 );
+
+const tokenIconPlaceholderIconStyle = prepareNativeStyle(utils => ({
+    backgroundColor: utils.colors.surfaceFillPage,
+    alignItems: 'center',
+    justifyContent: 'center',
+}));
+
+const tokenIconPlaceholderTextStyle = prepareNativeStyle(utils => ({
+    ...utils.typography['body-md'],
+    color: utils.colors.contentPrimary,
+    textAlign: 'center',
+}));
+
+interface TokenIconPlaceholderProps {
+    placeholder: string;
+    containerStyle: NativeStyleObject;
+}
+
+const TokenIconPlaceholder = ({ placeholder, containerStyle }: TokenIconPlaceholderProps) => {
+    const { applyStyle } = useNativeStyles();
+    const firstChar = placeholder[0] || 'T';
+
+    // due to circular deps issues we need to use Text and View comp from 'react-native' instead of 'atoms'
+    return (
+        <View style={[containerStyle, applyStyle(tokenIconPlaceholderIconStyle)]}>
+            <Text
+                style={applyStyle(tokenIconPlaceholderTextStyle)}
+                maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+            >
+                {firstChar}
+            </Text>
+        </View>
+    );
+};
 
 interface TokenIconProps {
     symbol: NetworkSymbol | NetworkDisplaySymbol;
@@ -124,7 +158,7 @@ const TokenIconComponent = ({ symbol, contractAddress, size = 'small' }: TokenIc
 
     if (showPlaceholder) {
         return (
-            <CryptoIconPlaceholder
+            <TokenIconPlaceholder
                 placeholder={symbol.toUpperCase()}
                 containerStyle={iconContainerStyle}
             />

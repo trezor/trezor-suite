@@ -7,7 +7,7 @@ import {
     NetworkIconSet as NetworkIconSetComponent,
     type NetworkIconSetProps,
 } from './NetworkIconSet';
-import { allowedTokenIconSizes } from '../TokenIcon/TokenIcon';
+import { allowedTokenIconSizes } from '../TokenIcon/tokenIconTypes';
 
 const NETWORK_1: NetworkSymbol = 'btc';
 const NETWORK_2: NetworkSymbol = 'eth';

@@ -11,7 +11,7 @@ import {
     CryptoToFiatAmountFormatter,
     NetworkDisplaySymbolNameFormatter,
 } from '@suite-native/formatters';
-import { TokenIcon, Icon } from '@suite-native/icons';
+import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { type NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
 import { isNetworkWithTokens } from '@suite-native/tokens';

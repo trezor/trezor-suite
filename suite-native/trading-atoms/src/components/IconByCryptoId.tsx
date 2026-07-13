@@ -2,11 +2,11 @@ import type { CryptoId } from 'invity-api';
 
 import { cryptoIdToNetworkSymbolAndContractAddress } from '@suite-common/trading';
 import { type NetworkDisplaySymbol, getDisplaySymbol } from '@suite-common/wallet-config';
-import { type CryptoIconSize, TokenIcon } from '@suite-native/icons';
+import { TokenIcon, type TokenIconSize } from '@suite-native/icons';
 
 export type IconByCryptoIdProps = {
     cryptoId: CryptoId;
-    size?: CryptoIconSize;
+    size?: TokenIconSize;
     withNetwork?: boolean;
 };
 

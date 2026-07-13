@@ -8,7 +8,7 @@ import {
 
 import { IconByCryptoId, type IconByCryptoIdProps } from '../IconByCryptoId';
 
-const cryptoIconHint = 'Crypto Icon';
+const tokenIconHint = 'Token Icon';
 const networkIconHint = 'Network Icon';
 
 describe('IconByCryptoId', () => {
@@ -65,7 +65,7 @@ describe('IconByCryptoId', () => {
                 withNetwork: true,
             });
 
-            expect(getByHintText(cryptoIconHint)).toBeTruthy();
+            expect(getByHintText(tokenIconHint)).toBeTruthy();
             expect(getByLabelText('BTC')).toBeTruthy();
             expect(queryByHintText(networkIconHint)).toBeNull();
         });
@@ -76,7 +76,7 @@ describe('IconByCryptoId', () => {
                 withNetwork: true,
             });
 
-            expect(getByHintText(cryptoIconHint)).toBeTruthy();
+            expect(getByHintText(tokenIconHint)).toBeTruthy();
             expect(getByLabelText('ETH')).toBeTruthy();
             expect(getByHintText(networkIconHint)).toBeTruthy();
         });
@@ -87,7 +87,7 @@ describe('IconByCryptoId', () => {
                 withNetwork: true,
             });
 
-            expect(getByHintText(cryptoIconHint)).toBeTruthy();
+            expect(getByHintText(tokenIconHint)).toBeTruthy();
             expect(getByLabelText('eth:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48')).toBeTruthy();
             expect(getByHintText(networkIconHint)).toBeTruthy();
         });
@@ -98,7 +98,7 @@ describe('IconByCryptoId', () => {
                 withNetwork: true,
             });
 
-            expect(getByHintText(cryptoIconHint)).toBeTruthy();
+            expect(getByHintText(tokenIconHint)).toBeTruthy();
             expect(getByLabelText('base:0xb6fe221fe9eef5aba221c348ba20a1bf5e73624c')).toBeTruthy();
             expect(getByHintText(networkIconHint)).toBeTruthy();
         });

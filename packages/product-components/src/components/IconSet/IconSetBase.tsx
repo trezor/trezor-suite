@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 import { Text } from '@trezor/components';
 import { type SpacingValuesNew, type TypographyStyle, borders } from '@trezor/theme';
 
-import { type TokenIconSize } from '../TokenIcon/TokenIcon';
+import { type TokenIconSize } from '../TokenIcon/tokenIconTypes';
 
 const mapSizeToTypographyStyle = (size: TokenIconSize): TypographyStyle => {
     const typographyStyleMap: Record<TokenIconSize, TypographyStyle> = {

@@ -1,7 +1,8 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Card, Column, GhostContainer, Row, Text } from '@trezor/components';
 
-import { TokenIcon, type TokenIconProps } from '../TokenIcon/TokenIcon';
+import { TokenIcon } from '../TokenIcon/TokenIcon';
+import { type TokenIconProps } from '../TokenIcon/tokenIconTypes';
 
 export type Asset = {
     id: string;

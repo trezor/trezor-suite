@@ -8,7 +8,7 @@ import {
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { getApyPercent } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
-import { Icon, TokenIcon, cryptoIconSizes } from '@suite-native/icons';
+import { Icon, TokenIcon, tokenIconSizes } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 
 const getApyBreakdownDescriptionKey = (
@@ -84,7 +84,7 @@ const RewardRow = ({ reward, networkSymbol, tokenSymbol }: RewardRowProps) => {
                         )}
                     </HStack>
                     {descriptionKey && (
-                        <Box style={{ marginLeft: cryptoIconSizes.extraSmall }} paddingLeft="sp8">
+                        <Box style={{ marginLeft: tokenIconSizes.extraSmall }} paddingLeft="sp8">
                             <Text variant="body-sm" color="contentSecondary">
                                 <Translation id={descriptionKey} values={{ tokenSymbol }} />
                             </Text>
