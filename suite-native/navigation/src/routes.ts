@@ -260,7 +260,7 @@ export enum YieldStackRoutes {
 
 export enum ReceiveStackRoutes {
     ReceiveAccounts = 'ReceiveAccounts',
-    ReceiveAccount = 'ReceiveAccount',
+    ReceiveAddress = 'ReceiveAddress',
 }
 
 export enum SendStackRoutes {
