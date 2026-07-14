@@ -264,6 +264,7 @@ export const SupportFeedbackSelection = () => {
                                         priority="secondary"
                                         as="div"
                                         maxWidth="100%"
+                                        data-testid="@guide/support/app-version"
                                     >
                                         <Translation
                                             id="TR_YOUR_CURRENT_VERSION"
@@ -286,6 +287,7 @@ export const SupportFeedbackSelection = () => {
                                         priority="secondary"
                                         as="div"
                                         maxWidth="100%"
+                                        data-testid="@guide/support/firmware-version"
                                     >
                                         {getFirmwareVersionLabel()}
                                     </Text>

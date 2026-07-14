@@ -55,17 +55,28 @@ export const GuideImage = ({ src, alt }: GuideImageProps) => {
 
     return (
         <>
-            <ThumbnailImage src={resolvedSrc} alt={alt} onClick={() => setIsOpen(true)} />
+            <ThumbnailImage
+                src={resolvedSrc}
+                alt={alt}
+                onClick={() => setIsOpen(true)}
+                data-testid="@guide/article/image"
+            />
             {isOpen &&
                 createPortal(
                     <Modal.Backdrop onClick={close} zIndex={zIndices.modalGuide}>
-                        <FullSizeImage src={resolvedSrc} alt={alt} onClick={close} />
+                        <FullSizeImage
+                            src={resolvedSrc}
+                            alt={alt}
+                            onClick={close}
+                            data-testid="@guide/article/image-modal"
+                        />
                         <CloseButtonWrapper>
                             <Button
                                 iconLeft={XIcon}
                                 intent="neutral"
                                 priority="secondary"
                                 onClick={close}
+                                data-testid="@guide/article/image-close"
                             >
                                 <Translation id="TR_CLOSE" />
                             </Button>
