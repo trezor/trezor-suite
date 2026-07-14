@@ -7,6 +7,7 @@ import {
     type AccountsRootState,
     cancelSignSendFormTransactionThunk,
     selectAccountByKey,
+    sendFormActions,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { AppTabsRoutes, RootStackRoutes, useDisableIOSGesture } from '@suite-native/navigation';
@@ -40,6 +41,11 @@ export const useEarnReviewBackNavigation = (
     useDisableIOSGesture();
 
     const isCancellationAlertVisibleRef = useRef(false);
+    const isReviewNavigationSuccessRef = useRef(false);
+
+    const markReviewNavigationSuccess = useCallback(() => {
+        isReviewNavigationSuccessRef.current = true;
+    }, []);
 
     const navigateToStakingHome = useCallback(() => {
         if (!account) {
@@ -70,8 +76,15 @@ export const useEarnReviewBackNavigation = (
         };
 
         const unsubscribe = navigation.addListener('beforeRemove', e => {
-            const isClosingWholeFlow = e.data.action.type === CLOSE_FLOW_ACTION_TYPE;
-            const isLeavingReview = REVIEW_EXIT_ACTION_TYPES.includes(e.data.action.type);
+            if (isReviewNavigationSuccessRef.current) {
+                dispatch(sendFormActions.discardTransaction());
+
+                return;
+            }
+
+            const actionType = e.data.action.type;
+            const isClosingWholeFlow = actionType === CLOSE_FLOW_ACTION_TYPE;
+            const isLeavingReview = REVIEW_EXIT_ACTION_TYPES.includes(actionType);
 
             if (!isLeavingReview || !isTransactionReviewInProgress) {
                 cleanup();
@@ -128,5 +141,5 @@ export const useEarnReviewBackNavigation = (
         navigation.dispatch(StackActions.popToTop());
     }, [navigation]);
 
-    return { navigateBack, closeReview };
+    return { navigateBack, closeReview, markReviewNavigationSuccess };
 };

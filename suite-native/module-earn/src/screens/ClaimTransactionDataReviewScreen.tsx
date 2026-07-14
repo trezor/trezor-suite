@@ -43,12 +43,16 @@ export const ClaimTransactionDataReviewScreen = ({
 
     const precomposedTransaction = useEarnSelectedPrecomposedTransaction('claim', accountKey);
 
-    const { handleSign, handlePush, closeReview } = useHandleOnEarnTransactionReview({
-        accountKey,
-        stakeType: 'claim',
-    });
+    const { handleSign, handlePush, closeReview, markReviewNavigationSuccess } =
+        useHandleOnEarnTransactionReview({
+            accountKey,
+            stakeType: 'claim',
+        });
 
-    const { trackPushedTransaction } = useNavigateAfterPushedTransaction({ accountKey });
+    const { trackPushedTransaction } = useNavigateAfterPushedTransaction({
+        accountKey,
+        markReviewNavigationSuccess,
+    });
 
     const { showTimer, secondsLeft, isPastDeadline, isBroadcasting, onRetry, isRetryDisabled } =
         useEarnTxValidityFlow({
