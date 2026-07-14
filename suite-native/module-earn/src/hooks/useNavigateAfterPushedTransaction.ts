@@ -64,10 +64,12 @@ const navigateToPushedTransactionAction = ({
 
 type UseNavigateAfterPushedTransactionParams = {
     accountKey: AccountKey;
+    markReviewNavigationSuccess: () => void;
 };
 
 export const useNavigateAfterPushedTransaction = ({
     accountKey,
+    markReviewNavigationSuccess,
 }: UseNavigateAfterPushedTransactionParams) => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
@@ -102,11 +104,19 @@ export const useNavigateAfterPushedTransaction = ({
 
     useEffect(() => {
         if (txid && isTransactionProcessedByBackend && networkSymbol) {
+            markReviewNavigationSuccess();
             navigation.dispatch(
                 navigateToPushedTransactionAction({ accountKey, symbol: networkSymbol, txid }),
             );
         }
-    }, [accountKey, isTransactionProcessedByBackend, navigation, networkSymbol, txid]);
+    }, [
+        accountKey,
+        isTransactionProcessedByBackend,
+        markReviewNavigationSuccess,
+        navigation,
+        networkSymbol,
+        txid,
+    ]);
 
     useEffect(() => {
         if (!txid) return undefined;

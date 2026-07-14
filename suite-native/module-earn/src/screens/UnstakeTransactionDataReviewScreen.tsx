@@ -43,12 +43,16 @@ export const UnstakeTransactionDataReviewScreen = ({
 
     const precomposedTransaction = useEarnSelectedPrecomposedTransaction('unstake', accountKey);
 
-    const { handleSign, handlePush, closeReview } = useHandleOnEarnTransactionReview({
-        accountKey,
-        stakeType: 'unstake',
-    });
+    const { handleSign, handlePush, closeReview, markReviewNavigationSuccess } =
+        useHandleOnEarnTransactionReview({
+            accountKey,
+            stakeType: 'unstake',
+        });
 
-    const { trackPushedTransaction } = useNavigateAfterPushedTransaction({ accountKey });
+    const { trackPushedTransaction } = useNavigateAfterPushedTransaction({
+        accountKey,
+        markReviewNavigationSuccess,
+    });
 
     const { showTimer, secondsLeft, isPastDeadline, isBroadcasting, onRetry, isRetryDisabled } =
         useEarnTxValidityFlow({
