@@ -11,7 +11,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, InlineAlertBox, type InlineAlertBoxProps, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-import { AddressQRCode } from './AddressQRCode';
+import { ReceiveAddressDetails } from './ReceiveAddressDetails';
 
 type ReceiveAddressCardProps = {
     accountKey: AccountKey;
@@ -68,7 +68,7 @@ export const ReceiveAddressCard = ({
 
     return (
         <VStack spacing="sp16" flex={1}>
-            <AddressQRCode
+            <ReceiveAddressDetails
                 accountDescriptor={accountDescriptor}
                 address={address}
                 deviceStaticSessionId={deviceStaticSessionId}

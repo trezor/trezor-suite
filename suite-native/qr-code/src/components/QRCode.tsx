@@ -7,7 +7,7 @@ import { type NativeSpacing, colorVariants } from '@trezor/theme';
 
 type QRCodeProps = {
     data: string;
-    size?: number;
+    qrCodeSize?: number;
     paddingHorizontal?: NativeSpacing;
     paddingVertical?: NativeSpacing;
 };
@@ -24,12 +24,12 @@ const getQRCodePadding = (padding: NativeSpacing | undefined) =>
     padding === undefined ? QRCODE_PADDING : nativeSpacingToNumber(padding) * 2;
 
 const qrCodeContainerStyle = prepareNativeStyle<{
-    size: number;
+    qrCodeSize: number;
     paddingHorizontal: number;
     paddingVertical: number;
-}>((_, { size, paddingHorizontal, paddingVertical }) => ({
-    width: size + paddingHorizontal,
-    height: size + paddingVertical,
+}>((_, { qrCodeSize, paddingHorizontal, paddingVertical }) => ({
+    width: qrCodeSize + paddingHorizontal,
+    height: qrCodeSize + paddingVertical,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colorVariants.standard.surfaceFillRaised,
@@ -37,7 +37,7 @@ const qrCodeContainerStyle = prepareNativeStyle<{
 
 export const QRCode = ({
     data,
-    size = QRCODE_SIZE,
+    qrCodeSize = QRCODE_SIZE,
     paddingHorizontal,
     paddingVertical,
 }: QRCodeProps) => {
@@ -50,7 +50,7 @@ export const QRCode = ({
         <Box alignItems="center">
             <View
                 style={applyStyle(qrCodeContainerStyle, {
-                    size,
+                    qrCodeSize,
                     paddingVertical: verticalPadding,
                     paddingHorizontal: horizontalPadding,
                 })}
@@ -59,7 +59,7 @@ export const QRCode = ({
                     bgColor={colorVariants.standard.surfaceFillRaised}
                     fgColor={colorVariants.standard.legacyBackgroundNeutralBold}
                     level="Q"
-                    size={size}
+                    size={qrCodeSize}
                     value={data}
                 />
             </View>
