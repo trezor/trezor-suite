@@ -1,10 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/CoinInfo.js
 import type {
     BitcoinNetworkInfo,
+    CoinSymbol,
     EthereumNetworkInfo,
     MiscNetworkInfo,
 } from '@trezor/connect-common/src/types/coinInfo';
-import type { DerivationPath } from '@trezor/connect-common/src/types/params';
 import coinsEth from '@trezor/connect-data/files/coins-eth.json';
 import coins from '@trezor/connect-data/files/coins.json';
 import { fromHardenedPathPart, toHardenedPathPart } from '@trezor/crypto-utils';
@@ -17,46 +17,46 @@ const ethereumNetworks: EthereumNetworkInfo[] = [];
 const miscNetworks: MiscNetworkInfo[] = [];
 
 export const getBitcoinNetwork = (
-    pathOrName: DerivationPath,
+    symbolOrPath: CoinSymbol | number[],
 ): Readonly<BitcoinNetworkInfo> | undefined => {
-    if (typeof pathOrName === 'string') {
-        const shortcut = pathOrName.toLowerCase();
+    if (typeof symbolOrPath === 'string') {
+        const shortcut = symbolOrPath.toLowerCase();
 
         return bitcoinNetworks.find(n => n.shortcut.toLowerCase() === shortcut);
     }
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
-    const pathElement: number = pathOrName[1];
+    const pathElement: number = symbolOrPath[1];
     const slip44 = fromHardenedPathPart(pathElement);
 
     return bitcoinNetworks.find(n => n.slip44 === slip44);
 };
 
 export const getEthereumNetwork = (
-    pathOrNetworkSymbol: DerivationPath,
+    symbolOrPath: CoinSymbol | number[],
 ): Readonly<EthereumNetworkInfo> | undefined => {
-    if (typeof pathOrNetworkSymbol === 'string') {
-        const networkSymbol = pathOrNetworkSymbol.toLowerCase();
+    if (typeof symbolOrPath === 'string') {
+        const networkSymbol = symbolOrPath.toLowerCase();
 
         return ethereumNetworks.find(network => network.shortcut.toLowerCase() === networkSymbol);
     }
 
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
-    const ethPathElement: number = pathOrNetworkSymbol[1];
+    const ethPathElement: number = symbolOrPath[1];
     const slip44 = fromHardenedPathPart(ethPathElement);
 
     return ethereumNetworks.find(n => n.slip44 === slip44);
 };
 
 export const getMiscNetwork = (
-    pathOrName: DerivationPath,
+    symbolOrPath: CoinSymbol | number[],
 ): Readonly<MiscNetworkInfo> | undefined => {
-    if (typeof pathOrName === 'string') {
-        const shortcut = pathOrName.toLowerCase();
+    if (typeof symbolOrPath === 'string') {
+        const shortcut = symbolOrPath.toLowerCase();
 
         return miscNetworks.find(n => n.shortcut.toLowerCase() === shortcut);
     }
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
-    const miscPathElement: number = pathOrName[1];
+    const miscPathElement: number = symbolOrPath[1];
     const slip44 = fromHardenedPathPart(miscPathElement);
 
     return miscNetworks.find(n => n.slip44 === slip44);
@@ -114,8 +114,15 @@ export const fixCoinInfoNetwork = (ci: BitcoinNetworkInfo, path: number[]) => {
     return coinInfo;
 };
 
-export const getCoinInfo = (currency: string) =>
-    getBitcoinNetwork(currency) || getEthereumNetwork(currency) || getMiscNetwork(currency);
+// The single untrusted-string boundary: `currency` comes from the public
+// `getCoinInfo` param and may not be a real shortcut. The resolvers match by
+// shortcut and return undefined for anything that isn't one, so the cast only
+// asserts "treat this as a candidate shortcut", never a derivation path.
+export const getCoinInfo = (currency: string) => {
+    const coin = currency as CoinSymbol;
+
+    return getBitcoinNetwork(coin) || getEthereumNetwork(coin) || getMiscNetwork(coin);
+};
 
 export const getCoinName = (path: number[]) => {
     // @ts-expect-error: indexing with noUncheckedIndexedAccess

@@ -25,7 +25,7 @@ export default class NostrGetPublicKey extends AbstractMethod<
         };
 
         super(message, params);
-        this.requiredFirmwareCoins = [getMiscNetwork('Nostr')];
+        this.requiredFirmwareCoins = [getMiscNetwork('nostr')];
     }
 
     get requiredPermissions() {

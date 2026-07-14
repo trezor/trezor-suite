@@ -26,7 +26,7 @@ export default class NostrSignEvent extends AbstractMethod<'nostrSignEvent', PRO
         };
 
         super(message, params);
-        this.requiredFirmwareCoins = [getMiscNetwork('Nostr')];
+        this.requiredFirmwareCoins = [getMiscNetwork('nostr')];
     }
 
     get requiredPermissions() {

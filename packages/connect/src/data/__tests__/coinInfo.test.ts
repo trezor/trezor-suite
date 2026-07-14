@@ -1,3 +1,5 @@
+import type { CoinSymbol } from '@trezor/connect-common/src/types/coinInfo';
+
 import { getAllNetworks, getCoinInfo, getMiscNetwork, getUniqueNetworks } from '../coinInfo';
 
 describe('data/coinInfo', () => {
@@ -17,7 +19,8 @@ describe('data/coinInfo', () => {
     it('resolves every misc firmware-gating shortcut (requiredFirmwareCoins is never [undefined])', () => {
         // the shortcut forms the misc api methods pass to getMiscNetwork() to build
         // requiredFirmwareCoins — a wrong form would silently become [undefined] (D1)
-        ['ada', 'xrp', 'xmr', 'trx', 'xlm', 'sol', 'xtz', 'nostr'].forEach(shortcut => {
+        const shortcuts: CoinSymbol[] = ['ada', 'xrp', 'xmr', 'trx', 'xlm', 'sol', 'xtz', 'nostr'];
+        shortcuts.forEach(shortcut => {
             expect(getMiscNetwork(shortcut)).toBeDefined();
         });
     });
