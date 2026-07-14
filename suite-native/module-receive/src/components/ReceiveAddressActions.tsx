@@ -4,11 +4,11 @@ import { Button, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { Translation, useTranslate } from '@suite-native/intl';
 
-type AddressQRCodeActionsProps = {
+type ReceiveAddressActionsProps = {
     address: string;
 };
 
-export const AddressQRCodeActions = ({ address }: AddressQRCodeActionsProps) => {
+export const ReceiveAddressActions = ({ address }: ReceiveAddressActionsProps) => {
     const copyToClipboard = useCopyToClipboard();
     const { translate } = useTranslate();
 

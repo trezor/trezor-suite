@@ -18,9 +18,7 @@
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../atoms" },
-        { "path": "../clipboard" },
         { "path": "../feature-feedback" },
-        { "path": "../intl" },
         { "path": "../labeling" },
         { "path": "../suite-sync" },
         { "path": "../../packages/connect" }
