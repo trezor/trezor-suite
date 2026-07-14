@@ -1,6 +1,9 @@
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
 import { type EarnModalAction } from '@suite-common/suite-types/src/staking';
+import { supportedTronNetworkSymbols } from '@suite-common/wallet-types';
 import { Divider, StepList } from '@trezor/components';
 import { CheckSquareOffsetIcon, LightningIcon, LockSimpleOpenIcon } from '@trezor/icons';
 
@@ -26,7 +29,21 @@ export const TronStakeInANutshellModal = ({
     onCancel,
     actionType = 'close',
 }: TronStakeInANutshellModalProps) => {
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { maxApr } = useTronStakingStats();
+
+    const handleCancel = () => {
+        onCancel();
+
+        analytics.report({
+            type: events.stakingStakeEvent.name,
+            payload: {
+                action: actionType,
+                step: 'stake-in-a-nutshell-modal',
+                networkSymbol: supportedTronNetworkSymbols[0],
+            },
+        });
+    };
 
     const networkFeeBadge = { text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true };
 
@@ -90,9 +107,9 @@ export const TronStakeInANutshellModal = ({
     return (
         <EarnInANutshellModalLayout
             heading={<Translation id="TR_EARN_TRON_STAKING_IN_A_NUTSHELL" />}
-            onCancel={onCancel}
+            onCancel={handleCancel}
             actionType={actionType}
-            onAction={onCancel}
+            onAction={handleCancel}
         >
             <EarnInANutshellHighlights
                 items={[

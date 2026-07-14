@@ -1,5 +1,7 @@
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
 import { TRON_REPRESENTATIVE_TERMS_OF_SERVICE_URLS } from '@suite-common/wallet-constants';
 import {
@@ -46,6 +48,7 @@ export const useTronStakeActions = ({
 }: UseTronStakeActionsProps): TronStakeActions => {
     const dispatch = useDispatch();
     const { device } = useDevice();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { stats } = useTronStakingStats();
     const { step, isSubmitting, error, pendingTxid } = useSelector(state =>
         selectTronStakeSession(state, account.key, flow),
@@ -103,8 +106,8 @@ export const useTronStakeActions = ({
 
                 const requestVoteConsent =
                     representative && termsOfServiceUrl
-                        ? async () =>
-                              Boolean(
+                        ? async () => {
+                              const isConsentGiven = Boolean(
                                   await dispatch(
                                       openDeferredModal({
                                           type: 'tron-vote-consent',
@@ -112,7 +115,22 @@ export const useTronStakeActions = ({
                                           termsOfServiceUrl,
                                       }),
                                   ),
-                              )
+                              );
+
+                              if (!isConsentGiven) {
+                                  analytics.report({
+                                      type: events.stakingUpdateProviderEvent.name,
+                                      payload: {
+                                          action: 'cancel',
+                                          step: 'stake-form-modal',
+                                          networkSymbol: account.symbol,
+                                          votingDelegation: representativeAddress,
+                                      },
+                                  });
+                              }
+
+                              return isConsentGiven;
+                          }
                         : undefined;
 
                 dispatch(

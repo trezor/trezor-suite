@@ -28,4 +28,5 @@ export type EarnAnalyticsStep =
     | 'staking-dashboard'
     | 'yield-deposit'
     | 'yield-withdraw'
-    | 'unstake-form-modal';
+    | 'unstake-form-modal'
+    | 'withdraw-form-modal';

@@ -1,5 +1,7 @@
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
 import {
     getResourceGain,
@@ -25,6 +27,7 @@ interface TronResourceModalProps {
 
 export const TronResourceModal = ({ account, resourceType, onClose }: TronResourceModalProps) => {
     const dispatch = useDispatch();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const resources = getTronResources(account);
     const stakingInfo = getTronStakingInfo(account);
     const isEnergy = resourceType === 'energy';
@@ -91,6 +94,15 @@ export const TronResourceModal = ({ account, resourceType, onClose }: TronResour
             }),
         );
         onClose();
+
+        analytics.report({
+            type: events.stakingStakeEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'staking-dashboard',
+                networkSymbol: account.symbol,
+            },
+        });
     };
 
     return (

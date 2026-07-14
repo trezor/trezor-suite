@@ -1,8 +1,10 @@
 import { type ReactNode } from 'react';
 
+import { type DesktopAnalyticsDep, events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { type Account } from '@suite-common/wallet-types';
 import { type IconComponent, Tooltip } from '@trezor/components';
@@ -49,7 +51,13 @@ interface UseNetworkContentProps {
     dispatch: ReturnType<typeof useDispatch>;
 }
 
-const getTronContent = ({ data, dispatch }: UseNetworkContentProps): EmptyStakingCardContent => {
+const getTronContent = ({
+    data,
+    dispatch,
+    analytics,
+}: UseNetworkContentProps & {
+    analytics: DesktopAnalyticsDep['analytics'];
+}): EmptyStakingCardContent => {
     const rate = formatApyValue(data.rate);
     const { displaySymbol, isStartStakingDisabled, account } = data;
 
@@ -93,6 +101,15 @@ const getTronContent = ({ data, dispatch }: UseNetworkContentProps): EmptyStakin
                 },
             }),
         );
+
+        analytics.report({
+            type: events.stakingStakeEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'staking-dashboard',
+                networkSymbol: account.symbol,
+            },
+        });
     };
 
     return { title, text, features, onStartStakingClick };
@@ -274,10 +291,11 @@ export const useStakingCardContent = ({
     data,
 }: UseStakingCardContentProps): EmptyStakingCardContent => {
     const dispatch = useDispatch();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     switch (variant) {
         case 'tron':
-            return getTronContent({ data, dispatch });
+            return getTronContent({ data, dispatch, analytics });
         case 'cardano':
             return getCardanoContent({ data, dispatch });
         case 'default':

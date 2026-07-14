@@ -17,6 +17,7 @@ type Attributes = {
     >;
     networkSymbol?: AttributeDef<string>;
     currency?: AttributeDef<'crypto' | 'fiat'>;
+    resource?: AttributeDef<'bandwidth' | 'energy'>;
 };
 
 export const stakingStakeEvent: EventDef<Attributes, EventType.StakingStake> = {
@@ -50,6 +51,11 @@ export const stakingStakeEvent: EventDef<Attributes, EventType.StakingStake> = {
             changelog: [{ version: '25.4.0', notes: 'added' }],
             description:
                 'The display currency format: `crypto` for cryptocurrency amounts, `fiat` for fiat currency conversion',
+        },
+        resource: {
+            changelog: [{ version: '26.7.0', notes: 'added' }],
+            description:
+                'The Tron resource the frozen balance provides: `bandwidth` or `energy`; only sent for Tron',
         },
     },
 };

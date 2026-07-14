@@ -1,6 +1,8 @@
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { getTronStakingRewards, isTronClaimSupported } from '@suite-common/wallet-utils';
 import { Button } from '@trezor/components';
@@ -13,6 +15,7 @@ import { useTronStakeContext } from '../TronStakeContext';
 
 export const TronClaimSubmitButton = () => {
     const { device, isLocked } = useDevice();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { translationString } = useTranslation();
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const { account, actions } = useTronStakeContext();
@@ -35,6 +38,19 @@ export const TronClaimSubmitButton = () => {
         }
 
         submitAction();
+
+        if (!device?.connected || !device?.available) {
+            return;
+        }
+
+        analytics.report({
+            type: events.stakingClaimEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'claim-form-modal',
+                networkSymbol: account.symbol,
+            },
+        });
     };
 
     return (
