@@ -31,11 +31,12 @@ export const useTradingBuyFormDefaultValues = (
     const country = !isTorEnabled
         ? (buyInfo?.buyInfo?.country as TradingCountryCode | undefined)
         : regional.UNKNOWN_COUNTRY;
+    const subdivision = !isTorEnabled ? buyInfo?.buyInfo?.subdivision : undefined;
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);
 
     const defaultSubdivision = useMemo(
-        () => getDefaultCountrySubdivision(buyInfo?.buyInfo?.subdivision),
-        [buyInfo?.buyInfo?.subdivision],
+        () => getDefaultCountrySubdivision(subdivision),
+        [subdivision],
     );
 
     const defaultCrypto = useMemo(() => {
