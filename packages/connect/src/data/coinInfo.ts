@@ -1,4 +1,5 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/CoinInfo.js
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import type {
     BitcoinNetworkInfo,
     CoinSymbol,
@@ -114,14 +115,17 @@ export const fixCoinInfoNetwork = (ci: BitcoinNetworkInfo, path: number[]) => {
     return coinInfo;
 };
 
-// The single untrusted-string boundary: `currency` comes from the public
-// `getCoinInfo` param and may not be a real shortcut. The resolvers match by
-// shortcut and return undefined for anything that isn't one, so the cast only
-// asserts "treat this as a candidate shortcut", never a derivation path.
-export const getCoinInfo = (currency: string) => {
-    const coin = currency as CoinSymbol;
+const getCoinInfo = (coin: CoinSymbol) =>
+    getBitcoinNetwork(coin) || getEthereumNetwork(coin) || getMiscNetwork(coin);
 
-    return getBitcoinNetwork(coin) || getEthereumNetwork(coin) || getMiscNetwork(coin);
+export const getCoinInfoOrThrow = (coin: string) => {
+    // `coin` is unvalidated caller input; a non-shortcut resolves to undefined below
+    const coinInfo = getCoinInfo(coin as CoinSymbol);
+    if (!coinInfo) {
+        throw ERRORS.TypedError('Method_UnknownCoin');
+    }
+
+    return coinInfo;
 };
 
 export const getCoinName = (path: number[]) => {
