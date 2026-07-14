@@ -25,4 +25,8 @@ yarn workspace @trezor/requirements requirements:verify --only=package-json
 
 # Limit to affected workspaces containing the given text
 yarn workspace @trezor/requirements requirements:verify --filter=@trezor/connect
+
+# Report oversized declarations after checking every TypeScript workspace
+yarn type-check:all --no-tui
+yarn workspace @trezor/requirements requirements:verify --only=type-declaration-size
 ```

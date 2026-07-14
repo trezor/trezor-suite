@@ -61,6 +61,8 @@ jobs:
         uses: ./.github/actions/minimal-yarn-install
       - name: Type Check
         run: yarn type-check --output-style=stream
+      - name: Check Type Declaration Sizes
+        run: yarn requirements:verify --only=type-declaration-size
 
   lint:
     name: Linting and formatting

@@ -49,8 +49,9 @@ export const runRequirements = async ({
     filter,
     mode,
 }: RunRequirementsProps): Promise<ReadonlyArray<RequirementResult>> => {
-    const filtered =
-        filter !== undefined ? requirements.filter(r => r.name === filter) : requirements;
+    const filtered = requirements.filter(requirement =>
+        filter !== undefined ? requirement.name === filter : requirement.runByDefault !== false,
+    );
 
     const results: RequirementResult[] = [];
 

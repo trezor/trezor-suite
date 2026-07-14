@@ -1,0 +1,131 @@
+import { existsSync, readdirSync, statSync } from 'node:fs';
+import { join, relative, sep } from 'node:path';
+
+import { listAllWorkspaces } from '../../workspaces';
+import type { Requirement } from '../Requirement';
+
+const kibToBytes = (sizeKib: number) => sizeKib * 1024;
+
+export const MAX_DECLARATION_SIZE_BYTES = kibToBytes(100);
+
+const KNOWN_OVERSIZED_DECLARATION_LIMITS = new Map<string, number>([
+    ['suite-common/wallet-core/libDev/src/stake/tron/tronStakeReducer.d.ts', kibToBytes(1670)],
+    ['suite/e2e/libDev/fixtures/invity/index.d.ts', kibToBytes(740)],
+    ['suite-common/earn-stablecoin-defs/libDev/src/api/index.d.ts', kibToBytes(625)],
+    ['suite-common/logger/libDev/src/utils.d.ts', kibToBytes(600)],
+    ['suite/intl/libDev/src/messages.d.ts', kibToBytes(550)],
+    ['suite-common/device/libDev/src/deviceSelectors.d.ts', kibToBytes(520)],
+    ['packages/suite/libDev/src/reducers/store.d.ts', kibToBytes(515)],
+    ['packages/suite/libDev/src/utils/suite/notification.d.ts', kibToBytes(395)],
+    ['packages/suite/libDev/src/reducers/suite/index.d.ts', kibToBytes(340)],
+    ['packages/transport/libDev/src/transports/bridge.d.ts', kibToBytes(235)],
+    ['packages/transport-common/libDev/src/transports/abstractApi.d.ts', kibToBytes(230)],
+    ['packages/protobuf/libDev/src/definitions/index.d.ts', kibToBytes(210)],
+    [
+        'packages/suite-desktop-ui/libDev/src/createSuiteDesktopCompositionRoot.d.ts',
+        kibToBytes(190),
+    ],
+    ['packages/suite-web/libDev/src/createSuiteWebCompositionRoot.d.ts', kibToBytes(190)],
+    ['packages/icons/libDev/src/generated/icons/index.d.ts', kibToBytes(185)],
+    ['suite/test-utils/libDev/src/initStoreForTests.d.ts', kibToBytes(185)],
+    [
+        'suite-common/wallet-core/libDev/src/transactions/transactionsSelectors.d.ts',
+        kibToBytes(180),
+    ],
+    ['suite-native/intl/libDev/src/Translate.d.ts', kibToBytes(155)],
+    ['packages/suite/libDev/src/actions/device/deviceSlice.d.ts', kibToBytes(150)],
+    ['suite-common/message-system/libDev/files/config.v1.d.ts', kibToBytes(135)],
+    ['suite-common/trading/libDev/src/selectors/tradingSelectors.d.ts', kibToBytes(130)],
+    [
+        'packages/suite/libDev/src/views/settings/SettingsDevice/ForgetDevice/useForgetDevice.d.ts',
+        kibToBytes(130),
+    ],
+    [
+        'packages/suite/libDev/src/selectors/suite/selectAccountLabelsForSearch.d.ts',
+        kibToBytes(130),
+    ],
+    ['suite-common/message-system/libDev/src/messageSystemSelectors.d.ts', kibToBytes(115)],
+    ['packages/protobuf/libDev/src/definitions/messages-bitcoin.d.ts', kibToBytes(115)],
+    ['packages/suite/libDev/src/hooks/wallet/useRbfForm.d.ts', kibToBytes(115)],
+    ['suite-native/intl/libDev/src/messages.d.ts', kibToBytes(115)],
+]);
+
+const normalizePath = (filePath: string) => filePath.split(sep).join('/');
+
+const isDeclarationFile = (fileName: string) => /\.d\.[cm]?ts$/.test(fileName);
+
+const listDeclarationFiles = (directory: string): ReadonlyArray<string> => {
+    const declarations: string[] = [];
+
+    for (const entry of readdirSync(directory, { withFileTypes: true })) {
+        const entryPath = join(directory, entry.name);
+
+        if (entry.isDirectory()) {
+            declarations.push(...listDeclarationFiles(entryPath));
+        } else if (entry.isFile() && isDeclarationFile(entry.name)) {
+            declarations.push(entryPath);
+        }
+    }
+
+    return declarations;
+};
+
+const formatSize = (sizeBytes: number) => {
+    const sizeKib = sizeBytes / 1024;
+
+    return `${Number.isInteger(sizeKib) ? sizeKib : sizeKib.toFixed(1)} KiB`;
+};
+
+const verifyDeclarationFile = (repoRoot: string, declarationFile: string) => {
+    const declarationPath = normalizePath(relative(repoRoot, declarationFile));
+    const sizeBytes = statSync(declarationFile).size;
+    const knownLimit = KNOWN_OVERSIZED_DECLARATION_LIMITS.get(declarationPath);
+    const maximumSize = knownLimit ?? MAX_DECLARATION_SIZE_BYTES;
+
+    if (knownLimit !== undefined && sizeBytes <= MAX_DECLARATION_SIZE_BYTES) {
+        return `${declarationPath} is now ${formatSize(
+            sizeBytes,
+        )}; remove its legacy declaration-size limit.`;
+    }
+
+    if (sizeBytes <= maximumSize) return undefined;
+
+    return `${declarationPath} is ${formatSize(sizeBytes)}; maximum is ${formatSize(maximumSize)}.`;
+};
+
+export const requireTypeDeclarationSize: Requirement<'repo'> = {
+    name: 'type-declaration-size',
+    scope: 'repo',
+    runByDefault: false,
+    verify: ({ repoRoot }) => {
+        const declarationOutputDirectories = listAllWorkspaces(repoRoot)
+            .map(workspace => join(workspace.dir, 'libDev'))
+            .filter(existsSync);
+        const declarationFiles = declarationOutputDirectories.flatMap(listDeclarationFiles);
+        const declarationPaths = new Set(
+            declarationFiles.map(declarationFile =>
+                normalizePath(relative(repoRoot, declarationFile)),
+            ),
+        );
+        const builtDeclarationOutputPaths = declarationOutputDirectories.map(directory =>
+            normalizePath(relative(repoRoot, directory)),
+        );
+        const errors = declarationFiles
+            .map(declarationFile => verifyDeclarationFile(repoRoot, declarationFile))
+            .filter(error => error !== undefined);
+
+        for (const declarationPath of KNOWN_OVERSIZED_DECLARATION_LIMITS.keys()) {
+            const isWorkspaceBuilt = builtDeclarationOutputPaths.some(outputPath =>
+                declarationPath.startsWith(`${outputPath}/`),
+            );
+
+            if (isWorkspaceBuilt && !declarationPaths.has(declarationPath)) {
+                errors.push(
+                    `${declarationPath} no longer exists; remove or update its legacy declaration-size limit.`,
+                );
+            }
+        }
+
+        return Promise.resolve(errors.sort());
+    },
+};
