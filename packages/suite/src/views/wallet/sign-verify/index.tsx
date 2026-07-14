@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { type FieldError } from 'react-hook-form';
 
+import { selectSelectedAccountKey } from '@suite/account';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { selectReceiveRevealedAddresses } from '@suite/receive';
@@ -41,8 +42,9 @@ const SignVerify = () => {
     const [isCompleted, setIsCompleted] = useState(false);
 
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const selectedAccountKey = useSelector(selectSelectedAccountKey);
     const revealedAddresses = useSelector(state =>
-        selectReceiveRevealedAddresses(state, selectedAccount.account?.key),
+        selectReceiveRevealedAddresses(state, selectedAccountKey),
     );
     const dispatch = useDispatch();
 
