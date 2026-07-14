@@ -1,7 +1,9 @@
 import { useFormState, useWatch } from 'react-hook-form';
 
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
 
@@ -12,8 +14,9 @@ import { CUSTOM_REPRESENTATIVE } from './constants';
 
 export const TronVoteSubmitButton = () => {
     const { device, isLocked } = useDevice();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const { form, actions } = useTronStakeContext();
+    const { account, form, actions } = useTronStakeContext();
     const { isSubmitting, pendingTxid, submitAction } = actions;
     const { control } = form.methods;
 
@@ -28,11 +31,29 @@ export const TronVoteSubmitButton = () => {
 
     const isDeviceLocked = !!device?.connected && !!device?.available && isLocked();
 
+    const handleClick = () => {
+        submitAction();
+
+        if (!device?.connected || !device?.available) {
+            return;
+        }
+
+        analytics.report({
+            type: events.stakingUpdateProviderEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'stake-form-modal',
+                networkSymbol: account.symbol,
+                votingDelegation: representative,
+            },
+        });
+    };
+
     return (
         <Button
             size="large"
             width="100%"
-            onClick={submitAction}
+            onClick={handleClick}
             isDisabled={
                 !isRepresentativeSelected || isSubmitting || isDeviceLocked || !!pendingTxid
             }

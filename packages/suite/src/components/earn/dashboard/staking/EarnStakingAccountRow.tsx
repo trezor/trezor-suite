@@ -244,6 +244,15 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                 },
             }),
         );
+
+        analytics.report({
+            type: events.stakingStakeEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'staking-dashboard',
+                networkSymbol: account.symbol,
+            },
+        });
     };
 
     const onTronVote = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -259,6 +268,15 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                 },
             }),
         );
+
+        analytics.report({
+            type: events.stakingUpdateProviderEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'staking-dashboard',
+                networkSymbol: account.symbol,
+            },
+        });
     };
 
     const apyAvailable =

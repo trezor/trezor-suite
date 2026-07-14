@@ -1,5 +1,7 @@
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -32,6 +34,7 @@ interface TronVoteAllocationModalProps {
 
 export const TronVoteAllocationModal = ({ account, onClose }: TronVoteAllocationModalProps) => {
     const dispatch = useDispatch();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { stats } = useTronStakingStats();
 
     const remainingVotes = getTronAvailableVotingPower(account);
@@ -52,6 +55,15 @@ export const TronVoteAllocationModal = ({ account, onClose }: TronVoteAllocation
             }),
         );
         onClose();
+
+        analytics.report({
+            type: events.stakingUpdateProviderEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'staking-dashboard',
+                networkSymbol: account.symbol,
+            },
+        });
     };
 
     return (

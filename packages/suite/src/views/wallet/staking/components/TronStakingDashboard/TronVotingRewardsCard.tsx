@@ -1,7 +1,9 @@
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { type Account } from '@suite-common/wallet-types';
 import {
     getTronRewardClaimCooldownEndsAt,
@@ -31,6 +33,7 @@ interface TronVotingRewardsCardProps {
 
 export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) => {
     const dispatch = useDispatch();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { device } = useDevice();
     const { translationString } = useTranslation();
     const { isFirmwareModalOpen, openFirmwareModal, closeFirmwareModal, updateFirmware } =
@@ -62,6 +65,15 @@ export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) =
                 },
             }),
         );
+
+        analytics.report({
+            type: events.stakingClaimEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'staking-dashboard',
+                networkSymbol: account.symbol,
+            },
+        });
     };
 
     return (

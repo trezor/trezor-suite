@@ -1,5 +1,7 @@
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { type Account } from '@suite-common/wallet-types';
 import { getTronWithdrawableBalance } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
@@ -14,13 +16,14 @@ interface TronWithdrawReadyBannerProps {
 
 export const TronWithdrawReadyBanner = ({ account }: TronWithdrawReadyBannerProps) => {
     const dispatch = useDispatch();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const withdrawableAmount = getTronWithdrawableBalance(account);
 
     if (new BigNumber(withdrawableAmount).lte(0)) {
         return null;
     }
 
-    const goToWithdraw = () =>
+    const goToWithdraw = () => {
         dispatch(
             goto({
                 routeName: 'earn-tron-withdraw',
@@ -31,6 +34,16 @@ export const TronWithdrawReadyBanner = ({ account }: TronWithdrawReadyBannerProp
                 },
             }),
         );
+
+        analytics.report({
+            type: events.stakingUnstakeEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'staking-dashboard',
+                networkSymbol: account.symbol,
+            },
+        });
+    };
 
     return (
         <Banner
