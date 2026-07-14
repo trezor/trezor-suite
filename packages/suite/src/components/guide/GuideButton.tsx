@@ -11,6 +11,7 @@ import {
     ShortcutBadge,
     TOOLTIP_DELAY_LONG,
     Tooltip,
+    commonFocusStyles,
 } from '@trezor/components';
 import { borders, zIndices } from '@trezor/theme';
 
@@ -21,14 +22,14 @@ const MASCOT_SOURCE_COLOR = '#1E5736';
 const MASCOT_SIZE = 32;
 
 // Session-scoped guard: the intro animation should play only once, on app load. Hovering replays the animation.
-let hasMascotIntroPlayed = false;
+const mascotIntro = { hasPlayed: false };
 
 const Wrapper = styled.div<{ $isGuideOpen: boolean }>`
     position: fixed;
     z-index: ${zIndices.guideButton};
     bottom: 16px;
     right: 16px;
-    border-radius: ${borders.radii.xs};
+    border-radius: ${borders.radii.sm};
     backdrop-filter: blur(10px);
     transition: ${({ $isGuideOpen }) => ($isGuideOpen ? 'none' : 'all 0.3s ease 0.3s')};
     opacity: ${({ $isGuideOpen }) => ($isGuideOpen ? '0' : '1')};
@@ -59,45 +60,29 @@ const MascotButton = styled.button`
     }
 
     &:focus-visible {
-        outline: 4px solid ${({ theme }) => theme.elementBorderFocusRing};
-        outline-offset: 2px;
+        ${commonFocusStyles}
     }
 `;
-
-const usePrefersReducedMotion = () => {
-    const queryRef = useRef(false);
-
-    if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
-        queryRef.current = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    }
-
-    return queryRef.current;
-};
 
 export const GuideButton = memo(function GuideButton() {
     const { openGuide, isGuideOpen } = useGuide();
     const { translationString } = useTranslation();
     const theme = useTheme();
     const lottieRef: LottieRef = useRef(null);
-    const prefersReducedMotion = usePrefersReducedMotion();
 
-    const shouldAutoplayIntro = !prefersReducedMotion && !hasMascotIntroPlayed;
+    const shouldAutoplayIntro = !mascotIntro.hasPlayed;
 
     useEffect(() => {
-        hasMascotIntroPlayed = true;
+        mascotIntro.hasPlayed = true;
     }, []);
 
-    const mascotColor = theme.variant === 'dark' ? theme.contentNeutral : theme.contentPrimary;
-
     const colorReplacements = useMemo(
-        () => [{ from: MASCOT_SOURCE_COLOR, to: mascotColor }],
-        [mascotColor],
+        () => [{ from: MASCOT_SOURCE_COLOR, to: theme.contentPrimary }],
+        [theme.contentPrimary],
     );
 
     const handleMouseEnter = () => {
-        if (!prefersReducedMotion) {
-            lottieRef.current?.goToAndPlay(0, true);
-        }
+        lottieRef.current?.goToAndPlay(0, true);
     };
 
     return (
