@@ -1,4 +1,4 @@
-import { type HTMLAttributes, forwardRef } from 'react';
+import { type HTMLAttributes, type Ref } from 'react';
 
 import styled from 'styled-components';
 
@@ -17,16 +17,18 @@ const ResponsiveFlex = styled.div`
     }
 `;
 
-interface SectionItemProps extends HTMLAttributes<HTMLDivElement> {
+type SectionItemProps = HTMLAttributes<HTMLDivElement> & {
     shouldHighlight?: boolean;
-}
+    ref?: Ref<HTMLDivElement>;
+};
 
-export const SectionItem = forwardRef<HTMLDivElement, SectionItemProps>(
-    ({ children, shouldHighlight, ...rest }, ref) => (
-        <div ref={ref} {...rest}>
-            <OutlineHighlight shouldHighlight={shouldHighlight}>
-                <ResponsiveFlex>{children}</ResponsiveFlex>
-            </OutlineHighlight>
-        </div>
-    ),
+export const SectionItem = ({ children, shouldHighlight, ref, ...rest }: SectionItemProps) => (
+    <div ref={ref} {...rest}>
+        <OutlineHighlight
+            shouldHighlight={shouldHighlight}
+            offset={{ vertical: 16, horizontal: 20 }}
+        >
+            <ResponsiveFlex>{children}</ResponsiveFlex>
+        </OutlineHighlight>
+    </div>
 );
