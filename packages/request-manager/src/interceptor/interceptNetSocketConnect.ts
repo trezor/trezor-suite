@@ -9,6 +9,8 @@ export const interceptNetSocketConnect: Interceptor = ({ context, validateReques
     //    https://github.com/nodejs/node/blob/e48763840625c037282681456ecd1e1cb034f636/lib/_http_outgoing.js#L508-L510
     // 2. node-fetch always(!) adds "User-Agent", "Accept", "Connection"...
     //    https://github.com/node-fetch/node-fetch/blob/7b86e946b02dfdd28f4f8fca3d73a022cbb5ca1e/src/request.js#L226
+    // This socket-level stripping applies to the legacy http(s) module path. Global `fetch` now goes
+    // through undici (see `interceptFetch`), which filters "Allowed-Headers" at the options level.
     const originalSocketWrite = net.Socket.prototype.write;
 
     net.Socket.prototype.write = function (data, ...args) {

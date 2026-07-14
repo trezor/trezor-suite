@@ -16946,6 +16946,7 @@ __metadata:
     node-fetch: "npm:^3.3.2"
     socks-proxy-agent: "npm:8.0.5"
     tsx: "npm:^4.21.0"
+    undici: "npm:8.5.0"
     ws: "npm:^8.20.0"
   languageName: unknown
   linkType: soft
@@ -45682,6 +45683,13 @@ __metadata:
   version: 6.20.0
   resolution: "undici-types@npm:6.20.0"
   checksum: 10/583ac7bbf4ff69931d3985f4762cde2690bb607844c16a5e2fbb92ed312fe4fa1b365e953032d469fa28ba8b224e88a595f0b10a449332f83fa77c695e567dbe
+  languageName: node
+  linkType: hard
+
+"undici@npm:8.5.0":
+  version: 8.5.0
+  resolution: "undici@npm:8.5.0"
+  checksum: 10/e95913777afd47d76babfe62547bb4e9a94b93f44b50c84b4e0b6fa41c00364e31ff4f433a955b1592c3162f43e8757e2e0feae6eea195187730594523393568
   languageName: node
   linkType: hard
 

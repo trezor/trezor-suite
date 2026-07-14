@@ -1,5 +1,6 @@
 import type http from 'http';
 
+import { CircuitMisbehavingError, isCircuitMisbehaving } from './isCircuitMisbehaving';
 import { type InterceptorOptions } from './types';
 
 export const createRequestPool = (interceptorOptions: InterceptorOptions) => {
@@ -27,25 +28,39 @@ export const createRequestPool = (interceptorOptions: InterceptorOptions) => {
             });
         });
 
-        request.on('error', (error: Error) => {
-            // catch network errors from:
-            // - nodejs http module (using error.code field) examples: "socket hang up" or "socket disconnected before secure TLS connection was established"
-            //   see ./node_modules/@types/node/*/http.d.ts
-            // - SocksClientError (using error.options field) thrown by 'socks' package (dependency of socks-proxy-agent)
-            //   see https://github.com/JoshGlazebrook/socks/blob/76d013e4c9a2d956f07868477d8f12ec0b96edfc/src/common/util.ts
-            //   see https://github.com/JoshGlazebrook/socks/blob/76d013e4c9a2d956f07868477d8f12ec0b96edfc/src/common/constants.ts
-            if (('code' in error && error.code === 'ECONNRESET') || 'options' in error) {
+        // Override `emit` so that when an 'error' event fires, all listeners
+        // (including consumer ones) receive a typed CircuitMisbehavingError
+        // instead of the raw network error.
+        const originalEmit = request.emit.bind(request);
+        request.emit = (event: string, ...args: unknown[]) => {
+            if (event === 'error' && isCircuitMisbehaving(args[0])) {
                 interceptorOptions.handler({
                     type: 'CIRCUIT_MISBEHAVING',
                     identity: identity?.split(':')[0],
                 });
-            } else {
+
+                return originalEmit(
+                    'error',
+                    new CircuitMisbehavingError(
+                        {
+                            host: host ?? 'unknown',
+                            identity: identity?.split(':')[0],
+                            method: 'http',
+                        },
+                        args[0],
+                    ),
+                );
+            }
+
+            if (event === 'error') {
                 interceptorOptions.handler({
                     type: 'ERROR',
-                    error,
+                    error: args[0] as Error,
                 });
             }
-        });
+
+            return originalEmit(event, ...args);
+        };
 
         return request;
     };

@@ -86,6 +86,17 @@ describe('Interceptor', () => {
     });
 
     ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].forEach(method => {
+        it(`Blocks all not whitelisted global.fetch requests for: ${method}`, async () => {
+            // undici wraps DNS failures as "fetch failed". the actual cause is in error.cause
+            await expect(fetch(`https://${WHITELISTED_DOMAIN}`, { method })).rejects.toThrow(
+                `fetch failed`,
+            );
+
+            await expect(fetch(`https://${NOT_WHITELISTED_DOMAIN}`, { method })).rejects.toThrow(
+                `Request blocked, not whitelisted domain: ${NOT_WHITELISTED_DOMAIN}`,
+            );
+        });
+
         it(`Blocks all not whitelisted node-fetch requests for: ${method}`, async () => {
             await expect(nodeFetch(`https://${WHITELISTED_DOMAIN}`, { method })).rejects.toThrow(
                 OK_ERROR_HTTPS,
@@ -155,22 +166,5 @@ describe('Interceptor', () => {
                 `Request blocked, not whitelisted domain: ${NOT_WHITELISTED_DOMAIN}`,
             );
         }
-    });
-
-    ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].forEach(method => {
-        it(`Blocks all not whitelisted native fetch for: ${method}`, async () => {
-            await expect(fetch(`https://${WHITELISTED_DOMAIN}`, { method })).rejects.toThrow(
-                'fetch failed',
-            );
-
-            try {
-                await fetch(`https://${NOT_WHITELISTED_DOMAIN}/`, { method });
-                expect('').toBe('Should throw an error');
-            } catch (error) {
-                expect(error.message).toBe(
-                    `Request blocked, not whitelisted domain: ${NOT_WHITELISTED_DOMAIN}`,
-                );
-            }
-        });
     });
 });
