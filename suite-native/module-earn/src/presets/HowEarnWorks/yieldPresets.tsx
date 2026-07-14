@@ -1,11 +1,19 @@
 import { Translation } from '@suite-native/intl';
+import { prepareNativeStyle } from '@trezor/styles-native';
 
 import { type HowEarnWorksScreenPreset } from './types';
+
+const abbrStyle = prepareNativeStyle(({ colors }) => ({
+    borderStyle: 'dotted',
+    borderBottomWidth: 1,
+    borderColor: colors.contentSecondary,
+}));
 
 type CreateHowYieldWorksPresetProps = {
     tokenSymbol: string;
     vaultTokenSymbol: string;
     apy: number | null;
+    onApyPress: () => void;
     bonusRewardTokenName?: string | null;
 };
 
@@ -13,6 +21,7 @@ export const createHowYieldWorksPreset = ({
     tokenSymbol,
     vaultTokenSymbol,
     apy,
+    onApyPress,
     bonusRewardTokenName,
 }: CreateHowYieldWorksPresetProps): HowEarnWorksScreenPreset => ({
     benefitItems: [
@@ -103,6 +112,8 @@ export const createHowYieldWorksPreset = ({
                         ) : (
                             <Translation id="earn.notAvailableShort" />
                         ),
+                    style: abbrStyle,
+                    onPress: onApyPress,
                 },
             ],
         },
