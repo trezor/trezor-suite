@@ -15,11 +15,11 @@ import { type Color } from '@trezor/theme';
 
 import { type DynamicScreenHeaderProps } from './DynamicHeader/DynamicScreenHeader';
 import { DynamicHeaderProvider } from './DynamicHeader/DynamicScreenHeaderContext';
+import { DynamicScrollableScreenContentHeader } from './DynamicHeader/DynamicScrollableScreenContentHeader';
+import { isScreenHeaderPropDynamic } from './DynamicHeader/dynamicHeaderUtils';
 import { ScreenContentWrapper } from './ScreenContentWrapper';
 import { useAndroidNavigationBarStyle } from '../hooks/useAndroidNavigationBarStyle';
 import { useIsKeyboardShown } from '../hooks/useIsKeyboardShown';
-import { DynamicScrollableScreenContentHeader } from './DynamicHeader/DynamicScrollableScreenContentHeader';
-import { isScreenHeaderPropDynamic } from './DynamicHeader/dynamicHeaderUtils';
 
 export type ScreenProps = {
     children: ReactNode;
@@ -34,6 +34,7 @@ export type ScreenProps = {
     hasBottomInset?: boolean;
     refreshControl?: ScrollViewProps['refreshControl'];
     containerStyle?: ViewProps['style'];
+    shouldKeepScrolledToEnd?: boolean;
 };
 
 const screenContainerStyle = prepareNativeStyle<{
@@ -93,6 +94,7 @@ export const Screen = ({
     noBottomPadding = false,
     focusedInputBottomOffset,
     hasBottomInset = true,
+    shouldKeepScrolledToEnd = false,
 }: ScreenProps) => {
     const {
         applyStyle,
@@ -146,6 +148,7 @@ export const Screen = ({
                     focusedInputBottomOffset={focusedInputBottomOffset}
                     refreshControl={refreshControl}
                     isDynamicHeader={isScreenHeaderPropDynamic(header)}
+                    shouldKeepScrolledToEnd={shouldKeepScrolledToEnd}
                 >
                     {shouldRenderDynamicScrollableHeader && (
                         <DynamicScrollableScreenContentHeader {...dynamicHeaderProps} />

@@ -33,6 +33,7 @@ const ConfirmOnTrezor = ({
     controlRef,
     isManualControlEnabled = false,
     defaultHeader,
+    shouldKeepScrolledToEnd,
     ...headerProps
 }: ConfirmOnTrezorWrapperProps) => {
     const { applyStyle } = useNativeStyles();
@@ -93,6 +94,7 @@ const ConfirmOnTrezor = ({
                         snapPoints={snapPoints}
                         isFullscreen={isFullscreen}
                         defaultHeader={defaultHeader}
+                        shouldKeepScrolledToEnd={shouldKeepScrolledToEnd}
                     >
                         {children}
                     </ConfirmOnTrezorContent>

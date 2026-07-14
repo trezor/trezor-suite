@@ -50,7 +50,7 @@ export const YieldDepositApprovalReviewContent = ({
     const isRevokeReview = transactionType === 'revoke';
     const successMessageTranslationId = isRevokeReview
         ? 'earn.yieldDepositRevokeReviewScreen.successMessage'
-        : 'earn.yieldDepositApprovalReviewScreen.successMessage';
+        : undefined;
     const submitButtonTranslationId = isRevokeReview
         ? 'earn.yieldDepositRevokeReviewScreen.submitButton'
         : 'earn.yieldDepositApprovalReviewScreen.submitButton';

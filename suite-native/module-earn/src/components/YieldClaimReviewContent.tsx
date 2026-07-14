@@ -58,7 +58,6 @@ export const YieldClaimReviewContent = ({
                     <EarnReviewSubmittedCard
                         buttonTranslationId="earn.yieldClaimReviewScreen.submitButton"
                         isButtonLoading={isSendingClaim}
-                        messageTranslationId="earn.yieldClaimReviewScreen.successMessage"
                         onButtonPress={handleClaimSubmitted}
                     />
                 ) : undefined
