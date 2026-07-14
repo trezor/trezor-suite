@@ -37,9 +37,10 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-const abbrStyle = prepareNativeStyle(() => ({
+const abbrStyle = prepareNativeStyle(({ colors }) => ({
     borderStyle: 'dotted',
     borderBottomWidth: 1,
+    borderColor: colors.contentSecondary,
 }));
 
 type StablecoinYieldTokenOverviewProps = {

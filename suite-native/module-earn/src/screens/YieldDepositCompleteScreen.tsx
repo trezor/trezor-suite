@@ -28,9 +28,10 @@ import { YieldCompleteScreenContent } from '../components/YieldCompleteScreenCon
 import { getYieldDepositCompleteRows } from '../components/YieldCompleteScreenPresets';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 
-const abbrStyle = prepareNativeStyle(() => ({
+const abbrStyle = prepareNativeStyle(({ colors }) => ({
     borderStyle: 'dotted',
     borderBottomWidth: 1,
+    borderColor: colors.contentSecondary,
 }));
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositComplete>;
