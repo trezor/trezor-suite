@@ -29,8 +29,8 @@ const representativeAssets: Partial<Record<NetworkSymbol, readonly Representativ
         { symbol: 'USDC', contract: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d' },
     ],
     arb: [
-        { symbol: 'ARB', contract: '0x912ce59144191c1204e64559fe8253a0e49e6548' },
         { symbol: 'ETH' },
+        { symbol: 'ARB', contract: '0x912ce59144191c1204e64559fe8253a0e49e6548' },
         { symbol: 'USDC', contract: '0xaf88d065e77c8cc2239327c5edb3a432268e5831' },
         { symbol: 'GMX', contract: '0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a' },
         { symbol: 'LINK', contract: '0xf97f4df75117a78c1a5a0dbb814af92458539fb4' },
@@ -43,8 +43,8 @@ const representativeAssets: Partial<Record<NetworkSymbol, readonly Representativ
         { symbol: 'USDT', contract: '0xfde4c96c8593536e31f229ea8f37b2ada2699bb2' },
     ],
     op: [
-        { symbol: 'OP', contract: '0x4200000000000000000000000000000000000042' },
         { symbol: 'ETH' },
+        { symbol: 'OP', contract: '0x4200000000000000000000000000000000000042' },
         { symbol: 'USDC', contract: '0x0b2c639c533813f4aa9d7837caf62653d097ff85' },
         { symbol: 'SNX', contract: '0x8700daec35af8ff88c16bdf0418774cb3d7599b4' },
         { symbol: 'VELO', contract: '0x9560e827af36c94d2ac33a39bce1fe78631088db' },
