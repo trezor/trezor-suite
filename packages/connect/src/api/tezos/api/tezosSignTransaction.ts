@@ -26,7 +26,7 @@ export default class TezosSignTransaction extends AbstractMethod<
 
         super(message, params);
         this.requiredDeviceCapabilities = ['Capability_Tezos'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Tezos')];
+        this.requiredFirmwareCoins = [getMiscNetwork('xtz')];
     }
 
     get requiredPermissions(): PermissionRequest[] {

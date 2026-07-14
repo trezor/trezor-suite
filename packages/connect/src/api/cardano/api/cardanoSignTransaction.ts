@@ -233,7 +233,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
         super(message, params);
 
         this.requiredDeviceCapabilities = ['Capability_Cardano'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Cardano')];
+        this.requiredFirmwareCoins = [getMiscNetwork('ada')];
     }
 
     get requiredPermissions(): PermissionRequest[] {

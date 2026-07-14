@@ -32,7 +32,7 @@ describe('TrezorConnect.unlockPath', () => {
         const address = await TrezorConnect.getAddress({
             path: "m/10025'/1'/0'/1'/0/0",
             unlockPath: unlockPath.payload,
-            coin: 'Testnet',
+            coin: 'test',
         });
         if (!address.success) throw new Error(address.error.message);
 
@@ -43,7 +43,7 @@ describe('TrezorConnect.unlockPath', () => {
         const address2 = await TrezorConnect.getAddress({
             path: "m/10025'/1'/0'/1'/0/1",
             unlockPath: unlockPath.payload,
-            coin: 'Testnet',
+            coin: 'test',
         });
         if (!address2.success) throw new Error(address2.error.message);
 
@@ -58,13 +58,13 @@ describe('TrezorConnect.unlockPath', () => {
                     path: "m/10025'/1'/0'/1'/0/0",
                     unlockPath: unlockPath.payload,
                     showOnTrezor: false,
-                    coin: 'Testnet',
+                    coin: 'test',
                 },
                 {
                     path: "m/10025'/1'/0'/1'/0/1",
                     unlockPath: unlockPath.payload,
                     showOnTrezor: false,
-                    coin: 'Testnet',
+                    coin: 'test',
                 },
             ],
         });
@@ -83,7 +83,7 @@ describe('TrezorConnect.unlockPath', () => {
         const changeAddress = await TrezorConnect.getAddress({
             path: "m/10025'/1'/0'/1'/1/1",
             unlockPath: unlockPath.payload,
-            coin: 'Testnet',
+            coin: 'test',
         });
         if (changeAddress.success) throw new Error('Expected error');
         expect(changeAddress.error).toMatchObject({ message: 'Forbidden key path' });
@@ -92,7 +92,7 @@ describe('TrezorConnect.unlockPath', () => {
         const otherAccount = await TrezorConnect.getAddress({
             path: "m/10025'/1'/1'/1'/0/0",
             unlockPath: unlockPath.payload,
-            coin: 'Testnet',
+            coin: 'test',
         });
         if (otherAccount.success) throw new Error('Expected error');
         expect(otherAccount.error).toMatchObject({ message: 'Forbidden key path' });
@@ -112,7 +112,7 @@ describe('TrezorConnect.unlockPath', () => {
         const unlockedPublicKey = await TrezorConnect.getPublicKey({
             path: "m/10025'/1'/0'/1'",
             unlockPath: unlockPath.payload,
-            coin: 'Testnet',
+            coin: 'test',
         });
 
         if (!unlockedPublicKey.success) throw new Error(unlockedPublicKey.error.message);
@@ -128,13 +128,13 @@ describe('TrezorConnect.unlockPath', () => {
                     path: "m/10025'/1'/0'/1'",
                     unlockPath: unlockPath.payload,
                     showOnTrezor: true,
-                    coin: 'Testnet',
+                    coin: 'test',
                 },
                 {
                     path: "m/10025'/1'/1'/1'",
                     unlockPath: unlockPath.payload,
                     showOnTrezor: true,
-                    coin: 'Testnet',
+                    coin: 'test',
                 },
             ],
         });
@@ -154,7 +154,7 @@ describe('TrezorConnect.unlockPath', () => {
 
         const forbiddenPublicKey = await TrezorConnect.getPublicKey({
             path: "m/10025'/1'/0'/1'",
-            coin: 'Testnet',
+            coin: 'test',
         });
 
         if (forbiddenPublicKey.success) throw new Error('Expected error');
@@ -197,7 +197,7 @@ describe('TrezorConnect.unlockPath', () => {
                     script_type: 'PAYTOADDRESS' as const,
                 },
             ],
-            coin: 'Testnet',
+            coin: 'test' as const,
         };
 
         const unlockedSignTx = await TrezorConnect.signTransaction({

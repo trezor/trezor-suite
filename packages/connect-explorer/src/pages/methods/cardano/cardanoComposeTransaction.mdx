@@ -36,7 +36,7 @@ const result = await TrezorConnect.cardanoComposeTransaction(params);
 // Get account info
 const accountInfo = await TrezorConnect.getAccountInfo({
     path: "m/1852'/1815'/0'/0/0",
-    coin: 'cardano',
+    coin: 'ada',
     details: 'txs',
 });
 const account = accountInfo.payload;

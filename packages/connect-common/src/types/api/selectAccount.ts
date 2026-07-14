@@ -1,6 +1,7 @@
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
+import { CoinSymbolParam } from '../coinInfo';
 import type { Params, Response } from '../params';
 
 // Account derivation variant. Mirrors the `type` values in `ACCOUNT_TYPES`
@@ -55,7 +56,7 @@ export const AddressSelection = Type.Union([
 export type SelectAccount = Static<typeof SelectAccount>;
 export const SelectAccount = Type.Object({
     // Network to select an account for, e.g. 'eth' | 'btc' | 'ada'.
-    coin: Type.String(),
+    coin: CoinSymbolParam(),
     selectionType: Type.Optional(SelectionType),
     // Allowed account types, each shown as its own tab in the picker. Entries are either one of
     // the network's built-in types, or a custom derivation path with its own label. If omitted,

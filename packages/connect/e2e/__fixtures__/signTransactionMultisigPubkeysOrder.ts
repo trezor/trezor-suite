@@ -30,7 +30,7 @@ export default {
         {
             description: 'Testnet (multisig): 2 of 3 (unorderd)',
             params: {
-                coin: 'testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/48'/1'/1'/0'/0/0",
@@ -65,7 +65,7 @@ export default {
         {
             description: 'Testnet (multisig): 2 of 3 (errors when ordered gives wrong key))',
             params: {
-                coin: 'testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/48'/1'/1'/0'/0/0",

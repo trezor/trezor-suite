@@ -13,7 +13,7 @@ export default {
             description: 'Testnet (P2TR): send Taproot',
             skip: ['<1.10.4', '<2.4.3'],
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/86'/1'/0'/1/0",
@@ -43,7 +43,7 @@ export default {
             description: 'Testnet (P2TR): 2 inputs, 1 output, 1 change',
             skip: ['<1.10.4', '<2.4.3'],
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/86'/1'/0'/0/0",
@@ -85,7 +85,7 @@ export default {
             description: 'Testnet: send mixed inputs to mixed outputs',
             skip: ['<1.10.4', '<2.4.3'],
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/49'/1'/1'/0/0",

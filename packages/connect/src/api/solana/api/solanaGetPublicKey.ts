@@ -42,7 +42,7 @@ export default class SolanaGetPublicKey extends AbstractMethod<
         this.hasBundle = hasBundle;
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Solana'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Solana')];
+        this.requiredFirmwareCoins = [getMiscNetwork('sol')];
     }
 
     get requiredPermissions(): PermissionRequest[] {

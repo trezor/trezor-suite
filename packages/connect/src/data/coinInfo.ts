@@ -20,14 +20,9 @@ export const getBitcoinNetwork = (
     pathOrName: DerivationPath,
 ): Readonly<BitcoinNetworkInfo> | undefined => {
     if (typeof pathOrName === 'string') {
-        const name = pathOrName.toLowerCase();
+        const shortcut = pathOrName.toLowerCase();
 
-        return bitcoinNetworks.find(
-            n =>
-                n.name.toLowerCase() === name ||
-                n.shortcut.toLowerCase() === name ||
-                n.label.toLowerCase() === name,
-        );
+        return bitcoinNetworks.find(n => n.shortcut.toLowerCase() === shortcut);
     }
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const pathElement: number = pathOrName[1];
@@ -56,11 +51,9 @@ export const getMiscNetwork = (
     pathOrName: DerivationPath,
 ): Readonly<MiscNetworkInfo> | undefined => {
     if (typeof pathOrName === 'string') {
-        const name = pathOrName.toLowerCase();
+        const shortcut = pathOrName.toLowerCase();
 
-        return miscNetworks.find(
-            n => n.name.toLowerCase() === name || n.shortcut.toLowerCase() === name,
-        );
+        return miscNetworks.find(n => n.shortcut.toLowerCase() === shortcut);
     }
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const miscPathElement: number = pathOrName[1];

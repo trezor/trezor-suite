@@ -128,7 +128,7 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
 
         super(message, params);
         this.requiredDeviceCapabilities = ['Capability_Tron'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Tron')];
+        this.requiredFirmwareCoins = [getMiscNetwork('trx')];
     }
 
     get requiredPermissions(): PermissionRequest[] {

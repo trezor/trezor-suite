@@ -24,6 +24,13 @@ Features:
 
 Breaking changes:
 
+- The `coin` parameter now accepts only the lowercase coin **shortcut** (the `CoinSymbol` set); network **names** and **labels** are no longer accepted, and the `coin` type is narrowed from `string` to `CoinSymbol`, so a non-shortcut value now fails at compile time as well as at runtime. Resolution is uniform across all coin families (previously Bitcoin matched name/shortcut/label, misc matched name/shortcut, and EVM matched shortcut only). Migration — use the shortcut everywhere:
+    - `getAddress({ coin: 'Bitcoin', … })` → `getAddress({ coin: 'btc', … })`
+    - `getAccountInfo({ coin: 'Bitcoin Cash', … })` → `getAccountInfo({ coin: 'bch', … })`
+    - `composeTransaction({ coin: 'cardano', … })` → `composeTransaction({ coin: 'ada', … })`
+
+    A former name/label passed to a path-taking method (`getAddress`, `getPublicKey`, …) now derives the network from `path`, exactly as it does when `coin` is omitted; methods without a path fallback (`getAccountInfo`, `selectAccount`, `verifyMessage`, `composeTransaction`, `signTransaction`, `signMessage`, `getOwnershipId`, `getOwnershipProof`, and the `blockchain*` family) throw `Method_UnknownCoin`. The complete list of accepted shortcuts is the [`CoinSymbol`](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/coinInfo.ts) type.
+
 - `getAccountDescriptor` has been removed. The per-coin `*GetPublicKey` methods (`getPublicKey`, `ethereumGetPublicKey`, `cardanoGetPublicKey`, `solanaGetPublicKey`, `tezosGetPublicKey`) now return the same fields after the response-shape unification, so the dedicated descriptor entry point is no longer needed. Consumers that previously called `getAccountDescriptor` should call the appropriate `*GetPublicKey` for the target coin. Field mapping from the old `getAccountDescriptor` payload:
     - `payload.descriptor` → Bitcoin: `result.descriptor` on `getPublicKey`. Non-Bitcoin coins did not return a descriptor; use `result.displayablePublicKey` for the canonical user-facing form.
     - `payload.path` (serialized string) → `result.serializedPath` on every `*GetPublicKey`.

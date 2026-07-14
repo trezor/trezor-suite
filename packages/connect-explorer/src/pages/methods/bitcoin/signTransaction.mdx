@@ -45,7 +45,7 @@ export const SignTransactionSchema = Type.Object({
 export const paramDescriptions = {
     coin:
         '> Determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-data/files/coins.json) file.\n' +
-        '> Coin `shortcut`, `name` or `label` can be used.\n',
+        '> Coin `shortcut` (a `CoinSymbol`, e.g. `btc`) is used.\n',
     inputs: 'of [PROTO.TxInputType](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/definitions/messages-bitcoin.ts)',
     outputs:
         'of [PROTO.TxOutputType](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/definitions/messages-bitcoin.ts)',

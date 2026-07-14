@@ -62,7 +62,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
         this.hasBundle = hasBundle;
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Cardano'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Cardano')];
+        this.requiredFirmwareCoins = [getMiscNetwork('ada')];
     }
 
     get requiredPermissions(): PermissionRequest[] {

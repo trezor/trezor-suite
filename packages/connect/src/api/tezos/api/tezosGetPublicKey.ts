@@ -43,7 +43,7 @@ export default class TezosGetPublicKey extends AbstractMethod<
 
         this.hasBundle = hasBundle;
         this.requiredDeviceCapabilities = ['Capability_Tezos'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Tezos')];
+        this.requiredFirmwareCoins = [getMiscNetwork('xtz')];
     }
 
     get requiredPermissions(): PermissionRequest[] {

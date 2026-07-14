@@ -7,7 +7,7 @@ export default {
         {
             description: 'Bitcoin (P2SH): first account using path',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 path: "m/49'/0'/0'",
             },
             result: {
@@ -18,7 +18,7 @@ export default {
         {
             description: 'Bitcoin (P2PKH): first account using path',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 path: "m/44'/0'/0'",
             },
             result: {
@@ -29,7 +29,7 @@ export default {
         {
             description: 'Testnet (P2SH): empty account using path',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 path: "m/49'/1'/256'",
             },
             result: {
@@ -43,7 +43,7 @@ export default {
         {
             description: 'Bitcoin (P2SH): account from descriptor',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 descriptor:
                     'ypub6Y5EDdQK9nQzpNeMtgXxhBB3SoLk2SyR2MFLQYsBkAusAHpaQNxTTwefgnL9G3oFGrRS9VkVvyY1SaApFAzQPZ99wto5etdReeE3XFkkMZt',
             },
@@ -56,7 +56,7 @@ export default {
         {
             description: 'Bitcoin (P2PKH): account from descriptor',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 descriptor:
                     'xpub6DExuxjQ16sWy5TF4KkLV65YGqCJ5pyv7Ej7d9yJNAXz7C1M9intqszXfaNZG99KsDJdQ29wUKBTZHZFXUaPbKTZ5Z6f4yowNvAQ8fEJw2G',
             },
@@ -114,7 +114,7 @@ export default {
         {
             description: 'invalid path',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 path: "m/49'/0'",
             },
             result: false,

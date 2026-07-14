@@ -46,7 +46,7 @@ export default class StellarSignTransaction extends AbstractMethod<
         super(message, params);
 
         this.requiredDeviceCapabilities = ['Capability_Stellar'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Stellar')];
+        this.requiredFirmwareCoins = [getMiscNetwork('xlm')];
     }
 
     get requiredPermissions(): PermissionRequest[] {

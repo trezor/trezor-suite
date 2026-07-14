@@ -7,7 +7,7 @@ export default class TronGetAddress extends AbstractMiscGetAddress<'tronGetAddre
     constructor(message: MethodMessage<'tronGetAddress'>) {
         super(message, 2);
         this.requiredDeviceCapabilities = ['Capability_Tron'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Tron')];
+        this.requiredFirmwareCoins = [getMiscNetwork('trx')];
     }
 
     get info() {

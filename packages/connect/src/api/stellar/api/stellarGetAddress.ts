@@ -9,7 +9,7 @@ export default class StellarGetAddress extends AbstractMiscGetAddress<'stellarGe
     constructor(message: MethodMessage<'stellarGetAddress'>) {
         super(message, 3);
         this.requiredDeviceCapabilities = ['Capability_Stellar'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Stellar')];
+        this.requiredFirmwareCoins = [getMiscNetwork('xlm')];
     }
 
     get info() {

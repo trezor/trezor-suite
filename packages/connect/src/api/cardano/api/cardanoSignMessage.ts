@@ -64,7 +64,7 @@ export default class CardanoSignMessage extends AbstractMethod<
 
         super(message, params);
 
-        this.requiredFirmwareCoins = [getMiscNetwork('Cardano')];
+        this.requiredFirmwareCoins = [getMiscNetwork('ada')];
     }
 
     get requiredPermissions(): PermissionRequest[] {

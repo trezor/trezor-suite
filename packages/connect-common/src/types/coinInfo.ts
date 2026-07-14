@@ -1,5 +1,5 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
-import type { Static } from '@trezor/schema-utils';
+import type { Static, StringOptions } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
 import { FeeLevel } from './fees';
@@ -196,3 +196,12 @@ const coinSymbolSet: ReadonlySet<string> = new Set(coinSymbols);
 // Strict on the canonical lowercase form; callers accepting mixed case should lowercase first
 // (the coin guard in @trezor/connect compares case-insensitively).
 export const isCoinSymbol = (value: string): value is CoinSymbol => coinSymbolSet.has(value);
+
+// TypeBox schema factory for the public `coin` method param. Its static type narrows to
+// `CoinSymbol` (so a non-shortcut coin such as `'bitcoin'` fails type-check), while runtime
+// validation stays a plain string: an unrecognised coin resolves to `undefined` in `getCoinInfo`
+// and is handled per-method (path fallback or `Method_UnknownCoin`), never rejected by the schema
+// here. Options (e.g. `description`, `default`) are forwarded so methods that document their `coin`
+// param stay call-site consistent with those that do not.
+export const CoinSymbolParam = (options?: StringOptions) =>
+    Type.Unsafe<CoinSymbol>(Type.String(options));

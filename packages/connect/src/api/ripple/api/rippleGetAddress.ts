@@ -9,7 +9,7 @@ export default class RippleGetAddress extends AbstractMiscGetAddress<'rippleGetA
     constructor(message: MethodMessage<'rippleGetAddress'>) {
         super(message, 3);
         this.requiredDeviceCapabilities = ['Capability_Ripple'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Ripple')];
+        this.requiredFirmwareCoins = [getMiscNetwork('xrp')];
     }
 
     get info() {

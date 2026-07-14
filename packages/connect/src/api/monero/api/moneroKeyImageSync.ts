@@ -115,7 +115,7 @@ export default class MoneroKeyImageSyncMethod extends AbstractMethod<'moneroKeyI
         super(message, params);
 
         this.requiredDeviceCapabilities = ['Capability_Monero'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Monero')];
+        this.requiredFirmwareCoins = [getMiscNetwork('xmr')];
     }
 
     get requiredPermissions(): PermissionRequest[] {

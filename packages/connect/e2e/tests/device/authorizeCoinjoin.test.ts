@@ -52,7 +52,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
                 maxCoordinatorFeeRate: 500000, // 5% => 0.005 * 10**8;
                 maxFeePerKvbyte: 3500,
                 path: "m/10025'/1'/0'/1'",
-                coin: 'Testnet',
+                coin: 'test',
                 scriptType: 'SPENDTAPROOT',
             });
 
@@ -72,7 +72,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
                 '0f7777772e6578616d706c652e636f6d0000000000000000000000000000000000000000000000000000000000000001';
 
             const proof = await TrezorConnect.getOwnershipProof({
-                coin: 'Testnet',
+                coin: 'test',
                 path: "m/10025'/1'/0'/1'/1/0",
                 scriptType: 'SPENDTAPROOT',
                 userConfirmation: true, // ButtonRequest is not emitted because of preauthorization
@@ -159,7 +159,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
                     },
                 ],
                 coinjoinRequest,
-                coin: 'testnet',
+                coin: 'test',
                 preauthorized: true,
                 unlockPath: unlockPath.payload, // NOTE: unlock path is required for validation, it will be removed in future
                 serialize: false,
@@ -236,7 +236,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
             maxCoordinatorFeeRate: 500000, // 5% => 0.005 * 10**8;
             maxFeePerKvbyte: 3500,
             path: "m/10025'/1'/0'/1'",
-            coin: 'Testnet',
+            coin: 'test',
             scriptType: 'SPENDTAPROOT',
         } as const;
 

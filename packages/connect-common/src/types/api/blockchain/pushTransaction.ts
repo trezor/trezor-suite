@@ -5,6 +5,7 @@
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
+import { CoinSymbolParam } from '../../coinInfo';
 import type { Params, Response } from '../../params';
 
 export type PushTransaction = Static<typeof PushTransaction>;
@@ -16,7 +17,7 @@ export const PushTransaction = Type.Object({
             disableAlternativeRPC: Type.Optional(Type.Boolean()),
         }),
     ]),
-    coin: Type.String(),
+    coin: CoinSymbolParam(),
     identity: Type.Optional(Type.String()),
 });
 

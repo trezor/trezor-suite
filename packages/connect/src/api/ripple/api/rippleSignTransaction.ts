@@ -51,7 +51,7 @@ export default class RippleSignTransaction extends AbstractMethod<
         super(message, params);
 
         this.requiredDeviceCapabilities = ['Capability_Ripple'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Ripple')];
+        this.requiredFirmwareCoins = [getMiscNetwork('xrp')];
     }
 
     get requiredPermissions(): PermissionRequest[] {

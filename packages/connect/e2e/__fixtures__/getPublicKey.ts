@@ -25,7 +25,7 @@ export default {
             description: 'Bitcoin p2tr first account',
             params: {
                 path: "m/86'/0'/0'",
-                coin: 'bitcoin',
+                coin: 'btc',
             },
             result: {
                 xpub: 'xpub6D1saVFSZYgqXCXDfc5m2KdPXUsBXC12E3WntXXzWGJB8dEBr3CGR62emtC8sxJRVRSmBKbtJubuaaGEvZeeCEWaPaYvD9iJwp2Ky7sZws7',
@@ -86,7 +86,7 @@ export default {
             description: 'Bitcoin p2sh first account (path as array)',
             params: {
                 path: [2147483697, 2147483648, 2147483648],
-                coin: 'Bitcoin',
+                coin: 'btc',
             },
             result: {
                 xpub: 'xpub6DExuxjQ16sWy5TF4KkLV65YGqCJ5pyv7Ej7d9yJNAXz7C1M9intqszXfaNZG99KsDJdQ29wUKBTZHZFXUaPbKTZ5Z6f4yowNvAQ8fEJw2G',
@@ -107,7 +107,7 @@ export default {
             description: 'Bitcoin p2pkh first account',
             params: {
                 path: "m/44'/0'/0'",
-                coin: 'bitcoin',
+                coin: 'btc',
             },
             result: {
                 xpub: 'xpub6D1weXBcFAo8CqBbpP4TbH5sxQH8ZkqC5pDEvJ95rNNBZC9zrKmZP2fXMuve7ZRBe18pWQQsGg68jkq24mZchHwYENd8cCiSb71u3KD4AFH',
@@ -126,7 +126,7 @@ export default {
             description: 'Bitcoin p2tr first account (showOnTrezor)',
             params: {
                 path: "m/86'/0'/0'",
-                coin: 'bitcoin',
+                coin: 'btc',
                 showOnTrezor: true,
             },
             result: {
@@ -172,7 +172,7 @@ export default {
             description: 'Bitcoin p2pkh first account (showOnTrezor)',
             params: {
                 path: "m/44'/0'/0'",
-                coin: 'bitcoin',
+                coin: 'btc',
                 showOnTrezor: true,
             },
             result: {
@@ -201,7 +201,7 @@ export default {
             description: 'Invalid path (too short)',
             params: {
                 path: [0, 1],
-                coin: 'Litecoin',
+                coin: 'ltc',
             },
             result: false,
         },
