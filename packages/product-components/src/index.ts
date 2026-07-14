@@ -43,7 +43,7 @@ export type { TransactionNotificationType } from './components/Notifications/not
 export { ActionButton } from './components/Settings/ActionButton';
 export { ActionColumn } from './components/Settings/ActionColumn';
 export { ActionSelect } from './components/Settings/ActionSelect';
-export { OutlineHighlight } from './components/Settings/OutlineHighlight';
+export { OutlineHighlight, type Offset } from './components/Settings/OutlineHighlight';
 export { SectionItem } from './components/Settings/SectionItem';
 export { SettingsRequirementBanner } from './components/Settings/SettingsRequirementBanner';
 export { SettingsSection } from './components/Settings/SettingsSection';

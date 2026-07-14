@@ -10,9 +10,9 @@ import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
 import { EarnStakingAccountRow } from './EarnStakingAccountRow';
 import { EarnStakingActivateRow } from './EarnStakingActivateRow';
+import { useStakingTableData } from './hooks/useStakingTableData';
 import { EarnProviderInfoBadge } from '../../providers/EarnProviderInfoBadge';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
-import { useStakingTableData } from './hooks/useStakingTableData';
 
 export const EarnStakingTable = () => {
     const { anchorRef, shouldHighlight } = useAnchor(EarnAnchor.Staking);

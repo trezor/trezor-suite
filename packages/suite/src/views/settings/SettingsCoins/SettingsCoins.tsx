@@ -9,7 +9,6 @@ import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import { openModal } from '@suite/modal';
-import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectIsTestnetNetworksEnabled } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
@@ -24,7 +23,7 @@ import {
 import { Box, Button, Column, Switch, Text, Tooltip, motionEasing } from '@trezor/components';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { CoinIcon } from '@trezor/icons';
-import { OutlineHighlight, SectionItem, SettingsSection } from '@trezor/product-components';
+import { SettingsSection } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
@@ -204,105 +203,49 @@ export const SettingsCoins = () => {
                 icon={CoinIcon}
                 hasContainer={false}
             >
-                <Anchor anchorId={SettingsAnchor.Crypto}>
-                    {({ anchorId, anchorRef, shouldHighlight }) => (
-                        <SectionItem
-                            data-testid={anchorId}
-                            ref={anchorRef}
-                            shouldHighlight={shouldHighlight}
-                        >
-                            <Column gap={24} width="100%">
-                                <NetworkSettingsSearchInput
-                                    searchQuery={searchQuery}
-                                    onSearchChange={handleSearchChange}
-                                    onSearchClear={handleSearchClear}
-                                />
-                                {hasNoSearchResults ? (
-                                    <NoNetworkSearchResults />
-                                ) : (
-                                    <Column gap={32} width="100%">
-                                        {showSupportedMainnets &&
-                                            renderNetworkList(filteredSupportedMainnets)}
+                <Column gap={24} width="100%">
+                    <NetworkSettingsSearchInput
+                        searchQuery={searchQuery}
+                        onSearchChange={handleSearchChange}
+                        onSearchClear={handleSearchClear}
+                    />
+                    {hasNoSearchResults ? (
+                        <NoNetworkSearchResults />
+                    ) : (
+                        <Column gap={32} width="100%">
+                            {showSupportedMainnets && renderNetworkList(filteredSupportedMainnets)}
 
-                                        {showSupportedTestnetsSection && (
-                                            <Anchor anchorId={SettingsAnchor.TestnetCrypto}>
-                                                {({
-                                                    anchorId: testnetAnchorId,
-                                                    anchorRef: testnetAnchorRef,
-                                                    shouldHighlight: testnetShouldHighlight,
-                                                }) => (
-                                                    <OutlineHighlight
-                                                        shouldHighlight={testnetShouldHighlight}
-                                                    >
-                                                        <Box
-                                                            ref={testnetAnchorRef}
-                                                            data-testid={testnetAnchorId}
-                                                            width="100%"
-                                                        >
-                                                            <Column gap={12} width="100%">
-                                                                <Text typographyStyle="body-md">
-                                                                    <Translation id="TR_TESTNET_COINS" />
-                                                                </Text>
-                                                                {renderNetworkList(
-                                                                    filteredSupportedTestnets,
-                                                                )}
-                                                            </Column>
-                                                        </Box>
-                                                    </OutlineHighlight>
-                                                )}
-                                            </Anchor>
-                                        )}
+                            {showSupportedTestnetsSection && (
+                                <Column gap={12} width="100%">
+                                    <Text typographyStyle="body-md">
+                                        <Translation id="TR_TESTNET_COINS" />
+                                    </Text>
+                                    {renderNetworkList(filteredSupportedTestnets)}
+                                </Column>
+                            )}
 
-                                        {showUnsupportedSection && (
-                                            <Anchor anchorId={SettingsAnchor.UnsupportedCrypto}>
-                                                {({
-                                                    anchorId: unsupportedAnchorId,
-                                                    anchorRef: unsupportedAnchorRef,
-                                                    shouldHighlight: unsupportedShouldHighlight,
-                                                }) => (
-                                                    <OutlineHighlight
-                                                        shouldHighlight={unsupportedShouldHighlight}
-                                                    >
-                                                        <Box
-                                                            ref={unsupportedAnchorRef}
-                                                            data-testid={unsupportedAnchorId}
-                                                            width="100%"
-                                                        >
-                                                            <Column gap={12} width="100%">
-                                                                <Text typographyStyle="headline-sm">
-                                                                    <Translation id="TR_UNSUPPORTED_COINS" />
-                                                                </Text>
-                                                                <Column gap={24} width="100%">
-                                                                    {showUnsupportedMainnets &&
-                                                                        renderNetworkList(
-                                                                            filteredUnsupportedMainnets,
-                                                                        )}
-                                                                    {showUnsupportedTestnets && (
-                                                                        <Column
-                                                                            gap={12}
-                                                                            width="100%"
-                                                                        >
-                                                                            <Text typographyStyle="body-md">
-                                                                                <Translation id="TR_TESTNET_COINS" />
-                                                                            </Text>
-                                                                            {renderNetworkList(
-                                                                                filteredUnsupportedTestnets,
-                                                                            )}
-                                                                        </Column>
-                                                                    )}
-                                                                </Column>
-                                                            </Column>
-                                                        </Box>
-                                                    </OutlineHighlight>
-                                                )}
-                                            </Anchor>
+                            {showUnsupportedSection && (
+                                <Column gap={12} width="100%">
+                                    <Text typographyStyle="headline-sm">
+                                        <Translation id="TR_UNSUPPORTED_COINS" />
+                                    </Text>
+                                    <Column gap={24} width="100%">
+                                        {showUnsupportedMainnets &&
+                                            renderNetworkList(filteredUnsupportedMainnets)}
+                                        {showUnsupportedTestnets && (
+                                            <Column gap={12} width="100%">
+                                                <Text typographyStyle="body-md">
+                                                    <Translation id="TR_TESTNET_COINS" />
+                                                </Text>
+                                                {renderNetworkList(filteredUnsupportedTestnets)}
+                                            </Column>
                                         )}
                                     </Column>
-                                )}
-                            </Column>
-                        </SectionItem>
+                                </Column>
+                            )}
+                        </Column>
                     )}
-                </Anchor>
+                </Column>
             </SettingsSection>
 
             <Box position={{ type: 'fixed', bottom: 16 }}>
