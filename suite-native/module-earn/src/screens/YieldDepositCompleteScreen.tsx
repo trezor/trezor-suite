@@ -10,9 +10,8 @@ import {
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
 import { toTokenSymbol } from '@suite-common/wallet-types';
-import { useAlert } from '@suite-native/alerts';
 import { Text } from '@suite-native/atoms';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import {
     type StackNavigationProps,
     type YieldStackParamList,
@@ -23,9 +22,9 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ApyValue } from '../components/ApyValue';
-import { StablecoinYieldApyBreakdown } from '../components/StablecoinYieldApyBreakdown';
 import { YieldCompleteScreenContent } from '../components/YieldCompleteScreenContent';
 import { getYieldDepositCompleteRows } from '../components/YieldCompleteScreenPresets';
+import { useApyBreakdownAlert } from '../hooks/useApyBreakdownAlert';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 
 const abbrStyle = prepareNativeStyle(({ colors }) => ({
@@ -44,8 +43,6 @@ export const YieldDepositCompleteScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const { applyStyle } = useNativeStyles();
-    const { showAlert } = useAlert();
-    const { translate } = useTranslate();
     const dispatch = useDispatch();
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const { CryptoAmountFormatter } = useFormatters();
@@ -54,6 +51,8 @@ export const YieldDepositCompleteScreen = () => {
     const session = useSelector((state: StablecoinYieldRootState) =>
         selectStablecoinYieldSessionByFlowKey(state, 'deposit', flowKey),
     );
+
+    const apyBreakdownAlert = useApyBreakdownAlert({ account, vault, apy });
 
     const handleExit = useCallback(() => {
         if (flowKey) {
@@ -80,31 +79,6 @@ export const YieldDepositCompleteScreen = () => {
             navigation.replace(YieldStackRoutes.YieldDeposit, route.params);
         }
     }, [navigation, navigateToInitialScreen, resolutionStatus, route.params, session]);
-
-    const onApyPress = useCallback(() => {
-        if (!account || !vault) {
-            return;
-        }
-
-        showAlert({
-            title: vault.outputToken?.name ?? '',
-            description: translate(
-                'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.apyLabel',
-                { apy },
-            ),
-            appendix: (
-                <StablecoinYieldApyBreakdown
-                    networkSymbol={account.symbol}
-                    rewards={vault.rewardRate.components}
-                    underlyingToken={vault.token}
-                    tokenSymbol={vault.token.symbol}
-                />
-            ),
-            textAlign: 'center',
-            titleSpacing: 'sp4',
-            primaryButtonTitle: translate('generic.buttons.close'),
-        });
-    }, [account, vault, showAlert, translate, apy]);
 
     const rows = useMemo(() => {
         if (resolutionStatus !== 'resolved' || !session) {
@@ -133,7 +107,7 @@ export const YieldDepositCompleteScreen = () => {
                     <ApyValue apy={apy} />
                 </Text>
             ),
-            onApyPress,
+            onApyPress: apyBreakdownAlert.onPress,
             receivedAmount,
             receivedTokenContract: flowData.receiptToken.contractAddress ?? undefined,
             sentAmount,
@@ -142,7 +116,7 @@ export const YieldDepositCompleteScreen = () => {
     }, [
         CryptoAmountFormatter,
         applyStyle,
-        onApyPress,
+        apyBreakdownAlert.onPress,
         account,
         apy,
         flowData,

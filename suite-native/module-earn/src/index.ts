@@ -1,5 +1,6 @@
 export { FiveBinariesHomeBanner } from './components/FiveBinariesHomeBanner';
 export { StablecoinYieldApyBreakdown } from './components/StablecoinYieldApyBreakdown';
+export { useApyBreakdownAlert } from './hooks/useApyBreakdownAlert';
 export { useResolvedYieldFlowData } from './hooks/useResolvedYieldFlowData';
 export { useStablecoinYieldFirmwareUpdateAlert } from './hooks/useStablecoinYieldFirmwareUpdateAlert';
 export { useStakingDetailNavigation } from './hooks/useStakingDetailNavigation';
