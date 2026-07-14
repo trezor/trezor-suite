@@ -25,6 +25,7 @@ import {
     type StablecoinYieldClaimSummariesState,
     useStablecoinYieldClaimSummaries,
 } from './useStablecoinYieldClaimSummaries';
+import { hasPositiveContractTokenBalance } from '../utils/contractTokenBalanceUtils';
 
 export const MORPHO_PROVIDER_LIST_ITEM = {
     id: 'morpho-provider',
@@ -107,16 +108,12 @@ export const useStablecoinYieldListData = () => {
                 : null;
             const outputTokenAddress = receiptTokenContract?.toLowerCase();
 
-            const accountsWithPosition = outputTokenAddress
-                ? accounts.filter(account => {
-                      if (account.symbol !== network.symbol) {
-                          return false;
-                      }
-
-                      return account.tokens?.some(
-                          token => token.contract.toLowerCase() === outputTokenAddress,
-                      );
-                  })
+            const accountsWithPosition = receiptTokenContract
+                ? accounts.filter(
+                      account =>
+                          account.symbol === network.symbol &&
+                          hasPositiveContractTokenBalance(account, receiptTokenContract),
+                  )
                 : [];
 
             const defaultYieldItem: StablecoinYieldEarnItem = {
