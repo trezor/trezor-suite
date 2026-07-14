@@ -35,6 +35,7 @@ export const YieldReviewScreenLayout = ({
                 }
             />
         }
+        shouldKeepScrolledToEnd={!!submittedCard}
     >
         <VStack flex={1} justifyContent="space-between">
             {children}

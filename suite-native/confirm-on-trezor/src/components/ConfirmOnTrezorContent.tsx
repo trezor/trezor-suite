@@ -67,6 +67,7 @@ export type ConfirmOnTrezorWrapperProps = PropsWithChildren<{
     isManualControlEnabled?: boolean;
     defaultHeader?: React.ReactNode;
     isCloseButtonDisabled?: boolean;
+    shouldKeepScrolledToEnd?: boolean;
 }> &
     ScreenHeaderProps;
 
@@ -84,6 +85,7 @@ export const ConfirmOnTrezorContent = ({
     panGesture,
     children,
     defaultHeader,
+    shouldKeepScrolledToEnd,
 }: ConfirmOnTrezorContentProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const colorVariant = useActiveColorScheme();
@@ -160,6 +162,7 @@ export const ConfirmOnTrezorContent = ({
                 <Screen
                     systemThemeStyle={!isFullscreen ? 'light' : undefined}
                     containerStyle={applyStyle(innerContainerStyle)}
+                    shouldKeepScrolledToEnd={shouldKeepScrolledToEnd}
                 >
                     {children}
                 </Screen>

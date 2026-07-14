@@ -76,7 +76,6 @@ export const YieldWithdrawReviewContent = ({
                     <EarnReviewSubmittedCard
                         buttonTranslationId={submitButtonTranslationId}
                         isButtonLoading={isSendingWithdraw}
-                        messageTranslationId="earn.yieldWithdrawReviewScreen.successMessage"
                         onButtonPress={handleWithdrawSubmitted}
                     />
                 ) : undefined

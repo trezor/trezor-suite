@@ -62,7 +62,6 @@ export const YieldDepositReviewContent = ({
                     <EarnReviewSubmittedCard
                         buttonTranslationId="earn.yieldDepositReviewScreen.submitButton"
                         isButtonLoading={isSendingDeposit}
-                        messageTranslationId="earn.yieldDepositReviewScreen.successMessage"
                         onButtonPress={handleDepositSubmitted}
                     />
                 ) : undefined
