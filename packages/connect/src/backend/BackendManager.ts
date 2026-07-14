@@ -1,6 +1,5 @@
 import { BLOCKCHAIN, createBlockchainMessage } from '@trezor/connect-common';
 import type { BlockchainLink, CoinInfo, Proxy } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { TimerId } from '@trezor/type-utils';
 import { deepEqual } from '@trezor/utils';
 
@@ -80,9 +79,8 @@ export class BackendManager {
 
     isSupported(coinInfo: CoinInfo) {
         const info = this.custom[coinInfo.shortcut] || coinInfo.blockchainLink;
-        if (!info) {
-            throw ERRORS.TypedError('Backend_NotSupported');
-        }
+
+        return !!info;
     }
 
     setCustom(shortcut: CoinShortcut, blockchainLink?: BlockchainLink) {

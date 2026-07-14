@@ -5,7 +5,7 @@ import { SolanaComposeTransaction as SolanaComposeTransactionSchema } from '@tre
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import { initBlockchain, isBackendSupported } from '../../../backend/BlockchainLink';
+import { assertBackendSupported, initBlockchain } from '../../../backend/BlockchainLink';
 import type { MethodContext, MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../../../data/coinInfo';
@@ -26,7 +26,7 @@ export default class SolanaComposeTransaction extends AbstractMethod<
 
         const coinInfo = getCoinInfoOrThrow(payload.coin || 'sol');
         // validate backend
-        isBackendSupported(coinInfo);
+        assertBackendSupported(coinInfo);
 
         const params = { coinInfo, ...payload };
 

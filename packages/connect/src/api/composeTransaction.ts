@@ -22,7 +22,7 @@ import { resolveAfter } from '@trezor/utils/src/resolveAfter';
 import { unique } from '@trezor/utils/src/unique';
 import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trezor/utxo-lib';
 
-import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
+import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { requestExistingAccounts } from './common/requestExistingAccounts';
@@ -79,7 +79,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             throw ERRORS.TypedError('Method_UnknownCoin');
         }
         // validate backend
-        isBackendSupported(coinInfo);
+        assertBackendSupported(coinInfo);
 
         // validate each output and transform into @trezor/utxo-lib/compose format
         const outputs: ComposeOutput[] = [];
