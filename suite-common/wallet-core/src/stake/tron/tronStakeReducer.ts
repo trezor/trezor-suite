@@ -78,6 +78,14 @@ const getNextStep = (flow: TronFlow, step: TronStakeStepId): TronStakeStepId => 
 };
 
 type SessionPayload = { accountKey: AccountKey; flow: TronFlow };
+type GoToStepPayload = SessionPayload & { step: TronStakeStepId };
+type SubmitFinishedPayload = SessionPayload & { txid?: string; error?: TronStakeError };
+type StorePrecomposedTransactionPayload = {
+    precomposedTx: PrecomposedTransactionFinal;
+    precomposedForm: FormState;
+    accountKey: AccountKey;
+};
+type StoreSignedTransactionPayload = { serializedTx: SerializedTx };
 
 const getSession = (
     state: TronStakeReducerState,
@@ -94,15 +102,18 @@ const setSession = (
     state.sessions[accountKey] = { ...state.sessions[accountKey], [flow]: session };
 };
 
-export const tronStakeSlice = createSlice({
+const tronStakeSlice = createSlice({
     name: TRON_STAKE_PREFIX,
     initialState,
     reducers: {
-        goToStep(state, action: PayloadAction<SessionPayload & { step: TronStakeStepId }>) {
+        goToStep(state: TronStakeReducerState, action: PayloadAction<GoToStepPayload>) {
             const { accountKey, flow, step } = action.payload;
             setSession(state, accountKey, flow, { ...getSession(state, accountKey, flow), step });
         },
-        pendingTransactionConfirmed(state, action: PayloadAction<SessionPayload>) {
+        pendingTransactionConfirmed(
+            state: TronStakeReducerState,
+            action: PayloadAction<SessionPayload>,
+        ) {
             const { accountKey, flow } = action.payload;
             const session = getSession(state, accountKey, flow);
             setSession(state, accountKey, flow, {
@@ -111,7 +122,10 @@ export const tronStakeSlice = createSlice({
                 step: getNextStep(flow, session.step),
             });
         },
-        pendingTransactionFailed(state, action: PayloadAction<SessionPayload>) {
+        pendingTransactionFailed(
+            state: TronStakeReducerState,
+            action: PayloadAction<SessionPayload>,
+        ) {
             const { accountKey, flow } = action.payload;
             setSession(state, accountKey, flow, {
                 ...getSession(state, accountKey, flow),
@@ -119,11 +133,11 @@ export const tronStakeSlice = createSlice({
                 error: { kind: 'confirmation-failed' },
             });
         },
-        reset(state, action: PayloadAction<SessionPayload>) {
+        reset(state: TronStakeReducerState, action: PayloadAction<SessionPayload>) {
             const { accountKey, flow } = action.payload;
             setSession(state, accountKey, flow, createTronStakeSession(flow));
         },
-        submitStarted(state, action: PayloadAction<SessionPayload>) {
+        submitStarted(state: TronStakeReducerState, action: PayloadAction<SessionPayload>) {
             const { accountKey, flow } = action.payload;
             setSession(state, accountKey, flow, {
                 ...getSession(state, accountKey, flow),
@@ -131,10 +145,7 @@ export const tronStakeSlice = createSlice({
                 error: null,
             });
         },
-        submitFinished(
-            state,
-            action: PayloadAction<SessionPayload & { txid?: string; error?: TronStakeError }>,
-        ) {
+        submitFinished(state: TronStakeReducerState, action: PayloadAction<SubmitFinishedPayload>) {
             const { accountKey, flow, txid, error } = action.payload;
             setSession(state, accountKey, flow, {
                 ...getSession(state, accountKey, flow),
@@ -144,22 +155,21 @@ export const tronStakeSlice = createSlice({
             });
         },
         storePrecomposedTransaction(
-            state,
-            action: PayloadAction<{
-                precomposedTx: PrecomposedTransactionFinal;
-                precomposedForm: FormState;
-                accountKey: AccountKey;
-            }>,
+            state: TronStakeReducerState,
+            action: PayloadAction<StorePrecomposedTransactionPayload>,
         ) {
             state.txReview.precomposedTx = action.payload.precomposedTx;
             state.txReview.precomposedForm = action.payload.precomposedForm;
             state.txReview.accountKey = action.payload.accountKey;
             state.txReview.serializedTx = undefined;
         },
-        storeSignedTransaction(state, action: PayloadAction<{ serializedTx: SerializedTx }>) {
+        storeSignedTransaction(
+            state: TronStakeReducerState,
+            action: PayloadAction<StoreSignedTransactionPayload>,
+        ) {
             state.txReview.serializedTx = action.payload.serializedTx;
         },
-        discardTransaction(state) {
+        discardTransaction(state: TronStakeReducerState) {
             state.txReview = { ...initialTronStakeTxReview };
         },
     },

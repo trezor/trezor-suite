@@ -44,7 +44,7 @@ import {
 } from '@trezor/connect';
 import { type FilterOutFromUnionByTypeProperty } from '@trezor/type-utils';
 
-import { type deviceSlice } from 'src/actions/device/deviceSlice';
+import { type desktopDeviceActions } from 'src/actions/device/deviceSlice';
 import type { OnboardingAction } from 'src/actions/onboarding/onboardingActions';
 import type { BioAuthAction } from 'src/actions/suite/bioAuthActions';
 import type { GuideAction } from 'src/actions/suite/guideActions';
@@ -120,7 +120,7 @@ type FeatureFeedbackAction = ReturnType<
     (typeof featureFeedbackSlice.actions)[keyof typeof featureFeedbackSlice.actions]
 >;
 type DeviceActionDesktop = ReturnType<
-    (typeof deviceSlice.actions)[keyof typeof deviceSlice.actions]
+    (typeof desktopDeviceActions)[keyof typeof desktopDeviceActions]
 >;
 type ThpAction = ReturnType<(typeof thpActions)[keyof typeof thpActions]>;
 type GeolocationAction = ReturnType<(typeof geolocationActions)[keyof typeof geolocationActions]>;

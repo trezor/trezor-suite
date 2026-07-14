@@ -22,10 +22,10 @@ const accountSearchSlice = createSlice({
     name: ACCOUNT_SEARCH_PREFIX,
     initialState: accountSearchInitialState,
     reducers: {
-        setCoinFilter(state, action: PayloadAction<Array<NetworkSymbol>>) {
+        setCoinFilter(state: AccountSearchState, action: PayloadAction<Array<NetworkSymbol>>) {
             state.coinFilter = action.payload ?? [];
         },
-        toggleCoinFilter(state, action: PayloadAction<NetworkSymbol>) {
+        toggleCoinFilter(state: AccountSearchState, action: PayloadAction<NetworkSymbol>) {
             const symbol = action.payload;
             if (!symbol) return;
 
@@ -35,7 +35,7 @@ const accountSearchSlice = createSlice({
                 state.coinFilter.push(symbol);
             }
         },
-        setSearchString(state, action: PayloadAction<string | undefined>) {
+        setSearchString(state: AccountSearchState, action: PayloadAction<string | undefined>) {
             state.searchString = action.payload;
         },
     },

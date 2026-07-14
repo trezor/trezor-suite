@@ -32,13 +32,16 @@ const localeSlice = createSlice({
     name: 'locale',
     initialState: localeInitialState,
     reducers: {
-        setAppLocaleCode: (state, { payload }: PayloadAction<AppLocaleOption>) => {
+        setAppLocaleCode: (state: LocaleState, { payload }: PayloadAction<AppLocaleOption>) => {
             state.appLocaleCode = payload;
         },
-        setSystemLocaleCode: (state, { payload }: PayloadAction<LocaleCode>) => {
+        setSystemLocaleCode: (state: LocaleState, { payload }: PayloadAction<LocaleCode>) => {
             state.systemLocaleCode = payload;
         },
-        setAreDebugTranslationKeysDisplayed: (state, { payload }: PayloadAction<boolean>) => {
+        setAreDebugTranslationKeysDisplayed: (
+            state: LocaleState,
+            { payload }: PayloadAction<boolean>,
+        ) => {
             state.areDebugTranslationKeysDisplayed = payload;
         },
     },

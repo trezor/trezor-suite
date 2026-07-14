@@ -29,10 +29,10 @@ const torSlice = createSlice({
     name: 'tor',
     initialState,
     reducers: {
-        setTorStatus: (state, { payload }: PayloadAction<TorStatus>) => {
+        setTorStatus: (state: TorState, { payload }: PayloadAction<TorStatus>) => {
             state.torStatus = payload;
         },
-        setTorBootstrap: (state, { payload }: PayloadAction<TorBootstrap | null>) => {
+        setTorBootstrap: (state: TorState, { payload }: PayloadAction<TorBootstrap | null>) => {
             state.torBootstrap = payload;
         },
     },

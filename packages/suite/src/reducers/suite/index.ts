@@ -17,7 +17,7 @@ import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { createNotificationsReducer } from '@suite-common/toast-notifications';
 import { prepareWalletConnectReducer } from '@suite-common/walletconnect';
 
-import { deviceSlice } from 'src/actions/device/deviceSlice';
+import { prepareDesktopDeviceReducer } from 'src/actions/device/deviceSlice';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import guide from './guideReducer';
@@ -28,7 +28,7 @@ import window from './windowReducer';
 const analytics = prepareAnalyticsReducer(extraDependencies);
 // Type annotation as a workaround for type-check error "The inferred type of 'default' cannot be named..."
 const messageSystem = prepareMessageSystemReducer(extraDependencies);
-const device = deviceSlice.prepareReducer(extraDependencies);
+const device = prepareDesktopDeviceReducer(extraDependencies);
 const flags = prepareFlagsReducer(extraDependencies);
 const suiteSettings = prepareSuiteSettingsReducer(extraDependencies);
 const debug = prepareDebugReducer(extraDependencies);

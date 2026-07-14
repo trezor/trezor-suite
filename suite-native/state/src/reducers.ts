@@ -74,7 +74,7 @@ import {
     walletStopPersistTransform,
 } from '@suite-native/storage';
 import { tradingInitialState, tradingSlice } from '@suite-native/trading-state';
-import { sendFormSlice } from '@suite-native/transaction-management';
+import { prepareSendFormReducer } from '@suite-native/transaction-management';
 
 import { appReducer } from './appSlice';
 import { extraDependencies } from './extraDependencies';
@@ -90,7 +90,7 @@ const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
-const sendFormReducer = sendFormSlice.prepareReducer(extraDependencies);
+const sendFormReducer = prepareSendFormReducer(extraDependencies);
 const tradingReducer = tradingSlice.prepareReducer(extraDependencies);
 const stakeReducer = prepareStakeReducer(extraDependencies);
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);

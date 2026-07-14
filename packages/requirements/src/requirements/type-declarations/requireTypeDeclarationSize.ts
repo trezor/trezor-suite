@@ -9,7 +9,6 @@ const kibToBytes = (sizeKib: number) => sizeKib * 1024;
 export const MAX_DECLARATION_SIZE_BYTES = kibToBytes(100);
 
 const KNOWN_OVERSIZED_DECLARATION_LIMITS = new Map<string, number>([
-    ['suite-common/wallet-core/libDev/src/stake/tron/tronStakeReducer.d.ts', kibToBytes(1670)],
     ['suite/e2e/libDev/fixtures/invity/index.d.ts', kibToBytes(740)],
     ['suite-common/earn-stablecoin-defs/libDev/src/api/index.d.ts', kibToBytes(625)],
     ['suite-common/logger/libDev/src/utils.d.ts', kibToBytes(600)],
@@ -33,8 +32,7 @@ const KNOWN_OVERSIZED_DECLARATION_LIMITS = new Map<string, number>([
         kibToBytes(180),
     ],
     ['suite-native/intl/libDev/src/Translate.d.ts', kibToBytes(155)],
-    ['packages/suite/libDev/src/actions/device/deviceSlice.d.ts', kibToBytes(150)],
-    ['suite-common/message-system/libDev/files/config.v1.d.ts', kibToBytes(135)],
+    ['suite-common/message-system/libDev/files/config.v1.d.ts', kibToBytes(140)],
     ['suite-common/trading/libDev/src/selectors/tradingSelectors.d.ts', kibToBytes(130)],
     [
         'packages/suite/libDev/src/views/settings/SettingsDevice/ForgetDevice/useForgetDevice.d.ts',

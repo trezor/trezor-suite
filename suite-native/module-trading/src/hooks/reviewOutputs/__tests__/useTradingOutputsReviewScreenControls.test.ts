@@ -13,7 +13,10 @@ import {
 } from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
 import { tradingSlice } from '@suite-native/trading-state';
-import { sendFormSlice, transactionManagementActions } from '@suite-native/transaction-management';
+import {
+    prepareSendFormReducer,
+    transactionManagementActions,
+} from '@suite-native/transaction-management';
 
 import { type TradingExchangeSignAndSendTransactionProps } from '../../exchange/useExchangeFlow';
 import { useTradingOutputsReviewScreenControls } from '../useTradingOutputsReviewScreenControls';
@@ -65,7 +68,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
         wallet: combineReducers({
             settings: createStaticReducer(initialWalletSettingsState),
             accounts: createStaticReducer(getWalletState({ tradeType: 'exchange' }).accounts),
-            send: sendFormSlice.prepareReducer(extraDependenciesCommonMock),
+            send: prepareSendFormReducer(extraDependenciesCommonMock),
             trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
         }),
     } as const;
