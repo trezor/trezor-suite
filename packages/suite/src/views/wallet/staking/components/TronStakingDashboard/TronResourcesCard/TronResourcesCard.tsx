@@ -1,7 +1,9 @@
 import { useState } from 'react';
 
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
 import { getTronResources } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Icon, Row, Text } from '@trezor/components';
@@ -18,6 +20,7 @@ interface TronResourcesCardProps {
 
 export const TronResourcesCard = ({ account }: TronResourcesCardProps) => {
     const dispatch = useDispatch();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const [openResource, setOpenResource] = useState<TronResourceType | null>(null);
     const resources = getTronResources(account);
 
@@ -28,7 +31,7 @@ export const TronResourcesCard = ({ account }: TronResourcesCardProps) => {
     const energyAvailable = resources?.availableEnergy ?? 0;
     const energyTotal = resources?.totalEnergy ?? 0;
 
-    const goToFreeze = () =>
+    const goToFreeze = () => {
         dispatch(
             goto({
                 routeName: 'earn-tron-stake',
@@ -39,6 +42,16 @@ export const TronResourcesCard = ({ account }: TronResourcesCardProps) => {
                 },
             }),
         );
+
+        analytics.report({
+            type: events.stakingStakeEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'staking-dashboard',
+                networkSymbol: account.symbol,
+            },
+        });
+    };
 
     return (
         <Card

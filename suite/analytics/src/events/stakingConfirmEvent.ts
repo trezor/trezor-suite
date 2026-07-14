@@ -3,7 +3,7 @@ import type { AttributeDef, EventDef } from '@suite-common/analytics';
 import { EventType } from '../constants';
 
 type Attributes = {
-    action: AttributeDef<'stake' | 'unstake' | 'claim' | 'change-delegate'>;
+    action: AttributeDef<'stake' | 'unstake' | 'claim' | 'change-delegate' | 'withdraw'>;
     networkSymbol?: AttributeDef<string>;
 };
 
@@ -14,7 +14,13 @@ export const stakingConfirmEvent: EventDef<Attributes, EventType.StakingConfirm>
 
     attributes: {
         action: {
-            changelog: [{ version: '25.4.0', notes: 'added' }],
+            changelog: [
+                { version: '25.4.0', notes: 'added' },
+                {
+                    version: '26.7.0',
+                    notes: 'added `withdraw` value for withdrawing an expired Tron unstake; for Tron, `stake` is the freeze transaction and `change-delegate` the vote transaction',
+                },
+            ],
         },
         networkSymbol: {
             changelog: [{ version: '25.12.0', notes: 'added' }],

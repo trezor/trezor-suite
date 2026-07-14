@@ -14,6 +14,7 @@ import {
     type FormState,
     type RbfTransactionType,
     type ReviewOutput,
+    type TronStakingFormState,
 } from '@suite-common/wallet-types';
 import {
     getTxValidityTimeoutInMs,
@@ -30,6 +31,17 @@ import { type TxInfoState, getTxType, hasTxValidityExpired } from '../utils';
 const mapRbfTypeToReporting: Record<RbfTransactionType, TransactionCreatedEventAction> = {
     'bump-fee': 'replaced',
     cancel: 'canceled',
+};
+
+const mapTronStakingKindToConfirmAction: Record<
+    TronStakingFormState['kind'],
+    'stake' | 'unstake' | 'claim' | 'change-delegate' | 'withdraw'
+> = {
+    freeze: 'stake',
+    vote: 'change-delegate',
+    unstake: 'unstake',
+    withdraw: 'withdraw',
+    claim: 'claim',
 };
 
 type TransactionReviewModalBottomContentProps = {
@@ -117,10 +129,15 @@ export const TransactionReviewModalBottomContent = ({
                     : 'sent',
             );
 
-            if (stakeType) {
+            const stakingConfirmAction =
+                stakeType ??
+                (precomposedForm.tronStaking &&
+                    mapTronStakingKindToConfirmAction[precomposedForm.tronStaking.kind]);
+
+            if (stakingConfirmAction) {
                 return analytics.report({
                     type: events.stakingConfirmEvent.name,
-                    payload: { action: stakeType, networkSymbol: symbol },
+                    payload: { action: stakingConfirmAction, networkSymbol: symbol },
                 });
             }
         }

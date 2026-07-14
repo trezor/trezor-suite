@@ -16,7 +16,7 @@ type Attributes = {
     >;
     networkSymbol?: AttributeDef<string>;
     currency?: AttributeDef<'crypto' | 'fiat'>;
-    votingDelegation?: AttributeDef<'everstake' | 'another_drep'>;
+    votingDelegation?: AttributeDef<string>;
 };
 
 export const stakingUpdateProviderEvent: EventDef<Attributes, EventType.StakingUpdateProvider> = {
@@ -52,9 +52,15 @@ export const stakingUpdateProviderEvent: EventDef<Attributes, EventType.StakingU
                 'Currency type: `crypto` for cryptocurrency amount, `fiat` for fiat currency conversion',
         },
         votingDelegation: {
-            changelog: [{ version: '25.12.0', notes: 'added' }],
+            changelog: [
+                { version: '25.12.0', notes: 'added' },
+                {
+                    version: '26.7.0',
+                    notes: 'for Tron, carries the Super Representative address of a Suite-offered representative, or `custom` for a user-entered one',
+                },
+            ],
             description:
-                'Voting delegation provider: `everstake` for Everstake provider, `another_drep` for other delegation providers',
+                'Voting delegation provider: `everstake` for Everstake provider, `another_drep` for other delegation providers; for Tron, the Super Representative address or `custom`',
         },
     },
 };

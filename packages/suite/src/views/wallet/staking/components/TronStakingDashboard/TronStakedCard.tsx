@@ -1,7 +1,9 @@
 import { useState } from 'react';
 
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { getTronVotedApr, useTronStakingStats } from '@suite-common/earn-staking-api';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -35,6 +37,7 @@ interface TronStakedCardProps {
 
 export const TronStakedCard = ({ account }: TronStakedCardProps) => {
     const dispatch = useDispatch();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const [isVoteAllocationOpen, setIsVoteAllocationOpen] = useState(false);
     const { stats, maxApr } = useTronStakingStats();
 
@@ -47,7 +50,7 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
     const hasRemainingVotes = new BigNumber(remainingVotes).gt(0);
     const shouldShowRemainingVotes = new BigNumber(remainingVotes).plus(totalVotes).gt(0);
 
-    const goToFlow = (routeName: 'earn-tron-stake' | 'earn-tron-unstake' | 'earn-tron-vote') =>
+    const goToFlow = (routeName: 'earn-tron-stake' | 'earn-tron-unstake' | 'earn-tron-vote') => {
         dispatch(
             goto({
                 routeName,
@@ -58,6 +61,22 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
                 },
             }),
         );
+
+        const eventTypeByRoute = {
+            'earn-tron-stake': events.stakingStakeEvent.name,
+            'earn-tron-unstake': events.stakingUnstakeEvent.name,
+            'earn-tron-vote': events.stakingUpdateProviderEvent.name,
+        } as const;
+
+        analytics.report({
+            type: eventTypeByRoute[routeName],
+            payload: {
+                action: 'continue',
+                step: 'staking-dashboard',
+                networkSymbol: account.symbol,
+            },
+        });
+    };
 
     return (
         <Card
