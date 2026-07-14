@@ -101,7 +101,7 @@ export const PassphraseForm = ({
                             onBlur={() => setIsInputFocused(false)}
                             testID="@passphrase/passphraseInput"
                         />
-                        {isInputFocused && (
+                        {(isInputFocused || isDirty) && (
                             <Animated.View entering={FadeIn} exiting={FadeOut}>
                                 <Button
                                     accessibilityRole="button"
