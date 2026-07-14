@@ -4137,7 +4137,7 @@ export const messages = {
     networks: {
         initialSetup: {
             title: 'Add your networks',
-            subtitle: 'You can buy or receive assets on any network you enable.',
+            subtitle: 'Enable networks to buy or receive assets. Change your selection anytime.',
             banner: 'Change your networks anytime in Settings.',
         },
     },

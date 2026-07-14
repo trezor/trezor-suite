@@ -58,6 +58,7 @@
         { "path": "../link" },
         { "path": "../module-connect-popup" },
         { "path": "../navigation" },
+        { "path": "../search" },
         { "path": "../settings" },
         { "path": "../storage" },
         { "path": "../suite-sync" },

@@ -31,6 +31,7 @@ import {
 import { useAccountAlerts } from '@suite-native/accounts';
 import { useBottomSheetModal } from '@suite-native/atoms';
 import {
+    type DiscoveryRootState,
     selectDeviceEnabledDiscoveryNetworkSymbols,
     selectDiscoveryNetworkSymbols,
 } from '@suite-native/discovery';
@@ -90,13 +91,15 @@ export const accountTypeTranslationKeys: Record<
 
 const LIMIT = 10; // Maximum number of manually added accounts per non-EVM network type.
 
-export const useAddCoinAccount = () => {
+export const useAddCoinAccount = (networksSearchQuery?: string) => {
     const dispatch = useDispatch();
     const { translate } = useTranslate();
     const { name: routeName } = useRoute();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
-    const supportedNetworkSymbols = useSelector(selectDiscoveryNetworkSymbols);
+    const supportedNetworkSymbols = useSelector((state: DiscoveryRootState) =>
+        selectDiscoveryNetworkSymbols(state, networksSearchQuery),
+    );
     const deviceAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectDeviceAccounts(state),
     );

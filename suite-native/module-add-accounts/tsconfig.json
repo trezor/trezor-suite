@@ -2,6 +2,12 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/analytics"
+        },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/wallet-config"
@@ -14,6 +20,7 @@
         },
         { "path": "../accounts" },
         { "path": "../add-coin-account" },
+        { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../coin-enabling" },
         { "path": "../discovery" },
@@ -22,6 +29,7 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../passphrase" },
+        { "path": "../search" },
         {
             "path": "../../packages/styles-native"
         },
