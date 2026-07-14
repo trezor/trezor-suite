@@ -2,6 +2,7 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
+import { CoinSymbolParam } from '../../coinInfo';
 import type { Params, Response } from '../../params';
 import { DerivationPath } from '../../params';
 
@@ -12,7 +13,7 @@ export const AuthorizeCoinjoin = Type.Object({
     maxRounds: Type.Number(),
     maxCoordinatorFeeRate: Type.Number(),
     maxFeePerKvbyte: Type.Number(),
-    coin: Type.Optional(Type.String()),
+    coin: Type.Optional(CoinSymbolParam()),
     scriptType: Type.Optional(PROTO.InternalInputScriptType),
     amountUnit: Type.Optional(PROTO.EnumAmountUnit),
     preauthorized: Type.Optional(Type.Boolean()),
