@@ -10,7 +10,6 @@ import {
     toTokenSymbol,
 } from '@suite-common/wallet-types';
 import { isApyAvailable } from '@suite-common/wallet-utils';
-import { useAlert } from '@suite-native/alerts';
 import {
     Box,
     Button,
@@ -23,9 +22,9 @@ import {
 } from '@suite-native/atoms';
 import { TokenAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import {
-    StablecoinYieldApyBreakdown,
+    useApyBreakdownAlert,
     useResolvedYieldFlowData,
     useStablecoinYieldFirmwareUpdateAlert,
 } from '@suite-native/module-earn';
@@ -55,8 +54,6 @@ export const StablecoinYieldTokenOverview = ({
     tokenContract,
 }: StablecoinYieldTokenOverviewProps) => {
     const navigation = useNavigation<NavigationProps>();
-    const { showAlert } = useAlert();
-    const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
     const { isFirmwareSupported, showFirmwareUpdateAlert } =
         useStablecoinYieldFirmwareUpdateAlert();
@@ -68,31 +65,7 @@ export const StablecoinYieldTokenOverview = ({
         });
     const apyValueText = apy && isApyAvailable(apy) ? `~${apy.toFixed(2)}%` : null;
 
-    const handleOpenApyAlert = useCallback(() => {
-        if (!account || !vault) {
-            return;
-        }
-
-        showAlert({
-            title: vault.outputToken?.name ?? '',
-            description: translate(
-                'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.apyLabel',
-                { apy: apyValueText },
-            ),
-            appendix: (
-                <StablecoinYieldApyBreakdown
-                    networkSymbol={account.symbol}
-                    rewards={vault.rewardRate.components}
-                    underlyingToken={vault.token}
-                    tokenSymbol={vault.token.symbol}
-                />
-            ),
-            textAlign: 'center',
-            titleSpacing: 'sp4',
-            primaryButtonTitle: translate('generic.buttons.close'),
-            testID: '@account-detail/stablecoin-yield/apy-breakdown-alert',
-        });
-    }, [account, apyValueText, showAlert, translate, vault]);
+    const apyBreakdownAlert = useApyBreakdownAlert({ account, vault, apy });
 
     const handleDepositMorePress = useCallback(() => {
         if (!vault?.token.address) {
@@ -176,7 +149,7 @@ export const StablecoinYieldTokenOverview = ({
                     </HStack>
                     <CardDivider />
                     <PressableOpacity
-                        onPress={handleOpenApyAlert}
+                        onPress={apyBreakdownAlert.onPress}
                         disabled={isApyRowDisabled}
                         testID="@account-detail/stablecoin-yield/apy-row"
                     >
