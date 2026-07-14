@@ -1,6 +1,7 @@
 import { networks } from '../networksConfig';
 import { type NetworkSymbol } from '../types';
 import {
+    filterNetworksByName,
     getMainnets,
     getNetworksWithMevProtection,
     getNetworksWithNativeTokenReserve,
@@ -46,6 +47,20 @@ describe(getTestnets.name, () => {
             allNetworks: mockNetworks,
         });
         expect(result).toEqual([]);
+    });
+});
+
+describe(filterNetworksByName.name, () => {
+    it.each(['', ' ', '\t'])('returns all networks for search query "%s"', searchQuery => {
+        expect(filterNetworksByName(mockNetworks, searchQuery)).toEqual(mockNetworks);
+    });
+
+    it('returns networks with name containing the search query', () => {
+        expect(filterNetworksByName(mockNetworks, 'bit')).toEqual([bitcoin, testnet, regtest]);
+    });
+
+    it('returns networks with symbol containing the search query', () => {
+        expect(filterNetworksByName(mockNetworks, 'BTC')).toEqual([bitcoin]);
     });
 });
 
