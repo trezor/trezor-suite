@@ -63,10 +63,6 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
         ? {
               tokenContractAddress: chosenYieldItem.underlyingTokenContract,
               tokenSymbol: chosenYieldItem.tokenSymbol,
-              receiptTokenContract: chosenYieldItem.receiptTokenContract,
-              token: chosenYieldItem.token,
-              outputToken: chosenYieldItem.outputToken,
-              pricePerShareState: chosenYieldItem.pricePerShareState,
           }
         : undefined;
 

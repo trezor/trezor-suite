@@ -75,18 +75,11 @@ export type StablecoinYieldNavigationItem = Pick<
 >;
 
 export type StablecoinYieldPromoNavigationItem = StablecoinYieldNavigationItem &
-    Pick<
-        StablecoinYieldEarnItem,
-        'networkSymbol' | 'tokenSymbol' | 'token' | 'outputToken' | 'pricePerShareState'
-    >;
+    Pick<StablecoinYieldEarnItem, 'networkSymbol' | 'tokenSymbol'>;
 
 export type ChooseAccountTokenBalance = {
     tokenContractAddress: TokenAddress;
     tokenSymbol: TokenSymbol;
-    receiptTokenContract?: TokenAddress | null;
-    token?: StablecoinYieldEarnItem['token'];
-    outputToken?: StablecoinYieldEarnItem['outputToken'];
-    pricePerShareState?: StablecoinYieldEarnItem['pricePerShareState'];
 };
 
 export type EarnPromoItem = StakingEarnItem | StablecoinYieldEarnItem;
