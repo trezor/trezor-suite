@@ -173,6 +173,7 @@ describe('utils/buildOutputDescriptor', () => {
             expect(
                 buildOutputDescriptor({
                     account: 0,
+                    // @ts-expect-error testing invalid coin
                     coin: 'Ethereum',
                     scriptType: 'SPENDWITNESS',
                     xpub: XPUB,

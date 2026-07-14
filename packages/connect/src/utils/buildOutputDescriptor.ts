@@ -23,7 +23,7 @@ const PURPOSE_TO_SCRIPT_TYPE: Record<number, PROTO.InternalInputScriptType> = {
 };
 
 type BuildOutputDescriptorBip380Params = {
-    coin?: string;
+    coin?: 'Bitcoin' | 'Testnet' | 'Regtest';
     account: number;
     purpose?: number;
     scriptType?: PROTO.InternalInputScriptType;
@@ -55,7 +55,7 @@ export const buildOutputDescriptor = ({
         return undefined;
     }
 
-    const COIN_TYPE: Record<string, number> = { Bitcoin: 0, Testnet: 1, Regtest: 1 };
+    const COIN_TYPE = { Bitcoin: 0, Testnet: 1, Regtest: 1 } as const;
     const coinType = COIN_TYPE[coin ?? 'Bitcoin'];
     if (coinType === undefined) {
         return undefined;
