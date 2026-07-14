@@ -13605,6 +13605,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/search@workspace:*, @suite-native/search@workspace:suite-native/search":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/search@workspace:suite-native/search"
+  dependencies:
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
+    react: "npm:19.2.3"
+    react-native-reanimated: "npm:4.3.1"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/send@workspace:*, @suite-native/send@workspace:suite-native/send":
   version: 0.0.0-use.local
   resolution: "@suite-native/send@workspace:suite-native/send"
