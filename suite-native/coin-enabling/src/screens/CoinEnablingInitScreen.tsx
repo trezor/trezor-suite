@@ -1,25 +1,26 @@
-import { useState } from 'react';
+import { useCallback } from 'react';
 import { LinearTransition } from 'react-native-reanimated';
 import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { events as commonEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { changeCoinVisibility } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { AnimatedBox, AnimatedInlineAlertBox, VStack } from '@suite-native/atoms';
+import { AnimatedBox } from '@suite-native/atoms';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
     type AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
-    DynamicScreenHeader,
     type RootStackParamList,
     RootStackRoutes,
     Screen,
     type StackToStackCompositeNavigationProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
+import { useScreenHeaderSearch } from '@suite-native/search';
 
 import {
     type CoinEnablingFormValues,
@@ -42,7 +43,21 @@ export const CoinEnablingInitScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     useInterceptNativeNavigation();
 
-    const [isAlertDismissed, setIsAlertDismissed] = useState(false);
+    const reportSearchAnalytics = useCallback(
+        () =>
+            analytics.report({
+                type: commonEvents.settingsNetworkSearchUsedEvent.name,
+                payload: { platform: 'mobile', origin: 'add-networks' },
+            }),
+        [analytics],
+    );
+
+    const { header, searchQuery } = useScreenHeaderSearch({
+        title: <Translation id="networks.initialSetup.title" />,
+        subtitle: <Translation id="networks.initialSetup.subtitle" />,
+        closeActionType: 'close',
+        onSearchUsed: reportSearchAnalytics,
+    });
 
     const form = useForm<CoinEnablingFormValues>({
         defaultValues: {
@@ -71,30 +86,14 @@ export const CoinEnablingInitScreen = () => {
 
     return (
         <Screen
-            header={
-                <DynamicScreenHeader
-                    title={<Translation id="networks.initialSetup.title" />}
-                    subtitle={<Translation id="networks.initialSetup.subtitle" />}
-                    closeActionType="close"
-                />
-            }
+            header={header}
             footer={hasEnabledCoin && <CoinEnablingInitFooter onSubmit={handleSubmit} />}
         >
-            <VStack spacing="sp16">
-                {!isAlertDismissed && (
-                    <AnimatedInlineAlertBox
-                        title={<Translation id="networks.initialSetup.banner" />}
-                        intent="neutral"
-                        onButtonPress={() => setIsAlertDismissed(true)}
-                        isCloseButtonDisplayed
-                    />
-                )}
-                <AnimatedBox layout={LinearTransition}>
-                    <Form form={form}>
-                        <DiscoveryCoinsFilter />
-                    </Form>
-                </AnimatedBox>
-            </VStack>
+            <AnimatedBox layout={LinearTransition} flex={1}>
+                <Form form={form}>
+                    <DiscoveryCoinsFilter searchQuery={searchQuery} />
+                </Form>
+            </AnimatedBox>
         </Screen>
     );
 };

@@ -2259,7 +2259,7 @@
     "moduleStellarToken.deactivationFee.cantDeactivateTitle": "You can't deactivate a token with a balance",
     "moduleStellarToken.deactivationFee.cantDeactivateDescription": "You need to transfer or convert your balance to zero first. Try selling for XLM.",
     "networks.initialSetup.title": "Add your networks",
-    "networks.initialSetup.subtitle": "You can buy or receive assets on any network you enable.",
+    "networks.initialSetup.subtitle": "Enable networks to buy or receive assets. Change your selection anytime.",
     "networks.initialSetup.banner": "Change your networks anytime in Settings.",
     "biometricsButton": "Unlock with biometrics"
 }

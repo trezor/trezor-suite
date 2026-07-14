@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/analytics"
+        },
+        {
             "path": "../../suite-common/dependency-injection"
         },
         { "path": "../../suite-common/device" },
@@ -23,6 +26,7 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../navigation" },
+        { "path": "../search" },
         { "path": "../toasts" },
         { "path": "../../packages/styles-native" }
     ]
