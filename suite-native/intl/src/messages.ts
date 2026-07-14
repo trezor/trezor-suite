@@ -4142,4 +4142,7 @@ export const messages = {
         },
     },
     biometricsButton: 'Unlock with biometrics',
+    search: {
+        noResults: 'No results',
+    },
 };
