@@ -350,6 +350,8 @@ export const YieldDepositApprovalScreen = () => {
                 onClose={handleCloseInfoBottomSheet}
                 tokenSymbol={tokenSymbol}
                 vaultTokenSymbol={vaultTokenSymbol}
+                account={account}
+                vault={resolvedFlowData.vault}
             />
             <YieldDepositApprovalLimitBottomSheet
                 ref={approvalLimitBottomSheetRef}

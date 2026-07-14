@@ -103,6 +103,8 @@ export const YieldWithdrawScreen = () => {
         openModal: openPendingBottomSheet,
     } = useBottomSheetModal();
 
+    const resolvedYieldFlowData = useResolvedYieldFlowData(route.params);
+
     const {
         account,
         apy,
@@ -114,7 +116,7 @@ export const YieldWithdrawScreen = () => {
         vault,
         vaultTokenSymbol: resolvedVaultTokenSymbol,
         vaultTokenName,
-    } = useResolvedYieldFlowData(route.params);
+    } = resolvedYieldFlowData;
 
     const activeInputToken = flowData
         ? getYieldWithdrawInputToken({ flowData, flowType })
@@ -588,6 +590,8 @@ export const YieldWithdrawScreen = () => {
                 onClose={handleCloseInfoBottomSheet}
                 tokenSymbol={underlyingTokenSymbol}
                 vaultTokenSymbol={resolvedVaultTokenSymbol}
+                account={account}
+                vault={vault}
             />
         </Screen>
     );

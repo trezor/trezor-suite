@@ -362,6 +362,8 @@ export const YieldDepositScreen = () => {
                 onClose={handleCloseInfoBottomSheet}
                 tokenSymbol={tokenSymbol}
                 vaultTokenSymbol={vaultTokenSymbol}
+                account={account}
+                vault={resolvedFlowData.vault}
             />
             {simulationPreparedAction && (
                 <YieldTxSimulationBottomSheet

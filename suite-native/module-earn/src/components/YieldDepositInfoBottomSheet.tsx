@@ -1,3 +1,9 @@
+import { useCallback } from 'react';
+
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { type Account } from '@suite-common/wallet-types';
+import { isApyAvailable } from '@suite-common/wallet-utils';
+import { useAlert } from '@suite-native/alerts';
 import {
     BottomSheetModal,
     type BottomSheetModalRef,
@@ -7,10 +13,11 @@ import {
     TimelineDetailsCard,
     VStack,
 } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 
 import { HowEarnWorksBenefitsSection } from './HowEarnWorks/HowEarnWorksBenefitsSection';
 import { HowEarnWorksTimelineCard } from './HowEarnWorks/HowEarnWorksTimelineCard';
+import { StablecoinYieldApyBreakdown } from './StablecoinYieldApyBreakdown';
 import { createHowYieldWorksPreset } from '../presets/HowEarnWorks/yieldPresets';
 
 type YieldDepositInfoBottomSheetProps = {
@@ -20,6 +27,8 @@ type YieldDepositInfoBottomSheetProps = {
     ref: BottomSheetModalRef;
     tokenSymbol: string;
     vaultTokenSymbol: string;
+    account: Account;
+    vault: YieldDtoV2;
 };
 
 export const YieldDepositInfoBottomSheet = ({
@@ -29,9 +38,43 @@ export const YieldDepositInfoBottomSheet = ({
     ref,
     tokenSymbol,
     vaultTokenSymbol,
+    account,
+    vault,
 }: YieldDepositInfoBottomSheetProps) => {
+    const { showAlert } = useAlert();
+    const { translate } = useTranslate();
+
+    const apyValueText = apy && isApyAvailable(apy) ? `~${apy.toFixed(2)}%` : null;
+
+    const onApyPress = useCallback(() => {
+        if (!account || !vault) {
+            return;
+        }
+
+        showAlert({
+            title: vault.outputToken?.name ?? '',
+            description: translate(
+                'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.apyLabel',
+                { apy: apyValueText },
+            ),
+            appendix: (
+                <StablecoinYieldApyBreakdown
+                    networkSymbol={account.symbol}
+                    rewards={vault.rewardRate.components}
+                    underlyingToken={vault.token}
+                    tokenSymbol={vault.token.symbol}
+                />
+            ),
+            textAlign: 'center',
+            titleSpacing: 'sp4',
+            primaryButtonTitle: translate('generic.buttons.close'),
+            testID: '@account-detail/stablecoin-yield/apy-breakdown-alert',
+        });
+    }, [account, apyValueText, showAlert, translate, vault]);
+
     const { benefitItems, timelineSections } = createHowYieldWorksPreset({
         apy,
+        onApyPress,
         bonusRewardTokenName,
         tokenSymbol,
         vaultTokenSymbol,
