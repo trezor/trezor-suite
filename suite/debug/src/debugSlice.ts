@@ -22,7 +22,7 @@ const debugSlice = createSliceWithExtraDeps({
     name: 'debug',
     initialState: debugInitialState,
     reducers: {
-        setShowDebugMenu: (state, { payload }: PayloadAction<boolean>) => {
+        setShowDebugMenu: (state: DebugState, { payload }: PayloadAction<boolean>) => {
             state.showDebugMenu = payload;
         },
     },

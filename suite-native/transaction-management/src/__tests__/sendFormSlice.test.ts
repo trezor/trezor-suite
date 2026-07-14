@@ -3,12 +3,12 @@ import { configureStore } from '@reduxjs/toolkit';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 
 import { createFeeLevels } from '../__fixtures__/feeLevels';
-import { sendFormSlice, transactionManagementActions } from '../sendFormSlice';
+import { prepareSendFormReducer, transactionManagementActions } from '../sendFormSlice';
 
 describe('sendFormSlice', () => {
     // Create a test store with the prepared reducer
     const createTestStore = () => {
-        const reducer = sendFormSlice.prepareReducer(extraDependenciesCommonMock);
+        const reducer = prepareSendFormReducer(extraDependenciesCommonMock);
 
         return configureStore({
             reducer: { send: reducer },

@@ -24,7 +24,7 @@ import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mo
 import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
 import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
 
-import { deviceSlice } from 'src/actions/device/deviceSlice';
+import { prepareDesktopDeviceReducer } from 'src/actions/device/deviceSlice';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 import { SETTINGS } from 'src/config/suite';
 import storageMiddleware from 'src/middlewares/wallet/storageMiddleware';
@@ -42,7 +42,7 @@ import * as storageActions from '../storageActions';
 const { getWalletTransaction } = testMocks;
 
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
-const deviceReducer = deviceSlice.prepareReducer(extraDependencies);
+const deviceReducer = prepareDesktopDeviceReducer(extraDependencies);
 const flagsReducer = prepareFlagsReducer(extraDependencies);
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
 const walletSettingsReducer = discoveryActions.prepareWalletSettingsReducer(extraDependencies);

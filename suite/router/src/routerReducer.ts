@@ -68,11 +68,14 @@ const routerSlice = createSlice({
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     initialState: initialState as RouterState,
     reducers: {
-        routerLocationChange: (state, action: PayloadAction<LocationChangePayload>) => {
+        routerLocationChange: (
+            state: RouterState,
+            action: PayloadAction<LocationChangePayload>,
+        ) => {
             state.loaded = true;
             Object.assign(state, action.payload);
         },
-        anchorChange: (state, action: PayloadAction<AnchorType | undefined>) => {
+        anchorChange: (state: RouterState, action: PayloadAction<AnchorType | undefined>) => {
             state.anchor = action.payload;
         },
     },

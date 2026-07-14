@@ -71,7 +71,10 @@ const flagsSlice = createSliceWithExtraDeps({
     name: 'flags',
     initialState: flagsInitialState,
     reducers: {
-        setFlag: (state, { payload }: PayloadAction<{ key: keyof FlagsState; value: boolean }>) => {
+        setFlag: (
+            state: FlagsState,
+            { payload }: PayloadAction<{ key: keyof FlagsState; value: boolean }>,
+        ) => {
             state[payload.key] = payload.value;
         },
     },

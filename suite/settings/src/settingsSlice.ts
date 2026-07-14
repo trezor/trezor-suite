@@ -99,55 +99,88 @@ const suiteSettingsSlice = createSliceWithExtraDeps({
     name: 'suiteSettings',
     initialState: suiteSettingsInitialState,
     reducers: {
-        setLanguage: (state, { payload }: PayloadAction<Locale>) => {
+        setLanguage: (state: SuiteSettingsState, { payload }: PayloadAction<Locale>) => {
             state.language = payload;
         },
-        setDebugMode: (state, { payload }: PayloadAction<Partial<DebugModeOptions>>) => {
+        setDebugMode: (
+            state: SuiteSettingsState,
+            { payload }: PayloadAction<Partial<DebugModeOptions>>,
+        ) => {
             state.debug = { ...state.debug, ...payload };
         },
         setExperimentalFeatures: (
-            state,
+            state: SuiteSettingsState,
             { payload }: PayloadAction<ExperimentalFeature[] | undefined>,
         ) => {
             state.experimental = payload;
         },
-        setIsTestnetNetworksEnabled: (state, { payload }: PayloadAction<boolean>) => {
+        setIsTestnetNetworksEnabled: (
+            state: SuiteSettingsState,
+            { payload }: PayloadAction<boolean>,
+        ) => {
             state.isTestnetNetworksEnabled = payload;
         },
-        setIsNftSectionEnabled: (state, { payload }: PayloadAction<boolean>) => {
+        setIsNftSectionEnabled: (
+            state: SuiteSettingsState,
+            { payload }: PayloadAction<boolean>,
+        ) => {
             state.isNftSectionEnabled = payload;
         },
-        setTheme: (state, { payload }: PayloadAction<SuiteSettingsState['theme']['variant']>) => {
+        setTheme: (
+            state: SuiteSettingsState,
+            { payload }: PayloadAction<SuiteSettingsState['theme']['variant']>,
+        ) => {
             state.theme.variant = payload;
         },
-        setAutodetect: (state, { payload }: PayloadAction<Partial<AutodetectSettings>>) => {
+        setAutodetect: (
+            state: SuiteSettingsState,
+            { payload }: PayloadAction<Partial<AutodetectSettings>>,
+        ) => {
             state.autodetect = { ...state.autodetect, ...payload };
         },
-        setSidebarWidth: (state, { payload }: PayloadAction<number>) => {
+        setSidebarWidth: (state: SuiteSettingsState, { payload }: PayloadAction<number>) => {
             state.sidebarWidth = payload;
         },
-        setIsCoinsFilterVisible: (state, { payload }: PayloadAction<boolean>) => {
+        setIsCoinsFilterVisible: (
+            state: SuiteSettingsState,
+            { payload }: PayloadAction<boolean>,
+        ) => {
             state.isCoinsFilterVisible = payload;
         },
-        setOnionLinks: (state, { payload }: PayloadAction<boolean>) => {
+        setOnionLinks: (state: SuiteSettingsState, { payload }: PayloadAction<boolean>) => {
             state.torOnionLinks = payload;
         },
-        setCoinjoinReceiveWarningHidden: (state, { payload }: PayloadAction<boolean>) => {
+        setCoinjoinReceiveWarningHidden: (
+            state: SuiteSettingsState,
+            { payload }: PayloadAction<boolean>,
+        ) => {
             state.isCoinjoinReceiveWarningHidden = payload;
         },
-        toggleDeviceAuthenticityCheck: (state, { payload }: PayloadAction<boolean>) => {
+        toggleDeviceAuthenticityCheck: (
+            state: SuiteSettingsState,
+            { payload }: PayloadAction<boolean>,
+        ) => {
             state.enabledSecurityChecks.deviceAuthenticity = payload;
         },
-        toggleFirmwareRevisionCheck: (state, { payload }: PayloadAction<boolean>) => {
+        toggleFirmwareRevisionCheck: (
+            state: SuiteSettingsState,
+            { payload }: PayloadAction<boolean>,
+        ) => {
             state.enabledSecurityChecks.firmwareRevision = payload;
         },
-        toggleFirmwareHashCheck: (state, { payload }: PayloadAction<boolean>) => {
+        toggleFirmwareHashCheck: (
+            state: SuiteSettingsState,
+            { payload }: PayloadAction<boolean>,
+        ) => {
             state.enabledSecurityChecks.firmwareHash = payload;
         },
-        toggleEntropyCheck: (state, { payload }: PayloadAction<boolean>) => {
+        toggleEntropyCheck: (state: SuiteSettingsState, { payload }: PayloadAction<boolean>) => {
             state.enabledSecurityChecks.entropy = payload;
         },
-        toggleDeviceMetaChecks: (state, { payload }: PayloadAction<boolean>) => {
+        toggleDeviceMetaChecks: (
+            state: SuiteSettingsState,
+            { payload }: PayloadAction<boolean>,
+        ) => {
             state.enabledSecurityChecks.deviceMeta = payload;
         },
     },

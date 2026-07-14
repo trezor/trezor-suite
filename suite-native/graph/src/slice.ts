@@ -42,13 +42,13 @@ const graphSlice = createSlice({
     initialState: graphInitialState,
     reducers: {
         setPortfolioGraphTimeframe: (
-            state,
+            state: GraphState,
             { payload: { timeframeHours } }: PayloadAction<{ timeframeHours: TimeframeHoursValue }>,
         ) => {
             state.portfolioGraphTimeframe = timeframeHours;
         },
         setAccountGraphTimeframe: (
-            state,
+            state: GraphState,
             {
                 payload: { accountKey, timeframeHours },
             }: PayloadAction<{ accountKey: AccountKey; timeframeHours: TimeframeHoursValue }>,
