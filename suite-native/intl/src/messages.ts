@@ -2988,6 +2988,7 @@ export const messages = {
         yieldDepositApprovalReviewScreen: {
             title: 'Review with Trezor',
             submitButton: 'Approve',
+            successMessage: "You're all set",
         },
         yieldDepositRevokeReviewScreen: {
             title: 'Review with Trezor',
@@ -2997,15 +2998,18 @@ export const messages = {
         yieldDepositReviewScreen: {
             title: 'Review with Trezor',
             submitButton: 'Deposit',
+            successMessage: "You're all set",
         },
         yieldWithdrawReviewScreen: {
             title: 'Review with Trezor',
             submitButton: 'Withdraw',
             redeemSubmitButton: 'Redeem',
+            successMessage: "You're all set.",
         },
         yieldClaimReviewScreen: {
             title: 'Review with Trezor',
             submitButton: 'Claim now',
+            successMessage: "You're all set.",
         },
         yieldDepositCompleteScreen: {
             title: 'Deposit complete',
