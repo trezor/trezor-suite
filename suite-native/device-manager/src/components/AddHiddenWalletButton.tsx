@@ -24,7 +24,11 @@ type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-export const AddHiddenWalletButton = () => {
+type AddHiddenWalletButtonProps = {
+    isDisabled?: boolean;
+};
+
+export const AddHiddenWalletButton = ({ isDisabled }: AddHiddenWalletButtonProps) => {
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const dispatch = useDispatch();
 
@@ -58,6 +62,7 @@ export const AddHiddenWalletButton = () => {
             intent="neutral"
             priority="secondary"
             iconLeft="password"
+            isDisabled={isDisabled}
             onPress={handleAddHiddenWallet}
             testID="@device-manager/passphrase/add"
         >

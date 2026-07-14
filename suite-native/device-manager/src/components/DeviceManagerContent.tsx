@@ -104,8 +104,9 @@ export const DeviceManagerContent = () => {
     const scrollViewTopOffset = insets.top + utils.spacings.sp24 + HEADER_HEIGHT;
     const scrollViewMaxHeight = CONTENT_MAX_HEIGHT - scrollViewTopOffset;
 
+    // Kept visible (but disabled) while discovery runs so the button doesn't vanish mid-discovery,
+    // mirroring the desktop switch-device behavior.
     const isAddHiddenWalletButtonVisible =
-        !hasRunningDiscovery &&
         isDeviceConnected &&
         isDeviceInitialized &&
         deviceStaticSessionId &&
@@ -144,7 +145,9 @@ export const DeviceManagerContent = () => {
                             )}
                             <VStack paddingHorizontal="sp16" paddingBottom="sp16" spacing="sp12">
                                 <DeviceSettingsButton />
-                                {isAddHiddenWalletButtonVisible && <AddHiddenWalletButton />}
+                                {isAddHiddenWalletButtonVisible && (
+                                    <AddHiddenWalletButton isDisabled={hasRunningDiscovery} />
+                                )}
                             </VStack>
                         </AnimatedVStack>
                     )}
