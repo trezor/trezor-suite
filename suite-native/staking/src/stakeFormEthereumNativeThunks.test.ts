@@ -299,7 +299,7 @@ describe('signEthereumStakingTransactionNativeThunk', () => {
         expect(result).toEqual({
             ok: false,
             error: {
-                error: 'sign-transaction-failed',
+                error: 'stake-live-state-invalid',
                 message: 'Max Amount For Unstake 1',
             },
         });
@@ -337,7 +337,7 @@ describe('signEthereumStakingTransactionNativeThunk', () => {
         expect(result).toEqual({
             ok: false,
             error: {
-                error: 'sign-transaction-failed',
+                error: 'stake-live-state-invalid',
                 message: 'Unstake request not filled yet',
             },
         });

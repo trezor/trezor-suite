@@ -1,6 +1,7 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import {
+    getEthereumStakingLiveStateErrorMessage,
     getUnstakeAmountFromCalldata,
     transformTx,
     verifyEthereumStakingCalldata,
@@ -201,12 +202,14 @@ export const signEthereumStakingTransactionNativeThunk = createThunk<
                         : undefined,
             });
             if (!liveState.isValid) {
-                return rejectWithValue(
-                    failed(
-                        liveState.error,
-                        `Live-state validation failed for ${stakeType}: ${liveState.error}`,
-                    ).error,
+                console.error(
+                    `${LOG_PREFIX}: Live-state validation failed for ${stakeType}: ${liveState.reason.code}`,
                 );
+
+                return rejectWithValue({
+                    error: 'stake-live-state-invalid',
+                    message: getEthereumStakingLiveStateErrorMessage(liveState.reason),
+                });
             }
 
             dispatch(
