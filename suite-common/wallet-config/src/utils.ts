@@ -63,6 +63,19 @@ export const getTestnets = ({
 
 export const getTestnetSymbols = () => getTestnets({ useTestnetNetworks: true }).map(n => n.symbol);
 
+export const filterNetworksByName = (someNetworks: Network[], searchQuery: string) => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+
+    if (!normalizedQuery) {
+        return someNetworks;
+    }
+
+    return someNetworks.filter(
+        ({ symbol, name }) =>
+            symbol.includes(normalizedQuery) || name.toLowerCase().includes(normalizedQuery),
+    );
+};
+
 export const isBlockbookBasedNetwork = (symbol: NetworkSymbol) =>
     networks[symbol]?.backendOptions.some(option => option.type === 'blockbook');
 
