@@ -1,6 +1,7 @@
 import { type ExchangeTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
+import { ExperimentId, ExperimentWrapper } from '@suite-common/message-system';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
     cryptoIdToNetwork,
@@ -30,6 +31,7 @@ import { TradingExchangeRateInfoItem } from '../TradingInfo/TradingExchangeRateI
 import { TradingExchangeSlippageInfoItem } from '../TradingInfo/TradingExchangeSlippageInfoItem';
 import { TradingNetworkFeeInfoItem } from '../TradingInfo/TradingNetworkFeeInfoItem';
 import { TradingProviderInfoItem } from '../TradingInfo/TradingProviderInfoItem';
+import { TradingTrezorFeeInfoItem } from '../TradingInfo/TradingTrezorFeeInfoItem';
 
 type TradingOfferExchangeDetailsProps = {
     account: Account;
@@ -91,6 +93,14 @@ export const TradingOfferExchangeDetails = ({
     return (
         <>
             <Column gap={8}>
+                <ExperimentWrapper
+                    id={ExperimentId.tradingShowTradeFee}
+                    components={[
+                        { variant: 'control', element: <></> },
+                        { variant: 'treatment', element: <TradingTrezorFeeInfoItem /> },
+                    ]}
+                />
+
                 {dexSlippage !== undefined && (
                     <>
                         <TradingExchangeSlippageInfoItem
