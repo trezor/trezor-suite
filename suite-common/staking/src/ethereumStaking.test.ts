@@ -13,11 +13,6 @@ import {
 import { type Err, type Ok, type Result } from '@trezor/type-utils';
 
 import {
-    type GetStakeFormsDefaultValuesParams,
-    type GetStakeTxGasLimitParams,
-    type StakeTxBaseArgs,
-} from '../types';
-import {
     claimFailedFixture,
     claimFixture,
     getAdjustedGasLimitConsumptionFixture,
@@ -58,6 +53,11 @@ import {
     validateEthereumUnstakeLiveState,
     verifyEthereumStakingLiveState,
 } from './ethereumStaking';
+import {
+    type GetStakeFormsDefaultValuesParams,
+    type GetStakeTxGasLimitParams,
+    type StakeTxBaseArgs,
+} from './types';
 
 describe('transformTx', () => {
     transformTxFixtures.forEach(test => {
@@ -293,18 +293,21 @@ describe('validateEthereumUnstakeLiveState', () => {
     it('is invalid when the autocompound balance is missing', () => {
         expect(validateEthereumUnstakeLiveState({}, '1.5')).toEqual({
             isValid: false,
-            error: 'Failed to get the autocompound balance',
+            reason: { code: 'AUTOCOMPOUND_BALANCE_MISSING' },
         });
         expect(validateEthereumUnstakeLiveState(undefined, '1.5')).toEqual({
             isValid: false,
-            error: 'Failed to get the autocompound balance',
+            reason: { code: 'AUTOCOMPOUND_BALANCE_MISSING' },
         });
     });
 
     it('is invalid when the requested amount exceeds the live balance', () => {
         expect(
             validateEthereumUnstakeLiveState({ autocompoundBalance: '100000000000000' }, '0.1'),
-        ).toEqual({ isValid: false, error: 'Max Amount For Unstake 0.0001' });
+        ).toEqual({
+            isValid: false,
+            reason: { code: 'MAX_AMOUNT_FOR_UNSTAKE', maxAmount: '0.0001' },
+        });
     });
 });
 
@@ -323,14 +326,14 @@ describe('validateEthereumClaimLiveState', () => {
             validateEthereumClaimLiveState({ withdrawTotalAmount: '100000000000000000' }),
         ).toEqual({
             isValid: false,
-            error: 'Failed to get the claimable or withdraw total amount',
+            reason: { code: 'CLAIM_AMOUNTS_MISSING' },
         });
     });
 
     it('is invalid when nothing has been requested for unstake', () => {
         expect(
             validateEthereumClaimLiveState({ withdrawTotalAmount: '0', claimableAmount: '0' }),
-        ).toEqual({ isValid: false, error: 'No amount requested for unstake' });
+        ).toEqual({ isValid: false, reason: { code: 'NO_AMOUNT_REQUESTED_FOR_UNSTAKE' } });
     });
 
     it('is invalid when the withdraw request is not fully filled yet', () => {
@@ -339,7 +342,7 @@ describe('validateEthereumClaimLiveState', () => {
                 withdrawTotalAmount: '200000000000000000',
                 claimableAmount: '100000000000000000',
             }),
-        ).toEqual({ isValid: false, error: 'Unstake request not filled yet' });
+        ).toEqual({ isValid: false, reason: { code: 'UNSTAKE_REQUEST_NOT_FILLED' } });
     });
 });
 
@@ -357,18 +360,18 @@ describe('getUnstakeAmountFromCalldata', () => {
 });
 
 describe('verifyEthereumStakingLiveState', () => {
-    const mockAccountInfo = (accountInfo: Record<string, any>) =>
-        jest
-            .spyOn(TrezorConnect, 'getAccountInfo')
-            .mockImplementation(() => Promise.resolve(accountInfo as AccountInfoResult));
+    // TrezorConnect.getAccountInfo is a shared spy across this file's describe blocks, so its
+    // call history must be cleared before each test here too, not just restored after.
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
 
     afterEach(() => {
         jest.restoreAllMocks();
     });
 
     it('is valid for stake without fetching account info', async () => {
-        const spy = mockAccountInfo({ success: true, payload: {} });
-        spy.mockClear();
+        mockTrezorConnect({ accountInfo: { success: true, payload: {} } });
 
         const result = await verifyEthereumStakingLiveState({
             stakeType: 'stake',
@@ -377,14 +380,16 @@ describe('verifyEthereumStakingLiveState', () => {
         });
 
         expect(result).toEqual({ isValid: true });
-        expect(spy).not.toHaveBeenCalled();
+        expect(TrezorConnect.getAccountInfo).not.toHaveBeenCalled();
     });
 
     it('is valid for unstake when the live balance still covers the amount', async () => {
-        mockAccountInfo({
-            success: true,
-            payload: {
-                misc: { stakingPools: [{ autocompoundBalance: '2000000000000000000' }] },
+        mockTrezorConnect({
+            accountInfo: {
+                success: true,
+                payload: {
+                    misc: { stakingPools: [{ autocompoundBalance: '2000000000000000000' }] },
+                },
             },
         });
 
@@ -398,29 +403,13 @@ describe('verifyEthereumStakingLiveState', () => {
         expect(result).toEqual({ isValid: true });
     });
 
-    it('is invalid for unstake when the live balance dropped below the amount', async () => {
-        mockAccountInfo({
-            success: true,
-            payload: {
-                misc: { stakingPools: [{ autocompoundBalance: '100000000000000' }] },
-            },
-        });
-
-        const result = await verifyEthereumStakingLiveState({
-            stakeType: 'unstake',
-            from: '0xabc',
-            symbol: 'eth',
-            amount: '0.1',
-        });
-
-        expect(result).toEqual({ isValid: false, error: 'Max Amount For Unstake 0.0001' });
-    });
-
     it('is invalid for unstake when the amount is not provided', async () => {
-        mockAccountInfo({
-            success: true,
-            payload: {
-                misc: { stakingPools: [{ autocompoundBalance: '2000000000000000000' }] },
+        mockTrezorConnect({
+            accountInfo: {
+                success: true,
+                payload: {
+                    misc: { stakingPools: [{ autocompoundBalance: '2000000000000000000' }] },
+                },
             },
         });
 
@@ -432,21 +421,23 @@ describe('verifyEthereumStakingLiveState', () => {
 
         expect(result).toEqual({
             isValid: false,
-            error: 'Missing unstake amount for live-state validation',
+            reason: { code: 'MISSING_UNSTAKE_AMOUNT' },
         });
     });
 
-    it('is invalid for claim when the withdraw request is not yet filled', async () => {
-        mockAccountInfo({
-            success: true,
-            payload: {
-                misc: {
-                    stakingPools: [
-                        {
-                            withdrawTotalAmount: '200000000000000000',
-                            claimableAmount: '100000000000000000',
-                        },
-                    ],
+    it('is valid for claim when the withdraw request is fully filled', async () => {
+        mockTrezorConnect({
+            accountInfo: {
+                success: true,
+                payload: {
+                    misc: {
+                        stakingPools: [
+                            {
+                                withdrawTotalAmount: '100000000000000000',
+                                claimableAmount: '100000000000000000',
+                            },
+                        ],
+                    },
                 },
             },
         });
@@ -457,11 +448,13 @@ describe('verifyEthereumStakingLiveState', () => {
             symbol: 'eth',
         });
 
-        expect(result).toEqual({ isValid: false, error: 'Unstake request not filled yet' });
+        expect(result).toEqual({ isValid: true });
     });
 
     it('is invalid when account info cannot be fetched', async () => {
-        mockAccountInfo({ success: false, error: { message: 'Account info error' } });
+        mockTrezorConnect({
+            accountInfo: { success: false, error: { message: 'Account info error' } },
+        });
 
         const result = await verifyEthereumStakingLiveState({
             stakeType: 'claim',
@@ -469,6 +462,9 @@ describe('verifyEthereumStakingLiveState', () => {
             symbol: 'eth',
         });
 
-        expect(result).toEqual({ isValid: false, error: 'Account info error' });
+        expect(result).toEqual({
+            isValid: false,
+            reason: { code: 'ACCOUNT_INFO_FAILED', message: 'Account info error' },
+        });
     });
 });

@@ -2702,6 +2702,11 @@ export const messages = {
                     'A staking transaction is already pending for this account. Wait for it to confirm before staking again.',
                 primaryButton: 'Go to Dashboard',
             },
+            signTransactionFailedAlert: {
+                title: 'Transaction was not signed',
+                description: 'Your account balance may have changed. Review and try again.',
+                primaryButton: 'Go to Dashboard',
+            },
         },
         unstakeTransactionDataReviewScreen: {
             title: 'Confirm on Trezor',
@@ -2716,6 +2721,11 @@ export const messages = {
                 title: 'Pending transaction detected',
                 description:
                     'An unstaking transaction is already pending for this account. Wait for it to confirm before unstaking again.',
+                primaryButton: 'Go to Dashboard',
+            },
+            signTransactionFailedAlert: {
+                title: 'Transaction was not signed',
+                description: 'Your account balance may have changed. Review and try again.',
                 primaryButton: 'Go to Dashboard',
             },
         },
@@ -3178,6 +3188,10 @@ export const messages = {
             alerts: {
                 primaryButton: 'Go to homepage',
                 approval: {
+                    signTransactionFailed: {
+                        title: 'Transaction was not signed',
+                        description: 'Review the transaction and sign it again.',
+                    },
                     pushTransactionFailed: {
                         title: 'Approval was not submitted',
                         description:
@@ -3190,6 +3204,10 @@ export const messages = {
                     },
                 },
                 revoke: {
+                    signTransactionFailed: {
+                        title: 'Transaction was not signed',
+                        description: 'Review the transaction and sign it again.',
+                    },
                     pushTransactionFailed: {
                         title: 'Revoke approval transaction not broadcast',
                         description:
@@ -3348,6 +3366,11 @@ export const messages = {
                 title: 'Pending transaction detected',
                 description:
                     'A claim transaction is already pending for this account. Wait for it to confirm before claiming again.',
+                primaryButton: 'Go to Dashboard',
+            },
+            signTransactionFailedAlert: {
+                title: 'Transaction was not signed',
+                description: 'Your account balance may have changed. Review and try again.',
                 primaryButton: 'Go to Dashboard',
             },
         },
