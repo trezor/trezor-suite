@@ -15,7 +15,7 @@ import { fromHardenedPathPart } from '@trezor/crypto-utils';
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getCoinInfo } from '../data/coinInfo';
+import { getCoinInfoOrThrow } from '../data/coinInfo';
 import { bundlify, validateParams } from './common/paramsValidator';
 import { getAccountLabel, isUtxoBased } from '../utils/accountUtils';
 import { buildOutputDescriptor } from '../utils/buildOutputDescriptor';
@@ -61,10 +61,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             ]);
 
             // validate coin info
-            const coinInfo = getCoinInfo(batch.coin);
-            if (!coinInfo) {
-                throw ERRORS.TypedError('Method_UnknownCoin');
-            }
+            const coinInfo = getCoinInfoOrThrow(batch.coin);
             // validate backend
             isBackendSupported(coinInfo);
             // validate path if exists

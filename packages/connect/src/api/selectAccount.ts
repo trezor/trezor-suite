@@ -1,5 +1,4 @@
 import { type CoinInfo, type PermissionRequest } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
 import {
     type AddressSelection,
     SelectAccount as SelectAccountSchema,
@@ -8,7 +7,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getCoinInfo } from '../data/coinInfo';
+import { getCoinInfoOrThrow } from '../data/coinInfo';
 import { isUtxoBased } from '../utils/accountUtils';
 import { getLabel } from '../utils/pathUtils';
 
@@ -23,10 +22,7 @@ export default class SelectAccount extends AbstractMethod<'selectAccount', Param
 
         Assert(SelectAccountSchema, payload);
 
-        const coinInfo = getCoinInfo(payload.coin);
-        if (!coinInfo) {
-            throw ERRORS.TypedError('Method_UnknownCoin');
-        }
+        const coinInfo = getCoinInfoOrThrow(payload.coin);
 
         super(message, { coinInfo, addressSelection: payload.addressSelection });
 

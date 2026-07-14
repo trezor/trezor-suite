@@ -8,7 +8,7 @@ import { Assert } from '@trezor/schema-utils';
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getCoinInfo } from '../data/coinInfo';
+import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
     tx: PushTransactionSchema['tx'];
@@ -23,10 +23,7 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
         // validate incoming parameters
         Assert(PushTransactionSchema, payload);
 
-        const coinInfo = getCoinInfo(payload.coin);
-        if (!coinInfo) {
-            throw ERRORS.TypedError('Method_UnknownCoin');
-        }
+        const coinInfo = getCoinInfoOrThrow(payload.coin);
         // validate backend
         isBackendSupported(coinInfo);
 

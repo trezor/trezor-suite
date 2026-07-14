@@ -1,19 +1,19 @@
 import type { CoinSymbol } from '@trezor/connect-common/src/types/coinInfo';
 
-import { getAllNetworks, getCoinInfo, getMiscNetwork, getUniqueNetworks } from '../coinInfo';
+import { getAllNetworks, getCoinInfoOrThrow, getMiscNetwork, getUniqueNetworks } from '../coinInfo';
 
 describe('data/coinInfo', () => {
     it('resolves a coin string by shortcut only (network name / label no longer accepted)', () => {
         // the lowercase shortcut resolves, case-insensitively, across all families
-        expect(getCoinInfo('btc')?.shortcut).toBe('BTC');
-        expect(getCoinInfo('BTC')?.shortcut).toBe('BTC');
-        expect(getCoinInfo('ada')?.shortcut).toBe('ADA');
-        expect(getCoinInfo('eth')?.shortcut).toBe('ETH');
+        expect(getCoinInfoOrThrow('btc').shortcut).toBe('BTC');
+        expect(getCoinInfoOrThrow('BTC').shortcut).toBe('BTC');
+        expect(getCoinInfoOrThrow('ada').shortcut).toBe('ADA');
+        expect(getCoinInfoOrThrow('eth').shortcut).toBe('ETH');
 
         // the network name and label forms are no longer accepted (D2/D3)
-        expect(getCoinInfo('bitcoin')).toBeUndefined();
-        expect(getCoinInfo('Bitcoin Cash')).toBeUndefined();
-        expect(getCoinInfo('cardano')).toBeUndefined();
+        expect(() => getCoinInfoOrThrow('bitcoin')).toThrow('Coin not found');
+        expect(() => getCoinInfoOrThrow('Bitcoin Cash')).toThrow('Coin not found');
+        expect(() => getCoinInfoOrThrow('cardano')).toThrow('Coin not found');
     });
 
     it('resolves every misc firmware-gating shortcut (requiredFirmwareCoins is never [undefined])', () => {
@@ -45,13 +45,13 @@ describe('data/coinInfo', () => {
 
     it('getUniqueNetworks', () => {
         const inputs = [
-            getCoinInfo('btc'),
-            getCoinInfo('ltc'),
-            getCoinInfo('btc'),
-            getCoinInfo('ltc'),
-            getCoinInfo('ltc'),
+            getCoinInfoOrThrow('btc'),
+            getCoinInfoOrThrow('ltc'),
+            getCoinInfoOrThrow('btc'),
+            getCoinInfoOrThrow('ltc'),
+            getCoinInfoOrThrow('ltc'),
         ];
-        const result = [getCoinInfo('btc'), getCoinInfo('ltc')];
+        const result = [getCoinInfoOrThrow('btc'), getCoinInfoOrThrow('ltc')];
         expect(getUniqueNetworks(inputs)).toEqual(result);
     });
 
