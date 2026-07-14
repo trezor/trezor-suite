@@ -2,11 +2,9 @@
 // If you want to add of modify icons please read README.md to find out how to do it
 
 export const paymentMethodLogos = {
-    applePay: require('../paymentMethods/applePay.svg'),
-    applePay_inverse: require('../paymentMethods/applePay_inverse.svg'),
-    googlePay: require('../paymentMethods/googlePay.svg'),
-    paypal: require('../paymentMethods/paypal.svg'),
-    revolut: require('../paymentMethods/revolut.svg'),
-    revolut_inverse: require('../paymentMethods/revolut_inverse.svg'),
+    applePay: require('../paymentMethods/applePay.webp'),
+    googlePay: require('../paymentMethods/googlePay.webp'),
+    paypal: require('../paymentMethods/paypal.webp'),
+    revolut: require('../paymentMethods/revolut.webp'),
 } as const;
 export type PaymentMethodLogoName = keyof typeof paymentMethodLogos;

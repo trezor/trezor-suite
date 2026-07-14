@@ -6,5 +6,5 @@ type TradingIconProps = {
 };
 
 export const TradingIcon = ({ iconUrl }: TradingIconProps) => (
-    <Image imageSrc={iconUrl} maxHeight={24} borderRadius={borders.radii.xxxs} />
+    <Image imageSrc={iconUrl} maxHeight={24} borderRadius={borders.radii.xxs} />
 );

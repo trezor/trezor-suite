@@ -8,7 +8,7 @@ module.exports = {
     setupFiles: ['jest-canvas-mock'],
     setupFilesAfterEnv: ['<rootDir>/../../packages/suite/jest.setup.js'],
     moduleNameMapper: {
-        '\\.(svg)$': '<rootDir>/../../packages/suite/__mocks__/import-svg.js',
+        '\\.(svg|webp)$': '<rootDir>/../../packages/suite/__mocks__/import-svg.js',
         ...baseConfig.moduleNameMapper,
     },
 };
