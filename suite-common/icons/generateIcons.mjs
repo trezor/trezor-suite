@@ -36,6 +36,7 @@ const paymentMethodLogosAssetsTypesConfig = [
         name: 'paymentMethodLogos',
         dirname: 'paymentMethods',
         typeName: 'PaymentMethodLogoName',
+        raster: true,
     },
 ];
 
@@ -92,10 +93,21 @@ const optimizeSvgAssets = assetsDirname => {
         }));
 };
 
+const listRasterAssets = assetsDirname => {
+    const assetsDir = path.join(__dirname, assetsDirname);
+
+    return fs
+        .readdirSync(assetsDir)
+        .filter(fileName => fileName.endsWith('.webp'))
+        .map(fileName => ({ fileName }));
+};
+
 const getOptimizedAssetTypes = assetTypesArray =>
     assetTypesArray.map(config => ({
         ...config,
-        assets: optimizeSvgAssets(config.dirname),
+        assets: config.raster
+            ? listRasterAssets(config.dirname)
+            : optimizeSvgAssets(config.dirname),
     }));
 
 const generateIconsFileContent = assetTypesArray => {
@@ -105,7 +117,7 @@ const generateIconsFileContent = assetTypesArray => {
             ${assets
                 .map(
                     ({ fileName }) =>
-                        `${fileName.replace('.svg', '')}: require('../${dirname}/${fileName}')`,
+                        `${fileName.replace(/\.(svg|webp)$/, '')}: require('../${dirname}/${fileName}')`,
                 )
                 .join(',')}
         } as const;
@@ -122,7 +134,10 @@ const generateIconsFileContent = assetTypesArray => {
 };
 
 const writeOptimizedAssets = assetTypesArray => {
-    assetTypesArray.forEach(({ assets, dirname }) => {
+    assetTypesArray.forEach(({ assets, dirname, raster }) => {
+        if (raster) {
+            return;
+        }
         assets.forEach(({ fileName, content }) =>
             fs.writeFileSync(path.resolve(dirname, fileName), content),
         );

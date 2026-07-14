@@ -9,9 +9,10 @@ type PaymentMethodLogoProps = {
 };
 
 const imageStyle = prepareNativeStyle<{ width?: number; height?: number }>(
-    (_, { width, height }) => ({
+    (utils, { width, height }) => ({
         width,
         height,
+        borderRadius: utils.borders.radii.r4,
     }),
 );
 
