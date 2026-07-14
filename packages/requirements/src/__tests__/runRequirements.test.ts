@@ -176,6 +176,30 @@ describe('runRequirements', () => {
     });
 
     describe('filtering', () => {
+        it('skips requirements that do not run by default', async () => {
+            const results = await runRequirements({
+                requirements: [
+                    createRepoRequirement({ name: 'default' }),
+                    createRepoRequirement({ name: 'opt-in', runByDefault: false }),
+                ],
+                repoRoot: '/repo',
+                mode: 'verify',
+            });
+
+            expect(results.map(result => result.requirement)).toEqual(['default']);
+        });
+
+        it('runs an opt-in requirement when selected by name', async () => {
+            const results = await runRequirements({
+                requirements: [createRepoRequirement({ name: 'opt-in', runByDefault: false })],
+                repoRoot: '/repo',
+                filter: 'opt-in',
+                mode: 'verify',
+            });
+
+            expect(results.map(result => result.requirement)).toEqual(['opt-in']);
+        });
+
         it('runs only the requirement matching the filter', async () => {
             const results = await runRequirements({
                 requirements: [
