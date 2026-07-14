@@ -7,7 +7,7 @@ import { type TradingType } from '@suite-common/trading';
 
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemTrading } from 'src/hooks/suite/useMessageSystemTrading';
-import { useTradingBuyForm } from 'src/hooks/wallet/trading/form/useTradingBuyForm';
+import { useTradingBuyForm } from 'src/hooks/wallet/trading/form/buy/useTradingBuyForm';
 import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
 import { TradingFormLayout } from 'src/views/wallet/trading/common/TradingForm/TradingFormLayout';

@@ -109,12 +109,9 @@ export interface TradingBuyFormContextProps
         TradingCommonFormBuySellProps {
     type: TradingBuyType;
     buyInfo?: TradingBuyInfoSelector;
-    cryptoInputValue?: string;
     quotesRequest: BuyTradeQuoteRequest | undefined;
     quotes: BuyTrade[];
-    selectedQuote: BuyTrade | undefined;
     trade?: TradingTransactionBuy;
-    verifiedAddress: TradingVerifiedAddress;
     // form - additional helpers for form
     form: {
         state: TradingFormStateProps;
@@ -123,7 +120,6 @@ export interface TradingBuyFormContextProps
     isAmountEmpty: boolean;
 
     onQuoteSelected: (quote: BuyTrade) => void;
-    verifyAddress: TradingVerifyAccountProps;
     setAmountLimits: (limits?: AmountLimitProps) => void;
     methods: UseFormReturn<TradingBuyFormProps>;
     clearQuotesAndParams: () => void;
