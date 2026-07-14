@@ -30,7 +30,7 @@ import {
     verifyTx,
 } from './bitcoin';
 import type { Blockchain } from '../backend/BlockchainLink';
-import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
+import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
@@ -283,7 +283,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         }
 
         // validate and initialize backend
-        isBackendSupported(coinInfo);
+        assertBackendSupported(coinInfo);
         const blockchain = await initBlockchain(coinInfo, sendCoreMessage, identity);
 
         const refTxs = !refTxsIds.length
@@ -379,7 +379,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
 
         if (params.push) {
             // validate backend
-            isBackendSupported(coinInfo);
+            assertBackendSupported(coinInfo);
             const blockchain = await initBlockchain(coinInfo, sendCoreMessage, params.identity);
             const txid = await blockchain.pushTransaction(response.serializedTx);
 

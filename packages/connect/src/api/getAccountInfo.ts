@@ -12,7 +12,7 @@ import type {
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { fromHardenedPathPart } from '@trezor/crypto-utils';
 
-import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
+import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage, MethodReturnType } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
@@ -63,7 +63,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             // validate coin info
             const coinInfo = getCoinInfoOrThrow(batch.coin);
             // validate backend
-            isBackendSupported(coinInfo);
+            assertBackendSupported(coinInfo);
             // validate path if exists
             let address_n: number[] = [];
             if (batch.path) {

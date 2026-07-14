@@ -5,7 +5,7 @@ import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
-import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
+import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
@@ -35,7 +35,7 @@ export default class BlockchainUnsubscribe extends AbstractMethod<'blockchainUns
 
         const coinInfo = getCoinInfoOrThrow(payload.coin);
         // validate backend
-        isBackendSupported(coinInfo);
+        assertBackendSupported(coinInfo);
 
         const params = {
             accounts: payload.accounts,

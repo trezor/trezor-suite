@@ -17,7 +17,7 @@ import {
 } from '@trezor/connect-common';
 import { arrayPartition, getSynchronize, versionUtils } from '@trezor/utils';
 
-import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
+import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
@@ -108,7 +108,7 @@ export default class DiscoverAccounts extends AbstractMethod<
             const coinInfo = getCoinInfoOrThrow(symbol);
 
             // validate backend
-            isBackendSupported(coinInfo);
+            assertBackendSupported(coinInfo);
 
             const firmwareRange = getFirmwareRange([payload.method], [coinInfo]);
 

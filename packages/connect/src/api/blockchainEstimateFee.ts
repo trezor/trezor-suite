@@ -10,7 +10,7 @@ import type {
 } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
-import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
+import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import { getOrInitFeeLevels } from '../backend/fees';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
 
@@ -52,7 +52,7 @@ export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEst
         }
         const coinInfo = getCoinInfoOrThrow(payload.coin);
         // validate backend
-        isBackendSupported(coinInfo);
+        assertBackendSupported(coinInfo);
 
         const params = {
             coinInfo,

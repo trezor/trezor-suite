@@ -1,6 +1,6 @@
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
-import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
+import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
@@ -27,7 +27,7 @@ export default class BlockchainGetContractInfo extends AbstractMethod<
 
         const coinInfo = getCoinInfoOrThrow(payload.coin);
 
-        isBackendSupported(coinInfo);
+        assertBackendSupported(coinInfo);
 
         const request = {
             contract: payload.contract,

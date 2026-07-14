@@ -1,6 +1,6 @@
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
-import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
+import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
@@ -27,7 +27,7 @@ export default class BlockchainEvmRpcCall extends AbstractMethod<'blockchainEvmR
 
         const coinInfo = getCoinInfoOrThrow(payload.coin);
         // validate backend
-        isBackendSupported(coinInfo);
+        assertBackendSupported(coinInfo);
 
         const params = {
             coinInfo,

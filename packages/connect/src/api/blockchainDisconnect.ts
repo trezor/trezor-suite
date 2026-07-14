@@ -4,7 +4,7 @@ import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 import { CoinObj } from '@trezor/connect-common';
 import { Assert } from '@trezor/schema-utils';
 
-import { findBackend, isBackendSupported } from '../backend/BlockchainLink';
+import { assertBackendSupported, findBackend } from '../backend/BlockchainLink';
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfoOrThrow } from '../data/coinInfo';
@@ -23,7 +23,7 @@ export default class BlockchainDisconnect extends AbstractMethod<'blockchainDisc
 
         const coinInfo = getCoinInfoOrThrow(payload.coin);
         // validate backend
-        isBackendSupported(coinInfo);
+        assertBackendSupported(coinInfo);
 
         const params = {
             coinInfo,
