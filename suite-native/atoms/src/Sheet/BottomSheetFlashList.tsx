@@ -78,8 +78,10 @@ export const BottomSheetFlashList = <TItem,>({
 
     // Imperative scroll reset.
     useEffect(() => {
-        flashListRef.current?.scrollToOffset({ offset: 0, animated: false });
-    }, [scrollResetKey]);
+        if (isVisible) {
+            flashListRef.current?.scrollToOffset({ offset: 0, animated: false });
+        }
+    }, [scrollResetKey, isVisible]);
 
     const dismissSheet = useCallback(() => {
         bottomSheetModalRef.current?.dismiss();
@@ -143,12 +145,13 @@ export const BottomSheetFlashList = <TItem,>({
         >
             <FlashList
                 ref={flashListRef}
+                maintainVisibleContentPosition={{ disabled: true }}
                 renderScrollComponent={BottomSheetListScrollComponent}
                 renderItem={renderFlashListItem}
-                {...flashListProps}
                 contentContainerStyle={applyStyle(sheetContentContainerStyle, {
                     insetBottom,
                 })}
+                {...flashListProps}
             />
         </BottomSheetModal>
     );
