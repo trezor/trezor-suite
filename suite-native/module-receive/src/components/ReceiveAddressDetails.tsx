@@ -1,4 +1,4 @@
-import { Pressable } from 'react-native';
+import { Pressable, useWindowDimensions } from 'react-native';
 
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountDescriptor } from '@suite-common/wallet-types';
@@ -11,7 +11,7 @@ import { QRCode } from '@suite-native/qr-code';
 import type { StaticSessionId } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-type AddressQRCodeProps = {
+type ReceiveAddressDetailsProps = {
     address: string;
     deviceStaticSessionId: StaticSessionId;
     accountDescriptor: AccountDescriptor;
@@ -25,26 +25,33 @@ const addressContainer = prepareNativeStyle(() => ({
 }));
 
 const cardStyle = prepareNativeStyle(utils => ({
-    paddingVertical: utils.spacings.sp16,
-    paddingHorizontal: utils.spacings.sp24,
-    justifyContent: 'center',
-    alignItems: 'center',
     marginHorizontal: utils.spacings.sp8,
     marginTop: utils.spacings.sp8,
 }));
 
-const RECEIVE_QR_CODE_SIZE = 310;
+const MAX_RECEIVE_QR_CODE_SIZE = 310;
 
-export const AddressQRCode = ({
+export const ReceiveAddressDetails = ({
     address,
     deviceStaticSessionId,
     accountDescriptor,
     networkSymbol,
     showLabelEdit = true,
-}: AddressQRCodeProps) => {
+}: ReceiveAddressDetailsProps) => {
     const copyToClipboard = useCopyToClipboard();
     const { translate } = useTranslate();
-    const { applyStyle } = useNativeStyles();
+    const {
+        applyStyle,
+        utils: { spacings },
+    } = useNativeStyles();
+    const { width: windowWidth } = useWindowDimensions();
+
+    const screenHorizontalPadding = spacings.sp16 * 2;
+    const cardHorizontalMargin = spacings.sp8 * 2;
+    const qrCodeHorizontalPadding = spacings.sp16 * 2;
+    const horizontalOffset =
+        screenHorizontalPadding + cardHorizontalMargin + qrCodeHorizontalPadding;
+    const qrCodeSize = Math.min(MAX_RECEIVE_QR_CODE_SIZE, windowWidth - horizontalOffset);
 
     const handleCopyAddress = async () => {
         await copyToClipboard(address, translate('qrCode.addressCopied'));
@@ -53,11 +60,11 @@ export const AddressQRCode = ({
     return (
         <VStack spacing="sp24" flex={1}>
             <Pressable onLongPress={handleCopyAddress}>
-                <Card style={applyStyle(cardStyle)}>
+                <Card noPadding style={applyStyle(cardStyle)}>
                     <QRCode
                         data={address}
-                        size={RECEIVE_QR_CODE_SIZE}
-                        paddingHorizontal="sp24"
+                        qrCodeSize={qrCodeSize}
+                        paddingHorizontal="sp16"
                         paddingVertical="sp16"
                     />
                 </Card>

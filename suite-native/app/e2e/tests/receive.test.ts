@@ -12,12 +12,13 @@ import { onTabBar } from '../pageObjects/tabBarActions';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
 import { getModelFromEnv } from '../support/utils';
 
+const model = getModelFromEnv();
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
-    getModelFromEnv() === Model.T3W1
-        ? btcDiscoveryFinishedStateT3W1
-        : btcDiscoveryFinishedStateT3T1,
+    model === Model.T3W1 ? btcDiscoveryFinishedStateT3W1 : btcDiscoveryFinishedStateT3T1,
 );
+const expectedReceiveAddress =
+    model === Model.T3W1 ? 'bc1q czeu ... xlma n6' : 'bc1q s9al ... xuj7 s9';
 
 describe('Receive [@androidOnly @T3T1 @T3W1]', () => {
     beforeEach(async () => {
@@ -35,8 +36,6 @@ describe('Receive [@androidOnly @T3T1 @T3W1]', () => {
         await onAccountDetail.openReceive();
         await onAccountReceive.waitForScreen();
 
-        await onAccountReceive.verifyReceiveAddress(
-            'bc1q s9al wrln 4e28 se4t q2nc 8dnn vskg 83qe xuj7 s9',
-        );
+        await onAccountReceive.verifyReceiveAddress(expectedReceiveAddress);
     });
 });
