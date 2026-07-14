@@ -1,7 +1,5 @@
 import { type ReactNode } from 'react';
 
-import { type RequireOneOrNone } from 'type-fest';
-
 import { Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -10,15 +8,19 @@ import { type CloseActionType } from '../navigators';
 import { ScreenHeaderContent, type ScreenHeaderContentProps } from './ScreenHeaderContent';
 
 export type ScreenHeaderProps = ScreenHeaderContentProps &
-    RequireOneOrNone<
-        {
-            leftIcon?: ReactNode;
-            closeActionType?: CloseActionType;
-            rightIcon?: ReactNode;
-            closeAction?: () => void;
-        },
-        'leftIcon' | 'closeActionType'
-    >;
+    (
+        | {
+              leftIcon?: ReactNode;
+              closeActionType?: never;
+          }
+        | {
+              leftIcon?: never;
+              closeActionType?: CloseActionType;
+          }
+    ) & {
+        closeAction?: () => void;
+        rightIcon?: ReactNode;
+    };
 
 const ICON_SIZE = 40;
 
