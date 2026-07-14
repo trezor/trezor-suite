@@ -2637,7 +2637,7 @@ export const messages = defineMessages({
         id: 'TR_SKIP_BACKUP',
     },
     TR_SKIP_BACKUP_HEADER: {
-        defaultMessage: 'Skip',
+        defaultMessage: 'Skip wallet backup',
         id: 'TR_SKIP_BACKUP_HEADER',
     },
     TR_SKIP_BACKUP_DESCRIPTION: {
@@ -5605,7 +5605,7 @@ export const messages = defineMessages({
     TR_TRON_VOTE_CONSENT_MODAL_BANNER_2_TEXT: {
         id: 'TR_TRON_VOTE_CONSENT_MODAL_BANNER_2_TEXT',
         defaultMessage:
-            'Use Trezor Suite to securely delegate your voting rights to {representativeName}. Enjoy competitive rewards, rely on a trusted Super Representative, and keep full ownership of your TRX at all times.',
+            'Use Trezor Suite to securely delegate your voting rights to {representativeName}. Enjoy competitive rewards, rely on a trusted Super Representative, and keep full ownership of your TRX at all times. To process rewards correctly, your voting transaction ID is shared with the Trezor backend.',
     },
     TR_TRON_BANDWIDTH: {
         id: 'TR_TRON_BANDWIDTH',

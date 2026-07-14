@@ -1830,6 +1830,7 @@
   "TR_TREZOR_CONNECT": "Trezor Connect",
   "TR_TREZOR_DEVICE_TUTORIAL_DESCRIPTION": "Impara a utilizzare il tuo dispositivo con l'aiuto di un breve tutorial",
   "TR_TREZOR_DEVICE_TUTORIAL_HEADING": "Conosci il tuo dispositivo Trezor",
+  "TR_TRON_VOTE_CONSENT_MODAL_BANNER_2_TEXT": "Usa Trezor Suite per delegare in modo sicuro i tuoi diritti di voto a {representativeName}. Approfitta di ricompense competitive, affidati a un Super Representative affidabile e mantieni sempre la piena proprietà dei tuoi TRX. Per elaborare correttamente le ricompense, l'ID della tua transazione di voto viene condiviso con il backend di Trezor.",
   "TR_TROUBLESHOOTING_CLOSE_TABS": "Chiudi le altre schede e finestre dove Trezor potrebbe essere in uso",
   "TR_TROUBLESHOOTING_CLOSE_TABS_DESCRIPTION": "Dopo aver chiuso le altre schede e finestre, prova ad aggiornare questa pagina.",
   "TR_TROUBLESHOOTING_CLOSE_TABS_DESCRIPTION_DESKTOP": "Dopo aver chiuso le altre schede e finestre del browser, prova a uscire e a riaprire Trezor Suite.",

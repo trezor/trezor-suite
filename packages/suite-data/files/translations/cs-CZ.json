@@ -2797,7 +2797,7 @@
   "TR_TRON_TX_WITHDRAW_BALANCE": "Výběr zůstatku",
   "TR_TRON_VOTES": "Hlasy",
   "TR_TRON_VOTE_CONSENT_MODAL_BANNER_1_TEXT": "Hlasujte pro {representativeName}, abyste získali TRX odměny a podpořili bezpečnost a stabilitu sítě Tron.",
-  "TR_TRON_VOTE_CONSENT_MODAL_BANNER_2_TEXT": "Použijte Trezor Suite k bezpečné delegaci svých hlasovacích práv na {representativeName}. Získejte atraktivní odměny, spolehněte se na důvěryhodného Super Representative a mějte neustále plné vlastnictví svých TRX.",
+  "TR_TRON_VOTE_CONSENT_MODAL_BANNER_2_TEXT": "Použijte Trezor Suite k bezpečné delegaci svých hlasovacích práv na {representativeName}. Získejte atraktivní odměny, spolehněte se na důvěryhodného Super Representative a mějte neustále plné vlastnictví svých TRX. Pro správné zpracování odměn se ID vaší hlasovací transakce sdílí s backendem Trezoru.",
   "TR_TRON_VOTE_CONSENT_MODAL_CONSENT_TEXT": "Potvrzuji <a>Obchodní podmínky {representativeName}</a> a souhlasím s delegací svých hlasů na {representativeName}.",
   "TR_TRON_VOTE_CONSENT_MODAL_DESCRIPTION": "Ponecháváte si plné vlastnictví svých TRX — delegují se pouze vaše hlasy.",
   "TR_TRON_VOTE_CONSENT_MODAL_HEADING": "Hlasovat pro {representativeName}",

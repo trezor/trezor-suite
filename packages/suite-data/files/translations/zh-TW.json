@@ -1921,6 +1921,7 @@
   "TR_TREZOR_CONNECT": "Trezor Connect",
   "TR_TREZOR_DEVICE_TUTORIAL_DESCRIPTION": "藉由簡短的課程來學習如何使用你的裝置",
   "TR_TREZOR_DEVICE_TUTORIAL_HEADING": "了解 Trezor 裝置",
+  "TR_TRON_VOTE_CONSENT_MODAL_BANNER_2_TEXT": "使用 Trezor Suite 將您的投票權安全地委託給 {representativeName}。享受豐厚的收益，仰賴值得信賴的超級代表，並始終完全掌控您的 TRX。為了正確處理收益，您的投票交易 ID 將與 Trezor 後端共享。",
   "TR_TROUBLESHOOTING_CLOSE_TABS": "請關閉其他可能正在使用 Trezor 裝置的分頁和視窗",
   "TR_TROUBLESHOOTING_CLOSE_TABS_DESCRIPTION": "關閉其他分頁和視窗後，請重新整理目前頁面。",
   "TR_TROUBLESHOOTING_CLOSE_TABS_DESCRIPTION_DESKTOP": "關閉其他瀏覽器分頁和視窗後，請將 Trezor Suite 退出然後重開。",

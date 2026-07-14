@@ -1822,6 +1822,7 @@
   "TR_TREZOR_CONNECT": "Trezor Connect",
   "TR_TREZOR_DEVICE_TUTORIAL_DESCRIPTION": "Kısa bir öğretici yardımıyla, cihazınızı nasıl kullanacağınızı öğrenin",
   "TR_TREZOR_DEVICE_TUTORIAL_HEADING": "Trezor'unuzu tanıyın",
+  "TR_TRON_VOTE_CONSENT_MODAL_BANNER_2_TEXT": "Oy haklarınızı {representativeName} adlı temsilciye güvenli bir şekilde devretmek için Trezor Suite'i kullanın. Rekabetçi ödüllerin keyfini çıkarın, güvenilir bir Super Representative'e güvenin ve TRX'lerinizin tam mülkiyetini her zaman elinizde tutun. Ödüllerin doğru şekilde işlenebilmesi için oylama işleminizin kimliği Trezor arka ucuyla paylaşılır.",
   "TR_TROUBLESHOOTING_CLOSE_TABS": "Trezor'unuzu kullanıyor olabilecek diğer sekmeleri ve pencereleri kapatın",
   "TR_TROUBLESHOOTING_CLOSE_TABS_DESCRIPTION": "Diğer sekmeleri ve pencereleri kapattıktan sonra bu sayfayı yenilemeyi deneyin.",
   "TR_TROUBLESHOOTING_CLOSE_TABS_DESCRIPTION_DESKTOP": "Diğer tarayıcı sekmelerini ve pencerelerini kapattıktan sonra Trezor Suite'ten çıkmayı ve yeniden açmayı deneyin.",

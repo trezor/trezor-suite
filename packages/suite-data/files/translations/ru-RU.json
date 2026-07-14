@@ -1453,6 +1453,7 @@
   "TR_TRANSACTION_DETAILS": "Подробности",
   "TR_TREZOR_DEVICE_TUTORIAL_DESCRIPTION": "Узнайте, как пользоваться Вашим устройством с помощью краткого руководства",
   "TR_TREZOR_DEVICE_TUTORIAL_HEADING": "Узнай свой Trezor",
+  "TR_TRON_VOTE_CONSENT_MODAL_BANNER_2_TEXT": "Используйте Trezor Suite, чтобы безопасно делегировать свои права голоса представителю {representativeName}. Получайте конкурентное вознаграждение, полагайтесь на надёжного Super Representative и всегда сохраняйте полное владение своими TRX. Для корректной обработки вознаграждений идентификатор вашей транзакции голосования передаётся на бэкенд Trezor.",
   "TR_TROUBLESHOOTING_CLOSE_TABS": "Закройте другие вкладки и окна, которые могут использовать ваш Trezor",
   "TR_TROUBLESHOOTING_CLOSE_TABS_DESCRIPTION": "После закрытия других вкладок и окон, попробуйте обновить эту страницу.",
   "TR_TROUBLESHOOTING_CLOSE_TABS_DESCRIPTION_DESKTOP": "После закрытия других вкладок и окон браузера попробуйте выйти и снова открыть приложение Trezor Suite.",

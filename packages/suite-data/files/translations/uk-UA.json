@@ -2510,6 +2510,7 @@
   "TR_TRON_TX_UPDATE_ACCOUNT": "Оновити акаунт",
   "TR_TRON_TX_VOTE_WITNESS": "Голосувати за witness",
   "TR_TRON_TX_WITHDRAW_BALANCE": "Вивести баланс",
+  "TR_TRON_VOTE_CONSENT_MODAL_BANNER_2_TEXT": "Використовуйте Trezor Suite, щоб безпечно делегувати свої права голосу представнику {representativeName}. Отримуйте конкурентну винагороду, покладайтеся на надійного Super Representative та завжди зберігайте повне право власності на свої TRX. Для коректної обробки винагород ідентифікатор вашої транзакції голосування передається на бекенд Trezor.",
   "TR_TROUBLESHOOTING_CLOSE_TABS": "Закрити інші вкладки та вікна, які можуть використовувати ваш Trezor",
   "TR_TROUBLESHOOTING_CLOSE_TABS_DESCRIPTION": "Після закриття інших вкладок і вікон спробуйте оновити цю сторінку.",
   "TR_TROUBLESHOOTING_CLOSE_TABS_DESCRIPTION_DESKTOP": "Після закриття інших вкладок і вікон браузера спробуйте вийти і знову відкрити Trezor Suite.",

@@ -2797,7 +2797,7 @@
   "TR_TRON_TX_WITHDRAW_BALANCE": "Sacar saldo",
   "TR_TRON_VOTES": "Votos",
   "TR_TRON_VOTE_CONSENT_MODAL_BANNER_1_TEXT": "Vote em {representativeName} para receber recompensas em TRX e ajudar a segurança e estabilidade da rede Tron.",
-  "TR_TRON_VOTE_CONSENT_MODAL_BANNER_2_TEXT": "Use o Trezor Suite para delegar com segurança seus direitos de votação para {representativeName}. Aproveite recompensas competitivas, conte com um Super Representante confiável e mantenha a propriedade total do seu TRX a qualquer momento.",
+  "TR_TRON_VOTE_CONSENT_MODAL_BANNER_2_TEXT": "Use o Trezor Suite para delegar com segurança seus direitos de votação para {representativeName}. Aproveite recompensas competitivas, conte com um Super Representante confiável e mantenha a propriedade total do seu TRX a qualquer momento. Para processar as recompensas corretamente, o ID da sua transação de votação é compartilhado com o backend da Trezor.",
   "TR_TRON_VOTE_CONSENT_MODAL_CONSENT_TEXT": "Reconheço os <a>Termos de Serviço de {representativeName}</a> e consinto em delegar meus votos a {representativeName}.",
   "TR_TRON_VOTE_CONSENT_MODAL_DESCRIPTION": "Você mantém a propriedade total do seu TRX — apenas seus votos são delegados.",
   "TR_TRON_VOTE_CONSENT_MODAL_HEADING": "Vote para {representativeName}",
