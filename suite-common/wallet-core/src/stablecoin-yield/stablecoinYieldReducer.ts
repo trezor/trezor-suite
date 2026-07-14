@@ -190,11 +190,14 @@ const withSession = (
     updater(session);
 };
 
-export const stablecoinYieldSlice = createSlice({
+const stablecoinYieldSlice = createSlice({
     name: STABLECOIN_YIELD_PREFIX,
     initialState: initialStablecoinYieldState,
     reducers: {
-        initSession(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
+        initSession(
+            state: StablecoinYieldState,
+            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+        ) {
             const { flowType, flowKey } = action.payload;
 
             if (!isSafeObjectKey(flowKey)) {
@@ -207,7 +210,10 @@ export const stablecoinYieldSlice = createSlice({
                 state[flowType][sessionKey] = createInitialStablecoinYieldSessionState(flowType);
             }
         },
-        disposeSession(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
+        disposeSession(
+            state: StablecoinYieldState,
+            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+        ) {
             const { flowType, flowKey } = action.payload;
 
             if (!isSafeObjectKey(flowKey)) {
@@ -216,7 +222,10 @@ export const stablecoinYieldSlice = createSlice({
 
             delete state[flowType][getStablecoinYieldSessionKey(flowKey)];
         },
-        resetSession(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
+        resetSession(
+            state: StablecoinYieldState,
+            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+        ) {
             const { flowType, flowKey } = action.payload;
 
             if (!isSafeObjectKey(flowKey)) {
@@ -227,7 +236,7 @@ export const stablecoinYieldSlice = createSlice({
                 createInitialStablecoinYieldSessionState(flowType);
         },
         setError(
-            state,
+            state: StablecoinYieldState,
             action: PayloadAction<
                 StablecoinYieldSessionActionPayload & {
                     error: StablecoinYieldTranslationKey;
@@ -238,13 +247,16 @@ export const stablecoinYieldSlice = createSlice({
                 session.error = action.payload.error;
             });
         },
-        clearError(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
+        clearError(
+            state: StablecoinYieldState,
+            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+        ) {
             withSession(state, action.payload, session => {
                 session.error = null;
             });
         },
         openApprovalModal(
-            state,
+            state: StablecoinYieldState,
             action: PayloadAction<
                 StablecoinYieldSessionActionPayload & {
                     modalState: YieldApproveModalState;
@@ -255,18 +267,27 @@ export const stablecoinYieldSlice = createSlice({
                 session.approval.modalState = action.payload.modalState;
             });
         },
-        closeApprovalModal(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
+        closeApprovalModal(
+            state: StablecoinYieldState,
+            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+        ) {
             withSession(state, action.payload, session => {
                 session.approval.modalState = null;
                 session.error = null;
             });
         },
-        setRevokeRequired(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
+        setRevokeRequired(
+            state: StablecoinYieldState,
+            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+        ) {
             withSession(state, action.payload, session => {
                 session.approval.isRevokeRequired = true;
             });
         },
-        startSubmittingApproval(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
+        startSubmittingApproval(
+            state: StablecoinYieldState,
+            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+        ) {
             withSession(state, action.payload, session => {
                 session.approval.isSubmitting = true;
                 session.approval.modalState = null;
@@ -275,7 +296,7 @@ export const stablecoinYieldSlice = createSlice({
             });
         },
         finishSubmittingApproval(
-            state,
+            state: StablecoinYieldState,
             action: PayloadAction<StablecoinYieldSessionActionPayload>,
         ) {
             withSession(state, action.payload, session => {
@@ -283,7 +304,7 @@ export const stablecoinYieldSlice = createSlice({
             });
         },
         startInitializingAllowance(
-            state,
+            state: StablecoinYieldState,
             action: PayloadAction<StablecoinYieldSessionActionPayload>,
         ) {
             withSession(state, action.payload, session => {
@@ -291,7 +312,7 @@ export const stablecoinYieldSlice = createSlice({
             });
         },
         setInitializedAllowance(
-            state,
+            state: StablecoinYieldState,
             action: PayloadAction<StablecoinYieldSessionActionPayload & { amount: string }>,
         ) {
             withSession(state, action.payload, session => {
@@ -299,19 +320,25 @@ export const stablecoinYieldSlice = createSlice({
                 session.approval.allowanceStatus = 'loaded';
             });
         },
-        setAllowanceError(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
+        setAllowanceError(
+            state: StablecoinYieldState,
+            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+        ) {
             withSession(state, action.payload, session => {
                 session.approval.allowanceAmount = null;
                 session.approval.allowanceStatus = 'error';
             });
         },
-        invalidateAllowance(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
+        invalidateAllowance(
+            state: StablecoinYieldState,
+            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+        ) {
             withSession(state, action.payload, session => {
                 session.approval.allowanceStatus = 'idle';
             });
         },
         enterModifyMode(
-            state,
+            state: StablecoinYieldState,
             action: PayloadAction<StablecoinYieldSessionActionPayload & { amount?: string }>,
         ) {
             withSession(state, action.payload, session => {
@@ -326,7 +353,7 @@ export const stablecoinYieldSlice = createSlice({
             });
         },
         completeApproval(
-            state,
+            state: StablecoinYieldState,
             action: PayloadAction<
                 StablecoinYieldSessionActionPayload & {
                     amount: string;
@@ -343,12 +370,18 @@ export const stablecoinYieldSlice = createSlice({
                 session.step = getNextYieldFlowStep(action.payload.flowType, 'approve');
             });
         },
-        skipApprovalStep(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
+        skipApprovalStep(
+            state: StablecoinYieldState,
+            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+        ) {
             withSession(state, action.payload, session => {
                 session.step = getNextYieldFlowStep(action.payload.flowType, 'approve');
             });
         },
-        revokeSuccess(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
+        revokeSuccess(
+            state: StablecoinYieldState,
+            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+        ) {
             withSession(state, action.payload, session => {
                 session.approval.isModifyMode = false;
                 session.approval.allowanceAmount = '0';
@@ -358,7 +391,7 @@ export const stablecoinYieldSlice = createSlice({
             });
         },
         startSubmittingAction(
-            state,
+            state: StablecoinYieldState,
             action: PayloadAction<
                 StablecoinYieldSessionActionPayload & {
                     amount: string;
@@ -372,13 +405,16 @@ export const stablecoinYieldSlice = createSlice({
                 session.error = null;
             });
         },
-        finishSubmittingAction(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
+        finishSubmittingAction(
+            state: StablecoinYieldState,
+            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+        ) {
             withSession(state, action.payload, session => {
                 session.action.isSubmitting = false;
             });
         },
         storeActionReviewData(
-            state,
+            state: StablecoinYieldState,
             action: PayloadAction<StablecoinYieldStoreActionReviewDataPayload>,
         ) {
             withSession(state, action.payload, session => {
@@ -402,7 +438,7 @@ export const stablecoinYieldSlice = createSlice({
             });
         },
         setPendingTx(
-            state,
+            state: StablecoinYieldState,
             action: PayloadAction<
                 StablecoinYieldSessionActionPayload & {
                     tx: YieldPendingTransactionState;
@@ -417,7 +453,7 @@ export const stablecoinYieldSlice = createSlice({
             });
         },
         completeAction(
-            state,
+            state: StablecoinYieldState,
             action: PayloadAction<
                 StablecoinYieldSessionActionPayload & {
                     amount: string;
@@ -437,14 +473,17 @@ export const stablecoinYieldSlice = createSlice({
                 session.step = getNextYieldFlowStep(action.payload.flowType, 'action');
             });
         },
-        transactionFailed(state, action: PayloadAction<StablecoinYieldSessionActionPayload>) {
+        transactionFailed(
+            state: StablecoinYieldState,
+            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+        ) {
             withSession(state, action.payload, session => {
                 session.action.pendingTransaction = null;
                 session.error = 'TR_EARN_YIELD_ERROR_TRANSACTION_FAILED';
             });
         },
         storePrecomposedTransaction(
-            state,
+            state: StablecoinYieldState,
             action: PayloadAction<
                 StablecoinYieldSessionActionPayload & {
                     precomposedTx: PrecomposedTransactionFinal;
@@ -464,12 +503,12 @@ export const stablecoinYieldSlice = createSlice({
             state.txReview.serializedTx = undefined;
         },
         storeSignedTransaction(
-            state,
+            state: StablecoinYieldState,
             action: PayloadAction<{ serializedTx: StablecoinYieldSerializedTx }>,
         ) {
             state.txReview.serializedTx = action.payload.serializedTx;
         },
-        discardTransaction(state) {
+        discardTransaction(state: StablecoinYieldState) {
             state.txReview.precomposedTx = undefined;
             state.txReview.precomposedForm = undefined;
             state.txReview.availableRewards = undefined;
