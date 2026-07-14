@@ -39,7 +39,7 @@ describe('BitcoinFeeLevels', () => {
     });
 
     it('fetches Bitcoin smart FeeLevels with exact match', async () => {
-        const coinInfo = getBitcoinNetwork('Bitcoin');
+        const coinInfo = getBitcoinNetwork('btc');
         if (!coinInfo) throw new Error('coinInfo is missing');
         const coinInfoMock = { ...coinInfo, defaultFees: defaultFeesMock };
 
@@ -58,7 +58,7 @@ describe('BitcoinFeeLevels', () => {
     });
 
     it('fetches Bitcoin smart FeeLevels with some unknown results in response', async () => {
-        const coinInfo = getBitcoinNetwork('Bitcoin');
+        const coinInfo = getBitcoinNetwork('btc');
         if (!coinInfo) throw new Error('coinInfo is missing');
         const coinInfoMock = { ...coinInfo, defaultFees: defaultFeesMock };
 
@@ -75,7 +75,7 @@ describe('BitcoinFeeLevels', () => {
     });
 
     it('fetches Bitcoin smart FeeLevels with custom fee level', async () => {
-        const coinInfo = getBitcoinNetwork('Bitcoin');
+        const coinInfo = getBitcoinNetwork('btc');
         if (!coinInfo) throw new Error('coinInfo is missing');
         const coinInfoMock = { ...coinInfo, defaultFees: defaultFeesMock };
 
@@ -102,7 +102,7 @@ describe('BitcoinFeeLevels', () => {
     });
 
     it('fetches Testnet smart FeeLevels with some unknown results in response', async () => {
-        const coinInfo = getBitcoinNetwork('Testnet');
+        const coinInfo = getBitcoinNetwork('test');
         if (!coinInfo) throw new Error('coinInfo is missing');
         // testnet has only one fee level 'normal'
         // @ts-expect-error: indexing with noUncheckedIndexedAccess

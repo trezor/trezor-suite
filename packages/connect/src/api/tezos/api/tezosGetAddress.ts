@@ -9,7 +9,7 @@ export default class TezosGetAddress extends AbstractMiscGetAddress<'tezosGetAdd
     constructor(message: MethodMessage<'tezosGetAddress'>) {
         super(message, 3);
         this.requiredDeviceCapabilities = ['Capability_Tezos'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Tezos')];
+        this.requiredFirmwareCoins = [getMiscNetwork('xtz')];
     }
 
     get info() {

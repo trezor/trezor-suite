@@ -51,7 +51,7 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
             batch => batch.suppressBackupWarning || !batch.proto.show_display,
         );
         this.requiredDeviceCapabilities = ['Capability_Cardano'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Cardano')];
+        this.requiredFirmwareCoins = [getMiscNetwork('ada')];
     }
 
     get requiredPermissions(): PermissionRequest[] {

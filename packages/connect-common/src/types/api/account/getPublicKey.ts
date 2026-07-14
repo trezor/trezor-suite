@@ -2,6 +2,7 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
+import { CoinSymbolParam } from '../../coinInfo';
 import type { BundledParams, Params, Response } from '../../params';
 import { GetPublicKey as GetPublicKeyShared, PublicKey } from '../../params';
 
@@ -10,9 +11,9 @@ export const GetPublicKey = Type.Intersect([
     GetPublicKeyShared,
     Type.Object({
         coin: Type.Optional(
-            Type.String({
+            CoinSymbolParam({
                 description:
-                    'determines network definition specified in coins.json file. Coin shortcut, name or label can be used. If coin is not set API will try to get network definition from path.',
+                    'determines network definition specified in coins.json file. The coin shortcut (a CoinSymbol, e.g. "btc") is used. If coin is not set API will try to get network definition from path.',
                 default: 'btc',
             }),
         ),

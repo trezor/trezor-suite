@@ -13,6 +13,7 @@ import type {
     TransactionInputOutputSortingStrategy,
 } from '@trezor/utxo-lib';
 
+import type { CoinSymbol } from '../../coinInfo';
 import type { Params, Response } from '../../params';
 
 // for convenience ComposeOutput `type: "payment"` field is not required by @trezor/connect api
@@ -24,7 +25,7 @@ export type ComposeOutput = Exclude<ComposeOutputBase, { type: 'payment' }> | Co
 
 export type ComposeParams = {
     outputs: ComposeOutput[];
-    coin: string;
+    coin: CoinSymbol;
     identity?: string;
     account?: undefined;
     feeLevels?: undefined;
@@ -45,7 +46,7 @@ export type ComposeUtxo = AccountUtxo & Partial<ComposeInputBase>;
 
 export type PrecomposeParams = {
     outputs: ComposeOutput[];
-    coin: string;
+    coin: CoinSymbol;
     identity?: string;
     account: {
         path: string;

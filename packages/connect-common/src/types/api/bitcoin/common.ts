@@ -5,6 +5,7 @@ import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
 import type { AccountTransaction } from '../../account';
+import { type CoinSymbol, CoinSymbolParam } from '../../coinInfo';
 import type { ProtoWithDerivationPath } from '../../params';
 import { DerivationPath } from '../../params';
 
@@ -13,7 +14,7 @@ import { DerivationPath } from '../../params';
 export type SignMessage = Static<typeof SignMessage>;
 export const SignMessage = Type.Object({
     path: DerivationPath,
-    coin: Type.Optional(Type.String()),
+    coin: Type.Optional(CoinSymbolParam()),
     message: Type.String(),
     hex: Type.Optional(Type.Boolean()),
     no_script_type: Type.Optional(Type.Boolean()),
@@ -84,7 +85,7 @@ export interface SignTransaction {
         addresses: AccountAddresses;
         transactions?: AccountTransaction[]; // refTxs in different format. see refTxs/validateReferencedTransactions
     };
-    coin: string;
+    coin: CoinSymbol;
     identity?: string;
     locktime?: number;
     timestamp?: number;
@@ -117,6 +118,6 @@ export const VerifyMessage = Type.Object({
     address: Type.String(),
     signature: Type.String(),
     message: Type.String(),
-    coin: Type.String(),
+    coin: CoinSymbolParam(),
     hex: Type.Optional(Type.Boolean()),
 });

@@ -56,7 +56,7 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
         this.hasBundle = hasBundle;
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Monero'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Monero')];
+        this.requiredFirmwareCoins = [getMiscNetwork('xmr')];
     }
 
     get requiredPermissions(): PermissionRequest[] {

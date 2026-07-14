@@ -179,7 +179,7 @@ export default class MoneroSignTransactionMethod extends AbstractMethod<
         super(message, params);
 
         this.requiredDeviceCapabilities = ['Capability_Monero'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Monero')];
+        this.requiredFirmwareCoins = [getMiscNetwork('xmr')];
     }
 
     get info() {

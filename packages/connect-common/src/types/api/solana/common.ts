@@ -2,6 +2,7 @@ import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
+import { CoinSymbolParam } from '../../coinInfo';
 import { PublicKey } from '../../params';
 
 // solanaGetPublicKey
@@ -76,7 +77,7 @@ const SolanaComposeTransactionCommon = {
         }),
     ),
     memo: Type.Optional(Type.String()),
-    coin: Type.Optional(Type.String()),
+    coin: Type.Optional(CoinSymbolParam()),
     identity: Type.Optional(Type.String()),
 };
 

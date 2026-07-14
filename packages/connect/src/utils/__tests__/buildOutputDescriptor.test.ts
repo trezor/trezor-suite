@@ -173,7 +173,7 @@ describe('utils/buildOutputDescriptor', () => {
             expect(
                 buildOutputDescriptor({
                     account: 0,
-                    coin: 'Ethereum',
+                    coin: 'eth',
                     scriptType: 'SPENDWITNESS',
                     xpub: XPUB,
                 }),

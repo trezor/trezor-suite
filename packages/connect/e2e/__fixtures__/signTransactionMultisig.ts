@@ -44,7 +44,7 @@ export default {
         {
             description: 'Testnet (multisig): 2 of 3 (sign with 1st key)',
             params: {
-                coin: 'testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/48'/1'/1'/0'/0/0",
@@ -77,7 +77,7 @@ export default {
         {
             description: 'Testnet (multisig): 2 of 3 (sign with 3rd key)',
             params: {
-                coin: 'testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/48'/1'/3'/0'/0/0",
@@ -112,7 +112,7 @@ export default {
         {
             description: 'Testnet (multisig): 15 of 15 (sign with 15th key)',
             params: {
-                coin: 'testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/48'/1'/1'/0'/0/14",
@@ -165,7 +165,7 @@ export default {
                 mnemonic: 'mnemonic_12',
             },
             params: {
-                coin: 'testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/48'/1'/1'/0'/0/0",
@@ -206,7 +206,7 @@ export default {
                     'solar segment strike patrol broccoli witness praise tennis fat elegant yellow menu favorite upgrade grace pulp subject tribe impact head west museum pulse term',
             },
             params: {
-                coin: 'testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: [2147483696, 2147483649, 2147483648, 2147483650, 0, 13],

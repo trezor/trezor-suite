@@ -7,7 +7,7 @@ export default {
         {
             description: "m/49'/0'/0'/0/0",
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 path: "m/49'/0'/0'/0/0",
                 showOnTrezor: true,
             },
@@ -18,7 +18,7 @@ export default {
         {
             description: "m/49'/0'/0'/0/1",
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 path: "m/49'/0'/0'/0/1",
                 showOnTrezor: true,
             },
@@ -29,7 +29,7 @@ export default {
         {
             description: "m/49'/0'/0'/1/0",
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 path: "m/49'/0'/0'/1/0",
                 showOnTrezor: true,
             },
@@ -40,7 +40,7 @@ export default {
         {
             description: "m/49'/0'/0'/1/1",
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 path: "m/49'/0'/0'/1/1",
                 showOnTrezor: true,
             },

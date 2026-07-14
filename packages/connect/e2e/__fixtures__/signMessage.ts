@@ -17,7 +17,7 @@ export default {
         {
             description: 'BTC: p2pkh',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 path: "m/44'/0'/0'/0/0",
                 message: 'This is an example of a signed message.',
             },
@@ -32,7 +32,7 @@ export default {
         {
             description: 'BTC: p2sh (segwit)',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 path: "m/49'/0'/0'/0/0",
                 message: 'This is an example of a signed message.',
             },
@@ -47,7 +47,7 @@ export default {
         {
             description: 'BTC: bech32 (segwit-native)',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 path: "m/84'/0'/0'/0/0",
                 message: 'This is an example of a signed message.',
             },
@@ -62,7 +62,7 @@ export default {
         {
             description: 'BTC: long message',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 path: "m/44'/0'/0'/0/0",
                 message: 'VeryLongMessage!'.repeat(64),
             },
@@ -77,7 +77,7 @@ export default {
         {
             description: 'BTC: p2sh long message',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 path: "m/49'/0'/0'/0/0",
                 message: 'VeryLongMessage!'.repeat(64),
             },
@@ -92,7 +92,7 @@ export default {
         {
             description: 'BTC: bech32 long message',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 path: "m/84'/0'/0'/0/0",
                 message: 'VeryLongMessage!'.repeat(64),
             },
@@ -107,7 +107,7 @@ export default {
         // {
         //     description: 'NFKD message',
         //     params: {
-        //         coin: 'Bitcoin',
+        //         coin: 'btc',
         //         path: "m/44'/0'/0'/0/1",
         //         // message: 'Pr\u030ci\u0301s\u030cerne\u030c z\u030clut\u030couc\u030cky\u0301 ku\u030an\u030c u\u0301pe\u030cl d\u030ca\u0301belske\u0301 o\u0301dy za\u0301ker\u030cny\u0301 uc\u030cen\u030c be\u030cz\u030ci\u0301 pode\u0301l zo\u0301ny u\u0301lu\u030a',
         //         message: 'Příšerně žluťoučký kůň úpěl ďábelské ódy zákeřný učeň běží podél zóny úlů',
@@ -120,7 +120,7 @@ export default {
         {
             description: 'NFC message',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 path: "m/44'/0'/0'/0/1",
                 message:
                     'P\u0159\xed\u0161ern\u011b \u017elu\u0165ou\u010dk\xfd k\u016f\u0148 \xfap\u011bl \u010f\xe1belsk\xe9 \xf3dy z\xe1ke\u0159n\xfd u\u010de\u0148 b\u011b\u017e\xed pod\xe9l z\xf3ny \xfal\u016f',
@@ -136,7 +136,7 @@ export default {
         {
             description: 'TESTNET: p2pkh',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 path: "m/44'/1'/0'/0/0",
                 message: 'This is an example of a signed message.',
             },
@@ -151,7 +151,7 @@ export default {
         {
             description: 'TESTNET: p2sh',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 path: "m/49'/1'/0'/0/0",
                 message: 'This is an example of a signed message.',
             },
@@ -166,7 +166,7 @@ export default {
         {
             description: 'TESTNET: bech32',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 path: "m/84'/1'/0'/0/0",
                 message: 'This is an example of a signed message.',
             },
@@ -181,7 +181,7 @@ export default {
         {
             description: 'BCH',
             params: {
-                coin: 'Bcash',
+                coin: 'bch',
                 path: "m/44'/145'/0'/0/0",
                 message: 'This is an example of a signed message.',
             },
@@ -196,7 +196,7 @@ export default {
         {
             description: 'BTC no_script_type p2pkh',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 path: "m/44'/0'/0'/0/0",
                 message: 'This is an example of a signed message.',
                 no_script_type: true,
@@ -213,7 +213,7 @@ export default {
         {
             description: 'BTC no_script_type p2sh',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 path: "m/49'/0'/0'/0/0",
                 message: 'This is an example of a signed message.',
                 no_script_type: true,
@@ -230,7 +230,7 @@ export default {
         {
             description: 'BTC no_script_type p2wpkh',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 path: "m/84'/0'/0'/0/0",
                 message: 'This is an example of a signed message.',
                 no_script_type: true,
@@ -248,7 +248,7 @@ export default {
             description: 'Message over maximum limit allowed by T1B1',
             skip: ['2'],
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 path: "m/84'/0'/0'/0/0",
                 message: 'a'.repeat(1024 + 1),
             },

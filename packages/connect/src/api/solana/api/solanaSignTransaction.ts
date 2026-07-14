@@ -69,7 +69,7 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
         super(message, params);
 
         this.requiredDeviceCapabilities = ['Capability_Solana'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Solana')];
+        this.requiredFirmwareCoins = [getMiscNetwork('sol')];
     }
 
     get requiredPermissions(): PermissionRequest[] {
