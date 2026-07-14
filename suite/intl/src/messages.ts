@@ -1206,6 +1206,15 @@ export const messages = defineMessages({
         defaultMessage: 'Network fee',
         id: 'TR_TRADING_NETWORK_FEE',
     },
+    TR_TRADING_TREZOR_FEE: {
+        defaultMessage: 'Trezor fee (incl.)',
+        id: 'TR_TRADING_TREZOR_FEE',
+    },
+    TR_TRADING_TREZOR_FEE_TOOLTIP: {
+        defaultMessage:
+            "This is Trezor's fee to facilitate your trade—already included in your offer.",
+        id: 'TR_TRADING_TREZOR_FEE_TOOLTIP',
+    },
     TR_TRADING_TRADE_HISTORY_COUNTER: {
         defaultMessage:
             '{totalBuys, plural, =0 {{totalBuys} buys} one {{totalBuys} buy} other {{totalBuys} buys} } • {totalSells, plural, =0 {{totalSells} sells} one {{totalSells} sell} other {{totalSells} sells} } • {totalSwaps, plural, =0 {{totalSwaps} swaps} one {{totalSwaps} swap} other {{totalSwaps} swaps} }',

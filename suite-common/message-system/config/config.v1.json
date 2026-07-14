@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "timestamp": "2026-07-13T12:00:00+00:00",
+    "timestamp": "2026-07-14T12:00:00+00:00",
     "sequence": 148,
     "actions": [
         {
@@ -1834,6 +1834,30 @@
                     {
                         "variant": "B",
                         "percentage": 100
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": "!",
+                        "web": "*"
+                    }
+                }
+            ],
+            "experiment": {
+                "id": "eef0ff6f-95da-4a7e-aae6-ccd589c32998",
+                "groups": [
+                    {
+                        "variant": "control",
+                        "percentage": 90
+                    },
+                    {
+                        "variant": "treatment",
+                        "percentage": 10
                     }
                 ]
             }
