@@ -23,7 +23,6 @@ const FILES_EXPECTED_TO_GROW = new Set<string>([
 const KNOWN_OVERSIZED_DECLARATION_LIMITS = new Map<string, number>([
     ['packages/connect-cli/libDev/src/transport.d.ts', kibToBytes(104)],
     ['suite/e2e/libDev/fixtures/invity/index.d.ts', kibToBytes(740)],
-    ['suite-common/logger/libDev/src/utils.d.ts', kibToBytes(600)],
     ['suite-common/device/libDev/src/deviceSelectors.d.ts', kibToBytes(520)],
     ['packages/suite/libDev/src/reducers/store.d.ts', kibToBytes(515)],
     ['packages/suite/libDev/src/utils/suite/notification.d.ts', kibToBytes(395)],
