@@ -230,7 +230,7 @@ export const YieldDepositForm = () => {
                                 inactiveContent: () => (
                                     <YieldApprovedAmountCard
                                         token={token}
-                                        amount={allowanceAmount || '0'}
+                                        amount={allowanceAmount}
                                         isLoading={allowanceStatus === 'loading'}
                                         hasError={allowanceStatus === 'error'}
                                     />
