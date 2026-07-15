@@ -2990,6 +2990,11 @@ export const messages = {
                 title: 'Network fees may exceed rewards.',
                 description: 'Consider waiting for your rewards to grow before claiming.',
             },
+            unverifiableFeeWarning: {
+                title: "Rewards value can't be verified.",
+                description:
+                    "We couldn't determine the value of your rewards. Make sure the network fee doesn't exceed the rewards you're claiming.",
+            },
             alerts: {
                 reviewMismatch: {
                     title: "Claim couldn't be verified",
