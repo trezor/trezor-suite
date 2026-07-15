@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useWatch } from 'react-hook-form';
 
 import { formInputsMaxLength } from '@suite-common/validators';
@@ -11,8 +12,16 @@ import { EthereumNonce } from './EthereumNonce';
 import { TransactionData } from '../shared/TransactionData';
 
 export const EthereumOptions = () => {
-    const { getDefaultValue, toggleOption, composeTransaction, account, setValue, control } =
-        useSendFormContext();
+    const {
+        getDefaultValue,
+        toggleOption,
+        resetDefaultValue,
+        composeTransaction,
+        account,
+        setValue,
+        control,
+        watch,
+    } = useSendFormContext();
 
     // Nonce editing is toggled from the send-form header dropdown (EVM-only). useWatch keeps this in
     // sync with that cross-component toggle (getValues would not re-render here when it flips).
@@ -32,7 +41,15 @@ export const EthereumOptions = () => {
     const confirmedNonce = nonceInfo?.confirmedNonce.toString();
 
     const options = getDefaultValue('options', []);
-    const dataEnabled = options.includes('transactionData');
+    const isDataEnabled = options.includes('transactionData');
+    const token = watch('outputs.0.token');
+
+    useEffect(() => {
+        if (token && isDataEnabled) {
+            toggleOption('transactionData');
+            resetDefaultValue('transactionData');
+        }
+    }, [token, isDataEnabled, toggleOption, resetDefaultValue]);
 
     const toggle = (option: FormOptions) => {
         toggleOption(option);
@@ -48,7 +65,7 @@ export const EthereumOptions = () => {
 
     return (
         <Column gap={16}>
-            {dataEnabled && (
+            {isDataEnabled && !token && (
                 <TransactionData maxBytes={formInputsMaxLength.ethData} close={toggleData} />
             )}
 

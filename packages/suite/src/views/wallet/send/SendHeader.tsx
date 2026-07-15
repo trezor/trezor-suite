@@ -97,7 +97,7 @@ export const SendHeader = () => {
             },
             closeOnClick: true,
             label: <Translation id="DATA_ADD" />,
-            isDisabled: dataEnabled || (networkType === 'tron' && !!token),
+            isDisabled: dataEnabled || !!token,
             isHidden: networkType !== 'ethereum' && networkType !== 'tron',
         },
         {
