@@ -12,20 +12,23 @@ const initialState: GlobalSendReceiveFiltersState = {
     networkSymbol: undefined,
 };
 
-export const globalSendReceiveFilters = createSlice({
+const globalSendReceiveFiltersSlice = createSlice({
     name: 'globalSendReceiveFilters',
     initialState,
     reducers: {
-        setSearch(state, action: PayloadAction<GlobalSendReceiveFiltersState['search']>) {
+        setSearch(
+            state: GlobalSendReceiveFiltersState,
+            action: PayloadAction<GlobalSendReceiveFiltersState['search']>,
+        ) {
             state.search = action.payload;
         },
         setNetworkSymbol(
-            state,
+            state: GlobalSendReceiveFiltersState,
             action: PayloadAction<GlobalSendReceiveFiltersState['networkSymbol']>,
         ) {
             state.networkSymbol = action.payload;
         },
-        resetFilters(state) {
+        resetFilters(state: GlobalSendReceiveFiltersState) {
             state.search = '';
             state.networkSymbol = undefined;
         },
@@ -41,6 +44,10 @@ export const globalSendReceiveFilters = createSlice({
     },
 });
 
+export const globalSendReceiveFiltersActions = globalSendReceiveFiltersSlice.actions;
+export const globalSendReceiveFiltersReducer = globalSendReceiveFiltersSlice.reducer;
+export const globalSendReceiveFiltersSelectors = globalSendReceiveFiltersSlice.selectors;
+
 export type GlobalSendReceiveAction = ReturnType<
-    (typeof globalSendReceiveFilters.actions)[keyof typeof globalSendReceiveFilters.actions]
+    (typeof globalSendReceiveFiltersActions)[keyof typeof globalSendReceiveFiltersActions]
 >;

@@ -7,7 +7,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { resetProtocol } from 'src/actions/suite/protocolActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
+import { globalSendReceiveFiltersActions } from 'src/slices/wallet/globalSendReceiveFilters';
 import { type AccountItemType } from 'src/types/wallet';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
@@ -54,13 +54,13 @@ export const GlobalSendReceive = memo(function GlobalSendReceiveInner() {
         sendAnalytics.close(filledSearch);
         closeModal();
         dispatch(resetProtocol());
-        dispatch(globalSendReceiveFilters.actions.resetFilters());
+        dispatch(globalSendReceiveFiltersActions.resetFilters());
     };
 
     const handleReceiveCancel = (filledSearch: boolean) => {
         receiveAnalytics.close(filledSearch);
         closeModal();
-        dispatch(globalSendReceiveFilters.actions.resetFilters());
+        dispatch(globalSendReceiveFiltersActions.resetFilters());
     };
 
     return (

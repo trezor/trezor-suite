@@ -25,24 +25,13 @@ const KNOWN_OVERSIZED_DECLARATION_LIMITS = new Map<string, number>([
     ['suite/e2e/libDev/fixtures/invity/index.d.ts', kibToBytes(740)],
     ['suite-common/device/libDev/src/deviceSelectors.d.ts', kibToBytes(520)],
     ['packages/suite/libDev/src/utils/suite/notification.d.ts', kibToBytes(395)],
-    ['packages/suite/libDev/src/reducers/suite/index.d.ts', kibToBytes(340)],
     ['packages/transport/libDev/src/transports/bridge.d.ts', kibToBytes(235)],
     ['packages/transport-common/libDev/src/transports/abstractApi.d.ts', kibToBytes(230)],
-    [
-        'packages/suite-desktop-ui/libDev/src/createSuiteDesktopCompositionRoot.d.ts',
-        kibToBytes(190),
-    ],
-    ['packages/suite-web/libDev/src/createSuiteWebCompositionRoot.d.ts', kibToBytes(190)],
-    ['suite/test-utils/libDev/src/initStoreForTests.d.ts', kibToBytes(185)],
     [
         'suite-common/wallet-core/libDev/src/transactions/transactionsSelectors.d.ts',
         kibToBytes(180),
     ],
     ['suite-common/trading/libDev/src/selectors/tradingSelectors.d.ts', kibToBytes(130)],
-    [
-        'packages/suite/libDev/src/selectors/suite/selectAccountLabelsForSearch.d.ts',
-        kibToBytes(130),
-    ],
     ['suite-common/message-system/libDev/src/messageSystemSelectors.d.ts', kibToBytes(115)],
     ['packages/suite/libDev/src/hooks/wallet/useRbfForm.d.ts', kibToBytes(115)],
 ]);

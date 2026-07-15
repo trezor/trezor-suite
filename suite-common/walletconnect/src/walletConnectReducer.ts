@@ -5,7 +5,7 @@ import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { walletConnectActions } from './walletConnectActions';
 import { type PendingConnectionProposal, type WalletConnectSession } from './walletConnectTypes';
 
-type WalletConnectState = {
+export type WalletConnectState = {
     sessions: WalletConnectSession[];
     pendingProposal: PendingConnectionProposal | undefined;
 };

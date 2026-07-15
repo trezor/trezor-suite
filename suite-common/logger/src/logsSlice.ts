@@ -2,7 +2,7 @@ import { type AnyAction, createSlice } from '@reduxjs/toolkit';
 
 import { type LogEntry } from './types';
 
-type LogsSliceState = {
+export type LogsSliceState = {
     logEntries: LogEntry[];
 };
 
