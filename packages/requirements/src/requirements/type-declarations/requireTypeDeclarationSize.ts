@@ -24,7 +24,6 @@ const KNOWN_OVERSIZED_DECLARATION_LIMITS = new Map<string, number>([
     ['packages/connect-cli/libDev/src/transport.d.ts', kibToBytes(104)],
     ['suite/e2e/libDev/fixtures/invity/index.d.ts', kibToBytes(740)],
     ['suite-common/device/libDev/src/deviceSelectors.d.ts', kibToBytes(520)],
-    ['packages/suite/libDev/src/reducers/store.d.ts', kibToBytes(515)],
     ['packages/suite/libDev/src/utils/suite/notification.d.ts', kibToBytes(395)],
     ['packages/suite/libDev/src/reducers/suite/index.d.ts', kibToBytes(340)],
     ['packages/transport/libDev/src/transports/bridge.d.ts', kibToBytes(235)],
@@ -40,10 +39,6 @@ const KNOWN_OVERSIZED_DECLARATION_LIMITS = new Map<string, number>([
         kibToBytes(180),
     ],
     ['suite-common/trading/libDev/src/selectors/tradingSelectors.d.ts', kibToBytes(130)],
-    [
-        'packages/suite/libDev/src/views/settings/SettingsDevice/ForgetDevice/useForgetDevice.d.ts',
-        kibToBytes(130),
-    ],
     [
         'packages/suite/libDev/src/selectors/suite/selectAccountLabelsForSearch.d.ts',
         kibToBytes(130),
