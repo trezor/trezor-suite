@@ -10153,6 +10153,11 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_WITHDRAW_DISABLED',
         defaultMessage: 'Withdrawal is currently disabled.',
     },
+    TR_EARN_YIELD_MAX_WITHDRAW_INFO: {
+        id: 'TR_EARN_YIELD_MAX_WITHDRAW_INFO',
+        defaultMessage:
+            'Amount switched to {receiptTokenSymbol} to withdraw your entire balance, including yield earned up to the moment the transaction is processed.',
+    },
     TR_EARN_YIELD_CLAIM_DISABLED: {
         id: 'TR_EARN_YIELD_CLAIM_DISABLED',
         defaultMessage: 'Claim is currently disabled.',
