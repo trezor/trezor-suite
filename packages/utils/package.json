@@ -45,7 +45,7 @@
         "@trezor/type-utils": "workspace:*"
     },
     "dependencies": {
-        "bignumber.js": "^11.1.2"
+        "bignumber.js": "^11.1.4"
     },
     "browser": {
         "crypto": false
