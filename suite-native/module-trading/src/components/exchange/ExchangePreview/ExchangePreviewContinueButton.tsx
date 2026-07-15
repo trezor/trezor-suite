@@ -94,7 +94,7 @@ export const ExchangePreviewContinueButton = memo(
                     <Button
                         onPress={handleSignTransaction}
                         isDisabled={isDisabled}
-                        isLoading={!isSignDataFlow && !isTXFinalType}
+                        isLoading={(!isSignDataFlow && !isTXFinalType) || isLoading}
                         testID={EXCHANGE_PREVIEW_CONTINUE_BUTTON_TEST_ID}
                     >
                         <Translation id="generic.buttons.continue" />
