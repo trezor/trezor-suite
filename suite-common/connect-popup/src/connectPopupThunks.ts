@@ -1089,11 +1089,13 @@ export const connectPopupResolveSelectAccountThunk = createThunk<
 
 export const connectPopupCancelThunk = createThunk<void, { error?: string; callId?: string }, void>(
     `${CONNECT_POPUP_MODULE}/cancelThunk`,
-    ({ error, callId }, { dispatch }) => {
+    ({ error, callId }, { dispatch, getState }) => {
         getPermissionDeferred().reject(TypedError('Method_Cancel'));
         TrezorConnect.cancel({ reason: error, callId });
-        // todo: probably not needed to call explicitly anymore
-        dispatch(deviceActions.removeButtonRequests({}));
+        // Clear the popup device's button requests so the modal reflects the cancel immediately,
+        // without waiting for the aborted call to settle. Passing no device was a no-op (the
+        // reducer requires a device to match), so this previously did nothing.
+        dispatch(deviceActions.removeButtonRequests({ device: selectSelectedDevice(getState()) }));
 
         const cancelError = TypedError('Method_Interrupted');
         // Show the cancellation error modal immediately so the user sees
