@@ -17370,7 +17370,7 @@ __metadata:
   dependencies:
     "@trezor/eslint": "workspace:*"
     "@trezor/type-utils": "workspace:*"
-    bignumber.js: "npm:^11.1.2"
+    bignumber.js: "npm:^11.1.4"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -21231,10 +21231,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bignumber.js@npm:^11.1.2":
-  version: 11.1.2
-  resolution: "bignumber.js@npm:11.1.2"
-  checksum: 10/b1f1a03e372a11a27a0bf2e43b7b31f96ca859a72f995232233b4710bc422852851a1bf4c3b3c678d51e61cb896ab17efd4f519be98f0b2395ee009490209fe2
+"bignumber.js@npm:^11.1.4":
+  version: 11.1.4
+  resolution: "bignumber.js@npm:11.1.4"
+  checksum: 10/3c5badd975dbe30ae11933818725dd9115dc402c56754566c9c0844c41d7d14627ab3d676414e90ab6567423161ffee720695bf0cd32e3975e78eeb1965bcc4b
   languageName: node
   linkType: hard
 
