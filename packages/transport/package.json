@@ -32,9 +32,6 @@
         },
         "browser": {
             "./lib/pinger/ping": "./lib/pinger/ping.browser.js"
-        },
-        "react-native": {
-            "./lib/pinger/ping": "./lib/pinger/ping.browser.mjs"
         }
     },
     "files": [

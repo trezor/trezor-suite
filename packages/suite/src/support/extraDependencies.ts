@@ -35,11 +35,11 @@ import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import {
     type CommonServices,
     type ConnectInitSettings,
-    type ExtraDependenciesStatic,
     type CreateTransports,
-    type TransportsDep,
+    type ExtraDependenciesStatic,
     type GetTransportsFactoriesDep,
     type ThpHostNameDep,
+    type TransportsDep,
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
