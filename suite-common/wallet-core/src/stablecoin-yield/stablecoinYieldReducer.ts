@@ -25,6 +25,7 @@ import { transactionsActions } from '../transactions/transactionsActions';
 // Message ids must exist in the desktop `suite/intl` messages — the desktop app renders
 // `session.error` directly via `<Translation>`.
 export type StablecoinYieldTranslationKey =
+    | 'TR_EARN_YIELD_ERROR_CLAIM_REVIEW_MISMATCH'
     | 'TR_EARN_YIELD_ERROR_FEE_ESTIMATION'
     | 'TR_EARN_YIELD_ERROR_GENERIC'
     | 'TR_EARN_YIELD_ERROR_PASSPHRASE_INCORRECT'

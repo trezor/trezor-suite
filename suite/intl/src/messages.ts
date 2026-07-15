@@ -10252,6 +10252,11 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_ERROR_TRANSACTION_FAILED',
         defaultMessage: 'Transaction failed',
     },
+    TR_EARN_YIELD_ERROR_CLAIM_REVIEW_MISMATCH: {
+        id: 'TR_EARN_YIELD_ERROR_CLAIM_REVIEW_MISMATCH',
+        defaultMessage:
+            "The rewards to claim didn't match the transaction details, so nothing was signed. Try again.",
+    },
     TR_EARN_YIELD_REVIEW_DEPOSIT_TITLE: {
         id: 'TR_EARN_YIELD_REVIEW_DEPOSIT_TITLE',
         defaultMessage: 'Deposit',
