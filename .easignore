@@ -1,23 +1,48 @@
-.github
-docker
-docs
-
+# BEGIN requirements:eas-workspaces
+packages/analytics-docs/
+packages/analytics-log-server/
+packages/auth-server/
+packages/coinjoin/
+packages/components/
 packages/connect-cli/
 packages/connect-electron/
+packages/connect-examples/electron-main-process/
+packages/connect-examples/mobile-expo/
+packages/connect-examples/node/
+packages/connect-examples/webextension/
+packages/connect-explorer/
+packages/connect-explorer-theme/
+packages/connect-plugin-ethereum/
+packages/connect-plugin-stellar/
+packages/connect-web/
+packages/connect-webextension/
+packages/dom-utils/
 packages/ipc-proxy/
+packages/product-components/
+packages/request-manager/
+packages/styles/
 packages/suite/
-packages/suite-analytics/
 packages/suite-build/
 packages/suite-data/
 packages/suite-desktop/
 packages/suite-desktop-api/
 packages/suite-desktop-core/
+packages/suite-desktop-native/
 packages/suite-desktop-ui/
 packages/suite-storage/
 packages/suite-web/
 packages/transport-bluetooth/
+packages/transport-bridge/
+packages/transport-test/
+scripts/
 suite/
+suite-common/backup/
+suite-common/illustrations/
+# END requirements:eas-workspaces
 
+.github
+docker
+docs
 
 ### content of all .gitignore files is not applied if .easignore is present
 
