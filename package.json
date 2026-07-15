@@ -142,7 +142,7 @@
         "@babel/preset-typescript": "^7.29.7",
         "@babel/runtime": "7.29.7",
         "@react-native/jest-preset": "0.85.3",
-        "@swc/core": "^1.15.40",
+        "@swc/core": "^1.15.43",
         "@swc/jest": "^0.2.39",
         "@trezor/eslint": "workspace:*",
         "@types/jest": "30.0.0",
