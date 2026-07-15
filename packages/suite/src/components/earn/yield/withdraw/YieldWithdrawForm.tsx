@@ -35,7 +35,8 @@ export const YieldWithdrawForm = () => {
         flowType,
         completedInput,
         completedOutput,
-        setAmountInput,
+        selectMaxWithdraw,
+        isMaxWithdrawInfoVisible,
         toggleWithdrawFlowType,
         submitAction,
         openPendingTransaction,
@@ -113,7 +114,29 @@ export const YieldWithdrawForm = () => {
             },
         });
 
-        setAmountInput(maxAmount);
+        selectMaxWithdraw();
+    };
+
+    const getWithdrawWarning = () => {
+        if (!isAmountInvalidDecimals && isAmountTooHigh) {
+            return <YieldActionStepWarning isInsufficientFunds={isAmountTooHigh} />;
+        }
+
+        if (isMaxWithdrawInfoVisible) {
+            return (
+                <Banner
+                    intent="info"
+                    description={
+                        <Translation
+                            id="TR_EARN_YIELD_MAX_WITHDRAW_INFO"
+                            values={{ receiptTokenSymbol: receiptToken.symbol }}
+                        />
+                    }
+                />
+            );
+        }
+
+        return undefined;
     };
 
     return (
@@ -150,13 +173,7 @@ export const YieldWithdrawForm = () => {
                                             symbol={inputTokenSymbol}
                                         />
                                     }
-                                    warning={
-                                        !isAmountInvalidDecimals && isAmountTooHigh ? (
-                                            <YieldActionStepWarning
-                                                isInsufficientFunds={isAmountTooHigh}
-                                            />
-                                        ) : undefined
-                                    }
+                                    warning={getWithdrawWarning()}
                                     isDisabled={
                                         isAmountEmpty ||
                                         isAmountTooHigh ||
