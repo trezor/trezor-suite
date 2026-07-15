@@ -131,22 +131,30 @@ export const YieldClaimScreen = () => {
     }, [claimFee.preparedAction, isContinueDisabled, openSimulationBottomSheet]);
 
     const handleConfirmSimulation = useCallback(() => {
-        if (!flowKey || !accountRewards || !simulationPreparedAction) {
+        if (!account || !flowKey || !simulationPreparedAction) {
             return;
         }
+
+        // The snapshot is built from the same frozen rewards the claim
+        // calldata was built from, so the review cannot diverge from the
+        // signed transaction when Merkl data refreshes in the background.
+        const rewardsSnapshot = getStablecoinYieldClaimRewardsSnapshot({
+            account,
+            rewards: simulationPreparedAction.rewards,
+        });
 
         dispatch(
             stablecoinYieldActions.storeActionReviewData({
                 flowKey,
                 flowType: 'claim',
-                rewards: getStablecoinYieldClaimRewardsSnapshot(accountRewards),
+                rewards: rewardsSnapshot,
                 unsignedTransaction: simulationPreparedAction.unsignedTransaction,
             }),
         );
         closeSimulationBottomSheet();
         navigation.navigate(YieldStackRoutes.YieldClaimReview, route.params);
     }, [
-        accountRewards,
+        account,
         closeSimulationBottomSheet,
         dispatch,
         flowKey,

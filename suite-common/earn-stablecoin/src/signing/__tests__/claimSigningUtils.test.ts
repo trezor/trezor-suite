@@ -19,9 +19,14 @@ const createReward = (tokenAddress = TOKEN): ClaimReward => ({
     },
 });
 
+const CLAIM_CALLDATA = buildClaimCalldata({
+    senderAddress: SENDER,
+    rewards: [createReward()],
+});
+
 const unsignedTransaction = {
     to: CLAIM_CONTRACT,
-    data: '0xabc',
+    data: CLAIM_CALLDATA,
     chainId: 1,
     gasLimit: '21000',
     maxFeePerGas: '2000000000',
@@ -114,7 +119,7 @@ describe('claimSigningUtils', () => {
             maxFeePerGas: '2',
             maxPriorityFeePerGas: '1',
             baseFeePerGas: '1',
-            transactionData: '0xabc',
+            transactionData: CLAIM_CALLDATA,
         });
         expect(result.precomposedTransaction).toMatchObject({
             fee: '42000000000000',
@@ -130,7 +135,7 @@ describe('claimSigningUtils', () => {
             chainId: 1,
             value: '0x0',
             nonce: '0xa',
-            data: '0x0abc',
+            data: CLAIM_CALLDATA,
             gasLimit: '0x5208',
             maxFeePerGas: '0x77359400',
             maxPriorityFeePerGas: '0x3b9aca00',
@@ -166,10 +171,52 @@ describe('claimSigningUtils', () => {
             chainId: 1,
             value: '0x0',
             nonce: '0xa',
-            data: '0x0abc',
+            data: CLAIM_CALLDATA,
             gasLimit: '0x5208',
             gasPrice: '0x3b9aca00',
         });
+    });
+
+    it('throws when review rewards do not match the claim calldata', () => {
+        const selectedFee = {
+            type: 'eip1559',
+            gasLimit: '0x5208',
+            maxFeePerGas: '0x77359400',
+            maxPriorityFeePerGas: '0x3b9aca00',
+            baseFeePerGas: '0x3b9aca00',
+        } as const;
+
+        expect(() =>
+            buildClaimTransactionReview({
+                unsignedTransaction,
+                selectedFee,
+                rewards: [createReward('0x1111111111111111111111111111111111111111')],
+            }),
+        ).toThrow('Claim rewards do not match the claim transaction data.');
+
+        expect(() =>
+            buildClaimTransactionReview({
+                unsignedTransaction,
+                selectedFee,
+                rewards: [createReward(), createReward()],
+            }),
+        ).toThrow('Claim rewards do not match the claim transaction data.');
+    });
+
+    it('throws when the claim transaction data cannot be decoded', () => {
+        expect(() =>
+            buildClaimTransactionReview({
+                unsignedTransaction: { ...unsignedTransaction, data: '0xabc' },
+                selectedFee: {
+                    type: 'eip1559',
+                    gasLimit: '0x5208',
+                    maxFeePerGas: '0x77359400',
+                    maxPriorityFeePerGas: '0x3b9aca00',
+                    baseFeePerGas: '0x3b9aca00',
+                },
+                rewards: [createReward()],
+            }),
+        ).toThrow('Failed to decode claim transaction data.');
     });
 
     it('throws when selected fee data is missing or incomplete', () => {
