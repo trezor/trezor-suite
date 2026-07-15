@@ -75,18 +75,12 @@ describe(requireTypeDeclarationSize.name, () => {
     });
 
     it('allows known oversized declarations up to their legacy limit', async () => {
-        const knownWorkspaceDirectory = join(repoRoot, 'packages', 'icons');
-        const knownDeclarationDirectory = join(
-            knownWorkspaceDirectory,
-            'libDev',
-            'src',
-            'generated',
-            'icons',
-        );
+        const knownWorkspaceDirectory = join(repoRoot, 'packages', 'connect-cli');
+        const knownDeclarationDirectory = join(knownWorkspaceDirectory, 'libDev', 'src');
         mkdirSync(knownDeclarationDirectory, { recursive: true });
-        writeFileSync(join(knownDeclarationDirectory, 'index.d.ts'), 'x'.repeat(180 * 1024));
+        writeFileSync(join(knownDeclarationDirectory, 'transport.d.ts'), 'x'.repeat(103 * 1024));
         mockListAllWorkspaces.mockReturnValue([
-            { dir: knownWorkspaceDirectory, name: '@trezor/icons' },
+            { dir: knownWorkspaceDirectory, name: '@trezor/connect-cli' },
         ]);
 
         const errors = await requireTypeDeclarationSize.verify(context);
@@ -95,39 +89,47 @@ describe(requireTypeDeclarationSize.name, () => {
     });
 
     it('reports legacy limits that can be removed', async () => {
-        const knownWorkspaceDirectory = join(repoRoot, 'packages', 'icons');
-        const knownDeclarationDirectory = join(
-            knownWorkspaceDirectory,
-            'libDev',
-            'src',
-            'generated',
-            'icons',
-        );
+        const knownWorkspaceDirectory = join(repoRoot, 'packages', 'connect-cli');
+        const knownDeclarationDirectory = join(knownWorkspaceDirectory, 'libDev', 'src');
         mkdirSync(knownDeclarationDirectory, { recursive: true });
-        writeFileSync(join(knownDeclarationDirectory, 'index.d.ts'), 'x'.repeat(90 * 1024));
+        writeFileSync(join(knownDeclarationDirectory, 'transport.d.ts'), 'x'.repeat(90 * 1024));
         mockListAllWorkspaces.mockReturnValue([
-            { dir: knownWorkspaceDirectory, name: '@trezor/icons' },
+            { dir: knownWorkspaceDirectory, name: '@trezor/connect-cli' },
         ]);
 
         const errors = await requireTypeDeclarationSize.verify(context);
 
         expect(errors).toEqual([
-            'packages/icons/libDev/src/generated/icons/index.d.ts is now 90 KiB; remove its legacy declaration-size limit.',
+            'packages/connect-cli/libDev/src/transport.d.ts is now 90 KiB; remove its legacy declaration-size limit.',
         ]);
     });
 
     it('reports legacy limits for declarations missing from built workspaces', async () => {
-        const knownWorkspaceDirectory = join(repoRoot, 'packages', 'icons');
+        const knownWorkspaceDirectory = join(repoRoot, 'packages', 'connect-cli');
         mkdirSync(join(knownWorkspaceDirectory, 'libDev'), { recursive: true });
         mockListAllWorkspaces.mockReturnValue([
-            { dir: knownWorkspaceDirectory, name: '@trezor/icons' },
+            { dir: knownWorkspaceDirectory, name: '@trezor/connect-cli' },
         ]);
 
         const errors = await requireTypeDeclarationSize.verify(context);
 
         expect(errors).toEqual([
-            'packages/icons/libDev/src/generated/icons/index.d.ts no longer exists; remove or update its legacy declaration-size limit.',
+            'packages/connect-cli/libDev/src/transport.d.ts no longer exists; remove or update its legacy declaration-size limit.',
         ]);
+    });
+
+    it('ignores emitted declarations that are expected to grow', async () => {
+        const knownWorkspaceDirectory = join(repoRoot, 'suite-native', 'intl');
+        const knownDeclarationDirectory = join(knownWorkspaceDirectory, 'libDev', 'src');
+        mkdirSync(knownDeclarationDirectory, { recursive: true });
+        writeFileSync(join(knownDeclarationDirectory, 'messages.d.ts'), 'x'.repeat(200 * 1024));
+        mockListAllWorkspaces.mockReturnValue([
+            { dir: knownWorkspaceDirectory, name: '@suite-native/intl' },
+        ]);
+
+        const errors = await requireTypeDeclarationSize.verify(context);
+
+        expect(errors).toEqual([]);
     });
 
     it('does not validate legacy limits for workspaces without declaration output', async () => {
