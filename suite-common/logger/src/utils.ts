@@ -26,7 +26,39 @@ export const startTime = new Date().toUTCString();
 
 export const prettifyLog = (json: Record<any, any>) => JSON.stringify(json, null, 2);
 
-export const redactAccount = (account: DeepPartial<Account> | undefined) => {
+/** Prevents redacted data from expanding complete account and device unions in declarations. */
+type RedactedAccount = Omit<
+    DeepPartial<Account>,
+    | 'descriptor'
+    | 'deviceState'
+    | 'addresses'
+    | 'balance'
+    | 'availableBalance'
+    | 'formattedBalance'
+    | 'history'
+    | 'tokens'
+    | 'utxo'
+    | 'metadata'
+    | 'key'
+    | 'misc'
+> & {
+    descriptor: string;
+    deviceState: string;
+    addresses: string;
+    balance: string;
+    availableBalance: string;
+    formattedBalance: string;
+    history: string;
+    tokens: object[] | undefined;
+    utxo: string;
+    metadata: string;
+    key: string;
+    misc: object | undefined;
+};
+
+export const redactAccount = (
+    account: DeepPartial<Account> | undefined,
+): RedactedAccount | undefined => {
     if (!account) return undefined;
 
     return {
@@ -62,7 +94,21 @@ export const redactAccount = (account: DeepPartial<Account> | undefined) => {
     };
 };
 
-export const redactDevice = (device: DeepPartial<TrezorDevice> | undefined) => {
+type RedactedDevice = Omit<
+    DeepPartial<TrezorDevice>,
+    'id' | 'label' | 'state' | 'firmwareReleaseConfigInfo' | 'features' | 'metadata'
+> & {
+    id: string;
+    label: string | undefined;
+    state: string;
+    firmwareReleaseConfigInfo: string | undefined;
+    features: object | undefined;
+    metadata: string | undefined;
+};
+
+export const redactDevice = (
+    device: DeepPartial<TrezorDevice> | undefined,
+): RedactedDevice | undefined => {
     if (!device) return undefined;
 
     return {
@@ -109,8 +155,8 @@ export const redactDiscovery = (
     };
 };
 
-export const redactAction = (action: LogEntry) => {
-    let payload;
+export const redactAction = (action: LogEntry): LogEntry => {
+    let payload: LogEntry['payload'];
 
     if (accountsActions.updateSelectedAccount.match(action)) {
         payload = {
