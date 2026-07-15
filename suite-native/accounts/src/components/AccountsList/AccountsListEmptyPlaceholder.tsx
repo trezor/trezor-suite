@@ -36,7 +36,7 @@ export const AccountsListEmptyPlaceholder = ({
         if (!isFilterEmpty) {
             return {
                 icon: 'magnifyingGlass',
-                title: <Translation id="moduleAccounts.emptyState.searchTitle" />,
+                title: <Translation id="search.noResults" />,
             };
         }
         if (isReceiveRoute) {
