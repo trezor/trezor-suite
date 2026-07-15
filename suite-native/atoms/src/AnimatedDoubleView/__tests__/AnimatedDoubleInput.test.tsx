@@ -40,6 +40,20 @@ describe('AnimatedDoubleInput', () => {
         expect(onInputSwitch).toHaveBeenCalledWith('secondary');
     });
 
+    it('should derive the next view from the controlled activeView', async () => {
+        const onInputSwitch = jest.fn();
+        const { getByLabelText } = renderAnimatedDoubleInput({
+            onInputSwitch,
+            activeView: 'secondary',
+        });
+
+        const switchButton = getByLabelText('Switch');
+        await userEvent.press(switchButton);
+
+        expect(onInputSwitch).toHaveBeenCalledTimes(1);
+        expect(onInputSwitch).toHaveBeenCalledWith('primary');
+    });
+
     it('should propagate switch label', () => {
         const switchLabel = 'Custom Switch Label';
         const { getByLabelText, queryByLabelText } = renderAnimatedDoubleInput({ switchLabel });

@@ -2965,6 +2965,8 @@ export const messages = {
             amountExceedsDeposited: 'The amount exceeds your deposited balance.',
             networkFeeWarning:
                 'Network fees may exceed this amount. Your balance may decrease. Enter higher amount.',
+            maxWithdrawInfo:
+                'Amount switched to {vaultTokenSymbol} to withdraw your entire balance, including yield earned up to the moment the transaction is processed.',
             title: 'Withdraw',
             supplied: 'Supplied:',
             maximumFee: 'Maximum fee',
