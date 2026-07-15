@@ -1,5 +1,4 @@
 export * from './components/PassphraseConfirmOnTrezorScreenContent';
-export * from './components/PassphraseScreenHeader';
 export * from './components/PassphraseEnterOnTrezorScreenContent';
 export * from './components/PassphraseContentScreenWrapper';
 export * from './components/PassphraseForm';

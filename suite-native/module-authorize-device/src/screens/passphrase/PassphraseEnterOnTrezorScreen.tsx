@@ -9,6 +9,7 @@ import {
 } from '@suite-native/passphrase';
 import TrezorConnect from '@trezor/connect';
 
+import { AuthorizeDeviceScreenHeader } from '../../components/AuthorizeDeviceScreenHeader';
 import { useHandleNavigateToInitialScreenOnIdle } from '../../hooks/useHandleNavigateToInitialScreenOnIdle';
 
 export const PassphraseEnterOnTrezorScreen = () => {
@@ -28,6 +29,7 @@ export const PassphraseEnterOnTrezorScreen = () => {
 
     return (
         <PassphraseContentScreenWrapper
+            header={<AuthorizeDeviceScreenHeader />}
             title={<Translation id="modulePassphrase.title" />}
             subtitle={
                 <Translation

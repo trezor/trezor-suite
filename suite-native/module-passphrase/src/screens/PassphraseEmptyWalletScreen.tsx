@@ -22,6 +22,8 @@ import { Translation } from '@suite-native/intl';
 import { EmptyWalletInfoSheet, PassphraseContentScreenWrapper } from '@suite-native/passphrase';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { PassphraseScreenHeader } from '../components/PassphraseScreenHeader';
+
 const cardStyle = prepareNativeStyle(utils => ({
     borderColor: utils.colors.borderNeutral,
     borderWidth: utils.borders.widths.small,
@@ -53,6 +55,7 @@ export const PassphraseEmptyWalletScreen = () => {
 
     return (
         <PassphraseContentScreenWrapper
+            header={<PassphraseScreenHeader />}
             title={<Translation id="modulePassphrase.emptyPassphraseWallet.title" />}
         >
             <Card style={applyStyle(cardStyle)}>

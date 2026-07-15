@@ -12,6 +12,7 @@ import {
     PassphraseEnterOnTrezorScreenContent,
 } from '@suite-native/passphrase';
 
+import { PassphraseScreenHeader } from '../components/PassphraseScreenHeader';
 import { usePassphraseMismatchAlert } from '../hooks/usePassphraseMismatchAlert';
 
 export const PassphraseEnterOnTrezorScreen = () => {
@@ -33,6 +34,7 @@ export const PassphraseEnterOnTrezorScreen = () => {
 
     return (
         <PassphraseContentScreenWrapper
+            header={<PassphraseScreenHeader />}
             title={<Translation id="modulePassphrase.title" />}
             subtitle={
                 <Translation

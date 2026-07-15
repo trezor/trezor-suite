@@ -6,7 +6,9 @@ import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Spinner, type SpinnerLoadingState, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Screen, useNavigateToInitialScreen } from '@suite-native/navigation';
-import { PassphraseScreenHeader, selectPassphraseDeviceNotEmpty } from '@suite-native/passphrase';
+import { selectPassphraseDeviceNotEmpty } from '@suite-native/passphrase';
+
+import { PassphraseScreenHeader } from '../components/PassphraseScreenHeader';
 
 export const PassphraseLoadingScreen = () => {
     const isDeviceNotEmpty = useSelector(selectPassphraseDeviceNotEmpty);

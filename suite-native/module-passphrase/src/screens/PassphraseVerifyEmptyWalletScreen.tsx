@@ -11,11 +11,9 @@ import {
     Screen,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import {
-    PassphraseForm,
-    PassphraseScreenHeader,
-    useHandleUiRequestPassphraseOnDevice,
-} from '@suite-native/passphrase';
+import { PassphraseForm, useHandleUiRequestPassphraseOnDevice } from '@suite-native/passphrase';
+
+import { PassphraseScreenHeader } from '../components/PassphraseScreenHeader';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     PassphraseStackParamList,
