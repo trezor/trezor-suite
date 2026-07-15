@@ -2990,6 +2990,13 @@ export const messages = {
                 title: 'Network fees may exceed rewards.',
                 description: 'Consider waiting for your rewards to grow before claiming.',
             },
+            alerts: {
+                reviewMismatch: {
+                    title: "Claim couldn't be verified",
+                    description:
+                        "The rewards to claim didn't match the transaction details, so nothing was signed and no funds moved. Tap Continue to try again with refreshed data. If the issue persists, contact Trezor Support.",
+                },
+            },
         },
         yieldDepositApprovalReviewScreen: {
             title: 'Review with Trezor',

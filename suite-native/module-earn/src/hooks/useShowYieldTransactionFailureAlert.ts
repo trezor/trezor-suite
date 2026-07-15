@@ -2,10 +2,25 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { type YieldFlowType, stablecoinYieldActions } from '@suite-common/wallet-core';
+import { type TxKeyPath } from '@suite-native/intl';
 
 import { useShowYieldAlert } from './useShowYieldAlert';
 
-const TRANSACTION_FAILED_ERROR = 'TR_EARN_YIELD_ERROR_TRANSACTION_FAILED';
+type FailureAlertContent = {
+    title: TxKeyPath;
+    description: TxKeyPath;
+};
+
+const FAILURE_ALERT_CONTENT: Record<string, FailureAlertContent> = {
+    TR_EARN_YIELD_ERROR_TRANSACTION_FAILED: {
+        title: 'earn.yieldDepositFlowScreen.alerts.transactionFailed.title',
+        description: 'earn.yieldDepositFlowScreen.alerts.transactionFailed.description',
+    },
+    TR_EARN_YIELD_ERROR_CLAIM_REVIEW_MISMATCH: {
+        title: 'earn.yieldClaimFlowScreen.alerts.reviewMismatch.title',
+        description: 'earn.yieldClaimFlowScreen.alerts.reviewMismatch.description',
+    },
+};
 
 type UseShowYieldTransactionFailureAlertParams = {
     flowKey: string | null;
@@ -24,13 +39,15 @@ export const useShowYieldTransactionFailureAlert = ({
     const showYieldAlert = useShowYieldAlert();
 
     useEffect(() => {
-        if (!isEnabled || !flowKey || error !== TRANSACTION_FAILED_ERROR) {
+        const alertContent = error ? FAILURE_ALERT_CONTENT[error] : undefined;
+
+        if (!isEnabled || !flowKey || !alertContent) {
             return;
         }
 
         showYieldAlert({
-            title: 'earn.yieldDepositFlowScreen.alerts.transactionFailed.title',
-            description: 'earn.yieldDepositFlowScreen.alerts.transactionFailed.description',
+            title: alertContent.title,
+            description: alertContent.description,
             onPressPrimaryButton: () =>
                 dispatch(stablecoinYieldActions.clearError({ flowType, flowKey })),
         });
