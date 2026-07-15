@@ -1,23 +1,43 @@
+# BEGIN requirements:eas-workspaces
+packages/analytics-docs/
+packages/analytics-log-server/
+packages/auth-server/
+packages/coinjoin/
+packages/components/
+packages/connect-cli/
+packages/connect-electron/
+packages/connect-examples/electron-main-process/
+packages/connect-examples/mobile-expo/
+packages/connect-examples/node/
+packages/connect-examples/webextension/
+packages/connect-explorer/
+packages/connect-explorer-theme/
+packages/connect-install-smoke/
+packages/connect-plugin-ethereum/
+packages/connect-plugin-stellar/
+packages/connect-web/
+packages/connect-webextension/
+packages/dom-utils/
+packages/ipc-proxy/
+packages/perf-e2e/
+packages/product-components/
+packages/request-manager/
+packages/styles/
+packages/suite/
+packages/suite-build/
+packages/suite-storage/
+packages/transport-bluetooth/
+packages/transport-bridge/
+packages/transport-test/
+scripts/
+suite/
+suite-common/backup/
+suite-common/illustrations/
+# END requirements:eas-workspaces
+
 .github
 docker
 docs
-
-packages/connect-cli/
-packages/connect-electron/
-packages/ipc-proxy/
-packages/suite/
-packages/suite-analytics/
-packages/suite-build/
-suite/app-assets/
-suite/desktop-app/
-suite/desktop-app-api/
-suite/desktop-app-main/
-suite/desktop-app-renderer/
-packages/suite-storage/
-suite/web-app/
-packages/transport-bluetooth/
-suite/
-
 
 ### content of all .gitignore files is not applied if .easignore is present
 
