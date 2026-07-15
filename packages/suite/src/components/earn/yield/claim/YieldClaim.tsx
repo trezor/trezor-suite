@@ -157,7 +157,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                 <FirmwareUpgradeNeededModal
                     onClose={closeFirmwareModal}
                     onUpdate={updateFirmware}
-                    featureName={translationString('TR_EARN_STABLECOIN_YIELD_TITLE')}
+                    featureName={translationString('TR_EARN_DEFI_YIELD_TITLE')}
                 />
             )}
             <Column gap={24} width="100%" maxWidth={500}>

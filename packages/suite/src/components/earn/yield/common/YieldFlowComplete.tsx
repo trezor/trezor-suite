@@ -116,7 +116,7 @@ export const YieldFlowComplete = ({
                         <Translation
                             id="TR_FEATURE_FEEDBACK_CARD_HEADING"
                             values={{
-                                feature: translationString('TR_EARN_STABLECOIN_YIELD_TITLE'),
+                                feature: translationString('TR_EARN_DEFI_YIELD_TITLE'),
                             }}
                         />
                     }

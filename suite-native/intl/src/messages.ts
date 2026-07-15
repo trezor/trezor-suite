@@ -1269,9 +1269,9 @@ export const messages = {
         },
         aboutUs: {
             title: 'About Trezor Suite',
+            text: 'Manage your assets securely with Trezor Suite. Buy, sell, send, receive, and swap assets, or earn rewards through staking and DeFi yield. Track your balances anytime, even without your Trezor connected.',
             followUs: 'Follow us',
             lastCommitHash: 'Last commit hash: {lastCommitHash}',
-            body: 'Manage your assets securely with Trezor Suite. Buy, sell, send, receive, and swap assets, or earn rewards through staking and stablecoin yield. Track your balances anytime, even without your Trezor connected.',
         },
         privacyAndSecurity: {
             title: 'Privacy & security',
@@ -1951,7 +1951,8 @@ export const messages = {
         },
         accountDetail: {
             stablecoinYield: {
-                infoText: 'This token represents your deposit and all rewards in stablecoin yield.',
+                defiYieldInfoText:
+                    'This token represents your deposit and all rewards in DeFi Yield.',
                 vault: 'Vault',
                 apy: 'Annual Percentage Yield',
                 deposited: 'Deposited',
@@ -2504,7 +2505,7 @@ export const messages = {
     },
     earn: {
         staking: 'Staking',
-        stablecoinYield: 'Stablecoin yield',
+        defiYield: 'DeFi Yield',
         poweredBy: 'Powered by',
         feeEstimationFailed:
             "The network fee couldn't be estimated, so the transaction can't be prepared. Try again later.",
@@ -2741,10 +2742,10 @@ export const messages = {
                 subtitle:
                     'Grow your crypto by locking it to help secure the {networkName} network—and earn rewards in return.',
                 cta: 'Enable {networkName}',
-                stablecoinYield: {
-                    title: 'Enable {networkName} to use stablecoin yield',
+                defiYield: {
+                    title: 'Enable {networkName} to use DeFi Yield',
                     subtitle:
-                        'Add the {networkName} network to deposit eligible stablecoins and earn yield.',
+                        'Add the {networkName} network to deposit eligible assets and earn yield.',
                     cta: 'Enable {networkName}',
                 },
             },
@@ -2810,8 +2811,8 @@ export const messages = {
             },
         },
         howYieldWorksScreen: {
-            title: 'How stablecoin yield works',
-            subtitle: 'Put your stablecoins to work and earn rewards.',
+            defiYieldTitle: 'How DeFi Yield works',
+            defiYieldSubtitle: 'Put your assets to work and earn rewards.',
             benefits: {
                 first: {
                     title: 'The deposited amount of {tokenSymbol} is always available.',
