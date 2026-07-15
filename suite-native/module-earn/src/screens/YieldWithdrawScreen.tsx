@@ -88,9 +88,12 @@ export const YieldWithdrawScreen = () => {
     const [assetAmount, setAssetAmount] = useState('');
     const [sharesAmount, setSharesAmount] = useState('');
     const [isMaxSelected, setIsMaxSelected] = useState(false);
-    const [flowType, setFlowType] = useState<YieldWithdrawFlowType>(
+    const [selectedFlowType, setSelectedFlowType] = useState<YieldWithdrawFlowType>(
         route.params.withdrawFlowType ?? 'withdraw',
     );
+    // Redeeming the exact shares balance prevents leaving yield dust behind.
+    const flowType: YieldWithdrawFlowType = isMaxSelected ? 'redeem' : selectedFlowType;
+    const isMaxWithdrawInfoVisible = isMaxSelected && selectedFlowType === 'withdraw';
     const isSharesInput = flowType === 'redeem';
     const amount = isSharesInput ? sharesAmount : assetAmount;
     const {
@@ -368,7 +371,8 @@ export const YieldWithdrawScreen = () => {
     }, [closeInfoBottomSheet, isWithdrawPending, openPendingBottomSheet]);
 
     const handleInputSwitch = useCallback((activeView: 'primary' | 'secondary') => {
-        setFlowType(getYieldWithdrawFlowTypeByInputView(activeView));
+        setIsMaxSelected(false);
+        setSelectedFlowType(getYieldWithdrawFlowTypeByInputView(activeView));
     }, []);
 
     const handleContinue = useCallback(() => {
@@ -472,6 +476,7 @@ export const YieldWithdrawScreen = () => {
                         </HStack>
 
                         <AnimatedDoubleInput
+                            activeView={isSharesInput ? 'secondary' : 'primary'}
                             onInputSwitch={handleInputSwitch}
                             renderPrimary={({ inputRef, isDisabled, onPress }) => (
                                 <Input
@@ -564,9 +569,11 @@ export const YieldWithdrawScreen = () => {
 
                 <YieldWithdrawWarning
                     isAmountTooHigh={!amountValidationError && isAmountTooHigh}
+                    isMaxWithdrawInfoVisible={isMaxWithdrawInfoVisible}
                     shouldShowNetworkFeeWarning={
                         !amountValidationError && shouldShowNetworkFeeWarning
                     }
+                    vaultTokenSymbol={vaultTokenSymbol}
                 />
             </VStack>
             {actionPendingTransaction && (
