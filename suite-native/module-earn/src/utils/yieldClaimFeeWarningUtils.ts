@@ -1,14 +1,21 @@
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 
-type ShouldShowClaimFeeWarningParams = {
+export type YieldClaimFeeWarning = 'fee-exceeds-rewards' | 'unverifiable-rewards-value';
+
+type GetClaimFeeWarningParams = {
     feeFiatAmount: BaseCurrencyAmount | null;
     totalFiatClaimableAmount: BaseCurrencyAmount | null;
 };
 
-export const shouldShowClaimFeeWarning = ({
+export const getClaimFeeWarning = ({
     feeFiatAmount,
     totalFiatClaimableAmount,
-}: ShouldShowClaimFeeWarningParams) =>
-    feeFiatAmount !== null &&
-    totalFiatClaimableAmount !== null &&
-    feeFiatAmount.gt(totalFiatClaimableAmount);
+}: GetClaimFeeWarningParams): YieldClaimFeeWarning | null => {
+    // Missing fiat data means the fee-vs-rewards check cannot run, which must
+    // surface to the user instead of silently suppressing the warning.
+    if (feeFiatAmount === null || totalFiatClaimableAmount === null) {
+        return 'unverifiable-rewards-value';
+    }
+
+    return feeFiatAmount.gt(totalFiatClaimableAmount) ? 'fee-exceeds-rewards' : null;
+};
