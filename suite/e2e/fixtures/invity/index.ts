@@ -62,7 +62,7 @@ export const invityEndpoint = {
     sellQuotes: `${invityUrl}/api/v3/sell/fiat/quotes`,
     sellTrade: `${invityUrl}/api/v3/sell/fiat/trade`,
     sellWatch: `${invityUrl}/api/v3/sell/fiat/watch/*`,
-};
+} as const;
 
 export const invityRequest = {
     buyTradeBTCPayload,
@@ -72,7 +72,13 @@ export const invityRequest = {
     sellWatchPayload,
 };
 
-export const invityGeneralResponses = {
+/**
+ * `unknown` keeps the heterogeneous JSON payload types out of this aggregate's declaration.
+ * The individual fixture exports below retain their inferred types for direct use.
+ */
+export const invityGeneralResponses: Partial<
+    Record<(typeof invityEndpoint)[keyof typeof invityEndpoint], unknown>
+> = {
     [invityEndpoint.swapList]: swapList,
     [invityEndpoint.swapWatch]: swapWatch,
     [invityEndpoint.info]: info,
