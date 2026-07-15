@@ -10155,7 +10155,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/address-validator": "workspace:*"
     "@trezor/crypto-utils": "workspace:*"
-    viem: "npm:^2.52.2"
+    viem: "npm:^2.54.1"
   languageName: unknown
   linkType: soft
 
@@ -10246,7 +10246,7 @@ __metadata:
     "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    viem: "npm:^2.52.2"
+    viem: "npm:^2.54.1"
   languageName: unknown
   linkType: soft
 
@@ -10781,7 +10781,7 @@ __metadata:
     "@trezor/network-solana": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    viem: "npm:^2.52.2"
+    viem: "npm:^2.54.1"
   languageName: unknown
   linkType: soft
 
@@ -16001,7 +16001,7 @@ __metadata:
     html-webpack-plugin: "npm:5.6.7"
     socks-proxy-agent: "npm:8.0.5"
     tiny-worker: "npm:^2.3.0"
-    viem: "npm:^2.52.2"
+    viem: "npm:^2.54.1"
     webpack: "npm:5.108.1"
   peerDependencies:
     tslib: ^2.6.2
@@ -16349,7 +16349,7 @@ __metadata:
     process: "npm:^0.11.10"
     stream-browserify: "npm:^3.0.0"
     tsx: "npm:^4.21.0"
-    viem: "npm:^2.52.2"
+    viem: "npm:^2.54.1"
     vite-plugin-node-polyfills: "npm:^0.26.0"
     vite-plugin-wasm: "npm:^3.6.0"
     vitest: "npm:^4.1.9"
@@ -46290,9 +46290,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:^2.52.2":
-  version: 2.52.2
-  resolution: "viem@npm:2.52.2"
+"viem@npm:^2.54.1":
+  version: 2.54.1
+  resolution: "viem@npm:2.54.1"
   dependencies:
     "@noble/curves": "npm:1.9.1"
     "@noble/hashes": "npm:1.8.0"
@@ -46307,7 +46307,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/755530dd313edfc433d3c48492940871a122647e5cbed7eaffd0622064fa91aab6ae1b06617af751dcdcb4b60aac782b83f7a8d5960d77c2655a75c552d980d9
+  checksum: 10/781733bab1ff72efcc2629c496ec1378b9c9939c3cd889c27adb5e06e5caa7f3f54061ba90c5323357c36bc700d0c8306f73d390ae246028bf1e258682cd5ec1
   languageName: node
   linkType: hard
 

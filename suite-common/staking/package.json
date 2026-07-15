@@ -23,6 +23,6 @@
         "@trezor/network-solana": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "viem": "^2.52.2"
+        "viem": "^2.54.1"
     }
 }
