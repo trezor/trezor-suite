@@ -225,7 +225,7 @@ const iconFontsMobileDir = path.join(__dirname, 'iconFontsMobile');
     // copy used icons to assetsTemp
     usedIcons.forEach(icon => {
         fs.copyFileSync(
-            `./assets/${icon}.svg`,
+            `../../packages/icons/assets/${icon}.svg`,
             `${tempAssetsDir}/${icon}.svg`,
             constants.COPYFILE_FICLONE,
         );
