@@ -3456,6 +3456,10 @@ export const messages = {
             youPay: 'You pay',
             youGet: 'You get',
         },
+        transactionSimulation: {
+            title: 'Simulation powered by Blockaid',
+            simulating: 'Simulating transaction',
+        },
         tradingExchangePreviewScreen: {
             title: 'Swap',
             fromAccount: 'From',

@@ -6,6 +6,7 @@ import { Translation } from '@suite-native/intl';
 import { useChangeStringsExtractor } from '@suite-native/trading-quote-utils';
 import { selectExchangeSelectedReceiveAccount } from '@suite-native/trading-state';
 
+import { useDexExchangeTxSimulation } from '../../../hooks/exchange/useDexExchangeTxSimulation';
 import { TradingAccountCard } from '../../general/TradingAccountCard';
 
 export type ExchangeToAccountTradePreviewCardProps = {
@@ -17,6 +18,9 @@ export const ExchangeToAccountTradePreviewCard = ({
 }: ExchangeToAccountTradePreviewCardProps) => {
     const toAccount = useSelector(selectExchangeSelectedReceiveAccount);
     const { toValue } = useChangeStringsExtractor(quote);
+    const { isLoading: isSimulationLoading, data: simulationResult } = useDexExchangeTxSimulation();
+
+    const simulatedReceiveAmount = getSimulatedReceiveAmount(simulationResult, quote?.receive);
 
     return (
         <TradingAccountCard
