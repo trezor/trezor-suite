@@ -6,7 +6,7 @@ import {
     type TradingAssetSellOption,
 } from '@suite-common/trading';
 import { Column, Row, Text } from '@trezor/components';
-import { AssetLogo, CoinLogo } from '@trezor/product-components';
+import { AssetLogo, CoinLogo, shouldShowNetworkIcon } from '@trezor/product-components';
 
 export type AssetPickerInputContentProps = {} & (
     | {
@@ -44,7 +44,7 @@ export function AssetPickerInputContent({ value }: AssetPickerInputContentProps)
                     symbol={networkSymbol}
                     contractAddress={contractAddress}
                     placeholder={displaySymbol}
-                    showNetworkIcon={showNetwork}
+                    showNetworkIcon={shouldShowNetworkIcon(networkSymbol, contractAddress)}
                 />
             )}
             <Column alignItems="start">
