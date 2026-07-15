@@ -2,12 +2,12 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
-type State = {
+export type GlobalSendReceiveFiltersState = {
     search: string;
     networkSymbol: NetworkSymbol | undefined;
 };
 
-const initialState: State = {
+const initialState: GlobalSendReceiveFiltersState = {
     search: '',
     networkSymbol: undefined,
 };
@@ -16,10 +16,13 @@ export const globalSendReceiveFilters = createSlice({
     name: 'globalSendReceiveFilters',
     initialState,
     reducers: {
-        setSearch(state, action: PayloadAction<State['search']>) {
+        setSearch(state, action: PayloadAction<GlobalSendReceiveFiltersState['search']>) {
             state.search = action.payload;
         },
-        setNetworkSymbol(state, action: PayloadAction<State['networkSymbol']>) {
+        setNetworkSymbol(
+            state,
+            action: PayloadAction<GlobalSendReceiveFiltersState['networkSymbol']>,
+        ) {
             state.networkSymbol = action.payload;
         },
         resetFilters(state) {

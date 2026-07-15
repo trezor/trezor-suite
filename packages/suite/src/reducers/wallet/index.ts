@@ -61,4 +61,6 @@ const WalletReducers = combineReducers({
     tronStake: tronStakeReducer,
 });
 
+export type WalletState = ReturnType<typeof WalletReducers>;
+
 export default WalletReducers;

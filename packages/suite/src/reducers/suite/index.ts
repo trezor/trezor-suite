@@ -1,3 +1,5 @@
+import { type StateFromReducersMapObject } from '@reduxjs/toolkit';
+
 import { prepareDebugReducer } from '@suite/debug';
 import { desktopUpdateReducer } from '@suite/desktop-update';
 import { featureFeedbackReducer } from '@suite/feature-feedback';
@@ -35,7 +37,7 @@ const debug = prepareDebugReducer(extraDependencies);
 const connectPopupReducer = prepareConnectPopupReducer(extraDependencies);
 const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
 
-export default {
+const suiteReducers = {
     suite,
     discreetMode: discreetModeReducer,
     tor: torReducer,
@@ -59,3 +61,7 @@ export default {
     connectPopup: connectPopupReducer,
     walletConnect: walletConnectReducer,
 };
+
+export type SuiteReducersState = StateFromReducersMapObject<typeof suiteReducers>;
+
+export default suiteReducers;
