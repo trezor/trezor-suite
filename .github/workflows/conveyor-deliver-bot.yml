@@ -1,0 +1,95 @@
+# Conveyor — deliver a finished fork branch to upstream as a trezor-bot-authored PR.
+#
+# Manual "activate trezor-bot" step of conveyor-6-deliver. When a fork PR is green and the
+# driver is satisfied, they dispatch this workflow with the fork branch. It cherry-picks
+# the branch's commits ONTO develop (preserving authorship + messages) and opens ONE PR in
+# trezor/trezor-suite authored by trezor-bot (via the app token). Because trezor-bot — not
+# the driver — opens the PR, the driver is NOT the PR author and can give the required
+# single approval on their own work, then merge it.
+#
+# workflow_dispatch requires this file on the DEFAULT branch (develop) to be triggerable.
+#
+# Trigger (manual):
+#   gh workflow run conveyor-deliver-bot.yml -R trezor/trezor-suite \
+#     -f fork=mroz22/trezor-suite -f branch=<branch> -f tracker=<forkPR#> -f title="<pr title>"
+
+name: conveyor-deliver-bot
+
+on:
+  workflow_dispatch:
+    inputs:
+      fork:
+        description: "Fork repo the branch lives on (owner/name)"
+        required: true
+      branch:
+        description: "Branch to deliver (must exist on the fork)"
+        required: true
+      title:
+        description: "Upstream PR title"
+        required: true
+      tracker:
+        description: "Fork tracker PR number (provenance link)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  deliver:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mint trezor-bot token
+        id: bot
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3
+        with:
+          client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
+      - name: Checkout develop (as trezor-bot)
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          ref: develop
+          fetch-depth: 0
+          token: ${{ steps.bot.outputs.token }}
+
+      - name: Cherry-pick the fork branch and open the PR as trezor-bot
+        env:
+          GH_TOKEN: ${{ steps.bot.outputs.token }}
+          FORK: ${{ inputs.fork }}
+          BRANCH: ${{ inputs.branch }}
+          TITLE: ${{ inputs.title }}
+          TRACKER: ${{ inputs.tracker }}
+        run: |
+          set -euo pipefail
+          git config user.name "trezor-bot"
+          git config user.email "trezor-bot@users.noreply.github.com"
+
+          git remote add fork "https://github.com/${FORK}.git"
+          git fetch --no-tags fork "${BRANCH}"
+
+          # fail closed: never open a second upstream PR for this branch
+          if [ -n "$(gh pr list --repo trezor/trezor-suite --head "${BRANCH}" --state all --json number --jq '.[].number')" ]; then
+            echo "A PR for ${BRANCH} already exists on trezor/trezor-suite — refusing to deliver twice."
+            exit 1
+          fi
+
+          # cherry-pick the commits unique to the fork branch onto develop (preserve history)
+          git checkout -b "${BRANCH}" origin/develop
+          git cherry-pick "origin/develop..fork/${BRANCH}"
+          git push origin "${BRANCH}"
+
+          BODY="Delivered by trezor-bot via Conveyor — cherry-picked from the finished fork branch."
+          if [ -n "${TRACKER}" ]; then
+            BODY="${BODY}"$'\n\n'"Conveyor tracker: ${FORK}#${TRACKER}"
+          fi
+          URL="$(gh pr create --repo trezor/trezor-suite --base develop --head "${BRANCH}" \
+            --title "${TITLE}" --body "${BODY}")"
+          echo "Opened upstream PR: ${URL}"
+
+          # product labels via REST (the gh pr edit label flag is unreliable here)
+          PR="$(printf '%s' "${URL}" | grep -oE '[0-9]+$')"
+          gh api -X POST "repos/trezor/trezor-suite/issues/${PR}/labels" \
+            -f "labels[]=no-project" -f "labels[]=code" >/dev/null || true
+          echo "PR_URL=${URL}" >> "$GITHUB_STEP_SUMMARY"
