@@ -1,8 +1,8 @@
 import { type TranslationKey } from '@suite/intl';
-import { type NotificationEntry } from '@suite-common/toast-notifications';
+import { type NotificationsState } from '@suite-common/toast-notifications';
 import { CheckIcon, InfoIcon, WarningIcon } from '@trezor/icons';
 
-import { type AppState, type ToastNotificationVariant } from 'src/types/suite';
+import { type ToastNotificationVariant } from 'src/types/suite';
 
 export const getNotificationIcon = (variant: ToastNotificationVariant) => {
     switch (variant) {
@@ -17,15 +17,22 @@ export const getNotificationIcon = (variant: ToastNotificationVariant) => {
     }
 };
 
-// filter notifications which should not be visible in notifications popup
-export const filterNonActivityNotifications = (notifications: AppState['notifications']) =>
+// Filters notifications which should not be visible in the notifications popup.
+export const filterNonActivityNotifications = (
+    notifications: NotificationsState<TranslationKey>,
+): NotificationsState<TranslationKey> =>
     notifications.filter(notification => notification.type !== 'coin-scheme-protocol');
 
-export const getSeenAndUnseenNotifications = (notifications: AppState['notifications']) => {
-    const seen: Array<NotificationEntry<TranslationKey>> = [];
-    const unseen: Array<NotificationEntry<TranslationKey>> = [];
+export const getSeenAndUnseenNotifications = (
+    notifications: NotificationsState<TranslationKey>,
+): {
+    seenNotifications: NotificationsState<TranslationKey>;
+    unseenNotifications: NotificationsState<TranslationKey>;
+} => {
+    const seen: NotificationsState<TranslationKey> = [];
+    const unseen: NotificationsState<TranslationKey> = [];
 
-    // loop over all notifications and check which of them there were seen or not
+    // Splits notifications based on whether they were seen.
     filterNonActivityNotifications(notifications).forEach(notification => {
         if (notification.seen) {
             seen.push(notification);

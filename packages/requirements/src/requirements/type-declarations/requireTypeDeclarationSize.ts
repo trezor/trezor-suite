@@ -24,7 +24,6 @@ const KNOWN_OVERSIZED_DECLARATION_LIMITS = new Map<string, number>([
     ['packages/connect-cli/libDev/src/transport.d.ts', kibToBytes(104)],
     ['suite/e2e/libDev/fixtures/invity/index.d.ts', kibToBytes(740)],
     ['suite-common/device/libDev/src/deviceSelectors.d.ts', kibToBytes(520)],
-    ['packages/suite/libDev/src/utils/suite/notification.d.ts', kibToBytes(395)],
     ['packages/transport/libDev/src/transports/bridge.d.ts', kibToBytes(235)],
     ['packages/transport-common/libDev/src/transports/abstractApi.d.ts', kibToBytes(230)],
     [
