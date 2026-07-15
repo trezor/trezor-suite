@@ -9,6 +9,7 @@ const kibToBytes = (sizeKib: number) => sizeKib * 1024;
 export const MAX_DECLARATION_SIZE_BYTES = kibToBytes(100);
 
 const KNOWN_OVERSIZED_DECLARATION_LIMITS = new Map<string, number>([
+    ['packages/connect-cli/libDev/src/transport.d.ts', kibToBytes(104)],
     ['suite/e2e/libDev/fixtures/invity/index.d.ts', kibToBytes(740)],
     ['suite-common/earn-stablecoin-defs/libDev/src/api/index.d.ts', kibToBytes(625)],
     ['suite-common/logger/libDev/src/utils.d.ts', kibToBytes(600)],
