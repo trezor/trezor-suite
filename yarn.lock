@@ -11616,7 +11616,7 @@ __metadata:
     expo-camera: "npm:~56.0.7"
     expo-clipboard: "npm:~56.0.3"
     expo-dev-client: "npm:~56.0.16"
-    expo-file-system: "npm:~56.0.8"
+    expo-file-system: "npm:~56.0.7"
     expo-haptics: "npm:~56.0.3"
     expo-image: "npm:~56.0.9"
     expo-image-picker: "npm:~56.0.14"
@@ -11808,7 +11808,7 @@ __metadata:
     "@trezor/device-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    expo-file-system: "npm:~56.0.8"
+    expo-file-system: "npm:~56.0.7"
     expo-sharing: "npm:~56.0.18"
     react: "npm:19.2.3"
     react-native: "npm:0.85.3"
@@ -12350,7 +12350,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    expo-file-system: "npm:~56.0.8"
+    expo-file-system: "npm:~56.0.7"
     expo-sharing: "npm:~56.0.18"
     react: "npm:19.2.3"
     react-native: "npm:0.85.3"
@@ -27042,13 +27042,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-file-system@npm:~56.0.7, expo-file-system@npm:~56.0.8":
-  version: 56.0.8
-  resolution: "expo-file-system@npm:56.0.8"
+"expo-file-system@npm:~56.0.7":
+  version: 56.0.7
+  resolution: "expo-file-system@npm:56.0.7"
   peerDependencies:
     expo: "*"
     react-native: "*"
-  checksum: 10/a5a930d2a43f32ffafba69f2d5d953c148d584aaf5091b7703c6465af5a3324713dc55020eae289307070352346ba403c5137daabcc76412a1f4ea275d2d2cc4
+  checksum: 10/c8074d7f7bd8c1c542eb4e3af20151f153d3ee684b80952402c3aef9a1a1f7c02b10f0b822e9ab6383217c90ec3beebaa02d567817126c31a79a5595f2cc1d96
   languageName: node
   linkType: hard
 
