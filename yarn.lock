@@ -14632,7 +14632,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^4.1.0"
-    immer: "npm:11.1.5"
+    immer: "npm:11.1.8"
     redux: "npm:^5.0.1"
   languageName: unknown
   linkType: soft
@@ -14987,7 +14987,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     dropbox: "npm:^10.34.0"
-    immer: "npm:11.1.5"
+    immer: "npm:11.1.8"
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
@@ -17167,7 +17167,7 @@ __metadata:
     framer-motion: "npm:^12.33.0"
     history: "npm:^5.3.0"
     idb: "npm:^8.0.3"
-    immer: "npm:11.1.5"
+    immer: "npm:11.1.8"
     jest-canvas-mock: "npm:^2.5.2"
     jest-watch-typeahead: "npm:3.0.1"
     lottie-react: "npm:2.4.1"
@@ -30361,10 +30361,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"immer@npm:11.1.5, immer@npm:^11.0.0":
-  version: 11.1.5
-  resolution: "immer@npm:11.1.5"
-  checksum: 10/6b9c87ff358b33e32869305f2d581831a523f6e329ce182b6ec3c17b5ae787b9194ba372af55fd20b84a29df05fc6442bcce2e60aacb0f6b6e54125ad2bad9ac
+"immer@npm:11.1.8, immer@npm:^11.0.0":
+  version: 11.1.8
+  resolution: "immer@npm:11.1.8"
+  checksum: 10/59a72aaac68115a8d584cb555a76566fb9c52be4c09055d446e5828c23e08470379b342f615a826cc07715e6a1c88dcdcfd41cc86114c397389cb8a6665768b0
   languageName: node
   linkType: hard
 
