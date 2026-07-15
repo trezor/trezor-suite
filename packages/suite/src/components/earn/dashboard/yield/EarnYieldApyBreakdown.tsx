@@ -102,6 +102,7 @@ export const EarnYieldApyBreakdown = ({
                                     typographyStyle="body-sm"
                                     intent="neutral"
                                     priority="secondary"
+                                    isInverse
                                 >
                                     <Translation id={descriptionId} />
                                 </Text>
@@ -111,6 +112,7 @@ export const EarnYieldApyBreakdown = ({
                             typographyStyle="body-sm"
                             intent={hasRatePercent ? 'brand' : 'neutral'}
                             priority={hasRatePercent ? 'primary' : 'secondary'}
+                            isInverse
                         >
                             {rateNode}
                         </Text>
@@ -118,8 +120,14 @@ export const EarnYieldApyBreakdown = ({
                 );
             })}
             <Row gap={4} alignItems="center" margin={{ top: 4 }}>
-                <Icon as={ChartLineIcon} size={14} intent="neutral" priority="secondary" />
-                <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                <Icon
+                    as={ChartLineIcon}
+                    size={14}
+                    intent="neutral"
+                    priority="secondary"
+                    isInverse
+                />
+                <Text typographyStyle="body-sm" intent="neutral" priority="secondary" isInverse>
                     <Translation id={footerId} />
                 </Text>
             </Row>
