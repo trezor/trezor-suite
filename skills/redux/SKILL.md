@@ -72,7 +72,7 @@ myPackageSelectors.ts;
 5. **Slice** - slice created using RTK `createSlice` function.
 
     ```tsx
-    export const appSettingsSlice = createSlice({
+    const appSettingsSlice = createSlice({
         name: 'appSettings',
         initialState,
         reducers: {
@@ -85,6 +85,34 @@ myPackageSelectors.ts;
 
 6. **Selectors and lookups**
 7. **Exports of actions and reducers**
+
+### Slice exports
+
+Keep the slice object private. Export its actions and reducer as named values. For slices created
+with `createSliceWithExtraDeps`, export `prepareReducer` instead of the prepared reducer. Define
+selectors as standalone exported functions so their declarations do not expose generated slice or
+Reselect implementation types.
+
+Explicitly type the `state` parameter of every case reducer. This keeps generated declaration files
+from exposing Redux Toolkit's inferred slice implementation types.
+
+```tsx
+const appSettingsSlice = createSlice({
+    name: 'appSettings',
+    initialState,
+    reducers: {
+        setColorScheme(state: AppSettingsState, action: PayloadAction<AppColorScheme>) {
+            state.colorScheme = action.payload;
+        },
+    },
+});
+
+export const appSettingsActions = appSettingsSlice.actions;
+export const appSettingsReducer = appSettingsSlice.reducer;
+export const selectColorScheme = (state: AppSettingsRootState) => state.appSettings.colorScheme;
+```
+
+Do not export `appSettingsSlice`. Consumers should not depend on the complete inferred slice API.
 
 Sources:
 

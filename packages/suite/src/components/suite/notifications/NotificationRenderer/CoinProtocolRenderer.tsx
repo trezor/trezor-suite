@@ -18,7 +18,7 @@ import { BigNumber } from '@trezor/utils';
 import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';
 import type { NotificationRendererProps } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
+import { globalSendReceiveFiltersActions } from 'src/slices/wallet/globalSendReceiveFilters';
 
 import { ConditionalActionRenderer } from './ConditionalActionRenderer';
 
@@ -72,7 +72,7 @@ export const CoinProtocolRenderer = ({
                         }),
                     );
                 } else {
-                    dispatch(globalSendReceiveFilters.actions.setNetworkSymbol(networkSymbol));
+                    dispatch(globalSendReceiveFiltersActions.setNetworkSymbol(networkSymbol));
                     dispatch(
                         goto({
                             routeName: 'suite-index',

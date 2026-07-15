@@ -5,20 +5,20 @@ import { type BreakpointFlags, initialBreakpointFlags } from '@trezor/theme';
 import { WINDOW } from 'src/actions/suite/constants';
 import { type Action } from 'src/types/suite';
 
-export interface State extends BreakpointFlags {
+export interface WindowState extends BreakpointFlags {
     isVisible: boolean;
 }
 
 interface WindowRootState {
-    window: State;
+    window: WindowState;
 }
 
-export const initialState: State = {
+export const initialState: WindowState = {
     ...initialBreakpointFlags,
     isVisible: true,
 };
 
-const windowReducer = (state: State = initialState, action: Action): State =>
+const windowReducer = (state: WindowState = initialState, action: Action): WindowState =>
     produce(state, draft => {
         switch (action.type) {
             case WINDOW.UPDATE_BREAKPOINTS:

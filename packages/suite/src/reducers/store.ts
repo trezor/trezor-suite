@@ -6,6 +6,7 @@ import {
     type Middleware,
     type MiddlewareAPI,
     type Reducer,
+    type ReducersMapObject,
     type UnknownAction,
     combineReducers,
     configureStore,
@@ -47,11 +48,12 @@ import { getSuiteMiddleware } from 'src/middlewares/suite';
 import { toastMiddleware } from 'src/middlewares/suite/toastMiddleware';
 import { getWalletMiddlewares } from 'src/middlewares/wallet';
 import onboardingReducers from 'src/reducers/onboarding';
-import suiteReducers, { type SuiteReducersState } from 'src/reducers/suite';
-import walletReducers, { type WalletState } from 'src/reducers/wallet';
+import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
+import { type SuiteReducersState, suiteReducers } from 'src/reducers/suite';
+import { type WalletState, walletReducers } from 'src/reducers/wallet';
 import {
     type GlobalSendReceiveFiltersState,
-    globalSendReceiveFilters,
+    globalSendReceiveFiltersReducer,
 } from 'src/slices/wallet/globalSendReceiveFilters';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import { type Action } from 'src/types/suite';
@@ -77,7 +79,7 @@ const suiteSyncReducer = suiteSyncSlice.prepareReducer(extraDependencies);
 const suiteSyncQuotaManagerReducer = suiteSyncQuotaManagerSlice.prepareReducer(extraDependencies);
 
 export type AppState = SuiteReducersState & {
-    onboarding: ReturnType<typeof onboardingReducers>;
+    onboarding: OnboardingState;
     wallet: WalletState;
     recovery: RecoveryState;
     firmware: FirmwareUpdateState;
@@ -110,8 +112,8 @@ const rootReducer = combineReducers({
     suiteSyncQuotaManager: suiteSyncQuotaManagerReducer,
     suiteSyncData: suiteSyncDataReducer,
     geolocation: geolocationReducer,
-    globalSendReceiveFilters: globalSendReceiveFilters.reducer,
-});
+    globalSendReceiveFilters: globalSendReceiveFiltersReducer,
+} satisfies ReducersMapObject<AppState, never, Record<keyof AppState, never>>);
 
 const loggerExcludedActions = [addLog.type, accountsActions.updateAccountRefreshTimestamp.type];
 
