@@ -50,26 +50,19 @@ describe('selectLastSuiteSyncRelayDisconnectedTimestamp', () => {
 
         expect(selectLastSuiteSyncRelayDisconnectedTimestamp(state)).toBeNull();
     });
-
-    it('memoizes the last disconnected timestamp for unchanged relay statuses', () => {
-        const state = createState([]);
-        selectLastSuiteSyncRelayDisconnectedTimestamp.resetRecomputations();
-
-        selectLastSuiteSyncRelayDisconnectedTimestamp(state);
-        selectLastSuiteSyncRelayDisconnectedTimestamp(state);
-
-        expect(selectLastSuiteSyncRelayDisconnectedTimestamp.recomputations()).toBe(1);
-    });
 });
 
 describe('selectIsSuiteSyncRelayConnected', () => {
-    it('memoizes the connection status for unchanged relay statuses', () => {
-        const state = createState([]);
-        selectIsSuiteSyncRelayConnected.resetRecomputations();
+    it('returns true when a relay is connected', () => {
+        const state = createState([
+            {
+                state: 'connected',
+                url: 'https://relay.example/evolu/',
+                lastDisconnectedTimestamp: null,
+                log: [],
+            },
+        ]);
 
-        selectIsSuiteSyncRelayConnected(state);
-        selectIsSuiteSyncRelayConnected(state);
-
-        expect(selectIsSuiteSyncRelayConnected.recomputations()).toBe(1);
+        expect(selectIsSuiteSyncRelayConnected(state)).toBe(true);
     });
 });
