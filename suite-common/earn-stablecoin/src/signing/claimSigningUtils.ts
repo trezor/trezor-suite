@@ -124,6 +124,31 @@ const getClaimFeeData = (fee: EvmFeeHex) => {
     };
 };
 
+const assertRewardsMatchClaimCalldata = ({
+    data,
+    rewards,
+}: {
+    data: EvmHexString;
+    rewards: ClaimReviewReward[];
+}) => {
+    const decodedClaim = Calldata.evm.distributor.claim.decode(data);
+
+    if (!decodedClaim) {
+        throw new Error('Failed to decode claim transaction data.');
+    }
+
+    const claimedTokens = decodedClaim.tokens;
+    const doRewardsMatchCalldata =
+        claimedTokens.length === rewards.length &&
+        rewards.every(
+            (reward, index) => reward.token.address.toLowerCase() === claimedTokens[index],
+        );
+
+    if (!doRewardsMatchCalldata) {
+        throw new Error('Claim rewards do not match the claim transaction data.');
+    }
+};
+
 export const buildClaimCalldata = ({ senderAddress, rewards }: BuildClaimCalldataParams) => {
     const sender = asEvmAddress(senderAddress);
     const claimResult = Calldata.evm.distributor.claim.encode(
@@ -269,6 +294,8 @@ export const buildClaimTransactionReview = ({
     if (!fee) {
         throw new Error('Fee information is missing for the transaction.');
     }
+
+    assertRewardsMatchClaimCalldata({ data: unsignedTransaction.data, rewards });
 
     return {
         ...buildClaimReviewState({
