@@ -15,7 +15,7 @@ import type { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/c
 import { BigNumber } from '@trezor/utils';
 
 import { type AppState } from 'src/reducers/store';
-import { type State as GraphState } from 'src/reducers/wallet/graphReducer';
+import { type GraphState } from 'src/reducers/wallet/graphReducer';
 import {
     type CommonAggregatedHistory,
     type GraphData,

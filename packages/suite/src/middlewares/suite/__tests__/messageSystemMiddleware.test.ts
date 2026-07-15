@@ -14,7 +14,7 @@ import { configureMockStore } from '@suite-common/test-utils';
 
 import { type AppState } from 'src/reducers/store';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import WalletReducers from 'src/reducers/wallet';
+import { walletReducers } from 'src/reducers/wallet';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import messageSystemMiddleware from '../messageSystemMiddleware';
@@ -30,7 +30,7 @@ const messageSystemReducer: Reducer<
 > = prepareMessageSystemReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 
-type WalletsState = ReturnType<typeof WalletReducers>;
+type WalletsState = ReturnType<typeof walletReducers>;
 type MessageSystemState = ReturnType<typeof messageSystemReducer>;
 type SuiteState = ReturnType<typeof suiteReducer>;
 
@@ -40,7 +40,7 @@ const getInitialState = (
     suite?: Partial<SuiteState>,
 ): Partial<AppState> => ({
     wallet: {
-        ...WalletReducers(undefined, { type: 'foo' } as any),
+        ...walletReducers(undefined, { type: 'foo' } as any),
         ...wallet,
     },
     messageSystem: {
@@ -69,7 +69,7 @@ const makeTestAction = (id: string): Action => ({
 });
 
 const reducer = combineReducers({
-    wallet: WalletReducers,
+    wallet: walletReducers,
     messageSystem: messageSystemReducer,
     suite: suiteReducer,
     tor: torReducer,
@@ -93,7 +93,7 @@ const initStore = (preloadedState: State) => {
 
             store.getState().suite = suiteReducer(suite, action);
             store.getState().messageSystem = messageSystemReducer(messageSystem, action);
-            if (wallet) store.getState().wallet = WalletReducers(wallet, action);
+            if (wallet) store.getState().wallet = walletReducers(wallet, action);
 
             store.getActions().push(action);
         }

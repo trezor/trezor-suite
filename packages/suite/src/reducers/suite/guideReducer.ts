@@ -5,7 +5,7 @@ import * as indexNodeJSON from '@trezor/suite-data/files/guide/index.json';
 import { GUIDE } from 'src/actions/suite/constants';
 import { type Action } from 'src/types/suite';
 
-export interface State {
+export interface GuideState {
     open: boolean;
     view: ActiveView;
     indexNode: GuideCategory | null;
@@ -15,7 +15,7 @@ export interface State {
 
 const indexNode = indexNodeJSON as GuideCategory;
 
-export const initialState: State = {
+export const initialState: GuideState = {
     open: false,
     view: 'GUIDE_DEFAULT',
     indexNode,
@@ -24,7 +24,7 @@ export const initialState: State = {
 };
 
 // NOTE: we cannot use immer in this reducer, because GuideCategory mimics the react node and immer uses Object.freeze()
-const guideReducer = (state: State = initialState, action: Action): State => {
+const guideReducer = (state: GuideState = initialState, action: Action): GuideState => {
     switch (action.type) {
         case GUIDE.OPEN:
             return {

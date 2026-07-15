@@ -24,13 +24,8 @@ const KNOWN_OVERSIZED_DECLARATIONS: string[] = [
     'suite/e2e/libDev/fixtures/invity/index.d.ts',
     'suite-common/device/libDev/src/deviceSelectors.d.ts',
     'packages/suite/libDev/src/utils/suite/notification.d.ts',
-    'packages/suite/libDev/src/reducers/suite/index.d.ts',
-    'packages/suite-desktop-ui/libDev/src/createSuiteDesktopCompositionRoot.d.ts',
-    'packages/suite-web/libDev/src/createSuiteWebCompositionRoot.d.ts',
-    'suite/test-utils/libDev/src/initStoreForTests.d.ts',
     'suite-common/wallet-core/libDev/src/transactions/transactionsSelectors.d.ts',
     'suite-common/trading/libDev/src/selectors/tradingSelectors.d.ts',
-    'packages/suite/libDev/src/selectors/suite/selectAccountLabelsForSearch.d.ts',
     'suite-common/message-system/libDev/src/messageSystemSelectors.d.ts',
     'packages/suite/libDev/src/hooks/wallet/useRbfForm.d.ts',
 ];

@@ -15,7 +15,7 @@ export interface TorBootstrap {
     isSlow?: boolean;
 }
 
-type TorState = {
+export type TorState = {
     torStatus: TorStatus;
     torBootstrap: TorBootstrap | null;
 };
