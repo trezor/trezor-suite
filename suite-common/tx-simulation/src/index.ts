@@ -1,6 +1,7 @@
 export * from './client';
 export type * from './types';
 export { getSimulationErrorRiskLevel, areTxSimulationMethods } from './utils';
+export { getAssetDiffTransferAmount } from './utils/getAssetDiffTransferAmount';
 export { useDappScan } from './hooks/useDappScan';
 export {
     useNetworkTxSimulation,
