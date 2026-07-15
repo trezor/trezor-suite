@@ -60,7 +60,7 @@ export const DetailModal = ({
                     <>
                         {canReplaceTransaction && (
                             <Modal.Button
-                                iconLeft={GaugeIcon}
+                                iconLeft="gauge"
                                 intent="neutral"
                                 priority="secondary"
                                 onClick={onChangeFeeClick}
