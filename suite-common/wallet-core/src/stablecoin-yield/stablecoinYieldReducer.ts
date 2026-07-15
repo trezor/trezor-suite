@@ -10,6 +10,7 @@ import {
 import { isSafeObjectKey } from '@trezor/utils';
 
 import { STABLECOIN_YIELD_PREFIX, YIELD_FLOW_STEP_SEQUENCES } from './stablecoinYieldConstants';
+import { type StablecoinYieldErrorState, buildYieldSessionError } from './stablecoinYieldErrors';
 import {
     type StablecoinYieldClaimUnsignedTransaction,
     type YieldApproveModalState,
@@ -21,13 +22,6 @@ import {
 } from './stablecoinYieldTypes';
 import { getNextYieldFlowStep } from './stablecoinYieldUtils';
 import { transactionsActions } from '../transactions/transactionsActions';
-
-// Message ids must exist in the desktop `suite/intl` messages — the desktop app renders
-// `session.error` directly via `<Translation>`.
-type StablecoinYieldTranslationKey =
-    | 'TR_EARN_YIELD_ERROR_GENERIC'
-    | 'TR_EARN_YIELD_ERROR_PASSPHRASE_INCORRECT'
-    | 'TR_EARN_YIELD_ERROR_TRANSACTION_FAILED';
 
 type StablecoinYieldSerializedTx = {
     tx: string;
@@ -75,7 +69,7 @@ export type StablecoinYieldTxReviewState = {
 
 export type StablecoinYieldSessionState = {
     step: YieldFlowStepId;
-    error: StablecoinYieldTranslationKey | null;
+    error: StablecoinYieldErrorState | null;
     approval: {
         allowanceAmount: string | null;
         modalState: YieldApproveModalState | null;
@@ -239,12 +233,12 @@ const stablecoinYieldSlice = createSlice({
             state: StablecoinYieldState,
             action: PayloadAction<
                 StablecoinYieldSessionActionPayload & {
-                    error: StablecoinYieldTranslationKey;
+                    errorCode: string;
                 }
             >,
         ) {
             withSession(state, action.payload, session => {
-                session.error = action.payload.error;
+                session.error = buildYieldSessionError(action.payload.errorCode);
             });
         },
         clearError(
@@ -479,7 +473,7 @@ const stablecoinYieldSlice = createSlice({
         ) {
             withSession(state, action.payload, session => {
                 session.action.pendingTransaction = null;
-                session.error = 'TR_EARN_YIELD_ERROR_TRANSACTION_FAILED';
+                session.error = buildYieldSessionError('transaction-failed');
             });
         },
         storePrecomposedTransaction(

@@ -17,7 +17,6 @@ import { getAllowanceSpender, getWithdrawRequestAmount } from './stablecoinYield
 import { fetchAllowance } from '../allowance/fetchAllowance';
 
 const YIELD_THUNK_PREFIX = `${STABLECOIN_YIELD_PREFIX}/thunk`;
-const YIELD_GENERIC_ERROR = 'TR_EARN_YIELD_ERROR_GENERIC';
 
 export type YieldSessionPayload = {
     flowType: YieldPositionFlowType;
@@ -41,8 +40,9 @@ type InitYieldAllowancePayload = YieldSessionDataPayload & {
     shouldSkipApprovalStep?: boolean;
 };
 
-type SetYieldGenericErrorParams = YieldSessionPayload & {
+type SetYieldErrorParams = YieldSessionPayload & {
     dispatch: Dispatch;
+    errorCode: string;
 };
 
 type GetApprovalContractAddressParams = {
@@ -69,16 +69,14 @@ type OpenYieldRevokeModalParams = YieldSessionDataPayload & {
     spender: string | null;
 };
 
-export const setYieldGenericError = ({
-    dispatch,
-    flowType,
-    flowKey,
-}: SetYieldGenericErrorParams) => {
+export const setYieldError = ({ dispatch, flowType, flowKey, errorCode }: SetYieldErrorParams) => {
+    console.error(`[stablecoin-yield] ${flowType} flow failed:`, errorCode);
+
     dispatch(
         stablecoinYieldActions.setError({
             flowType,
             flowKey,
-            error: YIELD_GENERIC_ERROR,
+            errorCode,
         }),
     );
 };
@@ -129,7 +127,12 @@ export const openYieldApproveModal = ({
     const contractAddress = getApprovalContractAddress({ flowType, flowData });
 
     if (!contractAddress) {
-        setYieldGenericError({ dispatch, flowType, flowKey });
+        setYieldError({
+            dispatch,
+            flowType,
+            flowKey,
+            errorCode: 'missing-approval-contract-address',
+        });
 
         return false;
     }
@@ -161,7 +164,7 @@ export const openYieldRevokeModal = ({
     spender,
 }: OpenYieldRevokeModalParams) => {
     if (!spender) {
-        setYieldGenericError({ dispatch, flowType, flowKey });
+        setYieldError({ dispatch, flowType, flowKey, errorCode: 'missing-revoke-spender' });
 
         return false;
     }
@@ -305,7 +308,12 @@ export const submitYieldApproveThunk = createThunk(
         });
 
         if (!requestAmount) {
-            setYieldGenericError({ dispatch, flowType, flowKey });
+            setYieldError({
+                dispatch,
+                flowType,
+                flowKey,
+                errorCode: 'missing-approval-request-amount',
+            });
 
             return;
         }
@@ -317,7 +325,12 @@ export const submitYieldApproveThunk = createThunk(
             const tokenContractAddress = flowData.token.contractAddress;
 
             if (!spender || !tokenContractAddress) {
-                setYieldGenericError({ dispatch, flowType, flowKey });
+                setYieldError({
+                    dispatch,
+                    flowType,
+                    flowKey,
+                    errorCode: 'missing-approval-params',
+                });
 
                 return;
             }
@@ -364,7 +377,7 @@ export const submitYieldApproveThunk = createThunk(
                 txType: 'approve',
             });
         } catch {
-            setYieldGenericError({ dispatch, flowType, flowKey });
+            setYieldError({ dispatch, flowType, flowKey, errorCode: 'approve-failed' });
         } finally {
             dispatch(stablecoinYieldActions.finishSubmittingApproval({ flowType, flowKey }));
         }

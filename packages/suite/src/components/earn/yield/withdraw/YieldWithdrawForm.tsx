@@ -24,6 +24,7 @@ export const YieldWithdrawForm = () => {
         receiptToken,
         maxAmount,
         errorMessage,
+        errorCode,
         pendingTransaction,
         isAmountEmpty,
         isAmountTooHigh,
@@ -128,7 +129,12 @@ export const YieldWithdrawForm = () => {
                         {errorMessage && (
                             <Banner
                                 intent="warning"
-                                description={<Translation id={errorMessage} />}
+                                description={
+                                    <>
+                                        <Translation id={errorMessage} />
+                                        {errorCode && ` (${errorCode})`}
+                                    </>
+                                }
                             />
                         )}
                     </>
