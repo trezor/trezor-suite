@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import { type JsonRpcScanParams } from '@blockaid/client/resources/evm';
 
 import { type NetworkConfig, networks } from '@suite-common/wallet-config';
@@ -82,23 +80,25 @@ function transformPayloadOfEthereumSignTypedData({
 /**
  * Transform payload to the format expected by the tx simulation API.
  */
-export function useTxSimulationParams(action: TxSimulationAction) {
-    return useMemo(() => {
-        switch (action.method) {
-            case 'ethereumSignTransaction':
-                return {
-                    method: action.method,
-                    params: transformPayloadOfEthereumSignTransaction(action),
-                } as const;
-            case 'ethereumSignTypedData':
-                return {
-                    method: action.method,
-                    params: transformPayloadOfEthereumSignTypedData(action),
-                } as const;
-            default:
-                return null;
-        }
-    }, [action]);
+export function getTxSimulationParams(action: TxSimulationAction | null) {
+    if (!action) {
+        return null;
+    }
+
+    switch (action.method) {
+        case 'ethereumSignTransaction':
+            return {
+                method: action.method,
+                params: transformPayloadOfEthereumSignTransaction(action),
+            } as const;
+        case 'ethereumSignTypedData':
+            return {
+                method: action.method,
+                params: transformPayloadOfEthereumSignTypedData(action),
+            } as const;
+        default:
+            return null;
+    }
 }
 
-export type UseTxSimulationParams = ReturnType<typeof useTxSimulationParams>;
+export type GetTxSimulationParams = ReturnType<typeof getTxSimulationParams>;

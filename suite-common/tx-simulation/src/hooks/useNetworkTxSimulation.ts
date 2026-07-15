@@ -3,7 +3,7 @@ import type { TransactionScanResponse } from '@blockaid/client/resources/evm';
 import { commonQueryKeys, useQuery } from '@suite-common/react-query';
 
 import { client } from '../client';
-import { type UseTxSimulationParams } from './useTxSimulationParams';
+import { type GetTxSimulationParams } from '../utils';
 
 type TxSimulationCommonResult = { needsDisclaimer: boolean };
 export type TxSimulationEVMResult = TransactionScanResponse & TxSimulationCommonResult;
@@ -18,7 +18,7 @@ const getEVMNeedsDisclaimer = ({ validation, simulation }: TransactionScanRespon
     validation?.result_type === 'Warning' ||
     simulation?.status === 'Error';
 
-async function handleTxScan(input: UseTxSimulationParams): Promise<NetworkTxSimulationResult> {
+async function handleTxScan(input: GetTxSimulationParams): Promise<NetworkTxSimulationResult> {
     switch (input?.method) {
         case 'ethereumSignTransaction':
         case 'ethereumSignTypedData': {
@@ -65,7 +65,7 @@ export interface UseTxSimulationProps {
 }
 
 export function useNetworkTxSimulation(
-    input: UseTxSimulationParams,
+    input: GetTxSimulationParams,
     { onSuccess }: UseTxSimulationProps = {},
 ) {
     // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is input.params; onSuccess is a side-effect callback and input.method is derived from the same params — neither belongs in the key
