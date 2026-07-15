@@ -50,6 +50,7 @@ import {
     type Account,
     type BaseCurrencyAmount,
     type RatesByKey,
+    areBaseCurrencyAmountsEqual,
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
 import { getAccountFiatBalance, isStakingSymbol } from '@suite-common/wallet-utils';
@@ -157,12 +158,26 @@ export const selectSelectedDeviceTotalFiatBalance = createMemoizedSelector(
         hasRunningDiscovery
             ? undefined
             : getTotalFiatBalanceNative({ deviceAccounts, localCurrency, rates }),
+    {
+        memoizeOptions: {
+            // Accounts and fiat rates churn on every sync; keep the previous BigNumber reference
+            // when the amount is unchanged so useSelector consumers don't rerender.
+            resultEqualityCheck: areBaseCurrencyAmountsEqual,
+        },
+    },
 );
 
 export const selectDeviceTotalFiatBalanceByDeviceState = createMemoizedSelector(
     [selectAccountsByDeviceState, selectCurrentFiatRates, selectBaseCurrency],
     (deviceAccounts, rates, localCurrency) =>
         getTotalFiatBalanceNative({ deviceAccounts, localCurrency, rates }),
+    {
+        memoizeOptions: {
+            // Accounts and fiat rates churn on every sync; keep the previous BigNumber reference
+            // when the amount is unchanged so useSelector consumers don't rerender.
+            resultEqualityCheck: areBaseCurrencyAmountsEqual,
+        },
+    },
 );
 
 // Unique symbols for all accounts that are on view only devices (excluding portfolio tracker)

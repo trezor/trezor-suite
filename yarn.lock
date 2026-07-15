@@ -11355,7 +11355,6 @@ __metadata:
     "@trezor/device-utils": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:^"
-    "@trezor/utils": "workspace:*"
     react: "npm:19.2.3"
     react-hook-form: "npm:^7.77.0"
     react-native: "npm:0.85.3"

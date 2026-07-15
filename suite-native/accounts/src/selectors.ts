@@ -1,7 +1,11 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import { getFirstFreshAddress } from '@suite-common/address';
-import { type DeviceRootState, selectIsPortfolioTrackerDevice } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    selectDeviceStaticSessionId,
+    selectIsPortfolioTrackerDevice,
+} from '@suite-common/device';
 import {
     createWeakMapSelector,
     returnStableArrayIfEmpty,
@@ -9,8 +13,8 @@ import {
 } from '@suite-common/redux-utils';
 import {
     type SuiteSyncDataRootState,
+    selectAccountsWithSuiteSyncLabel,
     selectSuiteSyncAccountLabel,
-    selectVisibleDeviceAccountsWithSuiteSyncLabel,
 } from '@suite-common/suite-sync';
 import {
     type SimpleTokenStructure,
@@ -40,6 +44,7 @@ import {
     type RatesByKey,
     type TokenAddress,
     type TokenInfoBranded,
+    areBaseCurrencyAmountsEqual,
     asBaseCurrencyAmount,
     createAccountKey,
 } from '@suite-common/wallet-types';
@@ -59,7 +64,6 @@ import { type CombinedLabelingState, selectIsLabellingAllowed } from '@suite-nat
 import { isNetworkWithTokens, selectAccountTokenInfo } from '@suite-native/tokens';
 import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
-import { BigNumber } from '@trezor/utils';
 
 import { type AccountListSection } from './types';
 import {
@@ -78,6 +82,13 @@ export type NativeAccountsRootState = AccountsRootState &
     TransactionsRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeAccountsRootState>();
+
+const selectVisibleAccountsWithSuiteSyncLabel = (state: NativeAccountsRootState) =>
+    selectAccountsWithSuiteSyncLabel(
+        state,
+        selectVisibleDeviceAccounts(state),
+        selectDeviceStaticSessionId(state),
+    );
 
 export const selectAccountLabel = (
     state: CombinedLabelingState,
@@ -117,7 +128,7 @@ export const selectAccountLabel = (
 // These are currently hidden in UI, but they should be made accessible in some way.
 const selectFilteredDeviceAccounts = createMemoizedSelector(
     [
-        selectVisibleDeviceAccountsWithSuiteSyncLabel,
+        selectVisibleAccountsWithSuiteSyncLabel,
         (_state: NativeAccountsRootState, filterValue: string) => filterValue,
         (_state: NativeAccountsRootState, _filterValue: string, isSendFlow: boolean = false) =>
             isSendFlow,
@@ -217,7 +228,7 @@ const createNetworkFilterOption = weakMapMemoize(
 
 export const selectNetworkFilterOptions = createMemoizedSelector(
     [
-        selectVisibleDeviceAccountsWithSuiteSyncLabel,
+        selectVisibleAccountsWithSuiteSyncLabel,
         (_state: NativeAccountsRootState, isSendFlow: boolean = false) => isSendFlow,
     ],
     (accounts, isSendFlow) => {
@@ -247,7 +258,7 @@ export const selectIsAccountsListNetworkFilterVisible = createMemoizedSelector(
     networkFilterOptions => networkFilterOptions.length > 1,
 );
 
-const selectAccountFiatBalanceValue = createMemoizedSelector(
+export const selectAccountFiatBalance = createMemoizedSelector(
     [
         selectCurrentFiatRates,
         selectAccountByKey,
@@ -263,7 +274,7 @@ const selectAccountFiatBalanceValue = createMemoizedSelector(
     ],
     (fiatRates, account, localCurrency, shouldIncludeStaking, shouldIncludeTokens) => {
         if (!account) {
-            return BASE_CURRENCY_ZERO.toFixed();
+            return BASE_CURRENCY_ZERO;
         }
 
         const totalBalance = getAccountFiatBalance({
@@ -274,17 +285,15 @@ const selectAccountFiatBalanceValue = createMemoizedSelector(
             shouldIncludeTokens,
         });
 
-        if (!totalBalance) {
-            return BASE_CURRENCY_ZERO.toFixed();
-        }
-
-        return totalBalance.toFixed();
+        return totalBalance ? asBaseCurrencyAmount(totalBalance) : BASE_CURRENCY_ZERO;
     },
-);
-
-export const selectAccountFiatBalance = createMemoizedSelector(
-    [selectAccountFiatBalanceValue],
-    fiatBalance => asBaseCurrencyAmount(new BigNumber(fiatBalance)),
+    {
+        memoizeOptions: {
+            // Accounts and fiat rates churn on every sync; keep the previous BigNumber reference
+            // when the amount is unchanged so useSelector consumers don't rerender.
+            resultEqualityCheck: areBaseCurrencyAmountsEqual,
+        },
+    },
 );
 
 export const selectAccountTokenFiatBalance = createMemoizedSelector(
@@ -298,6 +307,13 @@ export const selectAccountTokenFiatBalance = createMemoizedSelector(
         if (!rate || !balance) return BASE_CURRENCY_ZERO;
 
         return toFiatCurrency({ amount: balance, rate }) ?? BASE_CURRENCY_ZERO;
+    },
+    {
+        memoizeOptions: {
+            // Accounts and fiat rates churn on every sync; keep the previous BigNumber reference
+            // when the amount is unchanged so useSelector consumers don't rerender.
+            resultEqualityCheck: areBaseCurrencyAmountsEqual,
+        },
     },
 );
 
