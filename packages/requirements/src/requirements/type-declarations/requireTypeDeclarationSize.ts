@@ -22,11 +22,7 @@ const FILES_EXPECTED_TO_GROW = new Set<string>([
 
 const KNOWN_OVERSIZED_DECLARATIONS: string[] = [
     'suite/e2e/libDev/fixtures/invity/index.d.ts',
-    'suite-common/device/libDev/src/deviceSelectors.d.ts',
     'packages/suite/libDev/src/utils/suite/notification.d.ts',
-    'suite-common/wallet-core/libDev/src/transactions/transactionsSelectors.d.ts',
-    'suite-common/trading/libDev/src/selectors/tradingSelectors.d.ts',
-    'suite-common/message-system/libDev/src/messageSystemSelectors.d.ts',
     'packages/suite/libDev/src/hooks/wallet/useRbfForm.d.ts',
 ];
 
