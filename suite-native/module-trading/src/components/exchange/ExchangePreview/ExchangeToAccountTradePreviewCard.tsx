@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import type { ExchangeTrade } from 'invity-api';
 
+import { getSimulatedReceiveAmount } from '@suite-common/trading';
 import { Translation } from '@suite-native/intl';
 import { useChangeStringsExtractor } from '@suite-native/trading-quote-utils';
 import { selectExchangeSelectedReceiveAccount } from '@suite-native/trading-state';
@@ -26,7 +27,8 @@ export const ExchangeToAccountTradePreviewCard = ({
         <TradingAccountCard
             title={<Translation id="moduleTrading.tradingExchangePreviewScreen.toAccount" />}
             account={toAccount?.account}
-            amount={toValue}
+            amount={simulatedReceiveAmount ?? toValue}
+            isAmountLoading={isSimulationLoading}
             direction="to"
             cryptoId={quote?.receive}
         />
