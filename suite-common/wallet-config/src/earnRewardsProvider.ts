@@ -14,11 +14,13 @@ export const isEarnYieldClaimSupported = (
     networkSymbol: NetworkSymbol,
     { isDebugMode = false }: { isDebugMode?: boolean } = {},
 ) => {
+    const hasClaimContract = MERKL_XYZ_CONTRACT[networkSymbol] !== undefined;
+
     if (isDebugMode) {
-        return MERKL_XYZ_CONTRACT[networkSymbol] !== undefined;
+        return hasClaimContract;
     }
 
-    return getNetworkFeatures(networkSymbol).includes('claim-rewards');
+    return hasClaimContract && getNetworkFeatures(networkSymbol).includes('claim-rewards');
 };
 
 export const getEarnYieldClaimContractAddress = (networkSymbol: NetworkSymbol) =>

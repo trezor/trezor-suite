@@ -42,6 +42,11 @@ type UnsignedClaimTransactionFee =
 
 export type UnsignedClaimTransaction = UnsignedClaimTransactionBase & UnsignedClaimTransactionFee;
 
+type AssertRewardsMatchClaimCalldataParams = {
+    data: EvmHexString;
+    rewards: ClaimReviewReward[];
+};
+
 type BuildClaimCalldataParams = {
     senderAddress: string;
     rewards: ClaimReward[];
@@ -127,10 +132,7 @@ const getClaimFeeData = (fee: EvmFeeHex) => {
 const assertRewardsMatchClaimCalldata = ({
     data,
     rewards,
-}: {
-    data: EvmHexString;
-    rewards: ClaimReviewReward[];
-}) => {
+}: AssertRewardsMatchClaimCalldataParams) => {
     const decodedClaim = Calldata.evm.distributor.claim.decode(data);
 
     if (!decodedClaim) {
