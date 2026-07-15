@@ -2,12 +2,10 @@ import { useMemo } from 'react';
 
 import { type StakingNetworkSymbol } from '@suite-common/wallet-config';
 import {
-    selectAccountIsStakingActive,
     selectDeviceSupportedNetworks,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -19,18 +17,18 @@ type UseStakingTableDataResult = {
     ethNotActivated: boolean;
     adaNotActivated: boolean;
     solNotActivated: boolean;
+    trxNotActivated: boolean;
     isExpandable: boolean;
     isExpanded: boolean;
     toggleExpanded: () => void;
     hasAnyRewardsData: boolean;
-    isStakingActive: boolean;
-    isSectionOutdated: boolean;
 };
 
 export const useStakingTableData = (): UseStakingTableDataResult => {
     const ethCurrentRate = useCryptoCurrentRate('eth');
     const solCurrentRate = useCryptoCurrentRate('sol');
     const adaCurrentRate = useCryptoCurrentRate('ada');
+    const trxCurrentRate = useCryptoCurrentRate('trx');
 
     const currentRates: Record<StakingNetworkSymbol, number | undefined> = useMemo(
         () => ({
@@ -39,19 +37,21 @@ export const useStakingTableData = (): UseStakingTableDataResult => {
             ada: adaCurrentRate,
             thod: ethCurrentRate,
             dsol: solCurrentRate,
+            trx: trxCurrentRate,
         }),
-        [ethCurrentRate, solCurrentRate, adaCurrentRate],
+        [ethCurrentRate, solCurrentRate, adaCurrentRate, trxCurrentRate],
     );
 
     const accounts = useSelector(selectVisibleDeviceAccounts);
 
     const stakingAccounts = accounts.filter(
-        account => account.symbol === 'eth' || account.symbol === 'sol' || account.symbol === 'ada',
+        account =>
+            account.symbol === 'eth' ||
+            account.symbol === 'sol' ||
+            account.symbol === 'ada' ||
+            account.symbol === 'trx',
     );
 
-    const isStakingActive = useSelector(state =>
-        stakingAccounts.some(account => selectAccountIsStakingActive(state, account.key)),
-    );
     const deviceSupportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
 
     const ethNotActivated =
@@ -66,6 +66,10 @@ export const useStakingTableData = (): UseStakingTableDataResult => {
         deviceSupportedNetworkSymbols.includes('ada') &&
         !stakingAccounts.some(account => account.symbol === 'ada');
 
+    const trxNotActivated =
+        deviceSupportedNetworkSymbols.includes('trx') &&
+        !stakingAccounts.some(account => account.symbol === 'trx');
+
     const { displayedAccounts, isExpandable, isExpanded, toggleExpanded, hasAnyRewardsData } =
         useStakingAccountsVisibility({
             stakingAccounts,
@@ -73,22 +77,18 @@ export const useStakingTableData = (): UseStakingTableDataResult => {
             ethNotActivated,
             solNotActivated,
             adaNotActivated,
+            trxNotActivated,
         });
-
-    const isSectionOutdated = stakingAccounts.some(account =>
-        isCardanoStakedWithFiveBinaries(account),
-    );
 
     return {
         displayedAccounts,
         ethNotActivated,
         adaNotActivated,
         solNotActivated,
+        trxNotActivated,
         isExpandable,
         isExpanded,
         toggleExpanded,
         hasAnyRewardsData,
-        isStakingActive,
-        isSectionOutdated,
     };
 };

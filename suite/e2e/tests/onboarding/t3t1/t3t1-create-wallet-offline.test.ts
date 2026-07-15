@@ -1,12 +1,17 @@
+import { messages } from '@suite/intl';
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
-test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1', '@smoke'] }, () => {
+test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1'] }, () => {
     test.use({
         setupEmulator: false,
         electronConf: { offlineMode: true },
+        ignoreToastErrors: [
+            messages.TR_FIRMWARE_REVISION_CHECK_OTHER_ERROR.defaultMessage,
+            'Network request failed',
+        ],
     });
 
     test.beforeEach(async ({ onboardingPage }) => {
@@ -44,8 +49,6 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1', '@s
 
             await test.step('Device onboarding steps', async () => {
                 await onboardingPage.firmware.continueThroughFirmware();
-                await onboardingPage.passThroughAuthenticityCheck();
-                await page.waitForTimeout(500);
                 await onboardingPage.tutorial.skip();
             });
 

@@ -1,28 +1,23 @@
 import { useState } from 'react';
 
-import { Address, selectLabeledUnusedAddresses } from '@suite/address';
-import type { SelectLabeledUnusedAddressesState } from '@suite/address';
+import { Address, selectAddressLabelsForAccount } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
-import {
-    selectIsLegacyLabelingVisible,
-    selectLabelingDataForSelectedAccount,
-} from '@suite/metadata';
 import {
     selectCurrentFreshAddress,
     selectReceiveRevealedAddresses,
     showAddressThunk,
     useReceiveDisabled,
 } from '@suite/receive';
+import { getUsedAddressesList } from '@suite-common/address';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
-import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
-import { type SuiteSyncAddress } from '@suite-common/suite-sync-storage';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Row, Table, Text } from '@trezor/components';
 import { type AccountAddress } from '@trezor/connect';
+import { getAddressPathIndex } from '@trezor/crypto-utils';
+import { CaretDownIcon, CaretUpIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
@@ -47,14 +42,21 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
     const amount = formatNetworkAmount(addr.received || '0', symbol);
     const fresh = !addr.transfers;
     const isDisabled = locked || isReceiveDisabled;
+    const addressPathIndex = getAddressPathIndex(addr.path);
 
     return (
         <Table.Row>
             <Table.Cell>
-                <Text
-                    typographyStyle="body-md"
+                <Row
+                    gap={spacings.xxs}
+                    alignItems="center"
                     data-testid={`@wallet/receive/used-address/${index}`}
                 >
+                    {addressPathIndex !== undefined && (
+                        <Text typographyStyle="body-md" intent="neutral" priority="secondary">
+                            {addressPathIndex} /
+                        </Text>
+                    )}
                     <Labeling
                         payload={{
                             ...metadataPayload,
@@ -67,7 +69,7 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
                     >
                         {metadataPayload.value}
                     </Labeling>
-                </Text>
+                </Row>
             </Table.Cell>
             <Table.Cell align="end">
                 <ReceiveDisabledWrapper>
@@ -108,22 +110,24 @@ interface UsedAddressesProps {
 export const UsedAddresses = ({ account, pendingAddresses, locked }: UsedAddressesProps) => {
     const [limit, setLimit] = useState(DEFAULT_LIMIT);
     const dispatch = useDispatch();
-    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
-    const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
-    const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
     const currentFreshAddress = useSelector(state => selectCurrentFreshAddress(state, account.key));
     const revealedAddresses = useSelector(state =>
         selectReceiveRevealedAddresses(state, account.key),
     );
-    const labeledUnusedAddresses = useSelector((state: SelectLabeledUnusedAddressesState) =>
-        selectLabeledUnusedAddresses(state, account),
-    );
-    const suiteSyncAddressLabels = useSelector(state =>
-        isSuiteSyncEnabled
-            ? selectSuiteSyncAddressLabels(state, account.deviceState)
-            : returnStableArrayIfEmpty<SuiteSyncAddress>(),
+
+    const accountAddresses = account.addresses
+        ? account.addresses.used.concat(account.addresses.unused).map(({ address }) => address)
+        : [];
+
+    const addressLabels = useSelector(state =>
+        selectAddressLabelsForAccount(state, {
+            addresses: accountAddresses,
+            accountKey: account.key,
+            deviceStaticId: account.deviceState,
+        }),
     );
 
+    // For account based networks, the unuses addresses does not make sense.
     if (
         (account.networkType !== 'bitcoin' && account.networkType !== 'cardano') ||
         !account.addresses
@@ -131,23 +135,13 @@ export const UsedAddresses = ({ account, pendingAddresses, locked }: UsedAddress
         return null;
     }
 
-    const { used, unused } = account.addresses;
-    // find addresses from `unused` list that should be shown together with used ones
-    const revealed = unused.reduce(
-        (result, addr) => {
-            const revealed = revealedAddresses.find(u => u.path === addr.path);
-            const pending = pendingAddresses.includes(addr.address);
-            const labeled = labeledUnusedAddresses.find(u => u.path === addr.path);
-            const isCurrentFreshAddress = currentFreshAddress?.path === addr.path;
-            const isUsed = (revealed || pending || labeled) && !isCurrentFreshAddress;
-
-            return isUsed ? result.concat(addr) : result;
-        },
-        [] as typeof unused,
-    );
-    // TODO: add skipped addresses?
-    // add revealed addresses to `used` list
-    const list = used.concat(revealed).reverse();
+    const list = getUsedAddressesList({
+        account,
+        revealedAddresses,
+        pendingAddresses,
+        addressLabels,
+        currentFreshAddress,
+    });
 
     if (list.length < 1) {
         return null;
@@ -186,13 +180,7 @@ export const UsedAddresses = ({ account, pendingAddresses, locked }: UsedAddress
                                     defaultValue: addr.address,
                                     networkSymbol: account.symbol,
                                     accountDescriptor: account.descriptor,
-                                    value:
-                                        suiteSyncAddressLabels.find(
-                                            it => it.address === addr.address,
-                                        )?.label ??
-                                        (isLegacyLabelingVisible
-                                            ? addressLabels[addr.address]
-                                            : undefined),
+                                    value: addressLabels[addr.address] ?? undefined,
                                 }}
                                 onClick={() =>
                                     dispatch(
@@ -213,7 +201,7 @@ export const UsedAddresses = ({ account, pendingAddresses, locked }: UsedAddress
                             <Button
                                 intent="neutral"
                                 priority="secondary"
-                                iconRight="caretDown"
+                                iconRight={CaretDownIcon}
                                 onClick={() => setLimit(limit + 20)}
                                 data-testid="@wallet/receive/used-address/show-more"
                             >
@@ -225,7 +213,7 @@ export const UsedAddresses = ({ account, pendingAddresses, locked }: UsedAddress
                             <Button
                                 intent="neutral"
                                 priority="secondary"
-                                iconLeft="caretUp"
+                                iconLeft={CaretUpIcon}
                                 onClick={() => setLimit(DEFAULT_LIMIT)}
                             >
                                 <Translation id="TR_SHOW_LESS" />

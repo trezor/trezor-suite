@@ -17,13 +17,8 @@ import {
     networkAmountToSmallestUnit,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
-import { buildSendTransaction, toStroops } from '@trezor/blockchain-link-utils/src/stellar';
-import TrezorConnect, {
-    type FeeLevel,
-    type RipplePayment,
-    type StellarOperation,
-    type TokenInfo,
-} from '@trezor/connect';
+import TrezorConnect, { type FeeLevel, type RipplePayment, type TokenInfo } from '@trezor/connect';
+import stellar from '@trezor/network-stellar/runtime';
 import { StellarAssetType } from '@trezor/protobuf/src/definitions';
 import { BigNumber } from '@trezor/utils';
 
@@ -168,7 +163,7 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
         response.forEach((tx, index) => {
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
             const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
-            const feeLabel = predefinedLevel.label as FeeLevel['label'];
+            const feeLabel = predefinedLevel.label;
             resultLevels[feeLabel] = tx;
         });
 
@@ -312,22 +307,9 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                 asset = { type: StellarAssetType.NATIVE };
             }
 
-            let operation: StellarOperation;
-            if (destinationActivated) {
-                operation = {
-                    type: 'payment',
-                    asset,
-                    amount: toStroops(firstSignOutput.amount).toString(),
-                    destination: firstSignOutput.address,
-                };
-            } else {
-                operation = {
-                    type: 'createAccount',
-                    startingBalance: toStroops(firstSignOutput.amount).toString(),
-                    destination: firstSignOutput.address,
-                };
-            }
+            const { buildSendTransaction } = await stellar();
 
+            const testnet = isTestnet(selectedAccount.symbol);
             const transaction = buildSendTransaction({
                 descriptor: selectedAccount.descriptor,
                 sequence: selectedAccount.misc.stellarSequence,
@@ -337,37 +319,23 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                 amount: firstSignOutput.amount,
                 asset,
                 destinationTag: formState.destinationTag,
-                isTestnet: isTestnet(selectedAccount.symbol),
+                isTestnet: testnet,
             });
 
-            // It would be better if we could use `@trezor/connect-plugin-stellar`.
-            // const transformedTransaction = transformTransaction(selectedAccount.path, transaction);
-            const transformedTransaction = {
+            const xdrBase64 = transaction.toXDR();
+
+            response = await TrezorConnect.stellarSignTransaction({
                 device: {
                     path: device.path,
                     instance: device.instance,
                     state: device.state,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                 },
-                path: selectedAccount.path,
-                networkPassphrase: transaction.networkPassphrase,
-                transaction: {
-                    source: transaction.source,
-                    fee: Number.parseInt(transaction.fee, 10),
-                    sequence: transaction.sequence,
-                    memo: formState.destinationTag
-                        ? { type: 1, text: formState.destinationTag }
-                        : { type: 0 },
-                    timebounds: {
-                        minTime: 0,
-                        maxTime: 0,
-                    },
-                    operations: [operation],
-                },
                 payment_req: paymentRequests?.[0],
-                chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
-            };
-            response = await TrezorConnect.stellarSignTransaction(transformedTransaction);
+                path: selectedAccount.path,
+                xdrBase64,
+                testnet,
+            });
 
             if (response.success) {
                 const signature = Buffer.from(response.payload.signature, 'hex').toString('base64');

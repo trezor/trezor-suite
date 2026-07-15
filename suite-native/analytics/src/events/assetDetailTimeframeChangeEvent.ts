@@ -16,25 +16,29 @@ export const assetDetailTimeframeChangeEvent: EventDef<
     EventType.AssetDetailTimeframeChange
 > = {
     name: EventType.AssetDetailTimeframeChange,
-    descriptionTrigger: 'On every timeframe (scope) change of asset chart.',
+    descriptionTrigger:
+        'User changes the timeframe for the asset detail chart (e.g., 1d, 1w, 1m, 6m, 1y, All)',
     changelog: [{ version: '23.4.1', notes: 'added' }],
 
     attributes: {
         timeframe: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The selected timeframe for the asset detail graph',
+            description:
+                'The selected timeframe for the asset detail graph (e.g., `1d` for 1 day, `1w` for 1 week, `1m` for 1 month, `6m` for 6 months, `1y` for 1 year, `all` for all time)',
         },
         assetSymbol: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The symbol of the asset',
+            description: 'The network symbol of the asset being viewed (e.g., `btc`, `eth`, `ada`)',
         },
         tokenSymbol: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The symbols of the account tokens',
+            description:
+                'The symbol of the specific token being viewed (optional, only for token assets like ERC-20 tokens)',
         },
         tokenAddress: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The contract address of the account tokens',
+            description:
+                'The contract address of the specific token being viewed (optional, only for token assets)',
         },
     },
 };

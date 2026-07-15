@@ -3,12 +3,17 @@ import React, { useState } from 'react';
 import { type Meta, type StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
-// TODO: suite-common imports in non-suite packages should not be allowed
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { type IconName, icons } from '@suite-common/icons/src/icons';
+import * as generatedIcons from '@trezor/icons';
 import { typography } from '@trezor/theme';
+import { typedObjectEntries } from '@trezor/utils';
 
-import { Icon, type IconProps, allowedIconFrameProps, iconIntents, iconPriorities } from './Icon';
+import {
+    Icon,
+    type IconSharedProps,
+    allowedIconFrameProps,
+    iconIntents,
+    iconPriorities,
+} from './Icon';
 import { iconSizes } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { Input } from '../form/Input/Input';
@@ -77,7 +82,7 @@ const meta: Meta<typeof Render> = {
 };
 export default meta;
 
-const Render = (props: IconProps) => {
+const Render = (props: IconSharedProps) => {
     const [search, setSearch] = useState('');
     const [copied, setCopied] = useState<string | null>(null);
 
@@ -87,12 +92,12 @@ const Render = (props: IconProps) => {
         setTimeout(() => setCopied(null), 1000);
     };
 
-    const iconKeys = Object.keys(icons);
-    const filteredIconKeys = (iconKeys as IconName[]).filter(iconKey =>
+    const iconEntries = typedObjectEntries(generatedIcons);
+    const filteredIconEntries = iconEntries.filter(([iconKey]) =>
         new RegExp(search, 'i').test(iconKey),
     );
-    const filteredIconKeysWithLimit = filteredIconKeys.slice(0, MAX_RENDERED_ICONS);
-    const filteredIconsCount = filteredIconKeys.length;
+    const filteredIconEntriesWithLimit = filteredIconEntries.slice(0, MAX_RENDERED_ICONS);
+    const filteredIconsCount = filteredIconEntries.length;
 
     return (
         <>
@@ -108,12 +113,12 @@ const Render = (props: IconProps) => {
                 />
             </FloatingWrapper>
             <Wrapper>
-                {filteredIconKeysWithLimit.map(iconKey =>
+                {filteredIconEntriesWithLimit.map(([iconKey, IconComponent]) =>
                     copied === iconKey ? (
                         <CopiedText key={iconKey}>Copied to clipboard!</CopiedText>
                     ) : (
                         <IconWrapper key={iconKey} onClick={() => copy(iconKey)}>
-                            <Icon {...props} name={iconKey} />
+                            <Icon {...props} as={IconComponent} />
                             <IconText>{iconKey}</IconText>
                         </IconWrapper>
                     ),

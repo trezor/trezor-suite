@@ -1,25 +1,26 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
-
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import { selectIsMetadataEnabled } from '@suite/metadata';
 import { openDeferredModal } from '@suite/modal';
-import { selectIsDebugModeActive } from '@suite/settings';
 import { selectDesktopSuiteSyncInteraction } from '@suite/suite-sync';
 import {
     type AddressCorrection,
     autocorrectAddress,
+    checkAddressChecksum,
     isAddressDeprecated,
     isAddressValid,
     isTaprootAddress,
+    toChecksumAddress,
 } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { isAmountPresent, parseTransferUri } from '@suite-common/transfer-uri';
 import { formInputsMaxLength } from '@suite-common/validators';
 import type { Output } from '@suite-common/wallet-types';
 import {
@@ -29,6 +30,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { Icon, IconButton, Input, Link, Row, Text } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
+import { CheckIcon, InfoIcon, QrCodeIcon, WarningCircleIcon, XIcon } from '@trezor/icons';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { type TimerId } from '@trezor/type-utils';
@@ -45,7 +47,6 @@ import { InputError } from 'src/components/wallet';
 import { type InputErrorProps } from 'src/components/wallet/InputError';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
-import { getProtocolInfo } from 'src/utils/suite/protocol';
 import { captureSentryMessage } from 'src/utils/suite/sentry';
 
 import { DevSelfAddress } from './DevSelfAddress';
@@ -132,87 +133,98 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             return;
         }
 
-        const protocol = getProtocolInfo(uri);
+        const result = parseTransferUri(uri);
 
-        if (protocol) {
+        let parsedScheme: string | undefined;
+        if (result.success) {
+            parsedScheme = result.payload.scheme;
+        } else if (result.error.type === 'UNKNOWN_SCHEME') {
+            parsedScheme = result.error.scheme;
+        }
+
+        if (parsedScheme !== undefined) {
             analytics.report({
                 type: events.sendQrScanEvent.name,
                 payload: {
-                    scheme: protocol.scheme,
-                    isAmountPresent:
-                        ('amount' in protocol && protocol.amount !== undefined) ||
-                        ('tokenAmount' in protocol && protocol.tokenAmount !== undefined),
+                    scheme: parsedScheme,
+                    isAmountPresent: result.success && isAmountPresent(result.payload),
                     networkSymbol: symbol,
                 },
             });
         }
 
-        if (protocol && 'error' in protocol) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'qr-unknown-scheme-protocol',
-                    scheme: protocol.scheme,
-                    error: protocol.error,
-                }),
-            );
-
-            captureSentryMessage(`QR code with unknown scheme: ${protocol.scheme}`);
-
-            return;
-        }
-
-        if (protocol && 'scheme' in protocol) {
-            const isSymbolValidProtocol = getNetworkSymbolForProtocol(protocol.scheme) === symbol; //is protocol valid for this account network
-            if (!isSymbolValidProtocol) {
+        if (!result.success) {
+            if (result.error.type === 'UNKNOWN_SCHEME') {
                 dispatch(
                     notificationsActions.addToast({
-                        type: 'qr-incorrect-coin-scheme-protocol',
-                        coin: capitalizeFirstLetter(protocol.scheme),
+                        type: 'qr-unknown-scheme-protocol',
+                        scheme: result.error.scheme,
+                        error: 'Unknown protocol',
                     }),
                 );
+
+                captureSentryMessage(`QR code with unknown scheme: ${result.error.scheme}`);
 
                 return;
             }
 
-            setValue(inputName, protocol.address, { shouldValidate: true });
+            if (isAddressValid(uri, symbol)) {
+                setValue(inputName, uri, { shouldValidate: true });
 
-            if (protocol.token) {
-                // ERC-681: set token contract address
-                setValue(`outputs.${outputId}.token`, protocol.token, {
-                    shouldDirty: true,
-                });
+                composeTransaction(inputName);
+            } else {
+                dispatch(notificationsActions.addToast({ type: 'qr-incorrect-address' }));
             }
-
-            if (protocol.amount) {
-                setValue(amountInputName, String(protocol.amount), {
-                    shouldValidate: true,
-                });
-            } else if (protocol.tokenAmount && protocol.token) {
-                // ERC-681: convert raw uint256 amount using token decimals
-                const token = account.tokens?.find(
-                    t => t.contract.toLowerCase() === protocol.token?.toLowerCase(),
-                );
-                if (token) {
-                    setValue(
-                        amountInputName,
-                        convertAmountSubunitsToUnits(protocol.tokenAmount, token.decimals),
-                        { shouldValidate: true },
-                    );
-                }
-            }
-
-            composeTransaction(amountInputName);
 
             return;
         }
 
-        if (isAddressValid(uri, symbol)) {
-            setValue(inputName, uri, { shouldValidate: true });
+        const { scheme, address } = result.payload;
 
-            composeTransaction(inputName);
-        } else {
-            dispatch(notificationsActions.addToast({ type: 'qr-incorrect-address' }));
+        if (getNetworkSymbolForProtocol(scheme) !== symbol) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'qr-incorrect-coin-scheme-protocol',
+                    coin: capitalizeFirstLetter(scheme),
+                }),
+            );
+
+            return;
         }
+
+        setValue(inputName, address, { shouldValidate: true });
+
+        if (result.payload.format === 'erc681') {
+            const { token, tokenAmount } = result.payload;
+
+            if (token) {
+                setValue(`outputs.${outputId}.token`, token, { shouldDirty: true });
+
+                if (tokenAmount) {
+                    const accountToken = account.tokens?.find(
+                        t => t.contract.toLowerCase() === token.toLowerCase(),
+                    );
+                    if (accountToken) {
+                        setValue(
+                            amountInputName,
+                            convertAmountSubunitsToUnits(tokenAmount, accountToken.decimals),
+                            { shouldValidate: true },
+                        );
+                    }
+                }
+            }
+        } else {
+            if (result.payload.amount) {
+                setValue(amountInputName, result.payload.amount, { shouldValidate: true });
+            }
+            if (result.payload.label) {
+                setValue(`outputs.${outputId}.label`, result.payload.label, {
+                    shouldValidate: true,
+                });
+            }
+        }
+
+        composeTransaction(amountInputName);
     }, [
         account.tokens,
         amountInputName,
@@ -239,7 +251,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     learnMoreUrl: addressDeprecatedUrl ? ALL_URLS[addressDeprecatedUrl] : undefined,
                 };
             case 'evmChecks':
-                if (networkType === 'ethereum' && !checkAddressCheckSum(address)) {
+                if (networkType === 'ethereum' && !checkAddressChecksum(address)) {
                     return {
                         buttonProps: {
                             onClick: () => {
@@ -371,12 +383,11 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
                 // 1. Validate address checksum.
                 // Eth addresses are valid without checksum but Trezor displays them as checksummed.
-                if (networkType === 'ethereum' && !checkAddressCheckSum(address)) {
+                if (networkType === 'ethereum' && !checkAddressChecksum(address)) {
                     const checksumAndUsageValidationResult = checkIsAddressNotUsedNotChecksummed(
                         address,
                         payload.history,
-                        inputName,
-                        setValue,
+                        checksummed => setValue(inputName, checksummed, { shouldValidate: true }),
                         setHasAddressChecksummed,
                     );
                     if (checksumAndUsageValidationResult) {
@@ -460,15 +471,15 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
     const getBottomTextIconComponent = () => {
         if (addressError) {
-            return <Icon name="warningCircle" size={16} intent="critical" />;
+            return <Icon as={WarningCircleIcon} size={16} intent="critical" />;
         }
 
         if (hasAddressChecksummed) {
-            return <Icon name="check" size={16} isDisabled={true} />;
+            return <Icon as={CheckIcon} size={16} isDisabled={true} />;
         }
 
         if (autocorrectMessage) {
-            return <Icon name="info" size={16} intent="info" />;
+            return <Icon as={InfoIcon} size={16} intent="info" />;
         }
 
         if (isAddressWithLabel) {
@@ -481,7 +492,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     return (
         <Input
             hasError={!!addressError}
-            rightContent={<Icon name="qrCode" onClick={handleQrClick} />}
+            rightContent={<Icon as={QrCodeIcon} onClick={handleQrClick} />}
             label={<Translation id="RECIPIENT_ADDRESS" />}
             labelLeft={
                 <Translation
@@ -529,7 +540,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     )}
                     {outputsCount > 1 && (
                         <IconButton
-                            icon="x"
+                            icon={XIcon}
                             intent="neutral"
                             size="small"
                             priority="secondary"

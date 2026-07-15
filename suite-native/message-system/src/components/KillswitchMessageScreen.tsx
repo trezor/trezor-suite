@@ -1,14 +1,20 @@
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { G } from '@mobily/ts-belt';
-
-import { messageSystemActions } from '@suite-common/message-system';
+import { useServices } from '@suite-common/dependency-injection';
+import {
+    messageSystemActions,
+    resolveMessageContent,
+    selectActiveKillswitchMessage,
+} from '@suite-common/message-system';
+import { selectReloadAppDep } from '@suite-common/suite-types';
 import { Box, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Translation, selectSupportedLanguageLocale } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
+import TrezorConnect from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { selectActiveKillswitchMessage } from '../messageSystemSelectors';
+const APP_RESTART_DELAY_MILLISECONDS = 100;
 
 const screenStyle = prepareNativeStyle(utils => ({
     flexGrow: 1,
@@ -36,12 +42,22 @@ const buttonsWrapperStyle = prepareNativeStyle(_ => ({
 
 export const KillswitchMessageScreen = () => {
     const dispatch = useDispatch();
+    const language = useSelector(selectSupportedLanguageLocale);
     const openLink = useOpenLink();
     const { applyStyle } = useNativeStyles();
+    const { reloadApp } = useServices(selectReloadAppDep);
 
-    const killswitch = useSelector(selectActiveKillswitchMessage);
+    const activeKillswitchMessage = useSelector(selectActiveKillswitchMessage);
 
-    if (!killswitch) return null;
+    // Destroy Connect instance, to prevent any device or backend interaction on the background.
+    // Connect won't init if there is an active killswitch (see initActions.init), but message system can be updated anytime later.
+    useEffect(() => {
+        if (activeKillswitchMessage) {
+            TrezorConnect.dispose();
+        }
+    }, [activeKillswitchMessage]);
+
+    if (!activeKillswitchMessage) return null;
 
     const {
         id: messageId,
@@ -50,15 +66,11 @@ export const KillswitchMessageScreen = () => {
         content,
         cta,
         dismissible: isDismissible,
-        category,
-    } = killswitch;
+    } = activeKillswitchMessage;
 
-    // TODO: We use only English locale in suite-native so far. When the localization to other
-    // languages is implemented, the language selection logic has to be added here.
-    const language = 'en';
-    const messageTitle = headline?.[language];
-    const messageContent = content[language];
-    const ctaLabel = cta?.label[language];
+    const messageTitle = headline ? resolveMessageContent(headline, language) : null;
+    const messageContent = resolveMessageContent(content, language);
+    const ctaLabel = cta ? resolveMessageContent(cta.label, language) : null;
     const ctaLink = cta?.link;
     const isExternalCta = cta?.action === 'external-link';
 
@@ -74,16 +86,13 @@ export const KillswitchMessageScreen = () => {
 
     const handleDismiss = () => {
         if (!isDismissible) return;
+        dispatch(messageSystemActions.dismissMessage({ id: messageId, category: 'feature' }));
 
-        const categories = G.isArray(category) ? category : [category];
-        categories.forEach(item => {
-            dispatch(
-                messageSystemActions.dismissMessage({
-                    id: messageId,
-                    category: item,
-                }),
-            );
-        });
+        // To reinitialize Connect, we need to restart the native app.
+        // Leave some time for DB persistence.
+        setTimeout(() => {
+            reloadApp();
+        }, APP_RESTART_DELAY_MILLISECONDS);
     };
 
     return (

@@ -4,6 +4,7 @@
         "node-loader",
         "@playwright/browser-chromium",
         "@playwright/browser-firefox",
-        "@playwright/browser-webkit"
+        "@playwright/browser-webkit",
+        "@trezor/suite-desktop"
     ]
 }

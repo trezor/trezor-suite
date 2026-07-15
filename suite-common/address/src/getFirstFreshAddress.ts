@@ -1,4 +1,8 @@
 import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
+import { comparePath } from '@trezor/crypto-utils';
+
+const isPathLowerThanAnyUsedPath = (path: string, usedPaths: string[]) =>
+    usedPaths.some(usedPath => comparePath(path, usedPath) < 0);
 
 export const getFreshAddresses = (
     account: Account,
@@ -20,10 +24,13 @@ export const getFreshAddresses = (
         return unused;
     }
 
+    const usedPaths = alreadyUsedAddresses.map(address => address.path);
+
     return unused.filter(
         address =>
             !alreadyUsedAddresses.find(receiveAddress => receiveAddress.path === address.path) &&
-            !pendingAddresses.includes(address.address),
+            !pendingAddresses.includes(address.address) &&
+            !isPathLowerThanAnyUsedPath(address.path, usedPaths),
     );
 };
 

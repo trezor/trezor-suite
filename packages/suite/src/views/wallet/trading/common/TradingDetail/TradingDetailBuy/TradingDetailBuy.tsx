@@ -10,7 +10,7 @@ import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { type TradingBuyType, selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { Box, BulletList, Card, Column, H3, Paragraph } from '@trezor/components';
+import { Box, Card, Column, H3, Paragraph, StepList } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
@@ -132,7 +132,7 @@ export const TradingDetailBuy = () => {
                                     trade={trade.data}
                                     provider={provider}
                                 />
-                                <BulletList.Item
+                                <StepList.Item
                                     state="pending"
                                     title={<Translation id="TR_BUY_COMPLETE" />}
                                 />

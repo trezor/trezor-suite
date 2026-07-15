@@ -32,14 +32,23 @@ type Attributes = {
 
 export const tradeExchangeEvent: EventDef<Attributes, EventType.TradeExchange> = {
     name: EventType.TradeExchange,
-    descriptionTrigger: 'fired on every step during the exchange flow',
+    descriptionTrigger:
+        'User navigates through the exchange/swap flow, with tracking at each step of the process',
     changelog: [{ version: '25.5.2', notes: 'added' }],
 
     attributes: {
         action: {
             changelog: [{ version: '25.5.2', notes: 'added' }],
+            description:
+                'The user action in the exchange flow: `continue` to proceed, `cancel` to exit',
         },
         step: {
+            description: `The current step in the exchange flow:
+- \`exchange-form\`: initial exchange form
+- \`receive-address\`: selecting receive address
+- \`create-approval\`: token approval required
+- \`already-approved\`: token approval already exists
+- \`confirm-and-send\`: final confirmation`,
             changelog: [
                 { version: '25.5.2', notes: 'added' },
                 { version: '26.6.1', notes: 'removed `offers-form` value' },
@@ -67,7 +76,7 @@ export const tradeExchangeEvent: EventDef<Attributes, EventType.TradeExchange> =
         },
         receiveCryptoContractAddress: {
             changelog: [{ version: '25.5.2', notes: 'added' }],
-            description: 'contract address of the ‘From’ crypto (if it is a token)',
+            description: 'contract address of the ‘To’ crypto (if it is a token)',
         },
         exchangeName: {
             changelog: [{ version: '25.5.2', notes: 'added' }],

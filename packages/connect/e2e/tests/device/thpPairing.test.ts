@@ -1,7 +1,7 @@
 import { vi } from 'vitest';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-import TrezorConnect, { type ConnectSettings, type Device, type UiEvent } from '@trezor/connect';
+import TrezorConnect, { type Device, type ThpSettings, type UiEvent } from '@trezor/connect';
 
 import { getController, initTrezorConnect, restartEmu, setup } from '../../common.setup';
 
@@ -16,7 +16,7 @@ describe('THP pairing', () => {
         TrezorConnect.dispose();
     });
 
-    const waitForDevice = async (settings: Partial<ConnectSettings['thp']>) => {
+    const waitForDevice = async (settings: Partial<ThpSettings>) => {
         await initTrezorConnect(controller, {
             pendingTransportEvent: false,
             thp: {

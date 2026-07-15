@@ -4,6 +4,8 @@
     "references": [
         { "path": "../intl" },
         { "path": "../onboarding-components" },
-        { "path": "../../packages/components" }
+        { "path": "../../packages/components" },
+        { "path": "../../packages/icons" },
+        { "path": "../../packages/theme" }
     ]
 }

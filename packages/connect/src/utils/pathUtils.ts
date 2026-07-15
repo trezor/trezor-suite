@@ -8,15 +8,19 @@ import type {
     ProtoWithAddressN,
     ProtoWithDerivationPath,
 } from '@trezor/connect-common/src/types/params';
+import {
+    HD_HARDENED_PATH_PART,
+    fromHardenedPathPart,
+    getHDPath as parseHDPath,
+    toHardenedPathPart,
+} from '@trezor/crypto-utils';
+import { arrayPartition } from '@trezor/utils';
 
-export const HD_HARDENED = 0x80000000;
-export const toHardened = (n: number) => (n | HD_HARDENED) >>> 0;
-export const fromHardened = (n: number) => (n & ~HD_HARDENED) >>> 0;
 export const getSlip44ByPath = (path: number[]) => {
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const slip44: number = path[1];
 
-    return fromHardened(slip44);
+    return fromHardenedPathPart(slip44);
 };
 
 const PATH_NOT_VALID = ERRORS.TypedError('Method_InvalidParameter', 'Not a valid path');
@@ -26,40 +30,28 @@ const PATH_NEGATIVE_VALUES = ERRORS.TypedError(
 );
 
 export const getHDPath = (path: string): number[] => {
-    const parts = path.toLowerCase().split('/');
-    if (parts[0] !== 'm') throw PATH_NOT_VALID;
+    const result = parseHDPath(path);
 
-    return parts
-        .filter(p => p !== 'm' && p !== '')
-        .map(p => {
-            let hardened = false;
-            if (p.endsWith("'")) {
-                hardened = true;
-                p = p.substring(0, p.length - 1);
-            }
-            let n = parseInt(p, 10);
-            if (Number.isNaN(n)) {
-                throw PATH_NOT_VALID;
-            } else if (n < 0) {
-                throw PATH_NEGATIVE_VALUES;
-            }
-            if (hardened) {
-                // hardened index
-                n = toHardened(n);
-            }
+    if (result.success) {
+        return result.payload;
+    }
 
-            return n;
-        });
+    if (result.error.type === 'PATH_NEGATIVE_VALUES') {
+        throw PATH_NEGATIVE_VALUES;
+    }
+
+    throw PATH_NOT_VALID;
 };
 
-export const isSegwitPath = (path: number[] | undefined) =>
-    Array.isArray(path) && path[0] === toHardened(49);
+const isSegwitPath = (path: number[] | undefined) =>
+    Array.isArray(path) && path[0] === toHardenedPathPart(49);
 
 const isBech32Path = (path: number[] | undefined) =>
-    Array.isArray(path) && path[0] === toHardened(84);
+    Array.isArray(path) && path[0] === toHardenedPathPart(84);
 
 export const isTaprootPath = (path: number[] | undefined) =>
-    Array.isArray(path) && (path[0] === toHardened(86) || path[0] === toHardened(10025));
+    Array.isArray(path) &&
+    (path[0] === toHardenedPathPart(86) || path[0] === toHardenedPathPart(10025));
 
 export const getAccountType = (path: number[] | undefined) => {
     if (isTaprootPath(path)) return 'p2tr';
@@ -79,7 +71,7 @@ export const getScriptType = (
 
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const p0: number = path[0];
-    const p1 = fromHardened(p0);
+    const p1 = fromHardenedPathPart(p0);
     switch (p1) {
         case 44:
             return 'SPENDADDRESS';
@@ -90,7 +82,7 @@ export const getScriptType = (
 
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
             const p3raw: number = path[3];
-            const p3 = fromHardened(p3raw);
+            const p3 = fromHardenedPathPart(p3raw);
 
             switch (p3) {
                 case 0:
@@ -124,7 +116,7 @@ export const getOutputScriptType = (path?: number[]): PROTO.ChangeOutputScriptTy
 
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const pRaw: number = path[0];
-    const p = fromHardened(pRaw);
+    const p = fromHardenedPathPart(pRaw);
 
     switch (p) {
         case 44:
@@ -136,7 +128,7 @@ export const getOutputScriptType = (path?: number[]): PROTO.ChangeOutputScriptTy
 
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
             const p3raw2: number = path[3];
-            const p3 = fromHardened(p3raw2);
+            const p3 = fromHardenedPathPart(p3raw2);
             switch (p3) {
                 case 0:
                     return 'PAYTOMULTISIG';
@@ -187,8 +179,8 @@ export const validatePath = (path: DerivationPath, length = 0, base = false): nu
 export const getSerializedPath = (path: number[]) =>
     `m/${path
         .map(i => {
-            const s = (i & ~HD_HARDENED).toString();
-            if (i & HD_HARDENED) {
+            const s = (i & ~HD_HARDENED_PATH_PART).toString();
+            if (i & HD_HARDENED_PATH_PART) {
                 return `${s}'`;
             }
 
@@ -221,4 +213,54 @@ export const getLabel = (label: string, coinInfo?: CoinInfo) => {
     }
 
     return label.replace('#NETWORK', '');
+};
+
+/** @deprecated Temporary diagnostic method */
+export const __btcUnknownTxDebug__ = (
+    description: string,
+    inputs: { address_n?: number[]; orig_hash?: any }[],
+    addresses:
+        | { used: { path: string }[]; unused: { path: string }[]; change: { path: string }[] }
+        | undefined,
+) => {
+    try {
+        if (inputs.some(i => i.orig_hash)) {
+            // In RBF, account's change addresses are modified so the right change address is selected,
+            // therefore it's expected that the inputs can't be found in account's addresses.
+            return;
+        }
+
+        const accountAddressPaths = new Set(
+            addresses
+                ? addresses.change.concat(addresses.used, addresses.unused).map(({ path }) => path)
+                : [],
+        );
+
+        const [matched, unmatched] = arrayPartition(
+            inputs
+                .map(input => input.address_n)
+                .filter((addr): addr is number[] => Array.isArray(addr) && addr.length > 0),
+            addr => accountAddressPaths.has(getSerializedPath(addr)),
+        );
+
+        const toReadable = (address_n: number[]) =>
+            `${address_n[address_n.length - 2] ? 'change' : 'receive'}/${address_n[address_n.length - 1]}`;
+
+        if (unmatched.length) {
+            // [btc-unknown-tx-debug] the selected account does not contain paths used by the tx inputs.
+            // This can make Connect build a pending tx with wrong or empty vin addresses, which can then
+            // classify the optimistic pending tx incorrectly before the backend response arrives.
+            // Intentionally no paths / addresses / descriptor / txid: these reach Sentry and could
+            // deanonymize the user. accountType + symbol are low-cardinality, non-PII.
+            console.error(`[btc-unknown-tx-debug-v2] ${description}`, {
+                knownUsedCount: addresses?.used.length,
+                knownUnusedCount: addresses?.unused.length,
+                knownChangeCount: addresses?.change.length,
+                matchedInputs: matched.map(toReadable),
+                unmatchedInputs: unmatched.map(toReadable),
+            });
+        }
+    } catch {
+        // empty
+    }
 };

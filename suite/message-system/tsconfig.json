@@ -1,0 +1,37 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "include": ["."],
+    "references": [
+        {
+            "path": "../../suite-common/analytics-redux"
+        },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
+        {
+            "path": "../../suite-common/message-system"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/validators"
+        },
+        { "path": "../external-links" },
+        { "path": "../intl" },
+        { "path": "../router" },
+        { "path": "../settings" },
+        { "path": "../tor" },
+        { "path": "../../packages/components" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/dom-utils" },
+        { "path": "../../packages/icons" },
+        {
+            "path": "../../packages/product-components"
+        },
+        { "path": "../../packages/react-utils" },
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/utils" }
+    ]
+}

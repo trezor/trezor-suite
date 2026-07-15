@@ -100,6 +100,7 @@ export const Feature = {
         yield: {
             deposit: 'earn.yield.deposit',
             withdraw: 'earn.yield.withdraw',
+            redeem: 'earn.yield.redeem',
             claim: 'earn.yield.claim',
         } as const satisfies Record<YieldFlowType, string>,
     },
@@ -141,7 +142,7 @@ const getEarnYieldContext = (type: YieldFlowType) => `earn.yield.${type}` as con
 export type SettingsCategory = 'general' | 'device' | 'networks' | 'debug';
 const getSettingsContext = (category: SettingsCategory) => `settings.${category}` as const;
 
-export type LegalContextKey = 'gateway';
+type LegalContextKey = 'gateway';
 const getLegalContext = (key: LegalContextKey) => `legal.${key}` as const;
 
 /**

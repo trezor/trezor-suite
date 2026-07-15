@@ -18,6 +18,7 @@ export enum RootStackRoutes {
     ClaimReview = 'ClaimReview',
     ClaimTransactionDataReview = 'ClaimTransactionDataReview',
     DevUtils = 'DevUtils',
+    MessageSystemManager = 'MessageSystemManager',
     AccountSettings = 'AccountSettings',
     TransactionDetailStack = 'TransactionDetailStack',
     ReceiveStack = 'ReceiveStack',
@@ -50,6 +51,7 @@ export enum RootStackRoutes {
     TradingExchangeOutputsReview = 'TradingExchangeOutputsReview',
     ReceiveAccounts = 'ReceiveAccounts',
     TradingHistory = 'TradingHistory',
+    TradingBuyPreview = 'TradingBuyPreview',
 }
 
 export enum AppTabsRoutes {
@@ -242,13 +244,19 @@ export enum EarnStackRoutes {
 export enum YieldStackRoutes {
     HowYieldWorks = 'HowYieldWorks',
     YieldConsents = 'YieldConsents',
+    YieldClaim = 'YieldClaim',
+    YieldClaimReview = 'YieldClaimReview',
+    YieldClaimComplete = 'YieldClaimComplete',
     YieldDepositApproval = 'YieldDepositApproval',
     YieldDeposit = 'YieldDeposit',
     YieldDepositRevoke = 'YieldDepositRevoke',
+    YieldWithdraw = 'YieldWithdraw',
     YieldDepositApprovalReview = 'YieldDepositApprovalReview',
     YieldDepositRevokeReview = 'YieldDepositRevokeReview',
     YieldDepositReview = 'YieldDepositReview',
+    YieldWithdrawReview = 'YieldWithdrawReview',
     YieldDepositComplete = 'YieldDepositComplete',
+    YieldWithdrawComplete = 'YieldWithdrawComplete',
 }
 
 export enum ReceiveStackRoutes {
@@ -279,13 +287,14 @@ export enum SettingsStackRoutes {
     SettingsSupport = 'SettingsSupport',
     SettingsAppLog = 'SettingsAppLog',
     SettingsNetworks = 'SettingsNetworks',
+    SettingsNetworkBackends = 'SettingsNetworkBackends',
     SettingsSuiteSync = 'SettingsSuiteSync',
+    SettingsSecurity = 'SettingsSecurity',
     SettingsAdvanced = 'SettingsAdvanced',
     SettingsDustPhishing = 'SettingsDustPhishing',
     SettingsExperimental = 'SettingsExperimental',
     TurnOffDeviceAuthenticityCheck = 'TurnOffDeviceAuthenticityCheck',
     TurnOffFirmwareAuthenticityCheck = 'TurnOffFirmwareAuthenticityCheck',
-    BitcoinBackends = 'BitcoinBackends',
     SettingsTradingLocation = 'SettingsTradingLocation',
 }
 

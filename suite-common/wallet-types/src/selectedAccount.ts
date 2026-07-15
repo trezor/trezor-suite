@@ -4,7 +4,7 @@ import { type Account, type WalletParams } from './account';
 
 // 100% view
 // // Account loaders
-export interface SelectedAccountLoading {
+interface SelectedAccountLoading {
     status: 'loading';
     loader:
         | 'waiting-for-device' // No selectedDevice
@@ -28,15 +28,28 @@ export interface SelectedAccountLoaded {
 export type SelectedAccountException =
     | {
           status: 'exception';
-          loader: 'discovery-error' | 'discovery-empty'; // No network enabled in settings
+          loader: 'discovery-error'; // Account discovery failed
+          account?: Account;
+          network?: Network;
+          params?: WalletParams;
+      }
+    | {
+          status: 'exception';
+          loader: 'discovery-empty'; // No network enabled in settings
           account?: undefined;
           network?: Network;
           params?: WalletParams;
       }
     | {
           status: 'exception';
+          loader: 'account-not-loaded'; // Account discovery failed
+          account: Account;
+          network: Network;
+          params: WalletParams;
+      }
+    | {
+          status: 'exception';
           loader:
-              | 'account-not-loaded' // Account discovery failed
               | 'account-not-enabled' // Requested account network is not enabled in settings
               | 'account-not-exists'; // Requested account network is not listed in `networks` (@suite-common/wallet-config)
           account?: undefined;
@@ -44,7 +57,7 @@ export type SelectedAccountException =
           params: WalletParams;
       };
 
-export type SelectedAccountNone = {
+type SelectedAccountNone = {
     status: 'none';
     loader?: undefined;
     account?: undefined;

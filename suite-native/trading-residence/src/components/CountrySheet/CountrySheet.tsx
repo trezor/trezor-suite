@@ -2,14 +2,14 @@ import { memo, useCallback, useMemo } from 'react';
 import { Keyboard } from 'react-native';
 
 import { type TradingCountryOption, useCountryFilteredData } from '@suite-common/trading';
-import { Divider } from '@suite-native/atoms';
+import { type BottomSheetFlashListHandleProps, Divider } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { BottomSheetSectionList, SearchableSheetHeader } from '@suite-native/trading-atoms';
 
 import { CountryListEmptyComponent } from './CountryListEmptyComponent';
 import { CountryListItem } from './CountryListItem';
 
-export type CountrySheetProps = {
+type CountrySheetProps = {
     isVisible: boolean;
     onClose: () => void;
     onCountrySelect: (symbol: TradingCountryOption) => void;
@@ -30,9 +30,9 @@ export const CountrySheet = memo(
 
         // we need to keep stable callback reference, otherwise header will be re-mounted on every keystroke
         const renderHandle = useCallback(
-            () => (
+            ({ closeSheet }: BottomSheetFlashListHandleProps) => (
                 <SearchableSheetHeader
-                    onClose={onClose}
+                    onClose={closeSheet}
                     title={<Translation id="tradingResidence.countrySheet.title" />}
                     onFilterChange={setFilterValue}
                     searchInputTestId={searchInputTestId}
@@ -41,14 +41,8 @@ export const CountrySheet = memo(
                     )}
                 />
             ),
-            [onClose, setFilterValue, translate, searchInputTestId],
+            [setFilterValue, translate, searchInputTestId],
         );
-
-        const onCountrySelectCallback = (country: TradingCountryOption) => {
-            Keyboard.dismiss();
-            onCountrySelect(country);
-            onClose();
-        };
 
         const listData = useMemo(
             () => [
@@ -62,21 +56,26 @@ export const CountrySheet = memo(
             [filteredData],
         );
 
-        // re-mount FLashList component when filterValue changes (resets scroll position)
-        const flashListKey = 'countries_list-' + filterValue;
-
         return (
             <BottomSheetSectionList<TradingCountryOption>
                 isVisible={isVisible}
                 onClose={onClose}
                 ListEmptyComponent={<CountryListEmptyComponent />}
                 handleComponent={renderHandle}
-                renderItem={item => (
-                    <CountryListItem {...item} onPress={() => onCountrySelectCallback(item)} />
+                renderItem={(item, _config, { closeSheet }) => (
+                    <CountryListItem
+                        {...item}
+                        onPress={() => {
+                            Keyboard.dismiss();
+                            onCountrySelect(item);
+                            closeSheet();
+                        }}
+                    />
                 )}
                 data={listData}
                 keyExtractor={keyExtractor}
-                flashListKey={flashListKey}
+                // reset scroll position when filterValue changes
+                scrollResetKey={filterValue}
                 extraData={selectedCountryId}
                 testID={bottomSheetTestId}
                 ItemSeparatorComponent={ItemSeparator}

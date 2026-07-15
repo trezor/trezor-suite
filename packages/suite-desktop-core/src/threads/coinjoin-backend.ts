@@ -2,7 +2,7 @@ import { isDevEnv } from '@suite-common/suite-utils';
 import { CoinjoinBackend, type CoinjoinBackendSettings } from '@trezor/coinjoin';
 import { createInterceptor } from '@trezor/request-manager';
 
-import { onionDomain } from '../config';
+import { trezorIoOnionDomain } from '../config';
 import { createThread } from '../libs/thread';
 
 type BackgroundCoinjoinBackendSettings = CoinjoinBackendSettings & {
@@ -31,14 +31,14 @@ class BackgroundCoinjoinBackend extends CoinjoinBackend {
  * For Coinjoin backend we only need to allow our backends to do discovery:
  * download block-filters, download blocks and transactions form mempool (via our backends).
  */
-const coinjoinWhitelist = ['localhost', '127.0.0.1', 'trezor.io', onionDomain];
+const coinjoinWhitelist = ['localhost', '127.0.0.1', 'trezor.io', trezorIoOnionDomain];
 
 const init = (settings: BackgroundCoinjoinBackendSettings) => {
     const backend = new BackgroundCoinjoinBackend(settings);
 
     createInterceptor({
         // @ts-expect-error: backend emitter is strongly typed. there is no interceptor event
-        handler: event => backend.emit('interceptor' as any, event),
+        handler: event => backend.emit('interceptor', event),
         getTorSettings: () => backend.torSettings,
         allowTorBypass: isDevEnv,
         notRequiredTorDomainsList: ['127.0.0.1', 'localhost', '.sldev.cz'],

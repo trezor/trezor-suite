@@ -38,13 +38,9 @@ const steps = [
         id: 'deposit',
         label: <Translation id="earn.yieldDepositFlowScreen.depositTransactionStepTitle" />,
     },
-    {
-        id: 'complete',
-        label: <Translation id="earn.yieldDepositFlowScreen.depositCompleteStepTitle" />,
-    },
 ] as const satisfies EarnModalStep[];
 
-type YieldDepositStepIndex = 0 | 1 | 2;
+type YieldDepositStepIndex = 0 | 1;
 
 type YieldDepositStepCardProps = {
     currentStepIndex: YieldDepositStepIndex;

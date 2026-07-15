@@ -1,29 +1,32 @@
 import { Translation } from '@suite/intl';
-import { BulletList } from '@trezor/components';
+import { StepList } from '@trezor/components';
 
 import { EarnInfoRow } from './EarnInfoRow';
 
 interface YieldWithdrawingInfoProps {
-    supplySymbol: string;
+    depositSymbol: string;
 }
 
-export const YieldWithdrawingInfo = ({ supplySymbol }: YieldWithdrawingInfoProps) => (
-    <BulletList bulletGap={12} gap={16} bulletSize="small" titleGap={2}>
+export const YieldWithdrawingInfo = ({ depositSymbol }: YieldWithdrawingInfoProps) => (
+    <StepList bulletGap={12} gap={16} bulletSize="small" titleGap={2}>
         <EarnInfoRow
             heading={<Translation id="TR_EARN_SIGN_WITHDRAWAL_TRANSACTION" />}
             subheading={
                 <Translation
                     id="TR_EARN_YIELD_WITHDRAW_USES_VAULT_TOKENS_SUB"
-                    values={{ supplySymbol }}
+                    values={{ supplySymbol: depositSymbol }}
                 />
             }
             content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
         />
         <EarnInfoRow
             heading={
-                <Translation id="TR_EARN_YIELD_RECEIVE_IN_ACCOUNT" values={{ supplySymbol }} />
+                <Translation
+                    id="TR_EARN_YIELD_RECEIVE_IN_ACCOUNT"
+                    values={{ supplySymbol: depositSymbol }}
+                />
             }
             content={{ text: <Translation id="TR_EARN_INSTANTLY" /> }}
         />
-    </BulletList>
+    </StepList>
 );

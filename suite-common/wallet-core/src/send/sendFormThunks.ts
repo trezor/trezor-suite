@@ -16,6 +16,7 @@ import {
     type PrecomposedLevelsCardano,
     type PrecomposedTransactionFinal,
     type PrecomposedTransactionFinalBumpFeeRbf,
+    type PrecomposedTransactionFinalCancelRbf,
     type PrecomposedTransactionFinalCardano,
 } from '@suite-common/wallet-types';
 import {
@@ -29,11 +30,12 @@ import {
     getMevProtectedTxData,
     getPendingAccount,
     hasNetworkFeatures,
+    isAllowanceUnlimited,
     isCardanoTx,
     isEvmApprovalTxByTextSignature,
     isEvmYieldTxByTextSignature,
     isExchangeTradingForm,
-    isMaxAllowance,
+    isRbfCancelTransaction,
     subunitsToUnits,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
@@ -78,10 +80,6 @@ import {
     type SignTransactionError,
     type SignTransactionTimeoutError,
 } from './sendFormTypes';
-import {
-    composeTronTransactionFeeLevelsThunk,
-    signTronSendFormTransactionThunk,
-} from './tron/sendFormTronThunks';
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 import { syncAccountsWithBlockchainThunk } from '../blockchain/blockchainThunks';
@@ -90,11 +88,16 @@ import {
     selectBitcoinAmountUnit,
     selectIsNetworkReserveEnabled,
 } from '../settings/walletSettingsReducer';
+import { transactionsActions } from '../transactions/transactionsActions';
 import {
     addFakePendingCardanoTxThunk,
     addFakePendingEvmTxThunk,
     addFakePendingTxThunk,
 } from '../transactions/transactionsThunks';
+import {
+    composeTronTransactionFeeLevelsThunk,
+    signTronSendFormTransactionThunk,
+} from './tron/sendFormTronThunks';
 
 export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
     `${SEND_MODULE_PREFIX}/convertSendFormDraftsBtcAmountUnitsThunk`,
@@ -132,7 +135,7 @@ export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
                     : convertAmountSubunitsToUnits;
 
             const updatedDraft = cloneObject(draft);
-            const amountDecimals = getAccountDecimals(relatedAccount.symbol)!;
+            const amountDecimals = getAccountDecimals(relatedAccount.symbol);
 
             updatedDraft.outputs.forEach(output => {
                 if (output.amount && areSatsSupported) {
@@ -218,6 +221,7 @@ export const composeSendFormTransactionFeeLevelsThunk = createThunk<
             return rejectWithValue(
                 response?.payload ?? {
                     error: 'fee-levels-compose-failed',
+                    message: isRejected(response) ? response.error.message : undefined,
                 },
             );
         }
@@ -300,6 +304,27 @@ export const synchronizeSentTransactionThunk = createThunk(
                 }),
             );
             dispatch(accountsActions.updateAccount(selectedAccount));
+
+            // EVM cancel/bump: when the precomposed tx replaces a prior pending tx (identified by
+            // prevTxid), evict the old tx from the store immediately. The backend notification is
+            // delayed, and keeping the replaced tx visible would show the user a stale pending entry.
+            // blockchainGetTransactions is called to confirm the old tx is truly gone from the
+            // mempool before the local removal takes effect; its response is not awaited because we
+            // dispatch removeTransaction optimistically and the backend will correct any discrepancy
+            // on the next account sync.
+            if ('prevTxid' in precomposedTransaction && precomposedTransaction.prevTxid) {
+                const { prevTxid } = precomposedTransaction;
+                void TrezorConnect.blockchainGetTransactions({
+                    txs: [prevTxid],
+                    coin: selectedAccount.symbol,
+                });
+                dispatch(
+                    transactionsActions.removeTransaction({
+                        account: selectedAccount,
+                        txs: [{ txid: prevTxid }],
+                    }),
+                );
+            }
         } else {
             // there is no point in fetching account data right after tx submit
             //  as the account will update only after the tx is confirmed
@@ -366,7 +391,11 @@ export const pushSendFormTransactionThunk = createThunk<
 
             if (evmApprovalData && token) {
                 const amountString = evmApprovalData.amount.toString();
-                const isInfiniteApproval = isMaxAllowance(amountString);
+                const isInfiniteApproval = isAllowanceUnlimited({
+                    amount: amountString,
+                    decimals: token.decimals,
+                    isSubunit: true,
+                });
                 const amount = subunitsToUnits({
                     value: asAmountSubunit(new BigNumber(amountString)),
                     decimals: token.decimals,
@@ -471,10 +500,11 @@ export const pushSendFormRawTransactionThunk = createThunk(
         payload: {
             tx: string;
             symbol: NetworkSymbol;
+            descriptor: string;
             identity?: string;
             isMevProtectionEnabled: boolean;
         },
-        { dispatch, fulfillWithValue, rejectWithValue },
+        { dispatch, getState, fulfillWithValue, rejectWithValue },
     ) => {
         const txData = getMevProtectedTxData(
             payload.symbol,
@@ -492,7 +522,11 @@ export const pushSendFormRawTransactionThunk = createThunk(
             dispatch(
                 notificationsActions.addToast({
                     type: 'raw-tx-sent',
+                    device: selectSelectedDevice(getState()),
+                    descriptor: payload.descriptor,
+                    symbol: payload.symbol,
                     txid: sentTx.payload.txid,
+                    style: { maxWidth: 'auto' },
                 }),
             );
             dispatch(syncAccountsWithBlockchainThunk(payload.symbol));
@@ -673,6 +707,19 @@ export const enhancePrecomposedTransactionThunk = createThunk<
 
         const createRbfEnhancedTransaction = (): GeneralPrecomposedTransactionFinal => {
             if (!isCardanoTx(selectedAccount, precomposedTransaction) && formValues.rbfParams) {
+                // A cancel (zero-value replace) tx is already tagged rbfType: 'cancel' by its own
+                // compose step (e.g. useEthereumCancelTxCompose) — preserve that instead of always
+                // relabeling as 'bump-fee', which mislabels the review modal/analytics for cancels.
+                if (isRbfCancelTransaction(precomposedTransaction)) {
+                    const enhancedCancelPrecomposedTx: PrecomposedTransactionFinalCancelRbf = {
+                        ...precomposedTransaction,
+                        rbfType: 'cancel',
+                        prevTxid: formValues.rbfParams.txid,
+                    };
+
+                    return enhancedCancelPrecomposedTx;
+                }
+
                 const enhancedRbfPrecomposedTx: PrecomposedTransactionFinalBumpFeeRbf = {
                     ...precomposedTransaction,
                     rbfType: 'bump-fee',

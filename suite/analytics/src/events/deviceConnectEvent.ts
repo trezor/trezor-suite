@@ -25,7 +25,7 @@ type Attributes = {
 
 export const deviceConnectEvent: EventDef<Attributes, EventType.DeviceConnect> = {
     name: EventType.DeviceConnect,
-    descriptionTrigger: 'Fired when device is connected.',
+    descriptionTrigger: 'A device is connected to the application',
     possibleImprovements: '`totalInstances` does not make sense with current fire conditions',
     changelog: [
         { version: '1.0.0', notes: 'added' },
@@ -34,21 +34,31 @@ export const deviceConnectEvent: EventDef<Attributes, EventType.DeviceConnect> =
 
     attributes: {
         mode: {
+            description:
+                'The device mode: `normal` for regular operation, `bootloader` for firmware update mode, `initialize` for initial setup, `seedless` for seedless operation',
             changelog: [{ version: '1.0.0', notes: 'added' }],
         },
         firmware: {
+            description: 'The firmware version currently installed on the device',
             changelog: [{ version: '1.0.0', notes: 'added' }],
         },
         firmwareSource: {
+            description:
+                'The source or type of firmware (e.g., `NA - bootloader`, `official`, `unknown`)',
             changelog: [{ version: '25.4.1', notes: 'added' }],
         },
         bootloader: {
+            description: 'The bootloader version if available',
             changelog: [{ version: '1.18.0', notes: 'added' }],
         },
         pin_protection: {
+            description:
+                'Whether PIN protection is enabled on the device: `true` if enabled, `false` if disabled, null if unknown',
             changelog: [{ version: '1.0.0', notes: 'added' }],
         },
         passphrase_protection: {
+            description:
+                'Whether passphrase protection is enabled on the device: `true` if enabled, `false` if disabled, null if unknown',
             changelog: [{ version: '1.0.0', notes: 'added' }],
         },
         totalInstances: {
@@ -85,9 +95,11 @@ Possible backup types:
 - Slip39_Advanced_Extendable = ??SuperShamir, user would have had to create it outside Suite`,
         },
         isBitcoinOnly: {
+            description: 'Whether this device instance is configured to handle Bitcoin only',
             changelog: [{ version: '1.6.0', notes: 'added' }],
         },
         isBitcoinOnlyDevice: {
+            description: 'Whether the device model is a Bitcoin-only variant',
             changelog: [{ version: '25.4.1', notes: 'added' }],
         },
         totalDevices: {
@@ -100,6 +112,8 @@ Possible backup types:
             description: 'Device language, string (`en-US`)',
         },
         model: {
+            description:
+                'The device model identifier (e.g., `T1B1` for Trezor One, `T2T1` for Trezor Model T, `T2B1` for Trezor Model R)',
             changelog: [
                 { version: '1.9.0', notes: 'added' },
                 {
@@ -109,15 +123,20 @@ Possible backup types:
             ],
         },
         firmwareRevision: {
+            description: 'The firmware revision string containing detailed version information',
             changelog: [{ version: '1.18.0', notes: 'added' }],
         },
         bootloaderHash: {
+            description: 'The hash of the bootloader for verification purposes',
             changelog: [{ version: '1.18.0', notes: 'added' }],
         },
         optiga_sec: {
-            changelog: [{ version: '?', notes: 'added' }],
+            description: 'The OPTIGA secure element security level or status on the device',
+            changelog: [{ version: '24.8.1', notes: 'added' }],
         },
         connectionType: {
+            description:
+                'How the device is connected: `cable` for USB connection, `bluetooth` for wireless connection',
             changelog: [{ version: '25.10.1', notes: 'added' }],
         },
     },

@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 
-import { withScope } from '@sentry/core';
-
-import { EARN_API_BASE_URL } from '@suite-common/earn-staking-api/src/constants';
-import { useSolanaRewardsHistory } from '@suite-common/earn-staking-api/src/staking';
+import {
+    useSolStakingRewardsWarning,
+    useSolanaRewardsHistory,
+} from '@suite-common/earn-staking-api/src/staking';
 import {
     selectAccountIsStakingActive,
     selectHasRunningDiscovery,
@@ -13,8 +13,8 @@ import {
 } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
-import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
 import { Column, Flex, Grid } from '@trezor/components';
+import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 import { useCurrentRef } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 
@@ -28,7 +28,7 @@ import { StakingRewardsWarning } from './StakingRewardsWarning';
 import { ApyCard } from '../StakingDashboard/components/ApyCard';
 import { ClaimCard } from '../StakingDashboard/components/ClaimCard';
 import { DiscoveryWarning } from '../StakingDashboard/components/DiscoveryWarning';
-import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard';
+import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard/EmptyStakingCard';
 import { ExternalStakingProviderCard } from '../StakingDashboard/components/ExternalStakingProviderCard';
 import { PayoutCardFrequencyRewards } from '../StakingDashboard/components/PayoutCardFrequencyRewards';
 import { StakingCard } from '../StakingDashboard/components/StakingCard';
@@ -53,21 +53,20 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
     const rewardsQueryResult = useSolanaRewardsHistory(account, {
         limit: pagination.pageSize,
         offset: pagination.offset,
-        onTotalCount: pagination.setTotalCount,
-        onOutOfSync() {
-            withScope(scope => {
-                scope.setTag('error.code', 'solana_rewards_history_out_of_sync');
-                scope.setTag('error.source', EARN_API_BASE_URL);
-                scope.setTag('error.network', account.networkType);
-                scope.setTag('error.service', 'rewards_history');
-                scope.captureException(
-                    new Error(
-                        'Solana rewards history is out of sync with the current active epoch. Everstake API might return stale data.',
-                    ),
-                );
-            });
-        },
     });
+
+    const { shouldShowWarning } = useSolStakingRewardsWarning(account, {
+        limit: pagination.pageSize,
+    });
+
+    const { setTotalCount } = pagination;
+    const rewardsTotalCount = rewardsQueryResult.data?.totalCount;
+
+    useEffect(() => {
+        if (rewardsTotalCount !== undefined) {
+            setTotalCount(rewardsTotalCount);
+        }
+    }, [rewardsTotalCount, setTotalCount]);
 
     const pagintionRef = useCurrentRef(pagination);
 
@@ -83,26 +82,25 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
         selectSolExternalStakingAccountsTotalStaked(state, account.key),
     );
 
+    const externalStakingProviderCard = hasExternalStakingAccounts ? (
+        <ExternalStakingProviderCard
+            symbol={account.symbol}
+            totalStaked={externalStakingTotalStaked}
+        />
+    ) : null;
+
     return (
         <StakingDashboard
             selectedAccount={selectedAccount}
             dashboard={
                 <Column alignItems="normal" gap={spacings.xxxxl}>
-                    {hasExternalStakingAccounts && (
-                        <ExternalStakingProviderCard
-                            symbol={account.symbol}
-                            totalStaked={externalStakingTotalStaked}
-                        />
-                    )}
                     {isStakingActive ? (
                         <>
                             <DashboardSection>
                                 <Column alignItems="normal" gap={spacings.sm}>
+                                    {externalStakingProviderCard}
                                     {isDiscoveryRunning && <DiscoveryWarning />}
-                                    {rewardsQueryResult.isSuccess &&
-                                        rewardsQueryResult.data.notAvailableYet && (
-                                            <StakingRewardsWarning />
-                                        )}
+                                    {shouldShowWarning && <StakingRewardsWarning />}
 
                                     <Grid
                                         columns={isBelowLaptop || !canClaim ? 1 : 2}
@@ -134,9 +132,10 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
                             />
                         </>
                     ) : (
-                        <>
+                        <Column alignItems="normal" gap={spacings.sm}>
+                            {externalStakingProviderCard}
                             <EmptyStakingCard />
-                        </>
+                        </Column>
                     )}
                 </Column>
             }

@@ -349,6 +349,7 @@ export interface AccountInfo {
     misc?: {
         // EVM
         nonce?: string;
+        confirmedNonce?: string;
         contractInfo?: ContractInfo;
         stakingPools?: StakingPool[];
         addressAliases?: { [key: string]: AddressAlias };
@@ -356,6 +357,7 @@ export interface AccountInfo {
         sequence?: number;
         // Stellar
         stellarSequence?: string;
+        baseReserve?: string;
         reserve?: string;
         // blockfrost
         rewards?: string;

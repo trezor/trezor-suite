@@ -7,7 +7,7 @@ import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Column, type FractionButtonProps, Text } from '@trezor/components';
 import { InputWithOptions } from '@trezor/product-components';
 
-import { type WithdrawalFormState } from 'src/components/earn/forms/SupplyFormContext';
+import { type WithdrawalFormState } from 'src/components/earn/forms/StakeFormContext';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { useWithdrawalFormContext } from 'src/hooks/earn/useWithdrawalForm';
@@ -18,11 +18,13 @@ import {
     validateDecimals,
     validateFiatLimits,
     validateMin,
+    validateSolanaUnstakeAmount,
+    validateSolanaUnstakeFiatAmount,
 } from 'src/utils/suite/validation';
 
 export const UnstakeInputs = () => {
     const { translationString } = useTranslation();
-    const { CryptoAmountFormatter } = useFormatters();
+    const { CryptoAmountFormatter, BaseCurrencyAmountFormatter } = useFormatters();
 
     const locale = useSelector(selectLanguage);
 
@@ -67,6 +69,12 @@ export const UnstakeInputs = () => {
                 amountLimits,
                 localCurrency: baseCurrencyCode,
                 formatter: CryptoAmountFormatter,
+                fiatFormatter: BaseCurrencyAmountFormatter,
+                decimals: network.decimals,
+                rate: currentRate?.rate,
+            }),
+            solanaUnstakeAmount: validateSolanaUnstakeFiatAmount(translationString, {
+                account,
                 decimals: network.decimals,
                 rate: currentRate?.rate,
             }),
@@ -82,6 +90,7 @@ export const UnstakeInputs = () => {
                 amountLimits,
                 formatter: CryptoAmountFormatter,
             }),
+            solanaUnstakeAmount: validateSolanaUnstakeAmount(translationString, { account }),
         },
     };
 
@@ -152,6 +161,7 @@ export const UnstakeInputs = () => {
                                     typographyStyle="body-xs"
                                     intent="neutral"
                                     priority="secondary"
+                                    overflowWrap="anywhere"
                                 >
                                     {value}
                                 </Text>

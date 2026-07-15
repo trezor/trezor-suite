@@ -64,7 +64,7 @@ export const SuiteSyncKeysAlert = () => {
 
     return (
         <AnimatedFullAlertBox
-            variant="info"
+            intent="info"
             title={<Translation id="moduleHome.suiteSyncAlert.title" />}
             description={
                 <Translation

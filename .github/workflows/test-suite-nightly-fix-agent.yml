@@ -1,6 +1,8 @@
 name: "[Test] Nightly Suite Fix Agent"
 
 on:
+  schedule:
+    - cron: "0 3 * * 1-5"
   workflow_dispatch:
 
 permissions:
@@ -17,35 +19,43 @@ jobs:
     if: github.repository == 'trezor/trezor-suite'
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           fetch-depth: 1
 
       - name: Setup Node.js
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
 
       - name: Cache node_modules
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        id: node-modules-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
           path: node_modules
-          key: node_modules-${{ hashFiles('yarn.lock') }}
-          restore-keys: node_modules-
+          key: node_modules-e2e-utils-${{ hashFiles('yarn.lock') }}
 
       - name: Install dependencies
         run: yarn workspaces focus @trezor/e2e-utils
 
+      - name: Install Playwright trace skill
+        run: yarn workspace @trezor/e2e-utils exec playwright trace install-skill
+
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6
+        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6
         with:
           role-to-assume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
           aws-region: "eu-central-1"
 
+      - name: Download known-failures ledger from S3
+        run: |
+          aws s3 cp "s3://dev.suite.sldev.cz/e2e/fix-agent/ledger.json" \
+            "${{ github.workspace }}/ledger.json" || echo "No existing ledger — starting fresh."
+
       - name: Run analysis agent
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.E2E_CLAUDE_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.E2E_FIX_ANALYSIS_CLAUDE_API_KEY }}
           CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
         run: yarn workspace @trezor/e2e-utils fix-bot:analyze
 
@@ -120,23 +130,23 @@ jobs:
     if: github.repository == 'trezor/trezor-suite'
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           submodules: true
           fetch-depth: 1
 
       - name: Setup Node.js
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
 
       - name: Cache node_modules
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        id: node-modules-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
           path: node_modules
-          key: node_modules-${{ hashFiles('yarn.lock') }}
-          restore-keys: node_modules-
+          key: node_modules-suite-web-e2e-${{ hashFiles('yarn.lock') }}
 
       - name: Install dependencies
         run: yarn workspaces focus @trezor/suite-web @trezor/suite-data @trezor/suite-build
@@ -164,7 +174,7 @@ jobs:
     needs: [prepare-matrix, build-desktop, build-web]
     runs-on: ubuntu-24.04
     if: github.repository == 'trezor/trezor-suite' && needs.prepare-matrix.outputs.has-tasks == 'true'
-    timeout-minutes: 120
+    timeout-minutes: 210
     permissions:
       contents: write
       pull-requests: write
@@ -178,36 +188,39 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           submodules: true
           fetch-depth: 1
 
       - name: Setup Node.js
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
 
       - name: Cache node_modules
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        id: node-modules-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
           path: node_modules
-          key: node_modules-${{ hashFiles('yarn.lock') }}
-          restore-keys: node_modules-
+          key: node_modules-fix-agent-${{ hashFiles('yarn.lock') }}
 
       - name: Install dependencies
         # Union of test deps and web and desktop build toolchains
         run: yarn workspaces focus @trezor/suite-e2e @trezor/e2e-utils @trezor/suite-web @trezor/suite-desktop @trezor/suite-desktop-core @trezor/suite-desktop-ui @trezor/suite @trezor/suite-data @trezor/suite-build @trezor/transport-bridge @suite-common/message-system
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6
+        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6
         with:
           role-to-assume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
           aws-region: "eu-central-1"
 
       - name: Install Playwright browsers
         run: yarn workspace @trezor/suite-e2e exec playwright install chromium --with-deps
+
+      - name: Install Playwright trace skill
+        run: yarn workspace @trezor/suite-e2e exec playwright trace install-skill
 
       - name: Build message system config
         run: yarn message-system-sign-config 1>/dev/null
@@ -260,6 +273,7 @@ jobs:
         env:
           TASK_ID: ${{ matrix.task-id }}
         run: |
+          git fetch origin develop --depth=1
           BRANCH=$(jq -r --arg id "$TASK_ID" \
             'first(.fixTasks[] | select(.id == $id) | .branch) // empty' "report-download/report.json")
           if [ -z "$BRANCH" ]; then echo "Branch not found for task id: $TASK_ID" && exit 1; fi
@@ -273,7 +287,7 @@ jobs:
       - name: Run fix agent
         id: run-fix-agent
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.E2E_CLAUDE_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.E2E_FIX_EXECUTION_CLAUDE_API_KEY }}
           PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
           TASK_ID: ${{ matrix.task-id }}
           AGENT_GITHUB_ACTION: true
@@ -301,7 +315,7 @@ jobs:
 
       - name: Generate GitHub App token
         id: trezor-bot-token
-        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
@@ -330,22 +344,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           fetch-depth: 1
 
       - name: Setup Node.js
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
 
       - name: Cache node_modules
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        id: node-modules-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
           path: node_modules
-          key: node_modules-${{ hashFiles('yarn.lock') }}
-          restore-keys: node_modules-
+          key: node_modules-e2e-utils-${{ hashFiles('yarn.lock') }}
 
       - name: Install dependencies
         run: yarn workspaces focus @trezor/e2e-utils
@@ -355,6 +369,7 @@ jobs:
         with:
           name: fix-agent-report
           path: report-download/
+        continue-on-error: true
 
       - name: Download analyze cost artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
@@ -379,7 +394,71 @@ jobs:
           SLACK_FIX_AGENT_WEBHOOK: ${{ secrets.SLACK_FIX_AGENT_WEBHOOK }}
         run: yarn workspace @trezor/e2e-utils fix-bot:notify
 
-  aggregate:
+  update-ledger:
+    needs: [analyze, fix]
+    if: always() && github.repository == 'trezor/trezor-suite' && needs.analyze.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Cache node_modules
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+        with:
+          path: node_modules
+          key: node_modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: node_modules-
+
+      - name: Install dependencies
+        run: yarn workspaces focus @trezor/e2e-utils
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6
+        with:
+          role-to-assume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
+          aws-region: "eu-central-1"
+
+      - name: Download report artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: fix-agent-report
+          path: report-download/
+
+      - name: Download Slack fix summary artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          pattern: slack-fix-summary-*
+          path: summaries/
+          merge-multiple: true
+        continue-on-error: true
+
+      - name: Update ledger
+        env:
+          REPORT_PATH: ${{ github.workspace }}/report-download/report.json
+          SUMMARIES_DIR: ${{ github.workspace }}/summaries
+        run: yarn workspace @trezor/e2e-utils fix-bot:update-ledger
+
+      - name: Upload updated ledger to S3
+        run: |
+          aws s3api put-object \
+            --bucket dev.suite.sldev.cz \
+            --key "e2e/fix-agent/ledger.json" \
+            --body "${{ github.workspace }}/ledger.json" \
+            --content-type application/json \
+            --cache-control "no-cache, max-age=0"
+
+  aggregate_llm_cost:
     needs: [analyze, fix]
     if: always() && github.repository == 'trezor/trezor-suite' && needs.analyze.result != 'cancelled'
     uses: ./.github/workflows/build-llm-usage-dashboard.yml

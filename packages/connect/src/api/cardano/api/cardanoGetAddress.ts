@@ -3,18 +3,19 @@
 import {
     Bundle,
     CardanoGetAddress as CardanoGetAddressSchema,
-    type MethodPermission,
+    type PermissionRequest,
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { fromHardenedPathPart } from '@trezor/crypto-utils';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodContext, MethodMessage, MethodReturnType } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import { fromHardened, getSerializedPath } from '../../../utils/pathUtils';
+import { getSerializedPath } from '../../../utils/pathUtils';
 import { bundlify } from '../../common/paramsValidator';
 import {
     addressParametersFromProto,
@@ -59,14 +60,13 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
         super(message, params);
 
         this.hasBundle = hasBundle;
-        this.useUi = this.getUseUi(this.params, payload.useEventListener);
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Cardano'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Cardano')];
+        this.requiredFirmwareCoins = [getMiscNetwork('ada')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_address', this.requiredFirmwareCoins);
     }
 
     get info() {
@@ -79,7 +79,7 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
             const accountIndex: number = addressN[2];
 
-            return `Export Cardano address for account #${fromHardened(accountIndex) + 1}`;
+            return `Export Cardano address for account #${fromHardenedPathPart(accountIndex) + 1}`;
         }
 
         return 'Export multiple Cardano addresses';

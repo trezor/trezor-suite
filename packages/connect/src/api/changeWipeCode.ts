@@ -1,4 +1,4 @@
-import { type MethodPermission } from '@trezor/connect-common';
+import { type PermissionRequest } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import type { MethodMessage } from '../core/AbstractMethod';
@@ -16,8 +16,8 @@ export default class ChangeWipeCode extends AbstractMethod<'changeWipeCode', PRO
         this.skipFinalReload = false;
         this.useDeviceState = false;
     }
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
     }
 
     async run() {

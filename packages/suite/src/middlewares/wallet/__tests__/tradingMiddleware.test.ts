@@ -266,6 +266,29 @@ describe('tradingMiddleware', () => {
         },
     );
 
+    it('should set buy trading and receive account keys from prefilled account on buy route', () => {
+        const accountKey = mockAccountKey({ descriptor: 'prefilledaccountkey' });
+        const store = initStore(
+            getInitialState({
+                trading: {
+                    ...initialState,
+                    prefilledFromAccount: {
+                        cryptoId: 'bitcoin' as CryptoId,
+                        key: accountKey,
+                    },
+                },
+                router: {
+                    ...getInitialState().router,
+                },
+            }),
+        );
+
+        store.dispatch(routerLocationChange({ ...tradingMiddlewareFixtures.TRADING_BUY_ROUTE }));
+
+        expect(store.getState().wallet.trading.buy.tradingAccountKey).toEqual(accountKey);
+        expect(store.getState().wallet.trading.buy.receiveAccountKey).toEqual(accountKey);
+    });
+
     it.each([
         [tradingExchangeActions.setTradingAccountKey.type, 'exchange' as const],
         [tradingSellActions.setTradingAccountKey.type, 'sell' as const],

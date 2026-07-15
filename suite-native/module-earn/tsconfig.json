@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": [".", "**/*.json"],
     "references": [
+        { "path": "../../suite-common/calldata" },
         {
             "path": "../../suite-common/dependency-injection"
         },
@@ -29,7 +30,14 @@
         {
             "path": "../../suite-common/redux-utils"
         },
+        { "path": "../../suite-common/schemas" },
         { "path": "../../suite-common/staking" },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/test-utils"
+        },
         {
             "path": "../../suite-common/validators"
         },
@@ -56,7 +64,6 @@
         { "path": "../confirm-on-trezor" },
         { "path": "../device-manager" },
         { "path": "../device-mutex" },
-        { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../helpers" },
@@ -68,10 +75,15 @@
         { "path": "../settings" },
         { "path": "../staking" },
         { "path": "../test-utils" },
+        { "path": "../test-utils-store" },
         { "path": "../transaction-management" },
         { "path": "../transactions" },
         { "path": "../tx-simulation" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
         { "path": "../../packages/react-utils" },
         {
             "path": "../../packages/styles-native"

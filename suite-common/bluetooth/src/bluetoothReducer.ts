@@ -63,7 +63,7 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                                     nearbyDevice.connectionStatus?.type !== 'pairing-error' &&
                                     !state.ignoredDeviceIds.includes(nearbyDevice.id),
                             ) as Draft<T>[],
-                    ) as Draft<T>[];
+                    );
                 },
             )
             .addCase(
@@ -72,12 +72,12 @@ export const prepareBluetoothReducerCreator = <T extends BluetoothDeviceCommon>(
                     if (state.nearbyDevices !== null) {
                         state.nearbyDevices = state.nearbyDevices.map(it =>
                             it.id === deviceId ? { ...it, connectionStatus } : it,
-                        ) as Draft<T>[];
+                        );
                     }
 
                     state.knownDevices = state.knownDevices.map(it =>
                         it.id === deviceId ? { ...it, connectionStatus } : it,
-                    ) as Draft<T>[];
+                    );
                 },
             )
             .addCase(bluetoothActions.deviceUpdateAction, (state, { payload: { device } }) => {

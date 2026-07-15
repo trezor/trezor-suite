@@ -1,5 +1,3 @@
-@ethereumjs/common
-@ethereumjs/tx
 @exodus/patch-broken-hermes-typed-arrays
 @fivebinaries/coin-selection
 @hookform/resolvers
@@ -49,9 +47,9 @@ redux-persist
 redux-thunk
 reselect
 toml
+uint8array-tools
 varuint-bitcoin
 wif
-web3-utils
 worker-loader
 xrpl
 yup

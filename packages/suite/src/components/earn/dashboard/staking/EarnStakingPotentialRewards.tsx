@@ -1,8 +1,7 @@
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column, Paragraph } from '@trezor/components';
-
-import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 
 import { EarnRewardsAmount } from '../common/EarnRewardsAmount';
 

@@ -1,4 +1,4 @@
-import { Text as MockText } from '@suite-native/atoms';
+import { Text } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
 import { within } from '@suite-native/test-utils';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
@@ -15,9 +15,9 @@ jest.mock('../ReviewOutputItemValues', () => ({
         translationKey: string;
         value: string;
     }) => (
-        <MockText>
+        <Text>
             ReviewOutputItemValues: [{translationKey}]-[{value}]
-        </MockText>
+        </Text>
     ),
 }));
 
@@ -63,6 +63,7 @@ describe('ReviewOutputItem', () => {
             'traded_assets',
             getTranslation('transactionManagement.review.outputs.tradedAssetsOutputLabel'),
         ],
+        ['swap_intent', getTranslation('transactionManagement.review.outputs.swapIntentLabel')],
     ])('should display title based on type [%s]', (type, expectedTitle) => {
         // Suppress console warnings for unsupported types
         jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -265,6 +266,32 @@ describe('ReviewOutputItem', () => {
         );
     });
 
+    it('should render the send leg only for a partial clear-signed swap (receive missing)', () => {
+        const { getByTestId } = renderReviewOutputItem({
+            reviewOutput: {
+                type: 'traded_assets',
+                value: '',
+                value2: '',
+                state: 'active',
+                send: {
+                    cryptoId: undefined,
+                    accountKey: undefined,
+                    symbol: 'eth',
+                    amount: '0.5',
+                },
+            } as StatefulReviewOutput,
+        });
+
+        const content = getByTestId('review-output-card/content');
+
+        expect(content).toHaveTextContent(
+            `${getTranslation('transactionManagement.review.outputs.tradedAssetsSendLabel')} 0.5 eth`,
+        );
+        expect(content).not.toHaveTextContent(
+            getTranslation('transactionManagement.review.outputs.tradedAssetsReceiveLabel'),
+        );
+    });
+
     it('should render traded assets when receive is fiat', () => {
         const { getByTestId } = renderReviewOutputItem({
             reviewOutput: {
@@ -303,6 +330,19 @@ describe('ReviewOutputItem', () => {
         });
 
         expect(getByTestId('review-output-card/content')).toHaveTextContent('');
+    });
+
+    it('should render "Swap" for "swap_intent"', () => {
+        const { getByTestId } = renderReviewOutputItem({
+            reviewOutput: {
+                type: 'swap_intent',
+                value: 'swap',
+            } as StatefulReviewOutput,
+        });
+
+        expect(getByTestId('review-output-card/content')).toHaveTextContent(
+            getTranslation('transactionManagement.review.outputs.swapIntentValue'),
+        );
     });
 
     it.each<StatefulReviewOutput['type']>([
@@ -687,6 +727,46 @@ describe('ReviewOutputItem', () => {
         });
     });
 
+    describe('contentBuilder prop', () => {
+        it('renders content returned by contentBuilder instead of default', () => {
+            const contentBuilder = jest.fn().mockReturnValue(<Text>Custom Content</Text>);
+
+            const { getByText } = renderReviewOutputItem({ contentBuilder });
+
+            expect(getByText('Custom Content')).toBeOnTheScreen();
+            expect(() => getByText('mockvalue')).toThrow();
+        });
+
+        it('passes all data props to contentBuilder', () => {
+            const contentBuilder = jest.fn().mockReturnValue(undefined);
+
+            renderReviewOutputItem({
+                contentBuilder,
+                reviewOutput: { type: 'note', value: 'some value', state: 'active' },
+            });
+
+            expect(contentBuilder).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    outputType: 'note',
+                    value: 'some value',
+                }),
+            );
+        });
+
+        it('falls back to default rendering when contentBuilder returns undefined', () => {
+            const contentBuilder = jest.fn().mockReturnValue(undefined);
+
+            const { getByTestId } = renderReviewOutputItem({
+                contentBuilder,
+                reviewOutput: { type: 'note', value: 'fallback note text', state: 'active' },
+            });
+
+            expect(getByTestId('review-output-card/content')).toHaveTextContent(
+                'fallback note text',
+            );
+        });
+    });
+
     describe('ReviewOutputItemContent approve_data edge cases', () => {
         it('should warn and render no content for approve_data when exchange flow is swap', () => {
             const warningSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -718,27 +798,6 @@ describe('ReviewOutputItem', () => {
             const content = getByTestId('review-output-card/content');
 
             expect(within(content).getByText('123456789')).toBeOnTheScreen();
-        });
-
-        it('should render unlimited label for revoke approve_data without token when value is max uint256', () => {
-            const maxUint256 = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
-            const { getByTestId } = renderReviewOutputItem({
-                reviewOutput: {
-                    state: undefined,
-                    type: 'approve_data',
-                    value: maxUint256,
-                    value2: 'Ethereum',
-                } as StatefulReviewOutput,
-                flowType: 'revoke',
-            });
-
-            const content = getByTestId('review-output-card/content');
-
-            expect(
-                within(content).getByText(
-                    getTranslation('transactionManagement.review.outputs.approveMaxAmount'),
-                ),
-            ).toBeOnTheScreen();
         });
     });
 });

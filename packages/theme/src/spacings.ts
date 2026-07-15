@@ -1,3 +1,5 @@
+import { typedObjectKeys } from '@trezor/utils';
+
 /**
  * @deprecated Use numbers directly instead
  */
@@ -49,7 +51,7 @@ export type SpacingPx = { [K in Spacing]: `${Spacings[K]}px` };
 export type NegativeSpacingPx = { [K in Spacing]: `-${Spacings[K]}px` };
 export type SpacingPxValues = SpacingPx[Spacing] | NegativeSpacingPx[Spacing];
 
-export const spacingsPx = (Object.keys(spacings) as Array<Spacing>).reduce((result, key) => {
+export const spacingsPx = typedObjectKeys(spacings).reduce((result, key) => {
     (result as Record<Spacing, string>)[key] = `${spacings[key]}px`;
 
     return result;

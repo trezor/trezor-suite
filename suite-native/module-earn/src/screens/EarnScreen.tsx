@@ -5,7 +5,7 @@ import { FlashList } from '@shopify/flash-list';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { ListItemSkeleton, TitleHeader, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { TitleHeader, VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
@@ -15,10 +15,15 @@ import { EarnItemInfoModal } from '../components/EarnItemInfoModal';
 import { EarnPortfolioTrackerGuard } from '../components/EarnPortfolioTrackerGuard';
 import { EarnPoweredByProvider } from '../components/EarnPoweredByProvider';
 import { EarnPromoListHeader } from '../components/EarnPromoListHeader';
-import { EarnPromoListRow } from '../components/EarnPromoListRow';
+import {
+    EarnPromoListRow,
+    EarnPromoListRowContainer,
+    EarnPromoListSkeletonRow,
+} from '../components/EarnPromoListRow';
 import { EarnScreenListHeader } from '../components/EarnScreenListHeader';
+import { EarnStakingProvidersInfo } from '../components/EarnStakingProvidersInfo';
 import { EnableNetworkForEarnBottomSheet } from '../components/EnableNetworkForEarnBottomSheet';
-import { useStablecoinYieldFlag } from '../hooks/useStablecoinYieldFlag';
+import { StablecoinYieldLoadErrorAlert } from '../components/StablecoinYieldLoadErrorAlert';
 import { useStablecoinYieldListData } from '../hooks/useStablecoinYieldListData';
 import { useStablecoinYieldPromoNavigation } from '../hooks/useStablecoinYieldPromoNavigation';
 import { useStakingListData } from '../hooks/useStakingListData';
@@ -32,13 +37,13 @@ const getEarnListItemKey = (item: EarnPromoListDataItem) =>
     typeof item === 'string' ? item : item.id;
 
 const isSectionBoundaryItem = (item: EarnPromoListDataItem | undefined) =>
-    item === undefined || typeof item === 'string' || item.type === 'provider';
+    item === undefined ||
+    typeof item === 'string' ||
+    item.type === 'provider' ||
+    item.type === 'staking-providers-info';
 
 const EarnScreenContent = () => {
     const { analytics } = useServices(selectNativeAnalyticsDep);
-    const { bottomSheetRef: stablecoinYieldBottomSheetRef, openModal: openStablecoinYieldModal } =
-        useBottomSheetModal();
-    const isStablecoinYieldEnabled = useStablecoinYieldFlag();
 
     const {
         promoListData: stakingPromoItems,
@@ -48,7 +53,11 @@ const EarnScreenContent = () => {
     const {
         promoListData: stablecoinYieldPromoItems,
         activeItems: stablecoinYieldActiveItems,
+        stablecoinYieldClaimSummaries,
+        totalFiatClaimableAmount: stablecoinYieldTotalFiatClaimableAmount,
         isLoading: isYieldLoading,
+        isClaimSummariesLoading,
+        retryLoadStablecoinYield,
     } = useStablecoinYieldListData();
 
     const staking = useStakingPromoNavigation();
@@ -74,11 +83,7 @@ const EarnScreenContent = () => {
                     type: events.earnStablecoinYieldTilePressedEvent.name,
                 });
 
-                if (isStablecoinYieldEnabled) {
-                    handleStablecoinYieldPromoPress(item);
-                } else {
-                    openStablecoinYieldModal();
-                }
+                handleStablecoinYieldPromoPress(item);
 
                 return;
             }
@@ -89,13 +94,7 @@ const EarnScreenContent = () => {
 
             handleStakingPromoPress(item);
         },
-        [
-            analytics,
-            handleStablecoinYieldPromoPress,
-            handleStakingPromoPress,
-            isStablecoinYieldEnabled,
-            openStablecoinYieldModal,
-        ],
+        [analytics, handleStablecoinYieldPromoPress, handleStakingPromoPress],
     );
 
     const renderItem = useCallback(
@@ -108,11 +107,23 @@ const EarnScreenContent = () => {
                 return <EarnPoweredByProvider provider={item.provider} />;
             }
 
+            if (item.type === 'staking-providers-info') {
+                return <EarnStakingProvidersInfo />;
+            }
+
             const nextItem = earnListData[index + 1];
             const isLastInSection = isSectionBoundaryItem(nextItem);
 
             if (item.type === 'skeleton-loader') {
-                return <ListItemSkeleton />;
+                return <EarnPromoListSkeletonRow isLastInSection={isLastInSection} />;
+            }
+
+            if (item.type === 'stablecoin-yield-load-error') {
+                return (
+                    <EarnPromoListRowContainer isLastInSection={isLastInSection}>
+                        <StablecoinYieldLoadErrorAlert onRetry={retryLoadStablecoinYield} />
+                    </EarnPromoListRowContainer>
+                );
             }
 
             return (
@@ -123,7 +134,7 @@ const EarnScreenContent = () => {
                 />
             );
         },
-        [earnListData, handlePromoItemPress],
+        [earnListData, handlePromoItemPress, retryLoadStablecoinYield],
     );
 
     return (
@@ -142,9 +153,14 @@ const EarnScreenContent = () => {
                     ListHeaderComponent={
                         <EarnScreenListHeader
                             isStablecoinYieldLoading={isYieldLoading}
+                            isStablecoinYieldClaimSummariesLoading={isClaimSummariesLoading}
                             cardanoStakingAccountKey={accountStakedWithFiveBinaries?.key}
                             stakingActiveItems={stakingActiveItems}
                             stablecoinYieldActiveItems={stablecoinYieldActiveItems}
+                            stablecoinYieldClaimSummaries={stablecoinYieldClaimSummaries}
+                            stablecoinYieldTotalFiatClaimableAmount={
+                                stablecoinYieldTotalFiatClaimableAmount
+                            }
                         />
                     }
                     keyExtractor={getEarnListItemKey}
@@ -152,7 +168,6 @@ const EarnScreenContent = () => {
                 />
 
                 <EarnItemInfoModal ref={staking.infoSheetRef} type="staking" />
-                <EarnItemInfoModal ref={stablecoinYieldBottomSheetRef} type="stablecoin-yield" />
                 <ChooseStakingAccountBottomSheet
                     ref={staking.chooseAccountSheetRef}
                     accounts={staking.chosenAccounts}
@@ -171,14 +186,13 @@ const EarnScreenContent = () => {
                     accounts={stablecoinYield.chosenAccounts}
                     onAccountSelected={stablecoinYield.handleAccountSelected}
                     onClose={stablecoinYield.closeChooseAccountModal}
-                    onDismiss={stablecoinYield.handleChooseAccountDismiss}
+                    tokenBalance={stablecoinYield.chooseAccountTokenBalance}
                 />
                 <EnableNetworkForEarnBottomSheet
                     ref={stablecoinYield.enableNetworkSheetRef}
                     symbol={stablecoinYield.pendingEnableSymbol}
                     type="stablecoin-yield"
                     onEnablePress={stablecoinYield.handleEnableNetworkPress}
-                    onDismiss={stablecoinYield.handleEnableNetworkDismiss}
                 />
             </VStack>
         </Screen>

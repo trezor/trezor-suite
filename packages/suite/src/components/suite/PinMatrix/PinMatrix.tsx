@@ -16,6 +16,7 @@ import {
     Paragraph,
     Row,
 } from '@trezor/components';
+import { CaretLeftIcon, DotOutlineFilledIcon, PasswordIcon } from '@trezor/icons';
 import { HELP_CENTER_PIN_URL } from '@trezor/urls';
 
 type PinMatrixProps = {
@@ -115,7 +116,7 @@ export const PinMatrix = ({
             {showExplanation && (
                 <Banner
                     intent="info"
-                    icon="password"
+                    icon={PasswordIcon}
                     rightContent={
                         <Banner.Button href={learnMoreUrl} size="small">
                             <Translation id="TR_LEARN_MORE" />
@@ -146,7 +147,7 @@ export const PinMatrix = ({
                                     size="large"
                                     key={value}
                                     data-value={value}
-                                    icon="dotOutlineFilled"
+                                    icon={DotOutlineFilledIcon}
                                     intent="neutral"
                                     priority="secondary"
                                     onClick={() => onPinAdd(value)}
@@ -168,7 +169,7 @@ export const PinMatrix = ({
                             intent="neutral"
                             priority="secondary"
                             onClick={onPinBackspace}
-                            iconLeft="caretLeft"
+                            iconLeft={CaretLeftIcon}
                             isDisabled={isDisabled}
                         >
                             <Translation id="TR_BACKSPACE" />

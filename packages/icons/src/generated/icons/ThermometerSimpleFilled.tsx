@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgThermometerSimpleFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M20 18.26V5a4 4 0 1 0-8 0v13.26a7 7 0 1 0 8 0M16 3a2 2 0 0 1 2 2v5h-4V5a2 2 0 0 1 2-2"
+        />
+    </svg>
+);
+export { SvgThermometerSimpleFilled as ReactComponent };

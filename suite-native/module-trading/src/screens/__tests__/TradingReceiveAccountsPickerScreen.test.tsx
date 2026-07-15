@@ -2,6 +2,7 @@ import { type RouteProp } from '@react-navigation/native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+import { getTranslation } from '@suite-native/intl';
 import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
 import { accounts } from '@suite-native/trading-fixtures';
 
@@ -70,7 +71,7 @@ describe('TradingReceiveAccountsPickerScreen', () => {
 
         const { getByText } = renderScreen(overridesWithAccounts([]));
 
-        expect(getByText('Select account')).toBeTruthy();
+        expect(getByText(getTranslation('moduleTrading.accountScreen.titleStep1'))).toBeTruthy();
     });
 
     it('should render account list with accounts', () => {
@@ -94,7 +95,9 @@ describe('TradingReceiveAccountsPickerScreen', () => {
 
         const { getByText } = renderScreen(overridesWithAccounts([]));
 
-        expect(getByText('Account not found')).toBeTruthy();
+        expect(
+            getByText(getTranslation('moduleTrading.accountScreen.accountEmpty.viewOnly.title')),
+        ).toBeTruthy();
     });
 
     it('should render add account button', () => {
@@ -102,6 +105,8 @@ describe('TradingReceiveAccountsPickerScreen', () => {
 
         const { getByText } = renderScreen(overridesWithAccounts([]));
 
-        expect(getByText('Add new')).toBeTruthy();
+        expect(
+            getByText(getTranslation('moduleAddAccounts.coinDiscoveryFinishedScreen.addButton')),
+        ).toBeTruthy();
     });
 });

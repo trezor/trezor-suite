@@ -6,11 +6,16 @@ import { Translation, useTranslation } from '@suite/intl';
 import { PaymentMethodIcon } from '@suite/trading';
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
+    type TradingPaymentMethodListProps,
     type TradingPaymentMethodProps,
+    selectTradingPaymentMethodsByType,
+    selectTradingSelectedPaymentMethodByType,
 } from '@suite-common/trading';
-import { GhostContainer, Icon, Row, SkeletonRectangle, Text } from '@trezor/components';
+import { GhostContainer, Icon, Row, Skeleton, Text } from '@trezor/components';
+import { CaretRightIcon } from '@trezor/icons';
 
 import { FakeSelect } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { type TradingTradeBuySellType } from 'src/types/trading/trading';
 import { type TradingFormInputDefaultProps } from 'src/types/trading/tradingForm';
@@ -29,19 +34,19 @@ const TradingFormInputPaymentMethodValueContent = ({
     paymentMethod: TradingPaymentMethodProps;
 }) => {
     if (isFormLoading) {
-        return <SkeletonRectangle animate />;
+        return <Skeleton animate />;
     }
 
     return (
         <Row gap={16}>
-            <Row gap={4} alignItems="center">
-                <PaymentMethodIcon paymentMethod={paymentMethod} size={24} />
+            <Row gap={8} alignItems="center">
+                <PaymentMethodIcon paymentMethod={paymentMethod} size={20} />
                 <Text typographyStyle={hasPaymentMethods ? 'body-md' : undefined}>
                     {displayLabel}
                 </Text>
             </Row>
             {hasPaymentMethods && (
-                <Icon name="caretRight" size={20} intent="neutral" priority="secondary" />
+                <Icon as={CaretRightIcon} size={20} intent="neutral" priority="secondary" />
             )}
         </Row>
     );
@@ -57,29 +62,26 @@ export const TradingFormInputPaymentMethod = ({
 }: TradingFormInputPaymentMethodProps) => {
     const { translationString } = useTranslation();
     const [isModalOpen, setIsModalOpen] = useState(false);
-
     const {
-        paymentMethods,
-        defaultPaymentMethod,
+        type,
         form: {
             state: { isFormLoading },
         },
     } = useTradingFormContext<TradingTradeBuySellType>();
 
-    const paymentMethod = useWatch({ name: TRADING_FORM_PAYMENT_METHOD_SELECT });
-    const hasPaymentMethods = paymentMethods.length > 0;
+    const options = useSelector(state => selectTradingPaymentMethodsByType(state, type));
 
-    const selectedOption = hasPaymentMethods
-        ? paymentMethods.find(item => item.value === (paymentMethod?.value ?? defaultPaymentMethod))
-        : undefined;
+    const paymentMethod = useWatch({ name: TRADING_FORM_PAYMENT_METHOD_SELECT }) as
+        | TradingPaymentMethodListProps
+        | undefined;
+    const hasPaymentMethods = options.length > 0;
 
-    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-    const firstPaymentMethod: (typeof paymentMethods)[number] = paymentMethods[0];
-    const paymentMethodValue: TradingPaymentMethodProps =
-        selectedOption?.value ?? paymentMethod?.value ?? firstPaymentMethod?.value;
+    const selectedOption = useSelector(state =>
+        selectTradingSelectedPaymentMethodByType(state, type, paymentMethod?.value),
+    );
 
     const displayLabel = hasPaymentMethods
-        ? (selectedOption?.label ?? paymentMethod?.label ?? paymentMethods[0]?.label ?? '')
+        ? (selectedOption?.label ?? '')
         : translationString('TR_TRADING_NO_METHODS_AVAILABLE');
 
     return (
@@ -106,6 +108,8 @@ export const TradingFormInputPaymentMethod = ({
                             typographyStyle="body-md"
                             align="start"
                             data-testid="@trading/form/payment-method-select/value"
+                            intent="neutral"
+                            priority="secondary"
                         >
                             {label && <Translation id={label} />}
                         </Text>
@@ -113,7 +117,7 @@ export const TradingFormInputPaymentMethod = ({
                             isFormLoading={isFormLoading}
                             hasPaymentMethods={hasPaymentMethods}
                             displayLabel={displayLabel}
-                            paymentMethod={paymentMethodValue}
+                            paymentMethod={selectedOption?.value ?? ''}
                         />
                     </Row>
                 </GhostContainer>

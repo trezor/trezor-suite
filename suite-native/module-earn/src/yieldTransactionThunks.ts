@@ -2,15 +2,17 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin/src/signing';
 import { createThunk } from '@suite-common/redux-utils';
 import {
+    type YieldFlowDisplayToken,
     type YieldFlowResolvedData,
-    type YieldFlowType,
+    type YieldPositionFlowType,
+    isYieldTxReviewForFlow,
     selectAddressDisplayType,
     selectStablecoinYieldSession,
     selectStablecoinYieldTxReview,
     stablecoinYieldActions,
     synchronizeSentTransactionThunk,
 } from '@suite-common/wallet-core';
-import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import { AddressDisplayOptions, type EvmSelectedFee } from '@suite-common/wallet-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
@@ -21,7 +23,9 @@ const YIELD_TRANSACTION_THUNK_PREFIX = `${EARN_MODULE_PREFIX}/yield-transaction`
 type YieldActionReviewThunkPayload = {
     flowData: YieldFlowResolvedData;
     flowKey: string;
-    flowType: Extract<YieldFlowType, 'deposit' | 'withdraw'>;
+    flowType: YieldPositionFlowType;
+    reviewToken?: YieldFlowDisplayToken;
+    selectedFee?: EvmSelectedFee | null;
 };
 
 type YieldSignTransactionError = {
@@ -30,12 +34,12 @@ type YieldSignTransactionError = {
     message?: string;
 };
 
-type YieldPushTransactionError = {
+export type YieldPushTransactionError = {
     error: 'push-transaction-failed' | 'push-transaction-pending-conflict';
     message?: string;
 };
 
-const getPushErrorType = (message: string): YieldPushTransactionError['error'] =>
+export const getPushErrorType = (message: string): YieldPushTransactionError['error'] =>
     message.includes('could not replace existing tx')
         ? 'push-transaction-pending-conflict'
         : 'push-transaction-failed';
@@ -46,17 +50,27 @@ export const signYieldActionReviewThunk = createThunk<
     { rejectValue: YieldSignTransactionError }
 >(
     `${YIELD_TRANSACTION_THUNK_PREFIX}/signActionReview`,
-    async ({ flowData, flowKey, flowType }, { dispatch, getState, rejectWithValue }) => {
+    async (
+        { flowData, flowKey, flowType, reviewToken, selectedFee },
+        { dispatch, getState, rejectWithValue },
+    ) => {
         const session = selectStablecoinYieldSession(getState(), flowType, flowKey);
         const {
             action: { review },
         } = session;
         const device = selectSelectedDevice(getState());
 
-        if (!review || !device || flowData.account.networkType !== 'ethereum') {
+        if (review?.type !== flowType || !device || flowData.account.networkType !== 'ethereum') {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
                 message: 'Invalid input data.',
+            });
+        }
+
+        if (flowType === 'withdraw' && !selectedFee) {
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Fee information is missing for the transaction.',
             });
         }
 
@@ -65,9 +79,9 @@ export const signYieldActionReviewThunk = createThunk<
         try {
             transactionReview = buildStablecoinYieldTransactionReview({
                 amount: review.amount,
-                selectedFee: null,
+                selectedFee: selectedFee ?? null,
                 symbol: flowData.account.symbol,
-                token: flowData.token,
+                token: reviewToken ?? flowData.token,
                 unsignedTransaction: review.unsignedTransaction,
             });
         } catch (error) {
@@ -88,6 +102,8 @@ export const signYieldActionReviewThunk = createThunk<
                 precomposedTx: precomposedTransaction,
                 precomposedForm: formState,
                 accountKey: flowData.account.key,
+                flowKey,
+                flowType,
             }),
         );
 
@@ -114,7 +130,11 @@ export const signYieldActionReviewThunk = createThunk<
         const currentTxReview = selectStablecoinYieldTxReview(getState());
 
         if (
-            currentTxReview.accountKey !== flowData.account.key ||
+            !isYieldTxReviewForFlow(currentTxReview, {
+                accountKey: flowData.account.key,
+                flowKey,
+                flowType,
+            }) ||
             currentTxReview.precomposedForm !== formState ||
             currentTxReview.precomposedTx !== precomposedTransaction
         ) {
@@ -145,13 +165,23 @@ export const pushYieldActionReviewThunk = createThunk<
     `${YIELD_TRANSACTION_THUNK_PREFIX}/pushActionReview`,
     async ({ flowData, flowKey, flowType }, { dispatch, getState, rejectWithValue }) => {
         const session = selectStablecoinYieldSession(getState(), flowType, flowKey);
-        const { precomposedForm, precomposedTx, serializedTx } =
-            selectStablecoinYieldTxReview(getState());
+        const txReview = selectStablecoinYieldTxReview(getState());
+        const { precomposedForm, precomposedTx, serializedTx } = txReview;
         const {
             action: { review },
         } = session;
 
-        if (!review || !serializedTx || !precomposedForm || !precomposedTx) {
+        if (
+            review?.type !== flowType ||
+            !isYieldTxReviewForFlow(txReview, {
+                accountKey: flowData.account.key,
+                flowKey,
+                flowType,
+            }) ||
+            !serializedTx ||
+            !precomposedForm ||
+            !precomposedTx
+        ) {
             return rejectWithValue({
                 error: 'push-transaction-failed',
                 message: 'Transaction not found.',

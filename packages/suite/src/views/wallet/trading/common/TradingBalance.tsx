@@ -48,7 +48,12 @@ export const TradingBalance = ({
         if (Number(balance) === 0 || isNaN(Number(balance))) return null;
 
         return (
-            <Text intent="neutral" priority="secondary" typographyStyle="body-xs">
+            <Text
+                intent="neutral"
+                priority="secondary"
+                typographyStyle="body-xs"
+                overflowWrap="anywhere"
+            >
                 {!amountInCrypto ? (
                     <HiddenPlaceholder>
                         &asymp; {formattedBalance} {balanceCurrency}

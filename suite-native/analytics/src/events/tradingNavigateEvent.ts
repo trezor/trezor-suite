@@ -17,7 +17,7 @@ type Attributes = {
 export const tradingNavigateEvent: EventDef<Attributes, EventType.TradingNavigate> = {
     name: EventType.TradingNavigate,
     descriptionTrigger:
-        'Navigation from other place to trading happens, entry point of trade flow.',
+        'User navigates to the trading interface from another screen, marking the entry point of the trading flow',
     changelog: [{ version: '25.5.1', notes: 'added' }],
 
     attributes: {
@@ -41,9 +41,13 @@ export const tradingNavigateEvent: EventDef<Attributes, EventType.TradingNavigat
         },
         networkSymbol: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
+            description:
+                'The blockchain network symbol for the trading operation (e.g., `btc`, `eth`, `ada`)',
         },
         contractAddress: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
+            description:
+                'The contract address of the token being traded (if applicable for token trades)',
         },
     },
 };

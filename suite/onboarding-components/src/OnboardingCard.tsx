@@ -9,58 +9,39 @@ import {
     Column,
     H2,
     IconCircle,
-    type IconName,
+    type IconCircleIntent,
+    type IconComponent,
     Modal,
     Paragraph,
     Row,
-    type UIVariant,
 } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { getDeviceColorVariant } from '@trezor/device-utils';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
-import { zIndices } from '@trezor/theme';
+import { borders, zIndices } from '@trezor/theme';
 
 import { OnboardingCardButton } from './OnboardingCardButton';
 import { OnboardingCardSecondaryButton } from './OnboardingCardSecondaryButton';
-
-export const onboardingCardVariants = ['primary', 'warning', 'destructive', 'info'] as const;
-export type OnboardingCardVariant = Extract<UIVariant, (typeof onboardingCardVariants)[number]>;
-
-const mapVariantToIconCircleIntent = (variant: OnboardingCardVariant) => {
-    if (variant === 'destructive') {
-        return 'critical' as const;
-    }
-
-    if (variant === 'warning') {
-        return 'warning' as const;
-    }
-
-    if (variant === 'info') {
-        return 'info' as const;
-    }
-
-    return 'brand' as const;
-};
 
 export type OnboardingCardProps = {
     heading?: ReactNode;
     description?: ReactNode;
     innerActions?: ReactNode;
     outerActions?: ReactNode;
-    iconName?: IconName;
+    icon?: IconComponent;
     device?: TrezorDevice;
     isConfirmedOnDevice?: boolean;
     devicePrompt?: ReactNode;
     isActionAbortable?: boolean;
     children?: ReactNode;
-    variant?: OnboardingCardVariant;
+    intent?: IconCircleIntent;
     'data-testid'?: string;
 };
 
 export const OnboardingCard = ({
     heading,
     description,
-    iconName,
+    icon,
     innerActions,
     outerActions,
     device,
@@ -68,7 +49,7 @@ export const OnboardingCard = ({
     isConfirmedOnDevice = false,
     devicePrompt,
     children,
-    variant = 'primary',
+    intent = 'brand',
     'data-testid': dataTestId,
 }: OnboardingCardProps) => {
     const intl = useIntl();
@@ -82,7 +63,7 @@ export const OnboardingCard = ({
                 alignItems="center"
                 gap={20}
                 position={{ type: 'relative' }}
-                padding={{ top: iconName ? 48 : 0 }}
+                padding={{ top: icon ? 48 : 0 }}
                 width="100%"
             >
                 {isBackDropVisible && (
@@ -110,7 +91,7 @@ export const OnboardingCard = ({
                     paddingType="none"
                     data-testid={dataTestId}
                 >
-                    <Column gap={48} padding={60} margin={iconName ? { top: 40 } : undefined}>
+                    <Column gap={48} padding={60} margin={icon ? { top: 40 } : undefined}>
                         {(heading || description) && (
                             <Column gap={16} alignItems="center" width="100%">
                                 {heading && <H2 align="center">{heading}</H2>}
@@ -131,16 +112,14 @@ export const OnboardingCard = ({
                         {innerActions && <Row justifyContent="center">{innerActions}</Row>}
                     </Column>
                 </Card>
-                {iconName && (
+                {icon && (
                     <Box
                         position={{ type: 'absolute', top: 0 }}
                         zIndex={isBackDropVisible ? zIndices.modal : undefined}
+                        backgroundColor="surfaceFillPage"
+                        borderRadius={borders.radii.full}
                     >
-                        <IconCircle
-                            name={iconName}
-                            size={96}
-                            intent={mapVariantToIconCircleIntent(variant)}
-                        />
+                        <IconCircle icon={icon} size={96} intent={intent} />
                     </Box>
                 )}
                 {outerActions && <Box zIndex={zIndices.onboardingForeground}>{outerActions}</Box>}

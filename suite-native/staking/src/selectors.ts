@@ -10,10 +10,11 @@ import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
     getEthereumCryptoBalanceWithStaking,
     getSolanaCryptoBalanceWithStaking,
+    getTronCryptoBalanceWithStaking,
     getUnstakingPeriodInDays,
     isStakingSymbol,
 } from '@suite-common/wallet-utils';
-import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
+import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 import { exhaustive } from '@trezor/type-utils';
 
 import {
@@ -23,7 +24,6 @@ import {
     selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol,
 } from './cardanoStakingSelectors';
 import {
-    selectEntryPeriodRemainingInDaysByAccountKey,
     selectEthereumAccountHasStaking,
     selectEthereumCanClaimByAccountKey,
     selectEthereumClaimableAmountByAccountKey,
@@ -47,12 +47,19 @@ import {
     selectSolanaUnstakingBalanceByAccountKey,
     selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol,
 } from './solanaStakingSelectors';
+import {
+    selectTronAccountHasStaked,
+    selectTronRewardsBalanceByAccountKey,
+    selectTronStakedBalanceByAccountKey,
+    selectTronUnstakedBalanceByAccountKey,
+    selectVisibleDeviceTronAccountsWithStakingByNetworkSymbol,
+} from './tronStakingSelectors';
 import { type NativeStakingRootState } from './types';
 
 // create empty array in advance so it will be always same on shallow comparison
 const EMPTY_ACCOUNT_ARRAY: Account[] = [];
 
-export const selectDeviceAccountsWithStaking = (
+const selectDeviceAccountsWithStaking = (
     state: NativeStakingRootState,
     symbol: NetworkSymbol,
 ): Account[] => {
@@ -69,6 +76,8 @@ export const selectDeviceAccountsWithStaking = (
             return selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol(state, 'sol');
         case 'ada':
             return selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol(state, 'ada');
+        case 'trx':
+            return selectVisibleDeviceTronAccountsWithStakingByNetworkSymbol(state, 'trx');
         default:
             return exhaustive(symbol);
     }
@@ -95,6 +104,8 @@ export const getAccountCryptoBalanceWithStaking = (account: Account | null) => {
             return getSolanaCryptoBalanceWithStaking(account);
         case 'ada':
             return account.formattedBalance;
+        case 'trx':
+            return getTronCryptoBalanceWithStaking(account);
         default:
             return exhaustive(account.symbol);
     }
@@ -126,6 +137,8 @@ export const selectAccountHasStaking = (state: NativeStakingRootState, accountKe
             return selectSolAccountHasStaked(state, accountKey);
         case 'ada':
             return selectAdaAccountHasStaked(state, accountKey);
+        case 'trx':
+            return selectTronAccountHasStaked(state, accountKey);
         default:
             return exhaustive(symbol);
     }
@@ -150,6 +163,8 @@ export const selectIsStakePendingByAccountKey = (
             return selectSolanaIsStakePendingByAccountKey(state, accountKey);
         case 'ada':
             return false;
+        case 'trx':
+            return false;
         default:
             return exhaustive(symbol);
     }
@@ -173,6 +188,8 @@ export const selectIsStakeConfirmingByAccountKey = (
         case 'sol':
             return false; // there are no pending txns for solana staking;
         case 'ada':
+            return false;
+        case 'trx':
             return false;
         default:
             return exhaustive(symbol);
@@ -207,6 +224,8 @@ export const selectStakedBalanceByAccountKey = (
             return selectSolanaStakedBalanceByAccountKey(state, accountKey);
         case 'ada':
             return selectCardanoStakedBalanceByAccountKey(state, accountKey);
+        case 'trx':
+            return selectTronStakedBalanceByAccountKey(state, accountKey);
         default:
             return exhaustive(symbol);
     }
@@ -232,6 +251,8 @@ export const selectRewardsBalanceByAccountKey = (
             return selectExpectedRewardsForEpoch(state, accountKey);
         case 'ada':
             return selectCardanoRewardsBalanceByAccountKey(state, accountKey);
+        case 'trx':
+            return selectTronRewardsBalanceByAccountKey(state, accountKey);
         default:
             return exhaustive(symbol);
     }
@@ -256,6 +277,8 @@ export const selectTotalStakePendingByAccountKey = (
             return selectSolanaTotalStakePendingByAccountKey(state, accountKey);
         case 'ada':
             return selectCardanoTotalStakePendingByAccountKey(state, accountKey);
+        case 'trx':
+            return '0';
         default:
             return exhaustive(symbol);
     }
@@ -279,6 +302,8 @@ export const selectClaimableAmountByAccountKey = (
         case 'sol':
             return selectSolanaClaimableAmountByAccountKey(state, accountKey);
         case 'ada':
+            return '0';
+        case 'trx':
             return '0';
         default:
             return exhaustive(symbol);
@@ -304,6 +329,8 @@ export const selectCanClaimByAccountKey = (
             return selectSolanaCanClaimByAccountKey(state, accountKey);
         case 'ada':
             return false;
+        case 'trx':
+            return false;
         default:
             return exhaustive(symbol);
     }
@@ -328,6 +355,8 @@ export const selectUnstakingBalanceByAccountKey = (
             return selectSolanaUnstakingBalanceByAccountKey(state, accountKey);
         case 'ada':
             return '0';
+        case 'trx':
+            return selectTronUnstakedBalanceByAccountKey(state, accountKey);
         default:
             return exhaustive(symbol);
     }
@@ -362,9 +391,11 @@ export const selectEntryPeriodInDaysBySymbol = (
             return SOLANA_EPOCH_DAYS;
         case 'ada':
             return undefined;
+        case 'trx':
+            return undefined;
         default:
             return exhaustive(symbol);
     }
 };
 
-export { selectEntryPeriodRemainingInDaysByAccountKey, selectUnstakingPeriodInDaysBySymbol };
+export { selectUnstakingPeriodInDaysBySymbol };

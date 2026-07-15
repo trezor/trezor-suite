@@ -7,10 +7,9 @@ import {
     type TradingCountryOption,
 } from '@suite-common/trading';
 import { GhostContainer, Icon, Row, Text } from '@trezor/components';
+import { CaretRightIcon } from '@trezor/icons';
 
 import { FakeSelect } from 'src/components/suite';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { type TradingTradeBuySellType } from 'src/types/trading/trading';
 import { type TradingFormInputDefaultProps } from 'src/types/trading/tradingForm';
 
 import { CountrySubdivisionSelectModal } from './CountrySubdivisionSelectModal';
@@ -27,27 +26,22 @@ export const TradingFormInputCountrySubdivision = ({
 }: TradingFormInputCountrySubdivisionProps) => {
     const { translationString } = useTranslation();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { defaultSubdivision } = useTradingFormContext<TradingTradeBuySellType>();
 
     const subdivisionValue = useWatch({ name: TRADING_FORM_COUNTRY_SUBDIVISION_SELECT });
 
-    const subdivisionLabel = useMemo(() => {
-        const resolvedLabel = subdivisionValue?.label ?? defaultSubdivision?.label;
-
-        return (
-            resolvedLabel ?? (
-                <Text color="contentSecondary">
-                    <Translation id="TR_TRADING_COUNTRY_SUBDIVISION_NOT_SELECTED" />
-                </Text>
-            )
-        );
-    }, [subdivisionValue, defaultSubdivision]);
+    const subdivisionLabel = useMemo(
+        () =>
+            subdivisionValue?.label ?? (
+                <Translation id="TR_TRADING_COUNTRY_SUBDIVISION_NOT_SELECTED" />
+            ),
+        [subdivisionValue],
+    );
 
     return (
         <>
             {renderInput && (
                 <FakeSelect
-                    value={subdivisionValue?.label ?? defaultSubdivision?.label ?? ''}
+                    value={subdivisionValue?.label ?? ''}
                     placeholder={label ? translationString(label) : undefined}
                     onClick={() => setIsModalOpen(true)}
                     data-testid="@trading/form/country-subdivision-select"
@@ -60,18 +54,25 @@ export const TradingFormInputCountrySubdivision = ({
                     data-testid="@trading/form/country-subdivision-select"
                 >
                     <Row justifyContent="space-between" padding={20}>
-                        <Text typographyStyle="body-md" align="start">
+                        <Text
+                            typographyStyle="body-md"
+                            align="start"
+                            intent="neutral"
+                            priority="secondary"
+                        >
                             <Translation id="TR_TRADING_COUNTRY_SUBDIVISION" />
                         </Text>
                         <Row gap={16}>
                             <Text
                                 typographyStyle="body-md"
                                 data-testid="@trading/form/country-subdivision-select/value"
+                                intent="neutral"
+                                priority="secondary"
                             >
                                 {subdivisionLabel}
                             </Text>
                             <Icon
-                                name="caretRight"
+                                as={CaretRightIcon}
                                 size={20}
                                 intent="neutral"
                                 priority="secondary"

@@ -1,5 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { type PermissionRequest } from '@trezor/connect';
+
 import {
     type AppRememberedPermission,
     type ConnectPopupCall,
@@ -7,7 +9,7 @@ import {
     type ConnectSerializedError,
 } from './connectPopupTypes';
 
-export const ACTION_PREFIX = '@suite-common/connect-popup';
+const ACTION_PREFIX = '@suite-common/connect-popup';
 
 const initiateCall = createAction(
     `${ACTION_PREFIX}/initiateCall`,
@@ -39,6 +41,43 @@ const confirmAddresses = createAction(
         payload: Pick<
             ConnectPopupCall & { state: 'address-confirmation' },
             'addresses' | 'exported'
+        >,
+    ) => ({
+        payload,
+    }),
+);
+
+const selectAccount = createAction(
+    `${ACTION_PREFIX}/selectAccount`,
+    (
+        payload: Pick<
+            ConnectPopupCallWithState<'select-account'>,
+            | 'options'
+            | 'selectedAccountTypeKey'
+            | 'candidates'
+            | 'page'
+            | 'exported'
+            | 'manualPhase'
+        >,
+    ) => ({
+        payload,
+    }),
+);
+
+const updateSelectAccount = createAction(
+    `${ACTION_PREFIX}/updateSelectAccount`,
+    (
+        payload: Partial<
+            Pick<
+                ConnectPopupCallWithState<'select-account'>,
+                | 'selectedAccountTypeKey'
+                | 'candidates'
+                | 'page'
+                | 'exported'
+                | 'totalCandidates'
+                | 'manualPhase'
+                | 'manualAccountIndex'
+            >
         >,
     ) => ({
         payload,
@@ -77,6 +116,13 @@ const forgetAppPermissions = createAction(
     }),
 );
 
+const forgetAppPermission = createAction(
+    `${ACTION_PREFIX}/forgetAppPermission`,
+    (payload: { origin: string; permission: PermissionRequest }) => ({
+        payload,
+    }),
+);
+
 const setAppSilentMode = createAction(
     `${ACTION_PREFIX}/setAppSilentMode`,
     (payload: { origin: string; silentMode: boolean }) => ({
@@ -107,11 +153,14 @@ export const connectPopupActions = {
     rejectPermissions,
     finishCall,
     confirmAddresses,
+    selectAccount,
+    updateSelectAccount,
     setSelectedAccountKey,
     deeplinkCallback,
     setError,
     rememberAppPermissions,
     forgetAppPermissions,
+    forgetAppPermission,
     setAppSilentMode,
     txSimulation,
     setSelectedFee,

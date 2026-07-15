@@ -3,18 +3,27 @@
     "include": ["./src"],
     "compilerOptions": {
         "outDir": "./lib",
+        "rootDir": "./src",
         "lib": ["webworker", "ES2022"],
         "types": ["w3c-web-usb"]
     },
     "references": [
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
-        { "path": "../../coins/coins-solana" },
         { "path": "../connect-common" },
         { "path": "../connect-data" },
         { "path": "../crypto-utils" },
         { "path": "../device-authenticity" },
         { "path": "../device-utils" },
+        {
+            "path": "../../networks/cardano/network-cardano"
+        },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
         { "path": "../protobuf" },
         { "path": "../protocol" },
         { "path": "../transport" },

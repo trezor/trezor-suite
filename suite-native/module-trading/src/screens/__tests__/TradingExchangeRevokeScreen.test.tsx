@@ -1,9 +1,13 @@
-import { type RouteProp } from '@react-navigation/native';
+import { type NavigationAction, type RouteProp } from '@react-navigation/native';
 
 import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
-import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
-import { type TestStore, act } from '@suite-native/test-utils-store';
+import {
+    type RootStackParamList,
+    RootStackRoutes,
+    useNavigationRemoveActionInterceptor,
+} from '@suite-native/navigation';
+import { type TestStore } from '@suite-native/test-utils-store';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
 import {
@@ -15,6 +19,22 @@ import { TradingExchangeRevokeScreen } from '../TradingExchangeRevokeScreen';
 const mockShowSheet = jest.fn();
 const mockHideSheet = jest.fn();
 const mockConfirmApproval = jest.fn().mockResolvedValue({});
+const mockNavigationDispatch = jest.fn();
+
+jest.mock('@suite-native/navigation', () => ({
+    ...jest.requireActual('@suite-native/navigation'),
+    useNavigationRemoveActionInterceptor: jest.fn(),
+}));
+
+const mockedUseNavigationRemoveActionInterceptor = jest.mocked(
+    useNavigationRemoveActionInterceptor,
+);
+
+const triggerPreventNavigationRemove = (action: NavigationAction = { type: 'GO_BACK' }) => {
+    const params = mockedUseNavigationRemoveActionInterceptor.mock.calls.at(-1)?.[0];
+
+    params?.onInterceptedAction?.(action);
+};
 
 jest.mock('../../hooks/exchange/Approval/useApprovalFlow', () => ({
     useApprovalFlow: () => ({
@@ -34,15 +54,6 @@ jest.mock('../../hooks/exchange/Approval/useEvmApprovalFees', () => ({
         composeFees: jest.fn(),
     }),
 }));
-
-const mockAddListener = jest.fn(
-    (
-        _event: string,
-        _listener: (e: {
-            data: { action: { type: string; payload?: { count?: number } } };
-        }) => void,
-    ) => jest.fn(),
-);
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -93,7 +104,7 @@ describe('TradingExchangeRevokeScreen', () => {
         const result = renderWithTradingProvider(
             <TradingExchangeRevokeScreen
                 route={{ params } as any}
-                navigation={{ addListener: mockAddListener } as any}
+                navigation={{ dispatch: mockNavigationDispatch } as any}
             />,
             { store, tradeType: 'exchange' },
         );
@@ -166,29 +177,13 @@ describe('TradingExchangeRevokeScreen', () => {
         store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
         renderScreen();
 
-        // Simulate the beforeRemove event with a GO_BACK action (back button / swipe back).
-        const [, listener] =
-            mockAddListener.mock.calls.find(([event]) => event === 'beforeRemove') ?? [];
-        act(() => {
-            listener?.({ data: { action: { type: 'GO_BACK' } } });
-        });
+        const backAction: NavigationAction = { type: 'GO_BACK' };
+
+        triggerPreventNavigationRemove(backAction);
 
         const selectedQuote = selectTradingExchangeSelectedQuote(store.getState());
         expect(selectedQuote).toBeUndefined();
-    });
-
-    it('should not clear selected quote on programmatic popToTop (POP with count > 1)', () => {
-        store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
-        renderScreen();
-
-        const [, listener] =
-            mockAddListener.mock.calls.find(([event]) => event === 'beforeRemove') ?? [];
-        act(() => {
-            listener?.({ data: { action: { type: 'POP', payload: { count: 3 } } } });
-        });
-
-        const selectedQuote = selectTradingExchangeSelectedQuote(store.getState());
-        expect(selectedQuote).toEqual({ ...testQuote, approvalType: 'ZERO' });
+        expect(mockNavigationDispatch).toHaveBeenCalledWith(backAction);
     });
 
     it('should render low limit info alert when shouldIncreaseLimit is true', () => {
@@ -223,12 +218,7 @@ describe('TradingExchangeRevokeScreen', () => {
             store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
             renderScreen();
 
-            // Simulate the beforeRemove event with a GO_BACK action (back button / swipe back).
-            const [, listener] =
-                mockAddListener.mock.calls.find(([event]) => event === 'beforeRemove') ?? [];
-            act(() => {
-                listener?.({ data: { action: { type: 'GO_BACK' } } });
-            });
+            triggerPreventNavigationRemove({ type: 'GO_BACK' });
 
             expect(mockAnalyticsReport).toHaveBeenCalledWith('revoke-preview', 'cancel');
         });

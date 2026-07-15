@@ -1,18 +1,19 @@
 import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { shouldDisplayExportBip329Labels } from '@suite-common/bip329';
+import { shouldDisplayExportImportBip329Labels } from '@suite-common/bip329';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { type NetworkSymbol, networks } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccountByKey,
-    selectFormattedAccountType,
+    selectFormattedAccountTypeWithDefault,
     selectIsAccountUtxoBased,
 } from '@suite-common/wallet-core';
 import { AccountLabel } from '@suite-native/accounts';
 import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
+import { Bip329ManageLabelsCard } from '@suite-native/bip329';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -24,17 +25,15 @@ import {
 } from '@suite-native/navigation';
 
 import { AccountRenameButton } from '../components/AccountRenameButton';
-import { AccountSettingsExportBip329Card } from '../components/AccountSettingsExportBip329Card';
 import { AccountSettingsRemoveCoinButton } from '../components/AccountSettingsRemoveCoinButton';
 import { AccountSettingsShowXpubButton } from '../components/AccountSettingsShowXpubButton';
 
-const AccountDetailSettingsRow = ({
-    title,
-    children,
-}: {
+interface AccountDetailSettingsRowProps {
     title: ReactNode;
     children: ReactNode;
-}) => (
+}
+
+const AccountDetailSettingsRow = ({ title, children }: AccountDetailSettingsRowProps) => (
     <Box
         paddingVertical="sp8"
         flexDirection="row"
@@ -67,7 +66,7 @@ export const AccountSettingsScreen = ({
     );
 
     const formattedAccountType = useSelector((state: AccountsRootState) =>
-        selectFormattedAccountType(state, accountKey),
+        selectFormattedAccountTypeWithDefault(state, accountKey),
     );
 
     const isUtxoBasedAccount = useSelector((state: AccountsRootState) =>
@@ -77,7 +76,7 @@ export const AccountSettingsScreen = ({
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     if (!account) return null;
 
-    const shouldDisplayExport = shouldDisplayExportBip329Labels({
+    const shouldDisplayExportImport = shouldDisplayExportImportBip329Labels({
         account,
         isSuiteSyncEnabled,
     });
@@ -102,6 +101,7 @@ export const AccountSettingsScreen = ({
                             >
                                 <CryptoNameWithIcon symbol={account.symbol} />
                             </AccountDetailSettingsRow>
+
                             {!!formattedAccountType && (
                                 <AccountDetailSettingsRow
                                     title={
@@ -111,10 +111,20 @@ export const AccountSettingsScreen = ({
                                     <Text variant="body-sm">{formattedAccountType}</Text>
                                 </AccountDetailSettingsRow>
                             )}
+
+                            {account.path && (
+                                <AccountDetailSettingsRow
+                                    title={
+                                        <Translation id="moduleAccountManagement.accountSettingsScreen.derivationPath" />
+                                    }
+                                >
+                                    <Text variant="body-sm">{account.path}</Text>
+                                </AccountDetailSettingsRow>
+                            )}
                         </VStack>
                     </Card>
-                    {shouldDisplayExport && (
-                        <AccountSettingsExportBip329Card
+                    {shouldDisplayExportImport && (
+                        <Bip329ManageLabelsCard
                             accountDescriptor={account.descriptor}
                             networkSymbol={account.symbol}
                             deviceStaticSessionId={account.deviceState}

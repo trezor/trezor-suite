@@ -34,6 +34,7 @@
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/dom-utils" },
+        { "path": "../../packages/icons" },
         { "path": "../../packages/theme" }
     ]
 }

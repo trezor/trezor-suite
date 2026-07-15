@@ -9,9 +9,13 @@ type Attributes = {
 
 export const sendFeeLevelChangedEvent: EventDef<Attributes, EventType.SendFeeLevelChanged> = {
     name: EventType.SendFeeLevelChanged,
-    descriptionTrigger: 'Dispatched when user changes a fee level in send form.',
+    descriptionTrigger:
+        'User selects or changes the network fee level in the send transaction form',
     changelog: [{ version: '24.10.1', notes: 'Added' }],
     attributes: {
-        value: { changelog: [{ version: '24.10.1', notes: 'added' }] },
+        value: {
+            changelog: [{ version: '24.10.1', notes: 'added' }],
+            description: 'The selected fee level: `high`, `normal`, `economy`, `low`, or `custom`',
+        },
     },
 };

@@ -1,10 +1,23 @@
-import type { ErrorEvent, Options } from '@sentry/core';
+import {
+    type BrowserOptions,
+    browserProfilingIntegration,
+    browserTracingIntegration,
+    captureConsoleIntegration,
+    elementTimingIntegration,
+} from '@sentry/browser';
+import type { Options } from '@sentry/core';
 
-import { COINJOIN_NETWORK_TAG, COINJOIN_REPORT_TAG, redactSentryEvent } from '@suite-common/sentry';
+import {
+    COINJOIN_NETWORK_TAG,
+    COINJOIN_REPORT_TAG,
+    type ChainableBeforeSend,
+    redactSentryEvent,
+} from '@suite-common/sentry';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { redactUserPathFromString } from '@trezor/utils';
 
+import { getAnalyticsConfirmedAndEnabled } from './consent';
 import { ignoreErrors } from './ignoreErrors';
 
 /**
@@ -18,7 +31,8 @@ import { ignoreErrors } from './ignoreErrors';
  *
  * This is relevant only on Desktop.
  */
-const redactUserPath = (event: ErrorEvent): ErrorEvent => {
+const redactUserPath: ChainableBeforeSend = event => {
+    if (event === null) return null;
     try {
         const eventAsString = JSON.stringify(event);
         const redactedString = redactUserPathFromString(eventAsString);
@@ -36,7 +50,8 @@ const redactUserPath = (event: ErrorEvent): ErrorEvent => {
 };
 
 // Leaves only what is really necessary on a coinjoin error event
-const redactCoinjoinData = (event: ErrorEvent): ErrorEvent => {
+const redactCoinjoinData: ChainableBeforeSend = event => {
+    if (event === null) return null;
     if (event.tags?.[COINJOIN_REPORT_TAG]) {
         return {
             type: event.type,
@@ -53,7 +68,7 @@ const redactCoinjoinData = (event: ErrorEvent): ErrorEvent => {
     return event;
 };
 
-const beforeSend = (event: ErrorEvent) =>
+const beforeSend: ChainableBeforeSend = event =>
     redactSentryEvent(redactUserPath(redactCoinjoinData(event)));
 
 const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {
@@ -72,6 +87,9 @@ const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {
     return breadcrumb;
 };
 
+const isProd = isCodesignBuild();
+
+// Common Sentry config for all Suite Desktop & Web envs
 export const SENTRY_CONFIG = {
     dsn: 'https://6d91ca6e6a5d4de7b47989455858b5f6@o117836.ingest.sentry.io/5193825',
 
@@ -79,7 +97,7 @@ export const SENTRY_CONFIG = {
     enabled: !isDevEnv, // set to true to enable Sentry logging while testing locally
     maxValueLength: 500, // default 250 is not enough for some errors
     release: process.env.SENTRY_RELEASE,
-    environment: isCodesignBuild() ? 'production' : 'develop',
+    environment: isProd ? 'production' : 'develop',
     normalizeDepth: 4,
     maxBreadcrumbs: 40,
     beforeBreadcrumb,
@@ -90,3 +108,32 @@ export const SENTRY_CONFIG = {
         },
     },
 } satisfies Options;
+
+// Common Sentry config for Suite browser-based envs (i.e. Web & Electron Renderer, but not Electron Main)
+export const SENTRY_BROWSER_CONFIG = {
+    ...SENTRY_CONFIG,
+    profileSessionSampleRate: isProd ? 0.1 : 1,
+    tracesSampleRate: isProd ? 0.1 : 1,
+    profileLifecycle: 'trace',
+} satisfies BrowserOptions;
+
+// Get Sentry integrations common for Suite browser-based envs, that should be added on top of the default ones.
+export const getCommonBrowserIntegrations = () => {
+    const areAnalyticsConfirmedAndEnabled = getAnalyticsConfirmedAndEnabled();
+
+    return [
+        captureConsoleIntegration({ levels: ['error'] }),
+        /*
+         Unless explicit analytics consent was persisted from before, don't start with tracing & profiling integrations.
+         This means that after you accept analytics on your first session, tracing & profiling is still off until app is
+         reloaded, but that's an acceptable cost – most important is to make sure nothing gets through rejected consent.
+        */
+        ...(areAnalyticsConfirmedAndEnabled
+            ? [
+                  browserProfilingIntegration(),
+                  browserTracingIntegration(),
+                  elementTimingIntegration(),
+              ]
+            : []),
+    ] satisfies BrowserOptions['integrations'];
+};

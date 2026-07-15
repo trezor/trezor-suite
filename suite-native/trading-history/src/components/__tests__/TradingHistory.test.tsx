@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { accounts, getBuyTrade } from '@suite-native/trading-fixtures';
 
@@ -85,11 +86,17 @@ describe('TradingHistoryScreen', () => {
     it('should show bottom sheet when trade item is clicked', () => {
         const { getByText, queryAllByText } = renderTradingHistory();
 
-        fireEvent.press(getByText('Trans. ID: d3ef3451-8f68-4250-9e08-580ece5e7d12'));
+        fireEvent.press(
+            getByText(
+                getTranslation('moduleTrading.tradeHistory.transactionId', {
+                    orderId: 'd3ef3451-8f68-4250-9e08-580ece5e7d12',
+                }),
+            ),
+        );
 
         expect(mockShowSheet).toHaveBeenCalledTimes(1);
 
-        expect(getByText('You paid')).toBeTruthy();
+        expect(getByText(getTranslation('moduleTrading.tradeHistory.detail.paid'))).toBeTruthy();
         // one for history list and one for detail in sheet
         expect(queryAllByText('0.462586 ETH').length).toBe(2);
     });

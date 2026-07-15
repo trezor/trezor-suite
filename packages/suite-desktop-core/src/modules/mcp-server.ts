@@ -117,7 +117,9 @@ const MCP_TOOLS = [
         name: 'trezor_get_account_info',
         description:
             'Get account information including balance, transaction history, and UTXOs. ' +
-            'Works with any supported cryptocurrency. Uses descriptor or path for account lookup.',
+            'Works with any supported cryptocurrency. Requires either a path (derive the ' +
+            'descriptor on the device) or a descriptor (backend-only lookup); on-device ' +
+            'account discovery is not supported.',
         inputSchema: {
             type: 'object' as const,
             properties: {
@@ -128,12 +130,12 @@ const MCP_TOOLS = [
                 path: {
                     type: 'string',
                     description:
-                        "BIP44 account-level derivation path (e.g., \"m/84'/0'/0'\" for BTC segwit).",
+                        "BIP44 account-level derivation path (e.g., \"m/84'/0'/0'\" for BTC segwit). Provide this or descriptor.",
                 },
                 descriptor: {
                     type: 'string',
                     description:
-                        'Account descriptor (xpub for BTC, address for ETH). Alternative to path.',
+                        'Account descriptor (xpub for BTC, address for ETH). Provide this or path.',
                 },
                 details: {
                     type: 'string',
@@ -143,6 +145,7 @@ const MCP_TOOLS = [
                 },
             },
             required: ['coin'],
+            anyOf: [{ required: ['path'] }, { required: ['descriptor'] }],
         },
         annotations: {
             readOnlyHint: true,
@@ -695,7 +698,7 @@ const handleEvmSend = async (
         value: '0x' + BigInt(coinToSmallestUnit(value, coin)).toString(16),
         nonce: toHex(nonce ?? '0'),
         chainId,
-        data: (params.data as string) ?? '0x',
+        data: params.data ?? '0x',
     };
     transaction.gasLimit = toHex(gasLimit);
 

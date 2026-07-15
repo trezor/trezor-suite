@@ -6,6 +6,7 @@ import { type Static, Type } from '@trezor/schema-utils';
 export enum TronRawContractType {
     TransferContract = 1,
     VoteWitnessContract = 4,
+    WithdrawBalanceContract = 13,
     TriggerSmartContract = 31,
     FreezeBalanceV2Contract = 54,
     UnfreezeBalanceV2Contract = 55,
@@ -157,6 +158,14 @@ export const TronVoteWitnessContract = Type.Object(
         votes: Type.Array(TronVote),
     },
     { $id: 'TronVoteWitnessContract' },
+);
+
+export type TronWithdrawBalance = Static<typeof TronWithdrawBalance>;
+export const TronWithdrawBalance = Type.Object(
+    {
+        owner_address: Type.String(),
+    },
+    { $id: 'TronWithdrawBalance' },
 );
 
 export type TronWithdrawUnfreeze = Static<typeof TronWithdrawUnfreeze>;

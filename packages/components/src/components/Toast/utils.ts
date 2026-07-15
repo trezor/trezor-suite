@@ -1,29 +1,43 @@
+import { CheckIcon, InfoIcon, WarningIcon } from '@trezor/icons';
 import { type Color } from '@trezor/theme';
 
-import { type ToastAction, type ToastIconVariant, type ToastIntent } from './types';
+import { type ToastAction, type ToastIntent } from './types';
+import { type IconComponent } from '../Icon/Icon';
 
-export const mapToastIntentToIcon = (intent: ToastIntent) => {
-    const iconMap: Record<ToastIntent, ToastIconVariant> = {
-        brand: 'check',
-        info: 'info',
-        warning: 'warning',
-        critical: 'warning',
-        neutral: 'info',
+export const mapToastIntentToIcon = (intent: ToastIntent): IconComponent => {
+    const iconMap: Record<ToastIntent, IconComponent> = {
+        brand: CheckIcon,
+        info: InfoIcon,
+        warning: WarningIcon,
+        critical: WarningIcon,
+        neutral: InfoIcon,
     };
 
     return iconMap[intent];
 };
 
-export const mapToastVariantToColor = (variant: ToastIntent): Color => {
-    const colorMap: Record<ToastIntent, Color> = {
-        brand: 'contentBrand',
-        info: 'contentInfo',
-        warning: 'contentWarning',
-        critical: 'contentCritical',
-        neutral: 'contentSecondary',
+export const mapToastIntentToBackgroundColor = (intent: ToastIntent): Color => {
+    const backgroundColorMap: Record<ToastIntent, Color> = {
+        brand: 'surfaceFillModelessBrand',
+        info: 'surfaceFillModelessInfo',
+        warning: 'surfaceFillModelessWarning',
+        critical: 'surfaceFillModelessCritical',
+        neutral: 'surfaceFillModelessNeutralDark',
     };
 
-    return colorMap[variant];
+    return backgroundColorMap[intent];
+};
+
+export const mapToastIntentToBorderColor = (intent: ToastIntent): Color => {
+    const borderColorMap: Record<ToastIntent, Color> = {
+        brand: 'surfaceBorderModelessBrand',
+        info: 'surfaceBorderModelessInfo',
+        warning: 'surfaceBorderModelessWarning',
+        critical: 'surfaceBorderModelessCritical',
+        neutral: 'surfaceBorderModelessNeutralDark',
+    };
+
+    return borderColorMap[intent];
 };
 
 export const normalizeToastActions = (actions: ToastAction[] = [], toastIntent: ToastIntent) =>

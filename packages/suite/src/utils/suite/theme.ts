@@ -7,8 +7,6 @@ export const getThemeColors = (theme: SuiteSettingsState['theme']) => {
             return intermediaryTheme.light;
         case 'dark':
             return intermediaryTheme.dark;
-        case 'debug':
-            return intermediaryTheme.debug;
         default:
             return intermediaryTheme.light;
     }

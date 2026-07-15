@@ -9,7 +9,8 @@ export const transactionDetailCompareValuesEvent: EventDef<
     EventType.TransactionDetailCompareValues
 > = {
     name: EventType.TransactionDetailCompareValues,
-    descriptionTrigger: 'On opening Transaction detail Compare values sheet.',
+    descriptionTrigger:
+        'User opens the Transaction detail Compare values sheet to view and compare transaction amounts in different formats',
     changelog: [{ version: '23.4.1', notes: 'added' }],
     attributes: {},
 };

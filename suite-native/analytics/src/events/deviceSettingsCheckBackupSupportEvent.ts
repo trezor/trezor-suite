@@ -7,7 +7,8 @@ export const deviceSettingsCheckBackupSupportEvent: EventDef<
     EventType.DeviceSettingsCheckBackupSupport
 > = {
     name: EventType.DeviceSettingsCheckBackupSupport,
-    descriptionTrigger: 'When is user redirected to the support screen during check backup flow.',
+    descriptionTrigger:
+        'User is redirected to the support screen during device backup verification flow when backup check cannot be completed',
     changelog: [{ version: '25.8.1', notes: 'Added' }],
     attributes: {},
 };

@@ -5,7 +5,7 @@ import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { type DelegatedIdentityKey } from '@suite-common/suite-types';
 import { exhaustive } from '@trezor/type-utils';
 
-export type SaveDelegatedIdentityKeyDeps = {
+type SaveDelegatedIdentityKeyDeps = {
     dispatch: Dispatch;
 } & PlatformEncryptionDep;
 

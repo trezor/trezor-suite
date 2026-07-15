@@ -11,12 +11,13 @@ export const deviceSettingsCheckBackupExitedEvent: EventDef<
     EventType.DeviceSettingsCheckBackupExited
 > = {
     name: EventType.DeviceSettingsCheckBackupExited,
-    descriptionTrigger: 'User exits check backup flow before finishing it.',
+    descriptionTrigger: 'User exits the device backup verification flow before it completes',
     changelog: [{ version: '25.8.1', notes: 'Added' }],
     attributes: {
         location: {
             changelog: [{ version: '25.8.1', notes: 'added' }],
-            description: 'Location from where user exited the check backup flow.',
+            description:
+                'The screen or step identifier where the user exited the backup verification flow (e.g., `CheckBackup`, `CheckBackupSuccess`, `CheckBackupFail`, `CheckBackupSupport`, `CheckBackupTutorial`)',
         },
     },
 };

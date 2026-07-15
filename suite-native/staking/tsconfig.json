@@ -28,10 +28,12 @@
         },
         { "path": "../device-mutex" },
         { "path": "../labeling" },
-        { "path": "../../coins/coins-solana" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         {

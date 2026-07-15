@@ -3,6 +3,7 @@ import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { ButtonGroup, type ButtonProps } from '@trezor/components';
+import { ArrowDownIcon, ArrowUpIcon } from '@trezor/icons';
 
 import { HeaderActionButton } from '../HeaderActionButton';
 
@@ -22,7 +23,7 @@ export const GlobalSendReceiveButtons = ({
         <ButtonGroup intent={intent} priority={priority}>
             <HeaderActionButton
                 key="wallet-receive"
-                icon="arrowDown"
+                icon={ArrowDownIcon}
                 onClick={() => {
                     setActiveModal('receive');
 
@@ -38,7 +39,7 @@ export const GlobalSendReceiveButtons = ({
 
             <HeaderActionButton
                 key="wallet-send"
-                icon="arrowUp"
+                icon={ArrowUpIcon}
                 onClick={() => {
                     setActiveModal('send');
 

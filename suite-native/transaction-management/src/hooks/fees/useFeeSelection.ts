@@ -30,7 +30,7 @@ export const useFeeSelection = ({
     const dispatch = useDispatch();
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const handleFeeLevelChange = useCallback(
-        (
+        async (
             feeLevel: FeeLevelLabel,
             {
                 customFeePerUnit,
@@ -65,7 +65,7 @@ export const useFeeSelection = ({
                 };
             }
 
-            dispatch(updateThunk(thunkParams));
+            await dispatch(updateThunk(thunkParams));
         },
         [analytics, dispatch, updateThunk, accountKey, tokenContract, formDraftKey],
     );
@@ -76,14 +76,13 @@ export const useFeeSelection = ({
             customFeeLimit,
             customMaxFeePerGas,
             customMaxPriorityFeePerGas,
-        }: CustomFeeParams) => {
+        }: CustomFeeParams) =>
             handleFeeLevelChange('custom', {
                 customFeePerUnit,
                 customFeeLimit,
                 customMaxFeePerGas,
                 customMaxPriorityFeePerGas,
-            });
-        },
+            }),
         [handleFeeLevelChange],
     );
 

@@ -50,7 +50,9 @@ export const ZeroBalanceTokensSection = ({
     const animatedCaretStyle = useAnimatedStyle(() => ({
         transform: [
             {
-                rotate: `${withTiming(isExpanded.value ? -180 : 0, { duration: ANIMATION_DURATION })}deg`,
+                rotate: withTiming(isExpanded.value ? '-180deg' : '0deg', {
+                    duration: ANIMATION_DURATION,
+                }),
             },
         ],
     }));

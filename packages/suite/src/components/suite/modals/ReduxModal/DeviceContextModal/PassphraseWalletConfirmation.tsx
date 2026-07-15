@@ -1,7 +1,9 @@
 import { Translation } from '@suite/intl';
 import { selectDeviceModel } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
+import { selectDiscoveryByDevicePath } from '@suite-common/wallet-core';
 import { Banner, Column, H3 } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
@@ -28,6 +30,13 @@ export const PassphraseWalletConfirmation = ({
     isExistingWallet,
 }: PassphraseWalletConfirmationProps) => {
     const deviceModel = useSelector(selectDeviceModel);
+    const discovery = useSelector(state => selectDiscoveryByDevicePath(state, device.path));
+
+    // Scoped add-wallet flow: REQUEST_PASSPHRASE is kept out of the global modal, so the device's
+    // readiness for the passphrase comes from discovery.status.
+    const isDeviceLoading = !(
+        discovery?.status === 'enter-passphrase' || discovery?.status === 'confirm-empty-passphrase'
+    );
 
     return (
         <SwitchDeviceModal onCancel={onCancel}>
@@ -37,12 +46,13 @@ export const PassphraseWalletConfirmation = ({
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_TITLE" />
                     </H3>
                     <Banner
-                        icon="info"
+                        icon={InfoIcon}
                         description={
                             <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_WARNING" />
                         }
                     />
                     <PassphraseInputCard
+                        isDeviceLoading={isDeviceLoading}
                         deviceModel={deviceModel ?? undefined}
                         onSubmit={onSubmit}
                         offerPassphraseOnDevice={offerPassphraseOnDevice}

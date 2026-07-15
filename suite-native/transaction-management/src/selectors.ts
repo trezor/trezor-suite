@@ -26,12 +26,12 @@ import {
     getFormDraftKey,
     getIsUpdatedSendFlow,
     getTransactionReviewOutputState,
+    isClearSignedEvmTradingSwapTransaction,
     isRbfBumpFeeTransaction,
 } from '@suite-common/wallet-utils';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
 import { type NativeSendRootState } from './sendFormSlice';
-import { type StatefulReviewOutput } from './types';
 
 const isStakingPrefix = (
     prefix: FormDraftWithSendKeyPrefix,
@@ -121,17 +121,28 @@ export const selectTransactionReviewOutputs = createSendMemoizedSelector(
             ? outputs
             : outputs?.filter(output => output.type !== 'fee'); // The `fee` output is already included in the final transaction summary output.
 
-        return newFlowOutputs.map(
-            (output, outputIndex) =>
-                ({
-                    ...output,
-                    state: isTransactionAlreadySigned
-                        ? 'success'
-                        : getTransactionReviewOutputState(outputIndex, sendReviewButtonRequests),
-                }) as StatefulReviewOutput,
-        );
+        return newFlowOutputs.map((output, outputIndex) => {
+            const outputState: ReviewOutputState = isTransactionAlreadySigned
+                ? 'success'
+                : getTransactionReviewOutputState(outputIndex, sendReviewButtonRequests);
+
+            return { ...output, state: outputState };
+        });
     },
 );
+
+export const selectFormDraftByPrefix = (
+    state: TransactionReviewOutputsState,
+    prefix: FormDraftWithSendKeyPrefix,
+    accountKey: AccountKey,
+    tokenContract?: TokenAddress,
+) =>
+    prefix === 'send'
+        ? selectSendFormDraftByKey(state, accountKey, tokenContract)
+        : selectFormDraft<FormState>(
+              state,
+              getFormDraftKey(prefix, isStakingPrefix(prefix) ? accountKey : ''),
+          );
 
 export const selectTransactionReviewOutputsFromDraft = (
     state: TransactionReviewOutputsState,
@@ -139,13 +150,7 @@ export const selectTransactionReviewOutputsFromDraft = (
     accountKey: AccountKey,
     tokenContract?: TokenAddress,
 ) => {
-    const formDraft =
-        prefix === 'send'
-            ? selectSendFormDraftByKey(state, accountKey, tokenContract)
-            : selectFormDraft<FormState>(
-                  state,
-                  getFormDraftKey(prefix, isStakingPrefix(prefix) ? accountKey : ''),
-              );
+    const formDraft = selectFormDraftByPrefix(state, prefix, accountKey, tokenContract);
 
     return selectTransactionReviewOutputs(state, accountKey, tokenContract, formDraft);
 };
@@ -222,7 +227,7 @@ export const selectReviewSummaryOutputState = (
     prefix: FormDraftWithSendKeyPrefix,
     accountKey: AccountKey,
     tokenContract?: TokenAddress,
-) => {
+): ReviewOutputState => {
     const isTransactionAlreadySigned = selectIsTransactionAlreadySigned(state);
 
     if (isTransactionAlreadySigned) {
@@ -251,7 +256,7 @@ export const selectReviewSummaryOutput = createSendMemoizedSelector(
         }
 
         return {
-            state: outputState as ReviewOutputState,
+            state: outputState,
             totalSpent: precomposedTx.totalSpent,
             fee: precomposedTx.fee,
         };
@@ -279,3 +284,29 @@ export const selectTransactionReviewActiveStepIndex = (
 
     return activeIndex === -1 ? reviewOutputs.length : activeIndex;
 };
+
+export const selectIsClearSignedTradingSwap = createSendMemoizedSelector(
+    [
+        selectAccountByKey,
+        selectSelectedDevice,
+        (
+            state: TransactionReviewOutputsState,
+            accountKey: AccountKey,
+            prefix: FormDraftWithSendKeyPrefix,
+        ) => selectFormDraftByPrefix(state, prefix, accountKey),
+        selectSendPrecomposedTx,
+    ],
+    (account, device, formDraft, precomposedTx) => {
+        if (account && device && formDraft && precomposedTx) {
+            return isClearSignedEvmTradingSwapTransaction({
+                account,
+                device,
+                precomposedTx,
+                transactionData: formDraft.transactionData,
+                trading: formDraft.trading,
+            });
+        }
+
+        return false;
+    },
+);

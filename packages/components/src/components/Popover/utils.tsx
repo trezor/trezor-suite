@@ -24,8 +24,8 @@ export const convertPopoverPlacement = ({
     }
 
     if (alignment === 'center') {
-        return position as Placement;
+        return position;
     }
 
-    return `${position}-${alignment}` as Placement;
+    return `${position}-${alignment}`;
 };

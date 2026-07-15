@@ -7,7 +7,6 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { BRIDGE_VERSION } from './bridge';
 
 const appDir = path.join(__dirname, '../../../packages/suite-desktop');
-const showDebugMenuStatePatch = '--state.suite.settings.debug.showDebugMenu=true';
 const showConnectLogsArgument = '--state.suite.settings.debug.showConnectLogs=true';
 // #15670 Bug in desktop app that loglevel is ignored
 const logLevelArgument = `--log-level=${process.env.LOGLEVEL ?? 'debug'}`;
@@ -53,7 +52,6 @@ const buildArgs = (params: LaunchSuiteParams) => {
         `--height=${params.viewport.height}`,
         logLevelArgument,
         disableHWAccelerationArgument,
-        showDebugMenuStatePatch,
         showConnectLogsArgument,
     ];
 

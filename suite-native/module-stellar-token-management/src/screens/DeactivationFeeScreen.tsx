@@ -20,7 +20,7 @@ import {
     type StellarManageTokenStackParamList,
     type StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
-import { BASE_INFO } from '@trezor/blockchain-link-utils/src/stellar';
+import { STELLAR_BASE_RESERVE } from '@trezor/network-stellar/constants';
 
 import { FeeOptionsSection } from '../components/FeeOptionsSection';
 import { TokenDetailBottomSheet } from '../components/TokenDetailBottomSheet';
@@ -83,7 +83,7 @@ export const DeactivationFeeScreen = () => {
         onSuccess: handleSuccess,
     });
 
-    if (!account) return null;
+    if (account?.networkType !== 'stellar') return null;
 
     return (
         <Form form={form}>
@@ -118,7 +118,8 @@ export const DeactivationFeeScreen = () => {
                                             id="moduleStellarToken.deactivationFee.warningText"
                                             values={{
                                                 reserve: formatNetworkAmount(
-                                                    BASE_INFO.BASE_RESERVE.toString(),
+                                                    account.misc.baseReserve ??
+                                                        STELLAR_BASE_RESERVE,
                                                     account.symbol,
                                                     true,
                                                 ),

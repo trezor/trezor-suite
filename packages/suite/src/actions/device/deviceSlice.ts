@@ -4,7 +4,7 @@ import {
     type DeviceReducerState,
     deviceInitialState as commonInitialState,
     deviceActions,
-    prepareDeviceReducer,
+    prepareDeviceReducer as prepareCommonDeviceReducer,
 } from '@suite-common/device';
 import { type AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
 
@@ -25,29 +25,32 @@ export type DesktopDeviceRootState = {
     device: DesktopDeviceState;
 };
 
-export const deviceSlice = createSliceWithExtraDeps({
+const deviceSlice = createSliceWithExtraDeps({
     name: 'device',
     initialState,
     reducers: {
-        toggleConnectionModal: state => {
+        toggleConnectionModal: (state: DesktopDeviceState) => {
             state.isConnectionModalOpen = !state.isConnectionModalOpen;
         },
-        setConnectionModal: (state, { payload }: PayloadAction<boolean>) => {
+        setConnectionModal: (state: DesktopDeviceState, { payload }: PayloadAction<boolean>) => {
             state.isConnectionModalOpen = payload;
         },
-        setConnectionMode: (state, { payload }: PayloadAction<ConnectionMode>) => {
+        setConnectionMode: (
+            state: DesktopDeviceState,
+            { payload }: PayloadAction<ConnectionMode>,
+        ) => {
             state.defaultConnectionMode = payload;
         },
     },
     extraReducers: (builder, extra) => {
-        const commonReducer = prepareDeviceReducer(extra);
+        const commonReducer = prepareCommonDeviceReducer(extra);
 
         builder
             .addMatcher(
                 isAnyOf(deviceActions.connectDevice, deviceActions.connectUnacquiredDevice),
                 (state, action) => {
                     state.isConnectionModalOpen = false;
-                    commonReducer(state, action as AnyAction);
+                    commonReducer(state, action);
                 },
             )
             .addDefaultCase((state, action) => {
@@ -57,3 +60,5 @@ export const deviceSlice = createSliceWithExtraDeps({
 });
 
 export const { toggleConnectionModal, setConnectionModal, setConnectionMode } = deviceSlice.actions;
+export const desktopDeviceActions = deviceSlice.actions;
+export const prepareDesktopDeviceReducer = deviceSlice.prepareReducer;

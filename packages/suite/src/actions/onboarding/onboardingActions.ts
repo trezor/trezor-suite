@@ -135,7 +135,11 @@ const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDep
     // ensure navigation to 'suite-index'. Particularly, setting PIN leaves ButtonRequest_Success hanging for a moment.
     dispatch(closeModal());
 
-    dispatch(initialRunCompleted());
+    // A non-empty onboarding path means the user went through a create or recovery flow, i.e. set up
+    // a device from scratch. Pairing an already set up device leaves the path empty.
+    const isFreshDeviceSetup = getState().onboarding.path.length > 0;
+
+    dispatch(initialRunCompleted({ isFreshDeviceSetup }));
     dispatch(resetOnboarding());
     dispatch(closeModalApp(true));
 
@@ -148,23 +152,36 @@ const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDep
         dispatch(changeCoinVisibility({ symbol: 'btc', shouldBeVisible: true }));
     }
 
-    dispatch(startDiscoveryThunk({ device }));
-
-    // only to satisfy typescript, there must be a device to progress with onboarding
+    // there must be a device to progress with onboarding
     if (device?.features === undefined) return;
+
+    dispatch(startDiscoveryThunk({ device }));
     const reportAnalytics = () => {
-        const payload = {
-            ...onboardingAnalytics,
-            duration: Date.now() - onboardingAnalytics.startTime!,
+        const { analytics } = extra.services;
+        const { startTime, ...onboardingAttributes } = onboardingAnalytics;
+        const fullPayload = {
+            ...onboardingAttributes,
+            duration: Date.now() - startTime!,
             device: device.features.internal_model,
             unitPackaging: device.features.unit_packaging ?? 0,
         };
-        delete payload.startTime;
 
-        asTypedDesktopAnalytics(extra.services.analytics).report({
-            type: events.deviceSetupCompletedEvent.name,
-            payload,
-        });
+        const hasConsent = analytics.isEnabled();
+        const payload = hasConsent
+            ? fullPayload
+            : {
+                  duration: fullPayload.duration,
+                  device: fullPayload.device,
+                  unitPackaging: fullPayload.unitPackaging,
+              };
+
+        asTypedDesktopAnalytics(analytics).report(
+            {
+                type: events.deviceSetupCompletedEvent.name,
+                payload,
+            },
+            { force: true },
+        );
     };
     reportAnalytics();
 };

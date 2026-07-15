@@ -10,12 +10,13 @@ import {
     Button,
     Column,
     Icon,
-    type IconName,
+    type IconComponent,
     List,
     Paragraph,
     Row,
     Tooltip,
 } from '@trezor/components';
+import { EjectIcon } from '@trezor/icons';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -36,15 +37,18 @@ type DeviceItemProps = {
     onCancel?: ForegroundAppProps['onCancel'];
 };
 
-const ListItem = ({ children, iconName }: { children: ReactNode; iconName: IconName }) => (
+const ListItem = ({ children, icon }: { children: ReactNode; icon: IconComponent }) => (
     <List.Item
-        bulletComponent={<Icon name={iconName} intent="neutral" priority="secondary" size={20} />}
+        bulletComponent={
+            <Icon as={icon} intent="neutral" priority="secondary" isInverse size={20} />
+        }
     >
         <Paragraph
             typographyStyle="body-md"
             intent="neutral"
             priority="secondary"
             textWrap="pretty"
+            isInverse
         >
             {children}
         </Paragraph>
@@ -116,11 +120,11 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                                             <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_TITLE" />
                                         </Paragraph>
                                         <List bulletGap={spacings.sm}>
-                                            <ListItem iconName="eject">
+                                            <ListItem icon={EjectIcon}>
                                                 <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_ITEM_1" />
                                             </ListItem>
                                             <ListItem
-                                                iconName={mapTrezorModelToIcon[deviceModelInternal]}
+                                                icon={mapTrezorModelToIcon[deviceModelInternal]}
                                             >
                                                 <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_ITEM_2" />
                                             </ListItem>
@@ -136,6 +140,7 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                                                     onTooltipClose();
                                                     onCancel?.();
                                                 }}
+                                                isInverse
                                             >
                                                 <Translation id="TR_DEVICE_DISCONNECTED_TOOLTIP_BUTTON_PRIMARY" />
                                             </Button>
@@ -143,6 +148,7 @@ export const DeviceItem = ({ device, instances, onCancel }: DeviceItemProps) => 
                                                 size="small"
                                                 intent="neutral"
                                                 priority="secondary"
+                                                isInverse
                                                 onClick={() => {
                                                     onTooltipClose();
                                                     dispatch(

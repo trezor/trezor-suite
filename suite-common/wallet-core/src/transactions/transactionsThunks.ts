@@ -1,5 +1,3 @@
-import { toWei } from 'web3-utils';
-
 import { createSingleInstanceThunk, createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
@@ -17,6 +15,7 @@ import {
     ensureHexPrefix,
     findAccountsByAddress,
     findTransactions,
+    fromGwei,
     getEvmTransactionTextSignature,
     getPendingAccount,
     getRbfParams,
@@ -27,13 +26,15 @@ import {
     replaceEthereumSpecific,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import { type TokenInfo, type TokenStandard } from '@trezor/blockchain-link-types';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { blockbookUtils } from '@trezor/blockchain-link-utils';
 import TrezorConnect, {
     type AccountInfo,
     type AccountTransaction,
     type TokenTransfer,
 } from '@trezor/connect';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- temporary diagnostic
+import { __btcUnknownTxDebug__ } from '@trezor/connect/src/utils/pathUtils';
 
 import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';
 import {
@@ -46,7 +47,7 @@ import {
 } from './transactionsSelectors';
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccountByKey, selectAccounts } from '../accounts/accountsSelectors';
-import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
+import { selectBlockchainHeightBySymbol, selectGapLimit } from '../blockchain/blockchainReducer';
 import { selectRawNetworkFeeInfo } from '../fees/feesReducer';
 import { ethereumGetCurrentNonceThunk } from '../send/sendFormEthereumThunks';
 import { selectSendSignedTx } from '../send/sendFormSelectors';
@@ -181,32 +182,10 @@ export const addFakePendingTxThunk = createThunk(
                     affectedAccount.addresses ?? affectedAccount.descriptor,
                 );
                 if (affectedAccountTransaction.type === 'unknown') {
-                    const unusedCount = affectedAccount.addresses?.unused.length ?? 0;
-                    const usedCount = affectedAccount.addresses?.used.length ?? 0;
-                    const changeCount = affectedAccount.addresses?.change.length ?? 0;
-                    // [btc-unknown-tx-debug] the just-signed BTC tx was classified as 'unknown' before
-                    // even reaching the backend. The user will see "Unknown transaction" in the list
-                    // until the backend response replaces this entry. This is the clean, send-path-only
-                    // smoking gun (see also the createPendingTx.ts and blockbook.ts logs for upstream
-                    // detail). The payload reaches Sentry as event.extra.arguments[1]; the bug is rare
-                    // enough to triage per-event, and mobile-vs-desktop frequency is already split by
-                    // Sentry project (native vs desktop/web DSN), so tags are not needed here.
-                    // emptyAddresses separates the two leading hypotheses at a glance:
-                    //   true  -> no addresses at classification time (account addresses absent)
-                    //   false -> addresses present but nothing matched (path mismatch: gap-limit / taproot)
-                    // Intentionally no txid / accountKey / descriptor / raw addresses: these reach Sentry
-                    // and could deanonymize the user. accountType + symbol are low-cardinality, non-PII.
-                    console.error(
-                        '[btc-unknown-tx-debug] addFakePendingTxThunk → prepending tx has type=unknown',
-                        {
-                            accountType: affectedAccount.accountType,
-                            symbol: affectedAccount.symbol,
-                            hasAddresses: Boolean(affectedAccount.addresses),
-                            emptyAddresses: unusedCount + usedCount + changeCount === 0,
-                            unusedCount,
-                            usedCount,
-                            changeCount,
-                        },
+                    __btcUnknownTxDebug__(
+                        'addFakePendingTxThunk',
+                        precomposedTransaction.inputs,
+                        affectedAccount.addresses,
                     );
                 }
                 const prependingTx = { ...affectedAccountTransaction, deadline: blockHeight + 2 };
@@ -281,13 +260,13 @@ const buildFakePendingEvmTx = ({
             status: -1,
             nonce: parseInt(nonce),
             gasLimit: parseInt(precomposedTransaction.feeLimit ?? '0'),
-            gasPrice: isLegacyTx ? toWei(precomposedTransaction.feePerByte, 'gwei') : undefined,
+            gasPrice: isLegacyTx ? fromGwei(precomposedTransaction.feePerByte).toWei() : undefined,
             maxFeePerGas: isLegacyTx
                 ? undefined
-                : toWei(precomposedTransaction.maxFeePerGas ?? '0', 'gwei'),
+                : fromGwei(precomposedTransaction.maxFeePerGas ?? '0').toWei(),
             maxPriorityFeePerGas: isLegacyTx
                 ? undefined
-                : toWei(precomposedTransaction.maxPriorityFeePerGas ?? '0', 'gwei'),
+                : fromGwei(precomposedTransaction.maxPriorityFeePerGas ?? '0').toWei(),
             data: ensureHexPrefix(precomposedForm?.transactionData),
         },
         details: {
@@ -312,7 +291,7 @@ const buildFakePendingEvmTx = ({
     if (token) {
         const tokenTransfer: TokenTransfer = {
             type: 'sent',
-            standard: token.standard as TokenStandard,
+            standard: token.standard,
             amount,
             from: fromAddress,
             to: toAddress,
@@ -394,8 +373,11 @@ export const addFakePendingEvmTxThunk = createThunk(
             return;
         }
 
+        // Display-only fake pending tx (rendered after the real tx was already pushed): a confirmed-
+        // nonce backend round-trip here is unwarranted, and any transient mismatch self-corrects once
+        // the backend picks up the real tx.
         const { nonce } = await dispatch(
-            ethereumGetCurrentNonceThunk({ selectedAccount: account }),
+            ethereumGetCurrentNonceThunk({ selectedAccount: account, fetchConfirmedNonce: false }),
         ).unwrap();
 
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
@@ -472,6 +454,68 @@ export const addFakePendingCardanoTxThunk = createThunk(
     },
 );
 
+interface AddFakePendingTronTxThunkParams {
+    txid: string;
+    account: Account;
+    amount: string;
+    fee: string;
+    type: WalletAccountTransaction['type'];
+    target?: { addresses: string[]; amount: string };
+    tronSpecific?: WalletAccountTransaction['tronSpecific'];
+}
+
+export const addFakePendingTronTxThunk = createThunk(
+    `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
+    (
+        { txid, account, amount, fee, type, target, tronSpecific }: AddFakePendingTronTxThunkParams,
+        { dispatch, getState },
+    ) => {
+        if (account.networkType !== 'tron') return;
+
+        const FAKE_TX_TTL_SECONDS = 15 * 60;
+        const blockTime = selectRawNetworkFeeInfo(getState(), account.symbol)?.blockTime ?? 0;
+        const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol) ?? 0;
+        const deadline = blockHeight + Math.ceil(FAKE_TX_TTL_SECONDS / blockTime);
+
+        const fakeTx = {
+            type,
+            txid,
+            blockTime: Math.floor(Date.now() / 1000),
+            blockHash: undefined,
+            amount,
+            fee,
+            feeRate: undefined,
+            targets: target
+                ? [{ n: 0, addresses: target.addresses, isAddress: true, amount: target.amount }]
+                : [],
+            tokens: [],
+            internalTransfers: [],
+            tronSpecific,
+            details: {
+                vin: target
+                    ? [
+                          {
+                              n: 0,
+                              addresses: target.addresses,
+                              isAddress: true,
+                              isOwn: true,
+                              isAccountOwned: true,
+                          },
+                      ]
+                    : [],
+                vout: target
+                    ? [{ value: target.amount, n: 0, addresses: target.addresses, isAddress: true }]
+                    : [],
+                size: 0,
+                totalInput: '0',
+                totalOutput: target?.amount ?? '0',
+            },
+            deadline,
+        };
+        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+    },
+);
+
 /**
  * @param noLoading - disable loading indicator
  * @param forceRefetch - force refetch of transactions even if this page is already fetched
@@ -524,6 +568,10 @@ export const fetchTransactionsPageThunk = createThunk(
             ...(marker && !isFirstPage ? { marker } : {}),
             suppressBackupWarning: true,
             protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
+            gap:
+                account.networkType === 'bitcoin'
+                    ? selectGapLimit(getState(), account.symbol)
+                    : undefined,
         });
 
         // Account might have changed during async getAccountInfo call, so we fetch current state
@@ -580,6 +628,7 @@ export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk(
         const result = await TrezorConnect.blockchainGetTransactions({
             coin: account.symbol,
             txs: account.utxo.map(utxo => utxo.txid),
+            descriptor: account.descriptor,
         });
 
         if (signal.aborted) {

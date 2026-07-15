@@ -33,6 +33,7 @@ export const MIN_MAX_QUOTES_OK: BuyTrade[] = [
         minCrypto: 0.002,
         maxCrypto: 0.10532,
         paymentMethod: 'creditCard',
+        paymentMethodName: 'Credit Card',
         paymentId: 'e709df77-ee9e-4d12-98c2-84004a19c546',
     },
     {
@@ -48,6 +49,7 @@ export const MIN_MAX_QUOTES_OK: BuyTrade[] = [
         minCrypto: 0.002,
         maxCrypto: 0.20003,
         paymentMethod: 'creditCard',
+        paymentMethodName: 'Credit Card',
     },
     {
         fiatStringAmount: '10',
@@ -62,6 +64,7 @@ export const MIN_MAX_QUOTES_OK: BuyTrade[] = [
         minCrypto: 0.00415525,
         maxCrypto: 1.66210137,
         paymentMethod: 'creditCard',
+        paymentMethodName: 'Credit Card',
     },
 ];
 
@@ -80,6 +83,7 @@ export const MIN_MAX_QUOTES_LOW: BuyTrade[] = [
         minCrypto: 0.002,
         maxCrypto: 0.10532,
         paymentMethod: 'creditCard',
+        paymentMethodName: 'Credit Card',
     },
     {
         fiatStringAmount: '10',
@@ -95,6 +99,7 @@ export const MIN_MAX_QUOTES_LOW: BuyTrade[] = [
         minCrypto: 0.002,
         maxCrypto: 0.20003,
         paymentMethod: 'creditCard',
+        paymentMethodName: 'Credit Card',
     },
     {
         fiatStringAmount: '10',
@@ -109,6 +114,7 @@ export const MIN_MAX_QUOTES_LOW: BuyTrade[] = [
         minCrypto: 0.00415525,
         maxCrypto: 1.66210137,
         paymentMethod: 'creditCard',
+        paymentMethodName: 'Credit Card',
     },
 ];
 
@@ -127,6 +133,7 @@ export const MIN_MAX_QUOTES_HIGH: BuyTrade[] = [
         minCrypto: 0.002,
         maxCrypto: 0.10595,
         paymentMethod: 'creditCard',
+        paymentMethodName: 'Credit Card',
     },
     {
         fiatStringAmount: '100000',
@@ -142,6 +149,7 @@ export const MIN_MAX_QUOTES_HIGH: BuyTrade[] = [
         minCrypto: 0.002,
         maxCrypto: 0.20015,
         paymentMethod: 'creditCard',
+        paymentMethodName: 'Credit Card',
     },
     {
         fiatStringAmount: '100000',
@@ -156,6 +164,7 @@ export const MIN_MAX_QUOTES_HIGH: BuyTrade[] = [
         minCrypto: 0.00418032,
         maxCrypto: 1.67212968,
         paymentMethod: 'creditCard',
+        paymentMethodName: 'Credit Card',
     },
 ];
 
@@ -173,6 +182,7 @@ export const ALTERNATIVE_QUOTES: BuyTrade[] = [
         minCrypto: 0.002,
         maxCrypto: 0.19952,
         paymentMethod: 'creditCard',
+        paymentMethodName: 'Credit Card',
         tags: ['alternativeCurrency'],
     },
     {
@@ -188,6 +198,7 @@ export const ALTERNATIVE_QUOTES: BuyTrade[] = [
         minCrypto: 0.002,
         maxCrypto: 0.1055,
         paymentMethod: 'creditCard',
+        paymentMethodName: 'Credit Card',
         tags: ['alternativeCurrency'],
     },
     {
@@ -204,6 +215,7 @@ export const ALTERNATIVE_QUOTES: BuyTrade[] = [
         minCrypto: 0.00416233,
         maxCrypto: 1.66493314,
         paymentMethod: 'creditCard',
+        paymentMethodName: 'Credit Card',
         tags: ['alternativeCurrency'],
     },
     {
@@ -220,6 +232,7 @@ export const ALTERNATIVE_QUOTES: BuyTrade[] = [
         minCrypto: 0.00416233,
         maxCrypto: 1.66493314,
         paymentMethod: 'creditCard',
+        paymentMethodName: 'Credit Card',
     },
 ];
 
@@ -237,6 +250,7 @@ export const EMPTY_AMOUNT_QUOTES: BuyTrade[] = [
         minCrypto: 0.000001,
         maxCrypto: 0.0001,
         paymentMethod: 'creditCard',
+        paymentMethodName: 'Credit Card',
         error: 'Transaction amount too high. Please enter a value of 0.001 BTC or less.',
         tags: ['alternativeCurrency'],
     },
@@ -253,6 +267,7 @@ export const EMPTY_AMOUNT_QUOTES: BuyTrade[] = [
         minCrypto: 0.000001,
         maxCrypto: 0.0001,
         paymentMethod: 'creditCard',
+        paymentMethodName: 'Credit Card',
         error: 'Transaction amount too high. Please enter a value of 0.001 BTC or less.',
         tags: ['alternativeCurrency'],
     },

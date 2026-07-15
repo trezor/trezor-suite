@@ -1,7 +1,7 @@
 import { FormattedList } from 'react-intl';
 
 import { Translation } from '@suite/intl';
-import { BulletList } from '@trezor/components';
+import { StepList } from '@trezor/components';
 
 import { EarnInfoRow } from './EarnInfoRow';
 
@@ -10,7 +10,7 @@ interface YieldClaimingInfoProps {
 }
 
 export const YieldClaimingInfo = ({ rewardsSymbols }: YieldClaimingInfoProps) => (
-    <BulletList bulletGap={12} gap={16} bulletSize="small" titleGap={2}>
+    <StepList bulletGap={12} gap={16} bulletSize="small" titleGap={2}>
         <EarnInfoRow
             heading={<Translation id="TR_EARN_SIGN_CLAIM_REWARDS_TRANSACTION" />}
             subheading={<Translation id="TR_EARN_YIELD_CLAIM_AVAILABLE_IN_EARN_SUB" />}
@@ -27,5 +27,5 @@ export const YieldClaimingInfo = ({ rewardsSymbols }: YieldClaimingInfoProps) =>
             }
             content={{ text: <Translation id="TR_EARN_INSTANTLY" /> }}
         />
-    </BulletList>
+    </StepList>
 );

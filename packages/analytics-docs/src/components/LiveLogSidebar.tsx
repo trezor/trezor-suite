@@ -22,6 +22,7 @@ import {
     Text,
     variables,
 } from '@trezor/components';
+import { GearIcon, MagnifyingGlassIcon, ProhibitIcon } from '@trezor/icons';
 import { zIndices } from '@trezor/theme';
 import { removeTrailingSlashes } from '@trezor/utils';
 
@@ -63,7 +64,7 @@ const NewEventDot = styled.div<{ theme: SuiteThemeColors }>`
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: ${({ theme }) => theme.legacyBackgroundPrimaryDefault};
+    background: ${({ theme }) => theme.elementFillBrandBold};
     flex: 0 0 auto;
 `;
 
@@ -156,7 +157,7 @@ const LiveLogEventItem = ({
                     </Column>
                     {hasPayload && (
                         <IconButton
-                            icon="magnifyingGlass"
+                            icon={MagnifyingGlassIcon}
                             size="small"
                             intent="neutral"
                             priority="secondary"
@@ -291,12 +292,12 @@ export const LiveLogSidebar = ({ onEventClick, filterQuery }: LiveLogSidebarProp
                                             timeoutsRef.current.clear();
                                             setNewEventIds({});
                                         }}
-                                        icon="prohibit"
+                                        icon={ProhibitIcon}
                                         tooltip={{ content: 'Clear log' }}
                                     />
                                 )}
                                 <IconButton
-                                    icon="gear"
+                                    icon={GearIcon}
                                     size="small"
                                     intent="neutral"
                                     priority="secondary"

@@ -1,22 +1,23 @@
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Translation } from '@suite-native/intl';
 
 import { type HowEarnWorksScreenPreset } from './types';
 
 type CreateHowStakeWorksPresetProps = {
-    displaySymbol: string;
-    potentialRewards: string;
+    symbol: NetworkSymbol;
     entryPeriodInDays: number | undefined;
     unstakingPeriodInDays: number | undefined;
     apy: number | null | undefined;
 };
 
 export const createHowStakeWorksPreset = ({
-    displaySymbol,
-    potentialRewards,
+    symbol,
     entryPeriodInDays,
     unstakingPeriodInDays,
     apy,
 }: CreateHowStakeWorksPresetProps): HowEarnWorksScreenPreset => {
+    const displaySymbol = getNetworkDisplaySymbol(symbol);
+
     const entryPeriodDescriptionId =
         entryPeriodInDays !== undefined
             ? 'earn.howStakeWorksScreen.stakingTimeline.second.description'
@@ -38,20 +39,22 @@ export const createHowStakeWorksPreset = ({
                 title: (
                     <Translation
                         id="earn.howStakeWorksScreen.benefits.first.title"
-                        values={{ displaySymbol, potentialRewards }}
+                        values={{ apy }}
                     />
                 ),
                 description: (
-                    <Translation
-                        id="earn.howStakeWorksScreen.benefits.first.description"
-                        values={{ displaySymbol }}
-                    />
+                    <Translation id="earn.howStakeWorksScreen.benefits.first.description" />
                 ),
             },
             {
                 id: 'stake-benefit-compound',
                 icon: 'trendUp',
-                title: <Translation id="earn.howStakeWorksScreen.benefits.second.title" />,
+                title: (
+                    <Translation
+                        id="earn.howStakeWorksScreen.benefits.second.title"
+                        values={{ displaySymbol }}
+                    />
+                ),
                 description: (
                     <Translation id="earn.howStakeWorksScreen.benefits.second.description" />
                 ),
@@ -62,11 +65,18 @@ export const createHowStakeWorksPreset = ({
                 title: (
                     <Translation
                         id="earn.howStakeWorksScreen.benefits.third.title"
-                        values={{ displaySymbol }}
+                        values={{ days: unstakingPeriodInDays }}
                     />
                 ),
                 description: (
-                    <Translation id="earn.howStakeWorksScreen.benefits.third.description" />
+                    <Translation
+                        id={
+                            symbol === 'eth'
+                                ? 'earn.howStakeWorksScreen.benefits.third.description.ethereum'
+                                : 'earn.howStakeWorksScreen.benefits.third.description.solana'
+                        }
+                        values={{ days: unstakingPeriodInDays }}
+                    />
                 ),
             },
         ],

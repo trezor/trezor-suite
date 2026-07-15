@@ -9,13 +9,15 @@ type Attributes = {
 
 export const tradingSuccessEvent: EventDef<Attributes, EventType.TradingSuccess> = {
     name: EventType.TradingSuccess,
-    descriptionTrigger: 'User was sent to trade detail.',
+    descriptionTrigger:
+        'A trading transaction (buy/sell/exchange) completes successfully and the user is navigated to the trade detail view',
     changelog: [{ version: '25.5.1', notes: 'added' }],
 
     attributes: {
         type: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'Type of trade.',
+            description:
+                'Type of trade: `buy` for purchase, `sell` for selling cryptocurrency, `exchange` for swapping between cryptocurrencies',
         },
     },
 };

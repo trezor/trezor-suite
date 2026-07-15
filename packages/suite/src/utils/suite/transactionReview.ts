@@ -92,12 +92,8 @@ export const getTransactionReviewModalActionTranslation = ({
         return { id: 'TR_CANCEL_TX_BUTTON' };
     }
 
-    if (isSending) {
-        return { id: 'TR_CONFIRMING_TX' };
-    }
-
     if (routeName === 'earn-yield-deposit') {
-        return { id: 'TR_EARN_YIELD_SUPPLY' };
+        return { id: 'TR_EARN_YIELD_DEPOSIT' };
     }
 
     if (routeName === 'earn-yield-withdraw') {
@@ -108,6 +104,34 @@ export const getTransactionReviewModalActionTranslation = ({
 
     if (routeName === 'earn-yield-claim') {
         return { id: source === 'heading' ? 'TR_EARN_CLAIM_REWARDS' : 'TR_EARN_YIELD_CLAIM' };
+    }
+
+    if (routeName === 'earn-tron-withdraw') {
+        return { id: 'TR_EARN_TRON_WITHDRAW_TITLE' };
+    }
+
+    if (routeName === 'earn-tron-claim') {
+        return { id: 'TR_EARN_TRON_CLAIM_TITLE' };
+    }
+
+    if (
+        precomposedForm.tronStaking?.kind === 'freeze' ||
+        precomposedForm.tronStaking?.kind === 'unstake'
+    ) {
+        return {
+            id:
+                precomposedForm.tronStaking.kind === 'unstake'
+                    ? 'TR_EARN_TRON_UNSTAKE_TITLE'
+                    : 'TR_EARN_TRON_FREEZE',
+        };
+    }
+
+    if (precomposedForm.tronStaking?.kind === 'vote') {
+        return { id: 'TR_EARN_TRON_VOTE' };
+    }
+
+    if (isSending) {
+        return { id: 'TR_CONFIRMING_TX' };
     }
 
     return { id: 'SEND_TRANSACTION' };

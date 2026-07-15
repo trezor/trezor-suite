@@ -1,6 +1,6 @@
 import { BlockchainLink } from '@trezor/blockchain-link';
 import { MESSAGES, type ResponseTypes } from '@trezor/blockchain-link-types';
-import { type MethodPermission } from '@trezor/connect-common';
+import { type PermissionRequest } from '@trezor/connect-common';
 
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
@@ -36,7 +36,7 @@ export default class BlockchainValidateEvmRpcUrl extends AbstractMethod<
         this.useUi = false;
     }
 
-    get requiredPermissions(): MethodPermission[] {
+    get requiredPermissions(): PermissionRequest[] {
         return [];
     }
 

@@ -6,6 +6,7 @@ import {
     selectFirmwareHashCheckErrorIfEnabled,
     selectFirmwareRevisionCheckErrorIfEnabled,
 } from '@suite/authenticity-checks';
+import { MessageSystemBanner } from '@suite/message-system';
 import { SuiteSyncBanner, selectIsSuiteSyncBannerVisible } from '@suite/suite-sync';
 import {
     selectDeviceStaticSessionId,
@@ -23,7 +24,6 @@ import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 import { useLocalNetworkAccessPermission } from 'src/hooks/suite/useLocalNetworkAccessPermission';
 
-import { MessageSystemBanner } from '../MessageSystemBanner';
 import { BridgeDeprecated, useLegacyBridgeDetection } from './BridgeDeprecatedBanner';
 import { CardanoOutdatedStakingBanner } from './CardanoOutdatedStakingBanner';
 import { FailedBackup } from './FailedBackupBanner';

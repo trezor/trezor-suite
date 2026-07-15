@@ -8,20 +8,19 @@ import {
     CARDANO_DERIVATIONS,
     type CoinInfo,
     type DiscoverAccountsProgress,
-    ERRORS,
     type EntropyCheckResult,
     type FirmwareRange,
-    type MethodPermission,
     PAGING,
+    type PermissionRequest,
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';
 import { arrayPartition, getSynchronize, versionUtils } from '@trezor/utils';
 
-import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
+import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getCoinInfo } from '../data/coinInfo';
+import { getCoinInfoOrThrow } from '../data/coinInfo';
 import type { AccountDescriptor } from '../device/DeviceCommands';
 import { isUtxoBased } from '../utils/accountUtils';
 import { validatePath } from '../utils/pathUtils';
@@ -106,13 +105,10 @@ export default class DiscoverAccounts extends AbstractMethod<
             const { symbol, known: knownAccs, knownOnly, ...rest } = coin;
 
             // validate coin info
-            const coinInfo = getCoinInfo(symbol);
-            if (!coinInfo) {
-                throw ERRORS.TypedError('Method_UnknownCoin');
-            }
+            const coinInfo = getCoinInfoOrThrow(symbol);
 
             // validate backend
-            isBackendSupported(coinInfo);
+            assertBackendSupported(coinInfo);
 
             const firmwareRange = getFirmwareRange([payload.method], [coinInfo]);
 
@@ -153,8 +149,11 @@ export default class DiscoverAccounts extends AbstractMethod<
         this.useDeviceState = true;
         this.useUi = false;
     }
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms(
+            'read_account_info',
+            this.params.coins.map(c => c.coinInfo),
+        );
     }
 
     private progress: Partial<{ [key in ReturnType<typeof getAccountTypeKey>]: number }> = {};

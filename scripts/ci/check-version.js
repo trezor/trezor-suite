@@ -1,9 +1,7 @@
-/* eslint-disable camelcase */
-
-import semver from 'semver';
 import child_process from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
+import semver from 'semver';
 
 const args = process.argv.slice(2);
 
@@ -19,11 +17,10 @@ if (!['latest', 'beta', 'alpha'].includes(distTag)) {
 }
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
-const PACKAGE_PATH = path.join(
-    ROOT,
-    packageName.startsWith('coins-') ? 'coins' : 'packages',
-    packageName,
-);
+const NETWORK_MATCH = packageName.match(/^network-([^-]+)(-(.+))?$/);
+const PACKAGE_PATH = NETWORK_MATCH
+    ? path.join(ROOT, 'networks', NETWORK_MATCH[1], packageName)
+    : path.join(ROOT, 'packages', packageName);
 
 // read package version
 const packageJSONRaw = fs.readFileSync(path.join(PACKAGE_PATH, 'package.json'), {

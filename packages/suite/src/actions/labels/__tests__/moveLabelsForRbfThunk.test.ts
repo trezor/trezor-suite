@@ -1,5 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { prepareDebugReducer } from '@suite/debug';
 import { metadataReducer, selectLabelingDataForAccount } from '@suite/metadata';
 import { prepareSuiteSettingsReducer } from '@suite/settings';
 import { suiteSyncReducer } from '@suite-common/suite-sync';
@@ -30,6 +31,7 @@ const rootReducer = combineReducers({
     metadata: metadataReducer,
     suite: suiteReducer,
     suiteSettings: prepareSuiteSettingsReducer(extraDependencies),
+    debug: prepareDebugReducer(extraDependencies),
     suiteSync: suiteSyncReducer,
 });
 

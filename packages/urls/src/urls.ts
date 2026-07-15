@@ -34,6 +34,8 @@ export const DOCS_ANALYTICS_URL: Url = withPlatformUtm(
 
 export const TREZOR_SUITE_TOS_URL: Url = 'https://trezor.io/documents/suite_terms_of_use.pdf';
 export const TREZOR_TRADING_LEARN_MORE_URL: Url = 'https://trezor.io/trade-features';
+export const TREZOR_TRADING_DEX_SLIPPAGE_URL: Url =
+    'https://trezor.io/learn/advanced/defi/what-is-a-dex#fees-and-slippage';
 export const MORPHO_DISCLAIMER_URL: Url = 'https://morpho.org/disclaimers/';
 
 // =====================
@@ -331,6 +333,8 @@ export const TRADING_DOWNLOAD_INVITY_APP_URL: Url = 'https://invity.onelink.me/y
 // =====================
 
 export const TREZOR_SAFE_5_URL: Url = withPlatformUtm('https://trezor.io/trezor-safe-5');
+
+export const ESHOP_STORE_URL: Url = withPlatformUtm('https://trezor.io/store');
 export const ESHOP_KEEP_METAL_SINGLE_SHARE_URL: Url = withPlatformUtm(
     'https://trezor.io/trezor-keep-metal-single-share',
 );
@@ -342,6 +346,9 @@ export const DASHBOARD_BANNER_TEX_URL: Url =
 
 export const DASHBOARD_BANNER_TS7_URL: Url =
     'https://trezor.io/trezor-safe-7?utm_source=trezor_suite&utm_medium=suite_desktop_banner&utm_campaign=ts7_introduction';
+
+export const DASHBOARD_ONBOARDING_FEEDBACK_URL: Url =
+    'https://satoshilabs.typeform.com/to/fsiLqgmd';
 
 export const ESHOP_KEEP_METAL_MULTI_SHARE_URL: Url = withPlatformUtm(
     'https://trezor.io/trezor-keep-metal-multi-share',

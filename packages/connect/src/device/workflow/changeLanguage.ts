@@ -22,8 +22,8 @@ const uploadTranslationData = async (device: IDevice, payload: ArrayBuffer | nul
         .typedCall('ChangeLanguage', ['DataChunkRequest', 'Success'], { data_length: length });
 
     while (response.type !== 'Success') {
-        const start = response.message.data_offset!;
-        const end = response.message.data_offset! + response.message.data_length!;
+        const start = response.message.data_offset;
+        const end = response.message.data_offset + response.message.data_length;
         const chunk = payload.slice(start, end);
 
         response = await device

@@ -1,9 +1,8 @@
 import { type Account } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
-    getAccountTotalStakingBalance,
     getStakingLimitsByNetworkSymbol,
-    isSupportedEthStakingNetworkSymbol,
+    isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import {
     type RootStackParamList,
@@ -12,21 +11,26 @@ import {
 } from '@suite-native/navigation';
 import { BigNumber } from '@trezor/utils';
 
+import { hasAccountStakedBalance } from './hasAccountStakedBalance';
+import { resolveStakingTargetRoute } from './resolveStakingTargetRoute';
+
 type StakingNavigateFn = StackNavigationProps<
     RootStackParamList,
     RootStackRoutes.StakingManagement
 >['navigate'];
 
 export const navigateByAccountState = (account: Account, navigate: StakingNavigateFn) => {
-    const stakedBalance = getAccountTotalStakingBalance(account);
+    if (hasAccountStakedBalance(account)) {
+        navigate(resolveStakingTargetRoute(account.symbol), {
+            accountKey: account.key,
+        });
 
-    // Temporarily Ethereum-only until the Solana StakingManagement dashboard is merged.
-    if (
-        isSupportedEthStakingNetworkSymbol(account.symbol) &&
-        stakedBalance &&
-        stakedBalance !== '0'
-    ) {
-        navigate(RootStackRoutes.StakingManagement, {
+        return;
+    }
+
+    if (isSupportedSolStakingNetworkSymbol(account.symbol)) {
+        navigate(RootStackRoutes.HowStakeWorksScreen, {
+            symbol: account.symbol,
             accountKey: account.key,
         });
 

@@ -2,6 +2,7 @@ import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { portfolioTrackerBtcAccountState } from '../fixtures/portfolioTrackerBtcAccountState';
 import { onHome } from '../pageObjects/homeActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
+import { buyPreviewActions } from '../pageObjects/trading/buyPreviewActions';
 import { tradingBuyActions } from '../pageObjects/trading/tradingBuyActions';
 import { tradingHistoryActions } from '../pageObjects/trading/tradingHistoryActions';
 import { openApp, preparePreloadedReduxState } from '../support/setup';
@@ -24,8 +25,8 @@ describe('Trade Buy [@noDevice]', () => {
         await tradingBuyActions.selectReceiveAsset('BTC', undefined, 'Bitcoin');
         await tradingBuyActions.selectBtcReceiveAccount('BTC SegWit', "m/84'/0'/0'/0/0");
         await tradingBuyActions.selectFiatCurrency('PLN');
-        await tradingBuyActions.selectCountry('Polan', 'Poland', 'POL');
         await tradingBuyActions.setFiatAmount('100');
+        await tradingBuyActions.selectCountry('Polan', 'Poland', 'POL');
 
         await tradingBuyActions.viewHowTradingWorks();
         await tradingBuyActions.viewPaymentMethods();
@@ -33,6 +34,9 @@ describe('Trade Buy [@noDevice]', () => {
         await tradingBuyActions.expectValidBuyForm();
 
         await tradingBuyActions.confirmTradingForm();
+
+        await buyPreviewActions.expectBuyPreviewScreenToBeVisible();
+        await buyPreviewActions.confirmTrade();
         await tradingBuyActions.expectBrowserAuthTriggered();
 
         await tradingHistoryActions.openTradeHistory();

@@ -18,7 +18,14 @@ export const dashboardParamsSchema = yup
     })
     .notRequired();
 
-const getDashboardParamModal = (param: unknown): GlobalSendReceiveType => {
+export const getDashboardParamModal = (param: unknown): GlobalSendReceiveType => {
+    const hasModalParam =
+        typeof param === 'object' && param !== null && !Array.isArray(param) && 'modal' in param;
+
+    if (!hasModalParam) {
+        return null;
+    }
+
     try {
         const parsedParams = dashboardParamsSchema.validateSync(param, {
             abortEarly: false,
@@ -26,11 +33,9 @@ const getDashboardParamModal = (param: unknown): GlobalSendReceiveType => {
         });
 
         return parsedParams?.modal ?? null;
-    } catch (error) {
-        console.error(error);
+    } catch {
+        return null;
     }
-
-    return null;
 };
 
 export function useGlobalSendReceiveModal() {

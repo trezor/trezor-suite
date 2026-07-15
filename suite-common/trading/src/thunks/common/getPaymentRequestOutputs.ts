@@ -3,20 +3,27 @@ import { type PaymentRequestOutput } from 'invity-api';
 import { createThunk } from '@suite-common/redux-utils';
 import type { Network } from '@suite-common/wallet-config';
 import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import solana from '@trezor/coins-solana/runtime';
 import TrezorConnect from '@trezor/connect';
+import solana from '@trezor/network-solana/runtime';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import { type TradingSendRejectedProps } from '../../types';
-import { formatSlip24SendAmountByNetwork } from '../../utils/signature/signatureUtils';
+import {
+    formatSlip24AddressByNetwork,
+    formatSlip24SendAmountByNetwork,
+} from '../../utils/signature/signatureUtils';
 
 export const getPaymentRequestOutputs = createThunk<
     PaymentRequestOutput[],
-    { network: Network; composedLevels: GeneralPrecomposedTransactionFinal },
+    {
+        network: Network;
+        composedLevels: GeneralPrecomposedTransactionFinal;
+        destinationTag?: string;
+    },
     { rejectValue: TradingSendRejectedProps }
 >(
     `${TRADING_THUNK_PREFIX}/getPaymentRequestOutputs`,
-    async ({ network, composedLevels }, { rejectWithValue, fulfillWithValue }) => {
+    async ({ network, composedLevels, destinationTag }, { rejectWithValue, fulfillWithValue }) => {
         const outputs: PaymentRequestOutput[] = [];
 
         for (const output of composedLevels.outputs) {
@@ -49,7 +56,11 @@ export const getPaymentRequestOutputs = createThunk<
 
                 outputs.push({
                     amount,
-                    address: sendAddress,
+                    address: formatSlip24AddressByNetwork({
+                        address: sendAddress,
+                        network,
+                        destinationTag,
+                    }),
                 });
             }
 
@@ -71,7 +82,10 @@ export const getPaymentRequestOutputs = createThunk<
 
                 outputs.push({
                     amount: formatSlip24SendAmountByNetwork({ value: output.amount, network }),
-                    address: getAddress.payload.address,
+                    address: formatSlip24AddressByNetwork({
+                        address: getAddress.payload.address,
+                        network,
+                    }),
                 });
             }
         }

@@ -2,7 +2,7 @@ import { type ComponentType, type ReactNode, useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { selectModalType } from '@suite/modal';
-import { selectTorState } from '@suite/tor';
+import { TorStatus, selectTorState } from '@suite/tor';
 import {
     Banner,
     Card,
@@ -14,11 +14,11 @@ import {
     Row,
     Text,
 } from '@trezor/components';
+import { ClockClockwiseIcon, RepeatIcon, TorBrowserIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { toggleTor, updateTorStatus } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { TorStatus } from 'src/types/suite';
 
 type TorLoadingScreenProps = {
     ModalWrapper?: ComponentType<{ children: ReactNode }>;
@@ -103,7 +103,7 @@ export const TorLoader = ({ callback }: TorLoadingScreenProps) => {
     return (
         <Modal
             intent="info"
-            iconName="torBrowser"
+            icon={TorBrowserIcon}
             width={600}
             bottomContent={
                 <>
@@ -120,7 +120,7 @@ export const TorLoader = ({ callback }: TorLoadingScreenProps) => {
                     {isTorError && (
                         <Modal.Button
                             data-testid="@tor-loading-screen/try-again-button"
-                            iconLeft="repeat"
+                            iconLeft={RepeatIcon}
                             onClick={tryAgain}
                             intent="neutral"
                             priority="secondary"
@@ -135,7 +135,7 @@ export const TorLoader = ({ callback }: TorLoadingScreenProps) => {
                 <H3>
                     <Translation id={getMessageId()} />
                 </H3>
-                <Card fillType="flat">
+                <Card type="contrast">
                     <Row gap={spacings.md}>
                         <ProgressBar value={isTorError ? 100 : progress} />
                         <Paragraph
@@ -155,7 +155,7 @@ export const TorLoader = ({ callback }: TorLoadingScreenProps) => {
                 {!!torBootstrap?.isSlow && (
                     <Banner
                         intent="info"
-                        icon="clockClockwise"
+                        icon={ClockClockwiseIcon}
                         description={
                             <Translation id="TR_TOR_IS_SLOW_MESSAGE" values={{ br: () => ' ' }} />
                         }

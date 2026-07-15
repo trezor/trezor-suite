@@ -2,19 +2,34 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/backup" },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/redux-utils"
         },
         {
+            "path": "../../suite-common/suite-types"
+        },
+        {
             "path": "../../suite-common/toast-notifications"
         },
         { "path": "../analytics" },
+        { "path": "../external-links" },
+        { "path": "../intl" },
+        { "path": "../nfc" },
+        { "path": "../recovery" },
         { "path": "../router" },
+        { "path": "../settings" },
+        { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
         {
-            "path": "../../suite-common/suite-types"
+            "path": "../../packages/product-components"
         },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/urls" },
         {
             "path": "../../suite-common/test-utils"
         },

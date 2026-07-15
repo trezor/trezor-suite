@@ -1,7 +1,7 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
 import { type SuiteSyncListener } from '@suite-common/suite-sync-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
+import { parseStaticSessionId } from '@trezor/device-utils';
 
 import {
     clearDataForWallet,
@@ -21,15 +21,15 @@ export const createSuiteSyncListener = (deps: CreateSuiteSyncListenerDeps): Suit
             deps.dispatch(upsertManyWallets(entities));
         },
         accounts: (deviceStaticSessionId, entities) => {
-            const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+            const { walletDescriptor } = parseStaticSessionId(deviceStaticSessionId);
             deps.dispatch(upsertManyAccounts({ walletDescriptor, accounts: entities }));
         },
         addresses: (deviceStaticSessionId, entities) => {
-            const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+            const { walletDescriptor } = parseStaticSessionId(deviceStaticSessionId);
             deps.dispatch(upsertManyAddresses({ walletDescriptor, addresses: entities }));
         },
         outputs: (deviceStaticSessionId, entities) => {
-            const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+            const { walletDescriptor } = parseStaticSessionId(deviceStaticSessionId);
             deps.dispatch(upsertManyOutputs({ walletDescriptor, outputs: entities }));
         },
     },

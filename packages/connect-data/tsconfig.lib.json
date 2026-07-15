@@ -4,7 +4,6 @@
     "compilerOptions": {
         "outDir": "./lib",
         "rootDir": "./src",
-        "esModuleInterop": false,
         "types": ["node", "chrome", "jest"]
     },
     "references": []

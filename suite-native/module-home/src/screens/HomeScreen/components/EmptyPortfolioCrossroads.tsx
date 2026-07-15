@@ -1,4 +1,5 @@
 import { Platform, View } from 'react-native';
+import Animated, { FadeOut, LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -10,7 +11,18 @@ import {
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
+import {
+    AnimatedVStack,
+    Button,
+    Card,
+    CenteredTitleHeader,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
+import {
+    selectAreGetTrezorPromoBannersDisabled,
+    selectIsGetTrezorBannerClosed,
+} from '@suite-native/banner-flags';
 import { useConnectDeviceHandler } from '@suite-native/device';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import {
@@ -24,6 +36,7 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { GetTrezorCard } from './GetTrezorCard';
 import { ConnectTrezorSvg } from '../../../assets/ConnectTrezorSvg';
 
 const platformSpecificTitle: TxKeyPath = Platform.select({
@@ -31,8 +44,10 @@ const platformSpecificTitle: TxKeyPath = Platform.select({
     default: 'moduleHome.emptyState.connectTrezor.title.android',
 });
 
-const cardStyle = prepareNativeStyle<{ flex: 1 | 2 }>((utils, { flex }) => ({
-    flex,
+const cardFlexStyle = prepareNativeStyle<{ flex: 1 | 2 }>((_, { flex }) => ({ flex }));
+
+const cardContentStyle = prepareNativeStyle(utils => ({
+    flex: 1,
     justifyContent: 'center',
     paddingTop: utils.spacings.sp24,
     paddingBottom: utils.spacings.sp16,
@@ -66,6 +81,8 @@ export const EmptyPortfolioCrossroads = () => {
     const isQuestionnaireEnabled = useSelector((state: MessageSystemRootState) =>
         selectIsFeatureEnabled(state, Feature.demoAccountQuestionnaire, true),
     );
+    const isGetTrezorBannerClosed = useSelector(selectIsGetTrezorBannerClosed);
+    const areGetTrezorPromoBannersDisabled = useSelector(selectAreGetTrezorPromoBannersDisabled);
 
     const handleConnectDevice = () => {
         onConnectDevicePress();
@@ -110,45 +127,54 @@ export const EmptyPortfolioCrossroads = () => {
           };
 
     return (
-        <VStack spacing="sp16" flex={1}>
-            <Card style={applyStyle(cardStyle, { flex: 2 })}>
-                <VStack spacing="sp24" justifyContent="center" alignItems="center">
-                    <ConnectTrezorSvg />
-                    <CenteredTitleHeader
-                        title={<Translation id={platformSpecificTitle} />}
-                        subtitle={
-                            <Translation id="moduleHome.emptyState.connectTrezor.description" />
-                        }
-                    />
-                    <View style={applyStyle(buttonWrapperStyle)}>
-                        <Button onPress={handleConnectDevice}>
-                            <Translation id="moduleHome.emptyState.connectTrezor.connectButton" />
-                        </Button>
-                    </View>
-                </VStack>
-            </Card>
-            <Card style={applyStyle(cardStyle, { flex: 1 })}>
-                <VStack spacing="sp24" justifyContent="center" alignItems="center">
-                    <VStack alignItems="center">
-                        <Text variant="headline-sm" textAlign="center">
-                            <Translation id={secondaryCardConfig.titleTranslationId} />
-                        </Text>
-                        <Text color="contentSecondary" textAlign="center">
-                            <Translation id={secondaryCardConfig.descriptionTranslationId} />
-                        </Text>
+        <AnimatedVStack spacing="sp16" flex={1} layout={LinearTransition}>
+            <Animated.View layout={LinearTransition} style={applyStyle(cardFlexStyle, { flex: 2 })}>
+                <Card style={applyStyle(cardContentStyle)}>
+                    <VStack spacing="sp24" justifyContent="center" alignItems="center">
+                        <ConnectTrezorSvg />
+                        <CenteredTitleHeader
+                            title={<Translation id={platformSpecificTitle} />}
+                            subtitle={
+                                <Translation id="moduleHome.emptyState.connectTrezor.description" />
+                            }
+                        />
+                        <View style={applyStyle(buttonWrapperStyle)}>
+                            <Button onPress={handleConnectDevice}>
+                                <Translation id="moduleHome.emptyState.connectTrezor.connectButton" />
+                            </Button>
+                        </View>
                     </VStack>
-                    <View style={applyStyle(buttonWrapperStyle)}>
-                        <Button
-                            onPress={secondaryCardConfig.onPress}
-                            intent="neutral"
-                            priority="secondary"
-                            testID={secondaryCardConfig.testID}
-                        >
-                            <Translation id={secondaryCardConfig.buttonTranslationId} />
-                        </Button>
-                    </View>
-                </VStack>
-            </Card>
-        </VStack>
+                </Card>
+            </Animated.View>
+            {!isGetTrezorBannerClosed && !areGetTrezorPromoBannersDisabled && (
+                <Animated.View exiting={FadeOut}>
+                    <GetTrezorCard />
+                </Animated.View>
+            )}
+            <Animated.View layout={LinearTransition} style={applyStyle(cardFlexStyle, { flex: 1 })}>
+                <Card style={applyStyle(cardContentStyle)}>
+                    <VStack spacing="sp24" justifyContent="center" alignItems="center">
+                        <VStack alignItems="center">
+                            <Text variant="headline-sm" textAlign="center">
+                                <Translation id={secondaryCardConfig.titleTranslationId} />
+                            </Text>
+                            <Text color="contentSecondary" textAlign="center">
+                                <Translation id={secondaryCardConfig.descriptionTranslationId} />
+                            </Text>
+                        </VStack>
+                        <View style={applyStyle(buttonWrapperStyle)}>
+                            <Button
+                                onPress={secondaryCardConfig.onPress}
+                                intent="neutral"
+                                priority="secondary"
+                                testID={secondaryCardConfig.testID}
+                            >
+                                <Translation id={secondaryCardConfig.buttonTranslationId} />
+                            </Button>
+                        </View>
+                    </VStack>
+                </Card>
+            </Animated.View>
+        </AnimatedVStack>
     );
 };

@@ -12,6 +12,7 @@ import {
     initialState,
 } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
+import { selectTradingBuyPaymentMethods } from '../../../selectors/tradingSelectors';
 import {
     type HandleBuyRequestThunkProps,
     type TradingAssetOption,
@@ -22,7 +23,6 @@ import { buyThunks } from '../index';
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 const createMockQuotes = () =>
     [...MIN_MAX_QUOTES_OK, ...ALTERNATIVE_QUOTES].map(quote => ({ ...quote }));
-const usdcCryptoId = 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId;
 
 describe('handleBuyRequestThunk', () => {
     afterEach(() => {
@@ -88,6 +88,7 @@ describe('handleBuyRequestThunk', () => {
                 symbol: 'btc',
                 coingeckoId: 'bitcoin',
                 displaySymbol: 'BTC',
+                displaySymbolName: 'Bitcoin',
                 contractAddress: null,
                 networkName: 'Bitcoin',
                 networkSymbol: 'btc',
@@ -140,7 +141,7 @@ describe('handleBuyRequestThunk', () => {
             receiveAddress: 'RECEIVE_ADDRESS',
             wantCrypto: false,
         });
-        expect(state.info.paymentMethods.length).toEqual(1);
+        expect(selectTradingBuyPaymentMethods(store.getState()).length).toEqual(1);
         expect(state.isLoading).toBe(false);
         expect(state.quoteRefetchingState.status).toBe('running');
         expect(state.quoteRefetchingState.lastFetchTimestamp).toBeGreaterThan(0);
@@ -148,57 +149,6 @@ describe('handleBuyRequestThunk', () => {
             expect.objectContaining(mockQuotes[1]),
             expect.objectContaining(mockQuotes[6]),
         ]);
-    });
-
-    it('should resolve payment method symbol from trading coin info', async () => {
-        const { input, store } = getMocks();
-
-        invityAPI.getBuyQuotes = () => Promise.resolve(createMockQuotes());
-
-        await store.dispatch(buyThunks.handleRequestThunk(input)).unwrap();
-
-        expect(store.getState().wallet.trading.info.paymentMethods).toEqual(
-            expect.arrayContaining([expect.objectContaining({ symbol: 'BTC' })]),
-        );
-    });
-
-    it('should leave symbol undefined when coin info is missing for the receiveCurrency', async () => {
-        const { input, store } = getMocks();
-        const mockQuotes = createMockQuotes().map(quote => ({
-            ...quote,
-            receiveCurrency: usdcCryptoId,
-        }));
-
-        invityAPI.getBuyQuotes = () => Promise.resolve(mockQuotes);
-
-        await store.dispatch(buyThunks.handleRequestThunk(input)).unwrap();
-
-        expect(store.getState().wallet.trading.info.paymentMethods).toEqual(
-            expect.arrayContaining([expect.objectContaining({ symbol: undefined })]),
-        );
-    });
-
-    it('should use token symbol from coin info for ERC-20 receiveCurrency', async () => {
-        const { input, store } = getMocks(undefined, {
-            [usdcCryptoId]: {
-                symbol: 'usdc',
-                name: 'USD Coin',
-                coingeckoId: 'usd-coin',
-                services: { buy: true, sell: false, exchange: false },
-            },
-        });
-        const mockQuotes = createMockQuotes().map(quote => ({
-            ...quote,
-            receiveCurrency: usdcCryptoId,
-        }));
-
-        invityAPI.getBuyQuotes = () => Promise.resolve(mockQuotes);
-
-        await store.dispatch(buyThunks.handleRequestThunk(input)).unwrap();
-
-        expect(store.getState().wallet.trading.info.paymentMethods).toEqual(
-            expect.arrayContaining([expect.objectContaining({ symbol: 'USDC' })]),
-        );
     });
 
     it.each([

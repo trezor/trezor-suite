@@ -24,6 +24,9 @@ import {
     transformTarget,
 } from './utils';
 
+// ERC-20 default when a token does not expose decimals(); avoids breaking amount formatting.
+const DEFAULT_TOKEN_DECIMALS = 18;
+
 export const transformServerInfo = (payload: ServerInfo) => ({
     name: payload.name,
     shortcut: payload.shortcut,
@@ -83,7 +86,7 @@ export const filterTokenTransfers = (
             const tokenTransfer = {
                 ...transfer,
                 type,
-                decimals: transfer.decimals || 0,
+                decimals: transfer.decimals || DEFAULT_TOKEN_DECIMALS,
                 amount: transfer.value || '',
                 standard: transfer.standard,
             };
@@ -169,7 +172,7 @@ const getTransactionFee = (tx: BlockbookTransaction): string => {
     if (tx.chainExtraData?.payloadType === 'tron') {
         return tx.chainExtraData.payload?.totalFee || tx.fees;
     }
-    if (tx.ethereumSpecific && !tx.ethereumSpecific.gasUsed) {
+    if (tx.ethereumSpecific && !tx.ethereumSpecific.gasUsed && tx.ethereumSpecific.gasLimit) {
         return new BigNumber(
             tx.ethereumSpecific.maxFeePerGas ?? tx.ethereumSpecific.gasPrice ?? '0',
         )
@@ -178,6 +181,31 @@ const getTransactionFee = (tx: BlockbookTransaction): string => {
     }
 
     return tx.fees;
+};
+
+const getTronStakingClassification = (
+    tx: BlockbookTransaction,
+): { type: Transaction['type']; amount: string } | undefined => {
+    if (tx.chainExtraData?.payloadType !== 'tron') return undefined;
+
+    const { contractType, stakeAmount, unstakeAmount, claimedVoteReward } =
+        tx.chainExtraData.payload ?? {};
+
+    switch (contractType) {
+        case 'FreezeBalanceContract':
+        case 'FreezeBalanceV2Contract':
+            return { type: 'sent', amount: stakeAmount ?? '0' };
+        case 'UnfreezeBalanceContract':
+        case 'UnfreezeBalanceV2Contract':
+        case 'VoteWitnessContract':
+            return { type: 'sent', amount: '0' };
+        case 'WithdrawExpireUnfreezeContract':
+            return { type: 'recv', amount: unstakeAmount ?? '0' };
+        case 'WithdrawBalanceContract':
+            return { type: 'recv', amount: claimedVoteReward ?? '0' };
+        default:
+            return undefined;
+    }
 };
 
 export const transformTransaction = (
@@ -216,7 +244,16 @@ export const transformTransaction = (
     let amount: string;
     let targets: VinVout[];
 
-    if (tx.ethereumSpecific?.createdContract) {
+    const tronStaking = getTronStakingClassification(tx);
+
+    if (tronStaking) {
+        type = tronStaking.type;
+        amount = tronStaking.amount;
+        targets =
+            amount === '0'
+                ? []
+                : [{ n: 0, isAddress: true, value: amount, addresses: myAddresses }];
+    } else if (tx.ethereumSpecific?.createdContract) {
         type = 'contract';
         amount = tx.value;
         targets = [];
@@ -282,10 +319,12 @@ export const transformTransaction = (
         // descriptor), an 'unknown' is a genuine gap worth capturing — including the anomalous case where
         // the supplied addresses were empty (myAddressesCount === 0).
         // Intentionally no txid / addresses / descriptor: these reach Sentry and could deanonymize the user.
-        if (addressesOrDescriptor !== undefined) {
-            console.error('[btc-unknown-tx-debug] transformTransaction → type=unknown', {
+        if (addresses !== undefined) {
+            console.error('[btc-unknown-tx-debug-v2] transformTransaction', {
                 isPending: !tx.blockHeight || tx.blockHeight <= 0,
-                myAddressesCount: myAddresses.length,
+                knownUsedCount: addresses.used.length,
+                knownUnusedCount: addresses.unused.length,
+                knownChangeCount: addresses.change.length,
                 vinCount: inputs.length,
                 voutCount: outputs.length,
                 vinWithAddressesCount: inputs.filter(
@@ -336,6 +375,7 @@ export const transformTransaction = (
         ethereumSpecific: tx.ethereumSpecific && {
             ...tx.ethereumSpecific,
             gasPrice: tx.ethereumSpecific.gasPrice ?? '0', // even if it shouldn't, `null` sometimes came from Erigon
+            gasLimit: tx.ethereumSpecific.gasLimit ?? 0,
         },
         tronSpecific:
             tx.chainExtraData?.payloadType === 'tron' ? tx.chainExtraData.payload : undefined,
@@ -359,7 +399,7 @@ export const transformTokenInfo = (
         return arr.concat([
             {
                 ...token,
-                decimals: token.decimals || 0,
+                decimals: token.decimals || DEFAULT_TOKEN_DECIMALS,
                 standard: token.standard,
             },
         ]);
@@ -419,6 +459,7 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
     } else if (isEVM) {
         misc = {
             nonce: payload.nonce,
+            confirmedNonce: payload.confirmedNonce,
             contractInfo: payload.contractInfo,
             stakingPools: payload.stakingPools,
             addressAliases: payload.addressAliases,

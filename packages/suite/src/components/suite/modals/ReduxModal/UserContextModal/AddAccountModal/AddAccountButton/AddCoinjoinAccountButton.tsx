@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { createCoinjoinAccount } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { openDeferredModal, openModal, selectModalType } from '@suite/modal';
 import { selectTorState } from '@suite/tor';
@@ -12,7 +13,6 @@ import { isDesktop } from '@trezor/env-utils';
 import { resolveAfter } from '@trezor/utils';
 
 import { toggleTor } from 'src/actions/suite/suiteActions';
-import { createCoinjoinAccount } from 'src/actions/wallet/coinjoinAccountActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 

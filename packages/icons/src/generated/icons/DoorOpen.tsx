@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgDoorOpen = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M29 27h-3V5a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v22H3a1 1 0 0 0 0 2h26a1 1 0 0 0 0-2M24 5v22h-2V5zM8 5h12v22H8zm10 11.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"
+        />
+    </svg>
+);
+export { SvgDoorOpen as ReactComponent };

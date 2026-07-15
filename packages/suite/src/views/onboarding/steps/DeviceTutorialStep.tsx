@@ -5,9 +5,8 @@ import { Translation, messages } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectSelectedDevice } from '@suite-common/device';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
-import { type IconName } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-import { mapTrezorModelToIcon } from '@trezor/product-components';
+import { mapTrezorModelToFilledIcon } from '@trezor/product-components';
 
 import { beginOnboardingTutorial } from 'src/actions/onboarding/onboardingActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -21,6 +20,11 @@ export const DeviceTutorialStep = () => {
         dispatch(beginOnboardingTutorial());
     }, [dispatch]);
 
+    // Cancelling before the `showDeviceTutorial` call reaches the device (and registers in Connect
+    // core) is a no-op, leaving the device stuck showing the tutorial. Wait for the device to report
+    // it is waiting for interaction before allowing Skip.
+    const isDeviceReady = !!device?.buttonRequests.length;
+
     const handleSkipClick = () =>
         TrezorConnect.cancel({ reason: intl.formatMessage(messages.TR_CANCELLED) });
 
@@ -29,8 +33,10 @@ export const DeviceTutorialStep = () => {
             heading={<Translation id="TR_TREZOR_DEVICE_TUTORIAL_HEADING" />}
             description={<Translation id="TR_TREZOR_DEVICE_TUTORIAL_DESCRIPTION" />}
             device={device}
-            iconName={
-                `${mapTrezorModelToIcon[device?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL]}Filled` as IconName
+            icon={
+                mapTrezorModelToFilledIcon[
+                    device?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL
+                ]
             }
             innerActions={
                 <OnboardingCard.Button
@@ -38,6 +44,8 @@ export const DeviceTutorialStep = () => {
                     intent="neutral"
                     priority="secondary"
                     onClick={handleSkipClick}
+                    isDisabled={!isDeviceReady}
+                    isLoading={!isDeviceReady}
                 >
                     <Translation id="TR_SKIP" />
                 </OnboardingCard.Button>

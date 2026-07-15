@@ -1,4 +1,5 @@
 import type { TradingTradeType } from '@suite-common/trading';
+import { getTranslation } from '@suite-native/intl';
 import {
     banxaCreditCardSellQuote,
     cexdirectFloatingQuote,
@@ -32,6 +33,7 @@ describe('ProviderListItem', () => {
                 isSelected={false}
                 onPress={jest.fn()}
                 quote={quote}
+                shouldShowExchangeType={false}
                 tradingType="buy"
                 {...props}
             />,
@@ -45,10 +47,23 @@ describe('ProviderListItem', () => {
     });
 
     it('should render trading information with formatted strings', () => {
-        const { getByText } = renderProviderListItem(mercuryoApplePayBuyQuote);
+        const { getByText, queryByText } = renderProviderListItem(mercuryoApplePayBuyQuote);
 
-        expect(getByText('Centralized exchange')).toBeOnTheScreen();
+        expect(
+            queryByText(getTranslation('moduleTrading.providerListItem.centralizedExchange')),
+        ).toBeNull();
         expect(getByText('€9,998.32 / 1 BTC')).toBeOnTheScreen();
+    });
+
+    it('should render centralized exchange information for CEX providers when enabled', () => {
+        const { getByText } = renderProviderListItem(cexdirectFloatingQuote, {
+            shouldShowExchangeType: true,
+            tradingType: 'exchange',
+        });
+
+        expect(
+            getByText(getTranslation('moduleTrading.providerListItem.centralizedExchange')),
+        ).toBeOnTheScreen();
     });
 
     it('should render KYC information when provider has KYC policy', () => {
@@ -56,16 +71,21 @@ describe('ProviderListItem', () => {
             tradingType: 'exchange',
         });
 
-        expect(getByText('This provider requires KYC.')).toBeOnTheScreen();
+        expect(getByText(getTranslation('moduleTrading.kyc.kycRequired'))).toBeOnTheScreen();
     });
 
     it('should render anonymous information for DEX providers', () => {
         const { getByText } = renderProviderListItem(invityDexQuote, {
+            shouldShowExchangeType: true,
             tradingType: 'exchange',
         });
 
-        expect(getByText('Anonymous')).toBeOnTheScreen();
-        expect(getByText('Decentralized exchange')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.providerListItem.anonymous')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.providerListItem.decentralizedExchange')),
+        ).toBeOnTheScreen();
     });
 
     it('should not render when quote has no orderId', () => {
@@ -80,7 +100,9 @@ describe('ProviderListItem', () => {
     it('should render KYC warning for buy quote', () => {
         const { getByText } = renderProviderListItem(mercuryoApplePayBuyQuote);
 
-        expect(getByText('This provider requires KYC.')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.providerListItem.kycRequired')),
+        ).toBeOnTheScreen();
     });
 
     it('should render KYC warning for sell quote', () => {
@@ -88,6 +110,8 @@ describe('ProviderListItem', () => {
             tradingType: 'sell',
         });
 
-        expect(getByText('This provider requires KYC.')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.providerListItem.kycRequired')),
+        ).toBeOnTheScreen();
     });
 });

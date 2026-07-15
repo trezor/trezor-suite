@@ -26,8 +26,6 @@ export const getAdapterByMethod = (method: string) =>
 export const getAdapterByNetwork = (networkType: string) =>
     adapters.find(adapter => adapter.networkType === networkType);
 
-export const getAllMethods = () => adapters.flatMap(adapter => adapter.methods);
-
 export const getNamespaces = (accounts: Account[]) => {
     const accountsDeduped: Account[] = [];
     accounts.forEach(account => {

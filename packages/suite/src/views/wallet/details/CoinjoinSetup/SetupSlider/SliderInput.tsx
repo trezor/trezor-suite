@@ -10,20 +10,19 @@ import {
 
 import styled from 'styled-components';
 
-import { useElevation } from '@trezor/components';
-import { type Elevation, borders, mapElevationToBorder, typography } from '@trezor/theme';
+import { borders, typography } from '@trezor/theme';
 
 const LevelContainer = styled.div`
     width: 64px;
 `;
 
-const InputWrapper = styled.div<{ $elevation: Elevation; $isDisabled?: boolean }>`
+const InputWrapper = styled.div<{ $isDisabled?: boolean }>`
     display: flex;
     align-items: center;
     justify-content: center;
     height: 42px;
     padding: 0 12px;
-    border: 1.5px solid ${mapElevationToBorder};
+    border: 1.5px solid ${({ theme }) => theme.elementBorderField};
     border-radius: ${borders.radii.xs};
     background: none;
     cursor: ${({ $isDisabled }) => ($isDisabled ? 'not-allowed' : 'text')};
@@ -69,7 +68,6 @@ export const SliderInput = forwardRef<
     { setPreviousValue: (number: number) => void },
     SliderInputProps
 >(({ value, onChange, min, max, unit, isDisabled, className }, ref) => {
-    const { elevation } = useElevation();
     const [inputValue, setInputValue] = useState<number | ''>(value);
 
     const inputRef = useRef<HTMLInputElement>(null);
@@ -140,7 +138,7 @@ export const SliderInput = forwardRef<
 
     return (
         <LevelContainer className={className}>
-            <InputWrapper $elevation={elevation} $isDisabled={isDisabled} onClick={focusInput}>
+            <InputWrapper $isDisabled={isDisabled} onClick={focusInput}>
                 <StyledInput
                     ref={inputRef}
                     value={String(inputValue)}

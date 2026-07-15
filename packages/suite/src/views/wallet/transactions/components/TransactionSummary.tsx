@@ -5,6 +5,7 @@ import { Translation } from '@suite/intl';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { Button, Card, Column, Row } from '@trezor/components';
+import { RepeatIcon } from '@trezor/icons';
 import { typography } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
@@ -45,6 +46,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
     const dispatch = useDispatch();
 
     const intervalGraphData = getGraphDataForInterval({ account, graph });
+    const isGraphDataLoaded = intervalGraphData.length > 0;
     const data = intervalGraphData[0]?.data
         ? aggregateBalanceHistory(intervalGraphData, selectedRange.groupBy, 'account')
         : [];
@@ -102,7 +104,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                                 <Translation id="TR_COULD_NOT_RETRIEVE_DATA" />
                                 <Button
                                     onClick={() => onRefresh()}
-                                    iconLeft="repeat"
+                                    iconLeft={RepeatIcon}
                                     intent="neutral"
                                     priority="secondary"
                                 >
@@ -154,6 +156,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                 localCurrency={baseCurrencyCode}
                 account={account}
                 isLoading={isLoading}
+                isGraphDataLoaded={isGraphDataLoaded}
             />
         </Column>
     );

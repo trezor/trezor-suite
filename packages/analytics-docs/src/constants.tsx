@@ -7,7 +7,7 @@ export const HEADER_HEIGHT = 110;
 
 const PlatformItem = ({ platform }: { platform: string }) => (
     <Row alignItems="center" gap={8}>
-        <Icon name={getPlatformIcon(platform)} size={16} />
+        <Icon as={getPlatformIcon(platform)} size={16} />
         {platform}
     </Row>
 );

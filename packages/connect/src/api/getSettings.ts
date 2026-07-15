@@ -1,9 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetSettings.js
 
-import { type MethodPermission } from '@trezor/connect-common';
+import { type PermissionRequest } from '@trezor/connect-common';
 
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
+import * as enabledNetworksStore from '../data/enabledNetworksStore';
 import * as settingsStore from '../data/settingsStore';
 
 export default class GetSettings extends AbstractMethod<'getSettings'> {
@@ -12,11 +13,14 @@ export default class GetSettings extends AbstractMethod<'getSettings'> {
         this.useDevice = false;
         this.useUi = false;
     }
-    get requiredPermissions(): MethodPermission[] {
-        return ['internal'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
     }
 
     run() {
-        return Promise.resolve(settingsStore.get());
+        return Promise.resolve({
+            ...settingsStore.get(),
+            enabledNetworks: enabledNetworksStore.get(),
+        });
     }
 }

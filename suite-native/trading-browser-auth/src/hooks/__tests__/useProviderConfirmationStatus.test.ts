@@ -15,7 +15,7 @@ import {
     tradingActions,
     tradingSlice,
 } from '@suite-native/trading-state';
-import { sendFormSlice } from '@suite-native/transaction-management';
+import { prepareSendFormReducer } from '@suite-native/transaction-management';
 
 import { useProviderConfirmationStatus } from '../useProviderConfirmationStatus';
 
@@ -33,7 +33,7 @@ describe('useProviderConfirmationStatus', () => {
                 locale: localeReducer,
                 wallet: combineReducers({
                     settings: createStaticReducer(initialWalletSettingsState),
-                    send: sendFormSlice.prepareReducer(extraDependenciesCommonMock),
+                    send: prepareSendFormReducer(extraDependenciesCommonMock),
                     trading: tradingSlice.prepareReducer(extraDependenciesCommonMock),
                 }),
             },

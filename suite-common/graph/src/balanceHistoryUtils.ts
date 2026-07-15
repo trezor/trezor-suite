@@ -135,7 +135,7 @@ const getAccountHistoryMovementItemMisc = ({
 };
 
 // this can be also used for networks of Ethereum type (like ETH, POL or BNB)
-export const getAccountHistoryMovementItemETH = ({
+const getAccountHistoryMovementItemETH = ({
     transactions,
     from,
     to,

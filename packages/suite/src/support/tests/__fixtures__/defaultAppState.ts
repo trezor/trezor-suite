@@ -1,4 +1,5 @@
 import type { BackupState } from '@suite/backup';
+import { debugInitialState } from '@suite/debug';
 import { desktopUpdateInitialState } from '@suite/desktop-update';
 import { initialState as featureFeedbackInitialState } from '@suite/feature-feedback';
 import { flagsInitialState } from '@suite/flags';
@@ -23,11 +24,15 @@ import type WalletReducers from 'src/reducers/wallet';
 
 export const initialAppState: AppState = {
     suite: suiteInitialState,
+    discreetMode: {
+        isActive: false,
+    },
     tor: {
         torStatus: TorStatus.Disabled,
         torBootstrap: null,
     },
     suiteSettings: suiteSettingsInitialState,
+    debug: debugInitialState,
     flags: flagsInitialState,
     locks: locksInitialState,
     device: initialState,

@@ -1,3 +1,4 @@
+import { messages } from '@suite/intl';
 import {
     createAccountRowId,
     createOwnerIdFromSecret,
@@ -5,8 +6,8 @@ import {
     mnemonic12Fixtures,
 } from '@suite-common/e2e-evolu-client';
 import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
-import { asWalletDescriptor } from '@suite-common/wallet';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { asWalletDescriptor } from '@trezor/device-utils';
 
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
@@ -73,10 +74,16 @@ const expectedWalletTwoLabel = {
 
 test.describe('Suite Sync - Passphrase wallets', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.slow();
-    test.use({ wipeEvoluRelay: true, deviceSetup: { passphrase_protection: true } });
+    test.use({
+        wipeEvoluRelay: true,
+        deviceSetup: { passphrase_protection: true },
+        ignoreToastErrors: [messages.TR_SUITE_SYNC_ERROR_DEVICE_CANCELLED.defaultMessage],
+    });
 
     test.beforeEach(async ({ onboardingPage, metadataPage, settingsPage }) => {
-        await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+        await onboardingPage.completeOnboarding();
+        await settingsPage.navigateTo('application');
+        await settingsPage.toggleDebugModeInSettings();
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
         await metadataPage.enableSuiteSync();
     });

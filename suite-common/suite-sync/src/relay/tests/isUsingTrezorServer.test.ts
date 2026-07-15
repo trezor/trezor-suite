@@ -1,31 +1,48 @@
 import { isUsingTrezorServer } from '../isUsingTrezorServer';
 
 describe(isUsingTrezorServer.name, () => {
-    it('returns true for the dev relay server', () => {
-        expect(isUsingTrezorServer('https://suite-sync-dev.suite.sldev.cz/evolu/')).toBe(true);
-    });
-
-    it('returns true for the prod relay server', () => {
-        expect(isUsingTrezorServer('https://suite-sync.trezor.io/evolu/')).toBe(true);
-    });
-
-    it('returns true with leading/trailing whitespace', () => {
-        expect(isUsingTrezorServer('  https://suite-sync.trezor.io/evolu/  ')).toBe(true);
-    });
-
-    it('returns true with different casing', () => {
-        expect(isUsingTrezorServer('HTTPS://SUITE-SYNC.TREZOR.IO/EVOLU/')).toBe(true);
-    });
-
-    it('returns false for a custom relay server', () => {
-        expect(isUsingTrezorServer('https://my-custom-relay.example.com')).toBe(false);
-    });
-
-    it('returns false for an empty string', () => {
-        expect(isUsingTrezorServer('')).toBe(false);
-    });
-
-    it('returns false for a partial match', () => {
-        expect(isUsingTrezorServer('https://suite-sync.trezor.io')).toBe(false);
+    it.each([
+        {
+            description: 'dev relay server',
+            relayUrl: 'https://suite-sync-dev.suite.sldev.cz/evolu/',
+            expectedResult: true,
+        },
+        {
+            description: 'prod relay server',
+            relayUrl: 'https://suite-sync.trezor.io/evolu/',
+            expectedResult: true,
+        },
+        {
+            description: 'leading/trailing whitespace',
+            relayUrl: '  https://suite-sync.trezor.io/evolu/  ',
+            expectedResult: true,
+        },
+        {
+            description: 'different casing',
+            relayUrl: 'HTTPS://SUITE-SYNC.TREZOR.IO/EVOLU/',
+            expectedResult: true,
+        },
+        {
+            description: 'custom relay server',
+            relayUrl: 'https://my-custom-relay.example.com',
+            expectedResult: false,
+        },
+        {
+            description: 'local relay server',
+            relayUrl: 'http://127.0.0.1:4000/evolu/',
+            expectedResult: false,
+        },
+        {
+            description: 'empty string',
+            relayUrl: '',
+            expectedResult: false,
+        },
+        {
+            description: 'partial match',
+            relayUrl: 'https://suite-sync.trezor.io',
+            expectedResult: false,
+        },
+    ])('returns $expectedResult for $description', ({ relayUrl, expectedResult }) => {
+        expect(isUsingTrezorServer(relayUrl)).toBe(expectedResult);
     });
 });

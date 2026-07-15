@@ -3,22 +3,21 @@ import {
     type MetadataEncryptionVersion,
     type WalletLabels,
 } from '@suite-common/metadata-types';
-import { type TrezorConnect } from '@trezor/connect';
+import { type TrezorConnectCallable } from '@trezor/connect';
 
 export const FORMAT_VERSION = '1.0.0';
 
 // @trezor/connect params
-export const ENABLE_LABELING_PATH = "m/10015'/0'";
-export const ENABLE_LABELING_KEY = 'Enable labeling?';
-export const ENABLE_LABELING_VALUE =
-    'fedcba98765432100123456789abcdeffedcba98765432100123456789abcdef';
+const ENABLE_LABELING_PATH = "m/10015'/0'";
+const ENABLE_LABELING_KEY = 'Enable labeling?';
+const ENABLE_LABELING_VALUE = 'fedcba98765432100123456789abcdeffedcba98765432100123456789abcdef';
 export const FETCH_INTERVAL = 60_000;
 
 export const ENCRYPTION_VERSION: MetadataEncryptionVersion = 1;
 
 export const ENCRYPTION_VERSION_CONFIGS: Record<
     MetadataEncryptionVersion,
-    Parameters<TrezorConnect['cipherKeyValue']>[0]['bundle'][0]
+    Parameters<TrezorConnectCallable['cipherKeyValue']>[0]['bundle'][0]
 > = {
     1: {
         path: ENABLE_LABELING_PATH,

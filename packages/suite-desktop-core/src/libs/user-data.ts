@@ -6,21 +6,25 @@ import { isDevEnv } from '@suite-common/suite-utils';
 import type { InvokeResult } from '@trezor/suite-desktop-api';
 import type { Result } from '@trezor/type-utils';
 
-const resolveDirectoryInUserDataDir = (directory: string): Result<{ dir: string }, string> => {
+import { setAutoStartEnabled } from './auto-start';
+
+export const resolveDirectoryInUserDataDir = (
+    directory: string,
+): Result<{ dir: string }, string> => {
     const userDataDir = path.resolve(app.getPath('userData'));
     const dir = path.resolve(path.join(userDataDir, directory));
 
-    if (!dir.startsWith(userDataDir)) {
-        return {
-            success: false,
-            error: `Path traversal attempt detected, directory: "${directory}"`,
-        };
+    if (dir.startsWith(userDataDir + path.sep) || dir === userDataDir) {
+        return { success: true, payload: { dir } };
     }
 
-    return { success: true, payload: { dir } };
+    return {
+        success: false,
+        error: `Path traversal attempt detected, directory: "${directory}"`,
+    };
 };
 
-const resolvePathInUserDataDir = (
+export const resolvePathInUserDataDir = (
     directory: string,
     filename: string,
 ): Result<{ dir: string; file: string }, string> => {
@@ -185,10 +189,16 @@ export const rename = async (
     }
 };
 
-export const clear = async (): Promise<InvokeResult> => {
-    const dir = path.normalize(app.getPath('userData'));
+/**
+ * Clear the whole app data folder, incl. technical artifacts by Electron and cache.
+ * This contrasts with resetSuiteAppThunk, which only removes the user data, and it is driven from the Renderer.
+ */
+export const clearAppData = async (): Promise<InvokeResult> => {
+    // Autostart is persisted in OS integration, not in app data folder, so we need to erase it beforehand.
+    setAutoStartEnabled(false);
+    const localDataDir = path.normalize(app.getPath('userData'));
     try {
-        await fs.promises.rm(dir, { recursive: true, force: true });
+        await fs.promises.rm(localDataDir, { recursive: true, force: true });
 
         return { success: true };
     } catch (error) {
@@ -196,6 +206,27 @@ export const clear = async (): Promise<InvokeResult> => {
 
         return { success: false, error: error.message, code: error.code };
     }
+};
+
+/**
+ * Intentionally overlapping functionality with `clearAppData` - this is a technical function purely for E2E tests,
+ * it must run synchronously but we do not care about success/failure.
+ */
+export const clearUserDataOptimistically = (): void => {
+    // Autostart is persisted in OS integration, not in app data folder, so we need to erase it beforehand.
+    setAutoStartEnabled(false);
+    const localDataDir = app.getPath('userData');
+    const filesToDelete = fs.readdirSync(localDataDir);
+    filesToDelete.forEach(file => {
+        // omitting Cache folder it sometimes prevents the deletion and is not necessary to delete for test idempotency
+        if (file !== 'Cache') {
+            try {
+                fs.rmSync(path.join(localDataDir, file), { recursive: true });
+            } catch {
+                // If files does not exist do nothing.
+            }
+        }
+    });
 };
 
 export const getInfo = () => ({

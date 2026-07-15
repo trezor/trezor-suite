@@ -1,5 +1,6 @@
 import { Locator, Page, expect } from '@playwright/test';
 
+import { debugActions } from '@suite/debug/src/debugSlice';
 import { setFlag } from '@suite/flags';
 import { suiteSettingsActions } from '@suite/settings';
 import type { BackupType } from '@suite-common/suite-types';
@@ -43,6 +44,8 @@ export class OnboardingPage {
     readonly deviceCompromisedModal: Locator;
     readonly pairingInputAtIndex = (index: number) =>
         this.page.getByTestId('@modal/thp-paring').locator('input').nth(index);
+    readonly onboardingFeedbackBanner: Locator;
+    readonly onboardingFeedbackBannerCTAButton: Locator;
 
     constructor(
         public page: Page,
@@ -81,6 +84,12 @@ export class OnboardingPage {
         this.finalButton = this.page.getByTestId('@onboarding/final-button');
         this.continueAtYourOwnRiskButton = this.page.getByTestId('@continue-to-suite');
         this.deviceCompromisedModal = this.page.getByTestId('@device-compromised');
+        this.onboardingFeedbackBanner = this.page.getByTestId(
+            '@dashboard/onboarding-feedback-banner',
+        );
+        this.onboardingFeedbackBannerCTAButton = this.page.getByTestId(
+            '@dashboard/onboarding-feedback-banner/button',
+        );
     }
 
     @step()
@@ -120,7 +129,7 @@ export class OnboardingPage {
     }
 
     @step()
-    async completeOnboarding(options?: { keepDebugModeEnabled?: boolean }) {
+    async completeOnboarding() {
         await this.disableNecessaryFirmwareChecks();
         await this.disableDisconnectPrompt();
         await this.optionallyDismissFwHashCheckError();
@@ -129,14 +138,6 @@ export class OnboardingPage {
         await this.pairTHP();
 
         await this.completeOnboardingButton.click();
-        if (this.device.hasSecureElement && this.device.model !== Model.T3W1) {
-            await this.passThroughAuthenticityCheck();
-        }
-        // Enabled debug mode is needed for passing firmware checks but it also enables several hidden features
-        // that differs from production version, so we disable it again after onboarding is done
-        if (!options?.keepDebugModeEnabled) {
-            await this.disableDebugMode();
-        }
         await this.page.discoveryShouldFinish();
     }
 
@@ -183,10 +184,6 @@ export class OnboardingPage {
                     type: suiteSettingsActions.toggleFirmwareHashCheck.type,
                     payload: false,
                 },
-                {
-                    type: suiteSettingsActions.setDebugMode.type,
-                    payload: { showDebugMenu: true },
-                },
             ],
         );
     }
@@ -195,8 +192,17 @@ export class OnboardingPage {
     async disableDebugMode() {
         await this.page.ensureStoreOnDesktop();
         await this.page.evaluate(action => window.store.dispatch(action), {
-            type: suiteSettingsActions.setDebugMode.type,
-            payload: { showDebugMenu: false },
+            type: debugActions.setShowDebugMenu.type,
+            payload: false,
+        });
+    }
+
+    @step()
+    async enableDebugMode() {
+        await this.page.ensureStoreOnDesktop();
+        await this.page.evaluate(action => window.store.dispatch(action), {
+            type: debugActions.setShowDebugMenu.type,
+            payload: true,
         });
     }
 
@@ -230,11 +236,14 @@ export class OnboardingPage {
     @step()
     async disableNecessaryFirmwareChecks(options?: { skipSuiteLoadedCheck?: boolean }) {
         await this.disableFirmwareHashCheck(options);
-        if (this.device.hasCanaryFirmware) {
+
+        // Canary firmware is not officialy released, so it cannot possibly pass FW revision check (unrecognized revision).
+        // Tenv T1B1 has correct FW revisions, but mismatched bootloader revisions, so it does not pass FW revision check.
+        if (this.device.hasCanaryFirmware || this.device.model === Model.T1B1) {
             await this.disableFirmwareRevisionCheck();
         }
 
-        if (this.device.model === Model.T3W1) {
+        if (this.device.hasSecureElement) {
             await this.disableAuthenticityCheck();
         }
     }

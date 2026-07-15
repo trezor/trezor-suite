@@ -1,4 +1,5 @@
-import { type ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
+import { Pressable } from 'react-native';
 
 import {
     Box,
@@ -18,8 +19,17 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 export type YieldCompleteSummaryRow = {
     key: string;
     label: ReactNode;
-    value: ReactNode;
-};
+    onPress?: () => void;
+} & (
+    | {
+          value: ReactNode;
+          content?: never;
+      }
+    | {
+          value?: never;
+          content: ReactNode;
+      }
+);
 
 type YieldCompleteScreenContentProps = {
     buttonTranslationId: TxKeyPath;
@@ -37,14 +47,16 @@ const summaryCardStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.surfaceFillSunken,
 }));
 
-const summaryRowStyle = prepareNativeStyle<{ hasBorder: boolean }>((utils, { hasBorder }) => ({
-    paddingHorizontal: utils.spacings.sp16,
-    paddingVertical: utils.spacings.sp16,
-    borderTopWidth: hasBorder ? utils.borders.widths.small : 0,
-    borderTopColor: utils.colors.borderNeutral,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-}));
+const summaryRowStyle = prepareNativeStyle<{ hasBorder: boolean; hasContent: boolean }>(
+    (utils, { hasBorder, hasContent }) => ({
+        paddingHorizontal: utils.spacings.sp16,
+        paddingVertical: utils.spacings.sp16,
+        borderTopWidth: hasBorder ? utils.borders.widths.small : 0,
+        borderTopColor: utils.colors.borderNeutral,
+        alignItems: hasContent ? 'stretch' : 'center',
+        justifyContent: hasContent ? 'flex-start' : 'space-between',
+    }),
+);
 
 const footerStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp16,
@@ -93,18 +105,40 @@ export const YieldCompleteScreenContent = ({
                     borderColor="borderNeutral"
                     style={applyStyle(summaryCardStyle)}
                 >
-                    {rows.map((row, index) => (
-                        <HStack
-                            key={row.key}
-                            spacing="sp16"
-                            style={applyStyle(summaryRowStyle, { hasBorder: index > 0 })}
-                        >
-                            <Text variant="body-md">{row.label}</Text>
-                            <Box flexShrink={1} alignItems="flex-end">
-                                {row.value}
-                            </Box>
-                        </HStack>
-                    ))}
+                    {rows.map((row, index) => {
+                        if ('content' in row) {
+                            return (
+                                <VStack
+                                    key={row.key}
+                                    spacing="sp12"
+                                    style={applyStyle(summaryRowStyle, {
+                                        hasBorder: index > 0,
+                                        hasContent: true,
+                                    })}
+                                >
+                                    <Text variant="body-md">{row.label}</Text>
+                                    {row.content}
+                                </VStack>
+                            );
+                        }
+
+                        return (
+                            <Pressable onPress={row.onPress} key={row.key}>
+                                <HStack
+                                    spacing="sp16"
+                                    style={applyStyle(summaryRowStyle, {
+                                        hasBorder: index > 0,
+                                        hasContent: false,
+                                    })}
+                                >
+                                    <Text variant="body-md">{row.label}</Text>
+                                    <Box flexShrink={1} alignItems="flex-end">
+                                        {row.value}
+                                    </Box>
+                                </HStack>
+                            </Pressable>
+                        );
+                    })}
                 </Card>
             </VStack>
         </Screen>

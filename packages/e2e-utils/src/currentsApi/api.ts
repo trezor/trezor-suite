@@ -13,7 +13,9 @@ import type {
     TestResultsResponse,
     TestsExplorerResponse,
 } from './types';
-import { debug, warn } from '../logger';
+import { createLogger } from '../logger';
+
+const logger = createLogger('currents-api');
 
 function getApiKey(): string {
     const key = process.env.CURRENTS_API_KEY;
@@ -28,7 +30,7 @@ export async function currentsRequest<T>(
     retries = 3,
 ): Promise<T> {
     const url = `${CURRENTS_API_BASE}${path}`;
-    debug(`  → ${options.method ?? 'GET'} ${url}`);
+    logger.trace(`→ ${options.method ?? 'GET'} ${url}`);
     const res = await fetch(url, {
         ...options,
         headers: {
@@ -42,8 +44,8 @@ export async function currentsRequest<T>(
     if (res.status === 429 && retries > 0) {
         const retryAfter = res.headers.get('Retry-After');
         const waitMs = retryAfter ? parseInt(retryAfter, 10) * 1000 : 10_000 * (4 - retries);
-        warn(
-            `  [rate-limit] 429 received for ${url}. Waiting ${waitMs}ms before retry (${retries} left)…`,
+        logger.warn(
+            `429 rate-limit for ${url}. Waiting ${waitMs}ms before retry (${retries} left)…`,
         );
         await new Promise(resolve => setTimeout(resolve, waitMs));
 
@@ -56,7 +58,8 @@ export async function currentsRequest<T>(
     }
 
     const json = (await res.json()) as T;
-    debug(`  ← ${res.status} ${options.method ?? 'GET'} ${url}`, JSON.stringify(json));
+    // Never dump the full response body — it floods the log. A status line is enough at TRACE.
+    logger.trace(`← ${res.status} ${options.method ?? 'GET'} ${url}`);
 
     return json;
 }
@@ -83,7 +86,7 @@ export async function* paginateTestResults(
 
     do {
         const queryParts = [...baseParams, ...(cursor ? [`starting_after=${cursor}`] : [])];
-        debug(
+        logger.trace(
             `  paginateTestResults: signature=${signature.slice(0, 20)}… page=${pageIndex}`,
             cursor ? `cursor=${cursor.slice(0, 16)}…` : '(first page)',
         );
@@ -91,7 +94,7 @@ export async function* paginateTestResults(
             `/test-results/${signature}?${queryParts.join('&')}`,
         );
         const completed = response.data.filter(r => r.status !== 'pending');
-        debug(
+        logger.trace(
             `  paginateTestResults: page=${pageIndex} raw=${response.data.length} completed=${completed.length} has_more=${response.has_more}`,
         );
         yield completed;
@@ -140,14 +143,14 @@ export async function getLastNResultsFromDistinctBranches(
             if (branch === DEVELOP_BRANCH || branchNotIncludedYet) {
                 uniqueBranchesSet.add(branch);
                 picked.push(result);
-                debug(
+                logger.trace(
                     `  getLastNResultsFromDistinctBranches: picked branch=${branch} picked=${picked.length}/${numberOfResults}`,
                 );
                 if (picked.length >= numberOfResults) {
                     return picked;
                 }
             } else {
-                debug(
+                logger.trace(
                     `  getLastNResultsFromDistinctBranches: skipped branch=${branch} (already included)`,
                 );
             }
@@ -186,13 +189,15 @@ export async function getActiveTests(
             `limit=${limit}`,
         ].join('&');
 
-        debug(`  getActiveTests: project=${projectId} page=${page} (${items.length} items so far)`);
+        logger.trace(
+            `  getActiveTests: project=${projectId} page=${page} (${items.length} items so far)`,
+        );
         response = await currentsRequest<TestsExplorerResponse>(
             `/tests/${projectId}?${queryString}`,
         );
 
         items.push(...response.data.list);
-        debug(
+        logger.trace(
             `  getActiveTests: page=${page} items=${response.data.list.length} nextPage=${response.data.nextPage} cumulative=${items.length}`,
         );
         page++;
@@ -287,7 +292,7 @@ export async function getRunById(runId: string, mode: SpecFetchMode): Promise<Ru
         return true;
     });
 
-    debug(
+    logger.trace(
         `  getRunById: runId=${runId} mode=${mode}`,
         `total specs=${run.specs.length} fetching=${specsToFetch.length}`,
     );
@@ -343,13 +348,13 @@ export async function getResultsFromRun(
         // Once we see a non-empty page with no matching entries the run has
         // scrolled out of view — no need to paginate further.
         if (page.length > 0 && matching.length === 0) {
-            debug(
+            logger.trace(
                 `  getResultsFromRun: early exit after ${pagesScanned} page(s) — no matches in last page`,
             );
             break;
         }
     }
-    debug(
+    logger.trace(
         `  getResultsFromRun: signature=${signature.slice(0, 20)}… runId=${runId}`,
         `pages=${pagesScanned} results=${results.length}`,
     );

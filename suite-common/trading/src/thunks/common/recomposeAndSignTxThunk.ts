@@ -177,7 +177,10 @@ export const recomposeAndSignTxThunk = createThunk<
                 });
             }
 
-            formState.feeLimit = normalLevels.normal.feeLimit;
+            formState.feeLimit = BigNumber.max(
+                formState.feeLimit || '0',
+                normalLevels.normal.feeLimit,
+            ).toString();
         }
 
         // compose transaction again to recalculate fees based on real account values
@@ -214,6 +217,11 @@ export const recomposeAndSignTxThunk = createThunk<
                 type: 'sign-tx-error',
                 error,
             });
+        }
+
+        // Tron fee limit is SUN and recipient-dependent — use the recomposed (real recipient) estimate.
+        if (network.networkType === 'tron') {
+            formState.feeLimit = precomposedToSign.estimatedFeeLimit ?? precomposedToSign.fee ?? '';
         }
 
         /*
@@ -262,6 +270,7 @@ export const recomposeAndSignTxThunk = createThunk<
                       account,
                       composedLevels: precomposedToSign,
                       formattedMaxAmount,
+                      destinationTag,
                   }),
               ).unwrap()
             : [];

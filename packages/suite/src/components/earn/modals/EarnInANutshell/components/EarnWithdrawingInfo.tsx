@@ -6,8 +6,8 @@ import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectEthValidatorsQueue } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
-import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
-import { BulletList } from '@trezor/components';
+import { StepList } from '@trezor/components';
+import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -171,8 +171,8 @@ export const EarnWithdrawingInfo = ({ account, flow }: EarnWithdrawingInfoProps)
     if (!content) return null;
 
     return (
-        <BulletList bulletGap={12} gap={16} bulletSize="small" titleGap={4}>
+        <StepList bulletGap={12} gap={16} bulletSize="small" titleGap={4}>
             {content}
-        </BulletList>
+        </StepList>
     );
 };

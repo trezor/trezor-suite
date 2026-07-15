@@ -137,9 +137,15 @@ const getPlugins = (): ExpoPlugins => {
                     // this fixes expo-updates build error
                     kotlinVersion: '2.1.20',
                     ndkVersion: '27.0.12077973',
+                    // react-native-quick-crypto (since v1) and expo-sqlite both bundle their
+                    // own OpenSSL libcrypto.so, which collides during mergeDebugNativeLibs.
+                    // pickFirst resolves the duplicate-.so packaging conflict.
+                    packagingOptions: {
+                        pickFirst: ['**/libcrypto.so'],
+                    },
                 },
                 ios: {
-                    deploymentTarget: '15.1',
+                    deploymentTarget: '16.4',
                 },
             },
         ],
@@ -181,6 +187,12 @@ const getPlugins = (): ExpoPlugins => {
                 useSQLCipher: true,
             },
         ],
+        [
+            'expo-dev-client',
+            {
+                toolsButton: false,
+            },
+        ],
     ];
 
     return [
@@ -205,7 +217,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         slug: appSlugs[buildType],
         owner: appOwners[buildType],
         version: suiteNativeVersion,
-        runtimeVersion: '48',
+        runtimeVersion: '49',
         ...(buildType === 'production'
             ? {}
             : {

@@ -7,7 +7,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const pin = '1';
 
-test.describe('Recovery - dry run', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
+test.describe('Recovery - dry run', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
         deviceSetup: { mnemonic: 'mnemonic_all', pin },
     });

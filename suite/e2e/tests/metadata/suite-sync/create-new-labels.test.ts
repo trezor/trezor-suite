@@ -24,7 +24,9 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ wipeEvoluRelay: true });
 
     test.beforeEach(async ({ onboardingPage, metadataPage, settingsPage }) => {
-        await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+        await onboardingPage.completeOnboarding();
+        await settingsPage.navigateTo('application');
+        await settingsPage.toggleDebugModeInSettings();
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
         await metadataPage.enableSuiteSync();
     });
@@ -64,11 +66,6 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
             await expect
                 .soft(metadataPage.address.label(expectedAddress.address))
                 .toHaveText(expectedAddress.label);
-        });
-
-        await test.step('Close Suite Sync feedback notification', async () => {
-            await expect(metadataPage.suiteSyncNotification).toBeVisible();
-            await metadataPage.closeSuiteSyncNotificationButton.click();
         });
 
         await test.step('Change output label', async () => {

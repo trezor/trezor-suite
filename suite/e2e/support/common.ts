@@ -1,3 +1,5 @@
+import { createIntl, createIntlCache } from 'react-intl';
+
 import test, { Locator, Page, TestInfo } from '@playwright/test';
 import { isEqual, omit } from 'lodash';
 import { readdirSync } from 'node:fs';
@@ -32,10 +34,19 @@ export function step(stepName?: string) {
     /* eslint-disable @typescript-eslint/no-unsafe-function-type */
     return function decorator(target: Function, context: ClassMethodDecoratorContext) {
         return function replacementMethod(this: any, ...args: any) {
-            const name = stepName || `${this.constructor.name + '.' + (context.name as string)}`;
-            const params = args.map((arg: any) => JSON.stringify(arg)).join(', '); // Serialize arguments
+            const result = target.call(this, ...args);
 
-            return test.step(`${name}(${params})`, async () => await target.call(this, ...args));
+            // Only wrap async results in test.step. Wrapping synchronous methods could introduce
+            // race conditions, so we return their result untouched.
+            if (result instanceof Promise) {
+                const name =
+                    stepName || `${this.constructor.name + '.' + (context.name as string)}`;
+                const params = args.map((arg: any) => JSON.stringify(arg)).join(', '); // Serialize arguments
+
+                return test.step(`${name}(${params})`, async () => await result);
+            }
+
+            return result;
         };
     };
     /* eslint-enable @typescript-eslint/no-unsafe-function-type */
@@ -67,10 +78,11 @@ export const formatEvmAddress = (address: string) => {
 export const formatAddressWithNewlines = (address: string) =>
     formatEvmAddress(address).replace(REGEXP_ADDRESS_CHUNKS, '$1\n');
 
-// This function is used to override automatic fixtures that we want to skip in specific tests.
+// This overrides any auto fixture in tests that opt out of it; the skipped value is undefined, so
+// consumers of an optional fixture must guard against it (e.g. watcher?.stop()).
 /* eslint-disable react-hooks/rules-of-hooks */
-export async function skipFixture({}, use: (r: void) => Promise<void>) {
-    await use();
+export async function skipFixture<T = void>({}, use: (fixture: T | undefined) => Promise<void>) {
+    await use(undefined);
 }
 /* eslint-enable react-hooks/rules-of-hooks */
 
@@ -156,10 +168,11 @@ export const getBigNumberFromBalance = async (locator: Locator) => {
 /**
  * Mocks remote message-system with an empty JWS config signed by develop key.
  */
-export const mockRemoteMessageSystem = async (page: Page): Promise<void> =>
+export const mockRemoteMessageSystem = async (page: Page): Promise<void> => {
     await page.route('**/config.v1.jws', async route => {
         await route.fulfill({ status: 200, body: validJws });
     });
+};
 
 export const normalizeWhitespace = (obj: any): any => {
     if (typeof obj === 'string') {
@@ -226,3 +239,12 @@ export const sanitizeAndStringifyLogFields = (fields: Record<string, unknown>) =
 
 export const toADA = (lovelace: number, options?: { maxDecimals?: number }) =>
     `${localizeNumber(lovelace / 1000000, 'en-US', 0, options?.maxDecimals ?? 6)} ADA`;
+
+export const replaceTemplatesInTranslation = (
+    template: string,
+    values: Record<string, string | number>,
+) => {
+    const intlEn = createIntl({ locale: 'en', messages: {} }, createIntlCache());
+
+    return intlEn.formatMessage({ id: template, defaultMessage: template }, values);
+};

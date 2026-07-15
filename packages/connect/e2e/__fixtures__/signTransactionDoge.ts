@@ -12,7 +12,7 @@ export default {
             skip: ['>1.11.0', '>2.5.0'], // test works only in FW lower than 1.11.1 and 2.5.1
             description: 'Doge: big amounts',
             params: {
-                coin: 'Doge',
+                coin: 'doge',
                 inputs: [
                     {
                         address_n: "m/44'/3'/0'/1/0",

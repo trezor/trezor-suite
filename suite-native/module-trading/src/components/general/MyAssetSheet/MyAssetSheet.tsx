@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type TradingType } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
+import { type BottomSheetFlashListHandleProps } from '@suite-native/atoms';
 import { BottomSheetSectionList } from '@suite-native/trading-atoms';
 import {
     type CombinedSelectorsRootState,
@@ -41,11 +42,6 @@ const renderItem = (
 
 export const MyAssetSheet = memo(
     ({ tradingType, isVisible, onClose, onAssetSelect, testID }: MyAssetSheetProps) => {
-        const onAssetSelectCallback = (asset: TradeableAsset, account: Account) => {
-            onAssetSelect(asset, account);
-            onClose(false);
-        };
-
         const myAssets = useSelector((state: CombinedSelectorsRootState) =>
             selectAccountsWithTokensToSellSectionCondensedListByTradingType(state, tradingType),
         );
@@ -61,16 +57,16 @@ export const MyAssetSheet = memo(
         const headerTestID = testID ? `${testID}/header` : undefined;
 
         const renderHandle = useCallback(
-            () => (
+            ({ closeSheet }: BottomSheetFlashListHandleProps) => (
                 <MyAssetSheetHeader
-                    onClose={onClose}
+                    onClose={closeSheet}
                     onFilterChange={setFilterValue}
                     onSelectedNetworkFilter={setFilterSymbol}
                     availableNetworks={availableNetworks}
                     testID={headerTestID}
                 />
             ),
-            [onClose, setFilterValue, setFilterSymbol, availableNetworks, headerTestID],
+            [setFilterValue, setFilterSymbol, availableNetworks, headerTestID],
         );
 
         return (
@@ -81,7 +77,12 @@ export const MyAssetSheet = memo(
                 handleComponent={renderHandle}
                 data={filteredSections}
                 keyExtractor={keyExtractor}
-                renderItem={(asset, config) => renderItem(asset, config, onAssetSelectCallback)}
+                renderItem={(asset, config, { closeSheet }) =>
+                    renderItem(asset, config, (selectedAsset: TradeableAsset, account: Account) => {
+                        onAssetSelect(selectedAsset, account);
+                        closeSheet();
+                    })
+                }
                 renderSectionHeader={(_label, config) => {
                     const sectionIndex = filteredSections.findIndex(
                         section => section.sectionData.key === config.sectionData.key,
@@ -94,7 +95,7 @@ export const MyAssetSheet = memo(
                         />
                     );
                 }}
-                flashListKey={filterValue}
+                scrollResetKey={filterValue}
             />
         );
     },

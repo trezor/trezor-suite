@@ -1,5 +1,5 @@
 import { type Account } from '@suite-common/wallet-types';
-import type { SupportedSolanaNetworkSymbols } from '@trezor/coins-solana/types';
+import type { SupportedSolanaNetworkSymbols } from '@trezor/network-solana/types';
 
 export type SolanaAccount = Account & {
     networkType: 'solana';

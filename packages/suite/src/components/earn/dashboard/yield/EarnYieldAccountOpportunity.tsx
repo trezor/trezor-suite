@@ -1,12 +1,10 @@
-import { useEffect, useState } from 'react';
-
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { isStablecoinYieldSupported, selectSelectedDevice } from '@suite-common/device';
+import { selectSelectedDevice } from '@suite-common/device';
 import { useFormatters } from '@suite-common/formatters';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import {
@@ -14,14 +12,17 @@ import {
     toTokenCryptoId,
     tradingActions,
 } from '@suite-common/trading';
-import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
+import {
+    getYieldVaultContractAddress,
+    isStablecoinYieldSupported,
+} from '@suite-common/wallet-core';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, Row, Table } from '@trezor/components';
+import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
-import { selectIsConnectionModalOpen } from 'src/actions/device/deviceSelectors';
-import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 
@@ -47,79 +48,43 @@ export const EarnYieldAccountOpportunity = ({
     const { CryptoAmountFormatter } = useFormatters();
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
-    const [isFirmwareModalOpen, setIsFirmwareModalOpen] = useState(false);
-    const [isAwaitingConnectionForFwUpdate, setIsAwaitingConnectionForFwUpdate] = useState(false);
     const selectedDevice = useSelector(selectSelectedDevice);
-    const isConnectionModalOpen = useSelector(selectIsConnectionModalOpen);
     const isFirmwareOutdated = !isStablecoinYieldSupported(selectedDevice);
-
-    useEffect(() => {
-        if (isAwaitingConnectionForFwUpdate && !isConnectionModalOpen) {
-            setIsAwaitingConnectionForFwUpdate(false);
-            if (selectedDevice?.connected) {
-                setIsFirmwareModalOpen(false);
-                dispatch(goto({ routeName: 'firmware-index', params: { cancelable: true } }));
-            }
-        }
-    }, [
-        isAwaitingConnectionForFwUpdate,
-        isConnectionModalOpen,
-        selectedDevice?.connected,
-        dispatch,
-    ]);
-
-    const handleFirmwareModalClose = () => {
-        setIsFirmwareModalOpen(false);
-        setIsAwaitingConnectionForFwUpdate(false);
-    };
-
-    const handleFirmwareUpdate = () => {
-        if (!selectedDevice?.connected) {
-            if (selectedDevice?.descriptor?.apiType === 'bluetooth') {
-                dispatch(setConnectionMode('bluetooth'));
-            }
-            setIsAwaitingConnectionForFwUpdate(true);
-            dispatch(setConnectionModal(true));
-
-            return;
-        }
-
-        setIsFirmwareModalOpen(false);
-        dispatch(goto({ routeName: 'firmware-index', params: { cancelable: true } }));
-    };
+    const { isFirmwareModalOpen, openFirmwareModal, closeFirmwareModal, updateFirmware } =
+        useFirmwareUpgradeModal();
 
     const vaultContractAddress = getYieldVaultContractAddress(opportunity.vault);
     const depositMessageSystem = useMessageSystemYield('deposit', { vaultContractAddress });
     const withdrawMessageSystem = useMessageSystemYield('withdraw', { vaultContractAddress });
 
-    const hasSuppliedBalance = opportunity.hasVaultPosition;
-    const hasDisplayableSuppliedAmount = new BigNumber(opportunity.suppliedAmount).gt(0);
-    const hasAdditionalDepositAmount = new BigNumber(opportunity.additionalSupplyAmount).gt(0);
+    const hasDepositedBalance = opportunity.hasVaultPosition;
+    const hasDisplayableDepositedAmount = new BigNumber(opportunity.depositedAmount).gt(0);
+    const hasAdditionalDepositAmount = new BigNumber(opportunity.additionalDepositAmount).gt(0);
     const { hasRewardsData } = opportunity;
     const hasApy = opportunity.apyPercentage !== null && opportunity.apyPercentage > 0;
-    const yearlyRewards = hasDisplayableSuppliedAmount
-        ? new BigNumber(opportunity.suppliedAmount)
+    const yearlyRewards = hasDisplayableDepositedAmount
+        ? new BigNumber(opportunity.depositedAmount)
               .times(opportunity.vault.rewardRate.total)
               .toString()
         : '0';
     const potentialRewards = hasRewardsData
-        ? new BigNumber(opportunity.suppliedAmount)
-              .plus(opportunity.additionalSupplyAmount)
+        ? new BigNumber(opportunity.depositedAmount)
+              .plus(opportunity.additionalDepositAmount)
               .times(opportunity.vault.rewardRate.total)
               .toString()
         : '0';
     const hasPotentialRewards = new BigNumber(potentialRewards).gt(0);
-    const hasMaximumDeposited = hasSuppliedBalance && !hasAdditionalDepositAmount;
+    const hasMaximumDeposited = hasDepositedBalance && !hasAdditionalDepositAmount;
     const shouldSpanRewardsCells = !hasApy && !hasPotentialRewards && !hasMaximumDeposited;
-    const formattedSuppliedAmount = CryptoAmountFormatter.format(opportunity.suppliedAmount, {
-        symbol: opportunity.suppliedSymbol,
+    const formattedDepositedAmount = CryptoAmountFormatter.format(opportunity.depositedAmount, {
+        symbol: opportunity.depositedSymbol,
         withSymbol: false,
         isBalance: true,
     });
-    const formattedAdditionalSupplyAmount = CryptoAmountFormatter.format(
-        opportunity.additionalSupplyAmount,
+    const formattedAdditionalDepositAmount = CryptoAmountFormatter.format(
+        opportunity.additionalDepositAmount,
         {
-            symbol: opportunity.suppliedSymbol,
+            symbol: opportunity.depositedSymbol,
             withSymbol: false,
             isBalance: true,
         },
@@ -169,7 +134,7 @@ export const EarnYieldAccountOpportunity = ({
         );
     };
 
-    const openYieldSupplyFlow = () => {
+    const openYieldDepositFlow = () => {
         if (!opportunity.account) {
             return;
         }
@@ -184,7 +149,7 @@ export const EarnYieldAccountOpportunity = ({
                     vaultId: opportunity.vault.id,
                 },
             });
-            setIsFirmwareModalOpen(true);
+            openFirmwareModal();
 
             return;
         }
@@ -215,7 +180,7 @@ export const EarnYieldAccountOpportunity = ({
         );
     };
 
-    const navigateToYieldSupply = () => {
+    const navigateToYieldDeposit = () => {
         if (!opportunity.account) {
             return;
         }
@@ -230,7 +195,7 @@ export const EarnYieldAccountOpportunity = ({
                     vaultId: opportunity.vault.id,
                 },
             });
-            setIsFirmwareModalOpen(true);
+            openFirmwareModal();
 
             return;
         }
@@ -273,7 +238,7 @@ export const EarnYieldAccountOpportunity = ({
                     vaultId: opportunity.vault.id,
                 },
             });
-            setIsFirmwareModalOpen(true);
+            openFirmwareModal();
 
             return;
         }
@@ -303,49 +268,49 @@ export const EarnYieldAccountOpportunity = ({
 
     const isDepositDisabled = depositMessageSystem.isDisabled;
     const isWithdrawDisabled = withdrawMessageSystem.isDisabled;
-    const isSupplyNowDisabled = !opportunity.vault.status.enter || isDepositDisabled;
+    const isDepositNowDisabled = !opportunity.vault.status.enter || isDepositDisabled;
     const isDepositMoreDisabled =
         !opportunity.vault.status.enter || !hasAdditionalDepositAmount || isDepositDisabled;
 
     const firmwareModal = isFirmwareModalOpen && (
         <FirmwareUpgradeNeededModal
-            onClose={handleFirmwareModalClose}
-            onUpdate={handleFirmwareUpdate}
+            onClose={closeFirmwareModal}
+            onUpdate={updateFirmware}
             featureName={translationString('TR_EARN_STABLECOIN_YIELD_TITLE')}
         />
     );
 
     const yearlyRewardsProps = {
-        symbol: opportunity.suppliedSymbol,
+        symbol: opportunity.depositedSymbol,
         rewards: yearlyRewards,
         apy: opportunity.apyPercentage,
-        hasDisplayableSuppliedAmount,
-        formattedSuppliedAmount,
-        displaySymbol: opportunity.suppliedSymbol,
+        hasDisplayableDepositedAmount,
+        formattedDepositedAmount,
+        displaySymbol: opportunity.depositedSymbol,
     } as const;
 
     const potentialRewardsProps = {
         hasMaximumDeposited,
         hasPotentialRewards,
-        symbol: opportunity.suppliedSymbol,
+        symbol: opportunity.depositedSymbol,
         rewards: potentialRewards,
         apy: opportunity.apyPercentage,
-        formattedAdditionalSupplyAmount,
-        displaySymbol: opportunity.suppliedSymbol,
+        formattedAdditionalDepositAmount,
+        displaySymbol: opportunity.depositedSymbol,
     } as const;
 
     const actionButtonsProps = {
-        hasSuppliedBalance,
+        hasDepositedBalance,
         hasAdditionalDepositAmount,
         isDepositMoreDisabled,
         isDepositDisabled,
-        isSupplyNowDisabled,
+        isDepositNowDisabled,
         isWithdrawDisabled,
         depositMessageContent: depositMessageSystem.content,
         withdrawMessageContent: withdrawMessageSystem.content,
-        onSupplyMore: navigateToYieldSupply,
+        onDepositMore: navigateToYieldDeposit,
         onWithdraw: navigateToYieldWithdraw,
-        onSupplyNow: openYieldSupplyFlow,
+        onDepositNow: openYieldDepositFlow,
         onBuy: navigateToTradingBuy,
     } as const;
 
@@ -357,9 +322,9 @@ export const EarnYieldAccountOpportunity = ({
             showAssetNetworkIcon
             subtitle={opportunity.vault.outputToken?.name ?? ''}
             tokenBalance={{
-                value: opportunity.additionalSupplyAmount,
-                symbol: opportunity.suppliedSymbol,
-                contractAddress: opportunity.suppliedContractAddress,
+                value: opportunity.additionalDepositAmount,
+                symbol: opportunity.depositedSymbol,
+                contractAddress: opportunity.depositedContractAddress,
             }}
         />
     );
@@ -392,7 +357,7 @@ export const EarnYieldAccountOpportunity = ({
                                         <>
                                             {hasApy && (
                                                 <Icon
-                                                    name="arrowDown"
+                                                    as={ArrowDownIcon}
                                                     intent="neutral"
                                                     priority="secondary"
                                                     size={20}
@@ -413,7 +378,7 @@ export const EarnYieldAccountOpportunity = ({
                                             {hasApy && (
                                                 <Column flex="1" alignItems="center">
                                                     <Icon
-                                                        name="arrowRight"
+                                                        as={ArrowRightIcon}
                                                         intent="neutral"
                                                         priority="secondary"
                                                         size={20}
@@ -455,7 +420,7 @@ export const EarnYieldAccountOpportunity = ({
 
                                 {hasApy && (
                                     <Icon
-                                        name="arrowRight"
+                                        as={ArrowRightIcon}
                                         intent="neutral"
                                         priority="secondary"
                                         size={20}

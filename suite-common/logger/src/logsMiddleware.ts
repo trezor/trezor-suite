@@ -2,9 +2,9 @@ import { isAnyOf } from '@reduxjs/toolkit';
 
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { deviceActions } from '@suite-common/device';
+import { discreetModeActions } from '@suite-common/discreet-mode';
 import { createMiddleware } from '@suite-common/redux-utils';
 import {
-    WALLET_SETTINGS,
     accountsActions,
     blockchainActions,
     changeNetworks,
@@ -44,7 +44,7 @@ export const logsMiddleware = createMiddleware((action, { next, dispatch }) => {
             analyticsActions.enableAnalytics,
             analyticsActions.disableAnalytics,
         )(action) ||
-        action.type === WALLET_SETTINGS.SET_HIDE_BALANCE
+        discreetModeActions.setDiscreetMode.match(action)
     ) {
         dispatch(addLog({ type: action.type, payload: { ...action, type: undefined } }));
     }

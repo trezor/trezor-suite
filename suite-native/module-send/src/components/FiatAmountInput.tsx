@@ -80,6 +80,7 @@ export const FiatAmountInput = ({
     return (
         <Input
             ref={inputRef}
+            labelType="noLabel"
             value={value}
             placeholder="0"
             keyboardType="numeric"

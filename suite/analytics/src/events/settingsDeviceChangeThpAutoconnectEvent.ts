@@ -15,12 +15,15 @@ export const settingsDeviceChangeThpAutoconnectEvent: EventDef<
     EventType.SettingsDeviceChangeThpAutoconnect
 > = {
     name: EventType.SettingsDeviceChangeThpAutoconnect,
-    descriptionTrigger: '?',
-    changelog: [{ version: '?', notes: 'added' }],
+    descriptionTrigger:
+        'User changes the THP (Trezor Host Protocol) auto-connect setting on their device',
+    changelog: [{ version: '25.7.1', notes: 'added' }],
 
     attributes: {
         action: {
-            changelog: [{ version: '?', notes: 'added' }],
+            description:
+                'The action taken: `enable-autoconnect` to enable automatic device connection via THP, `disable-autoconnect` to disable it',
+            changelog: [{ version: '25.7.1', notes: 'added' }],
         },
     },
 };

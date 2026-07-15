@@ -4,6 +4,7 @@ import { type RefCallBack } from 'react-hook-form';
 import { Translation } from '@suite/intl';
 import { type Explorer } from '@suite-common/wallet-config';
 import { Button, Column, InfoItem, Input, Row, Text } from '@trezor/components';
+import { ChangeIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 import { typedObjectKeys } from '@trezor/utils';
 
@@ -80,7 +81,7 @@ export const ExplorerConfigForm = ({ form }: ExplorerConfigProps) => {
                             intent="neutral"
                             priority="secondary"
                             size="small"
-                            iconLeft="change"
+                            iconLeft={ChangeIcon}
                             isDisabled={usesDefaultExplorer}
                             onClick={setDefaultValues}
                         >

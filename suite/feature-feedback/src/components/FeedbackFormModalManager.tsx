@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
     type FeedbackFeatureName,
-    experimentalFeatureSet,
+    experimentalFeedbackFeatureSet,
     translatedFeedbackFeatures,
 } from '@suite/experimental';
 import { Translation, useTranslation } from '@suite/intl';
@@ -14,10 +14,16 @@ import {
     selectPendingFeedbackFeature,
     sendFeedbackAction,
 } from '@suite-common/feedback';
+import { SmileyIcon } from '@trezor/icons';
 import { SidebarBanner } from '@trezor/product-components';
 
 import { feedbackDismissed } from '../featureFeedbackSlice';
 import { FeedbackFormModal } from './FeedbackFormModal';
+
+type FeedbackSidebarBannerRootState = FeatureFeedbackRootState<FeedbackFeatureName>;
+
+export const selectShouldShowFeedbackSidebarBanner = (state: FeedbackSidebarBannerRootState) =>
+    selectPendingFeedbackFeature(state) !== null;
 
 export const FeedbackFormManager = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,11 +31,13 @@ export const FeedbackFormManager = () => {
     const dispatch = useDispatch();
 
     const { translationString } = useTranslation();
-    const pendingFeature = useSelector((state: FeatureFeedbackRootState<FeedbackFeatureName>) =>
+    const pendingFeature = useSelector((state: FeedbackSidebarBannerRootState) =>
         selectPendingFeedbackFeature(state),
     );
 
-    if (!pendingFeature) return null;
+    if (!pendingFeature) {
+        return null;
+    }
 
     const handleDismiss = () => {
         dispatch(feedbackDismissed(pendingFeature));
@@ -42,7 +50,9 @@ export const FeedbackFormManager = () => {
             sendFeedbackAction({
                 type: 'SUGGESTION',
                 payload: {
-                    category: (experimentalFeatureSet as ReadonlySet<string>).has(pendingFeature)
+                    category: (experimentalFeedbackFeatureSet as ReadonlySet<string>).has(
+                        pendingFeature,
+                    )
                         ? 'experimental'
                         : 'feature',
                     description,
@@ -86,7 +96,7 @@ export const FeedbackFormManager = () => {
                     }}
                 />
             }
-            icon="smiley"
+            icon={SmileyIcon}
             onClick={() => setIsModalOpen(true)}
             onClose={handleDismiss}
         />

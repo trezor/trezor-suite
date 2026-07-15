@@ -1,7 +1,7 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { isAddressValid } from '@trezor/address-validator';
 
 import { hasBitcoinCashAddressPrefix } from './hasBitcoinCashAddressPrefix';
-import { isAddressValid } from './isAddressValid';
 import { isBech32AddressUppercase } from './isBech32AddressUppercase';
 import { isBitcoinCashAddressUppercase } from './isBitcoinCashAddressUppercase';
 

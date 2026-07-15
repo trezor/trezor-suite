@@ -1,7 +1,7 @@
 import { LANGUAGES } from './languages';
 import { type messages } from './messages';
 
-export type Translations = typeof messages;
+type Translations = typeof messages;
 
 /**
  * Builds up valid keypaths for translations.
@@ -25,8 +25,7 @@ type RecursiveKeyOfHandleValue<TValue, Text extends string> = TValue extends any
 
 export type SupportedLocaleCode = keyof typeof LANGUAGES;
 
-export const isSupportedLanguage = (locale: string): locale is SupportedLocaleCode =>
-    locale in LANGUAGES;
+const isSupportedLanguage = (locale: string): locale is SupportedLocaleCode => locale in LANGUAGES;
 
 export const isOfficiallySupportedLanguage = (locale: string): locale is SupportedLocaleCode =>
     isSupportedLanguage(locale) && LANGUAGES[locale].type === 'official';

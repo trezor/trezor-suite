@@ -132,15 +132,18 @@ describe('deviceAuthorizationSlice', () => {
     });
 
     describe('isSuiteSyncButtonRequest matcher', () => {
-        it('should set deviceAuthorizationStep to ContinueOnTrezorRequested for secure_sync button request', () => {
-            const state = deviceAuthorizationReducer(undefined, {
-                type: UI_REQUEST.REQUEST_BUTTON,
-                payload: { name: 'secure_sync' },
-            });
+        it.each(['suite_sync', 'secure_sync'])(
+            'should set deviceAuthorizationStep to ContinueOnTrezorRequested for %s button request',
+            name => {
+                const state = deviceAuthorizationReducer(undefined, {
+                    type: UI_REQUEST.REQUEST_BUTTON,
+                    payload: { name },
+                });
 
-            expect(state).toEqual({
-                deviceAuthorizationStep: DeviceAuthorizationStep.ContinueOnTrezorRequested,
-            });
-        });
+                expect(state).toEqual({
+                    deviceAuthorizationStep: DeviceAuthorizationStep.ContinueOnTrezorRequested,
+                });
+            },
+        );
     });
 });

@@ -15,11 +15,11 @@
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
-        "@suite-common/wallet-utils": "workspace:*",
         "@suite/intl": "workspace:*",
         "@suite/metadata": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "react": "19.2.4",
-        "react-redux": "9.2.0"
+        "@trezor/device-utils": "workspace:*",
+        "react": "19.2.3",
+        "react-redux": "9.3.0"
     }
 }

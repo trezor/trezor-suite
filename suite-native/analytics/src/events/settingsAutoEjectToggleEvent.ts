@@ -10,13 +10,14 @@ export const settingsAutoEjectToggleEvent: EventDef<Attributes, EventType.Settin
     {
         name: EventType.SettingsAutoEjectToggle,
         descriptionTrigger:
-            'Triggered by auto eject switch in app settings under eject wallets section. When user changes behaviour of auto eject feature.',
+            'User toggles the auto-eject feature on/off in the app settings under the wallets section',
         changelog: [{ version: '25.8.1', notes: 'Added' }],
         attributes: {
             enabled: {
                 changelog: [
-                    { version: '25.8.1', notes: 'Boolean values for new value: true / false' },
+                    { version: '25.8.1', notes: 'Boolean values for new value: `true` / `false`' },
                 ],
+                description: '`true` if auto-eject is enabled, `false` if disabled',
             },
         },
     };

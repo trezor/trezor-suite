@@ -8,7 +8,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { Grid, Modal } from '@trezor/components';
 
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
-import { SupplyFormContext, useSupplyForm } from 'src/hooks/earn/useSupplyForm';
+import { StakeFormContext, useStakeForm } from 'src/hooks/earn/useStakeForm';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 
 import { StakeButton } from './StakeForm/StakeButton';
@@ -23,7 +23,7 @@ type StakeModalProps = {
 
 export const StakeModal = ({ onCancel, account, flow }: StakeModalProps) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const supplyContextValues = useSupplyForm({ account });
+    const stakeContextValues = useStakeForm({ account });
     const { isBelowTablet } = useLayoutSize();
 
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
@@ -42,12 +42,12 @@ export const StakeModal = ({ onCancel, account, flow }: StakeModalProps) => {
         });
     };
 
-    if (!supplyContextValues.stakingLimits) {
+    if (!stakeContextValues.stakingLimits) {
         return null;
     }
 
     return (
-        <SupplyFormContext.Provider value={supplyContextValues}>
+        <StakeFormContext.Provider value={stakeContextValues}>
             <Modal
                 width={960}
                 heading={
@@ -61,11 +61,11 @@ export const StakeModal = ({ onCancel, account, flow }: StakeModalProps) => {
                 onCancel={onCancelClick}
                 bottomContent={<StakeButton flow={flow} />}
             >
-                <Grid columns={isBelowTablet ? 1 : 2} gap={32}>
+                <Grid columns={isBelowTablet ? 1 : 2} gap={32} forceEqualColumns>
                     <StakeForm flow={flow} />
                     <StakeInfoCards account={account} flow={flow} />
                 </Grid>
             </Modal>
-        </SupplyFormContext.Provider>
+        </StakeFormContext.Provider>
     );
 };

@@ -1,8 +1,7 @@
-import { FormattedList } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { networksCollection } from '@suite-common/wallet-config';
+import { getNetworksWithNativeTokenReserve } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled, setNetworkReserve } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { TouchableSwitchRow } from '@suite-native/atoms';
@@ -16,10 +15,6 @@ export const ToggleNetworkReserveCheckCard = () => {
     const dispatch = useDispatch();
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const openLink = useOpenLink();
-
-    const supportedNetworks = networksCollection
-        .filter(network => !!network.nativeTokenReserve)
-        .map(network => network.name);
 
     const toggleNetworkReserve = (value: boolean) => {
         analytics.report({
@@ -37,22 +32,19 @@ export const ToggleNetworkReserveCheckCard = () => {
 
     return (
         <TouchableSwitchRow
-            isChecked={isNetworkReserveEnabled}
-            onChange={toggleNetworkReserve}
-            accessibilityLabel="network reserve"
-            text={<Translation id="moduleSettings.advanced.networkReserve.title" />}
-            onLearnMorePress={handleLearnMorePress}
             icon="graph"
-            description={
+            text={<Translation id="moduleSettings.advanced.networkReserve.title" />}
+            accessibilityLabel="network reserve"
+            description={<Translation id="moduleSettings.advanced.networkReserve.subtitle" />}
+            additionalInfo={
                 <Translation
-                    id="moduleSettings.advanced.networkReserve.subtitle"
-                    values={{
-                        supportedNetworks: (
-                            <FormattedList type="conjunction" value={supportedNetworks} />
-                        ),
-                    }}
+                    id="moduleSettings.availableOn"
+                    values={{ supportedNetworks: getNetworksWithNativeTokenReserve() }}
                 />
             }
+            onLearnMorePress={handleLearnMorePress}
+            isChecked={isNetworkReserveEnabled}
+            onChange={toggleNetworkReserve}
         />
     );
 };

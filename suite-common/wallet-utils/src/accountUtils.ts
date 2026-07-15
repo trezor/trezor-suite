@@ -28,7 +28,6 @@ import {
     createAccountKey,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/coins-solana/constants';
 import TrezorConnect, {
     type AccountAddress,
     type AccountAddresses,
@@ -40,9 +39,10 @@ import TrezorConnect, {
     type StaticSessionId,
     type TokenInfo,
 } from '@trezor/connect';
+import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/network-solana/constants';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_ADDRESSES_URL, HELP_CENTER_TAPROOT_URL } from '@trezor/urls';
-import { BigNumber, arrayDistinct, bufferUtils } from '@trezor/utils';
+import { BigNumber, arrayDistinct, bufferUtils, typedObjectKeys } from '@trezor/utils';
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
@@ -92,22 +92,6 @@ export const sortByBIP44AddressIndex = <T extends { path: string }>(
 
         return aIndex - bIndex;
     });
-};
-
-export const parseBIP44Path = (path: string) => {
-    const regEx = /m\/(\d+'?)\/(\d+'?)\/(\d+'?)\/([0,1])\/(\d+)/;
-    const tokens = path.match(regEx);
-    if (tokens?.length !== 6) {
-        return null;
-    }
-
-    return {
-        purpose: tokens[1],
-        coinType: tokens[2],
-        account: tokens[3],
-        change: tokens[4],
-        addrIndex: tokens[5],
-    };
 };
 
 export const getTitleForCoinjoinAccount = (symbol: NetworkSymbolExtended) => {
@@ -280,28 +264,37 @@ export const getAccountTypeUrl = (path: string) => {
 };
 
 /**
- * Sort accounts as they are defined in `networksConfig`, by two criteria:
+ * Compare accounts as they are defined in `networksConfig`, by two criteria:
  * - primary: by network `symbol`
  * - secondary: by `accountType`
  */
+export const compareAccountsByCoin = (a: Account, b: Account) => {
+    // primary sorting: by order of network keys
+    const aSymbolIndex = networkSymbolCollection.indexOf(a.symbol);
+    const bSymbolIndex = networkSymbolCollection.indexOf(b.symbol);
+    if (aSymbolIndex !== bSymbolIndex) return aSymbolIndex - bSymbolIndex;
+
+    // when it is sorted by network, sort by order of accountType keys within the same network
+    const network = networks[a.symbol];
+    // `network` is a union over all networks (some declare `accountTypes: {}`), which would collapse
+    // `keyof` to `never`; widening to the field's declared keyset yields `AccountType[]` soundly.
+    const orderedAccountTypes = typedObjectKeys(
+        network.accountTypes as Partial<Record<AccountType, unknown>>,
+    );
+    const aAccountTypeIndex = orderedAccountTypes.indexOf(a.accountType);
+    const bAccountTypeIndex = orderedAccountTypes.indexOf(b.accountType);
+
+    if (aAccountTypeIndex !== bAccountTypeIndex) return aAccountTypeIndex - bAccountTypeIndex;
+
+    // if both are same, sort by account index
+    return a.index - b.index;
+};
+
+/**
+ * Sort accounts with `compareAccountsByCoin`. Returns a new array, the input is not mutated.
+ */
 export const sortByCoin = <T extends Account>(accounts: T[]) =>
-    accounts.sort((a, b) => {
-        // primary sorting: by order of network keys
-        const aSymbolIndex = networkSymbolCollection.indexOf(a.symbol);
-        const bSymbolIndex = networkSymbolCollection.indexOf(b.symbol);
-        if (aSymbolIndex !== bSymbolIndex) return aSymbolIndex - bSymbolIndex;
-
-        // when it is sorted by network, sort by order of accountType keys within the same network
-        const network = networks[a.symbol];
-        const orderedAccountTypes = Object.keys(network.accountTypes) as AccountType[];
-        const aAccountTypeIndex = orderedAccountTypes.indexOf(a.accountType);
-        const bAccountTypeIndex = orderedAccountTypes.indexOf(b.accountType);
-
-        if (aAccountTypeIndex !== bAccountTypeIndex) return aAccountTypeIndex - bAccountTypeIndex;
-
-        // if both are same, keep the original order in `accounts`
-        return a.index - b.index;
-    });
+    accounts.toSorted(compareAccountsByCoin);
 
 export const findAccountsByNetwork = <T extends Account>(symbol: NetworkSymbol, accounts: T[]) =>
     accounts.filter(a => a.symbol === symbol);
@@ -761,6 +754,7 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
             networkType,
             misc: {
                 stellarSequence: misc?.stellarSequence ?? '0',
+                baseReserve: misc?.baseReserve ?? '0',
                 reserve: misc?.reserve ?? '0',
             },
             marker: undefined,
@@ -802,12 +796,27 @@ export type AccountSearchParams = {
 
     /** Return true if the account has token that match the search string */
     tokensMatch?: boolean;
+
+    /**
+     * Pre-filtered list of visible (non-hidden, non-unverified) tokens to search against.
+     * When provided, replaces account.tokens so that hidden/spam tokens are excluded from search.
+     */
+    searchableTokens?: TokenInfo[];
+
+    /** Localized account type name as displayed in the account type badge (e.g. "Legacy SegWit"). */
+    accountTypeName?: string;
 };
 
 export const accountSearchFn = (
     account: Account,
     rawSearchString: string | undefined,
-    { coinsFilter, accountLabel, tokensMatch = true }: AccountSearchParams,
+    {
+        coinsFilter,
+        accountLabel,
+        tokensMatch = true,
+        searchableTokens,
+        accountTypeName,
+    }: AccountSearchParams,
 ) => {
     let coinsFilterArray: NetworkSymbol[] = [];
 
@@ -839,6 +848,7 @@ export const accountSearchFn = (
     const symbolMatch = account.symbol.startsWith(searchString);
     const networkNameMatch = network?.name.toLowerCase().includes(searchString);
     const accountTypeMatch = account.accountType.startsWith(searchString);
+    const accountTypeNameMatch = !!accountTypeName?.toLowerCase().includes(searchString);
     const descriptorMatch = account.descriptor.toLowerCase() === searchString;
     const addressMatch = account.addresses
         ? account.addresses.used.find(matchAddressFn) ||
@@ -853,19 +863,20 @@ export const accountSearchFn = (
 
     // filter tokens by search string and balance greater than zero
     const filterTokens = (token: TokenInfo) =>
-        [token.name, token.symbol, token.contract].some(
-            field =>
-                field?.toLowerCase().includes(searchString) &&
-                new BigNumber(token.balance || '0').gt(0),
+        new BigNumber(token.balance || '0').gt(0) &&
+        [token.name, token.symbol, token.contract].some(field =>
+            field?.toLowerCase().includes(searchString),
         );
 
-    const tokenMatch = tokensMatch && !!account.tokens?.some(filterTokens);
+    const tokens = searchableTokens ?? account.tokens;
+    const tokenMatch = tokensMatch && !!tokens?.some(filterTokens);
 
     return (
         accountNumberMatch ||
         symbolMatch ||
         networkNameMatch ||
         accountTypeMatch ||
+        accountTypeNameMatch ||
         descriptorMatch ||
         addressMatch ||
         matchXRPAlternativeName ||
@@ -904,7 +915,7 @@ export const getUtxoFromSignedTransaction = ({
     ) =>
         account.utxo?.filter(
             u =>
-                !inputs.find(i => i.prev_hash === u.txid && i.prev_index === u.vout) &&
+                !inputs.some(i => i.prev_hash === u.txid && i.prev_index === u.vout) &&
                 u.txid !== prevTxid,
         ) || [];
 
@@ -931,7 +942,7 @@ export const getUtxoFromSignedTransaction = ({
         // check if utxo should be added
         // may be spent already in case of rbf
         const utxoSpent =
-            prevTxid && !replaceUtxo.find(u => u.address === addr?.address && u.vout === vout);
+            prevTxid && !replaceUtxo.some(u => u.address === addr?.address && u.vout === vout);
 
         if (addr && !utxoSpent) {
             utxo.unshift({
@@ -1081,13 +1092,12 @@ export const accountEqualTo = (a: Account) => (b: Account) =>
     (() => {
         // if the accounts seem equal but the descriptors are different
         if (a.descriptor !== b.descriptor) {
-            const { deviceState, symbol, accountType, index } = a;
+            const { symbol, accountType, index } = a;
+            // do not log deviceState or descriptors: they are confidential and would leak into Sentry breadcrumbs
             console.warn('Potentially equal accounts with different descriptors!', {
-                deviceState,
                 symbol,
                 accountType,
                 index,
-                descriptors: [a.descriptor, b.descriptor],
             });
         }
 
@@ -1168,48 +1178,6 @@ export const prepareNewAccountPayload = async ({
         backendType,
     };
 };
-
-interface FiatBalanceInDescComparatorProps {
-    accountA: Account;
-    accountB: Account;
-    baseCurrencyCode: BaseCurrencyCode;
-    fiatRates: RatesByKey;
-}
-
-export function accountsFiatBalanceInDescOrderComparator({
-    accountA,
-    accountB,
-    baseCurrencyCode,
-    fiatRates,
-}: FiatBalanceInDescComparatorProps) {
-    const accountAFiatBalance =
-        getAccountFiatBalance({
-            account: accountA,
-            baseCurrencyCode,
-            rates: fiatRates,
-            shouldIncludeTokens: true,
-            shouldIncludeStaking: false,
-        }) ?? new BigNumber(0);
-
-    const accountBFiatBalance =
-        getAccountFiatBalance({
-            account: accountB,
-            baseCurrencyCode,
-            rates: fiatRates,
-            shouldIncludeTokens: true,
-            shouldIncludeStaking: false,
-        }) ?? new BigNumber(0);
-
-    if (accountBFiatBalance.gt(accountAFiatBalance)) {
-        return 1;
-    }
-
-    if (accountAFiatBalance.gt(accountBFiatBalance)) {
-        return -1;
-    }
-
-    return 0;
-}
 
 export const isProgramDerivedAccount = (data: AccountInfo) =>
     !(data?.misc?.owner === SYSTEM_PROGRAM_PUBLIC_KEY || data?.misc?.owner === undefined);

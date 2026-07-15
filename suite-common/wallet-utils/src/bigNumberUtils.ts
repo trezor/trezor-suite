@@ -1,5 +1,4 @@
-import { UINT256_MAX } from '@suite-common/suite-constants';
-import { BigNumber } from '@trezor/utils';
+import { type BigNumber } from '@trezor/utils';
 
 /**
  * Rounds a value to a given number of non-zero fractional digits.
@@ -42,27 +41,3 @@ export function roundToNonZeroFractionDigits(
     // Round *up* at the calculated decimal place
     return value.decimalPlaces(decimalPlaces);
 }
-
-/** Whether {@link value} equals EVM unlimited token allowance. */
-export const isMaxAllowance = (value: string | undefined): boolean => {
-    if (!value) {
-        return false;
-    }
-
-    const allowance = new BigNumber(value);
-    const maxAllowance = new BigNumber(UINT256_MAX).dividedBy(2).integerValue();
-
-    // Some callers pass the raw allowance value in base units.
-    if (allowance.gte(maxAllowance)) {
-        return true;
-    }
-
-    const [, fractionalPart] = value.split('.');
-
-    if (!fractionalPart) {
-        return false;
-    }
-
-    // Some DEX quote fields pass the same value formatted with token decimals.
-    return allowance.shiftedBy(fractionalPart.length).gte(maxAllowance);
-};

@@ -10,31 +10,18 @@ import {
 
 import styled from 'styled-components';
 
-import {
-    Column,
-    Icon,
-    type IconName,
-    Paragraph,
-    Row,
-    Text,
-    useElevation,
-} from '@trezor/components';
-import {
-    type Elevation,
-    borders,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    spacings,
-} from '@trezor/theme';
+import { Column, Icon, type IconComponent, Paragraph, Row, Text } from '@trezor/components';
+import { FileXIcon } from '@trezor/icons';
+import { borders, spacings } from '@trezor/theme';
 
-const Wrapper = styled.div<{ $elevation: Elevation }>`
+const Wrapper = styled.div`
     border-radius: ${borders.radii.xs};
-    background: ${mapElevationToBackground};
+    background: ${({ theme }) => theme.elementFillField};
     cursor: pointer;
 
     &:hover,
     &.dragging {
-        outline: ${borders.widths.large} solid ${mapElevationToBorder};
+        outline: ${borders.widths.large} solid ${({ theme }) => theme.elementBorderFieldHovered};
         outline-offset: -${borders.widths.large};
     }
 
@@ -49,7 +36,7 @@ const StyledInput = styled.input`
 
 export type DropZoneProps = {
     accept?: string;
-    iconName?: IconName;
+    icon?: IconComponent;
     emptyLabel: ReactNode;
     emptyError: ReactNode;
     fileTypeError: ReactNode;
@@ -182,7 +169,7 @@ const useDropZone = ({ accept, emptyError, fileTypeError, onSelect }: DropZonePr
 
 export const DropZone = ({
     accept,
-    iconName = 'fileX',
+    icon = FileXIcon,
     emptyLabel,
     emptyError,
     fileTypeError,
@@ -197,10 +184,9 @@ export const DropZone = ({
         onSelect,
         'data-testid': dataTestId,
     });
-    const { elevation } = useElevation();
 
     return (
-        <Wrapper {...getWrapperProps()} $elevation={elevation} data-testid={dataTestId}>
+        <Wrapper {...getWrapperProps()} data-testid={dataTestId}>
             <Column
                 padding={spacings.lg}
                 minHeight={150}
@@ -211,7 +197,7 @@ export const DropZone = ({
                 <StyledInput {...getInputProps()} />
                 <Row gap={spacings.xs}>
                     <Icon
-                        name={iconName}
+                        as={icon}
                         size={20}
                         {...(filename
                             ? { intent: 'neutral' as const }

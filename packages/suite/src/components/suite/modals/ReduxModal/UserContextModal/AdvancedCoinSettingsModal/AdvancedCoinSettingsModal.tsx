@@ -101,6 +101,7 @@ export const AdvancedCoinSettingsModal = ({
     const isSubmitButtonDisabled =
         (isEditable && !!backendsForm.input.error) ||
         !explorerForm.isValid ||
+        (isBitcoinNetwork && isGapLimitEnabled && !!gapLimitForm.error) ||
         backendsForm.isValidating;
 
     if (torModalOpen) {

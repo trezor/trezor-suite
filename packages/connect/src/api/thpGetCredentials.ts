@@ -1,4 +1,4 @@
-import { DEVICE, type MethodPermission, UI_REQUEST } from '@trezor/connect-common';
+import { DEVICE, type PermissionRequest, UI_REQUEST } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import type { MethodMessage } from '../core/AbstractMethod';
@@ -12,8 +12,8 @@ export default class ThpGetCredentials extends AbstractMethod<'thpGetCredentials
         this.allowDeviceMode = [UI_REQUEST.INITIALIZE, UI_REQUEST.SEEDLESS];
         this.useDeviceState = false;
     }
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
     }
 
     async run() {

@@ -40,15 +40,16 @@
         {
             "path": "../../suite-common/toast-notifications"
         },
-        {
-            "path": "../../suite-common/wallet-utils"
-        },
         { "path": "../analytics" },
+        { "path": "../debug" },
         { "path": "../firmware-upgrade" },
         { "path": "../intl" },
         { "path": "../router" },
+        { "path": "../tor" },
         { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/icons" },
         {
             "path": "../../packages/product-components"
         },

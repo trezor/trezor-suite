@@ -196,6 +196,7 @@ class Client {
             url.searchParams.set('code_challenge', challenge);
             url.searchParams.set('code_challenge_method', 'plain');
             url.searchParams.set('response_type', 'code');
+            url.searchParams.set('access_type', 'offline');
         } else {
             // implicit flow
             url.searchParams.set('response_type', 'token');

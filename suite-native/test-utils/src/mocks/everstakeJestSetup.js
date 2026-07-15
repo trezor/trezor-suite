@@ -9,3 +9,12 @@ if (!window.clearImmediate) {
         clearTimeout(id);
     };
 }
+
+// jsdom 20 lacks `crypto.randomUUID` (added in jsdom 22), but RN runtime code relies on it.
+const { randomUUID } = require('crypto');
+
+if (!globalThis.crypto) {
+    globalThis.crypto = { randomUUID };
+} else if (!globalThis.crypto.randomUUID) {
+    globalThis.crypto.randomUUID = randomUUID;
+}

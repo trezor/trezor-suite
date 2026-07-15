@@ -23,10 +23,13 @@ export const firmwareFirmwareUpdateStuckedEvent: EventDef<
 > = {
     name: EventType.FirmwareFirmwareUpdateStucked,
     descriptionTrigger:
-        'On displayed stucked button, user clicked it and displayed part 1 or part 2 or modal that should help resolve that',
+        'User encounters a stuck firmware update and clicks the `Stucked` button to view recovery instructions or troubleshooting help',
     changelog: [{ version: '25.1.2', notes: 'Added' }],
     attributes: {
-        model: { changelog: [{ version: '25.1.2', notes: 'added' }] },
+        model: {
+            changelog: [{ version: '25.1.2', notes: 'added' }],
+            description: 'The device model identifier',
+        },
         fromBootloaderVersion: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
             description: 'Bootloader version string aka `1.2.3`',
@@ -39,10 +42,29 @@ export const firmwareFirmwareUpdateStuckedEvent: EventDef<
             changelog: [{ version: '25.1.2', notes: 'added' }],
             description: 'FW version aka `1.2.3`',
         },
-        fromFwType: { changelog: [{ version: '25.1.2', notes: 'added' }] },
-        toFwType: { changelog: [{ version: '25.1.2', notes: 'added' }] },
-        location: { changelog: [{ version: '25.1.2', notes: 'added' }] },
-        duration: { changelog: [{ version: '25.1.2', notes: 'added' }] },
-        stuckedType: { changelog: [{ version: '25.1.2', notes: 'added' }] },
+        fromFwType: {
+            changelog: [{ version: '25.1.2', notes: 'added' }],
+            description: 'The firmware type before update: `bitcoin-only`, `universal`, or `none`',
+        },
+        toFwType: {
+            changelog: [{ version: '25.1.2', notes: 'added' }],
+            description: 'The target firmware type: `bitcoin-only` or `universal`',
+        },
+        location: {
+            changelog: [{ version: '25.1.2', notes: 'added' }],
+            description:
+                'Where the firmware update was initiated: `settings`, `onboarding`, or `null`',
+        },
+        duration: {
+            changelog: [{ version: '25.1.2', notes: 'added' }],
+            description: 'How long the firmware update process was stuck, in seconds',
+        },
+        stuckedType: {
+            changelog: [{ version: '25.1.2', notes: 'added' }],
+            description: `The step at which the stuck state was reported:
+- \`buttonVisible\`: the "I might be stuck" button appears after a timeout on the installation screen (no user action yet)
+- \`modalPart1\`: user presses the button to open the recovery bottom sheet
+- \`modalPart2\`: user advances to the second screen of the bottom sheet (recovery tips)`,
+        },
     },
 };

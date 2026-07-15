@@ -64,6 +64,44 @@ describe('Account Reducer', () => {
         expect(store.getState().wallet.accounts.length).toEqual(1);
     });
 
+    it('Create account inserts accounts sorted by coin', () => {
+        const store = initStore();
+        const createAccountPayload = (
+            symbol: Account['symbol'],
+            accountType: Account['accountType'],
+            index: number,
+        ) => ({
+            deviceState: '1stTestnetAddress@device_id:0' as const,
+            index,
+            path: testBip43Path,
+            accountType,
+            symbol,
+            accountInfo: {
+                descriptor: `XPUB_${symbol}_${accountType}_${index}`,
+                path: testBip43Path,
+                empty: false,
+                balance: '0',
+                availableBalance: '0',
+                tokens: [],
+                history: {
+                    total: 0,
+                    transactions: [],
+                    unconfirmed: 0,
+                },
+            },
+            visible: true,
+        });
+
+        store.dispatch(accountsActions.createAccount(createAccountPayload('ltc', 'normal', 0)));
+        store.dispatch(accountsActions.createAccount(createAccountPayload('btc', 'legacy', 0)));
+        store.dispatch(accountsActions.createAccount(createAccountPayload('btc', 'normal', 1)));
+        store.dispatch(accountsActions.createAccount(createAccountPayload('btc', 'normal', 0)));
+
+        expect(
+            store.getState().wallet.accounts.map(a => `${a.symbol}/${a.accountType}/${a.index}`),
+        ).toEqual(['btc/normal/0', 'btc/normal/1', 'btc/legacy/0', 'ltc/normal/0']);
+    });
+
     it('Change account visibility', () => {
         const store = initStore({
             preloadedState: {

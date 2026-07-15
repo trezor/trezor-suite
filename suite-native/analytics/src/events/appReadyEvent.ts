@@ -31,7 +31,8 @@ type Attributes = {
 
 export const appReadyEvent: EventDef<Attributes, EventType.AppReady> = {
     name: EventType.AppReady,
-    descriptionTrigger: 'On the application start or when the onboarding is done.',
+    descriptionTrigger:
+        'User launches the mobile application or completes the onboarding process, making the app ready for use',
     changelog: [
         { version: '23.4.1', notes: 'added' },
         {
@@ -78,15 +79,19 @@ export const appReadyEvent: EventDef<Attributes, EventType.AppReady> = {
         },
         screenWidth: {
             changelog: [{ version: '24.4.1', notes: 'added' }],
+            description: 'Device screen width in pixels',
         },
         screenHeight: {
             changelog: [{ version: '24.4.1', notes: 'added' }],
+            description: 'Device screen height in pixels',
         },
         pixelDensity: {
             changelog: [{ version: '24.7.2', notes: 'added' }],
+            description: 'The pixel density of the device screen',
         },
         fontScale: {
             changelog: [{ version: '24.7.2', notes: 'added' }],
+            description: 'The font scaling factor for accessibility',
         },
         osName: {
             changelog: [{ version: '24.4.1', notes: 'added' }],
@@ -110,6 +115,8 @@ export const appReadyEvent: EventDef<Attributes, EventType.AppReady> = {
         },
         isBiometricsEnabled: {
             changelog: [{ version: '24.4.1', notes: 'added' }],
+            description:
+                'Whether biometric authentication (fingerprint/face recognition) is enabled',
         },
         rememberedStandardWallets: {
             changelog: [{ version: '24.5.1', notes: 'added' }],
@@ -125,7 +132,7 @@ export const appReadyEvent: EventDef<Attributes, EventType.AppReady> = {
         },
         labeling: {
             changelog: [{ version: '26.3.1', notes: 'added' }],
-            description: "The labeling method: 'suite-sync' or 'off'",
+            description: 'The labeling method: `suite-sync` or `off`',
         },
     },
 };

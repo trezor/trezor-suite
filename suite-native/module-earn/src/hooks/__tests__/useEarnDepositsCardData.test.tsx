@@ -257,6 +257,20 @@ describe('useEarnDepositsCardData', () => {
         expect(result.current.stablecoinYieldRow?.activeItems[0]?.id).toBe('steakhouse-usdc');
     });
 
+    it('orders active staking positions by fiat amount descending', () => {
+        const { result } = renderHookWithBasicProvider(() =>
+            useEarnDepositsCardData({
+                stakingActiveItems: [secondStakingActiveItem, stakingActiveItem],
+                stablecoinYieldActiveItems: [],
+            }),
+        );
+
+        expect(result.current.stakingRow?.activeItems.map(item => item.id)).toEqual([
+            'eth-1',
+            'eth-2',
+        ]);
+    });
+
     it('hides the card when there are no active positions', () => {
         const { result } = renderHookWithBasicProvider(() =>
             useEarnDepositsCardData({

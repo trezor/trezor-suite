@@ -1,6 +1,26 @@
-import { corsValidator } from '../connectSettings';
+import { corsValidator, parseConnectSettings } from '../connectSettings';
 
 describe('data/connectSettings', () => {
+    describe('parseConnectSettings enabledNetworks', () => {
+        it('preserves enabledNetworks passed to init', () => {
+            expect(
+                parseConnectSettings({ enabledNetworks: [{ coin: 'ada' }, { coin: 'btc' }] })
+                    .enabledNetworks,
+            ).toEqual([{ coin: 'ada' }, { coin: 'btc' }]);
+        });
+
+        it('leaves enabledNetworks undefined when not provided', () => {
+            expect(parseConnectSettings({}).enabledNetworks).toBeUndefined();
+        });
+
+        it('drops a non-array enabledNetworks value', () => {
+            expect(
+                // @ts-expect-error intentionally malformed input
+                parseConnectSettings({ enabledNetworks: 'ada' }).enabledNetworks,
+            ).toBeUndefined();
+        });
+    });
+
     it('corsValidator', () => {
         expect(corsValidator('https://connect.trezor.io/9-beta/')).toBeDefined();
         expect(corsValidator('https://az-AZ_123.trezor.io/')).toBeDefined();

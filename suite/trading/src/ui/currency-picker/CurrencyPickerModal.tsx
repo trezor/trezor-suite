@@ -12,6 +12,7 @@ import {
     Row,
     Text,
 } from '@trezor/components';
+import { CoinIcon } from '@trezor/icons';
 
 import { useFiatCurrencyFilteredData } from './hooks/useFiatCurrencyFilteredData';
 import { type CurrencyPickerOption } from './types/currencyPickerTypes';
@@ -36,7 +37,7 @@ export const CurrencyPickerModal = ({
     };
 
     return (
-        <Modal {...props} width={400} heading={<Translation id="TR_CURRENCY" />} height="85vh">
+        <Modal {...props} width={400} heading={<Translation id="TR_CURRENCY" />} maxHeight={680}>
             <Column gap={16} height="100%">
                 <Input
                     onChange={ev => setFilterValue(ev.target.value)}
@@ -64,7 +65,7 @@ export const CurrencyPickerModal = ({
                                                 <Flag country={flag} size={32} />
                                             ) : (
                                                 <IconCircle
-                                                    name="coin"
+                                                    icon={CoinIcon}
                                                     size={32}
                                                     intent="neutral"
                                                 />

@@ -18,20 +18,13 @@ import { EmojiRatingSelector } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
 
 import { setView } from 'src/actions/suite/guideActions';
-import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
+import {
+    GuideContent,
+    GuideHeader,
+    GuideSectionHeadline,
+    GuideViewWrapper,
+} from 'src/components/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-
-const Headline = styled.div`
-    ${typography['body-xs']}
-    text-align: left;
-    color: ${({ theme }) => theme.contentPrimary};
-    padding: 0 0 11px;
-    width: 100%;
-`;
-
-const SelectWrapper = styled.div`
-    padding: 0 0 20px;
-`;
 
 const AnonymousDataList = styled.ul`
     margin-left: 20px;
@@ -158,10 +151,11 @@ export const Feedback = ({ type }: FeedbackProps) => {
             <GuideContent>
                 {type === 'BUG' && (
                     <>
-                        <Headline>
-                            <Translation id="TR_GUIDE_FEEDBACK_CATEGORY_HEADLINE" />
-                        </Headline>
-                        <SelectWrapper data-testid="@guide/feedback/suggestion-dropdown">
+                        <GuideSectionHeadline id="TR_GUIDE_FEEDBACK_CATEGORY_HEADLINE" />
+                        <Box
+                            padding={{ bottom: 20 }}
+                            data-testid="@guide/feedback/suggestion-dropdown"
+                        >
                             <Select
                                 data-testid="@guide/feedback/suggestion-dropdown/select"
                                 isSearchable={false}
@@ -176,14 +170,12 @@ export const Feedback = ({ type }: FeedbackProps) => {
                                     <Translation id="TR_FEEDBACK_CATEGORY_SELECT_PLACEHOLDER" />
                                 }
                             />
-                        </SelectWrapper>
+                        </Box>
                     </>
                 )}
                 {type === 'SUGGESTION' && (
                     <Box margin={{ bottom: 12 }}>
-                        <Headline>
-                            <Translation id="TR_GUIDE_FEEDBACK_RATING_HEADLINE" />
-                        </Headline>
+                        <GuideSectionHeadline id="TR_GUIDE_FEEDBACK_RATING_HEADLINE" />
                         <EmojiRatingSelector
                             value={rating}
                             onChange={setRating}
@@ -192,14 +184,10 @@ export const Feedback = ({ type }: FeedbackProps) => {
                     </Box>
                 )}
                 {type === 'BUG' && (
-                    <Headline>
-                        <Translation id="TR_GUIDE_FEEDBACK_BUG_TEXT_HEADLINE" />
-                    </Headline>
+                    <GuideSectionHeadline id="TR_GUIDE_FEEDBACK_BUG_TEXT_HEADLINE" />
                 )}
                 {type === 'SUGGESTION' && (
-                    <Headline>
-                        <Translation id="TR_GUIDE_FEEDBACK_SUGGESTION_TEXT_HEADLINE" />
-                    </Headline>
+                    <GuideSectionHeadline id="TR_GUIDE_FEEDBACK_SUGGESTION_TEXT_HEADLINE" />
                 )}
 
                 <Textarea

@@ -26,6 +26,7 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { type AccountUtxo } from '@trezor/connect';
+import { ChangeIcon, ClockIcon, TagFilledIcon, TagIcon, XCircleIcon } from '@trezor/icons';
 
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
@@ -175,7 +176,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                                 }
                                             >
                                                 <Icon
-                                                    name="clock"
+                                                    as={ClockIcon}
                                                     intent="neutral"
                                                     priority="secondary"
                                                     size={16}
@@ -185,7 +186,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                         {coinjoinUnavailableMessage && (
                                             <Tooltip content={coinjoinUnavailableMessage}>
                                                 <Icon
-                                                    name="xCircle"
+                                                    as={XCircleIcon}
                                                     intent="neutral"
                                                     priority="secondary"
                                                     size={16}
@@ -199,7 +200,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                                 }
                                             >
                                                 <Icon
-                                                    name="change"
+                                                    as={ChangeIcon}
                                                     intent="neutral"
                                                     priority="secondary"
                                                     size={16}
@@ -260,7 +261,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                 gap={6}
                                 leftAddon={
                                     <Icon
-                                        name={outputLabel ? 'tagFilled' : 'tag'}
+                                        as={outputLabel ? TagFilledIcon : TagIcon}
                                         intent="neutral"
                                         priority="secondary"
                                         size={12}

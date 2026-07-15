@@ -426,9 +426,29 @@ jest.mock('@gorhom/bottom-sheet', () => {
     const { ScrollView } = require('react-native');
     const GorhomBottomSheetMock = require('@gorhom/bottom-sheet/mock');
 
+    class BottomSheetModal extends GorhomBottomSheetMock.BottomSheetModal {
+        isPresented = false;
+
+        present(data) {
+            this.isPresented = true;
+            super.present(data);
+        }
+
+        dismiss(...args) {
+            if (!this.isPresented) return;
+
+            this.isPresented = false;
+            super.dismiss(...args);
+            this.props.onDismiss?.();
+        }
+    }
+
     GorhomBottomSheetMock.useBottomSheetScrollableCreator = () => props => (
         <ScrollView {...props} />
     );
 
-    return GorhomBottomSheetMock;
+    return {
+        ...GorhomBottomSheetMock,
+        BottomSheetModal,
+    };
 });

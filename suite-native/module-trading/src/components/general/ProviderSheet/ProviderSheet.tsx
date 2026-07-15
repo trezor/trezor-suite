@@ -3,6 +3,7 @@ import {
     type TradingTradeType,
     type TradingType,
 } from '@suite-common/trading';
+import { type BottomSheetFlashListHandleProps } from '@suite-native/atoms';
 import { BottomSheetSectionList } from '@suite-native/trading-atoms';
 import { type QuotesByCategories, type QuotesCategory } from '@suite-native/trading-types';
 import { prepareNativeStyle } from '@trezor/styles-native';
@@ -39,32 +40,32 @@ export const ProviderSheet = <
     tradingType,
 }: ProviderSheetProps<K, T>) => {
     const shouldShowFilters = tradingType === 'exchange';
+    const shouldShowExchangeType = tradingType === 'exchange';
 
     const { filterItems, filteredSections, selectedFilter, setSelectedFilter } = useProviderFilters(
         quotes,
         shouldShowFilters,
     );
 
-    const onQuoteSelectCallback = (quote: T) => {
-        onQuoteSelect(quote);
-        onClose();
-    };
-
     return (
         <BottomSheetSectionList<T, QuotesCategory>
             isVisible={isVisible}
             onClose={onClose}
-            renderItem={item => (
+            renderItem={(item, _config, { closeSheet }) => (
                 <ProviderListItem
-                    onPress={onQuoteSelectCallback}
+                    onPress={quote => {
+                        onQuoteSelect(quote);
+                        closeSheet();
+                    }}
                     isSelected={item.orderId === selectedQuote?.orderId}
                     quote={item}
+                    shouldShowExchangeType={shouldShowExchangeType}
                     tradingType={tradingType}
                 />
             )}
-            handleComponent={() => (
+            handleComponent={({ closeSheet }: BottomSheetFlashListHandleProps) => (
                 <ProviderSheetHandle
-                    onClose={onClose}
+                    onClose={closeSheet}
                     shouldShowFilters={shouldShowFilters}
                     filterItems={filterItems}
                     selectedFilter={selectedFilter}

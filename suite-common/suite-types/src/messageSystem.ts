@@ -307,7 +307,7 @@ export type TradingType = 'buy' | 'sell' | 'exchange' | 'concierge';
  * This interface was referenced by `MessageSystem`'s JSON-Schema
  * via the `definition` "yieldFlowType".
  */
-export type YieldFlowType = 'deposit' | 'withdraw' | 'claim';
+export type YieldFlowType = 'deposit' | 'withdraw' | 'redeem' | 'claim';
 
 /**
  * JSON schema of the Trezor Suite messaging system.

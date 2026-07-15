@@ -5,6 +5,8 @@ import {
     selectDebugTransports,
     suiteSettingsActions,
 } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
+import { type TransportsDep } from '@suite-common/redux-utils';
 import { Checkbox } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
@@ -54,6 +56,9 @@ export const Transport = () => {
     const dispatch = useDispatch();
     const transports = isDesktop() ? TRANSPORTS_DESKTOP : TRANSPORTS_WEB;
     const items = useTransportItems(transports);
+    const { createTransports } = useServices(
+        (services): TransportsDep => ({ createTransports: services.createTransports }),
+    );
 
     return (
         <>
@@ -85,7 +90,9 @@ export const Transport = () => {
                                         transports: nextTransports,
                                     }),
                                 );
-                                TrezorConnect.updateConnectSettings({ transports: nextTransports });
+                                TrezorConnect.updateConnectSettings({
+                                    transports: createTransports(nextTransports),
+                                });
                             }}
                         />
                     </ActionColumn>

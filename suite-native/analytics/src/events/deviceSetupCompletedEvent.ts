@@ -51,13 +51,18 @@ export const deviceSetupCompletedEvent: EventDef<Attributes, EventType.DeviceSet
         },
         recoveryStepBack: {
             changelog: [{ version: '25.6.1', notes: 'added' }],
-            description: 'Whether user stepped back to previous screen during recovery',
+            description:
+                'Whether the user stepped back to a previous screen during recovery (`true` if they did)',
         },
         wasBackupSkipped: {
             changelog: [{ version: '25.7.1', notes: 'added' }],
+            description:
+                'Whether the user skipped the backup step during device setup (`true` if skipped)',
         },
         wasPinSkipped: {
             changelog: [{ version: '25.7.1', notes: 'added' }],
+            description:
+                'Whether the user skipped the PIN protection setup during device setup (`true` if skipped)',
         },
     },
 };

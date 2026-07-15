@@ -2,6 +2,7 @@ import type { Dispatch, PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 
 import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
+import { fixLoadedCoinjoinAccount } from '@suite/coinjoin';
 import type { FlagsState } from '@suite/flags';
 import { lockDevice } from '@suite/locks';
 import {
@@ -34,18 +35,25 @@ import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import {
     type CommonServices,
     type ConnectInitSettings,
+    type CreateTransports,
     type ExtraDependenciesStatic,
+    type GetTransportsFactoriesDep,
+    type ThpHostNameDep,
+    type TransportsDep,
 } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
+    createSuiteSyncWriteLabels,
     selectAllLabelsForAccount,
     selectIsSuiteSyncEnabled,
     selectSuiteSyncWalletLabel,
 } from '@suite-common/suite-sync';
+import { type ReloadAppDep } from '@suite-common/suite-types';
 import {
     type TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
 } from '@suite-common/token-definitions';
+import { selectTradedAccountKeys } from '@suite-common/trading';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BlockchainState,
@@ -58,15 +66,15 @@ import {
     selectAccountsByDeviceState,
 } from '@suite-common/wallet-core';
 import { createAccountKey } from '@suite-common/wallet-types';
-import { buildHistoricRatesFromStorage } from '@suite-common/wallet-utils';
-import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
+import { buildHistoricRatesFromStorage, sortByCoin } from '@suite-common/wallet-utils';
+import TrezorConnect, { type CreateLoggerDep, type StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 
 import { type StorageLoadAction } from 'src/actions/suite/storageActions';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
-import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
+import { createConnectInitHooks } from './createConnectInitHooks';
 import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseBondsThunk';
 import type { BioAuthState } from '../reducers/bioAuth';
 import { type AppState, type TrezorDevice } from '../types/suite';
@@ -79,7 +87,6 @@ const connectInitSettings: ConnectInitSettings = {
         appName: isDesktop() ? 'Trezor Suite desktop' : 'Trezor Suite web',
         appUrl: isDesktop() ? 'Trezor Suite desktop' : window.origin,
     },
-    sharedLogger: false,
     enableFirmwareHashCheck: true,
     firmwareHashCheckTimeouts: FW_HASH_CHECK_DEFAULT_TIMEOUTS,
 };
@@ -89,12 +96,19 @@ export type StoreAPIDep = {
     dispatch: Dispatch;
 };
 
-export type SuiteAppDeps = StoreAPIDep & HistoryDep & PlatformEncryptionDep;
+export type SuiteAppDeps = StoreAPIDep &
+    HistoryDep &
+    PlatformEncryptionDep &
+    CreateLoggerDep &
+    ReloadAppDep &
+    ThpHostNameDep &
+    GetTransportsFactoriesDep;
 
 export type SuiteServices = CommonServices &
     DesktopAnalyticsDep &
     MetadataMigrationDep &
-    SuiteRouterHistoryDep;
+    SuiteRouterHistoryDep &
+    TransportsDep;
 
 export const selectSuiteServices = (services: any): SuiteServices => services;
 
@@ -108,18 +122,12 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
 
     const analytics = createAnalytics();
 
-    const suiteSync = createSuiteSyncDesktopCompositionRoot({
-        dispatch: deps.dispatch,
-        getState: deps.getState,
-        platformEncryption: deps.platformEncryption,
-        trezorConnect: TrezorConnect,
-        ensureDelegatedIdentityKey,
-        analytics,
-        fetch: globalThis.fetch.bind(globalThis),
-    });
-
     const getCurrentAccountLabels = toGetter(deps.getState, selectAllLabelsForAccount);
     const getAccountsByDeviceState = toGetter(deps.getState, selectAccountsByDeviceState);
+
+    // Label writers that take storage as a param, used by the migration. They never call
+    // `ensureWalletSuiteSyncOn`, so the migration listener can be built before suiteSync.
+    const writeLabels = createSuiteSyncWriteLabels({ getState: deps.getState, analytics });
 
     const { migrateLabelsIfAvailable, migrateLegacyLabelsToSuiteSync } =
         createMetadataMigrationCompositionRoot({
@@ -129,10 +137,19 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
             getCurrentWalletLabel: toGetter(deps.getState, selectSuiteSyncWalletLabel),
             getCurrentAccountLabels,
             getDeviceByStaticSessionId: toGetter(deps.getState, selectDeviceByStaticSessionId),
-            labeling: suiteSync.labeling,
+            ...writeLabels,
         });
 
-    suiteSync.onWalletSuiteSyncOnEnsured(migrateLabelsIfAvailable);
+    const suiteSync = createSuiteSyncDesktopCompositionRoot({
+        dispatch: deps.dispatch,
+        getState: deps.getState,
+        platformEncryption: deps.platformEncryption,
+        trezorConnect: TrezorConnect,
+        ensureDelegatedIdentityKey,
+        analytics,
+        fetch: globalThis.fetch.bind(globalThis),
+        onStorageEnsured: migrateLabelsIfAvailable,
+    });
 
     const { bip329 } = createBip329CompositionRoot({
         getIsSuiteSyncEnabled: toGetter(deps.getState, selectIsSuiteSyncEnabled),
@@ -141,6 +158,24 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         updateAddressLabel: suiteSync.labeling.updateAddressLabel,
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
+
+    const connectInitHooks = createConnectInitHooks({
+        dispatch: deps.dispatch,
+        getState: deps.getState,
+    });
+
+    const createTransports: CreateTransports = transports => {
+        const factories = deps.getTransportsFactories();
+
+        return transports.map(name => {
+            const factory = factories[name];
+            if (!factory) {
+                throw new Error(`Transport factory for ${name} not found`);
+            }
+
+            return factory(deps.createLogger);
+        }) as ReturnType<CreateTransports>;
+    };
 
     return {
         suiteSync,
@@ -153,8 +188,13 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
             history: deps.history,
         }),
         reportSecurityCheck,
+        reloadApp: deps.reloadApp,
         saveAs: (data: Blob, fileName: string) => saveAs(data, fileName),
         connectInitSettings,
+        connectInitHooks,
+        createLogger: deps.createLogger,
+        thpHostName: deps.thpHostName,
+        createTransports,
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
                 dispatch: deps.dispatch,
@@ -182,6 +222,7 @@ export const extraDependencies: ExtraDependenciesStatic = {
         selectSelectedAccountStatus: (state: AppState) => state.wallet.selectedAccount.status,
         selectIsWindowVisible,
         selectTradingEnvironment: selectInvityServerEnvironment,
+        selectTradedAccountKeys,
         selectIsViewOnlyByDefaultEnabled: (_: AppState) => true,
         selectThpSettings: (state: AppState) => ({
             appName: 'Trezor Suite', // NOTE: this is displayed on Trezor. not the same as manifest.appName
@@ -268,8 +309,11 @@ export const extraDependencies: ExtraDependenciesStatic = {
             }
         },
         storageLoadAccounts: (_, { payload }: StorageLoadAction) =>
-            payload.accounts.map(acc =>
-                acc.backendType === 'coinjoin' ? fixLoadedCoinjoinAccount(acc) : acc,
+            // Storage returns accounts in IndexedDB key order, sort them like the reducer does.
+            sortByCoin(
+                payload.accounts.map(acc =>
+                    acc.backendType === 'coinjoin' ? fixLoadedCoinjoinAccount(acc) : acc,
+                ),
             ),
         setDeviceMetadataReducer: (
             state: DeviceReducerState,
@@ -342,16 +386,32 @@ export const extraDependencies: ExtraDependenciesStatic = {
             return state;
         },
         storageLoadFlags: (state: FlagsState, { payload }: StorageLoadAction) =>
-            payload.suiteSettings?.flags ? { ...state, ...payload.suiteSettings.flags } : state,
+            payload.suiteSettings?.flags
+                ? {
+                      ...state,
+                      ...payload.suiteSettings.flags,
+                      // The onboarding feedback banner is session-only: it is enabled when onboarding
+                      // is completed and must not survive an app restart. Reset it on every load so a
+                      // returning user only sees it again after completing onboarding once more.
+                      showOnboardingFeedbackBanner: false,
+                  }
+                : state,
         storageLoadSuiteSettings: (state: SuiteSettingsState, { payload }: StorageLoadAction) => {
             if (!payload.suiteSettings?.settings) return state;
 
+            const loadedSettings = payload.suiteSettings.settings;
+            const theme =
+                (loadedSettings.theme?.variant as string | undefined) === 'debug'
+                    ? { ...loadedSettings.theme, variant: 'light' as const }
+                    : loadedSettings.theme;
+
             return {
                 ...state,
-                ...payload.suiteSettings.settings,
+                ...loadedSettings,
+                theme: theme ?? state.theme,
                 enabledSecurityChecks: {
                     ...state.enabledSecurityChecks,
-                    ...payload.suiteSettings.settings.enabledSecurityChecks,
+                    ...loadedSettings.enabledSecurityChecks,
                 },
             };
         },

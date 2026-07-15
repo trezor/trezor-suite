@@ -18,6 +18,7 @@ import {
     Screen,
     ScreenHeader,
     type StackProps,
+    useNavigationRemoveActionInterceptor,
 } from '@suite-native/navigation';
 import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
 
@@ -109,26 +110,13 @@ const TradingExchangeApprovalScreenContent = ({
         };
     }, [quote, isReady, isRevoked, dispatch, confirmApproval, reportToAnalytics]);
 
-    useEffect(() => {
-        // Clear the selected quote only when the user navigates backward (back button / swipe back).
-        // popToTop() translates to POP with count > 1 — those removals are programmatic forward
-        // navigation so the quote must remain in Redux for the next screen to read it.
-        const unsubscribe = navigation.addListener('beforeRemove', e => {
-            const { type, payload } = e.data.action as {
-                type: string;
-                payload?: { count?: number };
-            };
-            const isSingleBackPress =
-                type === 'GO_BACK' || (type === 'POP' && (payload?.count ?? 1) <= 1);
-
-            if (isSingleBackPress) {
-                dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
-                reportToAnalytics('cancel');
-            }
-        });
-
-        return unsubscribe;
-    }, [dispatch, navigation, reportToAnalytics]);
+    useNavigationRemoveActionInterceptor({
+        onInterceptedAction: action => {
+            dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
+            reportToAnalytics('cancel');
+            navigation.dispatch(action);
+        },
+    });
 
     const onApprovalTypeChangeWithAnalytics = (approvalType: DexApprovalType) => {
         onApprovalTypeChange(approvalType);
@@ -142,7 +130,7 @@ const TradingExchangeApprovalScreenContent = ({
                     title={
                         <Translation id="moduleTrading.tradingExchangeApprovalScreen.approveErrorAlert" />
                     }
-                    variant="critical"
+                    intent="critical"
                 />
             </Screen>
         );
@@ -174,7 +162,7 @@ const TradingExchangeApprovalScreenContent = ({
             <VStack spacing="sp12">
                 {!!shouldIncreaseLimit && (
                     <InlineAlertBox
-                        variant="info"
+                        intent="info"
                         title={
                             <Translation id="moduleTrading.tradingExchangeApprovalScreen.lowLimitInfoAlert" />
                         }
@@ -183,7 +171,7 @@ const TradingExchangeApprovalScreenContent = ({
 
                 {!!isRevoked && (
                     <InlineAlertBox
-                        variant="success"
+                        intent="brand"
                         title={
                             <Translation id="moduleTrading.tradingExchangeApprovalScreen.revokeSuccessAlert" />
                         }

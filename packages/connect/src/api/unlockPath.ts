@@ -1,4 +1,4 @@
-import { type MethodPermission, UnlockPathParams } from '@trezor/connect-common';
+import { type PermissionRequest, UnlockPathParams } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
@@ -21,8 +21,8 @@ export default class UnlockPath extends AbstractMethod<'unlockPath', PROTO.Unloc
         super(message, params);
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'read_xpub' }];
     }
 
     async run() {

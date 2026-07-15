@@ -1,6 +1,7 @@
 import { FormattedList } from 'react-intl';
 
 import { Translation } from '@suite/intl';
+import { CoinsIcon, HandCoinsIcon, LockSimpleIcon, PlusCircleIcon } from '@trezor/icons';
 
 import {
     type EarnInANutshellHighlight,
@@ -8,43 +9,43 @@ import {
 } from './EarnInANutshellHighlights';
 
 interface YieldEarnInANutshellHighlightsProps {
-    supplySymbol: string;
+    depositSymbol: string;
     vaultSymbol?: string;
     rewardsSymbols?: string[];
 }
 
 export const YieldEarnInANutshellHighlights = ({
-    supplySymbol,
+    depositSymbol,
     vaultSymbol,
     rewardsSymbols,
 }: YieldEarnInANutshellHighlightsProps) => {
     const highlights: EarnInANutshellHighlight[] = [
         {
-            icon: 'lockSimple',
+            icon: LockSimpleIcon,
             content: (
                 <Translation
                     id="TR_EARN_YIELD_NUTSHELL_DEPOSITED_AMOUNT"
-                    values={{ supplySymbol }}
+                    values={{ supplySymbol: depositSymbol }}
                 />
             ),
         },
         {
-            icon: 'handCoins',
+            icon: HandCoinsIcon,
             content: (
                 <Translation
                     id="TR_EARN_YIELD_NUTSHELL_COMPOUND_INTEREST"
-                    values={{ supplySymbol }}
+                    values={{ supplySymbol: depositSymbol }}
                 />
             ),
         },
         ...(vaultSymbol !== undefined
             ? [
                   {
-                      icon: 'coins' as const,
+                      icon: CoinsIcon,
                       content: (
                           <Translation
                               id="TR_EARN_YIELD_NUTSHELL_VAULT_TOKENS"
-                              values={{ supplySymbol, vaultSymbol }}
+                              values={{ supplySymbol: depositSymbol, vaultSymbol }}
                           />
                       ),
                   },
@@ -53,7 +54,7 @@ export const YieldEarnInANutshellHighlights = ({
         ...(rewardsSymbols !== undefined && rewardsSymbols.length > 0
             ? [
                   {
-                      icon: 'plusCircle' as const,
+                      icon: PlusCircleIcon,
                       content: (
                           <Translation
                               id="TR_EARN_YIELD_NUTSHELL_CLAIM_REWARDS"

@@ -2,7 +2,6 @@ import { type RefObject, useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
-import type { BuyTrade } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { invariant } from '@suite-common/suite-utils';
@@ -162,7 +161,7 @@ const useBuyQuotesThunk = (
         const requestPromise = dispatch(buyThunks.handleRequestThunk(payload));
         quotesPromiseRef.current = requestPromise;
         const action = await requestPromise;
-        if (isFulfilled(action) && (action.payload as BuyTrade[]).length > 0) {
+        if (isFulfilled(action) && action.payload.length > 0) {
             analytics.report({
                 type: events.tradingQuoteReceivedEvent.name,
                 payload: {

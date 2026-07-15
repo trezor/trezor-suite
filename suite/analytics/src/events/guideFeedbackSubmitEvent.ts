@@ -8,11 +8,14 @@ type Attributes = {
 
 export const guideFeedbackSubmitEvent: EventDef<Attributes, EventType.GuideFeedbackSubmit> = {
     name: EventType.GuideFeedbackSubmit,
-    descriptionTrigger: 'Guide > Report Bug & Feedback > Feedback > Submit',
+    descriptionTrigger:
+        'User submits bug report or feature suggestion feedback through Guide > Report Bug & Feedback > Feedback > Submit',
     changelog: [{ version: '1.11.0', notes: 'added' }],
 
     attributes: {
         type: {
+            description:
+                'The feedback type: `bug` for bug report or `suggestion` for feature suggestion',
             changelog: [{ version: '1.11.0', notes: 'added' }],
         },
     },

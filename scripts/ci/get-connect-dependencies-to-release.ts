@@ -2,8 +2,8 @@
 // and stdout out those to be used by GitHub workflow.
 
 import fs from 'node:fs';
-import util from 'node:util';
 import path from 'node:path';
+import util from 'node:util';
 import semver from 'semver';
 
 import { getNpmRemoteGreatestVersion, getTrezorPackageDir } from './helpers';
@@ -40,11 +40,9 @@ const checkNonReleasedDependencies = async (packageName: string) => {
         return;
     }
 
-    // eslint-disable-next-line no-restricted-syntax
     for await (const [dependency] of Object.entries(dependencies)) {
         // is not a dependency released from monorepo. we don't care
         if (!dependency.startsWith('@trezor')) {
-            // eslint-disable-next-line no-continue
             continue;
         }
         const name = dependency.split('/')[1];
@@ -68,9 +66,10 @@ const getConnectDependenciesToRelease = async () => {
 
     // We do not want to include `connect`, `connect-web` and `connect-webextension` since we want
     // to release those separately and we always want to release them.
-    const onlyDependenciesToRelease = nonReleaseDependencies.filter(item => {
-        return !['connect', 'connect-web', 'connect-webextension', 'connect-mobile'].includes(item);
-    });
+    const onlyDependenciesToRelease = nonReleaseDependencies.filter(
+        item =>
+            !['connect', 'connect-web', 'connect-webextension', 'connect-mobile'].includes(item),
+    );
 
     // We use `onlyDependenciesToRelease` to trigger NPM releases
     const dependenciesToRelease = JSON.stringify(onlyDependenciesToRelease);

@@ -1,0 +1,140 @@
+diff --git a/dist/src/local-first/Shared.worker.js b/dist/src/local-first/Shared.worker.js
+index f88d8b614e728f37a45831b9888805c51c3dbe4f..38ff92199176ca16ad44dd86bff046e89e2683ed 100644
+--- a/dist/src/local-first/Shared.worker.js
++++ b/dist/src/local-first/Shared.worker.js
+@@ -57,10 +57,52 @@ import { createWebSocket, ok } from "@evolu/common";
+ import { initSharedWorker } from "@evolu/common/local-first";
+ import { createRun } from "../Task.js";
+ import { createOneTabSharedWorkerSelfPolyfill, createSharedWorkerSelf, createWorkerDeps, } from "../Worker.js";
++const workerDeps = createWorkerDeps();
++const serializeWebSocketError = (error) => ({
++    type: error.type,
++    ...(error.type === "RetryError" && {
++        attempts: error.attempts,
++        cause: { type: error.cause.type, eventType: error.cause.event.type },
++    }),
++    ...(error.type !== "RetryError" && { eventType: error.event.type }),
++});
++const createDebugWebSocket = (url, options = {}) => {
++    workerDeps.console.info("webSocketCreated", { url });
++    return async (run) => {
++        const result = await run(createWebSocket(url, {
++            ...options,
++            onOpen: () => {
++                workerDeps.console.info("webSocketOpen", { url });
++                options.onOpen?.();
++            },
++            onClose: (event) => {
++                workerDeps.console.info("webSocketClose", { url, code: event.code });
++                options.onClose?.(event);
++            },
++            onError: (error) => {
++                workerDeps.console.info("webSocketError", {
++                    url,
++                    error: serializeWebSocketError(error),
++                });
++                options.onError?.(error);
++            },
++        }));
++        if (!result.ok)
++            return result;
++        const webSocket = result.value;
++        return ok({
++            ...webSocket,
++            [Symbol.asyncDispose]: async () => {
++                await webSocket[Symbol.asyncDispose]();
++                workerDeps.console.info("webSocketDestroyed", { url });
++            },
++        });
++    };
++};
+ // No disposal (`await using`) is needed — a SharedWorker lives forever.
+ const run = createRun({
+-    ...createWorkerDeps(),
+-    createWebSocket,
++    ...workerDeps,
++    createWebSocket: createDebugWebSocket,
+     lockManager: globalThis.navigator.locks,
+ });
+ void run(async (run) => {
+diff --git a/src/local-first/Shared.worker.ts b/src/local-first/Shared.worker.ts
+index cfd09d13b785162b5dc8e2c072125f81b89ba7d0..c1090e23b6ba67969bc80ddee599a7e93fe114bd 100644
+--- a/src/local-first/Shared.worker.ts
++++ b/src/local-first/Shared.worker.ts
+@@ -4,7 +4,12 @@ declare const self: DedicatedWorkerGlobalScope | SharedWorkerGlobalScope;
+ import { installPolyfills } from "@evolu/common/polyfills";
+ installPolyfills();
+ 
+-import { createWebSocket, ok } from "@evolu/common";
++import {
++  createWebSocket,
++  ok,
++  type CreateWebSocket,
++  type WebSocketError,
++} from "@evolu/common";
+ import type {
+   SharedWorkerInput,
+   SharedWorkerOutput,
+@@ -18,10 +23,60 @@ import {
+   createWorkerDeps,
+ } from "../Worker.js";
+ 
++const workerDeps = createWorkerDeps();
++
++const serializeWebSocketError = (error: WebSocketError) => ({
++  type: error.type,
++  ...(error.type === "RetryError" && {
++    attempts: error.attempts,
++    cause: { type: error.cause.type, eventType: error.cause.event.type },
++  }),
++  ...(error.type !== "RetryError" && { eventType: error.event.type }),
++});
++
++const createDebugWebSocket: CreateWebSocket = (url, options = {}) => {
++  workerDeps.console.info("webSocketCreated", { url });
++
++  return async (run) => {
++    const result = await run(
++      createWebSocket(url, {
++        ...options,
++        onOpen: () => {
++          workerDeps.console.info("webSocketOpen", { url });
++          options.onOpen?.();
++        },
++        onClose: (event) => {
++          workerDeps.console.info("webSocketClose", { url, code: event.code });
++          options.onClose?.(event);
++        },
++        onError: (error) => {
++          workerDeps.console.info("webSocketError", {
++            url,
++            error: serializeWebSocketError(error),
++          });
++          options.onError?.(error);
++        },
++      }),
++    );
++
++    if (!result.ok) return result;
++
++    const webSocket = result.value;
++
++    return ok({
++      ...webSocket,
++      [Symbol.asyncDispose]: async () => {
++        await webSocket[Symbol.asyncDispose]();
++        workerDeps.console.info("webSocketDestroyed", { url });
++      },
++    });
++  };
++};
++
+ // No disposal (`await using`) is needed — a SharedWorker lives forever.
+ const run = createRun({
+-  ...createWorkerDeps(),
+-  createWebSocket,
++  ...workerDeps,
++  createWebSocket: createDebugWebSocket,
+   lockManager: globalThis.navigator.locks,
+ });
+ 

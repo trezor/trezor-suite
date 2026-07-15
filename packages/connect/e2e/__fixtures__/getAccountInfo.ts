@@ -7,7 +7,7 @@ export default {
         {
             description: 'Bitcoin (P2SH): first account using path',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 path: "m/49'/0'/0'",
             },
             result: {
@@ -18,7 +18,7 @@ export default {
         {
             description: 'Bitcoin (P2PKH): first account using path',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 path: "m/44'/0'/0'",
             },
             result: {
@@ -29,7 +29,7 @@ export default {
         {
             description: 'Testnet (P2SH): empty account using path',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 path: "m/49'/1'/256'",
             },
             result: {
@@ -43,7 +43,7 @@ export default {
         {
             description: 'Bitcoin (P2SH): account from descriptor',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 descriptor:
                     'ypub6Y5EDdQK9nQzpNeMtgXxhBB3SoLk2SyR2MFLQYsBkAusAHpaQNxTTwefgnL9G3oFGrRS9VkVvyY1SaApFAzQPZ99wto5etdReeE3XFkkMZt',
             },
@@ -56,7 +56,7 @@ export default {
         {
             description: 'Bitcoin (P2PKH): account from descriptor',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 descriptor:
                     'xpub6DExuxjQ16sWy5TF4KkLV65YGqCJ5pyv7Ej7d9yJNAXz7C1M9intqszXfaNZG99KsDJdQ29wUKBTZHZFXUaPbKTZ5Z6f4yowNvAQ8fEJw2G',
             },
@@ -114,7 +114,7 @@ export default {
         {
             description: 'invalid path',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 path: "m/49'/0'",
             },
             result: false,
@@ -125,11 +125,11 @@ export default {
                 mnemonic: 'mnemonic_all',
             },
             description: 'Cardano: empty account using descriptor',
+            enabledCoins: ['ada'] as const,
             params: {
                 coin: 'ada',
                 descriptor:
                     '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1f123474e140a2c360b01f0fa66f2f22e2e965a5b07a80358cf75f77abbd66088',
-                useCardanoDerivation: true,
             },
             result: {
                 availableBalance: '0',
@@ -145,10 +145,10 @@ export default {
                 mnemonic: 'mnemonic_all',
             },
             description: 'Cardano: empty account using path',
+            enabledCoins: ['ada'] as const,
             params: {
                 coin: 'ada',
                 path: "m/1852'/1815'/0'/0/0",
-                useCardanoDerivation: true,
             },
             result: {
                 availableBalance: '0',

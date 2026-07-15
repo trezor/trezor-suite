@@ -1,15 +1,16 @@
 import { selectSelectedAccount } from '@suite/account';
+import { UNECONOMICAL_COINJOIN_THRESHOLD } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { goto } from '@suite/router';
 import { convertAmountSubunitsToUnits, getAccountDecimals } from '@suite-common/wallet-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
+import { ArrowsInIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { UNECONOMICAL_COINJOIN_THRESHOLD } from 'src/services/coinjoin';
 
 export const UnecoCoinjoinModal = () => {
     const account = useSelector(selectSelectedAccount);
@@ -46,7 +47,7 @@ export const UnecoCoinjoinModal = () => {
             }
             width={600}
             intent="warning"
-            iconName="arrowsIn"
+            icon={ArrowsInIcon}
         >
             <Column gap={spacings.xs}>
                 <H3>

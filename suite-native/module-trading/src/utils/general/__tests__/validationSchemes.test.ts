@@ -243,16 +243,16 @@ describe('validationSchemes', () => {
                 );
             });
 
-            it('shows lower than dust limit when maxSpendableAmount is undefined', async () => {
+            it('passes when maxSpendableAmount is undefined and value is within balance', async () => {
                 const context = createContext({
                     sendSymbol: 'btc',
-                    balance: '0.00000001',
+                    balance: '100',
                     maxSpendableAmount: undefined,
                 });
 
-                await expect(
-                    validate(sendCryptoAmountValidationSchema, 0.00000001, context),
-                ).rejects.toThrow(getTranslation('moduleTrading.validators.dustLimit'));
+                await expect(validate(sendCryptoAmountValidationSchema, 50, context)).resolves.toBe(
+                    50,
+                );
             });
         });
     });

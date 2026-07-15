@@ -1,304 +1,166 @@
-import type { Page, Route } from '@playwright/test';
+import { PASSTHROUGH, SolanaRpcServerMock } from '@trezor/e2e-utils';
 
-import { solanaUrlPattern } from './tradingMock';
-import solSimulateTransactionResponse from '../../fixtures/staking/sol-simulate-stake-transaction.json';
-import transactionResponse from '../../fixtures/staking/sol-stake-transactionResponse.json';
+import solSimulateStakeTransaction from '../../fixtures/staking/sol-simulate-stake-transaction.json';
+import solStakeTransaction from '../../fixtures/staking/sol-stake-transactionResponse.json';
 import {
     SolanaStakingAccount,
     solStakingAccountDeactivating,
     solStakingAccountFirst,
 } from '../../fixtures/staking/sol-staking-accounts';
-import { step } from '../common';
+import { isDesktopProject, step } from '../common';
+import { PlaywrightTarget } from '../testExtends/suiteTestOptions';
 
-type JsonRequestBody = {
-    id?: number | string;
-    method?: string;
-    params?: unknown[];
-};
+const UPSTREAM_URL = 'https://sol.trezor.io/';
+const ACCOUNT_ADDRESS = '8NapsSamBA2jd8VR8SZw4aXSvSAHiskUZXaiYW1HxTGe';
+const STAKE_PROGRAM_ADDRESS = 'Stake11111111111111111111111111111111111111';
+const TRANSACTION_SIGNATURE =
+    '41ZJr1SqnXVXym6EKrvfELQWh4pPdPeUSrj1GvcPNq9eL7Dh7QyCQXS65yahU6QtoBBNnfEJNGQ7poWRe4Gbk2Zd';
 
-type SolanaRouteHandler = {
-    enabled: boolean;
-    predicate?: (params?: unknown[]) => boolean;
-    respond: (route: Route, body: JsonRequestBody) => Promise<void>;
-};
+// Frozen so stake warmup/withdraw/claim amounts stay deterministic; they depend on the relation
+// between a stake account's activation/deactivation epoch and the current epoch.
+const INITIAL_EPOCH = 864;
+const ACCOUNT_BALANCE_LAMPORTS = 1_000_000_000_000;
+const SLOTS_IN_EPOCH = 432000;
+const SLOT_INDEX = 376284;
 
-export type SolanaRouteHandlers = Record<SolanaRouteMethod, SolanaRouteHandler>;
-
-export type SolanaRouteMethod =
-    | 'getEpochInfo'
-    | 'getBalance'
-    | 'sendTransaction'
-    | 'simulateTransaction'
-    | 'getSignatureStatuses'
-    | 'getSignaturesForAddress'
-    | 'getTransaction'
-    | 'getProgramAccounts'
-    | 'getRecentPrioritizationFees'
-    | 'getFeeForMessage'
-    | 'getMinimumBalanceForRentExemption';
-
-const BASE_EPOCH = 864; // chosen based of our mocked program accounts activation/deactivation epochs
-
-export const fulfillWithResult = async (route: Route, body: JsonRequestBody, result: unknown) => {
-    await route.fulfill({
-        json: {
-            jsonrpc: '2.0',
-            id: body.id,
-            result,
-        },
-    });
-};
-
-const createDefaultHandlers = (): SolanaRouteHandlers => ({
-    // handler to freeze epoch info so stake warmup/withdraw/claim amount dont change over time
-    // their state is defined by relation between activationEpoch, deactivationEpoch and current epoch
-    getEpochInfo: {
-        enabled: true,
-        respond: async (route, body) => {
-            const slotIndex = 376284;
-            const slotsInEpoch = 432000;
-            await fulfillWithResult(route, body, {
-                absoluteSlot: BASE_EPOCH * slotsInEpoch + slotIndex,
-                blockHeight: 359120112,
-                epoch: BASE_EPOCH,
-                slotIndex,
-                slotsInEpoch,
-                transactionCount: 464794163561,
-            });
-        },
-    },
-    // handler to mock initial SOL balance for staking
-    getBalance: {
-        enabled: true,
-        predicate: params => params?.[0] === '8NapsSamBA2jd8VR8SZw4aXSvSAHiskUZXaiYW1HxTGe',
-        respond: async (route, body) => {
-            await fulfillWithResult(route, body, {
-                context: { slot: 0 },
-                value: 1_000_000_000_000,
-            });
-        },
-    },
-    //handlers for staking transaction flow
-    sendTransaction: {
-        enabled: true,
-        respond: async (route, body) => {
-            await fulfillWithResult(
-                route,
-                body,
-                '41ZJr1SqnXVXym6EKrvfELQWh4pPdPeUSrj1GvcPNq9eL7Dh7QyCQXS65yahU6QtoBBNnfEJNGQ7poWRe4Gbk2Zd',
-            );
-        },
-    },
-    simulateTransaction: {
-        enabled: true,
-        respond: async (route, body) => {
-            await fulfillWithResult(route, body, {
-                value: solSimulateTransactionResponse,
-            });
-        },
-    },
-    getSignatureStatuses: {
-        enabled: true,
-        respond: async (route, body) => {
-            await fulfillWithResult(route, body, {
-                value: [
-                    {
-                        slot: 48,
-                        confirmations: null,
-                        err: null,
-                        status: { Ok: null },
-                        confirmationStatus: 'finalized',
-                    },
-                ],
-            });
-        },
-    },
-    //handlers for finalizing staking transaction flow
-    getSignaturesForAddress: {
-        enabled: false,
-        predicate: params => params?.[0] === '8NapsSamBA2jd8VR8SZw4aXSvSAHiskUZXaiYW1HxTGe',
-        respond: async (route, body) => {
-            await fulfillWithResult(route, body, [
-                {
-                    blockTime: 1758796808,
-                    confirmationStatus: 'finalized',
-                    err: null,
-                    memo: null,
-                    signature:
-                        '41ZJr1SqnXVXym6EKrvfELQWh4pPdPeUSrj1GvcPNq9eL7Dh7QyCQXS65yahU6QtoBBNnfEJNGQ7poWRe4Gbk2Zd',
-                    slot: 369150991,
-                },
-            ]);
-        },
-    },
-    getTransaction: {
-        enabled: false,
-        predicate: params =>
-            params?.[0] ===
-            '41ZJr1SqnXVXym6EKrvfELQWh4pPdPeUSrj1GvcPNq9eL7Dh7QyCQXS65yahU6QtoBBNnfEJNGQ7poWRe4Gbk2Zd',
-        respond: async route => {
-            await route.fulfill({ json: transactionResponse });
-        },
-    },
-    //handler to mock stake account info, starts empty
-    getProgramAccounts: {
-        enabled: true,
-        predicate: params => params?.[0] === 'Stake11111111111111111111111111111111111111',
-        respond: async (route, body) => {
-            await fulfillWithResult(route, body, []);
-        },
-    },
-    getRecentPrioritizationFees: {
-        enabled: true,
-        respond: async (route, body) => {
-            await fulfillWithResult(route, body, [
-                {
-                    prioritizationFee: 0,
-                    slot: 394770899,
-                },
-            ]);
-        },
-    },
-    getFeeForMessage: {
-        enabled: true,
-        respond: async (route, body) => {
-            await fulfillWithResult(route, body, {
-                value: 5000,
-            });
-        },
-    },
-    getMinimumBalanceForRentExemption: {
-        enabled: true,
-        respond: async (route, body) => {
-            await fulfillWithResult(route, body, 2282880);
-        },
-    },
+const buildEpochInfo = (epoch: number) => ({
+    absoluteSlot: epoch * SLOTS_IN_EPOCH + SLOT_INDEX,
+    blockHeight: 359120112,
+    epoch,
+    slotIndex: SLOT_INDEX,
+    slotsInEpoch: SLOTS_IN_EPOCH,
+    transactionCount: 464794163561,
 });
 
-const hasEnabledHandler = (
-    handlers: SolanaRouteHandlers,
-    method: string,
-): method is keyof SolanaRouteHandlers =>
-    Object.hasOwn(handlers, method) &&
-    (handlers as Record<string, SolanaRouteHandler>)[method]?.enabled === true;
-
 export class SolanaStakingMock {
-    readonly handlers: SolanaRouteHandlers;
-    protected currentEpoch: number = BASE_EPOCH;
+    private readonly server = new SolanaRpcServerMock(UPSTREAM_URL);
+    private readonly balances = new Map<string, number>([
+        [ACCOUNT_ADDRESS, ACCOUNT_BALANCE_LAMPORTS],
+    ]);
+    private epoch = INITIAL_EPOCH;
+    private stakeAccounts: SolanaStakingAccount[] = [];
+    private simulatedTransaction: unknown = solSimulateStakeTransaction;
+    private transactionConfirmed = false;
+
     readonly stakeFeeFormatted = '0.002298742 SOL';
     readonly unstakeFeeFormatted = '0.000015862 SOL';
     readonly claimFeeFormatted = '0.000008605 SOL';
 
-    constructor(
-        private readonly page: Page,
-        handlers: SolanaRouteHandlers = createDefaultHandlers(),
-    ) {
-        this.handlers = handlers;
-    }
+    constructor(private target: PlaywrightTarget) {}
 
-    async routeSolana(routeHandlers: SolanaRouteHandlers = this.handlers) {
-        await this.page.route(solanaUrlPattern, route => this.handle(route, routeHandlers));
+    get url(): string {
+        return this.server.url;
     }
 
     @step()
-    enableRoutes(methods: SolanaRouteMethod[]) {
-        methods.forEach(method => {
-            this.getHandler(method).enabled = true;
-        });
+    async start() {
+        this.registerHandlers();
+        await this.server.start();
     }
 
     @step()
-    disableRoutes(methods: SolanaRouteMethod[]) {
-        methods.forEach(method => {
-            this.getHandler(method).enabled = false;
-        });
+    async stop() {
+        await this.server.stop();
     }
 
     @step()
-    enableRoutesForTransactions() {
-        // necessary routes for sending and finalizing transactions
-        // cannot be enabled during discovery as they would interfere with it
-        this.enableRoutes(['getTransaction', 'getSignaturesForAddress']);
+    setBalance(address: string, lamports: number) {
+        this.balances.set(address, lamports);
     }
 
     @step()
-    async replaceRoute(method: SolanaRouteMethod, overrides: Partial<SolanaRouteHandler>) {
-        this.handlers[method] = {
-            ...this.getHandler(method),
-            ...overrides,
-        };
-        await this.routeSolana();
+    setStakeAccounts(accounts: SolanaStakingAccount[]) {
+        this.stakeAccounts = accounts;
     }
 
     @step()
-    async setProgramAccounts(accounts: SolanaStakingAccount[]) {
-        await this.replaceRoute('getProgramAccounts', {
-            respond: async (route, body) => {
-                await fulfillWithResult(route, body, accounts);
-            },
-        });
+    setEpoch(epoch: number) {
+        this.applyEpoch(epoch);
     }
 
     @step()
-    async setEpoch(epoch: number) {
-        const slotIndex = 376284;
-        const slotsInEpoch = 432000;
-        await this.replaceRoute('getEpochInfo', {
-            respond: async (route, body) => {
-                await fulfillWithResult(route, body, {
-                    absoluteSlot: epoch * slotsInEpoch + slotIndex,
-                    blockHeight: 359120112,
-                    epoch,
-                    slotIndex,
-                    slotsInEpoch,
-                    transactionCount: 464794163561,
-                });
-            },
-        });
-        this.currentEpoch = epoch;
+    advanceEpoch() {
+        this.applyEpoch(this.epoch + 1);
     }
 
-    @step()
-    async advanceEpoch() {
-        await this.setEpoch(this.currentEpoch + 1);
-    }
-
-    private getHandler(method: SolanaRouteMethod): SolanaRouteHandler {
-        if (!this.handlers[method]) {
-            throw new Error(`Unknown Solana route method: ${method}`);
+    private applyEpoch(epoch: number) {
+        this.epoch = epoch;
+        // Terminating all connections forces a restart of a worker with clean cache (which includes epoch)
+        if (isDesktopProject(this.target)) {
+            this.server.dropConnections();
         }
-
-        return this.handlers[method];
     }
 
-    private async handle(route: Route, routeHandlers: SolanaRouteHandlers) {
-        const body = route.request().postDataJSON() as JsonRequestBody;
-        const { method } = body;
-        // Continue if no handler is enabled for intercepted request's method
-        if (!method || !hasEnabledHandler(routeHandlers, method)) {
-            return route.continue();
-        }
-
-        const methodHandler = routeHandlers[method];
-        // Continue if predicate does not match intercepted request's params
-        if (methodHandler.predicate && !methodHandler.predicate(body.params)) {
-            return route.continue();
-        }
-
-        await methodHandler.respond(route, body);
+    // Makes the broadcasted transaction discoverable, simulating its on-chain confirmation. Kept off
+    // during discovery, where a phantom signature would be mistaken for existing account history.
+    @step()
+    confirmTransaction() {
+        this.transactionConfirmed = true;
     }
 
     @step()
-    async setupStakedAccount() {
-        await this.setProgramAccounts([solStakingAccountFirst.payload]);
-        const epochAfterActivation = solStakingAccountFirst.activationEpoch + 1;
-        await this.setEpoch(epochAfterActivation);
+    setSimulatedTransaction(simulation: unknown) {
+        this.simulatedTransaction = simulation;
     }
 
     @step()
-    async setupUnstakingAccount() {
-        await this.setProgramAccounts([solStakingAccountDeactivating.payload]);
-        const { deactivationEpoch } = solStakingAccountDeactivating;
-        await this.setEpoch(deactivationEpoch);
+    setupStakedAccount() {
+        this.setStakeAccounts([solStakingAccountFirst.payload]);
+        this.setEpoch(solStakingAccountFirst.activationEpoch + 1);
+    }
+
+    @step()
+    setupUnstakingAccount() {
+        this.setStakeAccounts([solStakingAccountDeactivating.payload]);
+        this.setEpoch(solStakingAccountDeactivating.deactivationEpoch);
+    }
+
+    private registerHandlers() {
+        this.server.setHandler('getEpochInfo', () => buildEpochInfo(this.epoch));
+        this.server.setHandler('getBalance', ([address]) => {
+            const lamports = this.balances.get(String(address));
+
+            return lamports === undefined ? PASSTHROUGH : { context: { slot: 0 }, value: lamports };
+        });
+        this.server.setHandler('getProgramAccounts', ([programAddress]) =>
+            programAddress === STAKE_PROGRAM_ADDRESS ? this.stakeAccounts : PASSTHROUGH,
+        );
+        this.server.setHandler('simulateTransaction', () => ({ value: this.simulatedTransaction }));
+        this.server.setHandler('sendTransaction', () => TRANSACTION_SIGNATURE);
+        this.server.setHandler('getSignatureStatuses', () => ({
+            value: [
+                {
+                    slot: 48,
+                    confirmations: null,
+                    err: null,
+                    status: { Ok: null },
+                    confirmationStatus: 'finalized',
+                },
+            ],
+        }));
+        this.server.setHandler('getRecentPrioritizationFees', () => [
+            { prioritizationFee: 0, slot: 394770899 },
+        ]);
+        this.server.setHandler('getFeeForMessage', () => ({ value: 5000 }));
+        this.server.setHandler('getMinimumBalanceForRentExemption', () => 2282880);
+        this.server.setHandler('getSignaturesForAddress', ([address]) =>
+            this.transactionConfirmed && address === ACCOUNT_ADDRESS
+                ? [
+                      {
+                          blockTime: 1758796808,
+                          confirmationStatus: 'finalized',
+                          err: null,
+                          memo: null,
+                          signature: TRANSACTION_SIGNATURE,
+                          slot: 369150991,
+                      },
+                  ]
+                : PASSTHROUGH,
+        );
+        this.server.setHandler('getTransaction', ([signature]) =>
+            this.transactionConfirmed && signature === TRANSACTION_SIGNATURE
+                ? solStakeTransaction
+                : PASSTHROUGH,
+        );
     }
 }

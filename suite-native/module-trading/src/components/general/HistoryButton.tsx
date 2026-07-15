@@ -1,6 +1,5 @@
-import { memo } from 'react';
-import { Pressable } from 'react-native';
-import { FadeInDown, FadeOutDown, LinearTransition } from 'react-native-reanimated';
+import { Platform, Pressable } from 'react-native';
+import { FadeInDown, LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -15,9 +14,10 @@ import {
     type TradingStackParamList,
     type TradingStackRoutes,
 } from '@suite-native/navigation';
-import { selectIsAmountInputActive } from '@suite-native/trading-state';
+import { selectActiveTradingType, selectIsAmountInputActive } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { useMountedRecentlyFlag } from '../../hooks/general/useMountedRecentlyFlag';
 import { useWatchAllTrades } from '../../hooks/general/useWatchAllTrades';
 
 export type HistoryButtonProps = {
@@ -41,17 +41,28 @@ const buttonStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
 }));
 
-const HistoryButtonMemoized = memo(({ isFormMountedRecently }: HistoryButtonProps) => {
+const isAndroid = Platform.OS === 'android';
+
+export const HistoryButton = () => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
+    const activeTradingType = useSelector(selectActiveTradingType);
+    const isMountedRecently = useMountedRecentlyFlag(activeTradingType);
+
+    const { totalTrades } = useWatchAllTrades();
+    const shouldHideButton = useSelector(selectIsAmountInputActive);
 
     const handleOnPress = () => navigation.navigate(RootStackRoutes.TradingHistory);
 
+    if (totalTrades === 0 || shouldHideButton) {
+        return null;
+    }
+
     return (
         <AnimatedBox
-            entering={isFormMountedRecently ? undefined : FadeInDown}
-            exiting={FadeOutDown}
-            layout={LinearTransition}
+            key={isAndroid ? activeTradingType : undefined}
+            entering={isMountedRecently && isAndroid ? undefined : FadeInDown}
+            layout={isMountedRecently ? undefined : LinearTransition}
         >
             <Pressable onPress={handleOnPress} testID={TRADE_HISTORY_BUTTON_TEST_ID}>
                 <HStack style={applyStyle(buttonStyle)}>
@@ -63,15 +74,4 @@ const HistoryButtonMemoized = memo(({ isFormMountedRecently }: HistoryButtonProp
             </Pressable>
         </AnimatedBox>
     );
-});
-
-export const HistoryButton = (props: HistoryButtonProps) => {
-    const { totalTrades } = useWatchAllTrades();
-    const shouldHideButton = useSelector(selectIsAmountInputActive);
-
-    if (totalTrades === 0 || shouldHideButton) {
-        return null;
-    }
-
-    return <HistoryButtonMemoized {...props} />;
 };

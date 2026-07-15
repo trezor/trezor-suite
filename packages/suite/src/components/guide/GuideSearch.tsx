@@ -4,18 +4,12 @@ import styled from 'styled-components';
 
 import { Translation, useTranslation } from '@suite/intl';
 import type { GuideCategory } from '@suite-common/suite-types';
-import { Box, Icon, Input, Paragraph, Spinner } from '@trezor/components';
+import { Box, CardList, Icon, Input, Paragraph, Spinner } from '@trezor/components';
+import { MagnifyingGlassIcon } from '@trezor/icons';
 import { typography } from '@trezor/theme';
 
 import { GuideNode } from 'src/components/guide';
-import { useGuideSearch } from 'src/hooks/guide';
-
-const PageFoundList = styled.div`
-    margin-top: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-`;
+import { MIN_QUERY_LENGTH, useGuideSearch } from 'src/hooks/guide';
 
 const PreviewContent = styled.div`
     white-space: nowrap;
@@ -54,17 +48,18 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
     const inputRef = useRef<HTMLInputElement | null>(null);
 
     const { translationString } = useTranslation();
-    const { searchResult, loading } = useGuideSearch(query, pageRoot);
+    const { searchResult, loading, isQueryTooShort } = useGuideSearch(query, pageRoot);
 
     useEffect(() => {
         setSearchActive?.(!!searchResult.length || !!query);
     }, [query, searchResult, setSearchActive, loading]);
 
     return (
-        <Box margin={{ bottom: 8 }}>
+        <Box margin={{ bottom: 16 }}>
             <Input
                 placeholder={translationString('TR_SEARCH')}
                 value={query}
+                size="small"
                 onChange={e => setQuery(e.currentTarget.value)}
                 showClearButton={true}
                 onClear={() => setQuery('')}
@@ -73,7 +68,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
                         <Spinner size={24} isDisabled={true} />
                     ) : (
                         <Icon
-                            name="magnifyingGlass"
+                            as={MagnifyingGlassIcon}
                             size={20}
                             intent="neutral"
                             priority="secondary"
@@ -89,7 +84,7 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
             />
 
             {searchResult.length ? (
-                <PageFoundList data-testid="@guide/search/results">
+                <CardList margin={{ top: 16 }} data-testid="@guide/search/results">
                     {searchResult.map(({ page, preview }) => (
                         <GuideNode
                             key={page.id}
@@ -97,20 +92,34 @@ export const GuideSearch = ({ pageRoot, setSearchActive }: GuideSearchProps) => 
                             description={preview && <Preview {...preview} />}
                         />
                     ))}
-                </PageFoundList>
+                </CardList>
             ) : (
                 query &&
-                !loading && (
+                !loading &&
+                (isQueryTooShort ? (
                     <Paragraph
-                        data-testid="@guide/search/no-results"
-                        typographyStyle="body-sm"
+                        data-testid="@guide/search/min-query-length"
+                        typographyStyle="body-md"
                         intent="neutral"
                         priority="secondary"
-                        margin={{ top: 12 }}
+                        margin={{ top: 16 }}
+                    >
+                        <Translation
+                            id="TR_GUIDE_SEARCH_MIN_QUERY_LENGTH"
+                            values={{ count: MIN_QUERY_LENGTH }}
+                        />
+                    </Paragraph>
+                ) : (
+                    <Paragraph
+                        data-testid="@guide/search/no-results"
+                        typographyStyle="body-md"
+                        intent="neutral"
+                        priority="secondary"
+                        margin={{ top: 16 }}
                     >
                         <Translation id="TR_ACCOUNT_SEARCH_NO_RESULTS" />
                     </Paragraph>
-                )
+                ))
             )}
         </Box>
     );

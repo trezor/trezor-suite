@@ -19,7 +19,8 @@ describe(createBip329ToSuiteSync.name, () => {
         const importBip329ToSuiteSync = createBip329ToSuiteSync(deps);
 
         const result = await importBip329ToSuiteSync({
-            account,
+            deviceStaticSessionId: account.deviceState,
+            accountDescriptor: account.descriptor,
             bip329Labels: [
                 {
                     type: 'output',
@@ -57,7 +58,8 @@ describe(createBip329ToSuiteSync.name, () => {
         const importBip329ToSuiteSync = createBip329ToSuiteSync(deps);
 
         const result = await importBip329ToSuiteSync({
-            account,
+            deviceStaticSessionId: account.deviceState,
+            accountDescriptor: account.descriptor,
             bip329Labels: [
                 { type: 'tx', ref: 'txid', label: 'Transaction label' },
                 { type: 'wallet', ref: 'walletRef', label: 'Wallet label' },
@@ -81,7 +83,8 @@ describe(createBip329ToSuiteSync.name, () => {
 
         const importBip329ToSuiteSync = createBip329ToSuiteSync(deps);
         const result = await importBip329ToSuiteSync({
-            account,
+            deviceStaticSessionId: account.deviceState,
+            accountDescriptor: account.descriptor,
             bip329Labels: [
                 {
                     type: 'output',

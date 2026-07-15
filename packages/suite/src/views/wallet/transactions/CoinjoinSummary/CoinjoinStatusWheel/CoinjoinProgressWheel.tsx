@@ -3,26 +3,23 @@ import { useCallback, useState } from 'react';
 import { lighten, rgba } from 'polished';
 import styled, { type DefaultTheme, css, keyframes } from 'styled-components';
 
+import {
+    coinjoinSessionAutostop,
+    selectCurrentCoinjoinWheelStates,
+    selectSessionProgressByAccountKey,
+    selectStartCoinjoinSessionArguments,
+    startCoinjoinSession,
+    stopCoinjoinSession,
+} from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { Tooltip, useElevation } from '@trezor/components';
-import { type Elevation, mapElevationToBorder } from '@trezor/theme';
+import { Tooltip } from '@trezor/components';
 
-import {
-    coinjoinSessionAutostop,
-    startCoinjoinSession,
-} from 'src/actions/wallet/coinjoinAccountActions';
-import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
 import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import {
-    selectCurrentCoinjoinWheelStates,
-    selectSessionProgressByAccountKey,
-    selectStartCoinjoinSessionArguments,
-} from 'src/reducers/wallet/coinjoinReducer';
 
 import {
     CoinjoinProgressContent,
@@ -66,7 +63,6 @@ const Wheel = styled.div<{
     $isWithoutProgressOutline: boolean;
     $isStartable: boolean;
     $isGreyedOut: boolean;
-    $elevation: Elevation;
 }>`
     position: relative;
     display: flex;
@@ -75,9 +71,9 @@ const Wheel = styled.div<{
     width: 94px;
     height: 94px;
     border-radius: 50%;
-    background: ${({ theme, $progress, $elevation }) =>
-        `conic-gradient(${theme.legacyBackgroundPrimaryDefault} ${3.6 * $progress}deg, ${rgba(
-            mapElevationToBorder({ theme, $elevation }),
+    background: ${({ theme, $progress }) =>
+        `conic-gradient(${theme.elementFillBrandBold} ${3.6 * $progress}deg, ${rgba(
+            theme.borderNeutral,
             0.6,
         )} 0)`};
     transition:
@@ -92,8 +88,7 @@ const Wheel = styled.div<{
 
             &:active {
                 ${ProgressContentContainer} {
-                    background: ${({ theme }) =>
-                        lighten(0.02, theme.legacyBackgroundNeutralBoldInverted)};
+                    background: ${({ theme }) => lighten(0.02, theme.surfaceFillRaised)};
                 }
             }
         `}
@@ -105,7 +100,7 @@ const Wheel = styled.div<{
             color: ${({ theme }) => theme.contentBrand};
 
             ${ProgressContentContainer} {
-                background: ${({ theme }) => theme.legacyBackgroundPrimaryDefault};
+                background: ${({ theme }) => theme.elementFillBrandBold};
 
                 path {
                     fill: ${({ theme }) => theme.contentBrand};
@@ -137,11 +132,11 @@ const Wheel = styled.div<{
             }
         `}
 
-    ${({ $isPaused, $hasCriticalError, theme, $progress, $elevation }) =>
+    ${({ $isPaused, $hasCriticalError, theme, $progress }) =>
         $isPaused &&
         css`
             background: ${`conic-gradient(${theme.surfaceFillPage} ${3.6 * $progress}deg, ${rgba(
-                mapElevationToBorder({ theme, $elevation }),
+                theme.borderNeutral,
                 0.6,
             )} 0)`};
 
@@ -159,7 +154,7 @@ const Wheel = styled.div<{
             color: inherit;
 
             ${ProgressContentContainer} {
-                background: ${theme.legacyBackgroundNeutralBoldInverted};
+                background: ${theme.surfaceFillRaised};
             }
         `}
 `;
@@ -169,7 +164,6 @@ interface CoinjoinProgressWheelProps {
 }
 
 export const CoinjoinProgressWheel = ({ accountKey }: CoinjoinProgressWheelProps) => {
-    const { elevation } = useElevation();
     const {
         isSessionActive,
         isPaused,
@@ -277,7 +271,6 @@ export const CoinjoinProgressWheel = ({ accountKey }: CoinjoinProgressWheelProps
                     onClick={handleWheelClick}
                     onMouseEnter={() => setIsWheelHovered(true)}
                     onMouseLeave={() => setIsWheelHovered(false)}
-                    $elevation={elevation}
                 >
                     <CoinjoinProgressContent
                         accountKey={accountKey}

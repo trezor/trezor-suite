@@ -15,6 +15,7 @@ import {
 import { useSelector } from 'src/hooks/suite';
 
 import { ConnectAddressConfirmation } from './UserContextModal/ConnectAddressConfirmation';
+import { ConnectSelectAccount } from './UserContextModal/ConnectSelectAccount/ConnectSelectAccount';
 
 interface ConfirmAddressModalProps extends Pick<
     ConfirmValueModalProps,
@@ -26,16 +27,15 @@ interface ConfirmAddressModalProps extends Pick<
 export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAddressModalProps) => {
     const device = useSelector(selectSelectedDevice);
     const account = useSelector(selectAccountIncludingChosenInTrading);
-    const isConnectPopup = useSelector(
-        state => selectConnectPopupCall(state)?.state === 'address-confirmation',
-    );
+    const popupCallState = useSelector(state => selectConnectPopupCall(state)?.state);
 
     const validateAddress = useCallback(
         () => showAddressThunk({ path: addressPath, address: value }),
         [addressPath, value],
     );
 
-    if (isConnectPopup) return <ConnectAddressConfirmation />;
+    if (popupCallState === 'address-confirmation') return <ConnectAddressConfirmation />;
+    if (popupCallState === 'select-account') return <ConnectSelectAccount />;
     if (!device) return null;
 
     const getHeading = () => {

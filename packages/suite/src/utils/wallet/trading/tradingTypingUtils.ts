@@ -8,7 +8,6 @@ import {
     type TradingExchangeType,
     type TradingFiatCurrencyOption,
     type TradingSellType,
-    type TradingTradeMapProps,
     type TradingTradeType,
     type TradingType,
 } from '@suite-common/trading';
@@ -17,7 +16,6 @@ import { type BaseCurrencyOption } from '@suite-common/wallet-types';
 import {
     type TradingGetCryptoQuoteAmountProps,
     type TradingGetFiatCurrenciesProps,
-    type TradingGetPaymentMethodProps,
     type TradingGetProvidersInfoProps,
 } from 'src/types/trading/trading';
 import {
@@ -126,16 +124,6 @@ export const getFiatCurrenciesProps = (
     return null;
 };
 
-export const getSelectQuoteTyped = (
-    context: TradingFormContextValues<TradingType>,
-): ((quote: TradingTradeMapProps[typeof context.type]) => void) => {
-    const selectQuote = context.selectQuote as (
-        quote: TradingTradeMapProps[typeof context.type],
-    ) => void;
-
-    return selectQuote;
-};
-
 export const getSelectedCryptoId = (
     context: TradingFormContextValues<TradingType>,
 ): CryptoId | null => {
@@ -162,20 +150,6 @@ export const getSelectedTradingCurrency = (
     }
 
     return context.getValues(TRADING_FORM_FIAT_CURRENCY_SELECT);
-};
-
-export const getPaymentMethod = (
-    selectedQuote: SellFiatTrade | ExchangeTrade | BuyTrade,
-    context: TradingFormContextValues<TradingType>,
-): TradingGetPaymentMethodProps => {
-    if (isTradingExchangeContext(context)) return {};
-
-    const selectedQuoteTyped = selectedQuote as SellFiatTrade | BuyTrade;
-
-    return {
-        paymentMethod: selectedQuoteTyped.paymentMethod,
-        paymentMethodName: selectedQuoteTyped.paymentMethodName,
-    };
 };
 
 const getQuotesFilteredByProviderAndPaymentMethod = <T extends BuyTrade | SellFiatTrade>(
@@ -211,14 +185,14 @@ export const getSelectedQuote = (
 
     if (isTradingBuyContext(context)) {
         return getQuotesFilteredByProviderAndPaymentMethod<BuyTrade>(
-            context.quotes as BuyTrade[],
+            context.quotes,
             provider,
             paymentMethod?.value,
         )?.[0];
     }
 
     return getQuotesFilteredByProviderAndPaymentMethod<SellFiatTrade>(
-        context.quotes as SellFiatTrade[],
+        context.quotes,
         provider,
         paymentMethod?.value,
     )?.[0];

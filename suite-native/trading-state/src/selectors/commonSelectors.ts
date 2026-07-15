@@ -20,6 +20,7 @@ import {
     cryptoIdToSymbol,
     isFinalStatus,
     selectDeviceTradingTrades,
+    selectTradingIsSlip24Allowed,
     selectTradingSupportedSymbols,
     toTokenCryptoId,
 } from '@suite-common/trading';
@@ -92,6 +93,32 @@ const createFiatRatesMemoizedSelector = createWeakMapSelector.withTypes<
 export const selectTradingEnvironment = (state: TradingRootState) =>
     state.wallet.trading.tradingEnvironment;
 
+const createTradingMemoizedSelector = createWeakMapSelector.withTypes<TradingRootState>();
+
+export const selectTradedAccountKeys = createTradingMemoizedSelector(
+    [state => state.wallet.trading.trades],
+    trades =>
+        returnStableArrayIfEmpty<AccountKey>(
+            trades.length
+                ? Array.from(
+                      new Set(
+                          trades.flatMap(trade =>
+                              [
+                                  'selectedAccountKey' in trade
+                                      ? trade.selectedAccountKey
+                                      : undefined,
+                                  'receiveAccountKey' in trade
+                                      ? trade.receiveAccountKey
+                                      : undefined,
+                                  'sendAccountKey' in trade ? trade.sendAccountKey : undefined,
+                              ].filter((key): key is AccountKey => !!key),
+                          ),
+                      ),
+                  )
+                : undefined,
+        ),
+);
+
 export const selectIsTradingBuyEnabled = (state: MessageSystemRootState & FeatureFlagsRootState) =>
     selectIsFeatureEnabled(state, Feature.trading.buy, true);
 export const selectIsTradingExchangeEnabled = (
@@ -104,6 +131,17 @@ export const selectIsTradingSellEnabled = (state: MessageSystemRootState & Featu
 export const selectIsTradingConciergeEnabled = (
     state: MessageSystemRootState & FeatureFlagsRootState,
 ) => selectIsFeatureEnabled(state, Feature.trading.concierge, true);
+
+export const selectIsTradingSlip24Enabled = (
+    state: MessageSystemRootState & FeatureFlagsRootState & TradingRootStateWithDeviceAndAccounts,
+    account: Account | undefined | null,
+) =>
+    selectTradingIsSlip24Allowed(
+        state,
+        account,
+        selectIsFeatureEnabled(state, Feature.trading.slip24, true) &&
+            selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingSlip24Enabled),
+    );
 
 export const selectIsTradingEnabled = (
     state: MessageSystemRootState & FeatureFlagsRootState & TradingRootState,
@@ -168,6 +206,9 @@ export const selectIsAmountInputActive = (state: TradingRootState) =>
 
 export const selectActiveTradingType = (state: TradingRootState) =>
     state.wallet.trading.activeTradingType;
+
+export const selectHasActiveTradingType = (state: TradingRootState) =>
+    state.wallet.trading.activeTradingType !== null;
 
 export const selectAmountInBaseFiatCurrency = createFiatRatesMemoizedSelector(
     [

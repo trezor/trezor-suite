@@ -8,9 +8,12 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
             mnemonic: 'mnemonic_all',
         },
     });
+
     test.beforeEach(
         async ({ onboardingPage, dashboardPage, settingsPage, walletPage, trezorUserEnv }) => {
-            await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+            await onboardingPage.completeOnboarding();
+            await settingsPage.navigateTo('application');
+            await settingsPage.toggleDebugModeInSettings();
 
             await settingsPage.toggleTestnetNetworks();
             await settingsPage.navigateTo('coins');

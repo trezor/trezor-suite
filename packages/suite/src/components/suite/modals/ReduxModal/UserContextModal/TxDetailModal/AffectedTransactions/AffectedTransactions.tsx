@@ -17,7 +17,7 @@ export const AffectedTransactions = ({ chainedTxs, showChained }: AffectedTransa
 
     return (
         <Card
-            fillType="flat"
+            type="contrast"
             paddingType="small"
             header={
                 <Row justifyContent="space-between" alignItems="center">

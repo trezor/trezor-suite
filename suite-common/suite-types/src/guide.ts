@@ -14,6 +14,8 @@ export interface GuideCategory {
         [key: string]: string;
     };
     image?: string;
+    /** Icon name from @trezor/components. Takes precedence over `image` in the UI. */
+    icon?: string;
     /** Sub-categories and sub-pages. */
     children: GuideNode[];
 }
@@ -32,5 +34,6 @@ export type GuideNode = GuideCategory | GuideArticle;
 
 export type GuideView = 'GUIDE_DEFAULT' | 'GUIDE_CATEGORY' | 'GUIDE_ARTICLE';
 export type FeedbackView = 'SUPPORT_FEEDBACK_SELECTION' | 'FEEDBACK_BUG' | 'FEEDBACK_SUGGESTION';
+export type ShortcutsView = 'KEYBOARD_SHORTCUTS';
 
-export type ActiveView = GuideView | FeedbackView;
+export type ActiveView = GuideView | FeedbackView | ShortcutsView;

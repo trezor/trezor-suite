@@ -7,7 +7,7 @@ import { borders, spacings } from '@trezor/theme';
 import { type SwitchLabelPosition, type SwitchSize } from './types';
 import { mapSizeToHandleSize, mapSizeToLabelContainerGap, mapSizeToLabelTypography } from './utils';
 import { type FrameProps, type FramePropsKeys } from '../../../utils/frameProps';
-import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
+import { commonFocusStyles, focusStyleTransition } from '../../../utils/utils';
 import { Box } from '../../Box/Box';
 import { Row } from '../../Flex/Flex';
 import { Text } from '../../typography/Text/Text';
@@ -56,7 +56,9 @@ const Container = styled.div<{
                           : theme.elementFillNeutralBoldHovered};
                   }
 
-                  ${getFocusShadowStyle(':focus-within:has(:focus-visible)')}
+                  &:focus-within:has(:focus-visible) {
+                      ${commonFocusStyles}
+                  }
               `};
 `;
 
@@ -70,7 +72,7 @@ const Handle = styled.button<{ $isChecked: boolean }>`
     transform: ${({ $isChecked }) => $isChecked && `translateX(100%)`};
     transition: transform 0.25s ease 0s;
     pointer-events: none;
-    box-shadow: ${({ theme }) => theme.boxShadowBase};
+    box-shadow: ${({ theme }) => theme.elementShadowElevated};
 `;
 
 const CheckboxInput = styled.input`
@@ -128,7 +130,7 @@ export const Switch = ({
                     height={mapSizeToHandleSize(size)}
                     aspectRatio="2 / 1"
                     margin={spacings.xxxs}
-                    opacity={isDisabled ? 0.66 : 1}
+                    opacity={isDisabled ? 0.74 : 1}
                 >
                     <Handle tabIndex={-1} $isChecked={isChecked} type="button" />
                 </Box>

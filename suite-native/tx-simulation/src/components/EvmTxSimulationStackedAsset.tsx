@@ -27,7 +27,6 @@ export const EvmTxSimulationStackedAsset = ({
                                 : undefined
                         }
                         fiatSign="+ "
-                        isInline
                         summary={inAmount.summary}
                         summaryColor="contentBrand"
                     />
@@ -42,7 +41,6 @@ export const EvmTxSimulationStackedAsset = ({
                                 : undefined
                         }
                         fiatSign="- "
-                        isInline
                         summary={outAmount.summary}
                         summaryColor="contentCritical"
                     />
@@ -53,7 +51,6 @@ export const EvmTxSimulationStackedAsset = ({
                     <HStack key={`spender-${index}`} alignItems="center" spacing="sp8">
                         <EvmTxSimulationAssetAmount
                             fiatAmount={spender.exposure.usd_price}
-                            isInline
                             summary={spender.summary}
                             summaryColor="contentSecondary"
                         />

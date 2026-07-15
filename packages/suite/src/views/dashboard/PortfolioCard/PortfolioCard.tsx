@@ -22,6 +22,7 @@ import {
     Paragraph,
     Row,
 } from '@trezor/components';
+import { CaretDownIcon, CaretUpIcon, InfoIcon } from '@trezor/icons';
 import { breakpoints } from '@trezor/theme';
 
 import { updateGraphData } from 'src/actions/wallet/graphActions';
@@ -136,7 +137,7 @@ export const PortfolioCard = memo(() => {
             size="small"
             intent="neutral"
             priority="secondary"
-            icon={dashboardGraphHidden ? 'caretDown' : 'caretUp'}
+            icon={dashboardGraphHidden ? CaretDownIcon : CaretUpIcon}
             onClick={() =>
                 dispatch(
                     setFlag({
@@ -206,7 +207,7 @@ export const PortfolioCard = memo(() => {
                                                     />
                                                 </Paragraph>
                                                 <Icon
-                                                    name="info"
+                                                    as={InfoIcon}
                                                     size={24}
                                                     intent="neutral"
                                                     priority="secondary"

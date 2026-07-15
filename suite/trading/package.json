@@ -22,9 +22,13 @@
         "@suite/intl": "workspace:*",
         "@suite/router": "workspace:*",
         "@trezor/components": "workspace:*",
+        "@trezor/icons": "workspace:*",
         "@trezor/product-components": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "react": "19.2.4",
+        "react": "19.2.3",
         "styled-components": "^6.3.9"
+    },
+    "devDependencies": {
+        "@types/invity-api": "^1.1.19"
     }
 }

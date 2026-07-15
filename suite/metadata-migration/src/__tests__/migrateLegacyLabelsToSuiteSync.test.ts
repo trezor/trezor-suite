@@ -6,7 +6,11 @@ import {
     createSuiteSyncOutputId,
     createSuiteSyncUpdateError,
 } from '@suite-common/suite-sync-storage';
-import type { SuiteSyncAddress, SuiteSyncOutput } from '@suite-common/suite-sync-storage';
+import type {
+    SuiteSyncAddress,
+    SuiteSyncOutput,
+    SuiteSyncStorage,
+} from '@suite-common/suite-sync-storage';
 import type { TrezorDeviceWithState } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
@@ -133,10 +137,10 @@ const createMigrate = (
         getLegacyAccountLabels,
         getCurrentWalletLabel: () => null,
         getCurrentAccountLabels,
-        updateWalletLabel: () => Promise.resolve(ok()),
-        updateAccountLabel: () => Promise.resolve(ok()),
-        updateAddressLabel: () => Promise.resolve(ok()),
-        updateOutputLabel: () => Promise.resolve(ok()),
+        writeWalletLabel: () => ok(),
+        writeAccountLabel: () => ok(),
+        writeAddressLabel: () => ok(),
+        writeOutputLabel: () => ok(),
         ...depsOverrides,
     });
 
@@ -148,28 +152,28 @@ const createMigrate = (
         migrateWalletLabels: createMigrateWalletLabels({
             getLegacyWalletLabels: deps.getLegacyWalletLabels,
             getCurrentWalletLabel: deps.getCurrentWalletLabel,
-            updateWalletLabel: deps.updateWalletLabel,
+            writeWalletLabel: deps.writeWalletLabel,
         }),
         migrateAccountLabels: createMigrateAccountLabels({
-            updateAccountLabel: deps.updateAccountLabel,
+            writeAccountLabel: deps.writeAccountLabel,
         }),
         migrateAddressLabels: createMigrateAddressLabels({
-            updateAddressLabel: deps.updateAddressLabel,
+            writeAddressLabel: deps.writeAddressLabel,
         }),
         migrateOutputLabels: createMigrateOutputLabels({
-            updateOutputLabel: deps.updateOutputLabel,
+            writeOutputLabel: deps.writeOutputLabel,
         }),
     });
 
-    return () => migrateLegacyLabelsToSuiteSync(selectedDevice);
+    return () => migrateLegacyLabelsToSuiteSync(selectedDevice, {} as SuiteSyncStorage);
 };
 
 describe(createMigrateLegacyLabelsToSuiteSync.name, () => {
     it('migrates missing wallet, account, address, and output labels', async () => {
-        const updateWalletLabel = jest.fn(() => Promise.resolve(ok()));
-        const updateAccountLabel = jest.fn(() => Promise.resolve(ok()));
-        const updateAddressLabel = jest.fn(() => Promise.resolve(ok()));
-        const updateOutputLabel = jest.fn(() => Promise.resolve(ok()));
+        const writeWalletLabel = jest.fn(() => ok());
+        const writeAccountLabel = jest.fn(() => ok());
+        const writeAddressLabel = jest.fn(() => ok());
+        const writeOutputLabel = jest.fn(() => ok());
 
         const migrateLegacyLabelsToSuiteSync = createMigrate({
             getAccountsByDeviceState: () => [
@@ -185,20 +189,20 @@ describe(createMigrateLegacyLabelsToSuiteSync.name, () => {
                 addressLabels: { address1: 'Legacy address' },
                 outputLabels: { tx1: { '0': 'Legacy output' } },
             }),
-            updateWalletLabel,
-            updateAccountLabel,
-            updateAddressLabel,
-            updateOutputLabel,
+            writeWalletLabel,
+            writeAccountLabel,
+            writeAddressLabel,
+            writeOutputLabel,
         });
 
         const result = await migrateLegacyLabelsToSuiteSync();
 
         expect(result).toEqual(ok({ changed: 4, skipped: 0 }));
 
-        expect(updateWalletLabel).toHaveBeenCalledTimes(1);
-        expect(updateAccountLabel).toHaveBeenCalledTimes(1);
-        expect(updateAddressLabel).toHaveBeenCalledTimes(1);
-        expect(updateOutputLabel).toHaveBeenCalledTimes(1);
+        expect(writeWalletLabel).toHaveBeenCalledTimes(1);
+        expect(writeAccountLabel).toHaveBeenCalledTimes(1);
+        expect(writeAddressLabel).toHaveBeenCalledTimes(1);
+        expect(writeOutputLabel).toHaveBeenCalledTimes(1);
     });
 
     it('skips labels already present in SuiteSync', async () => {
@@ -246,15 +250,15 @@ describe(createMigrateLegacyLabelsToSuiteSync.name, () => {
     it('is idempotent across repeated runs', async () => {
         let hasWalletLabel = false;
 
-        const updateWalletLabel = jest.fn(() => {
+        const writeWalletLabel = jest.fn(() => {
             hasWalletLabel = true;
 
-            return Promise.resolve(ok());
+            return ok();
         });
 
         const migrateLegacyLabelsToSuiteSync = createMigrate({
             getCurrentWalletLabel: () => (hasWalletLabel ? 'Legacy wallet' : null),
-            updateWalletLabel,
+            writeWalletLabel,
         });
 
         const firstRun = await migrateLegacyLabelsToSuiteSync();
@@ -263,13 +267,12 @@ describe(createMigrateLegacyLabelsToSuiteSync.name, () => {
         expect(firstRun).toEqual(ok({ changed: 1, skipped: 0 }));
         expect(secondRun).toEqual(ok({ changed: 0, skipped: 1 }));
 
-        expect(updateWalletLabel).toHaveBeenCalledTimes(1);
+        expect(writeWalletLabel).toHaveBeenCalledTimes(1);
     });
 
     it('returns typed failure when a SuiteSync update fails', async () => {
         const migrateLegacyLabelsToSuiteSync = createMigrate({
-            updateWalletLabel: () =>
-                Promise.resolve(err(createSuiteSyncUpdateError({ reason: 'boom' }))),
+            writeWalletLabel: () => err(createSuiteSyncUpdateError({ reason: 'boom' })),
         });
 
         await expect(migrateLegacyLabelsToSuiteSync()).resolves.toEqual({

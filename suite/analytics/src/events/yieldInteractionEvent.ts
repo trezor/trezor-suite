@@ -35,7 +35,7 @@ export const yieldInteractionEvent: EventDef<Attributes, EventType.YieldInteract
         },
         value: {
             description:
-                'Optional sub-identifier — for `in-a-nutshell-process-tab`: `deposit` | `withdraw` | `claim`; for `withdraw-unit-toggle`: the unit being switched to (`asset` = underlying deposit token, `shares` = vault receipt token); for `withdraw-max`: the current unit (`asset` | `shares`); for `pending-tx-open`: the pending tx type (`approve` | `revoke` | `revoke-only` | `deposit` | `withdraw` | `claim`); omitted for `deposit-max`',
+                'Optional sub-identifier — for `in-a-nutshell-process-tab`: `deposit` | `withdraw` | `claim`; for `withdraw-unit-toggle`: the unit being switched to (`asset` = underlying deposit token, `shares` = vault receipt token); for `withdraw-max`: the current unit (`asset` | `shares`); for `pending-tx-open`: the pending tx type (`approve` | `revoke` | `deposit` | `withdraw` | `claim`); omitted for `deposit-max`',
             changelog: [{ version: '26.5.2', notes: 'added' }],
         },
         networkSymbol: {

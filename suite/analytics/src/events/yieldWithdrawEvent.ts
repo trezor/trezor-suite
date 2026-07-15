@@ -13,6 +13,7 @@ type Attributes = {
         | 'leftPending'
         | 'firmware-upgrade-needed-modal'
     >;
+    operation?: AttributeDef<'withdraw' | 'redeem'>;
     networkSymbol?: AttributeDef<string>;
     vaultId?: AttributeDef<string>;
     durationMs?: AttributeDef<number>;
@@ -37,6 +38,11 @@ export const yieldWithdrawEvent: EventDef<Attributes, EventType.YieldWithdraw> =
                     notes: 'added `leftPending`, `tx-simulation-modal`, `firmware-upgrade-needed-modal` values',
                 },
             ],
+        },
+        operation: {
+            description:
+                'Which ERC-4626 vault-exit operation the withdraw flow performed: `withdraw` (by underlying assets) or `redeem` (by vault shares). Reported on submit and resolution.',
+            changelog: [{ version: '26.6.2', notes: 'added' }],
         },
         networkSymbol: {
             changelog: [{ version: '26.5.0', notes: 'added' }],

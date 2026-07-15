@@ -61,7 +61,7 @@ export const getOnlineFirmwareBaseUrl = (
     if (!firmwareChannel) {
         return {
             ...FIRMWARE_REMOTE_BASE_URLS['production'],
-            firmwareChannel: 'production' as FirmwareChannel,
+            firmwareChannel: 'production',
         };
     }
 

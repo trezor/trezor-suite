@@ -5,7 +5,10 @@
 
 export * from './utils';
 export * from './selectors';
-export { signStakeTransactionNativeThunk } from './stakeNativeThunks';
+export {
+    pushStakeTransactionNativeThunk,
+    signStakeTransactionNativeThunk,
+} from './stakeNativeThunks';
 export {
     composeSolanaStakingTransactionFeeLevelsNativeThunk,
     signSolanaStakingTransactionNativeThunk,
@@ -19,3 +22,13 @@ export {
     selectIsCardanoStakedOutsideEverstake,
     selectIsCardanoStakedWithFiveBinaries,
 } from './cardanoStakingSelectors';
+export {
+    selectTronAccountHasStaked,
+    selectTronAvailableVotingPowerByAccountKey,
+    selectTronPendingUnstakeBalanceByAccountKey,
+    selectTronRewardsBalanceByAccountKey,
+    selectTronStakedBalanceByAccountKey,
+    selectTronTotalVotingPowerByAccountKey,
+    selectTronUnstakedBalanceByAccountKey,
+    selectTronVotesByAccountKey,
+} from './tronStakingSelectors';

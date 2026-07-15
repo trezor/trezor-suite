@@ -1,0 +1,48 @@
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import type { Static } from '@trezor/schema-utils';
+import { Type } from '@trezor/schema-utils';
+
+import { CoinSymbolParam } from '../../coinInfo';
+import type { BundledParams, Params, Response } from '../../params';
+import { GetPublicKey as GetPublicKeyShared, PublicKey } from '../../params';
+
+export type GetPublicKey = Static<typeof GetPublicKey>;
+export const GetPublicKey = Type.Intersect([
+    GetPublicKeyShared,
+    Type.Object({
+        coin: Type.Optional(
+            CoinSymbolParam({
+                description:
+                    'determines network definition specified in coins.json file. The coin shortcut (a CoinSymbol, e.g. "btc") is used. If coin is not set API will try to get network definition from path.',
+                default: 'btc',
+            }),
+        ),
+        crossChain: Type.Optional(Type.Boolean()),
+        scriptType: Type.Optional(PROTO.InternalInputScriptType),
+        ignoreXpubMagic: Type.Optional(Type.Boolean()),
+        ecdsaCurveName: Type.Optional(Type.String()),
+        unlockPath: Type.Optional(PROTO.UnlockPath),
+    }),
+]);
+
+// PROTO.HDNodeType with camelcase fields + path
+export type HDNodeResponse = Static<typeof HDNodeResponse>;
+export const HDNodeResponse = Type.Intersect([
+    PublicKey,
+    Type.Object({
+        childNum: Type.Number(),
+        xpub: Type.String(),
+        xpubSegwit: Type.Optional(Type.String()),
+        descriptorChecksum: Type.Optional(Type.String()),
+        chainCode: Type.String(),
+        fingerprint: Type.Number(),
+        rootFingerprint: Type.Optional(Type.Number()),
+        depth: Type.Number(),
+        descriptor: Type.Optional(Type.String()),
+    }),
+]);
+
+export declare function getPublicKey(params: Params<GetPublicKey>): Response<HDNodeResponse>;
+export declare function getPublicKey(
+    params: BundledParams<GetPublicKey>,
+): Response<HDNodeResponse[]>;

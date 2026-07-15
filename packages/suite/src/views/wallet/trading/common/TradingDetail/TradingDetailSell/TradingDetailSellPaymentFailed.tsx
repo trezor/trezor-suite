@@ -3,6 +3,7 @@ import { type SellFiatTrade, type SellProviderInfo } from 'invity-api';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/components';
+import { XIcon } from '@trezor/icons';
 
 import { useDispatch } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
@@ -27,7 +28,7 @@ export const TradingDetailSellPaymentFailed = ({
 
     return (
         <Column gap={24} padding={{ top: 12, bottom: 4 }}>
-            <IconCircle name="x" intent="critical" size={96} />
+            <IconCircle icon={XIcon} intent="critical" size={96} />
             <Column>
                 <H3 data-testid="@trading/transaction/detail/status">
                     <Translation id="TR_SELL_DETAIL_ERROR_TITLE" />

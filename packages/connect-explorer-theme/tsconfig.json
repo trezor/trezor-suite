@@ -7,8 +7,10 @@
     },
     "references": [
         { "path": "../components" },
+        { "path": "../icons" },
         { "path": "../product-components" },
         { "path": "../theme" },
-        { "path": "../type-utils" }
+        { "path": "../type-utils" },
+        { "path": "../utils" }
     ]
 }

@@ -1,13 +1,14 @@
 // Monero GetAddress implementation
-import { type MethodPermission } from '@trezor/connect-common';
+import { type PermissionRequest } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { Address } from '@trezor/connect-common/src/types/params';
+import { HD_HARDENED_PATH_PART } from '@trezor/crypto-utils';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import { HD_HARDENED, getSerializedPath, validatePath } from '../../../utils/pathUtils';
+import { getSerializedPath, validatePath } from '../../../utils/pathUtils';
 import { bundlify } from '../../common/paramsValidator';
 
 type Params = {
@@ -29,7 +30,7 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
             const path = validatePath(batch.path, 3);
 
             // require all path components to be hardened
-            const allHardened = path.every(component => (component & HD_HARDENED) !== 0);
+            const allHardened = path.every(component => (component & HD_HARDENED_PATH_PART) !== 0);
             if (!allHardened) {
                 throw ERRORS.TypedError(
                     'Method_InvalidParameter',
@@ -53,14 +54,13 @@ export default class MoneroGetAddress extends AbstractMethod<'moneroGetAddress',
         super(message, params);
 
         this.hasBundle = hasBundle;
-        this.useUi = this.getUseUi(this.params, payload.useEventListener);
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Monero'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Monero')];
+        this.requiredFirmwareCoins = [getMiscNetwork('xmr')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_address', this.requiredFirmwareCoins);
     }
 
     get info() {

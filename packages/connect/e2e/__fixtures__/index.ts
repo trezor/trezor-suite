@@ -32,6 +32,8 @@ export { default as moneroGetAddress } from './moneroGetAddress';
 export { default as moneroGetWatchKey } from './moneroGetWatchKey';
 export { default as moneroKeyImageSync } from './moneroKeyImageSync';
 export { default as moneroSignTransaction } from './moneroSignTransaction';
+export { default as nostrGetPublicKey } from './nostrGetPublicKey';
+export { default as nostrSignEvent } from './nostrSignEvent';
 export { default as rippleGetAddress } from './rippleGetAddress';
 export { default as rippleSignTransaction } from './rippleSignTransaction';
 export { default as signMessage } from './signMessage';

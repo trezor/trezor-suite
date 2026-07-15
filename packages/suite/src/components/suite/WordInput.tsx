@@ -5,12 +5,12 @@ import { useTranslation } from '@suite/intl';
 import { selectModalRequestId } from '@suite/modal';
 import { Select } from '@trezor/components';
 import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
-import { bip39 } from '@trezor/crypto-utils';
+import { bip39EnglishWordlist } from '@trezor/crypto-utils';
 import { resolveAfter } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 
-const options = bip39.map(item => ({ label: item, value: item }));
+const options = bip39EnglishWordlist.map(item => ({ label: item, value: item }));
 
 type Option = { label: string; value: string };
 

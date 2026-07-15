@@ -142,291 +142,284 @@ async function setupWebextensionTest(
     return { context, page, suite, connectPermissionsModal };
 }
 
-test.describe(
-    'TrezorConnect webextension -> Suite Web',
-    { tag: ['@smoke', '@T3T1', '@webOnly'] },
-    () => {
-        test(
-            'TrezorConnect.getAddress',
-            {
-                annotation: createTestAnnotation({
-                    testCase:
-                        'Suite Web Connect (webextension): Happy path scenario with getAddress',
-                }),
-            },
-            async ({ model, device, context: defaultContext }) => {
-                const { context, page, suite } = await setupWebextensionTest(
-                    model,
-                    device,
-                    defaultContext,
-                    'connect-explorer-webextension',
-                );
+test.describe('TrezorConnect webextension -> Suite Web', { tag: ['@T3T1', '@webOnly'] }, () => {
+    test(
+        'TrezorConnect.getAddress',
+        {
+            annotation: createTestAnnotation({
+                testCase: 'Suite Web Connect (webextension): Happy path scenario with getAddress',
+            }),
+        },
+        async ({ model, device, context: defaultContext }) => {
+            const { context, page, suite } = await setupWebextensionTest(
+                model,
+                device,
+                defaultContext,
+                'connect-explorer-webextension',
+            );
 
-                try {
-                    await suite.getByTestId('@connect-address-confirmation/confirm-button').click();
+            try {
+                await suite.getByTestId('@connect-address-confirmation/confirm-button').click();
 
-                    await expect(
-                        suite.getByTestId('@connect-address-confirmation/verify-button/0'),
-                    ).toBeDisabled();
-                    await suite.waitForTimeout(1000);
-                    await device.pressYes();
+                await expect(
+                    suite.getByTestId('@connect-address-confirmation/verify-button/0'),
+                ).toBeDisabled();
+                await suite.waitForTimeout(1000);
+                await device.pressYes();
 
-                    await expect(
-                        suite.getByTestId('@connect-address-confirmation/verified-badge/0'),
-                    ).toBeVisible();
+                await expect(
+                    suite.getByTestId('@connect-address-confirmation/verified-badge/0'),
+                ).toBeVisible();
 
-                    await suite.getByTestId('@connect-address-confirmation/close-button').click();
+                await suite.getByTestId('@connect-address-confirmation/close-button').click();
 
-                    const response = page.getByTestId('@response');
-                    await expect(response).toHaveText(/success: true/);
-                } finally {
-                    await context.close();
-                }
-            },
-        );
+                const response = page.getByTestId('@response');
+                await expect(response).toHaveText(/success: true/);
+            } finally {
+                await context.close();
+            }
+        },
+    );
 
-        test(
-            'call cancellation',
-            {
-                annotation: createTestAnnotation({
-                    testCase: 'Suite Web Connect (webextension): Call cancelled by user',
-                }),
-            },
-            async ({ model, device, context: defaultContext }) => {
-                // --- Cancel on Grant Permissions modal ---
-                const {
-                    context,
-                    page,
-                    connectPermissionsModal: modal1,
-                } = await setupWebextensionTest(
-                    model,
-                    device,
-                    defaultContext,
-                    'connect-explorer-webextension-cancellation',
-                    { skipPermissionConfirm: true },
-                );
+    test(
+        'call cancellation',
+        {
+            annotation: createTestAnnotation({
+                testCase: 'Suite Web Connect (webextension): Call cancelled by user',
+            }),
+        },
+        async ({ model, device, context: defaultContext }) => {
+            // --- Cancel on Grant Permissions modal ---
+            const {
+                context,
+                page,
+                connectPermissionsModal: modal1,
+            } = await setupWebextensionTest(
+                model,
+                device,
+                defaultContext,
+                'connect-explorer-webextension-cancellation',
+                { skipPermissionConfirm: true },
+            );
 
-                try {
-                    await modal1.cancelButton.click();
+            try {
+                await modal1.cancelButton.click();
 
-                    const response1 = page.getByTestId('@response');
-                    await expect(response1).toHaveText(/success: false/);
+                const response1 = page.getByTestId('@response');
+                await expect(response1).toHaveText(/success: false/);
 
-                    // --- Cancel after confirming permissions (on address confirmation) ---
-                    const [suite2] = await Promise.all([
-                        context.waitForEvent('page', { timeout: 10_000 }),
-                        page.getByTestId('@submit-button').click(),
-                    ]);
+                // --- Cancel after confirming permissions (on address confirmation) ---
+                const [suite2] = await Promise.all([
+                    context.waitForEvent('page', { timeout: 10_000 }),
+                    page.getByTestId('@submit-button').click(),
+                ]);
 
-                    await suite2.waitForLoadState('domcontentloaded', { timeout: 10_000 });
-                    await suite2
-                        .getByTestId('@suite/menu/suite-index')
-                        .waitFor({ state: 'visible', timeout: 15_000 });
+                await suite2.waitForLoadState('domcontentloaded', { timeout: 10_000 });
+                await suite2
+                    .getByTestId('@suite/menu/suite-index')
+                    .waitFor({ state: 'visible', timeout: 15_000 });
 
-                    const modal2 = new ConnectPermissionsModal(suite2);
-                    await expect(modal2.appName).toHaveText('Trezor Connect Explorer', {
-                        timeout: 15_000,
-                    });
-                    await modal2.confirmButton.click();
+                const modal2 = new ConnectPermissionsModal(suite2);
+                await expect(modal2.appName).toHaveText('Trezor Connect Explorer', {
+                    timeout: 15_000,
+                });
+                await modal2.confirmButton.click();
 
-                    await expect(modal2.loadingHeader).toHaveText('Export Bitcoin address');
-                    await suite2.getByTestId('@connect-address-confirmation/close-button').click();
+                await expect(modal2.loadingHeader).toHaveText('Export Bitcoin address');
+                await suite2.getByTestId('@connect-address-confirmation/close-button').click();
 
-                    const response2 = page.getByTestId('@response');
-                    await expect(response2).toHaveText(/success: false/);
-                } finally {
-                    await context.close();
-                }
-            },
-        );
+                const response2 = page.getByTestId('@response');
+                await expect(response2).toHaveText(/success: false/);
+            } finally {
+                await context.close();
+            }
+        },
+    );
 
-        test(
-            'call cancelled from calling application',
-            {
-                annotation: createTestAnnotation({
-                    testCase:
-                        'Suite Web Connect (webextension): Call cancelled via TrezorConnect.cancel() from the calling app',
-                }),
-            },
-            async ({ model, device, context: defaultContext }) => {
-                const { context, page, suite } = await setupWebextensionTest(
-                    model,
-                    device,
-                    defaultContext,
-                    'connect-explorer-webextension-cancel-from-app',
-                );
+    test(
+        'call cancelled from calling application',
+        {
+            annotation: createTestAnnotation({
+                testCase:
+                    'Suite Web Connect (webextension): Call cancelled via TrezorConnect.cancel() from the calling app',
+            }),
+        },
+        async ({ model, device, context: defaultContext }) => {
+            const { context, page, suite } = await setupWebextensionTest(
+                model,
+                device,
+                defaultContext,
+                'connect-explorer-webextension-cancel-from-app',
+            );
 
-                try {
-                    // Switch back to connect-explorer and click the cancel "x" button
-                    // that appears next to the submit button while a call is in progress.
-                    await page.bringToFront();
-                    const cancelButton = page.getByTestId('@cancel-button');
-                    await cancelButton.click();
+            try {
+                // Switch back to connect-explorer and click the cancel "x" button
+                // that appears next to the submit button while a call is in progress.
+                await page.bringToFront();
+                const cancelButton = page.getByTestId('@cancel-button');
+                await cancelButton.click();
 
-                    const response = page.getByTestId('@response');
-                    await expect(response).toHaveText(/success: false/);
-                    await expect(response).toHaveText(/Method_Interrupted/);
+                const response = page.getByTestId('@response');
+                await expect(response).toHaveText(/success: false/);
+                await expect(response).toHaveText(/Method_Interrupted/);
 
-                    // The popup (suite tab) should show a cancellation message.
-                    await expect(suite.getByText('Request was canceled by the user')).toBeVisible({
-                        timeout: 15_000,
-                    });
-                } finally {
-                    await context.close();
-                }
-            },
-        );
+                // The popup (suite tab) should show a cancellation message.
+                await expect(suite.getByText('Request was canceled by the user')).toBeVisible({
+                    timeout: 15_000,
+                });
+            } finally {
+                await context.close();
+            }
+        },
+    );
 
-        test(
-            'closing popup window',
-            {
-                annotation: createTestAnnotation({
-                    testCase:
-                        'Suite Web Connect (webextension): Closing the popup window (not close button) returns a proper error',
-                }),
-            },
-            async ({ model, device, context: defaultContext }) => {
-                const { context, page, suite } = await setupWebextensionTest(
-                    model,
-                    device,
-                    defaultContext,
-                    'connect-explorer-webextension-interrupted',
-                );
+    test(
+        'closing popup window',
+        {
+            annotation: createTestAnnotation({
+                testCase:
+                    'Suite Web Connect (webextension): Closing the popup window (not close button) returns a proper error',
+            }),
+        },
+        async ({ model, device, context: defaultContext }) => {
+            const { context, page, suite } = await setupWebextensionTest(
+                model,
+                device,
+                defaultContext,
+                'connect-explorer-webextension-interrupted',
+            );
 
-                try {
-                    // Close the browser popup window directly (simulates user clicking X)
-                    await suite.close();
+            try {
+                // Close the browser popup window directly (simulates user clicking X)
+                await suite.close();
 
-                    const response = page.getByTestId('@response');
-                    await expect(response).toHaveText(/success: false/);
-                    await expect(response).toHaveText(/Method_Interrupted/);
-                } finally {
-                    await context.close();
-                }
-            },
-        );
+                const response = page.getByTestId('@response');
+                await expect(response).toHaveText(/success: false/);
+                await expect(response).toHaveText(/Method_Interrupted/);
+            } finally {
+                await context.close();
+            }
+        },
+    );
 
-        test(
-            'second call after popup was closed by user should work',
-            {
-                annotation: createTestAnnotation({
-                    testCase:
-                        'Suite Web Connect (webextension): After popup is force-closed, next call should still work',
-                }),
-            },
-            async ({ model, device, context: defaultContext }) => {
-                const {
-                    context,
-                    page,
-                    suite: suite1,
-                } = await setupWebextensionTest(
-                    model,
-                    device,
-                    defaultContext,
-                    'connect-explorer-webextension-recovery',
-                );
+    test(
+        'second call after popup was closed by user should work',
+        {
+            annotation: createTestAnnotation({
+                testCase:
+                    'Suite Web Connect (webextension): After popup is force-closed, next call should still work',
+            }),
+        },
+        async ({ model, device, context: defaultContext }) => {
+            const {
+                context,
+                page,
+                suite: suite1,
+            } = await setupWebextensionTest(
+                model,
+                device,
+                defaultContext,
+                'connect-explorer-webextension-recovery',
+            );
 
-                try {
-                    // Close the Suite popup directly (simulates user clicking X)
-                    await suite1.close();
+            try {
+                // Close the Suite popup directly (simulates user clicking X)
+                await suite1.close();
 
-                    const response1 = page.getByTestId('@response');
-                    await expect(response1).toHaveText(/success: false/);
-                    await expect(response1).toHaveText(/Method_Interrupted/);
+                const response1 = page.getByTestId('@response');
+                await expect(response1).toHaveText(/success: false/);
+                await expect(response1).toHaveText(/Method_Interrupted/);
 
-                    // Second call — register page listener before clicking to
-                    // avoid a race where the tab opens before waitForEvent.
-                    const [suite2] = await Promise.all([
-                        context.waitForEvent('page', { timeout: 10_000 }),
-                        page.getByTestId('@submit-button').click(),
-                    ]);
-                    await suite2.waitForLoadState('domcontentloaded', { timeout: 10_000 });
-                    await suite2
-                        .getByTestId('@suite/menu/suite-index')
-                        .waitFor({ state: 'visible', timeout: 15_000 });
+                // Second call — register page listener before clicking to
+                // avoid a race where the tab opens before waitForEvent.
+                const [suite2] = await Promise.all([
+                    context.waitForEvent('page', { timeout: 10_000 }),
+                    page.getByTestId('@submit-button').click(),
+                ]);
+                await suite2.waitForLoadState('domcontentloaded', { timeout: 10_000 });
+                await suite2
+                    .getByTestId('@suite/menu/suite-index')
+                    .waitFor({ state: 'visible', timeout: 15_000 });
 
-                    const modal2 = new ConnectPermissionsModal(suite2);
-                    await expect(modal2.appName).toHaveText('Trezor Connect Explorer', {
-                        timeout: 15_000,
-                    });
-                    await modal2.confirmButton.click();
+                const modal2 = new ConnectPermissionsModal(suite2);
+                await expect(modal2.appName).toHaveText('Trezor Connect Explorer', {
+                    timeout: 15_000,
+                });
+                await modal2.confirmButton.click();
 
-                    await expect(modal2.loadingHeader).toHaveText('Export Bitcoin address');
-                    await suite2
-                        .getByTestId('@connect-address-confirmation/confirm-button')
-                        .click();
+                await expect(modal2.loadingHeader).toHaveText('Export Bitcoin address');
+                await suite2.getByTestId('@connect-address-confirmation/confirm-button').click();
 
-                    await expect(
-                        suite2.getByTestId('@connect-address-confirmation/verify-button/0'),
-                    ).toBeDisabled();
-                    await suite2.waitForTimeout(1000);
-                    await device.pressYes();
+                await expect(
+                    suite2.getByTestId('@connect-address-confirmation/verify-button/0'),
+                ).toBeDisabled();
+                await suite2.waitForTimeout(1000);
+                await device.pressYes();
 
-                    await expect(
-                        suite2.getByTestId('@connect-address-confirmation/verified-badge/0'),
-                    ).toBeVisible();
-                    await suite2.getByTestId('@connect-address-confirmation/close-button').click();
-                    const response2 = page.getByTestId('@response');
-                    await expect(response2).toHaveText(/success: true/);
-                } finally {
-                    await context.close();
-                }
-            },
-        );
+                await expect(
+                    suite2.getByTestId('@connect-address-confirmation/verified-badge/0'),
+                ).toBeVisible();
+                await suite2.getByTestId('@connect-address-confirmation/close-button').click();
+                const response2 = page.getByTestId('@response');
+                await expect(response2).toHaveText(/success: true/);
+            } finally {
+                await context.close();
+            }
+        },
+    );
 
-        test(
-            'focuses existing popup if already open',
-            {
-                annotation: createTestAnnotation({
-                    testCase:
-                        'Suite Web Connect (webextension): If popup is already open, it should be focused instead of opening a new one',
-                }),
-            },
-            async ({ model, device, context: defaultContext }) => {
-                const { context, page, suite } = await setupWebextensionTest(
-                    model,
-                    device,
-                    defaultContext,
-                    'connect-explorer-webextension-focus',
-                );
+    test(
+        'focuses existing popup if already open',
+        {
+            annotation: createTestAnnotation({
+                testCase:
+                    'Suite Web Connect (webextension): If popup is already open, it should be focused instead of opening a new one',
+            }),
+        },
+        async ({ model, device, context: defaultContext }) => {
+            const { context, page, suite } = await setupWebextensionTest(
+                model,
+                device,
+                defaultContext,
+                'connect-explorer-webextension-focus',
+            );
 
-                try {
-                    // Start the address flow but don't finish it
-                    await suite.getByTestId('@connect-address-confirmation/confirm-button').click();
+            try {
+                // Start the address flow but don't finish it
+                await suite.getByTestId('@connect-address-confirmation/confirm-button').click();
 
-                    await expect(
-                        suite.getByTestId('@connect-address-confirmation/verify-button/0'),
-                    ).toBeDisabled();
-                    await suite.waitForTimeout(1000);
-                    await device.pressYes();
+                await expect(
+                    suite.getByTestId('@connect-address-confirmation/verify-button/0'),
+                ).toBeDisabled();
+                await suite.waitForTimeout(1000);
+                await device.pressYes();
 
-                    await expect(
-                        suite.getByTestId('@connect-address-confirmation/verified-badge/0'),
-                    ).toBeVisible();
+                await expect(
+                    suite.getByTestId('@connect-address-confirmation/verified-badge/0'),
+                ).toBeVisible();
 
-                    // Switch focus back to the extension and click submit again
-                    await page.bringToFront();
+                // Switch focus back to the extension and click submit again
+                await page.bringToFront();
 
-                    // Count pages before second click
-                    const pageCountBefore = context.pages().length;
+                // Count pages before second click
+                const pageCountBefore = context.pages().length;
 
-                    await page.getByTestId('@submit-button').click();
+                await page.getByTestId('@submit-button').click();
 
-                    // Wait a bit and verify no new page was opened
-                    await page.waitForTimeout(2000);
-                    const pageCountAfter = context.pages().length;
+                // Wait a bit and verify no new page was opened
+                await page.waitForTimeout(2000);
+                const pageCountAfter = context.pages().length;
 
-                    expect(pageCountAfter).toBe(pageCountBefore);
+                expect(pageCountAfter).toBe(pageCountBefore);
 
-                    // The original Suite popup should still be open
-                    expect(suite.isClosed()).toBe(false);
+                // The original Suite popup should still be open
+                expect(suite.isClosed()).toBe(false);
 
-                    // Clean up
-                    await suite.close();
-                } finally {
-                    await context.close();
-                }
-            },
-        );
-    },
-);
+                // Clean up
+                await suite.close();
+            } finally {
+                await context.close();
+            }
+        },
+    );
+});

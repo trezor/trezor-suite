@@ -11,7 +11,7 @@ const Option = styled.div`
 `;
 
 const On = styled(Option)`
-    color: ${({ theme }) => theme.legacyBackgroundPrimaryDefault};
+    color: ${({ theme }) => theme.contentBrand};
 `;
 
 const Off = styled(Option)`

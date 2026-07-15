@@ -79,8 +79,9 @@ export function parseDisplayContent(json: any): NormalizedDisplayContent {
     }
 
     const titleCandidate = getFirstPresent(headerObj, ['title', 'Title']);
+    // Some screens (e.g. the ethereum "Maximum fee" summary) render an empty title, which is valid.
     const title = extractTextish(titleCandidate);
-    if (!title) {
+    if (title === undefined) {
         throw new Error(
             `Display content invalid, header.title.text missing: ${JSON.stringify(headerObj)}`,
         );

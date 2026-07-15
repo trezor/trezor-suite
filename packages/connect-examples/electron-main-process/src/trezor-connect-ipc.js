@@ -84,7 +84,8 @@ export const initTrezorConnect = sender => {
             appName: 'Trezor Connect Example',
             appUrl: 'electron-app-boilerplate',
         },
-        transports: ['BridgeTransport'],
+        // transports omitted on purpose — @trezor/connect Node entry provides
+        // the BridgeTransport default automatically.
     })
         .then(() => {
             sender.send('trezor-connect', 'TrezorConnect is ready!');

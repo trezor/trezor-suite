@@ -7,6 +7,7 @@ import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Icon, Input } from '@trezor/components';
 import { Row } from '@trezor/components/src/components/Flex/Flex';
+import { MagnifyingGlassIcon } from '@trezor/icons';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -90,11 +91,16 @@ export const TransactionListActions = ({
                 data-testid="@wallet/accounts/search-icon"
                 placeholder={translationString('TR_SEARCH_TRANSACTIONS')}
                 value={searchQuery}
-                onChange={event => setSearch(event.target.value)}
+                onChange={event => onSearch(event.target.value)}
                 onClear={() => setSearch('')}
                 size="small"
                 leftContent={
-                    <Icon name="magnifyingGlass" intent="neutral" priority="secondary" size={16} />
+                    <Icon
+                        as={MagnifyingGlassIcon}
+                        intent="neutral"
+                        priority="secondary"
+                        size={16}
+                    />
                 }
             />
             {isTxFilteringEnabled && hasNetworkPotentialFraudTransactions(account.symbol) && (

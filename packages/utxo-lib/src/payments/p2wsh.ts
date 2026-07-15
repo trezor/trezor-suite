@@ -7,7 +7,7 @@ import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as ecc from '../noble-compatibility';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { type Payment, type PaymentOpts, type StackElement, type StackFunction } from '../types';
+import { type Payment, type PaymentOpts, type StackElement } from '../types';
 import { BufferNSchema, BufferSchema, Nullable, Type, assertType } from '../types/validation';
 
 const { OPS } = bscript;
@@ -80,7 +80,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
         };
     });
 
-    const _rchunks = lazy.value(() => bscript.decompile(a.redeem!.input!)) as StackFunction;
+    const _rchunks = lazy.value(() => bscript.decompile(a.redeem!.input!));
 
     let { network } = a;
     if (!network) {
@@ -94,7 +94,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
         const words = bech32.toWords(o.hash);
         words.unshift(0x00);
 
-        return bech32.encode(network!.bech32, words);
+        return bech32.encode(network.bech32, words);
     });
     lazy.prop(o, 'hash', () => {
         if (a.output) return a.output.subarray(2);
@@ -145,7 +145,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'name', () => {
         const nameParts = ['p2wsh'];
-        if (o.redeem?.name !== undefined) nameParts.push(o.redeem.name!);
+        if (o.redeem?.name !== undefined) nameParts.push(o.redeem.name);
 
         return nameParts.join('-');
     });
@@ -190,7 +190,7 @@ export function p2wsh(a: Payment, opts?: PaymentOpts): Payment {
 
             // is the redeem output non-empty?
             if (a.redeem.output) {
-                if (bscript.decompile(a.redeem.output)!.length === 0)
+                if (bscript.decompile(a.redeem.output).length === 0)
                     throw new TypeError('Redeem.output is invalid');
 
                 // match hash against other sources

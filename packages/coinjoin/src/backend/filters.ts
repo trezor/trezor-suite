@@ -29,7 +29,7 @@ const createFilter = (data: Buffer, { P = P_DEFAULT, M = M_DEFAULT }) => {
 };
 
 export const getAddressScript = (address: string, network: Network) =>
-    addressBjs.toOutputScript(address, network) as Buffer;
+    addressBjs.toOutputScript(address, network);
 
 export const getMultiFilter = (filterHex: string, { P, M, key }: FilterParams = {}) => {
     if (!filterHex) return () => false;

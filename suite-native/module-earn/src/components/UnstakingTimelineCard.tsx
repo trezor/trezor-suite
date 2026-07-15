@@ -61,7 +61,7 @@ export const UnstakingTimelineCard = ({ accountKey }: UnstakingTimelineCardProps
 
                     {unstakingPeriodInDays !== undefined && (
                         <InlineAlertBox
-                            variant="info"
+                            intent="info"
                             title={
                                 <Translation
                                     id="earn.earnFormScreen.unstakingPeriodInfo"

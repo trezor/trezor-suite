@@ -26,9 +26,9 @@ export class BatchingJsonRpcClient extends JsonRpcClient {
         this.maxQueueLength = options?.maxQueueLength || MAX_QUEUE_LENGTH;
     }
 
-    protected send(message: string) {
+    protected send(id: number, message: string) {
         if (this.batchingDisabled) {
-            super.send(message);
+            super.send(id, message);
 
             return;
         }
@@ -42,7 +42,7 @@ export class BatchingJsonRpcClient extends JsonRpcClient {
                 // @ts-expect-error: indexing with noUncheckedIndexedAccess
                 const first: string = q[0];
                 const content = q.length > 1 ? `[${q.join(',')}]` : first;
-                super.send(content);
+                super.send(id, content);
             }
         }, this.timeoutMs);
     }

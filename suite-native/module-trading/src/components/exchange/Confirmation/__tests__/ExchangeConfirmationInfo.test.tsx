@@ -1,6 +1,7 @@
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
 import { tradingExchangeActions } from '@suite-common/trading';
+import { getTranslation } from '@suite-native/intl';
 import { type TestStore, renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
 import { mockTransaction } from '@suite-native/tokens';
 import { exchangeQuotes } from '@suite-native/trading-fixtures';
@@ -56,21 +57,29 @@ describe('ExchangeConfirmationInfo', () => {
     it('should not render date row when transaction is not available', () => {
         renderInfo({ flowType: 'approve', transaction: null });
 
-        expect(screen.queryByText('Date')).toBeNull();
+        expect(
+            screen.queryByText(getTranslation('moduleTrading.tradingConfirmationScreen.date')),
+        ).toBeNull();
     });
 
     it('should render date row when transaction has blockTime', () => {
         renderInfo({ flowType: 'approve', transaction: mockTransaction });
 
-        expect(screen.getByText('Date')).toBeOnTheScreen();
+        expect(
+            screen.getByText(getTranslation('moduleTrading.tradingConfirmationScreen.date')),
+        ).toBeOnTheScreen();
     });
 
     it('should render provider, limit and fee rows', () => {
         renderInfo({ flowType: 'approve', transaction: null });
 
         expect(screen.getByText('Mercuryo')).toBeOnTheScreen();
-        expect(screen.getByText('Limit')).toBeOnTheScreen();
-        expect(screen.getByText('Fee')).toBeOnTheScreen();
+        expect(
+            screen.getByText(
+                getTranslation('moduleTrading.tradingExchangeApprovalScreen.limitLabel'),
+            ),
+        ).toBeOnTheScreen();
+        expect(screen.getByText(getTranslation('transactions.detail.feeLabel'))).toBeOnTheScreen();
     });
 
     it('should render fee as "0" when transaction is not available and quote has no numeric fee', () => {

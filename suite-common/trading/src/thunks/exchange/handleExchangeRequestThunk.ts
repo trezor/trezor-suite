@@ -5,7 +5,7 @@ import { type Network } from '@suite-common/wallet-config';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
-import { validate as validateAddress } from '@trezor/address-validator';
+import { isAddressValid } from '@trezor/address-validator';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
@@ -77,7 +77,7 @@ const isReceiveAddressValid = (
     receiveSymbol: NonNullable<ReturnType<typeof cryptoIdToSymbol>>,
 ): boolean => {
     try {
-        return validateAddress(receiveAddress, receiveSymbol);
+        return isAddressValid(receiveAddress, receiveSymbol);
     } catch {
         return false;
     }

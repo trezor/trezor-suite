@@ -1,0 +1,14 @@
+import type { SVGProps } from 'react';
+const SvgStackSimpleFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="m1.5 13.875 14 8a1 1 0 0 0 .992 0l14-8a1 1 0 0 0 0-1.738l-14-8a1 1 0 0 0-.992 0l-14 8a1 1 0 0 0 0 1.738"
+        />
+        <path
+            fill="currentColor"
+            d="M29.5 17.131 16 24.85 2.5 17.13a1.005 1.005 0 0 0-1 1.744l14 8a1 1 0 0 0 .993 0l14-8a1.002 1.002 0 0 0 .116-1.66 1 1 0 0 0-1.109-.078v-.006z"
+        />
+    </svg>
+);
+export { SvgStackSimpleFilled as ReactComponent };

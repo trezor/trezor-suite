@@ -8,7 +8,7 @@
             }
         ],
         "outDir": "./libDev",
-        "baseUrl": "."
+        "paths": { "src/*": ["./src/*"] }
     },
     "include": [".", "e2e", "**/*.json"],
     "references": [
@@ -43,6 +43,9 @@
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/device-authenticity"
+        },
+        {
+            "path": "../../suite-common/discreet-mode"
         },
         {
             "path": "../../suite-common/earn-stablecoin"
@@ -85,7 +88,6 @@
         {
             "path": "../../suite-common/redux-utils"
         },
-        { "path": "../../suite-common/schemas" },
         { "path": "../../suite-common/sentry" },
         { "path": "../../suite-common/staking" },
         {
@@ -131,12 +133,14 @@
             "path": "../../suite-common/transaction-search"
         },
         {
+            "path": "../../suite-common/transfer-uri"
+        },
+        {
             "path": "../../suite-common/tx-simulation"
         },
         {
             "path": "../../suite-common/validators"
         },
-        { "path": "../../suite-common/wallet" },
         {
             "path": "../../suite-common/wallet-config"
         },
@@ -162,8 +166,11 @@
             "path": "../../suite/authenticity-checks"
         },
         { "path": "../../suite/backup" },
+        { "path": "../../suite/coinjoin" },
+        { "path": "../../suite/debug" },
         { "path": "../../suite/desktop-update" },
         { "path": "../../suite/device" },
+        { "path": "../../suite/discreet-mode" },
         { "path": "../../suite/experimental" },
         { "path": "../../suite/external-links" },
         {
@@ -181,6 +188,7 @@
         { "path": "../../suite/labeling" },
         { "path": "../../suite/locks" },
         { "path": "../../suite/macos" },
+        { "path": "../../suite/message-system" },
         { "path": "../../suite/metadata" },
         {
             "path": "../../suite/metadata-migration"
@@ -193,21 +201,22 @@
         { "path": "../../suite/receive" },
         { "path": "../../suite/recovery" },
         { "path": "../../suite/router" },
+        { "path": "../../suite/sentry" },
         { "path": "../../suite/settings" },
         { "path": "../../suite/suite-sync" },
         { "path": "../../suite/thp" },
         { "path": "../../suite/tor" },
         { "path": "../../suite/trading" },
+        { "path": "../../suite/transfer-uri" },
         { "path": "../../suite/tx-simulation" },
+        { "path": "../../suite/ui-animations" },
         { "path": "../../suite/wallet" },
         { "path": "../address-validator" },
         { "path": "../analytics-uploader" },
         { "path": "../asset-utils" },
-        { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
         { "path": "../blockchain-link-utils" },
         { "path": "../coinjoin" },
-        { "path": "../../coins/coins-solana" },
         { "path": "../components" },
         { "path": "../connect" },
         { "path": "../connect-common" },
@@ -215,7 +224,13 @@
         { "path": "../device-utils" },
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
-        { "path": "../ipc-proxy" },
+        { "path": "../icons" },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
         { "path": "../product-components" },
         { "path": "../react-utils" },
         { "path": "../styles" },

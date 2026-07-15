@@ -4,13 +4,13 @@ import { Translation } from '@suite/intl';
 import { isOnionUrl } from '@suite/tor';
 import { type UserContextPayload } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { blockchainActions } from '@suite-common/wallet-core';
+import { blockchainActions, selectCustomBackends } from '@suite-common/wallet-core';
 import { Banner, Button, Card, Column, H3, Modal, Paragraph, Row } from '@trezor/components';
+import { GearIcon, TorBrowserIcon } from '@trezor/icons';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { useCustomBackends } from 'src/hooks/settings/backends';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { AdvancedCoinSettingsModal } from './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
 
@@ -21,7 +21,8 @@ type DisableTorModalProps = Omit<Extract<UserContextPayload, { type: 'disable-to
 export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) => {
     const dispatch = useDispatch();
     const [symbol, setSymbol] = useState<NetworkSymbol>();
-    const onionBackends = useCustomBackends().filter(({ urls }) => urls.every(isOnionUrl));
+    const customBackends = useSelector(selectCustomBackends);
+    const onionBackends = customBackends.filter(({ urls }) => urls.every(isOnionUrl));
 
     const onDisableTor = () => {
         onionBackends.forEach(({ symbol, type, urls }) =>
@@ -48,7 +49,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
             onCancel={onCancel}
             intent={onionBackends.length ? 'warning' : 'brand'}
             width={600}
-            iconName={onionBackends.length ? undefined : 'torBrowser'}
+            icon={onionBackends.length ? undefined : TorBrowserIcon}
             heading={
                 onionBackends.length ? <Translation id="TR_TOR_DISABLE_ONIONS_ONLY" /> : undefined
             }
@@ -73,7 +74,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                 <Column gap={spacings.md}>
                     <Banner
                         intent="warning"
-                        icon="torBrowser"
+                        icon={TorBrowserIcon}
                         description={
                             <>
                                 <Translation id="TR_TOR_DISABLE_ONIONS_ONLY_TITLE" />{' '}
@@ -101,7 +102,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                                         intent="neutral"
                                         priority="secondary"
                                         onClick={() => setSymbol(symbol)}
-                                        iconLeft="gear"
+                                        iconLeft={GearIcon}
                                         size="small"
                                         margin={{ left: 'auto' }}
                                     >

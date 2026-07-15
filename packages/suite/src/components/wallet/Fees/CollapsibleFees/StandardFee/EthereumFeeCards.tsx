@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useFormState } from 'react-hook-form';
 
+import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
-import { selectIsDebugModeActive } from '@suite/settings';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
@@ -12,7 +12,6 @@ import { FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite';
-import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { useLocales, useSelector } from 'src/hooks/suite';
 
 import { FeeCard } from './FeeCard';
@@ -62,6 +61,8 @@ export const EthereumFeeCards = ({ feeOptions }: EthereumFeeCardsProps) => {
         return null;
     }
 
+    const units = getFeeUnits(networkType);
+
     return (
         <>
             <FeeCardsWrapper data-testid="@wallet/fee-details">
@@ -108,15 +109,15 @@ export const EthereumFeeCards = ({ feeOptions }: EthereumFeeCardsProps) => {
                                     >
                                         <Translation id="TR_MAX_FEE_PER_GAS" />
                                         <Text isMonospaced>
-                                            {fee.maxFeePerGas} {getFeeUnits(networkType)}
+                                            {fee.maxFeePerGas} {units}
                                         </Text>
                                         <Translation id="TR_MAX_PRIORITY_FEE_PER_GAS" />
                                         <Text isMonospaced>
-                                            {fee.maxPriorityFeePerGas} {getFeeUnits(networkType)}
+                                            {fee.maxPriorityFeePerGas} {units}
                                         </Text>
                                         <Translation id="TR_BASE_FEE" />
                                         <Text isMonospaced>
-                                            {fee.baseFeePerGas} {getFeeUnits(networkType)}
+                                            {fee.baseFeePerGas} {units}
                                         </Text>
                                     </Grid>
                                 </>
@@ -125,6 +126,7 @@ export const EthereumFeeCards = ({ feeOptions }: EthereumFeeCardsProps) => {
                     />
                 ))}
             </FeeCardsWrapper>
+
             {isDebug && cachedGasLimit && (
                 <Row alignItems="baseline" justifyContent="space-between">
                     <Row gap={spacings.xxs}>

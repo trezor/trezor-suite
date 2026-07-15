@@ -18,7 +18,7 @@ const torDataDir = path.join(__dirname, 'tmp');
 const ipRegex = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;
 
 const interceptorOptions: InterceptorOptions = {
-    getWhitelistedDomains: () => ['check.torproject.org'],
+    getWhitelistedDomains: () => ['check.torproject.org', 'localhost'],
     handler: () => {},
     getTorSettings: () => ({ running: true, host, port }),
 };

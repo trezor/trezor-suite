@@ -1,20 +1,43 @@
+import { asEvmAddress } from '@suite-common/calldata';
 import { createThunk } from '@suite-common/redux-utils';
-
+import { getNetwork } from '@suite-common/wallet-config';
 import {
-    getApprovalRequestAmount,
-    setYieldGenericError,
-    submitYieldOpportunity,
-} from './stablecoinYieldApprovalThunks';
-import { STABLECOIN_YIELD_PREFIX, stablecoinYieldActions } from './stablecoinYieldReducer';
+    asAmountUnit,
+    getAccountIdentity,
+    getConvertedOrDefaultFeeInfo,
+    tokenSupportsIncreasingAllowance,
+    unitsToSubunits,
+} from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils';
+
+import { getApprovalRequestAmount } from './stablecoinYieldApprovalThunks';
+import { STABLECOIN_YIELD_PREFIX } from './stablecoinYieldConstants';
+import { estimateYieldFeeLevel } from './stablecoinYieldFeeEstimation';
 import type { YieldFlowResolvedData } from './stablecoinYieldTypes';
 import {
+    buildYieldDepositCalldata,
+    buildYieldUnsignedTransaction,
+    getAllowanceSpender,
     getWithdrawRequestAmount,
-    getYieldApprovalModalParams,
-    getYieldRevokeModalParams,
-    getYieldSupplyTransaction,
 } from './stablecoinYieldUtils';
+import { fetchAllowance } from '../allowance/fetchAllowance';
+import { selectRawNetworkFeeInfo } from '../fees/feesReducer';
+import { ethereumGetCurrentNonceThunk } from '../send/sendFormEthereumThunks';
 
 const YIELD_DEPOSIT_THUNK_PREFIX = `${STABLECOIN_YIELD_PREFIX}/thunk`;
+
+export type YieldDepositErrorReason =
+    | 'unsupported-network'
+    | 'missing-deposit-params'
+    | 'vault-chain-mismatch'
+    | 'missing-fee-level'
+    | 'fee-estimation-failed'
+    | 'compose-failed';
+
+export const getYieldDepositErrorTranslationKey = (reason: YieldDepositErrorReason) =>
+    reason === 'fee-estimation-failed'
+        ? ('TR_EARN_YIELD_ERROR_FEE_ESTIMATION' as const)
+        : ('TR_EARN_YIELD_ERROR_GENERIC' as const);
 
 export type PrepareYieldDepositResult =
     | {
@@ -32,131 +55,129 @@ export type PrepareYieldDepositResult =
       }
     | {
           type: 'error';
+          reason: YieldDepositErrorReason;
       };
 
-type GetYieldDepositPreparationResultParams = {
-    amount: string;
-    flowData: YieldFlowResolvedData;
-    transactions: Awaited<ReturnType<typeof submitYieldOpportunity>>['response']['transactions'];
-};
-
-type PrepareYieldDepositPayload = {
-    flowKey: string;
+type ComposeYieldDepositTransactionPayload = {
     flowData: YieldFlowResolvedData;
     amount: string;
 };
 
-type PrepareYieldDepositActionParams = {
-    amount: string;
-    flowData: YieldFlowResolvedData;
-};
-
-export const getYieldDepositPreparationResult = ({
-    amount,
-    flowData,
-    transactions,
-}: GetYieldDepositPreparationResultParams): PrepareYieldDepositResult => {
-    const revokeModalParams = getYieldRevokeModalParams(transactions);
-
-    if (revokeModalParams) {
-        return {
-            type: 'revoke-required',
-            spender: revokeModalParams.spender,
-        };
-    }
-
-    const approvalModalParams = getYieldApprovalModalParams(transactions);
-
-    if (approvalModalParams) {
-        return {
-            type: 'approval-required',
-            spender: approvalModalParams.spender,
-        };
-    }
-
-    const actionTransaction = getYieldSupplyTransaction(transactions);
-
-    if (!actionTransaction?.id || typeof actionTransaction.unsignedTransaction !== 'string') {
-        return { type: 'error' };
-    }
-
-    const receiptAmount =
-        getWithdrawRequestAmount({
-            networkSymbol: flowData.account.symbol,
-            amount,
-            token: flowData.token,
-            receiptToken: flowData.receiptToken,
-            pricePerShare: flowData.vault.state?.pricePerShareState?.price,
-        }) ?? amount;
-
-    return {
-        type: 'action-ready',
-        unsignedTransaction: actionTransaction.unsignedTransaction,
-        receiptAmount,
-    };
-};
-
-export const prepareYieldDepositAction = async ({
-    amount,
-    flowData,
-}: PrepareYieldDepositActionParams): Promise<PrepareYieldDepositResult> => {
-    const errorResult = { type: 'error' } as const;
-    const requestAmount = getApprovalRequestAmount({
-        flowType: 'deposit',
-        amount,
-        flowData,
-    });
-
-    if (!requestAmount) {
-        return errorResult;
-    }
-
-    const { response, verification } = await submitYieldOpportunity({
-        flowType: 'deposit',
-        flowData,
-        amount: requestAmount,
-    });
-
-    if (verification === 'failure') {
-        return errorResult;
-    }
-
-    return getYieldDepositPreparationResult({
-        amount,
-        flowData,
-        transactions: response.transactions,
-    });
-};
-
-export const prepareYieldDepositThunk = createThunk<
+export const composeYieldDepositTransactionThunk = createThunk<
     PrepareYieldDepositResult,
-    PrepareYieldDepositPayload,
+    ComposeYieldDepositTransactionPayload,
     void
 >(
-    `${YIELD_DEPOSIT_THUNK_PREFIX}/prepareDeposit`,
-    async ({ flowKey, flowData, amount }, { dispatch }) => {
-        const flowType = 'deposit' as const;
-        const errorResult = { type: 'error' } as const;
+    `${YIELD_DEPOSIT_THUNK_PREFIX}/composeDepositTransaction`,
+    async ({ flowData, amount }, { dispatch, getState }) => {
+        const { account, token, vault } = flowData;
 
-        dispatch(stablecoinYieldActions.startSubmittingAction({ flowType, flowKey, amount }));
-
-        try {
-            const result = await prepareYieldDepositAction({
-                amount,
-                flowData,
-            });
-
-            if (result.type === 'error') {
-                setYieldGenericError({ dispatch, flowType, flowKey });
-            }
-
-            return result;
-        } catch {
-            setYieldGenericError({ dispatch, flowType, flowKey });
-
-            return errorResult;
-        } finally {
-            dispatch(stablecoinYieldActions.finishSubmittingAction({ flowType, flowKey }));
+        if (account.networkType !== 'ethereum') {
+            return { type: 'error', reason: 'unsupported-network' } as const;
         }
+
+        const requestAmount = getApprovalRequestAmount({
+            flowType: 'deposit',
+            amount,
+            flowData,
+        });
+        const spender = getAllowanceSpender(flowData);
+        const tokenContractAddress = token.contractAddress;
+
+        if (!requestAmount || !spender || !tokenContractAddress) {
+            return { type: 'error', reason: 'missing-deposit-params' } as const;
+        }
+
+        const allowanceSubunits = await fetchAllowance({
+            owner: account.descriptor,
+            spender,
+            tokenContractAddress,
+            coin: account.symbol,
+        });
+        const requestSubunits = unitsToSubunits({
+            value: asAmountUnit(new BigNumber(requestAmount)),
+            decimals: token.decimals,
+        });
+
+        if (allowanceSubunits.lt(requestSubunits)) {
+            const isRevokeRequired =
+                allowanceSubunits.gt(0) && !tokenSupportsIncreasingAllowance(tokenContractAddress);
+
+            return isRevokeRequired
+                ? { type: 'revoke-required', spender }
+                : { type: 'approval-required', spender };
+        }
+
+        const network = getNetwork(account.symbol);
+
+        if (!network.chainId || vault.chainId !== network.chainId) {
+            return { type: 'error', reason: 'vault-chain-mismatch' } as const;
+        }
+
+        const ownerAddress = asEvmAddress(account.descriptor);
+        const calldata = buildYieldDepositCalldata({
+            amount: requestAmount,
+            flowData,
+            ownerAddress,
+            receiverAddress: ownerAddress,
+        });
+
+        const [{ nonce }, estimatedFeeLevel] = await Promise.all([
+            dispatch(
+                ethereumGetCurrentNonceThunk({
+                    selectedAccount: account,
+                    fetchConfirmedNonce: true,
+                }),
+            ).unwrap(),
+            estimateYieldFeeLevel({
+                coin: account.symbol,
+                identity: getAccountIdentity(account),
+                from: account.descriptor,
+                to: spender,
+                data: calldata,
+            }),
+        ]);
+
+        if (!estimatedFeeLevel.success) {
+            return { type: 'error', reason: 'fee-estimation-failed' } as const;
+        }
+
+        const feeInfo = getConvertedOrDefaultFeeInfo({
+            networkType: account.networkType,
+            feeInfo: selectRawNetworkFeeInfo(getState(), account.symbol),
+        });
+        const normalLevel =
+            feeInfo.levels.find(level => level.label === 'normal') ?? feeInfo.levels[0];
+
+        if (!normalLevel) {
+            return { type: 'error', reason: 'missing-fee-level' } as const;
+        }
+
+        const unsignedTransaction = JSON.stringify(
+            buildYieldUnsignedTransaction({
+                chainId: network.chainId,
+                data: calldata,
+                feeLevel: normalLevel,
+                from: account.descriptor,
+                gasLimit: estimatedFeeLevel.payload.feeLimit,
+                nonce: Number(nonce),
+                to: spender,
+            }),
+        );
+
+        const receiptAmount =
+            getWithdrawRequestAmount({
+                networkSymbol: account.symbol,
+                amount,
+                token: flowData.token,
+                receiptToken: flowData.receiptToken,
+                pricePerShare: flowData.vault.state?.pricePerShareState?.price,
+            }) ?? amount;
+
+        return {
+            type: 'action-ready',
+            unsignedTransaction,
+            receiptAmount,
+        };
     },
 );

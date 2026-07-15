@@ -20,12 +20,20 @@ test.describe('Labeling migration', { tag: ['@T3W1', '@T3T1', '@desktopOnly'] },
     test.use({ wipeEvoluRelay: true });
 
     test.beforeEach(async ({ onboardingPage, settingsPage, metadataPage }) => {
-        await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+        await onboardingPage.completeOnboarding();
+        await settingsPage.navigateTo('application');
+        await settingsPage.toggleDebugModeInSettings();
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
         await metadataPage.enableLegacyLabeling(MetadataProvider.LOCAL);
     });
 
-    test('Migration from local file', async ({ page, walletPage, metadataPage, evoluClient }) => {
+    test('Migration from local file', async ({
+        page,
+        dashboardPage,
+        walletPage,
+        metadataPage,
+        evoluClient,
+    }) => {
         await test.step('Set up local file labeling', async () => {
             await walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }).click();
             await expect(
@@ -85,6 +93,17 @@ test.describe('Labeling migration', { tag: ['@T3W1', '@T3T1', '@desktopOnly'] },
             await expect(
                 walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
             ).toHaveText(localLabel);
+        });
+
+        await test.step('Change wallet label to trigger device prompt for Suite Sync keys', async () => {
+            await dashboardPage.openDeviceSwitcher();
+            await metadataPage.wallet.changeLabel({
+                index: 0,
+                label: 'label4key',
+                confirmSuiteSync: true,
+            });
+            await expect.soft(metadataPage.wallet.walletLabel(0)).toHaveText('label4key');
+            await dashboardPage.deviceSwitchingCloseButton.click();
         });
 
         await test.step('Verify output label is synced', async () => {

@@ -35,12 +35,14 @@ import {
     tradingExchangeCreatePaymentRequest,
     tradingSellCreatePaymentRequest,
 } from '../../utils/signature/signatureUtils';
+import { validatePaymentRequestSignature } from '../../utils/signature/validatePaymentRequest';
 
 type CreateSignatureThunkProps = {
     type: TradingTradeSellExchangeType;
     account: Account;
     composedLevels: GeneralPrecomposedTransaction;
     formattedMaxAmount: string | undefined;
+    destinationTag?: string;
 };
 
 export const createPaymentRequestsThunk = createThunk<
@@ -52,7 +54,7 @@ export const createPaymentRequestsThunk = createThunk<
 >(
     `${TRADING_THUNK_PREFIX}/createPaymentRequests`,
     async (
-        { type, account, composedLevels, formattedMaxAmount },
+        { type, account, composedLevels, formattedMaxAmount, destinationTag },
         { dispatch, getState, fulfillWithValue, rejectWithValue },
     ) => {
         const { mac: macRefund, path: pathRefund } = await dispatch(
@@ -103,7 +105,11 @@ export const createPaymentRequestsThunk = createThunk<
                 ).unwrap();
 
                 const outputs = await dispatch(
-                    getPaymentRequestOutputs({ network: sendNetwork, composedLevels }),
+                    getPaymentRequestOutputs({
+                        network: sendNetwork,
+                        composedLevels,
+                        destinationTag,
+                    }),
                 ).unwrap();
 
                 const sendSlip44 = getSlip44ByPath(validatePath(pathRefund));
@@ -156,6 +162,16 @@ export const createPaymentRequestsThunk = createThunk<
                     });
                 }
 
+                validatePaymentRequestSignature({
+                    paymentRequest,
+                    sendSlip44,
+                    outputs,
+                    sentAsset: {
+                        network: sendNetwork.symbol,
+                        isToken: !!composedLevels.token,
+                    },
+                });
+
                 return fulfillWithValue([paymentRequest]);
             }
             case 'sell': {
@@ -190,7 +206,11 @@ export const createPaymentRequestsThunk = createThunk<
                 const memoText = `Selling ${quote.cryptoStringAmount} ${cryptoSymbol?.symbol} for ${quote.fiatStringAmount} ${quote.fiatCurrency}`;
 
                 const outputs = await dispatch(
-                    getPaymentRequestOutputs({ network: sendNetwork, composedLevels }),
+                    getPaymentRequestOutputs({
+                        network: sendNetwork,
+                        composedLevels,
+                        destinationTag,
+                    }),
                 ).unwrap();
 
                 const sendSlip44 = getSlip44ByPath(validatePath(pathRefund));
@@ -238,6 +258,16 @@ export const createPaymentRequestsThunk = createThunk<
                         },
                     });
                 }
+
+                validatePaymentRequestSignature({
+                    paymentRequest,
+                    sendSlip44,
+                    outputs,
+                    sentAsset: {
+                        network: sendNetwork.symbol,
+                        isToken: !!composedLevels.token,
+                    },
+                });
 
                 return fulfillWithValue([paymentRequest]);
             }

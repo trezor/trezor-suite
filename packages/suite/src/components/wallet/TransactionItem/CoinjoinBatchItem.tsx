@@ -2,6 +2,7 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { IconCircle, Link } from '@trezor/components';
+import { ShuffleIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
@@ -27,7 +28,11 @@ export const CoinjoinBatchItem = ({ transactions, isPending }: CoinjoinBatchItem
             }
             heading={<Translation id="TR_COINJOIN_TRANSACTION_BATCH" />}
             icon={
-                <IconCircle name="shuffle" intent={isPending ? 'warning' : 'neutral'} size={40} />
+                <IconCircle
+                    icon={ShuffleIcon}
+                    intent={isPending ? 'warning' : 'neutral'}
+                    size={40}
+                />
             }
         >
             {transactions.map(transaction => {

@@ -1,46 +1,24 @@
 import { forwardRef, useImperativeHandle } from 'react';
 import { useSelector } from 'react-redux';
 
-import { getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { Box, Text, VStack } from '@suite-native/atoms';
+import { VStack } from '@suite-native/atoms';
 import { selectSelectedDeviceTotalFiatBalance } from '@suite-native/device';
 import { useIsDiscoveryDurationTooLong } from '@suite-native/discovery';
 import {
     Graph,
-    TimeSwitch,
-    selectDeviceHistoryIgnoredNetworkSymbols,
     selectHasDeviceHistoryEnabledAccounts,
     useGraphAtoms,
     useGraphForAllDeviceAccounts,
 } from '@suite-native/graph';
-import { Translation } from '@suite-native/intl';
 
 import { referencePointAtom, selectedPointAtom } from '../portfolioGraphAtoms';
+import { IgnoredNetworksBanner } from './IgnoredNetworksBanner';
+import { PortfolioGraphTimeSwitch } from './PortfolioGraphTimeSwitch';
 import { PortfolioHeader } from './PortfolioHeader';
 
 export type PortfolioGraphRef = {
     refetchGraph: () => Promise<void>;
-};
-
-const IgnoredNetworksBanner = () => {
-    const graphIgnoredNetworkSymbols = useSelector(selectDeviceHistoryIgnoredNetworkSymbols);
-
-    if (!graphIgnoredNetworkSymbols.length) {
-        return null;
-    }
-
-    const networksString = graphIgnoredNetworkSymbols
-        .map(symbol => getNetwork(symbol).name)
-        .join(', ');
-
-    return (
-        <Box paddingHorizontal="sp16">
-            <Text textAlign="center" variant="body-sm" color="contentSecondary">
-                <Translation id="moduleHome.graphIgnoredNetworks" values={{ networksString }} />
-            </Text>
-        </Box>
-    );
 };
 
 export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
@@ -50,17 +28,10 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
     const loadingTakesLongerThanExpected = useIsDiscoveryDurationTooLong();
     const totalFiatBalance = useSelector(selectSelectedDeviceTotalFiatBalance);
 
-    const {
-        graphPoints,
-        error,
-        isLoading,
-        isAnyMainnetAccountPresent,
-        refetch,
-        onSelectTimeFrame,
-        timeframe,
-    } = useGraphForAllDeviceAccounts({
-        baseCurrencyCode,
-    });
+    const { graphPoints, error, isLoading, isAnyMainnetAccountPresent, refetch } =
+        useGraphForAllDeviceAccounts({
+            baseCurrencyCode,
+        });
 
     const { handleGestureStart, setInitialSelectedPoints, setSelectedPoint } = useGraphAtoms({
         referencePointAtom,
@@ -99,9 +70,7 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
                 />
             )}
             <IgnoredNetworksBanner />
-            {showGraph && (
-                <TimeSwitch selectedTimeFrame={timeframe} onSelectTimeFrame={onSelectTimeFrame} />
-            )}
+            {showGraph && <PortfolioGraphTimeSwitch />}
         </VStack>
     );
 });

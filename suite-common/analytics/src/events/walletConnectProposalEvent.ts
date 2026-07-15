@@ -9,19 +9,22 @@ type Attributes = {
 
 export const walletConnectProposalEvent: EventDef<Attributes, EventType.WalletConnectProposal> = {
     name: EventType.WalletConnectProposal,
-    descriptionTrigger: 'WalletConnect DApp requesting connection',
+    descriptionTrigger: 'A WalletConnect DApp requests permission to establish a connection',
     changelog: [{ version: '25.5.0', notes: 'added' }],
 
     attributes: {
         origin: {
             changelog: [{ version: '25.5.0', notes: 'added' }],
-            description: 'Source of the call (URL)',
+            description: 'The URL or origin of the DApp requesting the connection',
         },
         validation: {
             changelog: [{ version: '25.5.0', notes: 'added' }],
+            description:
+                'The validation status of the DApp: `VALID` if verified, `INVALID` if verification failed, `UNKNOWN` if not yet verified',
         },
         networks: {
             changelog: [{ version: '25.5.0', notes: 'added' }],
+            description: 'List of blockchain networks that the DApp is requesting access to',
         },
     },
 };

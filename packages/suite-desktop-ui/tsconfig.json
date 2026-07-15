@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "libDev",
-        "baseUrl": "../suite"
+        "paths": { "src/*": ["../suite/src/*"] }
     },
     "include": ["."],
     "references": [
@@ -10,6 +10,7 @@
             "path": "../../suite-common/dependency-injection"
         },
         { "path": "../../suite/analytics" },
+        { "path": "../../suite/debug" },
         { "path": "../../suite/desktop-update" },
         { "path": "../../suite/flags" },
         { "path": "../../suite/github" },
@@ -20,8 +21,8 @@
         { "path": "../../suite/router" },
         { "path": "../../suite/sentry" },
         { "path": "../components" },
-        { "path": "../connect" },
-        { "path": "../ipc-proxy" },
+        { "path": "../connect-electron" },
+        { "path": "../icons" },
         { "path": "../suite" },
         { "path": "../suite-desktop-api" },
         { "path": "../theme" },

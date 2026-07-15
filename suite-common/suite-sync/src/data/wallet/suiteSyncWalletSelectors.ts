@@ -4,18 +4,22 @@ import {
     type SuiteSyncAddress,
     type SuiteSyncOutput,
 } from '@suite-common/suite-sync-storage';
-import { type WalletDescriptor } from '@suite-common/wallet';
+import { type WalletDescriptor } from '@trezor/device-utils';
 import { typedObjectValues } from '@trezor/utils';
 
 import { type SuiteSyncDataRootState, type WalletData } from '../suiteSyncDataReducer';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<SuiteSyncDataRootState>();
 
-export const selectWalletById = (
-    state: SuiteSyncDataRootState,
-    walletDescriptor: WalletDescriptor | null,
-): WalletData | null =>
-    walletDescriptor !== null ? (state.suiteSyncData.wallets[walletDescriptor] ?? null) : null;
+export const selectWalletById = createMemoizedSelector(
+    [
+        (state: SuiteSyncDataRootState) => state.suiteSyncData.wallets,
+        (_state: SuiteSyncDataRootState, walletDescriptor: WalletDescriptor | null) =>
+            walletDescriptor,
+    ],
+    (wallets, walletDescriptor): WalletData | null =>
+        walletDescriptor !== null ? (wallets[walletDescriptor] ?? null) : null,
+);
 
 export const selectAllAccountsForWallet = createMemoizedSelector(
     [(state, walletDescriptor) => selectWalletById(state, walletDescriptor)],

@@ -93,7 +93,7 @@ export interface BluetoothIpcState {
     knownDevices: BluetoothDevice[];
 }
 
-export interface BluetoothIpcApi {
+export type BluetoothIpcApi = {
     init(state?: BluetoothIpcState): Promise<IpcResponse>;
     getInfo(): Promise<IpcResponse<BluetoothInfo>>;
     dispose(): Promise<IpcResponse>;
@@ -108,4 +108,4 @@ export interface BluetoothIpcApi {
     on: TypedManagerEvents['on'];
     off: TypedManagerEvents['off'];
     removeAllListeners: TypedManagerEvents['removeAllListeners'];
-}
+};

@@ -1,20 +1,11 @@
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { useSelector } from 'react-redux';
+import { Platform } from 'react-native';
+import { FadeIn, FadeOut, StretchInY, StretchOutY } from 'react-native-reanimated';
 
-import {
-    type AccountsRootState,
-    type FeesRootState,
-    selectAccountByKey,
-    selectAreFeesLoading,
-} from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { calculateTronFeeBreakdown } from '@suite-common/wallet-utils';
-import { AnimatedPressable } from '@suite-native/atoms';
-import { useTranslate } from '@suite-native/intl';
+import { AnimatedPressable, Card } from '@suite-native/atoms';
 
-import { TronFeeSummaryCardContent } from './TronFeeSummaryCardContent';
-import { selectFeeLevels } from '../../../selectors';
-import { type NativeSendRootState } from '../../../sendFormSlice';
+import { TronFeeSummaryRow } from './TronFeeSummaryRow';
+import { useTronFeeBreakdown } from '../../../hooks/fees/useTronFeeBreakdown';
 
 type TronFeeSummaryCardProps = {
     accountKey: AccountKey;
@@ -31,71 +22,37 @@ export const TronFeeSummaryCard = ({
     feeLimitSunOverride,
     supportsAdjustableFees,
 }: TronFeeSummaryCardProps) => {
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
-    );
-    const feeLevels = useSelector((state: NativeSendRootState) => selectFeeLevels(state));
-    const areFeesLoading = useSelector((state: FeesRootState) =>
-        selectAreFeesLoading(state, account?.symbol),
-    );
-    const { translate } = useTranslate();
+    const breakdown = useTronFeeBreakdown({ accountKey, feeLimitSunOverride });
 
-    if (account?.networkType !== 'tron') return null;
+    if (!breakdown) return null;
 
-    const breakdown = calculateTronFeeBreakdown(
-        feeLevels.normal,
-        account.misc?.tronResources,
-        account.symbol,
-        feeLimitSunOverride,
-    );
-
-    const trxBurned =
-        breakdown !== null && !breakdown.trxBurned.isZero() ? breakdown.trxBurned.toString() : null;
-
-    const resourceParts: string[] = [];
-    if (breakdown?.coveredEnergy.gt(0)) {
-        resourceParts.push(
-            translate('moduleSend.fees.tron.energyCount', {
-                count: breakdown.coveredEnergy.toFixed(0),
-            }),
-        );
-    }
-    if (breakdown?.coveredBandwidth.gt(0)) {
-        resourceParts.push(
-            translate('moduleSend.fees.tron.bandwidthCount', {
-                count: breakdown.coveredBandwidth.toFixed(0),
-            }),
-        );
-    }
-    const resourceLabel = resourceParts.join(' & ');
-
-    const content = (
-        <TronFeeSummaryCardContent
-            symbol={account.symbol}
-            networkType={account.networkType}
+    const summaryRow = (
+        <TronFeeSummaryRow
+            symbol={breakdown.symbol}
+            networkType={breakdown.networkType}
             supportsAdjustableFees={supportsAdjustableFees}
-            trxBurned={trxBurned}
-            areFeesLoading={areFeesLoading}
-            resourceLabel={resourceLabel}
+            trxBurned={breakdown.trxBurned}
+            areFeesLoading={breakdown.areFeesLoading}
+            resourceLabel={breakdown.resourceLabel}
         />
     );
 
     if (onPress) {
         return (
             <AnimatedPressable
-                exiting={FadeOut}
-                entering={FadeIn}
+                entering={Platform.OS === 'android' ? StretchInY : FadeIn}
+                exiting={Platform.OS === 'android' ? StretchOutY : FadeOut}
                 onPress={onPress}
                 testID={testID}
             >
-                {content}
+                <Card noPadding>{summaryRow}</Card>
             </AnimatedPressable>
         );
     }
 
     return (
-        <Animated.View entering={FadeIn} exiting={FadeOut} testID={testID}>
-            {content}
-        </Animated.View>
+        <Card noPadding testID={testID}>
+            {summaryRow}
+        </Card>
     );
 };

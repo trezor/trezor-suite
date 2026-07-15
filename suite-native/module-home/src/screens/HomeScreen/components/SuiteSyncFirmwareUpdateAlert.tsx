@@ -35,7 +35,7 @@ export const SuiteSyncFirmwareUpdateAlert = () => {
 
     return (
         <AnimatedFullAlertBox
-            variant="info"
+            intent="info"
             title={<Translation id="moduleHome.suiteSyncFirmwareUpdateAlert.title" />}
             description={<Translation id="moduleHome.suiteSyncFirmwareUpdateAlert.description" />}
             primaryButtonLabel={<Translation id="moduleHome.suiteSyncFirmwareUpdateAlert.button" />}

@@ -5,7 +5,7 @@ import type { DexApprovalType } from 'invity-api';
 
 import { useFormDraft } from '@suite-common/wallet-core';
 import type { FormState } from '@suite-common/wallet-types';
-import { Card, InlineAlertBox } from '@suite-native/atoms';
+import { InlineAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { NetworkAndAccountCard } from '@suite-native/trading-atoms';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
@@ -40,7 +40,7 @@ export const ExchangeApprovalDetails = ({
                 title={
                     <Translation id="moduleTrading.tradingExchangeApprovalScreen.approveErrorAlert" />
                 }
-                variant="critical"
+                intent="critical"
             />
         );
     }
@@ -51,21 +51,19 @@ export const ExchangeApprovalDetails = ({
                 account={account}
                 title={<Translation id="moduleTrading.exchangeTradePreviewCard.account" />}
             >
-                <ProviderInfoRow exchange={exchange} />
+                <ProviderInfoRow exchange={exchange} tradingType="exchange" />
                 <OriginalLimit />
                 <LimitPicker onApprovalTypeChange={onApprovalTypeChange} />
             </NetworkAndAccountCard>
 
-            <Card noPadding>
-                <FeeSelector
-                    accountKey={account.key}
-                    updateThunk={updateTradingSelectedFeeLevelThunk}
-                    selectedFee={formDraft?.selectedFee ?? 'normal'}
-                    selectedFeePerUnit={formDraft?.feePerUnit}
-                    formDraft={formDraft}
-                    formDraftKey={formDraftKey}
-                />
-            </Card>
+            <FeeSelector
+                accountKey={account.key}
+                updateThunk={updateTradingSelectedFeeLevelThunk}
+                selectedFee={formDraft?.selectedFee ?? 'normal'}
+                selectedFeePerUnit={formDraft?.feePerUnit}
+                formDraft={formDraft}
+                formDraftKey={formDraftKey}
+            />
         </>
     );
 };

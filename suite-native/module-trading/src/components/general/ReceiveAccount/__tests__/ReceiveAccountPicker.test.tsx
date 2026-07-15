@@ -1,3 +1,4 @@
+import { getTranslation } from '@suite-native/intl';
 import { type TestStore, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { btc1NormalAccount } from '@suite-native/trading-fixtures';
 
@@ -64,7 +65,7 @@ describe('ReceiveAccountPicker', () => {
             receiveAccount: undefined,
         });
 
-        expect(getByText('Not selected')).toBeTruthy();
+        expect(getByText(getTranslation('moduleTrading.notSelected'))).toBeTruthy();
     });
 
     it('should call navigate to account picker when symbol is specified and picker pressed', () => {
@@ -73,7 +74,7 @@ describe('ReceiveAccountPicker', () => {
             receiveAccount: undefined,
         });
 
-        fireEvent.press(getByText('Receive account'));
+        fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.receiveAccount')));
 
         expect(mockNavigate).toHaveBeenCalledTimes(1);
         expect(mockNavigate).toHaveBeenCalledWith('ReceiveAccounts', {
@@ -89,7 +90,7 @@ describe('ReceiveAccountPicker', () => {
             tradingType: 'exchange',
         });
 
-        fireEvent.press(getByText('Receive account'));
+        fireEvent.press(getByText(getTranslation('moduleTrading.tradingScreen.receiveAccount')));
 
         expect(mockNavigate).toHaveBeenCalledTimes(1);
         expect(mockNavigate).toHaveBeenCalledWith('ReceiveAccounts', {
@@ -109,7 +110,7 @@ describe('ReceiveAccountPicker', () => {
         expect(getByText('BTC Account #1')).toBeTruthy();
     });
 
-    it('should display account name and address', () => {
+    it('should display account name when address is selected', () => {
         const { getByText } = renderReceiveAccountPicker({
             receiveAccount: {
                 account: btc1NormalAccount,
@@ -118,7 +119,6 @@ describe('ReceiveAccountPicker', () => {
         });
 
         expect(getByText('BTC Account #1')).toBeTruthy();
-        expect(getByText('USED1')).toBeTruthy();
     });
 
     describe('with testID specified', () => {
@@ -128,7 +128,9 @@ describe('ReceiveAccountPicker', () => {
                 testID: 'TEST_ID',
             });
 
-            expect(getByTestId('TEST_ID/not-selected')).toHaveTextContent('Not selected');
+            expect(getByTestId('TEST_ID/not-selected')).toHaveTextContent(
+                getTranslation('moduleTrading.notSelected'),
+            );
         });
 
         it('should render correctly with receiveAccount but no address', () => {

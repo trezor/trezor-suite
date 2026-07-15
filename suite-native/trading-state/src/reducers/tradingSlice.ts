@@ -7,7 +7,7 @@ import {
     prepareTradingReducer,
 } from '@suite-common/trading';
 import { tradingInitialState } from '@suite-native/trading-consts';
-import type { ProviderConfirmationStatus } from '@suite-native/trading-types';
+import type { ProviderConfirmationStatus, TradingState } from '@suite-native/trading-types';
 
 import { TRADING_BUY, buyActions, buyReducer } from './buySlice';
 import { TRADING_EXCHANGE, exchangeActions, exchangeReducer } from './exchangeSlice';
@@ -46,30 +46,36 @@ export const tradingSlice = createSliceWithExtraDeps({
     name: 'trading',
     initialState: tradingInitialState,
     reducers: {
-        setTradingEnvironment: (state, { payload }: PayloadAction<InvityServerEnvironment>) => {
+        setTradingEnvironment: (
+            state: TradingState,
+            { payload }: PayloadAction<InvityServerEnvironment>,
+        ) => {
             state.tradingEnvironment = payload;
             state.tradeOrderIdToBeOpened = undefined;
             buyReducer(state.buy, buyActions.clearState());
             exchangeReducer(state.exchange, exchangeActions.clearState());
             sellReducer(state.sell, sellActions.clearState());
         },
-        setTradeOrderIdToBeOpened: (state, { payload }: PayloadAction<string>) => {
+        setTradeOrderIdToBeOpened: (state: TradingState, { payload }: PayloadAction<string>) => {
             state.tradeOrderIdToBeOpened = payload;
         },
-        clearTradeOrderIdToBeOpened: state => {
+        clearTradeOrderIdToBeOpened: (state: TradingState) => {
             state.tradeOrderIdToBeOpened = undefined;
         },
-        setIsAmountInputActive: (state, { payload }: PayloadAction<boolean>) => {
+        setIsAmountInputActive: (state: TradingState, { payload }: PayloadAction<boolean>) => {
             state.isAmountInputActive = payload;
         },
-        setActiveTradingType: (state, { payload }: PayloadAction<TradingTypeWithConcierge>) => {
+        setActiveTradingType: (
+            state: TradingState,
+            { payload }: PayloadAction<TradingTypeWithConcierge>,
+        ) => {
             state.activeTradingType = payload;
         },
-        clearActiveTradingType: state => {
+        clearActiveTradingType: (state: TradingState) => {
             state.activeTradingType = undefined;
         },
         setProviderConfirmationStatus: (
-            state,
+            state: TradingState,
             { payload: newStatus }: PayloadAction<ProviderConfirmationStatus>,
         ) => {
             const currentStatus = state.providerConfirmationStatus;
@@ -83,7 +89,7 @@ export const tradingSlice = createSliceWithExtraDeps({
                 state.providerConfirmationStatus = newStatus;
             }
         },
-        clearSelectedAccounts: state => {
+        clearSelectedAccounts: (state: TradingState) => {
             state.buy.tradingAccountKey = undefined;
             state.buy.receiveAccountKey = undefined;
             state.buy.receiveAddress = undefined;

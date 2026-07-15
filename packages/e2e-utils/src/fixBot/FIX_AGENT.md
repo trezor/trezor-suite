@@ -23,10 +23,14 @@ Your fix task is embedded at the bottom of this prompt. Read it before doing any
 
 ## Fix Constraints
 
-Allowed changes are:
+Your change surface is exactly two things — nothing else, no exceptions:
 
-- Any file inside `suite/e2e/`
-- `data-testid` attributes in product source files. No other product code changes!
+1. Any file inside `suite/e2e/`.
+2. Adding a `data-testid` attribute in a product source file.
+
+Everything else in product code is off-limits.
+This holds even when a product change is the only way to make a test pass — in that case the
+failure is not yours to fix (see Step 2, "Bail when it is not yours to fix").
 
 ## Environment
 
@@ -55,24 +59,30 @@ yarn workspace @trezor/suite-desktop build:app
 
 ## Step 1 — Read context
 
-Read the `diagnosis` field from the fix task. It contains the full analysis from the analyst
+Read the `analysis` field from the fix task. It contains the full analysis from the analyst
 agent: error messages, stack traces, visual evidence, and root cause reasoning.
 Treat it as a starting hypothesis, not a fix prescription.
 
-Then read the source files mentioned in the diagnosis — spec files, page objects, helpers, and
+Then read the source files mentioned in the analysis — spec files, page objects, helpers, and
 (if a locator is involved) the product component that renders the target element. **Expand the
-diagnosis with your own product-code analysis and the preflight results (Step 2)** before
+analysis with your own product-code analysis and the preflight results (Step 2)** before
 deciding the fix.
+
+The test name and each `test.step()` label are the specification of intended behavior — read
+them as the source of truth for what the test verifies. A correct fix restores the test's
+ability to exercise that behavior; it repairs what drifted (locators, waits, selectors, flow),
+never the test's design or what it asserts. If the only way to green is to weaken an assertion
+or change what the test checks, the failure is not yours to fix — bail as in Step 2.
 
 ---
 
 ## Step 2 — Pre-flight
 
+_Cost marker: run `echo fixagent-stage-preflight` before starting this step._
+
 Confirm each validation actually fails before attempting any fix.
 
 ```bash
-touch /tmp/preflight-marker
-
 # For each validation — select config by platform:
 (cd suite/e2e && yarn xvfb-maybe -- playwright test \
   --config=./playwright-config/playwright-<web|desktop>.config.ts \
@@ -87,29 +97,24 @@ Non-zero = failing — read the trace before deciding anything further (see belo
 
 ### Reading traces after pre-flight and any test run
 
-```bash
-find suite/e2e/test-results -name 'trace.zip' -newer /tmp/preflight-marker
-```
+Every failing run leaves a trace at `suite/e2e/test-results/<…>/trace.zip` (find it with
+`find suite/e2e/test-results -name 'trace.zip'`). Read it with the **`playwright-trace` skill**.
+`test-results` is overwritten by the next run, so read a trace before running anything else.
 
-Unzip and read the last 10 screenshots (closest to the failure):
-
-```bash
-unzip -q <path/to/trace.zip> -d /tmp/trace-preflight/
-ls /tmp/trace-preflight/resources/page@*.jpeg | sort | tail -10
-```
-
-### Check the failure matches the diagnosis
+### Check the failure matches the analysis
 
 After reading the trace: if the test fails due to an infrastructure or environment error
 (emulator crash, transport failure, bridge error, process startup issue) rather than the
-test assertion described in `diagnosis` — retry once. If the retry shows the same
+test assertion described in `analysis` — retry once. If the retry shows the same
 infrastructure or environment error, return the result (Step 4) with `result: "fail"` and
 `iterations: 0`, and stop. Do not enter the fix loop.
 
 **Bail when it is not yours to fix.** If at preflight — or during any later iteration — your
-analysis concludes the root cause is a **product bug** (logic/behavior/markup must change, not
-just a `data-testid`) do not continue in the fix loop. Instead, return the result (Step 4) with
-`result: "fail"`, the iteration count reached, and explain the reclassification in the
+analysis concludes the root cause is a **product bug** (product logic, behavior, or markup must
+change, not just a `data-testid`), you are NOT ALLOWED to fix. Do not edit product code to make the
+test pass, even when you are confident in the fix and still have iteration budget left — a passing
+test is never justification for stepping outside the change surface. Return the result (Step 4)
+with `result: "fail"`, the iteration count reached, and explain the reclassification in the
 `pr-description.md`.
 
 ---
@@ -122,32 +127,32 @@ Track your current iteration number starting at 1. Stop when budget is exhausted
 
 ### Per iteration
 
+_Cost marker: at the start of each iteration, run `echo fixagent-stage-iteration-<N>` with the current iteration number (e.g. `fixagent-stage-iteration-1`)._
+
 **1. Make changes** within the allowed surface (see Fix Constraints).
 
 **Missing / mismatched locator.** When a locator the test uses is not found, do not reflexively
-add it to the product. First inspect the product element the test targets. If it already exposes
-a `data-testid` (possibly renamed from what the test expects), point the test/page-object at the
-current one. Add a new `data-testid` only if the element genuinely has none.
+add it to the product. Inspect the target element in the trace (see _Reading traces_) to see what
+it actually exposes — don't guess. If it already exposes a `data-testid` (possibly renamed from what
+the test expects), point the test/page-object at the current one. Add a new `data-testid` only if
+the element genuinely has none.
+
+**Readability lives in clear code, not comments.** Any test file or page object you touch should
+read on its own through precise naming and obvious structure — that is the primary tool. A comment
+is the last resort, reserved for intent the code genuinely cannot carry (a non-obvious wait, a
+workaround for a known bug). When you do add one, keep it to a single line.
 
 **2. Run all validations that are still failing:**
 
-```bash
-touch /tmp/iter-<N>-marker
+Run each failing validation separately, reading its trace right after the run (see
+"Reading traces" above) — `test-results` is overwritten by the next run.
+Select config by platform:
 
-# Run each failing validation separately so you get one trace per spec.
-# Select config by platform:
+```bash
 (cd suite/e2e && yarn xvfb-maybe -- playwright test \
   --config=./playwright-config/playwright-<web|desktop>.config.ts \
   --project=<group> \
   <spec>)
-```
-
-**3. Read traces for any that still fail:**
-
-```bash
-find suite/e2e/test-results -name 'trace.zip' -newer /tmp/iter-<N>-marker
-unzip -q <trace.zip> -d /tmp/trace-iter-<N>/
-ls /tmp/trace-iter-<N>/resources/page@*.jpeg | sort | tail -10
 ```
 
 **4. Commit all changes from this iteration:**
@@ -170,7 +175,12 @@ Then use `git commit --fixup $FIRST_SHA` for all subsequent iterations.
 
 ---
 
-## Step 4 — Write the PR description and return the result
+## Step 4 — Verify the commit, write the PR description, return the result
+
+_Cost marker: run `echo fixagent-stage-finalize` before starting this step._
+
+Before reporting, reconcile your result with `git log --oneline origin/develop..HEAD` — a
+`pass` or `partial` result requires at least one commit; if the log is empty, commit your fix now.
 
 **`pr-description.md`** — write this file to the repo root (current directory) using the
 Write tool (see the section below for its contents).
@@ -187,13 +197,12 @@ Emit only the JSON object as your final answer, with no surrounding prose or cod
   "iterations": <number of fix iterations performed, 0 if none needed>,
   "passed": ["<platform>/<group>/<spec>"],
   "failed": ["<platform>/<group>/<spec>"],
-  "prTitle": "<string up to 100 chars>"
+  "prTitle": "Nightly fix <YY-MM-DD> - <description of committed fix, up to 80 chars>"
 }
 ```
 
-`prTitle` must be the full PR title including the `Nightly fix <YY-MM-DD> - ` prefix. Base it on the fix you just made.
-`pass` — all validations pass after fixes.
-`partial` — at least one passes, at least one fails.
+`pass` — all validations pass and the fix is committed.
+`partial` — at least one passes, at least one fails; the partial fix is committed.
 `fail` — zero validations pass after fixes.
 `not_duplicated` — all validations already passed in pre-flight; failure could not be reproduced.
 

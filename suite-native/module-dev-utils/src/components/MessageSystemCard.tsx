@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
+import { useNavigation } from '@react-navigation/native';
 
 import {
     CONFIG_URL_REMOTE,
@@ -9,13 +10,21 @@ import {
 } from '@suite-common/message-system';
 import { Button, Card, Divider, Text, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
+import {
+    type RootStackParamList,
+    RootStackRoutes,
+    type StackNavigationProps,
+} from '@suite-native/navigation';
 import { isCodesignBuild } from '@trezor/env-utils';
 
 import { MessageSystemConfigSourceSelect } from './MessageSystemConfigSourceSelect';
 
+type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.DevUtils>;
+
 export const MessageSystemCard = () => {
     const config = useSelector(selectMessageSystemConfig);
     const allValidMessages = useSelector(selectAllValidMessages);
+    const navigation = useNavigation<NavigationProp>();
     const copyToClipboard = useCopyToClipboard();
     const isCodesigned = isCodesignBuild();
     const remoteConfigUrl = isCodesigned ? CONFIG_URL_REMOTE.stable : CONFIG_URL_REMOTE.develop;
@@ -41,6 +50,14 @@ export const MessageSystemCard = () => {
                         onPress={handleCopyConfig}
                     >
                         Copy full config
+                    </Button>
+                    <Button
+                        intent="neutral"
+                        priority="secondary"
+                        size="medium"
+                        onPress={() => navigation.navigate(RootStackRoutes.MessageSystemManager)}
+                    >
+                        Message manager
                     </Button>
                 </VStack>
                 <Text variant="body-md-strong">Valid messages:</Text>

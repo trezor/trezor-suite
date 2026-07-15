@@ -18,6 +18,7 @@ import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { Box, H2, Image, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect, { UI_REQUEST } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { CheckIcon, WarningIcon } from '@trezor/icons';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -250,9 +251,9 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
         }
     };
 
-    const getIconName = () => {
+    const getIcon = () => {
         if (recovery.status === 'finished') {
-            return hasError ? 'warning' : 'check';
+            return hasError ? WarningIcon : CheckIcon;
         }
 
         return undefined;
@@ -315,7 +316,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                 onBackClick={hasBackClick ? handleBackClick : undefined}
                 onCancel={handleClose}
                 intent={getIntent()}
-                iconName={getIconName()}
+                icon={getIcon()}
                 width={getWidth()}
             >
                 {getStep()}

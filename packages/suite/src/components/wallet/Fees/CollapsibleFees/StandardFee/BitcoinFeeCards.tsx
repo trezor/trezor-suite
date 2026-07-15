@@ -82,7 +82,7 @@ export const BitcoinFeeCards = ({ feeOptions }: BitcoinFeeCardsProps) => {
                 ))}
             </FeeCardsWrapper>
             <DustPreventionNotice
-                chosenFeePerByte={selectedFeeLevel!.feePerUnit}
+                chosenFeePerByte={selectedFeeLevel.feePerUnit}
                 composedFeePerByte={
                     transactionInfo?.type === 'final' ? transactionInfo.feePerByte : undefined
                 }

@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/VerifyMessage.js
 
 import { VerifyMessage as VerifyMessageSchema } from '@trezor/connect-common';
-import type { CoinInfo, MethodPermission, PROTO } from '@trezor/connect-common';
+import type { CoinInfo, PROTO, PermissionRequest } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
@@ -47,8 +47,8 @@ export default class VerifyMessage extends AbstractMethod<'verifyMessage', Param
         this.requiredFirmwareCoins = [coinInfo];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [this.coinPerm('verify_message', this.params.coinInfo)];
     }
 
     get info() {

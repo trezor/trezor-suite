@@ -4,7 +4,6 @@ import type { CryptoId } from 'invity-api';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 
-import { selectTradingMaxSlippagePercentage } from '../../selectors/settingsSelectors';
 import { buyThunks } from '../../thunks/buy';
 import { exchangeThunks } from '../../thunks/exchange';
 import { sellThunks } from '../../thunks/sell';
@@ -13,7 +12,6 @@ import { tradingFixtures } from '../__fixtures__/tradingReducer';
 import { buyInitialState, tradingBuyActions } from '../buyReducer';
 import { exchangeInitialState, tradingExchangeActions } from '../exchangeReducer';
 import { sellInitialState, tradingSellActions } from '../sellReducer';
-import { settingsInitialState, tradingSettingsActions } from '../settingsReducer';
 import { initialState, tradingActions } from '../tradingCommonReducer';
 import { prepareTradingReducer } from '../tradingReducer';
 
@@ -51,7 +49,6 @@ describe('Testing trading reducer', () => {
                     trading: {
                         ...initialState,
                         isLoading: true,
-                        info: { paymentMethods: [{ value: 'creditCard', label: 'Credit Card' }] },
                         buy: {
                             quotes: [{ id: '1', name: 'Quote 1' }],
                             amountLimits: { min: 0, max: 100 },
@@ -72,9 +69,6 @@ describe('Testing trading reducer', () => {
                 isLoading: false,
             }),
         );
-        expect(store.getState().wallet.trading.info).toEqual(
-            expect.objectContaining({ paymentMethods: [] }),
-        );
     });
 
     it('sellThunks.handleRequestThunk.rejected should clear quotes, amountLimits and set isLoading to false', () => {
@@ -90,7 +84,6 @@ describe('Testing trading reducer', () => {
                     trading: {
                         ...initialState,
                         isLoading: true,
-                        info: { paymentMethods: [{ value: 'creditCard', label: 'Credit Card' }] },
                         sell: {
                             quotes: [{ id: '1', name: 'Quote 1' }],
                             amountLimits: { min: 0, max: 100 },
@@ -110,9 +103,6 @@ describe('Testing trading reducer', () => {
                 quotes: [],
                 amountLimits: undefined,
             }),
-        );
-        expect(store.getState().wallet.trading.info).toEqual(
-            expect.objectContaining({ paymentMethods: [] }),
         );
     });
 
@@ -156,7 +146,7 @@ describe('Testing trading reducer', () => {
         );
     });
 
-    it('sellThunks.handleRequestThunk.pending should clear payment methods and set isLoading to true', () => {
+    it('sellThunks.handleRequestThunk.pending should set isLoading to true', () => {
         const store = configureMockStore({
             extra: {},
             reducer: combineReducers({
@@ -168,7 +158,6 @@ describe('Testing trading reducer', () => {
                 wallet: {
                     trading: {
                         ...initialState,
-                        info: { paymentMethods: [{ value: 'creditCard', label: 'Credit Card' }] },
                         sell: {
                             ...sellInitialState,
                             isLoading: false,
@@ -184,9 +173,6 @@ describe('Testing trading reducer', () => {
             expect.objectContaining({
                 isLoading: true,
             }),
-        );
-        expect(store.getState().wallet.trading.info).toEqual(
-            expect.objectContaining({ paymentMethods: [] }),
         );
     });
 
@@ -248,18 +234,6 @@ describe('Testing trading reducer', () => {
                 expect(legacyStore.getState().wallet.trading.favouriteAssets).toEqual({
                     bitcoin: true,
                 });
-            });
-        });
-
-        describe('tradingSettings', () => {
-            it('should contain settings initial state', () => {
-                expect(store.getState().wallet.trading.settings).toEqual(settingsInitialState);
-            });
-
-            it('should delegate settings actions to settings slice', () => {
-                store.dispatch(tradingSettingsActions.setMaxSlippagePercentage('2'));
-
-                expect(selectTradingMaxSlippagePercentage(store.getState())).toEqual('2');
             });
         });
 

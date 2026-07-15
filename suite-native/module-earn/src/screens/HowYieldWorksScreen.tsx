@@ -13,6 +13,7 @@ import {
 import { HowEarnWorksBenefitsSection } from '../components/HowEarnWorks/HowEarnWorksBenefitsSection';
 import { HowEarnWorksHeaderSection } from '../components/HowEarnWorks/HowEarnWorksHeaderSection';
 import { HowEarnWorksTimelineCard } from '../components/HowEarnWorks/HowEarnWorksTimelineCard';
+import { useApyBreakdownAlert } from '../hooks/useApyBreakdownAlert';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { createHowYieldWorksPreset } from '../presets/HowEarnWorks/yieldPresets';
 
@@ -21,9 +22,17 @@ type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoute
 export const HowYieldWorksScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const route = useRoute<RouteProp<YieldStackParamList, YieldStackRoutes.HowYieldWorks>>();
-    const { apy, tokenSymbol, vaultTokenName, resolutionStatus } = useResolvedYieldFlowData(
-        route.params,
-    );
+    const {
+        account,
+        apy,
+        vault,
+        tokenSymbol,
+        vaultTokenSymbol,
+        bonusRewardTokenName,
+        resolutionStatus,
+    } = useResolvedYieldFlowData(route.params);
+
+    const apyBreakdownAlert = useApyBreakdownAlert({ account, vault, apy });
 
     const handleNavigateToYieldConsents = () => {
         navigation.navigate(YieldStackRoutes.YieldConsents, route.params);
@@ -35,8 +44,10 @@ export const HowYieldWorksScreen = () => {
 
     const { benefitItems, timelineSections } = createHowYieldWorksPreset({
         tokenSymbol,
-        vaultTokenName,
+        vaultTokenSymbol,
         apy,
+        onApyPress: apyBreakdownAlert.onPress,
+        bonusRewardTokenName,
     });
 
     return (

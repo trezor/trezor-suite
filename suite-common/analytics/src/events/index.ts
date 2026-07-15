@@ -9,16 +9,27 @@ export { settingsAppLogExportedEvent } from './settingsAppLogExportedEvent';
 export { settingsDeviceChangeLabelEvent } from './settingsDeviceChangeLabelEvent';
 export { settingsDeviceWipeEvent } from './settingsDeviceWipeEvent';
 export { settingsGeneralLabelingEvent } from './settingsGeneralLabelingEvent';
+export { settingsNetworkSearchUsedEvent } from './settingsNetworkSearchUsedEvent';
+export { settingsTestnetNetworksToggleEvent } from './settingsTestnetNetworksToggleEvent';
 export { walletConnectInitEvent } from './walletConnectInitEvent';
 export { walletConnectPairedEvent } from './walletConnectPairedEvent';
 export { walletConnectProposalApprovedEvent } from './walletConnectProposalApprovedEvent';
 export { walletConnectProposalEvent } from './walletConnectProposalEvent';
 export { walletConnectProposalRejectedEvent } from './walletConnectProposalRejectedEvent';
 export { walletConnectSessionRequestEvent } from './walletConnectSessionRequestEvent';
-export { coinDiscoveryEvent } from './coinDiscoveryEvent';
+export { accountsInfoEvent } from './accountsInfoEvent';
 export {
     onboardingStepViewedEvent,
     type DeviceOnboardingStepName,
 } from './onboardingStepViewedEvent';
+export {
+    onboardingFeedbackBannerClickedEvent,
+    type OnboardingFeedbackBannerOrigin,
+} from './onboardingFeedbackBannerClickedEvent';
 export { suiteSyncLabelCreatedEvent } from './suiteSyncLabelCreatedEvent';
 export { walletBalanceEvent } from './walletBalanceEvent';
+export {
+    promoNoDeviceEshopCtaEvent,
+    type NoDeviceEshopCtaOrigin,
+} from './promoNoDeviceEshopCtaEvent';
+export { guideSupportChatOpenedEvent } from './guideSupportChatOpenedEvent';

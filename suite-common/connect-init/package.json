@@ -13,14 +13,12 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.11.2",
+        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/firmware": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
-        "@suite-common/suite-types": "workspace:*",
-        "@suite-common/suite-utils": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@trezor/connect": "workspace:*",

@@ -254,7 +254,7 @@ describe('router', () => {
 
             expect(
                 getAppWithParams({
-                    pathname: '/earn/staking/tron',
+                    pathname: '/earn/tron/stake',
                     hash: '#/trx/0/normal',
                 }),
             ).toEqual({
@@ -264,7 +264,7 @@ describe('router', () => {
                     accountIndex: 0,
                     accountType: 'normal',
                 },
-                route: getRoute('earn-staking-tron'),
+                route: getRoute('earn-tron-stake'),
             });
         });
     });

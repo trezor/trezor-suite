@@ -1,11 +1,12 @@
-import { Column, Row, SkeletonCircle, SkeletonRectangle } from '@trezor/components';
+import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
+import { Column, Row, Skeleton } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { useLoadingSkeleton } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 export const AccountItemSkeleton = () => {
-    const { shouldAnimate } = useLoadingSkeleton();
+    const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
     const { isSidebarCollapsed } = useResponsiveContext();
 
     if (isSidebarCollapsed) {
@@ -16,17 +17,17 @@ export const AccountItemSkeleton = () => {
                 alignItems="center"
                 data-testid="@account-menu/account-item-skeleton"
             >
-                <SkeletonCircle size="24px" />
+                <Skeleton type="circle" size={24} />
             </Row>
         );
     }
 
     return (
         <Row gap={spacings.md} margin={8} data-testid="@account-menu/account-item-skeleton">
-            <SkeletonCircle size="24px" animate={shouldAnimate} />
+            <Skeleton type="circle" size={24} animate={shouldAnimate} />
             <Column alignItems="flex-start" gap={2}>
-                <SkeletonRectangle width="140px" animate={shouldAnimate} />
-                <SkeletonRectangle animate={shouldAnimate} />
+                <Skeleton width={140} animate={shouldAnimate} />
+                <Skeleton animate={shouldAnimate} />
             </Column>
         </Row>
     );

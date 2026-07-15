@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@reduxjs/toolkit": "2.11.2",
+        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/device": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
@@ -34,8 +34,8 @@
         "@trezor/device-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react": "19.2.4",
-        "react-redux": "9.2.0"
+        "react": "19.2.3",
+        "react-redux": "9.3.0"
     },
     "devDependencies": {
         "@suite-native/test-utils-store": "workspace:*"

@@ -24,7 +24,7 @@ export const OriginalLimit = () => {
 
     return (
         <TradeInfoRow testID="ExchangeApproval/OriginalLimit">
-            <Text variant="body-sm">
+            <Text variant="body-sm" color="contentSecondary">
                 <Translation id="moduleTrading.tradingExchangeApprovalScreen.currentLimitLabel" />
             </Text>
             <HStack alignItems="center">

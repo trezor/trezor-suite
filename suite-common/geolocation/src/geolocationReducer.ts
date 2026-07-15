@@ -16,7 +16,7 @@ const geolocationSlice = createSlice({
     name: GEOLOCATION_PREFIX,
     initialState: geolocationInitialState,
     reducers: {
-        setCountryCode(state, action: PayloadAction<CountryCode>) {
+        setCountryCode(state: GeolocationState, action: PayloadAction<CountryCode>) {
             state.countryCode = action.payload;
         },
     },

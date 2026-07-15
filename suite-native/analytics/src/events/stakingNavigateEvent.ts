@@ -12,17 +12,22 @@ type Attributes = {
 export const stakingNavigateEvent: EventDef<Attributes, EventType.StakingNavigate> = {
     name: EventType.StakingNavigate,
     descriptionTrigger:
-        'fired when the user navigates from any staking button to the staking dashboard',
+        'User navigates from any staking button or dashboard state to the staking interface or cancels the navigation',
     changelog: [{ version: '26.4.1', notes: 'added' }],
     attributes: {
         action: {
             changelog: [{ version: '26.4.1', notes: 'added' }],
+            description:
+                'User action: `navigate` when proceeding to staking, `cancel` when dismissing the flow',
         },
         from: {
             changelog: [{ version: '26.4.1', notes: 'added' }],
+            description:
+                'The staking state from which navigation occurred, one of: `earn/staking-inactive`, `earn/staking-active`, `earn/staking-max`, `earn/insufficient-funds`, `earn/staked-but-insufficient-funds`',
         },
         networkSymbol: {
             changelog: [{ version: '26.4.1', notes: 'added' }],
+            description: 'The blockchain network symbol for staking (e.g., `eth`, `ada`, `sol`)',
         },
     },
 };

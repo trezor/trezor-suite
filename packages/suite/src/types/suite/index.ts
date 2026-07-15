@@ -2,6 +2,7 @@ import type { Store as ReduxStore } from 'redux';
 import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 
 import type { backupActions } from '@suite/backup';
+import { type debugActions } from '@suite/debug';
 import type { desktopUpdateActions } from '@suite/desktop-update';
 import { type featureFeedbackSlice } from '@suite/feature-feedback';
 import type { flagsActions } from '@suite/flags';
@@ -12,10 +13,11 @@ import type { recoveryActions } from '@suite/recovery';
 import { type Route, type RouterAction } from '@suite/router';
 import { type suiteSettingsActions } from '@suite/settings';
 import { type suiteSyncSlice } from '@suite/suite-sync';
-import { type torActions } from '@suite/tor';
+import { type TorAction } from '@suite/tor';
 import { type analyticsActions } from '@suite-common/analytics-redux';
 import { type bluetoothActions } from '@suite-common/bluetooth';
 import { type deviceActions } from '@suite-common/device';
+import { type discreetModeActions } from '@suite-common/discreet-mode';
 import { type firmwareActions } from '@suite-common/firmware';
 import { type geolocationActions } from '@suite-common/geolocation';
 import { type addLog } from '@suite-common/logger';
@@ -42,7 +44,7 @@ import {
 } from '@trezor/connect';
 import { type FilterOutFromUnionByTypeProperty } from '@trezor/type-utils';
 
-import { type deviceSlice } from 'src/actions/device/deviceSlice';
+import { type desktopDeviceActions } from 'src/actions/device/deviceSlice';
 import type { OnboardingAction } from 'src/actions/onboarding/onboardingActions';
 import type { BioAuthAction } from 'src/actions/suite/bioAuthActions';
 import type { GuideAction } from 'src/actions/suite/guideActions';
@@ -118,7 +120,7 @@ type FeatureFeedbackAction = ReturnType<
     (typeof featureFeedbackSlice.actions)[keyof typeof featureFeedbackSlice.actions]
 >;
 type DeviceActionDesktop = ReturnType<
-    (typeof deviceSlice.actions)[keyof typeof deviceSlice.actions]
+    (typeof desktopDeviceActions)[keyof typeof desktopDeviceActions]
 >;
 type ThpAction = ReturnType<(typeof thpActions)[keyof typeof thpActions]>;
 type GeolocationAction = ReturnType<(typeof geolocationActions)[keyof typeof geolocationActions]>;
@@ -129,7 +131,10 @@ type SuiteSettingsAction = ReturnType<
 >;
 type RecoveryAction = ReturnType<(typeof recoveryActions)[keyof typeof recoveryActions]>;
 type BackupAction = ReturnType<(typeof backupActions)[keyof typeof backupActions]>;
-type TorAction = ReturnType<(typeof torActions)[keyof typeof torActions]>;
+type DiscreetModeAction = ReturnType<
+    (typeof discreetModeActions)[keyof typeof discreetModeActions]
+>;
+type DebugAction = ReturnType<(typeof debugActions)[keyof typeof debugActions]>;
 type DesktopUpdateAction = ReturnType<
     (typeof desktopUpdateActions)[keyof typeof desktopUpdateActions]
 >;
@@ -138,6 +143,8 @@ type DesktopUpdateAction = ReturnType<
 export type Action =
     | AnalyticsAction
     | BackupAction
+    | DebugAction
+    | DiscreetModeAction
     | BioAuthAction
     | BluetoothAction
     | BluetoothActionDesktop
@@ -197,9 +204,6 @@ export type ForegroundAppProps = {
 };
 
 export type ToastNotificationVariant = 'success' | 'info' | 'warning' | 'error' | 'transparent';
-
-export { TorStatus } from '@suite/tor';
-export type { TorBootstrap } from '@suite/tor';
 
 export enum DisplayMode {
     CHUNKS = 1,

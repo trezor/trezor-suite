@@ -32,7 +32,7 @@ inputs:
       - crypto-utils
       - device-utils
       - device-authenticity
-      - coins-solana
+      - network-solana
       - connect
       - connect-web
       - connect-webextension
@@ -56,17 +56,15 @@ runs:
         node-version-file: ".nvmrc"
         cache: yarn
 
-    - name: Install Socket Firewall
-      uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+    - name: Install SafeDep PMG
+      uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
       continue-on-error: true
       with:
-        mode: firewall-free
-        job-summary: errors
-        firewall-version: 1.11.0
+        version: v0.19.1
 
     - name: Install dependencies
       shell: bash
-      run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
+      run: yarn install --immutable
 
     - name: Check version
       shell: bash
@@ -75,10 +73,17 @@ runs:
     - name: Publish to NPM
       shell: bash
       run: |
-        if [[ "${{ inputs.packageName }}" == coins-* ]]; then
-          cd ./coins/${{ inputs.packageName }}
+        if [[ "${{ inputs.packageName }}" == network-* ]]; then
+          # e.g. "network-solana-sdk"
+          remainder="${{ inputs.packageName }}"
+          # Strip "network-" prefix -> "solana-sdk"
+          remainder="${remainder#network-}"
+          # Strip from first dash onward -> "solana"
+          network="${remainder%%-*}"
+          # Result: ./networks/solana/network-solana-sdk
+          cd "./networks/${network}/${{ inputs.packageName }}"
         else
           cd ./packages/${{ inputs.packageName }}
         fi
         yarn build:lib
-        yarn npm publish --tag ${{ inputs.deploymentType }} --access public
+        yarn npm publish --tag ${{ inputs.deploymentType }} --access public --provenance

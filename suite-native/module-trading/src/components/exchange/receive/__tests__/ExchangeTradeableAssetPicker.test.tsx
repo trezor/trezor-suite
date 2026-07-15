@@ -1,5 +1,6 @@
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import { type TestStore, screen } from '@suite-native/test-utils-store';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 import { FirmwareType } from '@trezor/connect';
@@ -53,7 +54,11 @@ describe('ExchangeTradeableAssetPicker', () => {
     it('should render "Select asset" button with caret', () => {
         const { getByLabelText } = renderTradeableAssetPicker();
 
-        expect(getByLabelText('Select asset')).toHaveTextContent(/^Select asset.$/);
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
+        ).toHaveTextContent(
+            new RegExp(`^${getTranslation('moduleTrading.selectCoin.buttonTitle')}.$`),
+        );
     });
 
     it('should render bottom sheet with all assets', () => {

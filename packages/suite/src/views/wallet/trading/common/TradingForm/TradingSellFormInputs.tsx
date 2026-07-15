@@ -8,12 +8,14 @@ import {
     type TradingSellFormProps,
     type TradingSellType,
     isCountrySubdivisionRequired,
+    selectTradingSellQuotes,
     selectTradingSellSupportedCryptoIds,
 } from '@suite-common/trading';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
+import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, Row } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
@@ -38,6 +40,8 @@ import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
 
 export const TradingSellFormInputs = () => {
     const context = useTradingFormContext<TradingSellType>();
+    const quotes = useSelector(selectTradingSellQuotes);
+    const sellSupportedCryptoIds = useSelector(selectTradingSellSupportedCryptoIds);
 
     const {
         feeInfo,
@@ -47,10 +51,10 @@ export const TradingSellFormInputs = () => {
         shouldSendInSats,
         changeFeeLevel,
         showReserveBanner,
-        quotes,
-        defaultCountry,
     } = context;
+
     const { getValues } = useFormContext<TradingSellFormProps>();
+
     const { outputs, sendCryptoSelect, amountInCrypto, countrySelect } = getValues();
     const output = outputs[0];
     const currencySelect = output?.currency;
@@ -68,7 +72,10 @@ export const TradingSellFormInputs = () => {
 
     const outputAmount =
         shouldSendInSats && output?.amount
-            ? convertAmountSubunitsToUnits(output.amount, sendAssetDecimals)
+            ? subunitsToUnits({
+                  value: asAmountSubunit(new BigNumber(output.amount)),
+                  decimals: sendAssetDecimals,
+              }).toString()
             : output?.amount;
 
     const onCryptoCurrencyChangeRef = useCurrentRef(helpers.onCryptoCurrencyChange);
@@ -79,10 +86,7 @@ export const TradingSellFormInputs = () => {
         [onCryptoCurrencyChangeRef],
     );
 
-    const sellSupportedCryptoIds = useSelector(selectTradingSellSupportedCryptoIds);
-
-    const selectedCountry = countrySelect ?? defaultCountry;
-    const countryRequiresSubdivision = isCountrySubdivisionRequired(selectedCountry?.value);
+    const countryRequiresSubdivision = isCountrySubdivisionRequired(countrySelect?.value);
 
     return (
         <Column gap={20}>
@@ -108,13 +112,13 @@ export const TradingSellFormInputs = () => {
                             cryptoCurrencyLabel={sendCryptoSelect?.id}
                         />
                         {amountInCrypto && (
-                            <Row justifyContent="space-between" alignItems="flex-start">
+                            <Row justifyContent="space-between" alignItems="center" gap={8}>
                                 <TradingFractionButtons />
                                 <TradingBalance
                                     balance={outputAmount}
                                     displaySymbol={sendCryptoSelect?.id}
                                     symbol={account.symbol}
-                                    tokenAddress={tokenAddress as TokenAddress}
+                                    tokenAddress={tokenAddress}
                                     showOnlyAmount
                                     amountInCrypto={amountInCrypto}
                                     decimals={sendAssetDecimals}
@@ -131,22 +135,23 @@ export const TradingSellFormInputs = () => {
                 </TradingFormSection>
             </TradingFormCard>
             <TradingFormCard>
-                <TradingFormFees
-                    feeInfo={feeInfo}
-                    account={account}
-                    composedLevels={composedLevels}
-                    changeFeeLevel={changeFeeLevel}
-                />
-                {!!quotes.length && (
-                    <TradingFormInputPaymentMethod label="TR_TRADING_RECEIVE_METHOD" />
-                )}
-
                 <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
                 {countryRequiresSubdivision && (
                     <TradingFormInputCountrySubdivision
                         label="TR_TRADING_COUNTRY_SUBDIVISION"
-                        country={selectedCountry}
+                        country={countrySelect}
                     />
+                )}
+                {!!quotes.length && (
+                    <>
+                        <TradingFormFees
+                            feeInfo={feeInfo}
+                            account={account}
+                            composedLevels={composedLevels}
+                            changeFeeLevel={changeFeeLevel}
+                        />
+                        <TradingFormInputPaymentMethod label="TR_TRADING_RECEIVE_METHOD" />
+                    </>
                 )}
 
                 <TradingSelectedOfferProvider />

@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { selectCurrentTargetAnonymity } from '@suite/coinjoin';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     DEFAULT_OPRETURN,
@@ -28,7 +29,6 @@ import { BigNumber, throwError } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useCoinjoinRegisteredUtxos } from 'src/hooks/wallet/form/useCoinjoinRegisteredUtxos';
-import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
 
 import { useCompose } from './form/useCompose';
 import { useFees } from './form/useFees';
@@ -91,12 +91,14 @@ const getEthereumFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParamsEthere
         const highMaxPriorityFeePerGas = highLevel.maxPriorityFeePerGas;
         const newMaxFeePerGas = BigNumber.maximum(currentMaxFee, highMaxFeePerGas ?? 0)
             .multipliedBy(ETH_SPEED_UP_TX_MULTIPLIER)
+            .decimalPlaces(9, BigNumber.ROUND_UP)
             .toString();
         const newMaxPriorityFeePerGas = BigNumber.maximum(
             currentMaxPriorityFee,
             highMaxPriorityFeePerGas ?? 0,
         )
             .multipliedBy(ETH_SPEED_UP_TX_MULTIPLIER)
+            .decimalPlaces(9, BigNumber.ROUND_UP)
             .toString();
 
         return {

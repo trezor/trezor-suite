@@ -4,6 +4,7 @@ import { Translation } from '@suite/intl';
 import { useWalletLabel } from '@suite/wallet';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
+import { LinkBreakIcon, LinkIcon } from '@trezor/icons';
 
 import { DeviceConnectionText } from './DeviceConnectionText';
 
@@ -23,7 +24,7 @@ export const DeviceStatusTextVisible = ({
         <DeviceConnectionText
             intent={connected ? 'brand' : 'neutral'}
             priority={connected ? 'primary' : 'secondary'}
-            icon={connected ? 'link' : 'linkBreak'}
+            icon={connected ? LinkIcon : LinkBreakIcon}
             data-testid={connected ? '@deviceStatus-connected' : '@deviceStatus-disconnected'}
             data-testid-alt="@deviceStatus"
         >

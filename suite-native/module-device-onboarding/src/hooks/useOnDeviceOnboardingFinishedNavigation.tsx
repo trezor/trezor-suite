@@ -1,7 +1,9 @@
 import { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { setIsOnboardingFeedbackBannerEnabled } from '@suite-native/banner-flags';
 import {
     type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
@@ -14,11 +16,13 @@ type NavigationProps = StackNavigationProps<
 >;
 
 export const useOnDeviceOnboardingFinishedNavigation = () => {
+    const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
 
     const onDeviceOnboardingFinishedNavigation = useCallback(() => {
+        dispatch(setIsOnboardingFeedbackBannerEnabled(true));
         navigation.navigate(DeviceOnboardingStackRoutes.Congratulations);
-    }, [navigation]);
+    }, [dispatch, navigation]);
 
     return { onDeviceOnboardingFinishedNavigation };
 };

@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgRewindCircleFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M16 3a13 13 0 1 0 13 13A13.013 13.013 0 0 0 16 3m6 16.5a1 1 0 0 1-1.574.819l-5-3.5A1 1 0 0 1 15 16v3.5a1 1 0 0 1-1.574.819l-5-3.5a1 1 0 0 1 0-1.638l5-3.5A1 1 0 0 1 15 12.5V16a1 1 0 0 1 .426-.819l5-3.5A1 1 0 0 1 22 12.5z"
+        />
+    </svg>
+);
+export { SvgRewindCircleFilled as ReactComponent };

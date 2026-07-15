@@ -2,6 +2,7 @@ import { expect, test } from '../../support/fixtures';
 
 test.describe('Passphrase duplicate', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { passphrase_protection: true } });
+
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });

@@ -12,8 +12,8 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "build:lib": "yarn browser-detection && yarn favicon && yarn guide-pull-content",
-        "browser-detection": "webpack --config ./browser-detection.webpack.ts",
-        "favicon": "webpack --config ./favicon.webpack.ts",
+        "browser-detection": "TS_NODE_PROJECT=\"./tsconfig.webpack.json\" webpack --config ./browser-detection.webpack.ts",
+        "favicon": "TS_NODE_PROJECT=\"./tsconfig.webpack.json\" webpack --config ./favicon.webpack.ts",
         "guide-pull-content": "yarn tsx ./src/guide/index.ts",
         "update-coinjoin-middleware": "./files/bin/coinjoin/update.sh",
         "type-check": "yarn g:tsc --build tsconfig.json",
@@ -22,7 +22,6 @@
     "dependencies": {
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
-        "@suite/intl": "workspace:*",
         "semver": "^7.7.1"
     },
     "devDependencies": {
@@ -38,8 +37,8 @@
         "style-loader": "^4.0.0",
         "ts-node": "^10.9.2",
         "tsx": "^4.21.0",
-        "webpack": "5.106.2",
-        "webpack-cli": "^7.0.2"
+        "webpack": "5.108.1",
+        "webpack-cli": "^7.0.3"
     },
     "nx": {
         "targets": {

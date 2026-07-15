@@ -20,7 +20,8 @@ export const firmwareFirmwareUpdateStartedEvent: EventDef<
     EventType.FirmwareFirmwareUpdateStarted
 > = {
     name: EventType.FirmwareFirmwareUpdateStarted,
-    descriptionTrigger: 'On starting update firmware flow or tapping Retry button.',
+    descriptionTrigger:
+        'User initiates a firmware update or taps the retry button after a failed update attempt',
     changelog: [{ version: '25.1.2', notes: 'added' }],
 
     attributes: {
@@ -30,31 +31,33 @@ export const firmwareFirmwareUpdateStartedEvent: EventDef<
         },
         fromBootloaderVersion: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'Bootloader version before update',
+            description: 'Bootloader version before the update',
         },
         fromFwVersion: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'Firmware version before update',
+            description: 'Firmware version before the update',
         },
         toFwVersion: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'Target firmware version',
+            description: 'Target firmware version the device is updating to',
         },
         fromFwType: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'Firmware type before update',
+            description: 'Type of firmware before update: `bitcoin-only`, `universal`, or `none`',
         },
         toFwType: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'Target firmware type',
+            description: 'Type of target firmware: `bitcoin-only` or `universal`',
         },
         location: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'Location where the update was started',
+            description:
+                'Where the update was initiated: `settings` from device settings, `onboarding` during initial setup, `null` if not specified',
         },
         startType: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'Started first time or is it retry?',
+            description:
+                'How the update was started: `normal` for first attempt, `retry` if retrying after a previous failure',
         },
     },
 };

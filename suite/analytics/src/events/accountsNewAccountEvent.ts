@@ -10,7 +10,8 @@ type Attributes = {
 
 export const accountsNewAccountEvent: EventDef<Attributes, EventType.AccountsNewAccount> = {
     name: EventType.AccountsNewAccount,
-    descriptionTrigger: 'Accounts → `+` → Add new account of already activated coin',
+    descriptionTrigger:
+        'User creates a new account for an already activated coin via Accounts menu > + button > Add new account',
     changelog: [
         { version: '1.0.0', notes: 'added' },
         {
@@ -21,16 +22,19 @@ export const accountsNewAccountEvent: EventDef<Attributes, EventType.AccountsNew
 
     attributes: {
         symbol: {
+            description:
+                'The blockchain network symbol: `btc` for Bitcoin, `eth` for Ethereum, etc.',
             changelog: [{ version: '1.0.0', notes: 'added' }],
-            description: 'btc, eth, etc, doge,...',
         },
         path: {
+            description:
+                'The derivation path used for the account (see [Standard derivation paths](https://wiki.trezor.io/Standard_derivation_paths))',
             changelog: [{ version: '1.0.0', notes: 'added' }],
-            description: 'https://wiki.trezor.io/Standard_derivation_paths',
         },
         type: {
+            description:
+                'The account type, one of: `normal`, `imported`, `placeholder`, `legacy`, `segwit`, `coinjoin`, `taproot`, `ledger`',
             changelog: [{ version: '1.0.0', notes: 'added' }],
-            description: 'normal, segwit, legacy',
         },
     },
 };

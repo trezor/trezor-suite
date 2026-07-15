@@ -53,25 +53,19 @@ jobs:
             platform: win
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           lfs: true
           submodules: recursive
       - name: Install node and yarn
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
 
-      - name: Install Socket Firewall
-        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
-        continue-on-error: true
-        with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
+      # safedep/pmg not available on macOS (that's ok, PMG must be run on PR workflows but here it's optional)
       - name: Install deps and build libs
         run: |
-          $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
+          yarn workspaces focus @trezor/suite-desktop @trezor/suite-desktop-ui @trezor/suite-desktop-core @trezor/suite-build @trezor/suite-data @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/transport-bridge build:lib
@@ -100,7 +94,7 @@ jobs:
     needs: suite-desktop
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         # checkout is only needed for the version number for draft release
       - name: Download suite-desktop apps
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
@@ -110,7 +104,7 @@ jobs:
           path: ./
       - name: Generate GitHub App token
         id: trezor-bot-token
-        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
@@ -134,9 +128,9 @@ jobs:
     needs: suite-desktop
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6
+        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production
           aws-region: eu-central-1
@@ -178,30 +172,24 @@ jobs:
     runs-on: trezor-suite-release-runners
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           lfs: true
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6
+        uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production
           aws-region: eu-central-1
       - name: Setup node
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
-      - name: Install Socket Firewall
-        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
-        continue-on-error: true
-        with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
+      # safedep/pmg not available on macOS (that's ok, PMG must be run on PR workflows but here it's optional)
       - name: Install dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable # focus install is not used here to make sure that all global patches are applied for the release.
+          yarn workspaces focus @trezor/suite-web @trezor/suite-data @suite-common/message-system
 
       - name: Build suite-web
         env:
@@ -242,25 +230,19 @@ jobs:
             platform: win
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           lfs: true
           submodules: recursive
       - name: Install node and yarn
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
 
-      - name: Install Socket Firewall
-        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
-        continue-on-error: true
-        with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
+      # safedep/pmg not available on macOS (that's ok, PMG must be run on PR workflows but here it's optional)
       - name: Install deps and build libs
         run: |
-          $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
+          yarn workspaces focus @trezor/suite-desktop @trezor/suite-desktop-ui @trezor/suite-desktop-core @trezor/suite-build @trezor/suite-data @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/transport-bridge build:lib
@@ -323,7 +305,7 @@ jobs:
     needs: create-test-releases
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
       - name: Download suite-desktop apps
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:

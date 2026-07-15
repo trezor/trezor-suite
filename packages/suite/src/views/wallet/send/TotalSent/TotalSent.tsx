@@ -9,7 +9,7 @@ import {
     convertAmountSubunitsToUnits,
     formatNetworkAmount,
 } from '@suite-common/wallet-utils';
-import { Card, Column, InfoItem, SkeletonRectangle } from '@trezor/components';
+import { Card, Column, InfoItem, Skeleton } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
@@ -22,7 +22,7 @@ import { TotalSentFeeContent } from './TotalSentFeeContent';
 type ChildOrSkeletonProps = PropsWithChildren<{ isLoading?: boolean }>;
 
 const ChildOrSkeleton = ({ children, isLoading }: ChildOrSkeletonProps) =>
-    isLoading ? <SkeletonRectangle animate={true} /> : children;
+    isLoading ? <Skeleton animate={true} /> : children;
 
 const Container = styled.div`
     position: sticky;
@@ -65,7 +65,7 @@ export const TotalSent = () => {
 
     return (
         <Container>
-            <Card height="min-content" fillType="flat">
+            <Card height="min-content" type="sunken">
                 <Column gap={4} margin={{ bottom: 24 }}>
                     {!isZeroValueTx && (
                         <InfoItem

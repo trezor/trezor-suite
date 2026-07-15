@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { type ActiveView } from '@suite-common/suite-types';
 import { Box, Modal, ResizableBox, variables } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
-import { borders, spacings, zIndices } from '@trezor/theme';
+import { spacings, zIndices } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
 import { setWidth as setGuideWidth } from 'src/actions/suite/guideActions';
@@ -15,6 +15,7 @@ import {
     Guide,
     GuideArticle,
     GuideCategory,
+    GuideShortcuts,
     SupportFeedbackSelection,
 } from 'src/components/guide';
 import { MIN_CONTENT_WIDTH } from 'src/constants/suite/layout';
@@ -36,6 +37,8 @@ const getGuideContent = (activeView: ActiveView) => {
             return <Feedback type="SUGGESTION" />;
         case 'GUIDE_DEFAULT':
             return <Guide />;
+        case 'KEYBOARD_SHORTCUTS':
+            return <GuideShortcuts />;
         default:
             exhaustive(activeView);
     }
@@ -119,12 +122,7 @@ export const GuideRouter = () => {
                 onWidthResizeEnd={handleResizeEnd}
                 zIndex={zIndices.guide}
             >
-                <Box
-                    height="100dvh"
-                    maxWidth="100vw"
-                    overflow="hidden auto"
-                    borderWidth={{ left: borders.widths.small }}
-                >
+                <Box height="100dvh" maxWidth="100vw" overflow="hidden auto">
                     {activeView && getGuideContent(activeView)}
                 </Box>
             </ResizableBox>

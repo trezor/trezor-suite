@@ -1,5 +1,5 @@
 import { Translation, type TranslationKey } from '@suite/intl';
-import { Button, type IconName } from '@trezor/components';
+import { Button, type IconComponent } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
@@ -10,7 +10,7 @@ interface TradingFormOfferConfirmButtonProps {
     isLoading: boolean;
     translationId: TranslationKey;
     translationValues?: Record<string, string>;
-    iconRight?: IconName;
+    iconRight?: IconComponent;
     testId: string;
 }
 

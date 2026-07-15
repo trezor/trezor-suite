@@ -26,7 +26,7 @@ export const StakingEarnProviderConsentModal = ({
     provider,
     yieldContext,
 }: StakingEarnProviderConsentModalProps) => {
-    const { proceedToSupply, onCancelClick } = useEarnProviderConsentActions({
+    const { proceedToEarnFlow, onCancelClick } = useEarnProviderConsentActions({
         flow: EarnFlow.Stake,
         onCancel,
         account,
@@ -55,7 +55,7 @@ export const StakingEarnProviderConsentModal = ({
                     values={{ providerName }}
                 />
             }
-            onConfirm={proceedToSupply}
+            onConfirm={proceedToEarnFlow}
             onCancel={onCancelClick}
             networkType={account.networkType}
         >

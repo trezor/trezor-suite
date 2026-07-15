@@ -11,12 +11,12 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.11.2",
+        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/suite-sync": "workspace:*",
-        "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/labeling": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "react": "19.2.4",
-        "react-redux": "9.2.0"
+        "@trezor/device-utils": "workspace:*",
+        "react": "19.2.3",
+        "react-redux": "9.3.0"
     }
 }

@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { type UserContextPayload } from '@suite-common/suite-types';
 import { Banner, Column, Modal, Paragraph } from '@trezor/components';
+import { TorBrowserIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 type DisableTorStopCoinjoinModalProps = {
@@ -42,7 +43,7 @@ export const DisableTorStopCoinjoinModal = ({
             <Column gap={spacings.xl}>
                 <Banner
                     intent="warning"
-                    icon="torBrowser"
+                    icon={TorBrowserIcon}
                     description={
                         <Paragraph typographyStyle="body-md">
                             <Translation

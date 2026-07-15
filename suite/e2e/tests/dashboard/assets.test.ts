@@ -1,6 +1,6 @@
 import { expect, test } from '../../support/fixtures';
 
-test.describe('Assets', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
+test.describe('Assets', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage, dashboardPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });

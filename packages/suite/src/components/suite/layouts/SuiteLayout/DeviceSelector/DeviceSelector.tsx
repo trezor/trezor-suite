@@ -4,9 +4,10 @@ import styled, { css } from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
-import { Box, Icon, Tooltip } from '@trezor/components';
-import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
-import { borders, spacingsPx, zIndices } from '@trezor/theme';
+import { Box, Icon, Row, ShortcutBadge, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
+import { commonFocusStyles, focusStyleTransition } from '@trezor/components/src/utils/utils';
+import { CaretCircleDownIcon } from '@trezor/icons';
+import { borders, spacings, spacingsPx, zIndices } from '@trezor/theme';
 
 import { setRecentlyConnectedDevicePath } from 'src/actions/suite/suiteActions';
 import { openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
@@ -39,11 +40,13 @@ const Wrapper = styled.div<{ $isSidebarCollapsed?: boolean }>`
             justify-content: center;
         `}
 
-    ${getFocusShadowStyle()};
+    &:focus-visible {
+        ${commonFocusStyles}
+    }
 
     &:hover {
         ${CaretContainer} {
-            background: ${({ theme }) => theme.legacyBackgroundTertiaryPressedOnElevation0};
+            background: ${({ theme }) => theme.elementFillGhostPressed};
         }
     }
 `;
@@ -100,23 +103,39 @@ export const DeviceSelector = () => {
             zIndex={zIndices.popover /* to prevent it from appearing above modals */}
         >
             <Wrapper $isSidebarCollapsed={isSidebarCollapsed}>
-                <InnerContainer
-                    onClick={handleSwitchDeviceClick}
-                    tabIndex={0}
-                    data-testid="@menu/switch-device"
+                {/* The shortcut hint is shown only in the expanded sidebar; when collapsed,
+                    DeviceStatus renders its own tooltip with the device detail and shortcut. */}
+                <Tooltip
+                    cursor="pointer"
+                    width="100%"
+                    isActive={!isSidebarCollapsed}
+                    delayShow={TOOLTIP_DELAY_LONG}
+                    placement="right"
+                    content={
+                        <Row gap={spacings.sm} alignItems="center">
+                            <Translation id="TR_GUIDE_KEYBOARD_SHORTCUTS_SWITCH_DEVICE" />
+                            <ShortcutBadge shortcut={['ALT', 'KEY_W']} isInverse />
+                        </Row>
+                    }
                 >
-                    <Box flex="1" minWidth="0" overflow="hidden">
-                        <SidebarDeviceStatus />
-                    </Box>
+                    <InnerContainer
+                        onClick={handleSwitchDeviceClick}
+                        tabIndex={0}
+                        data-testid="@menu/switch-device"
+                    >
+                        <Box flex="1" minWidth="0" overflow="hidden">
+                            <SidebarDeviceStatus />
+                        </Box>
 
-                    <ExpandedSidebarOnly>
-                        {selectedDevice?.state && (
-                            <CaretContainer>
-                                <Icon size={20} name="caretCircleDown" />
-                            </CaretContainer>
-                        )}
-                    </ExpandedSidebarOnly>
-                </InnerContainer>
+                        <ExpandedSidebarOnly>
+                            {selectedDevice?.state && (
+                                <CaretContainer>
+                                    <Icon size={20} as={CaretCircleDownIcon} />
+                                </CaretContainer>
+                            )}
+                        </ExpandedSidebarOnly>
+                    </InnerContainer>
+                </Tooltip>
             </Wrapper>
         </Tooltip>
     );

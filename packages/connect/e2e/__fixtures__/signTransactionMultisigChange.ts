@@ -73,7 +73,7 @@ export default {
         {
             description: 'Testnet (multisig): external external',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [input1, input2],
                 outputs: [
                     {
@@ -97,7 +97,7 @@ export default {
         {
             description: 'Testnet (multisig): external internal',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [input1, input2],
                 outputs: [
                     {
@@ -121,7 +121,7 @@ export default {
         {
             description: 'Testnet (multisig): internal internal',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [input1, input2],
                 outputs: [
                     {
@@ -145,7 +145,7 @@ export default {
         {
             description: 'Testnet (multisig): external external',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [input1, input2],
                 outputs: [
                     {

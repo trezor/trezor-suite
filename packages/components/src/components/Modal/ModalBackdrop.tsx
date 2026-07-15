@@ -30,8 +30,8 @@ const Backdrop = styled.div<{ $opaque?: boolean }>`
                   background: ${theme.surfaceFillSunken};
               `
             : css`
-                  backdrop-filter: blur(5px);
-                  background: rgb(0 0 0 / 30%);
+                  backdrop-filter: blur(16px);
+                  background: ${theme.surfaceFillModalUnderlay};
               `}
     height: 100%;
 `;
@@ -62,7 +62,6 @@ export const ModalBackdrop = ({
                             justifyContent={mapAlignmentToJustifyContent(alignment)}
                             gap={spacings.md}
                             height="100%"
-                            overflow="auto"
                         >
                             <InnerWrapper onMouseDown={e => e.stopPropagation()}>
                                 {children}

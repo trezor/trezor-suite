@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgArrowUDownRightFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="m28.707 21.707-6 6A1 1 0 0 1 21 27v-5H11a8 8 0 0 1 0-16h11a1 1 0 1 1 0 2H11a6 6 0 1 0 0 12h10v-5a1 1 0 0 1 1.707-.707l6 6a1 1 0 0 1 0 1.415z"
+        />
+    </svg>
+);
+export { SvgArrowUDownRightFilled as ReactComponent };

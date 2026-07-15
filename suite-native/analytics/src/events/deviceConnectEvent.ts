@@ -17,17 +17,33 @@ type Attributes = {
 
 export const deviceConnectEvent: EventDef<Attributes, EventType.DeviceConnect> = {
     name: EventType.DeviceConnect,
-    descriptionTrigger: 'When device is successfully connected and authorized.',
+    descriptionTrigger:
+        'A Trezor device is successfully connected to the application and authorized for use',
     changelog: [
         { version: '25.5.1', notes: 'Added attribute: mode' },
         { version: '25.10.1', notes: 'Added attribute: connectionType' },
         { version: '25.11.1', notes: 'added' },
     ],
     attributes: {
-        mode: { changelog: [{ version: '25.5.1', notes: 'added' }] },
-        firmwareVersion: { changelog: [{ version: '25.5.1', notes: 'added' }] },
-        pinProtection: { changelog: [{ version: '25.5.1', notes: 'added' }] },
-        deviceModel: { changelog: [{ version: '25.5.1', notes: 'added' }] },
+        mode: {
+            changelog: [{ version: '25.5.1', notes: 'added' }],
+            description:
+                'The device mode (e.g., `normal`, `bootloader`, `initialize`, `seedless`), or null if unknown',
+        },
+        firmwareVersion: {
+            changelog: [{ version: '25.5.1', notes: 'added' }],
+            description:
+                'The firmware version installed on the device as a version array, or null if not available',
+        },
+        pinProtection: {
+            changelog: [{ version: '25.5.1', notes: 'added' }],
+            description:
+                'Whether PIN protection is enabled on the device: `true` if enabled, `false` if disabled, null if unknown',
+        },
+        deviceModel: {
+            changelog: [{ version: '25.5.1', notes: 'added' }],
+            description: 'The device model identifier (e.g., T1B1, T2T1), or null if unknown',
+        },
         isBitcoinOnly: {
             changelog: [
                 {
@@ -36,7 +52,14 @@ export const deviceConnectEvent: EventDef<Attributes, EventType.DeviceConnect> =
                 },
             ],
         },
-        deviceLanguage: { changelog: [{ version: '25.5.1', notes: 'added' }] },
-        connectionType: { changelog: [{ version: '25.10.1', notes: 'added' }] },
+        deviceLanguage: {
+            changelog: [{ version: '25.5.1', notes: 'added' }],
+            description: 'The language set on the device, or null if not available',
+        },
+        connectionType: {
+            changelog: [{ version: '25.10.1', notes: 'added' }],
+            description:
+                'The connection type used: `cable` for USB/wired connection, `bluetooth` for wireless connection',
+        },
     },
 };

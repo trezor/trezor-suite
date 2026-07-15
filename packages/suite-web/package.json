@@ -16,17 +16,23 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@sentry/browser": "10.50.0",
+        "@sentry/browser": "10.62.0",
         "@suite-common/dependency-injection": "workspace:*",
+        "@suite-common/suite-utils": "workspace:*",
+        "@suite/debug": "workspace:*",
         "@suite/platform-encryption-webauthn": "workspace:*",
         "@suite/router": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
         "@trezor/suite": "workspace:*",
+        "@trezor/transport": "workspace:*",
+        "@trezor/transport-web": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "core-js": "^3.49.0",
         "history": "^5.3.0",
-        "react": "19.2.4",
-        "react-dom": "19.2.4",
-        "react-redux": "9.2.0"
+        "react": "19.2.3",
+        "react-dom": "19.2.3",
+        "react-redux": "9.3.0"
     },
     "devDependencies": {
         "@suite/sentry": "workspace:*",

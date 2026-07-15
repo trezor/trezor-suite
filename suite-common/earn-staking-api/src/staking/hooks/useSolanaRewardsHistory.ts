@@ -1,10 +1,27 @@
+import { captureException, withScope } from '@sentry/core';
+
 import { commonQueryKeys, keepPreviousData, useQuery } from '@suite-common/react-query';
 import { type Account } from '@suite-common/wallet-types';
 
 import { type SolRewardsHistory } from '../../api/types';
+import { EARN_API_BASE_URL } from '../../constants';
 import { getSolanaRewardsHistory } from '../services';
 
 const isInt = (value: unknown): value is number => Number.isInteger(value);
+
+function reportSolanaRewardsOutOfSync(account: Account) {
+    withScope(scope => {
+        scope.setTag('error.code', 'solana_rewards_history_out_of_sync');
+        scope.setTag('error.source', EARN_API_BASE_URL);
+        scope.setTag('error.network', account.networkType);
+        scope.setTag('error.service', 'rewards_history');
+        captureException(
+            new Error(
+                'Solana rewards history is out of sync with the current active epoch. Everstake API might return stale data.',
+            ),
+        );
+    });
+}
 
 function rewardsNotAvailableYet(account: Account, rewards: SolRewardsHistory['rewards']) {
     if (account.networkType !== 'solana') {
@@ -52,17 +69,11 @@ function rewardsOutOfSync(account: Account, rewards: SolRewardsHistory['rewards'
 interface UseSolanaRewardsProps {
     limit: number;
     offset: number;
-    onTotalCount: (totalCount: number) => void;
-
-    /**
-     * Triggered when the rewards history is out of sync with the current active epoch. I.e. the API returns stale data and there's an error to investigate.
-     */
-    onOutOfSync?: () => void;
 }
 
 export function useSolanaRewardsHistory(
     account: Account,
-    { limit, offset, onTotalCount, onOutOfSync }: UseSolanaRewardsProps,
+    { limit, offset }: UseSolanaRewardsProps,
 ) {
     return useQuery({
         enabled: account.symbol === 'sol',
@@ -73,15 +84,15 @@ export function useSolanaRewardsHistory(
                 params: { limit, offset },
             });
 
-            onTotalCount(totalCount);
+            const notAvailableYet = offset === 0 && rewardsNotAvailableYet(account, rewards);
+            const outOfSync = offset === 0 && rewardsOutOfSync(account, rewards);
 
-            const outOfSync = rewardsOutOfSync(account, rewards);
-
-            if (outOfSync) onOutOfSync?.();
+            if (outOfSync) reportSolanaRewardsOutOfSync(account);
 
             return {
                 rewards,
-                notAvailableYet: rewardsNotAvailableYet(account, rewards),
+                totalCount,
+                notAvailableYet,
                 outOfSync,
             };
         },

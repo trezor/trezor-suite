@@ -24,12 +24,10 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedSpinnerFrameProps)[numb
 const StyledLottie = styled(Lottie)<
     {
         size: SpinnerProps['size'];
-        $isDisabled: SpinnerProps['isDisabled'];
     } & TransientProps<AllowedFrameProps>
 >`
     width: ${({ size }) => `${size}px`};
     height: ${({ size }) => `${size}px`};
-    filter: ${({ $isDisabled }) => ($isDisabled ? 'grayscale(1) opacity(0.6)' : 'none')};
     display: flex;
 
     ${withFrameProps}
@@ -55,9 +53,10 @@ export const Spinner = ({
     ...rest
 }: SpinnerProps) => {
     const theme = useTheme();
-    const defaultBodyColor = theme.contentBrand;
-    const defaultWarningColor = theme.contentWarning;
+    const defaultBodyColor = isDisabled ? theme.contentDisabled : theme.contentBrand;
+    const defaultWarningColor = isDisabled ? theme.contentDisabled : theme.contentWarning;
     const defaultWarningForegroundColor = theme.contentPrimaryInverse;
+    const animationKey = `${theme.variant}-${variant}-${isDisabled ? 'disabled' : 'enabled'}`;
 
     const frameProps = pickAndPrepareFrameProps(rest, allowedSpinnerFrameProps);
 
@@ -119,8 +118,8 @@ export const Spinner = ({
 
     return (
         <StyledLottie
+            key={animationKey}
             size={size}
-            $isDisabled={isDisabled}
             data-testid={dataTest ?? '@spinner'}
             {...lottieProps}
             {...frameProps}

@@ -11,10 +11,12 @@ const clean = (markdown: string): string => markdown.replace(/^---\n.*?\n---\n/s
  * Transforms HTML notation produced by GitBook to stadard markdown which can be parsed by react-markdown lib.
  *
  * <figure><img src=".gitbook/assets/example.png" alt=""><figcaption></figcaption></figure> to ![](.gitbook/assets/example.png)
+ *
+ * The `<img>` tag may carry extra attributes (e.g. `width`), so anything after the `src` up to the closing `>` is ignored.
  */
 export const transformImagesMarkdown = (markdown: string) =>
     markdown.replace(
-        /<figure><img src="([^"]+)" alt=""><figcaption><\/figcaption><\/figure>/g,
+        /<figure><img src="([^"]+)"[^>]*><figcaption><\/figcaption><\/figure>/g,
         '![]($1)',
     );
 

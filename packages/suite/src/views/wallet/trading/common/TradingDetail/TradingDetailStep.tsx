@@ -1,7 +1,7 @@
-import { BulletList, type BulletListItemState, Row, Spinner, Text } from '@trezor/components';
+import { Row, Spinner, StepList, type StepListItemState, Text } from '@trezor/components';
 
 type TradingDetailStepProps = {
-    state: BulletListItemState;
+    state: StepListItemState;
     title: React.ReactNode;
     children?: React.ReactNode;
     doneContent?: React.ReactNode;
@@ -16,7 +16,7 @@ export const TradingDetailStep = ({
     const isActive = state === 'active';
 
     return (
-        <BulletList.Item
+        <StepList.Item
             state={state}
             title={
                 <Row justifyContent="space-between" gap={12}>
@@ -29,6 +29,6 @@ export const TradingDetailStep = ({
             }
         >
             {children && state !== 'done' && children}
-        </BulletList.Item>
+        </StepList.Item>
     );
 };

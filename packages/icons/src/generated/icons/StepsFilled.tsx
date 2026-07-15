@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgStepsFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M30 7v18a1 1 0 0 1-1 1H1a1 1 0 0 1 0-2h6v-5a1 1 0 0 1 1-1h6v-5a1 1 0 0 1 1-1h6V7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1"
+        />
+    </svg>
+);
+export { SvgStepsFilled as ReactComponent };

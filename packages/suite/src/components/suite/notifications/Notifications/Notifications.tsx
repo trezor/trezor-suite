@@ -4,6 +4,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { Divider, IconButton, Row, Tabs } from '@trezor/components';
+import { XIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { SETTINGS } from 'src/config/suite';
@@ -50,7 +51,7 @@ export const Notifications = (props: NotificationsProps) => {
                     <IconButton
                         intent="neutral"
                         priority="secondary"
-                        icon="x"
+                        icon={XIcon}
                         onClick={onCancel}
                         tooltip={{ content: <Translation id="TR_CLOSE" /> }}
                     />

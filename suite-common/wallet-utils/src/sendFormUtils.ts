@@ -7,8 +7,6 @@ import {
     type Merge,
 } from 'react-hook-form';
 
-import { fromWei, numberToHex, padLeft, toWei } from 'web3-utils';
-
 import {
     type Network,
     type NetworkSymbol,
@@ -58,7 +56,8 @@ import {
     networkAmountToSmallestUnit,
 } from './amountUtils';
 import { isBaseCurrencyWithSats } from './baseCurrency';
-import { isEip1559, isEvmApprovalTx, sanitizeHex } from './ethUtils';
+import { fromEther, fromGwei, fromIntegerString, fromWei } from './ethConverter';
+import { isEip1559, isEvmApprovalTx, sanitizeHex, strip } from './ethUtils';
 
 export const calculateTotal = (amount: string, fee: string): string => {
     try {
@@ -124,16 +123,15 @@ export const calculateTotalGasCost = (gasPriceInWei?: string, gasLimit?: string)
     return fee.toFixed();
 };
 
-const getSerializedAmount = (amount?: string) =>
-    amount ? numberToHex(toWei(amount, 'ether')) : '0x00';
+const getSerializedAmount = (amount?: string) => (amount ? fromEther(amount).toWei('hex') : '0x00');
 
 const getSerializedErc20Transfer = (token: TokenInfo, to: string, amount: string) => {
     // 32 bytes address parameter, remove '0x' prefix
-    const erc20recipient = padLeft(to, 64).substring(2);
+    const erc20recipient = strip(to).padStart(64, '0');
     // convert amount to satoshi
     const tokenAmount = convertAmountUnitsToSubunits(amount, token.decimals);
     // 32 bytes amount paramter, remove '0x' prefix
-    const erc20amount = padLeft(numberToHex(tokenAmount), 64).substring(2);
+    const erc20amount = fromIntegerString(tokenAmount).toHex().substring(2).padStart(64, '0');
 
     // join data
     return `0x${ERC20_TRANSFER}${erc20recipient}${erc20amount}`;
@@ -180,8 +178,8 @@ export const prepareEthereumTransaction = (
         to: txInfo.to,
         value: getSerializedAmount(txInfo.amount),
         chainId: txInfo.chainId,
-        nonce: numberToHex(txInfo.nonce),
-        gasLimit: numberToHex(txInfo.gasLimit),
+        nonce: fromIntegerString(txInfo.nonce).toHex(),
+        gasLimit: fromIntegerString(txInfo.gasLimit).toHex(),
         payment_req: txInfo.payment_req,
     };
 
@@ -189,13 +187,13 @@ export const prepareEthereumTransaction = (
         result = {
             ...commonTxData,
             gasPrice: undefined,
-            maxFeePerGas: numberToHex(toWei(txInfo.maxFeePerGas, 'gwei')),
-            maxPriorityFeePerGas: numberToHex(toWei(txInfo.maxPriorityFeePerGas || '0', 'gwei')),
+            maxFeePerGas: fromGwei(txInfo.maxFeePerGas).toWei('hex'),
+            maxPriorityFeePerGas: fromGwei(txInfo.maxPriorityFeePerGas || '0').toWei('hex'),
         } satisfies EthereumTransactionEIP1559;
     } else if (txInfo.gasPrice) {
         result = {
             ...commonTxData,
-            gasPrice: numberToHex(toWei(txInfo.gasPrice, 'gwei')),
+            gasPrice: fromGwei(txInfo.gasPrice).toWei('hex'),
             maxFeePerGas: undefined,
             maxPriorityFeePerGas: undefined,
         } satisfies EthereumTransaction;
@@ -245,12 +243,12 @@ const getConvertedOrDefaultFeeLevels = ({
         return levels.map(level => {
             const { feePerUnit, maxFeePerGas, maxPriorityFeePerGas, baseFeePerGas } = level;
 
-            const feePerUnitInGwei = fromWei(feePerUnit, 'gwei');
-            const maxFeePerGasInGwei = maxFeePerGas ? fromWei(maxFeePerGas, 'gwei') : undefined;
+            const feePerUnitInGwei = fromWei(feePerUnit).toGwei();
+            const maxFeePerGasInGwei = maxFeePerGas ? fromWei(maxFeePerGas).toGwei() : undefined;
             const maxPriorityFeePerGasInGwei = maxPriorityFeePerGas
-                ? fromWei(maxPriorityFeePerGas, 'gwei')
+                ? fromWei(maxPriorityFeePerGas).toGwei()
                 : undefined;
-            const baseFeePerGasInGwei = baseFeePerGas ? fromWei(baseFeePerGas, 'gwei') : undefined;
+            const baseFeePerGasInGwei = baseFeePerGas ? fromWei(baseFeePerGas).toGwei() : undefined;
 
             return {
                 ...level,

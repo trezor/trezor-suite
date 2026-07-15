@@ -1,7 +1,7 @@
 import * as fs from 'node:fs';
 
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { decodeStakeResponses } from '@trezor/coins-solana';
+import { decodeStakeResponses } from '@trezor/network-solana';
 
 const bigintReplacer = (_: string, value: unknown) =>
     typeof value === 'bigint' ? value.toString() : value;

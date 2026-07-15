@@ -3,23 +3,23 @@ import { type ExchangeTrade } from 'invity-api';
 import { Translation } from '@suite/intl';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
-    TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    type TradingExchangeType,
     cryptoIdToNetwork,
-    selectTradingComposedTransactionInfo,
+    selectTradingDisplayComposedFee,
     selectTradingExchangeFormStep,
+    selectTradingExchangeInfo,
+    selectTradingExchangeReceiveAccountKey,
     useTradingUtils,
 } from '@suite-common/trading';
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
-import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { type Account } from '@suite-common/wallet-types';
+import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Card, Column, InfoItem, Text, Tooltip } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils';
 
 import { BannerPoints } from 'src/components/wallet/WalletLayout/AccountBanners/BannerPoints';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
-import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { type TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
 import { formatCryptoAmountAsAmount } from 'src/views/wallet/trading/common/formatCryptoAmountAsAmount';
 
@@ -32,40 +32,42 @@ import { TradingNetworkFeeInfoItem } from '../TradingInfo/TradingNetworkFeeInfoI
 import { TradingProviderInfoItem } from '../TradingInfo/TradingProviderInfoItem';
 
 type TradingOfferExchangeDetailsProps = {
+    account: Account;
     exchangeQuote: ExchangeTrade;
     exchange: string | undefined;
     providers: TradingExchangeProvidersInfoProps;
 };
 
 export const TradingOfferExchangeDetails = ({
+    account,
     exchangeQuote,
     exchange,
     providers,
 }: TradingOfferExchangeDetailsProps) => {
     const formStep = useSelector(selectTradingExchangeFormStep);
+    const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
-    const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
+    const networkFee = useSelector(state => selectTradingDisplayComposedFee(state, exchangeQuote));
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
 
-    const context = useTradingFormContext<TradingExchangeType>();
-    const { account, exchangeInfo, getValues } = context;
     const { symbol } = account;
+    const formattedNetworkFee = subunitsToUnits({
+        value: asAmountSubunit(new BigNumber(networkFee || '0')),
+        symbol,
+    }).toString();
 
-    const networkFee = composedTransactionInfo?.composed?.fee;
-    const formattedNetworkFee = formatNetworkAmount(networkFee || '0', symbol);
-
-    const sendCryptoSelect = getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT);
+    const receiveAccountKey = useSelector(selectTradingExchangeReceiveAccountKey);
     const { getAssetDecimals } = useTradingAssetDecimals();
     const decimals = getAssetDecimals({
-        accountKey: sendCryptoSelect?.accountKey,
-        cryptoId: sendCryptoSelect?.id,
+        accountKey: receiveAccountKey,
+        cryptoId: exchangeQuote.receive,
     });
 
     const supportedMevProtectionNetworks = networksCollection
         .filter(network => network.features.includes('mev-protection'))
         .map(network => network.name);
-    const sendNetwork = sendCryptoSelect?.id ? cryptoIdToNetwork(sendCryptoSelect.id) : undefined;
+    const sendNetwork = exchangeQuote.send ? cryptoIdToNetwork(exchangeQuote.send) : undefined;
     const isMevProtectionSupported = sendNetwork?.features.includes('mev-protection') ?? false;
 
     const { coinSymbol: receiveCoinSymbol, contractAddress: receiveContractAddress } =
@@ -88,10 +90,14 @@ export const TradingOfferExchangeDetails = ({
 
     return (
         <>
-            <Column gap={spacings.xs}>
+            <Column gap={8}>
                 {dexSlippage !== undefined && (
                     <>
-                        <TradingExchangeSlippageInfoItem isEditable slippage={dexSlippage} />
+                        <TradingExchangeSlippageInfoItem
+                            isEditable
+                            slippage={dexSlippage}
+                            selectedQuote={exchangeQuote}
+                        />
                         <TradingExchangeMinimumReceivedInfoItem
                             minimumYouGetAmount={minimumYouGetAmount}
                             symbol={receiveCoinSymbol}
@@ -117,7 +123,10 @@ export const TradingOfferExchangeDetails = ({
                 <TradingProviderInfoItem exchange={exchange} providers={providers} />
 
                 <InfoItem label={<Translation id="TR_TRADING_EXCHANGE_TYPE" />} direction="row">
-                    <Text typographyStyle="body-sm">
+                    <Text
+                        typographyStyle="body-sm"
+                        data-testid="@trading/offer/info/exchange-dex-type"
+                    >
                         <Tooltip
                             content={
                                 <Translation
@@ -141,11 +150,7 @@ export const TradingOfferExchangeDetails = ({
 
             {formStep === 'SIGN_DATA' && (
                 <Card>
-                    <Text
-                        typographyStyle="body-md-strong"
-                        as="div"
-                        margin={{ bottom: spacings.xs }}
-                    >
+                    <Text typographyStyle="body-md-strong" as="div" margin={{ bottom: 8 }}>
                         <Translation
                             id="TR_TRADING_EXCHANGE_SIGN_BANNER_TITLE"
                             values={{ provider: providerName }}

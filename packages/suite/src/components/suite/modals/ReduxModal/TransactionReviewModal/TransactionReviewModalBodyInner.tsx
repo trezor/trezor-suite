@@ -176,8 +176,7 @@ export const TransactionReviewModalBodyInner = ({
     const createdTxTimestamp = txInfoState?.precomposedTx?.createdTimestamp ?? 0;
     const deadline = createdTxTimestamp + getTxValidityTimeoutInMs(account?.networkType);
 
-    // for bump fee we have to analyze tx data which are in outputs[0], for legacy in outputs[1]
-    const stakeType = getStakeType(precomposedForm, outputs);
+    const stakeType = getStakeType(precomposedForm);
     const shouldCheckTxTimeValidity = account?.networkType === 'solana' && createdTxTimestamp !== 0;
 
     const onCancel = () => {
@@ -188,8 +187,13 @@ export const TransactionReviewModalBodyInner = ({
     };
 
     const isCancelRbfAction = isRbfCancelTransaction(precomposedTx);
+    const isTronStakeFreeze =
+        networkType === 'tron' &&
+        (precomposedForm.tronStaking?.kind === 'freeze' ||
+            precomposedForm.tronStaking?.kind === 'unstake');
     const showSummary =
-        !(isBumpFeeRbfAction && networkType === 'bitcoin') && networkType !== 'tron';
+        !(isBumpFeeRbfAction && networkType === 'bitcoin') &&
+        (networkType !== 'tron' || isTronStakeFreeze);
 
     const showTxValidityTimer = shouldShowTxValidityTimer({
         deadline,

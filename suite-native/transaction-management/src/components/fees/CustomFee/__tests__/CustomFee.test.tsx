@@ -1,6 +1,7 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey, type FormState } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import {
     act,
     renderHookWithStoreProvider,
@@ -111,7 +112,9 @@ describe('CustomFee', () => {
         });
 
         expect(getByTestId('@transactionManagement/fees-level-custom')).toBeTruthy();
-        expect(getByText('Add custom fee')).toBeTruthy();
+        expect(
+            getByText(getTranslation('transactionManagement.fees.custom.addButton')),
+        ).toBeTruthy();
     });
 
     it('should render custom fee card when custom fee is selected', () => {
@@ -127,8 +130,8 @@ describe('CustomFee', () => {
         });
 
         expect(getByText(/Custom/)).toBeTruthy();
-        expect(getByText('Cancel')).toBeTruthy();
-        expect(getByText('Edit')).toBeTruthy();
+        expect(getByText(getTranslation('generic.buttons.cancel'))).toBeTruthy();
+        expect(getByText(getTranslation('generic.buttons.edit'))).toBeTruthy();
     });
 
     it('should not render for solana network', () => {
@@ -216,9 +219,13 @@ describe('CustomFee', () => {
             form,
         });
 
-        await userEvent.press(getByText('Edit'));
+        await userEvent.press(getByText(getTranslation('generic.buttons.edit')));
 
-        expect(getByText('Gas limit')).toBeTruthy();
+        expect(
+            getByText(
+                getTranslation('transactionManagement.fees.custom.bottomSheet.label.gasLimit'),
+            ),
+        ).toBeTruthy();
     });
 
     it('should handle different account keys', () => {

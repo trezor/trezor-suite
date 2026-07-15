@@ -1,10 +1,11 @@
 import {
     Bundle,
     GetOwnershipId as GetOwnershipIdSchema,
-    type MethodPermission,
+    type PermissionRequest,
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
@@ -26,8 +27,12 @@ export default class GetOwnershipId extends AbstractMethod<
 
         const preprocessed = payload.bundle.map(batch => {
             const address_n = validatePath(batch.path, 1);
+            const coinInfo = getBitcoinNetwork(batch.coin || address_n);
+            if (batch.coin && !coinInfo) {
+                throw ERRORS.TypedError('Method_UnknownCoin');
+            }
 
-            return { batch, address_n, coinInfo: getBitcoinNetwork(batch.coin || address_n) };
+            return { batch, address_n, coinInfo };
         });
 
         const params = preprocessed.map(({ batch, address_n, coinInfo }) => {
@@ -48,8 +53,8 @@ export default class GetOwnershipId extends AbstractMethod<
     }
     hasBundle?: boolean;
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_account_info', this.requiredFirmwareCoins);
     }
 
     get info() {

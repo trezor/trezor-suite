@@ -259,7 +259,7 @@ test.describe('Device Settings - Forget TS7', { tag: ['@T3W1'] }, () => {
     );
 });
 
-test.describe('Device Settings - Forget TS5', { tag: ['@T3T1', '@smoke'] }, () => {
+test.describe('Device Settings - Forget TS5', { tag: ['@T3T1'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('device');

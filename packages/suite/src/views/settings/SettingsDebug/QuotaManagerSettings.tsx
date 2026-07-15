@@ -1,14 +1,14 @@
 import { useState } from 'react';
 
+import { selectIsTorEnabled } from '@suite/tor';
 import {
-    DEFAULT_QUOTA_MANAGER_URL,
-    DEV_QUOTA_MANAGER_URL,
-    PRODUCTION_QUOTA_MANAGER_URL,
     enforceQuotaManagerUpdated,
     eraseFetchedData,
+    getQuotaManagerDefaultUrl,
+    getQuotaManagerUrl,
     selectEnforceQuotaManager,
     selectOwnersAllowance,
-    selectQuotaManagerBaseUrl,
+    selectQuotaManagerCustomUrl,
     selectRegisteredDevices,
     updateQuotaManagerBaseUrl,
 } from '@suite-common/suite-sync-quota-manager';
@@ -19,26 +19,24 @@ import { breakpoints, spacings } from '@trezor/theme';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
-const LOCAL_QUOTA_MANAGER_URL = 'http://127.0.0.1:4001/';
-
 export const QuotaManagerSettings = () => {
     const dispatch = useDispatch();
     const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.laptop);
-    const quotaManagerBaseUrl = useSelector(selectQuotaManagerBaseUrl);
+    const isTorEnabled = useSelector(selectIsTorEnabled);
+    const quotaManagerCustomUrl = useSelector(selectQuotaManagerCustomUrl);
     const registeredDevices = useSelector(selectRegisteredDevices);
     const ownersAllowance = useSelector(selectOwnersAllowance);
     const enforceQuotaManager = useSelector(selectEnforceQuotaManager);
-    const [quotaManagerUrl, setQuotaManagerUrl] = useState(quotaManagerBaseUrl ?? '');
+    const defaultQuotaManagerUrl = getQuotaManagerDefaultUrl({ isTorEnabled });
+    const [quotaManagerUrl, setQuotaManagerUrl] = useState(quotaManagerCustomUrl ?? '');
 
     const [isUpdateUrlLoading, setIsUpdateUrlLoading] = useState(false);
 
     const onQuotaManagerBaseUrlSave = (baseUrl = quotaManagerUrl) => {
         setIsUpdateUrlLoading(true);
 
-        const normalizedUrl = baseUrl.trim() === '' ? DEFAULT_QUOTA_MANAGER_URL : baseUrl;
-
-        setQuotaManagerUrl(normalizedUrl);
-        dispatch(updateQuotaManagerBaseUrl({ baseUrl: normalizedUrl }));
+        setQuotaManagerUrl(baseUrl);
+        dispatch(updateQuotaManagerBaseUrl({ baseUrl }));
 
         // fake ui loading delay
         setTimeout(() => {
@@ -83,14 +81,16 @@ export const QuotaManagerSettings = () => {
                             }
                         />
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                            Default is: <Code>{DEFAULT_QUOTA_MANAGER_URL}</Code>
+                            Default is: <Code>{defaultQuotaManagerUrl}</Code>
                         </Text>
                         <ButtonGroup size="small" priority="secondary">
                             <Button
                                 intent="critical"
                                 isDisabled={isUpdateUrlLoading}
                                 onClick={() =>
-                                    onQuotaManagerUrlPresetClick(PRODUCTION_QUOTA_MANAGER_URL)
+                                    onQuotaManagerUrlPresetClick(
+                                        getQuotaManagerUrl({ env: 'prod', isTorEnabled }),
+                                    )
                                 }
                             >
                                 Production
@@ -98,7 +98,11 @@ export const QuotaManagerSettings = () => {
                             <Button
                                 intent="brand"
                                 isDisabled={isUpdateUrlLoading}
-                                onClick={() => onQuotaManagerUrlPresetClick(DEV_QUOTA_MANAGER_URL)}
+                                onClick={() =>
+                                    onQuotaManagerUrlPresetClick(
+                                        getQuotaManagerUrl({ env: 'dev', isTorEnabled }),
+                                    )
+                                }
                             >
                                 Dev
                             </Button>
@@ -106,10 +110,19 @@ export const QuotaManagerSettings = () => {
                                 intent="info"
                                 isDisabled={isUpdateUrlLoading}
                                 onClick={() =>
-                                    onQuotaManagerUrlPresetClick(LOCAL_QUOTA_MANAGER_URL)
+                                    onQuotaManagerUrlPresetClick(
+                                        getQuotaManagerUrl({ env: 'local', isTorEnabled }),
+                                    )
                                 }
                             >
                                 Local
+                            </Button>
+                            <Button
+                                intent="neutral"
+                                isDisabled={isUpdateUrlLoading}
+                                onClick={() => onQuotaManagerUrlPresetClick('')}
+                            >
+                                Reset
                             </Button>
                         </ButtonGroup>
                     </Column>

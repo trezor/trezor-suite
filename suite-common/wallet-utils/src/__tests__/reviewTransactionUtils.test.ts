@@ -5,10 +5,12 @@ import {
     type FormState,
     type FormStateTrading,
     type GeneralPrecomposedTransactionFinal,
+    type StakeFormState,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import type { TokenInfo } from '@trezor/connect';
 
+import { buildApprovalTransactionData } from '../ethUtils';
 import {
     constructTransactionReviewOutputs,
     isClearSignedEvmTradingSwapTransaction,
@@ -26,8 +28,21 @@ const LIFI_SWAP_DATA = `0x5fd9ae2e${'00'.repeat(32 * 4)}`;
 // ERC-20 transfer (global selector a9059cbb) — works on any contract
 const ERC20_TRANSFER_DATA = `0xa9059cbb${'00'.repeat(32 * 2)}`;
 
-// ERC-20 approve (global selector 095ea7b3)
-const ERC20_APPROVE_DATA = `0x095ea7b3${'00'.repeat(32 * 2)}`;
+// Everstake staking pool
+const EVERSTAKE_POOL = '0xD523794C879D9eC028960a231F866758e405bE34';
+const STAKE_DATA = `0x3a29dbae${'00'.repeat(32)}`;
+const UNSTAKE_DATA = `0x76ec871c${'00'.repeat(32 * 3)}`;
+const CLAIM_DATA = '0x33986ffa';
+
+const ERC20_APPROVE_SPENDER = '0x0000000000000000000000000000000000001234';
+const ERC20_APPROVE_DATA = buildApprovalTransactionData({
+    amount: '1',
+    spender: ERC20_APPROVE_SPENDER,
+});
+const ERC20_REVOKE_DATA = buildApprovalTransactionData({
+    amount: '0',
+    spender: ERC20_APPROVE_SPENDER,
+});
 
 const buildTrading = (overrides: Partial<FormStateTrading> = {}): FormStateTrading => ({
     activeSection: 'exchange',
@@ -69,17 +84,20 @@ const buildEthereumAccount = (overrides: Partial<Account> = {}): Account =>
         ...overrides,
     });
 
+// >= 2.12.1: clear-signing-capable (clear signing is version-gated per selector).
 const buildUpdatedDevice = () =>
     mockSuiteDevice(undefined, {
         major_version: 2,
-        minor_version: 6,
-        patch_version: 3,
+        minor_version: 12,
+        patch_version: 2,
     });
 
 const buildPrecomposedTransaction = ({
+    isTokenKnown = true,
     to,
     token,
 }: {
+    isTokenKnown?: boolean;
     to: string;
     token?: TokenInfo;
 }): GeneralPrecomposedTransactionFinal =>
@@ -90,7 +108,7 @@ const buildPrecomposedTransaction = ({
         feePerByte: '1',
         token,
         useNativeRbf: false,
-        isTokenKnown: true,
+        isTokenKnown,
     }) as unknown as GeneralPrecomposedTransactionFinal;
 
 const usdcToken: TokenInfo = {
@@ -188,6 +206,55 @@ describe('constructTransactionReviewOutputs', () => {
         );
     });
 
+    it('renders the plain flow on modern firmware that predates clear signing', () => {
+        const oldFirmwareDevice = mockSuiteDevice(undefined, {
+            major_version: 2,
+            minor_version: 11,
+            patch_version: 0,
+        });
+
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device: oldFirmwareDevice,
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({
+                transactionData: LIFI_SWAP_DATA,
+                trading: buildTrading(),
+            }),
+            precomposedTx: buildPrecomposedTransaction({ to: LIFI_DIAMOND, token: usdcToken }),
+        });
+
+        expect(outputs).not.toEqual(
+            expect.arrayContaining([expect.objectContaining({ type: 'swap_intent' })]),
+        );
+    });
+
+    it('omits the receive leg for a partial clear-signed swap (1inch unoswap)', () => {
+        const ONEINCH_ROUTER = '0x111111125421cA6dc452d289314280a0f8842A65';
+        const UNOSWAP_DATA = `0x83800a8e${'00'.repeat(32 * 4)}`; // unoswap selector
+
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device,
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({
+                transactionData: UNOSWAP_DATA,
+                trading: buildTrading(),
+            }),
+            precomposedTx: buildPrecomposedTransaction({ to: ONEINCH_ROUTER, token: usdcToken }),
+        });
+
+        const tradedAssets = outputs.find(o => o.type === 'traded_assets');
+        expect(tradedAssets).toBeDefined();
+        expect(tradedAssets?.receive).toBeUndefined();
+        expect(tradedAssets?.receiveAddress).toBeUndefined();
+        expect(outputs).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({ type: 'swap_intent', value: 'swap' }),
+            ]),
+        );
+    });
+
     it('does not render swap-specific outputs for approve transaction in exchange flow', () => {
         const outputs = constructTransactionReviewOutputs({
             account,
@@ -216,4 +283,103 @@ describe('constructTransactionReviewOutputs', () => {
             ]),
         );
     });
+
+    it.each([
+        { stakeType: 'stake', transactionData: STAKE_DATA },
+        { stakeType: 'unstake', transactionData: UNSTAKE_DATA },
+        { stakeType: 'claim', transactionData: CLAIM_DATA },
+    ])(
+        'renders a single address output for a clear-signed $stakeType transaction',
+        ({ transactionData }) => {
+            const outputs = constructTransactionReviewOutputs({
+                account,
+                device,
+                decreaseOutputId: undefined,
+                precomposedForm: buildFormState({ transactionData }),
+                precomposedTx: buildPrecomposedTransaction({ to: EVERSTAKE_POOL }),
+            });
+
+            // The firmware clear-signs staking as one screen plus the amount/fee summary,
+            // so any extra output would desynchronize the review steps from the device.
+            expect(outputs).toEqual([{ type: 'address', value: EVERSTAKE_POOL }]);
+        },
+    );
+
+    it('renders a single address output for the stake form without transaction data', () => {
+        const stakeFormState: StakeFormState = {
+            ...buildFormState({ transactionData: '' }),
+            stakeType: 'stake',
+        };
+
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device,
+            decreaseOutputId: undefined,
+            precomposedForm: stakeFormState,
+            precomposedTx: buildPrecomposedTransaction({ to: EVERSTAKE_POOL }),
+        });
+
+        expect(outputs).toEqual([{ type: 'address', value: EVERSTAKE_POOL }]);
+    });
+
+    it('renders the generic contract flow for staking on firmware without clear signing', () => {
+        // 2.6.0 is the last version before the updated Ethereum send flow.
+        const oldFirmwareDevice = mockSuiteDevice(undefined, {
+            major_version: 2,
+            minor_version: 6,
+            patch_version: 0,
+        });
+
+        const outputs = constructTransactionReviewOutputs({
+            account,
+            device: oldFirmwareDevice,
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({ transactionData: STAKE_DATA }),
+            precomposedTx: buildPrecomposedTransaction({ to: EVERSTAKE_POOL }),
+        });
+
+        expect(outputs).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({ type: 'data', value: STAKE_DATA }),
+                expect.objectContaining({ type: 'contract', value: EVERSTAKE_POOL }),
+            ]),
+        );
+    });
+
+    it.each([
+        { transactionData: ERC20_APPROVE_DATA, transactionType: 'approve' },
+        { transactionData: ERC20_REVOKE_DATA, transactionType: 'revoke' },
+    ])(
+        'does not render unknown token contract before supported $transactionType rows',
+        ({ transactionData }) => {
+            const outputs = constructTransactionReviewOutputs({
+                account,
+                decreaseOutputId: undefined,
+                device,
+                precomposedForm: buildFormState({
+                    transactionData,
+                }),
+                precomposedTx: buildPrecomposedTransaction({
+                    isTokenKnown: false,
+                    to: '0x0000000000000000000000000000000000001234',
+                    token: usdcToken,
+                }),
+                vaultName: 'USDC Vault',
+            });
+
+            expect(outputs).toEqual([
+                expect.objectContaining({ type: 'address' }),
+                expect.objectContaining({ type: 'contract', value: 'USDC Vault' }),
+                expect.objectContaining({ type: 'approve_data' }),
+            ]);
+            expect(outputs).not.toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        type: 'contract',
+                        value: usdcToken.contract,
+                    }),
+                ]),
+            );
+        },
+    );
 });

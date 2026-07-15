@@ -2,8 +2,8 @@ import { bytesToHex } from '@noble/hashes/utils.js';
 
 import { TronSignTransaction as TronSignTransactionSchema } from '@trezor/connect-common';
 import type {
-    MethodPermission,
     PROTO,
+    PermissionRequest,
     TronContractInput,
     TronContracts,
     TronContractsTypes,
@@ -13,6 +13,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
+import { getMiscNetwork } from '../../../data/coinInfo';
 import { validatePath } from '../../../utils/pathUtils';
 import { encodeTronContractRawData } from '../tronEncode';
 import { encodeBroadcastTransaction } from '../tronProtobuf';
@@ -68,6 +69,7 @@ const transformContract = (input: TronContractInput): TronContracts => {
         case 'TransferContract':
         case 'TriggerSmartContract':
         case 'WithdrawExpireUnfreezeContract':
+        case 'WithdrawBalanceContract':
             return input;
     }
 };
@@ -78,6 +80,7 @@ const contractMapping = {
     FreezeBalanceV2Contract: 'TronFreezeBalanceV2Contract',
     UnfreezeBalanceV2Contract: 'TronUnfreezeBalanceV2Contract',
     WithdrawExpireUnfreezeContract: 'TronWithdrawUnfreeze',
+    WithdrawBalanceContract: 'TronWithdrawBalance',
     VoteWitnessContract: 'TronVoteWitnessContract',
 } as const satisfies Record<TronContractsTypes, PROTO.MessageKey>;
 
@@ -125,10 +128,11 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
 
         super(message, params);
         this.requiredDeviceCapabilities = ['Capability_Tron'];
+        this.requiredFirmwareCoins = [getMiscNetwork('trx')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     get info() {
@@ -149,13 +153,16 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
         const { signature } = message;
 
         let serializedTx: string | undefined;
+        let rawDataHex: string | undefined;
         try {
-            const rawData = encodeTronContractRawData(this.params.contract, this.params.tx);
-            serializedTx = encodeBroadcastTransaction(bytesToHex(rawData), signature);
+            rawDataHex = bytesToHex(
+                encodeTronContractRawData(this.params.contract, this.params.tx),
+            );
+            serializedTx = encodeBroadcastTransaction(rawDataHex, signature);
         } catch {
             // unsupported contract type
         }
 
-        return { signature, serializedTx };
+        return { signature, serializedTx, rawDataHex };
     }
 }

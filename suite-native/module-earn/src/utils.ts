@@ -1,29 +1,14 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountKey, type FormState } from '@suite-common/wallet-types';
+import { type FormState } from '@suite-common/wallet-types';
 import {
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
-import { RootStackRoutes } from '@suite-native/navigation';
 
 import { USER_CANCELLED_ERROR_CODES } from './constants';
 
 export const isStakeFlowSupportedSymbol = (symbol: NetworkSymbol): boolean =>
     isSupportedEthStakingNetworkSymbol(symbol) || isSupportedSolStakingNetworkSymbol(symbol);
-
-export const getEarnPostSignParentRoute = (symbol: NetworkSymbol, accountKey: AccountKey) => {
-    if (isStakeFlowSupportedSymbol(symbol)) {
-        return {
-            name: RootStackRoutes.StakingManagement,
-            params: { accountKey },
-        } as const;
-    }
-
-    return {
-        name: RootStackRoutes.StakingDetail,
-        params: { accountKey },
-    } as const;
-};
 
 export const buildEarnComposeFormState = (
     contractAddress: string,
@@ -50,6 +35,12 @@ export const buildEarnComposeFormState = (
     feeLimit: '',
 });
 
+export const isUserCancelledSignError = (
+    payload: { errorCode?: string; message?: string } | undefined,
+) =>
+    payload?.message === 'tx-cancelled' ||
+    (!!payload?.errorCode && USER_CANCELLED_ERROR_CODES.some(code => code === payload.errorCode));
+
 type HandleEarnReviewErrorProps = {
     payload: { error?: string; errorCode?: string; message?: string } | undefined;
     navigation: { pop: () => void };
@@ -58,12 +49,6 @@ type HandleEarnReviewErrorProps = {
     showDeviceDisconnectedAlert: () => void;
 };
 
-export const isUserCancelledSignError = (
-    payload: { errorCode?: string; message?: string } | undefined,
-) =>
-    payload?.message === 'tx-cancelled' ||
-    (!!payload?.errorCode && USER_CANCELLED_ERROR_CODES.some(code => code === payload.errorCode));
-
 export const handleEarnReviewError = ({
     payload,
     navigation,
@@ -71,6 +56,10 @@ export const handleEarnReviewError = ({
     showPendingTransactionConflictAlert,
     showDeviceDisconnectedAlert,
 }: HandleEarnReviewErrorProps) => {
+    if (payload?.error === 'sign-transaction-timeout') {
+        return;
+    }
+
     if (payload?.message === 'tx-cancelled') {
         return;
     }

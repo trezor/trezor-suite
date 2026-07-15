@@ -2,17 +2,18 @@ import { keccak_256 } from '@noble/hashes/sha3.js';
 import { hexToBytes } from '@noble/hashes/utils.js';
 
 import type {
-    MethodPermission,
     MoneroExportedKeyImage,
     MoneroKeyImageSyncResult,
+    PermissionRequest,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { HD_HARDENED_PATH_PART } from '@trezor/crypto-utils';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import { HD_HARDENED, validatePath } from '../../../utils/pathUtils';
+import { validatePath } from '../../../utils/pathUtils';
 
 // Encode unsigned integer as varint (LEB128 format)
 function encodeVarint(n: number): Uint8Array {
@@ -39,7 +40,7 @@ export default class MoneroKeyImageSyncMethod extends AbstractMethod<'moneroKeyI
         const path = validatePath(payload.path, 3);
 
         // require all path components to be hardened
-        const allHardened = path.every(component => (component & HD_HARDENED) !== 0);
+        const allHardened = path.every(component => (component & HD_HARDENED_PATH_PART) !== 0);
         if (!allHardened) {
             throw ERRORS.TypedError(
                 'Method_InvalidParameter',
@@ -114,11 +115,11 @@ export default class MoneroKeyImageSyncMethod extends AbstractMethod<'moneroKeyI
         super(message, params);
 
         this.requiredDeviceCapabilities = ['Capability_Monero'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Monero')];
+        this.requiredFirmwareCoins = [getMiscNetwork('xmr')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_account_info', this.requiredFirmwareCoins);
     }
 
     get info() {

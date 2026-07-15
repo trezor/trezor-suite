@@ -4,10 +4,6 @@ import { getIsTorEnabled, getIsTorLoading } from './torUtils';
 export const selectIsTorEnabled = (state: TorRootState) =>
     state.tor.torStatus === TorStatus.Enabled || state.tor.torStatus === TorStatus.Slow;
 
-export const selectTorStatus = (state: TorRootState) => state.tor.torStatus;
-
-export const selectTorBootstrap = (state: TorRootState) => state.tor.torBootstrap;
-
 export const selectTorState = (state: TorRootState) => {
     const { torStatus, torBootstrap } = state.tor;
 

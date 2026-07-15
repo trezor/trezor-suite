@@ -3,7 +3,7 @@
     "include": ["./src"],
     "compilerOptions": {
         "outDir": "./lib",
-        "esModuleInterop": false,
+        "rootDir": "./src",
         "types": ["node", "chrome", "jest"]
     },
     "references": [
@@ -15,6 +15,9 @@
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
         { "path": "../device-authenticity" },
+        {
+            "path": "../../networks/cardano/network-cardano"
+        },
         { "path": "../transport-common" },
         { "path": "../utxo-lib" }
     ]

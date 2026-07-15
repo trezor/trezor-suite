@@ -3,15 +3,16 @@ import { Image } from 'expo-image';
 import { type PaymentMethodLogoName, paymentMethodLogos } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-export type PaymentMethodLogoProps = {
+type PaymentMethodLogoProps = {
     paymentMethodLogoName: PaymentMethodLogoName;
     size?: number;
 };
 
 const imageStyle = prepareNativeStyle<{ width?: number; height?: number }>(
-    (_, { width, height }) => ({
+    (utils, { width, height }) => ({
         width,
         height,
+        borderRadius: utils.borders.radii.r4,
     }),
 );
 

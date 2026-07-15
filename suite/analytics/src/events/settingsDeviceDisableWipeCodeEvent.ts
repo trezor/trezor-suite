@@ -9,8 +9,8 @@ export const settingsDeviceDisableWipeCodeEvent: EventDef<
     EventType.SettingsDeviceDisableWipeCode
 > = {
     name: EventType.SettingsDeviceDisableWipeCode,
-    descriptionTrigger: '?',
-    changelog: [{ version: '?', notes: 'added' }],
+    descriptionTrigger: 'User disables or removes the wipe code from their device through settings',
+    changelog: [{ version: '24.2.1', notes: 'added' }],
 
     attributes: {},
 };

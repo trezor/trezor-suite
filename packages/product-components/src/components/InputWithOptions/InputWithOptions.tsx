@@ -10,7 +10,6 @@ import {
     Row,
     TextButton,
 } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { NumberInput, type NumberInputProps } from '../NumberInput/NumberInput';
 
@@ -83,10 +82,10 @@ export const InputWithOptions = <TFieldValues extends FieldValues>({
 
     return (
         <InputWithOptionsContainer>
-            <Column gap={spacings.xs}>
+            <Column gap={8}>
                 {numberInputs}
-                <Row justifyContent="space-between">
-                    <Row gap={spacings.xs} data-testid={`${dataTest}/fraction-buttons`}>
+                <Row justifyContent="space-between" gap={12}>
+                    <Row gap={8} data-testid={`${dataTest}/fraction-buttons`}>
                         {options.map(button => (
                             <FractionButton key={button.id} {...button} />
                         ))}

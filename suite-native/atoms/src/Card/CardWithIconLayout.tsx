@@ -18,7 +18,7 @@ export type CardWithIconLayoutProps = {
     icon: IconName;
     title: ReactNode;
     children: ReactNode;
-    alertBoxProps?: Omit<InlineAlertBoxProps, 'borderRadius'>;
+    alertBoxProps?: InlineAlertBoxProps;
     testID?: string;
 };
 

@@ -47,7 +47,7 @@ export const ExchangeFiatDeviationWarning = ({ quote }: ExchangeFiatDeviationWar
                 />
             }
             iconName={exchangeDeviation.exceedsHighThreshold ? 'warningCircle' : 'warning'}
-            variant={exchangeDeviation.exceedsHighThreshold ? 'critical' : 'warning'}
+            intent={exchangeDeviation.exceedsHighThreshold ? 'critical' : 'warning'}
         />
     );
 };

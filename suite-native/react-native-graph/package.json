@@ -15,10 +15,10 @@
         "@shopify/react-native-skia": "2.5.1",
         "@trezor/utils": "workspace:*",
         "@types/react": "19.2.14",
-        "react": "19.2.4",
-        "react-native": "0.83.2",
+        "react": "19.2.3",
+        "react-native": "0.85.3",
         "react-native-gesture-handler": "2.31.1",
-        "react-native-reanimated": "~4.2.1"
+        "react-native-reanimated": "4.3.1"
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*"

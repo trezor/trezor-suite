@@ -21,8 +21,8 @@ export type ConnectPopupStateRootState = {
 };
 
 type StorageActionPayload = {
-    connect: {
-        permissions: AppRememberedPermission[];
+    connect?: {
+        permissions?: AppRememberedPermission[] | null;
     };
 };
 
@@ -38,7 +38,24 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
             .addCase(
                 extra.actionTypes.storageLoad,
                 (state, { payload }: PayloadAction<StorageActionPayload>) => {
-                    if (payload.connect) state.permissions = payload.connect.permissions;
+                    if (payload.connect) {
+                        const permissions = Array.isArray(payload.connect.permissions)
+                            ? payload.connect.permissions
+                            : [];
+
+                        state.permissions = permissions.filter(
+                            (permission): permission is AppRememberedPermission =>
+                                permission !== null &&
+                                typeof permission === 'object' &&
+                                'allowedPermissions' in permission &&
+                                Array.isArray(permission.allowedPermissions) &&
+                                // Drop entries that do not have the expected format.
+                                permission.allowedPermissions.every(
+                                    (t: unknown) =>
+                                        t !== null && typeof t === 'object' && 'permission' in t,
+                                ),
+                        );
+                    }
                 },
             )
             .addCase(connectPopupActions.initiateCall, (state, { payload }) => {
@@ -92,6 +109,26 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                     };
                 }
             })
+            .addCase(connectPopupActions.selectAccount, (state, { payload }) => {
+                if (
+                    state.activeCall?.state === 'ongoing' ||
+                    state.activeCall?.state === 'select-account'
+                ) {
+                    state.activeCall = {
+                        ...state.activeCall,
+                        state: 'select-account',
+                        ...payload,
+                    };
+                }
+            })
+            .addCase(connectPopupActions.updateSelectAccount, (state, { payload }) => {
+                if (state.activeCall?.state === 'select-account') {
+                    state.activeCall = {
+                        ...state.activeCall,
+                        ...payload,
+                    };
+                }
+            })
             .addCase(connectPopupActions.setSelectedAccountKey, (state, { payload }) => {
                 if (state.activeCall?.state === 'ongoing') {
                     state.activeCall = {
@@ -138,11 +175,43 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                 }
             })
             .addCase(connectPopupActions.rememberAppPermissions, (state, { payload }) => {
-                state.permissions = state.permissions.filter(p => p.origin !== payload.origin);
-                state.permissions.push(payload);
+                const existing = state.permissions.find(p => p.origin === payload.origin);
+                if (!existing) {
+                    state.permissions.push(payload);
+
+                    return;
+                }
+
+                const newPermissions = payload.allowedPermissions.filter(
+                    next =>
+                        !existing.allowedPermissions.some(
+                            prev => prev.permission === next.permission && prev.coin === next.coin,
+                        ),
+                );
+                existing.allowedPermissions.push(...newPermissions);
+                existing.silentMode = payload.silentMode;
             })
             .addCase(connectPopupActions.forgetAppPermissions, (state, { payload }) => {
                 state.permissions = state.permissions.filter(p => p.origin !== payload.origin);
+            })
+            .addCase(connectPopupActions.forgetAppPermission, (state, { payload }) => {
+                const app = state.permissions.find(p => p.origin === payload.origin);
+                if (!app) {
+                    return;
+                }
+
+                app.allowedPermissions = app.allowedPermissions.filter(
+                    granted =>
+                        !(
+                            granted.permission === payload.permission.permission &&
+                            granted.coin === payload.permission.coin
+                        ),
+                );
+
+                // Drop the whole app entry once its last permission is removed.
+                if (app.allowedPermissions.length === 0) {
+                    state.permissions = state.permissions.filter(p => p.origin !== payload.origin);
+                }
             })
             .addCase(connectPopupActions.setAppSilentMode, (state, { payload }) => {
                 const permission = state.permissions.find(p => p.origin === payload.origin);

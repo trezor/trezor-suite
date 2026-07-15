@@ -6,6 +6,7 @@ import {
     type AccountsRootState,
     type SendRootState,
     type StablecoinYieldState,
+    type TronStakeReducerState,
     accountsActions,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
@@ -24,6 +25,7 @@ export type SelectedAccountRootStateWithTrading = SelectedAccountRootState &
         wallet: {
             trading: TradingState;
             stablecoinYield: StablecoinYieldState;
+            tronStake: TronStakeReducerState;
         };
         connectPopup: ConnectPopupState;
     };
@@ -68,6 +70,11 @@ export const selectAccountIncludingChosenInTrading = (
     const stablecoinYieldAccountKey = state.wallet.stablecoinYield.txReview.accountKey;
     if (stablecoinYieldAccountKey) {
         return selectAccountByKey(state, stablecoinYieldAccountKey) ?? undefined;
+    }
+
+    const tronStakeAccountKey = state.wallet.tronStake.txReview.accountKey;
+    if (tronStakeAccountKey) {
+        return selectAccountByKey(state, tronStakeAccountKey) ?? undefined;
     }
 
     const sendAccountKey = state.wallet.send.accountKey;

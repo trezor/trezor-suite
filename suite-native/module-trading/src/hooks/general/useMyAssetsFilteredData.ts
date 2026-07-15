@@ -13,7 +13,7 @@ const filterCallback = (item: MyAssetRow, filterValue: string): boolean => {
     }
 
     const normalized = normalizeForSearch(filterValue);
-    const asset = item as MyAssetTradeable;
+    const asset = item;
 
     return (
         normalizeForSearch(asset.name).includes(normalized) ||
@@ -72,9 +72,7 @@ export const useMyAssetsFilteredData = (sections: SectionListData<MyAssetRow, Ac
             Array.from(
                 new Set(
                     sections.flatMap(section =>
-                        section.data
-                            .filter(item => item.isEnabled)
-                            .map(item => (item as MyAssetTradeable).symbol),
+                        section.data.filter(item => item.isEnabled).map(item => item.symbol),
                     ),
                 ),
             ),

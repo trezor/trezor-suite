@@ -6,7 +6,7 @@ import {
     selectIsDeviceAuthenticityCheckEnabled,
     selectIsUnlockedBootloaderAllowed,
 } from '@suite/settings';
-import { BulletList, type BulletListItemState, Text } from '@trezor/components';
+import { StepList, type StepListItemState, Text } from '@trezor/components';
 
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 
@@ -39,7 +39,7 @@ const useOnboardingStepCategoriesInPath = () => {
     );
 };
 
-const getState = (index: number, indexOfActiveStep: number): BulletListItemState => {
+const getState = (index: number, indexOfActiveStep: number): StepListItemState => {
     // When active category is not in the visible list (e.g. final step), all visible steps are done.
     if (indexOfActiveStep === -1) return 'done';
     if (index < indexOfActiveStep) return 'done';
@@ -56,7 +56,7 @@ export const OnboardingProgressBar = () => {
     );
 
     return (
-        <BulletList
+        <StepList
             direction="horizontal"
             isOrdered
             bulletGap={16}
@@ -64,7 +64,7 @@ export const OnboardingProgressBar = () => {
             lineWidth={1}
         >
             {stepCategoriesInPath.map(({ id, labelTranslationId }, index) => (
-                <BulletList.Item
+                <StepList.Item
                     key={id}
                     title={
                         <Text typographyStyle="body-xs">
@@ -74,6 +74,6 @@ export const OnboardingProgressBar = () => {
                     state={getState(index, indexOfActiveStep)}
                 />
             ))}
-        </BulletList>
+        </StepList>
     );
 };

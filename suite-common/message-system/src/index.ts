@@ -12,6 +12,9 @@ export * from './messageSystemValidation';
 
 export * from './cachedEnvData';
 export * from './experimentUtils';
+export * from './ExperimentWrapper';
 export * from './featureFlagUtils';
+export * from './useConditionControls';
 export * from './useExperiment';
+export * from './useMessageSystemMessageForm';
 export * from './useMessageSystemStaking';

@@ -1,6 +1,6 @@
 import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
+import TerserPlugin from 'minimizer-webpack-plugin';
 import path, { resolve } from 'path';
-import TerserPlugin from 'terser-webpack-plugin';
 import webpack from 'webpack';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
@@ -206,7 +206,10 @@ const config: webpack.Configuration = {
             ),
             'process.env.TRANSPORT_BROWSER_PING': JSON.stringify(transportBrowserPing),
             __SENTRY_DEBUG__: isDev,
-            __SENTRY_TRACING__: false, // needs to be removed when we introduce performance monitoring in trezor-suite
+            // Keeps Sentry tracing/performance code in the bundle. Must stay truthy for
+            // browserTracingIntegration (transactions, Web Vitals) and trace-lifecycle profiling
+            // to work; setting it false tree-shakes all of that out at build time.
+            __SENTRY_TRACING__: true,
         }),
         new webpack.ProvidePlugin({
             Buffer: ['buffer', 'Buffer'],

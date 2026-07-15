@@ -1,7 +1,12 @@
 import { type LayoutChangeEvent, View } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import {
+    type AccountKey,
+    type FormDraftWithSendKeyPrefix,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import type { ExchangeFlowType } from '@suite-native/navigation';
@@ -10,6 +15,10 @@ import { BigNumber } from '@trezor/utils';
 
 import { ReviewOutputCard } from './ReviewOutputCard';
 import { ReviewOutputItemValues } from './ReviewOutputItemValues';
+import {
+    type TransactionReviewOutputsState,
+    selectIsClearSignedTradingSwap,
+} from '../../selectors';
 import { type ReviewSummaryOutput } from '../../types';
 
 export type ReviewOutputSummaryItemProps = {
@@ -19,6 +28,7 @@ export type ReviewOutputSummaryItemProps = {
     tokenContract?: TokenAddress;
     summaryOutput?: ReviewSummaryOutput;
     flowType?: ExchangeFlowType;
+    prefix: FormDraftWithSendKeyPrefix;
 };
 
 type BitcoinValuesProps = {
@@ -30,6 +40,7 @@ type BitcoinValuesProps = {
 type TokenEnabledValuesProps = {
     tokenContract?: TokenAddress;
     flowType?: ExchangeFlowType;
+    isClearSignedTradingSwap: boolean;
 } & BitcoinValuesProps;
 
 const BitcoinValues = ({ accountKey, totalSpent, fee }: BitcoinValuesProps) => (
@@ -53,6 +64,7 @@ const TokenEnabledValues = ({
     fee,
     tokenContract,
     flowType,
+    isClearSignedTradingSwap,
 }: TokenEnabledValuesProps) => {
     let amount: string | undefined;
 
@@ -62,7 +74,7 @@ const TokenEnabledValues = ({
 
     return (
         <>
-            {!!amount && (
+            {!!amount && !isClearSignedTradingSwap && (
                 <ReviewOutputItemValues
                     accountKey={accountKey}
                     value={amount}
@@ -86,13 +98,18 @@ export const ReviewOutputSummaryItem = ({
     tokenContract,
     summaryOutput,
     flowType,
+    prefix,
 }: ReviewOutputSummaryItemProps) => {
     const { translate } = useTranslate();
 
-    if (!summaryOutput) return null;
+    const isClearSignedTradingSwap = useSelector((state: TransactionReviewOutputsState) =>
+        selectIsClearSignedTradingSwap(state, accountKey, prefix),
+    );
 
+    if (!summaryOutput) {
+        return null;
+    }
     const { state, totalSpent, fee } = summaryOutput;
-
     const isNetworkSupportingTokens = isNetworkWithTokens(symbol);
 
     return (
@@ -109,6 +126,7 @@ export const ReviewOutputSummaryItem = ({
                             fee={fee}
                             tokenContract={tokenContract}
                             flowType={flowType}
+                            isClearSignedTradingSwap={isClearSignedTradingSwap}
                         />
                     ) : (
                         <BitcoinValues accountKey={accountKey} totalSpent={totalSpent} fee={fee} />

@@ -1,7 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/ConnectSettings.js
 
 import { parseThpSettings } from './thpSettings';
-import { DEFAULT_DOMAIN, VERSION } from './version';
+import { VERSION } from './version';
+import { DEFINITIONS_CHANNELS } from '../types/definitions';
+import type { DefinitionsChannel } from '../types/definitions';
 import type { ConnectSettings, LocalFirmwares, Manifest } from '../types/settings';
 
 /*
@@ -9,19 +11,10 @@ import type { ConnectSettings, LocalFirmwares, Manifest } from '../types/setting
  * It could be changed by passing values into TrezorConnect.init(...) method
  */
 
-export const DEFAULT_PRIORITY = 2;
-
 const initialSettings: ConnectSettings = {
-    configSrc: './data/config.json', // constant
-    version: VERSION, // constant
     debug: false,
-    priority: DEFAULT_PRIORITY,
-    popupSrc: `${DEFAULT_DOMAIN}popup.html`,
     transports: undefined,
     pendingTransportEvent: true,
-    env: 'node',
-    timestamp: new Date().getTime(),
-    sharedLogger: true,
     transportReconnect: true,
 };
 
@@ -41,8 +34,7 @@ export const parseManifest = (manifest?: Manifest) => {
     };
 };
 
-export const parseVersion = (version?: string) =>
-    typeof version === 'string' ? version : initialSettings.version;
+export const parseVersion = (version?: string) => (typeof version === 'string' ? version : VERSION);
 
 export const parseLocalFirmwares = (localFirmwares: LocalFirmwares) => {
     if (!localFirmwares) return;
@@ -83,6 +75,11 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         }
     }
 
+    // Runtime function supplied by the host composition root; passthrough (not validated).
+    if (typeof input.createLogger === 'function') {
+        settings.createLogger = input.createLogger;
+    }
+
     if (typeof input.transportReconnect === 'boolean') {
         settings.transportReconnect = input.transportReconnect;
     }
@@ -95,6 +92,10 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.firmwareChannel = input.firmwareChannel;
     }
 
+    if (DEFINITIONS_CHANNELS.includes(input.definitionsChannel as DefinitionsChannel)) {
+        settings.definitionsChannel = input.definitionsChannel;
+    }
+
     if (Array.isArray(input.transports)) {
         settings.transports = input.transports;
     }
@@ -103,31 +104,8 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.pendingTransportEvent = input.pendingTransportEvent;
     }
 
-    if (typeof input.extension === 'string') {
-        settings.extension = input.extension;
-    }
-
-    if (typeof input.env === 'string') {
-        settings.env = input.env;
-    }
-
-    if (typeof input.timestamp === 'number') {
-        settings.timestamp = input.timestamp;
-    }
-
     if (typeof input.manifest === 'object') {
         settings.manifest = parseManifest(input.manifest);
-    }
-
-    if (typeof input.sharedLogger === 'boolean') {
-        settings.sharedLogger = input.sharedLogger;
-    }
-
-    if (
-        typeof input.coreMode === 'string' &&
-        ['auto', 'suite-desktop', 'suite-web'].includes(input.coreMode)
-    ) {
-        settings.coreMode = input.coreMode;
     }
 
     if (typeof input.binFilesBaseUrl === 'string') {
@@ -146,12 +124,8 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.firmwareHashCheckTimeouts = input.firmwareHashCheckTimeouts;
     }
 
-    if (typeof input.npmVersion === 'string') {
-        settings.npmVersion = input.npmVersion;
-    }
-
-    if (typeof input.version === 'string') {
-        settings.version = input.version;
+    if (Array.isArray(input.enabledNetworks)) {
+        settings.enabledNetworks = input.enabledNetworks;
     }
 
     settings.thp = parseThpSettings(input);

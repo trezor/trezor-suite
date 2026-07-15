@@ -40,6 +40,10 @@ class TabBarActions {
         await detoxExpect(element(by.id('@screen/Trading'))).toBeVisible();
     }
 
+    async assertTradingIsNotVisible() {
+        await detoxExpect(element(by.id('@screen/Trading'))).not.toBeVisible();
+    }
+
     async assertHomeTabBarItemTitle(title: string) {
         await detoxExpect(element(by.id('@tabBar/HomeStack/title'))).toHaveText(title);
     }

@@ -3,17 +3,40 @@ import { type ReactNode } from 'react';
 import { type Variants, motion } from 'framer-motion';
 
 import {
+    Box,
     Button,
-    Card,
+    type ButtonProps,
     Column,
     H4,
+    IconButton,
     IconCircle,
-    type IconName,
+    type IconComponent,
     Paragraph,
     Row,
 } from '@trezor/components';
+import { XIcon } from '@trezor/icons';
 
 type SidebarBannerAnimation = 'drop' | 'shake' | Array<'drop' | 'shake'>;
+
+type SidebarBannerWithIconProps = {
+    heroContent?: never;
+    icon: IconComponent;
+};
+
+type SidebarBannerWithHeroContentProps = {
+    heroContent: ReactNode;
+    icon?: never;
+};
+
+type SidebarBannerWithCloseProps = {
+    closeLabel: ReactNode;
+    onClose: ButtonProps['onClick'];
+};
+
+type SidebarBannerWithoutCloseProps = {
+    closeLabel?: undefined;
+    onClose?: undefined;
+};
 
 type SidebarBannerBaseProps = {
     animate?: SidebarBannerAnimation;
@@ -22,21 +45,13 @@ type SidebarBannerBaseProps = {
     'data-testid'?: string;
     description?: ReactNode;
     heading: ReactNode;
-    icon: IconName;
-    onClick: () => void;
-};
-
-type SidebarBannerWithCloseProps = {
-    closeLabel: ReactNode;
-    onClose: () => void;
-};
-
-type SidebarBannerWithoutCloseProps = {
-    closeLabel?: undefined;
-    onClose?: undefined;
+    intent?: ButtonProps['intent'];
+    onClick: ButtonProps['onClick'];
+    ctaHref?: ButtonProps['href'];
 };
 
 export type SidebarBannerProps = SidebarBannerBaseProps &
+    (SidebarBannerWithIconProps | SidebarBannerWithHeroContentProps) &
     (SidebarBannerWithCloseProps | SidebarBannerWithoutCloseProps);
 
 const variants: Variants = {
@@ -72,46 +87,61 @@ export const SidebarBanner = ({
     description,
     heading,
     icon,
+    heroContent,
+    intent = 'brand',
     onClick,
     onClose,
+    ctaHref,
 }: SidebarBannerProps) => (
     <motion.div variants={variants} initial="initial" exit="exit" animate={animate}>
-        <Card data-testid={dataTestId} paddingType="none" width="auto">
-            <Column gap={12} padding={12}>
-                <IconCircle name={icon} size={40} intent="neutral" />
-                <Column gap={2}>
-                    <H4 typographyStyle="body-sm-strong">{heading}</H4>
+        <Box
+            data-testid={dataTestId}
+            width="auto"
+            shadow="surfaceShadowModeless"
+            borderRadius={16}
+            backgroundColor="surfaceFillModeless"
+            borderWidth={1}
+            borderColor="surfaceBorderModeless"
+        >
+            <Column gap={16} padding={12}>
+                {icon ? (
+                    <IconCircle icon={icon} size={40} intent={intent} />
+                ) : (
+                    <Box margin={{ top: -12, horizontal: -12 }}>{heroContent}</Box>
+                )}
+                <Column gap={4}>
+                    <H4 typographyStyle="body-md-strong">{heading}</H4>
                     {description && (
-                        <Paragraph intent="neutral" typographyStyle="body-sm">
+                        <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                             {description}
                         </Paragraph>
                     )}
                 </Column>
-                <Row gap={10} margin={{ top: 2 }} flexWrap="wrap">
+                <Row gap={8} flexWrap="wrap">
                     <Button
-                        intent="brand"
+                        intent={intent}
                         type="button"
                         data-testid={ctaDataTestId}
+                        href={ctaHref}
                         onClick={onClick}
-                        size="small"
+                        size="medium"
+                        flex="1"
                     >
                         {ctaLabel}
                     </Button>
-
                     {onClose !== undefined && (
-                        <Button
-                            intent="neutral"
+                        <IconButton
+                            icon={XIcon}
+                            intent={intent}
                             priority="secondary"
-                            type="button"
                             data-testid={`${dataTestId}/close-button`}
                             onClick={onClose}
-                            size="small"
-                        >
-                            {closeLabel}
-                        </Button>
+                            size="medium"
+                            tooltip={{ content: closeLabel }}
+                        />
                     )}
                 </Row>
             </Column>
-        </Card>
+        </Box>
     </motion.div>
 );

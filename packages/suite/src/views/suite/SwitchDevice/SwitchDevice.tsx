@@ -5,6 +5,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectDevices } from '@suite-common/device';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { Button, Column } from '@trezor/components';
+import { TrezorDevicesIcon } from '@trezor/icons';
 
 import { setConnectionMode, toggleConnectionModal } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -56,7 +57,7 @@ export const SwitchDeviceContent = ({ cancelable, onCancel }: ForegroundAppProps
             <Button
                 intent="neutral"
                 priority="secondary"
-                iconLeft="trezorDevices"
+                iconLeft={TrezorDevicesIcon}
                 isFloating
                 width="100%"
                 size="large"

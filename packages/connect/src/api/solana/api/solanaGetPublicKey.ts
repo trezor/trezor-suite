@@ -6,13 +6,14 @@ import {
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';
-import type { MethodPermission, PROTO } from '@trezor/connect-common';
+import type { PROTO, PermissionRequest } from '@trezor/connect-common';
+import { fromHardenedPathPart } from '@trezor/crypto-utils';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodContext, MethodMessage, MethodReturnType } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
+import { getSerializedPath, validatePath } from '../../../utils/pathUtils';
 import { bundlify } from '../../common/paramsValidator';
 
 export default class SolanaGetPublicKey extends AbstractMethod<
@@ -41,11 +42,11 @@ export default class SolanaGetPublicKey extends AbstractMethod<
         this.hasBundle = hasBundle;
         this.confirmMissingBackup = true;
         this.requiredDeviceCapabilities = ['Capability_Solana'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Solana')];
+        this.requiredFirmwareCoins = [getMiscNetwork('sol')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
     }
 
     get info() {
@@ -68,7 +69,7 @@ export default class SolanaGetPublicKey extends AbstractMethod<
 
         return {
             view: 'export-xpub' as const,
-            label: `Export Solana public key for account #${fromHardened(accountIndex) + 1}`,
+            label: `Export Solana public key for account #${fromHardenedPathPart(accountIndex) + 1}`,
         };
     }
 

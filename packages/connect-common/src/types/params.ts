@@ -4,6 +4,7 @@ import type { Static, TSchema } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 import type { Err, Ok } from '@trezor/type-utils';
 
+import type { CoinSymbol } from './coinInfo';
 import type { DeviceState, DeviceUniquePath } from './device';
 import type { SerializedError } from '../constants/errors';
 
@@ -16,7 +17,6 @@ export interface DeviceIdentity {
 export interface CommonParams {
     device?: DeviceIdentity & { useEmptyPassphrase?: boolean };
     keepSession?: boolean;
-    useCardanoDerivation?: boolean;
     /**
      * Client-provided correlation token forwarded to related UI events during this call.
      * Must be a valid UUID; the method validator throws `Method_InvalidParameter` otherwise.
@@ -45,7 +45,7 @@ export const Bundle = <T extends TSchema>(type: T) =>
 export type BundledParams<T> = CommonParams & Bundle<T>;
 
 export interface CommonParamsWithCoin extends CommonParams {
-    coin: string;
+    coin: CoinSymbol;
     identity?: string; // ensures that different backend connections are opened for different identities
 }
 
@@ -59,6 +59,13 @@ export type DerivationPath = string | number[];
 export const DerivationPath = Type.Union([Type.String(), Type.Array(Type.Number())], {
     description: 'Derivation Path (BIP32).',
     $id: 'DerivationPath',
+});
+
+// Marker fragment intersected into payloads of methods that require explicit
+// opt-in via `__experimental: true`.
+export type ExperimentalMethod = Static<typeof ExperimentalMethod>;
+export const ExperimentalMethod = Type.Object({
+    __experimental: Type.Literal(true),
 });
 
 // replace type `T` address_n field type `A` with address_n type `R`

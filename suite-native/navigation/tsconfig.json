@@ -5,7 +5,6 @@
         {
             "path": "../../suite-common/dependency-injection"
         },
-        { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/message-system"
         },
@@ -32,6 +31,7 @@
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/theme" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../test-utils" }
     ]
 }

@@ -1,4 +1,5 @@
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
+import { noopCreateLogger } from '@trezor/connect-common/src/utils/debug';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 import { v1 as protocolV1 } from '@trezor/protocol';
 import { buildMessage } from '@trezor/transport-common';
@@ -188,7 +189,7 @@ const calculateFirmwareHashMock = (hash?: string) => ({
 const setupTest = () => {
     const deviceList = new DeviceList({
         ...settingsStore.get(),
-        // debug: true,
+        createLogger: noopCreateLogger,
     });
 
     const fixtures: ResponseFixture[] = [];

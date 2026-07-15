@@ -1,9 +1,9 @@
+import { type CoinjoinAccount } from '@suite/coinjoin';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { filterInconclusiveAuthenticityChecks } from '@suite-common/firmware-authenticity';
 import { type DeviceWithEmptyPath } from '@suite-common/suite-types';
 
 import { type AcquiredDevice } from 'src/types/suite';
-import { type CoinjoinAccount } from 'src/types/wallet/coinjoin';
 
 /**
  * Strip fields from Device

@@ -6,10 +6,3 @@ export const residenceCheckDisabledState = {
         [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
     },
 };
-
-export const residenceCheckEnabledState = {
-    featureFlags: {
-        ...featureFlagsInitialState,
-        [FeatureFlag.IsTradingResidenceCheckEnabled]: true,
-    },
-};

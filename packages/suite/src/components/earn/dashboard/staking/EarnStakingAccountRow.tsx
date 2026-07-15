@@ -22,36 +22,41 @@ import {
     isPending,
 } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, Paragraph, Row, Table } from '@trezor/components';
+import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
+import { useStakingRate } from 'src/hooks/earn/useStakingRate';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
 import { EarnStakingActionButtons } from './EarnStakingActionButtons';
 import { EarnStakingCurrentRewards } from './EarnStakingCurrentRewards';
 import { EarnStakingOutdatedProvider } from './EarnStakingOutdatedProvider';
 import { EarnStakingPotentialRewards } from './EarnStakingPotentialRewards';
-import { useStakingAccountStatus } from './hooks/useStakingAccountStatus';
+import { EarnStakingRateTooltip } from './EarnStakingRateTooltip';
+import { EarnStakingRemainingVotes } from './EarnStakingRemainingVotes';
 import { EarnAccountCell } from '../common/EarnAccountCell';
+import { useStakingAccountStatus } from './hooks/useStakingAccountStatus';
 
-export const EarnStakingAccountRow = ({
-    account,
-    isCardLayout,
-}: {
+interface EarnStakingAccountRowProps {
     account: Account;
     isCardLayout: boolean;
-}) => {
+}
+
+export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAccountRowProps) => {
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { isBelowMobile } = useLayoutSize();
-    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
+
+    const { rate } = useStakingRate({ symbol: account.symbol, accountKey: account.key });
+
     // Promoted (best) pool APY, shown when suggesting a switch to a new provider.
     const newProviderApy = useSelector(state =>
         selectPoolStatsApy(state, { networkSymbol: account.symbol }),
     );
+
     const displaySymbol = getDisplaySymbol(account.symbol);
     const isCardanoNetworkType = account.networkType === 'cardano';
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
@@ -185,11 +190,11 @@ export const EarnStakingAccountRow = ({
             maxDisplayedDecimals: 8,
         });
 
-    const currentRewards = calculateRewards(stakingBalance, apy);
+    const currentRewards = calculateRewards(stakingBalance, rate);
     const totalBalance = new BigNumber(stakingBalance).plus(accountBalance).toString();
     const potentialRewards = calculateRewards(
         getNetworkAdjustedStakingBalance(totalBalance, account),
-        apy,
+        rate,
     );
     const formattedStakingBalance = formatCryptoAmount(stakingBalance);
     const formattedAccountBalance = formatCryptoAmount(accountBalance);
@@ -197,7 +202,7 @@ export const EarnStakingAccountRow = ({
     const currentRewardsProps = {
         symbol: account.symbol,
         rewards: currentRewards,
-        apy,
+        apy: rate,
         isStakingActive,
         formattedStakingBalance,
         displaySymbol,
@@ -206,7 +211,7 @@ export const EarnStakingAccountRow = ({
     const potentialRewardsProps = {
         symbol: account.symbol,
         rewards: potentialRewards,
-        apy,
+        apy: rate,
         isCardanoNetworkType,
         formattedAccountBalance,
         displaySymbol,
@@ -227,6 +232,58 @@ export const EarnStakingAccountRow = ({
         </Paragraph>
     );
 
+    const onTronStake = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
+
+        dispatch(
+            goto({
+                routeName: 'earn-tron-stake',
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
+            }),
+        );
+
+        analytics.report({
+            type: events.stakingStakeEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'staking-dashboard',
+                networkSymbol: account.symbol,
+            },
+        });
+    };
+
+    const onTronVote = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
+
+        dispatch(
+            goto({
+                routeName: 'earn-tron-vote',
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
+            }),
+        );
+
+        analytics.report({
+            type: events.stakingUpdateProviderEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'staking-dashboard',
+                networkSymbol: account.symbol,
+            },
+        });
+    };
+
+    const apyAvailable =
+        stakingStatus !== 'staking-outdated-provider' &&
+        stakingStatus !== 'staking-remaining-votes';
+
     const actionButtonsProps = {
         stakingStatus,
         isStakingDisabled,
@@ -235,9 +292,10 @@ export const EarnStakingAccountRow = ({
         isClaimButtonDisabled,
         claimingMessageContent,
         onBuy: navigateToTradingBuy,
-        onStake: openStakeModal,
-        onStakeNow: navigateToStaking,
+        onStake: account.symbol === 'trx' ? onTronStake : openStakeModal,
+        onStakeNow: account.symbol === 'trx' ? onTronStake : navigateToStaking,
         onUpdateProvider: navigateToStaking,
+        onVote: onTronVote,
         onClaim: openClaimModal,
     } as const;
 
@@ -247,9 +305,12 @@ export const EarnStakingAccountRow = ({
                 <Column gap={12} width="100%">
                     <Row justifyContent="space-between" alignItems="flex-start">
                         <EarnAccountCell account={account} />
-                        <ApyValue
-                            apy={stakingStatus === 'staking-outdated-provider' ? null : apy}
-                        />
+
+                        {apyAvailable ? (
+                            <EarnStakingRateTooltip networkType={account.networkType} rate={rate} />
+                        ) : (
+                            <Translation id="TR_EARN_NOT_AVAILABLE" />
+                        )}
                     </Row>
 
                     {stakingStatus === 'insufficient-funds' && minStakeParagraph}
@@ -258,13 +319,17 @@ export const EarnStakingAccountRow = ({
                         <EarnStakingOutdatedProvider apy={newProviderApy} />
                     )}
 
+                    {stakingStatus === 'staking-remaining-votes' && (
+                        <EarnStakingRemainingVotes apr={rate} />
+                    )}
+
                     {(stakingStatus === 'staking-active' || stakingStatus === 'staking-inactive') &&
                         (isBelowMobile ? (
                             <Column gap={4}>
                                 <EarnStakingCurrentRewards {...currentRewardsProps} />
-                                {apy && (
+                                {rate && (
                                     <Icon
-                                        name="arrowDown"
+                                        as={ArrowDownIcon}
                                         intent="neutral"
                                         priority="secondary"
                                         size={20}
@@ -277,10 +342,10 @@ export const EarnStakingAccountRow = ({
                                 <Column flex="2">
                                     <EarnStakingCurrentRewards {...currentRewardsProps} />
                                 </Column>
-                                {apy && (
+                                {rate && (
                                     <Column flex="1" alignItems="center">
                                         <Icon
-                                            name="arrowRight"
+                                            as={ArrowRightIcon}
                                             intent="neutral"
                                             priority="secondary"
                                             size={20}
@@ -338,10 +403,10 @@ export const EarnStakingAccountRow = ({
             </Table.Cell>
 
             <Table.Cell>
-                {stakingStatus === 'staking-outdated-provider' ? (
-                    <Translation id="TR_EARN_NOT_AVAILABLE" />
+                {apyAvailable ? (
+                    <EarnStakingRateTooltip networkType={account.networkType} rate={rate} />
                 ) : (
-                    <ApyValue apy={apy} />
+                    <Translation id="TR_EARN_NOT_AVAILABLE" />
                 )}
             </Table.Cell>
 
@@ -359,9 +424,9 @@ export const EarnStakingAccountRow = ({
                     <Table.Cell>
                         <Row width="100%" alignItems="center" justifyContent="space-between">
                             <EarnStakingCurrentRewards {...currentRewardsProps} />
-                            {apy && (
+                            {rate && (
                                 <Icon
-                                    name="arrowRight"
+                                    as={ArrowRightIcon}
                                     intent="neutral"
                                     priority="secondary"
                                     size={20}
@@ -410,6 +475,17 @@ export const EarnStakingAccountRow = ({
                 <>
                     <Table.Cell colSpan={2}>
                         <EarnStakingOutdatedProvider apy={newProviderApy} />
+                    </Table.Cell>
+                    <Table.Cell align="end">
+                        <EarnStakingActionButtons {...actionButtonsProps} />
+                    </Table.Cell>
+                </>
+            )}
+
+            {stakingStatus === 'staking-remaining-votes' && (
+                <>
+                    <Table.Cell colSpan={2}>
+                        <EarnStakingRemainingVotes apr={rate} />
                     </Table.Cell>
                     <Table.Cell align="end">
                         <EarnStakingActionButtons {...actionButtonsProps} />

@@ -12,6 +12,28 @@ export const createSuiteDesktopCompositionRoot = (
 ) => {
     const history = createMemoryHistory();
     const platformEncryption = createElectronPlatformEncryption({ desktopApi });
+    const reloadApp = desktopApi.appRestart;
 
-    return initStore({ history, platformEncryption }, preloadStoreAction, { statePatch });
+    // The desktop renderer can't construct node-only transports (`usb`/`dgram`), so each factory
+    // yields the identifier string; the main process (`@trezor/suite-desktop-core`'s
+    // trezor-connect.ts) maps it to a real Transport instance below the IPC boundary. This also
+    // keeps `@trezor/transport` out of the renderer bundle.
+    const getTransportsFactories = () => ({
+        BridgeTransport: () => 'BridgeTransport' as const,
+        NodeUsbTransport: () => 'NodeUsbTransport' as const,
+        UdpTransport: () => 'UdpTransport' as const,
+    });
+
+    return initStore(
+        {
+            history,
+            platformEncryption,
+            createConnectLoggerFactory: undefined,
+            reloadApp,
+            thpHostName: undefined,
+            getTransportsFactories,
+        },
+        preloadStoreAction,
+        { statePatch },
+    );
 };

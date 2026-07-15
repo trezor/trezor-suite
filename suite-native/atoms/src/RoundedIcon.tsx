@@ -88,7 +88,7 @@ export const RoundedIcon = ({
         >
             {children ??
                 (name && name in icons ? (
-                    <Icon name={name as IconName} color={iconColor} size={iconSize} />
+                    <Icon name={name} color={iconColor} size={iconSize} />
                 ) : (
                     symbol && <CryptoIcon symbol={symbol} contractAddress={contractAddress} />
                 ))}

@@ -1,4 +1,4 @@
-import { type FC, type PropsWithChildren, type ReactNode } from 'react';
+import { type PropsWithChildren, type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -31,10 +31,8 @@ export const useReceiveDisabled = () => {
     };
     const tooltipContent = getTooltipContent();
 
-    const ReceiveDisabledWrapper: FC<PropsWithChildren> =
-        tooltipContent !== null
-            ? ({ children }) => <Tooltip content={tooltipContent}>{children}</Tooltip>
-            : ({ children }) => children;
+    const ReceiveDisabledWrapper = ({ children }: PropsWithChildren) =>
+        tooltipContent !== null ? <Tooltip content={tooltipContent}>{children}</Tooltip> : children;
 
     return {
         isReceiveDisabled,

@@ -47,7 +47,7 @@ export const mockGetFirmwareReleaseConfigInfo = (): NonNullable<
  * @param {Partial<Features>} [feat]
  * @returns {Features}
  */
-const getDeviceFeatures = (feat?: Partial<Features>): Features => {
+export const mockDeviceFeatures = (feat?: Partial<Features>): Features => {
     const isBootloader = feat?.bootloader_mode;
     const major_version = feat?.major_version || 2;
     const [_, minor_version, patch_version] = isBootloader ? [2, 0, 0] : [2, 1, 1];
@@ -135,7 +135,7 @@ export const mockConnectDevice = (
         };
     }
 
-    const features = getDeviceFeatures(feat);
+    const features = mockDeviceFeatures(feat);
 
     return {
         descriptor: { apiType: 'usb', id: 'device-id' },

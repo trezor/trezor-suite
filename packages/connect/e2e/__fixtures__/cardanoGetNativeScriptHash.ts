@@ -12,6 +12,7 @@ const legacyResults = {
 
 export default {
     method: 'cardanoGetNativeScriptHash',
+    enabledCoins: ['ada'] as const,
     setup: {
         mnemonic: 'mnemonic_all',
     },

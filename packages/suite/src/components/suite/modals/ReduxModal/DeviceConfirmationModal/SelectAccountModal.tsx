@@ -4,18 +4,9 @@ import { AccountLabel } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { onReceiveAccount } from '@suite/modal';
 import { selectAccounts } from '@suite-common/wallet-core';
-import {
-    Card,
-    Column,
-    Icon,
-    Modal,
-    Row,
-    SkeletonCircle,
-    SkeletonRectangle,
-    SubTabs,
-    Table,
-} from '@trezor/components';
+import { Card, Column, Icon, Modal, Row, Skeleton, SubTabs, Table } from '@trezor/components';
 import { type UiRequestSelectAccount } from '@trezor/connect';
+import { CaretRightIcon } from '@trezor/icons';
 import { CoinLogo, isNetworkSymbolWithIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -52,10 +43,10 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
         }
     }, [data.accountTypes, data.defaultAccountType, data.accounts]);
     const typeLabels = {
-        p2wpkh: <Translation id="TR_NORMAL_ACCOUNTS" />,
-        p2tr: <Translation id="TR_TAPROOT_ACCOUNTS" />,
-        p2sh: <Translation id="TR_LEGACY_SEGWIT_ACCOUNTS" />,
-        p2pkh: <Translation id="TR_LEGACY_ACCOUNTS" />,
+        p2wpkh: <Translation id="TR_ACCOUNT_TYPE_DEFAULT" />,
+        p2tr: <Translation id="TR_ACCOUNT_TYPE_TAPROOT" />,
+        p2sh: <Translation id="TR_ACCOUNT_TYPE_SEGWIT" />,
+        p2pkh: <Translation id="TR_ACCOUNT_TYPE_LEGACY" />,
     };
     const indexedAccounts = accounts?.map((account, index) => ({ ...account, index }));
     const filteredAccounts = indexedAccounts?.filter(
@@ -150,7 +141,7 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
                                                 )}
                                             </Table.Cell>
                                             <Table.Cell align="end">
-                                                <Icon size={24} name="caretRight" />
+                                                <Icon size={24} as={CaretRightIcon} />
                                             </Table.Cell>
                                         </Table.Row>
                                     );
@@ -158,13 +149,13 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
                                 {data.type !== 'end' && data.type !== 'complete' && (
                                     <Table.Row>
                                         <Table.Cell>
-                                            <SkeletonRectangle width="100px" animate />
+                                            <Skeleton width={100} animate />
                                         </Table.Cell>
                                         <Table.Cell>
-                                            <SkeletonRectangle width="80px" animate />
+                                            <Skeleton width={80} animate />
                                         </Table.Cell>
                                         <Table.Cell align="end">
-                                            <SkeletonCircle size="24px" />
+                                            <Skeleton type="circle" size={24} />
                                         </Table.Cell>
                                     </Table.Row>
                                 )}

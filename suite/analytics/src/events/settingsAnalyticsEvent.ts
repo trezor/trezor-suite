@@ -14,6 +14,8 @@ export const settingsAnalyticsEvent: EventDef<Attributes, EventType.SettingsAnal
     attributes: {
         value: {
             changelog: [{ version: '1.0.0', notes: 'added' }],
+            description:
+                '`true` if analytics collection is enabled, `false` if analytics collection is disabled',
         },
     },
 };

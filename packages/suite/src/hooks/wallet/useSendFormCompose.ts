@@ -271,6 +271,7 @@ export const useSendFormCompose = ({
             !selectedFee || (typeof setMaxOutputId === 'number' && selectedFee !== 'custom');
         if (shouldSwitch && composed.type === 'error') {
             // find nearest possible tx
+            // eslint-disable-next-line no-restricted-syntax -- composedLevels is keyed by fee labels but typed as Record<string, …>, so assert the keys back to FeeLevel['label']
             const nearest = (Object.keys(composedLevels) as FeeLevel['label'][]).find(
                 key => composedLevels[key]?.type !== 'error',
             );

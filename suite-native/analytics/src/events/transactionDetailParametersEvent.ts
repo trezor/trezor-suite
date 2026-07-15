@@ -9,7 +9,8 @@ export const transactionDetailParametersEvent: EventDef<
     EventType.TransactionDetailParameters
 > = {
     name: EventType.TransactionDetailParameters,
-    descriptionTrigger: 'On opening Transaction detail Parameters sheet.',
+    descriptionTrigger:
+        'User opens the Transaction detail Parameters sheet to view advanced transaction information',
     changelog: [{ version: '23.4.1', notes: 'added' }],
     attributes: {},
 };

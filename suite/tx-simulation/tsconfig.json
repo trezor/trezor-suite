@@ -16,6 +16,7 @@
         },
         { "path": "../intl" },
         { "path": "../../packages/components" },
+        { "path": "../../packages/icons" },
         {
             "path": "../../packages/product-components"
         },

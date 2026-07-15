@@ -26,6 +26,7 @@ export type EarnAnalyticsStep =
     | 'stake-form-modal'
     | 'stake-in-a-nutshell-modal'
     | 'staking-dashboard'
-    | 'yield-supply'
+    | 'yield-deposit'
     | 'yield-withdraw'
-    | 'unstake-form-modal';
+    | 'unstake-form-modal'
+    | 'withdraw-form-modal';

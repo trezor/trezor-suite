@@ -1,41 +1,21 @@
-import type { UpdateConnectSettings } from '@trezor/connect-common';
-import { factory } from '@trezor/connect-common';
-import { deepEqual } from '@trezor/utils';
+import { type UpdateConnectSettings, factoryPrivileged } from '@trezor/connect-common';
+import { BridgeTransport } from '@trezor/transport/src/transports/bridge';
+import type { AbstractTransportParams } from '@trezor/transport-common';
 
-import { reconnectAllBackends } from './backend/BlockchainLink';
-import * as settingsStore from './data/settingsStore';
+import { updateProxy } from './backend/BlockchainLink';
 import { CoreInModule } from './impl/core-in-module';
 
 class CoreInModuleNode extends CoreInModule {
-    protected get defaultTransports() {
-        return ['BridgeTransport' as const];
+    protected defaultTransports(params: AbstractTransportParams) {
+        return [new BridgeTransport(params)];
     }
 
     protected async updateProxy(proxy: UpdateConnectSettings['proxy']) {
-        // updateConnectSettings() may be called before init() — nothing to do yet.
-        if (!settingsStore.isLoaded()) return;
-        const settings = settingsStore.get();
-        if (proxy !== undefined && !deepEqual(settings.proxy, proxy)) {
-            settingsStore.update({ proxy });
-            await reconnectAllBackends();
-        }
+        await updateProxy(proxy);
     }
 }
 
-const impl = new CoreInModuleNode();
-
-const TrezorConnect = factory(
-    {
-        eventEmitter: impl.eventEmitter,
-        init: impl.init.bind(impl),
-        call: impl.call.bind(impl),
-        updateConnectSettings: impl.updateConnectSettings.bind(impl),
-        uiResponse: impl.uiResponse.bind(impl),
-        cancel: impl.cancel.bind(impl),
-        dispose: impl.dispose.bind(impl),
-    },
-    {},
-);
+const TrezorConnect = factoryPrivileged(new CoreInModuleNode());
 
 export default TrezorConnect;
 

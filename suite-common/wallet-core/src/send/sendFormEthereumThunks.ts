@@ -1,22 +1,24 @@
-import { fromWei, toWei } from 'web3-utils';
-
 import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
+import { type EvmGasParamsGwei } from '@suite-common/schemas/src/evm';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
+    ETH_SPEED_UP_TX_MULTIPLIER,
     ETH_TRANSFER_BACKUP_GAS_LIMIT,
     STAKE_GAS_LIMIT_RESERVE,
 } from '@suite-common/wallet-constants';
 import {
-    type Account,
+    type AccountWithNetworkType,
     AddressDisplayOptions,
     type ComposeActionContext,
     type ExternalOutput,
+    type FeeInfo,
     type PrecomposedLevels,
     type PrecomposedTransaction,
     type RbfTransactionParams,
+    type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
@@ -26,22 +28,28 @@ import {
     calculateTotalGasCost,
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
+    fromGwei,
+    fromWei,
     getAccountIdentity,
     getApprovalComposeOutput,
     getCryptoMaxAmountWithReserve,
     getEthereumEstimateFeeParams,
+    getEvmNonceInfo,
+    getEvmNonceInfoFromConfirmedNonce,
     getExternalComposeOutput,
     getTxStakeNameByDataHex,
+    isEip1559,
     isEvmApprovalTx,
-    isPending,
-    isSentTransaction,
     prepareEthereumTransaction,
     subunitsToUnits,
+    tryGetAccountIdentity,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel, type TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
+import { reportEthereumFeeEstimationFailed } from './reportEthereumFeeEstimationError';
+import { sendFormActions } from './sendFormActions';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
     type ComposeFeeLevelsError,
@@ -50,7 +58,74 @@ import {
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
 import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
-import { selectTransactions } from '../transactions/transactionsSelectors';
+import { selectAccountTransactions } from '../transactions/transactionsSelectors';
+
+/**
+ * Returns fee info with levels bumped above the original transaction's gas price,
+ * so that the replacement transaction will be accepted by the mempool.
+ *
+ * Expects `feeInfo` with levels already in Gwei (i.e. from selectConvertedNetworkFeeInfo).
+ * `originalGasParams` must also be in Gwei.
+ */
+export const getEthereumRbfFeeInfo = (
+    feeInfo: FeeInfo,
+    originalGasParams: EvmGasParamsGwei,
+): FeeInfo => {
+    // feeInfo.levels are already in Gwei — do NOT call getConvertedOrDefaultFeeInfo here,
+    // that would double-convert and produce near-zero values.
+    const { levels } = feeInfo;
+    const firstLevel: FeeLevel | undefined = levels[0];
+    if (!firstLevel) return feeInfo;
+
+    const { maxPriorityFeePerGas } = originalGasParams;
+    if (isEip1559(originalGasParams) && isEip1559(firstLevel)) {
+        const currentMaxFee = new BigNumber(originalGasParams.maxFeePerGas);
+        const currentMaxPriorityFee = new BigNumber(maxPriorityFeePerGas ?? '0');
+        const highLevel = levels.find(l => l.label === 'high') ?? firstLevel;
+
+        // Gwei has at most 9 decimal places (1 Gwei = 1e9 Wei); multiplying by a decimal
+        // multiplier can produce more, which later fails Wei conversion. Round up to keep
+        // the bump at least as large as calculated.
+        const newMaxFeePerGas = BigNumber.maximum(currentMaxFee, highLevel.maxFeePerGas ?? 0)
+            .multipliedBy(ETH_SPEED_UP_TX_MULTIPLIER)
+            .decimalPlaces(9, BigNumber.ROUND_UP)
+            .toString();
+        const newMaxPriorityFeePerGas = BigNumber.maximum(
+            currentMaxPriorityFee,
+            highLevel.maxPriorityFeePerGas ?? 0,
+        )
+            .multipliedBy(ETH_SPEED_UP_TX_MULTIPLIER)
+            .decimalPlaces(9, BigNumber.ROUND_UP)
+            .toString();
+
+        return {
+            ...feeInfo,
+            levels: [
+                {
+                    ...highLevel,
+                    label: 'normal' as const,
+                    maxFeePerGas: newMaxFeePerGas,
+                    maxPriorityFeePerGas: newMaxPriorityFeePerGas,
+                },
+            ],
+        };
+    }
+
+    const currentGasPrice = new BigNumber(
+        originalGasParams.gasPrice || originalGasParams.maxFeePerGas || '0',
+    );
+    const minFeeFromNetwork = new BigNumber(firstLevel.feePerUnit);
+    const fee = BigNumber.maximum(minFeeFromNetwork, currentGasPrice.plus(feeInfo.minFee));
+
+    return {
+        ...feeInfo,
+        levels: feeInfo.levels.map(level => ({
+            ...level,
+            feePerUnit: fee.toString(),
+        })),
+        minFee: currentGasPrice.plus(feeInfo.minFee).toNumber(),
+    };
+};
 
 export const calculate = (
     availableBalance: string,
@@ -64,7 +139,7 @@ export const calculate = (
     let max: string | undefined;
 
     const totalGasCostInWei = calculateTotalGasCost(
-        toWei(feeLevel.maxFeePerGas || feeLevel.feePerUnit, 'gwei'),
+        fromGwei(feeLevel.maxFeePerGas || feeLevel.feePerUnit).toWei(),
         feeLevel.feeLimit,
     );
 
@@ -72,7 +147,12 @@ export const calculate = (
         ? convertAmountUnitsToSubunits(token.balance!, token.decimals)
         : undefined;
 
-    if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
+    const isSendMax = output.type === 'send-max' || output.type === 'send-max-noaddress';
+
+    const consumesEntireFee =
+        isSendMax && !token && feeLevel.label !== 'custom' && !!feeLevel.maxFeePerGas;
+
+    if (isSendMax) {
         max = availableTokenBalance || calculateMax(availableBalance, totalGasCostInWei);
 
         if (composeContext) {
@@ -117,7 +197,7 @@ export const calculate = (
                 errorMessage: {
                     id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
                     values: {
-                        feeAmount: fromWei(totalGasCostInWei, 'ether').toString(),
+                        feeAmount: fromWei(totalGasCostInWei).toEther(),
                     },
                 },
             } as const;
@@ -148,7 +228,9 @@ export const calculate = (
         max,
         fee: totalGasCostInWei,
         maxFeePerGas: feeLevel.maxFeePerGas,
-        maxPriorityFeePerGas: feeLevel.maxPriorityFeePerGas,
+        maxPriorityFeePerGas: consumesEntireFee
+            ? feeLevel.maxFeePerGas
+            : feeLevel.maxPriorityFeePerGas,
         feePerByte: feeLevel.feePerUnit,
         feeLimit: feeLevel.feeLimit,
         token,
@@ -256,6 +338,15 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
                     ? ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT
                     : ETH_TRANSFER_BACKUP_GAS_LIMIT,
             );
+
+            reportEthereumFeeEstimationFailed({
+                account,
+                formState,
+                tokenInfo,
+                estimateTarget: ethereumEstimateFeeParams.to,
+                error: estimatedFee.error,
+            });
+
             dispatch(
                 notificationsActions.addToast({
                     type: 'estimated-fee-error',
@@ -310,7 +401,7 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
         response.forEach((tx, index) => {
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
             const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
-            const feeLabel = predefinedLevel.label as FeeLevel['label'];
+            const feeLabel = predefinedLevel.label;
             resultLevels[feeLabel] = tx;
         });
 
@@ -343,39 +434,111 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
     },
 );
 
+/**
+ * Resolves the nonce to use for the next Ethereum transaction.
+ *
+ * For RBF (cancel / speed-up) the original tx's nonce is reused. Otherwise:
+ *  - `confirmedNonce` = the mined-only nonce from blockbook when `fetchConfirmedNonce` is true and
+ *    the backend supports it (trezor/blockbook#1562), trusted as-is; otherwise the account's
+ *    last-synced nonce from the backend (account.misc.nonce), reconciled against local tx data
+ *    since it can be stale/pending-inclusive.
+ *  - `nonce` (signing default) = `confirmedNonce` advanced past any *contiguous* outgoing pending
+ *    txs. Gapped pending txs (e.g. a stuck tx far above the confirmed nonce) are ignored, so the
+ *    suggestion fills the gap instead of queueing behind an unmineable tx.
+ */
+interface ResolveEthereumNonceParams {
+    selectedAccount: AccountWithNetworkType<'ethereum'>;
+    rbfParams?: RbfTransactionParams;
+    accountTransactions: WalletAccountTransaction[];
+    // Required (yet optional for types to match) on purpose: every caller must consciously decide whether to pay for
+    // the authoritative mined-only backend nonce (outgoing txs) or skip it (RBF / display-only).
+    // Silently omitting it is exactly how the staking/WalletConnect/earn flows ended up stale.
+    fetchConfirmedNonce?: boolean;
+}
+
+interface ResolveEthereumNonceResult {
+    nonce: string;
+    confirmedNonce: string;
+}
+
+export const resolveEthereumNonce = async ({
+    selectedAccount,
+    rbfParams,
+    accountTransactions,
+    fetchConfirmedNonce,
+}: ResolveEthereumNonceParams): Promise<ResolveEthereumNonceResult> => {
+    // For RBF (cancel / speed-up) always use the original tx's nonce.
+    // confirmedNonce is only consumed for custom-nonce validation (non-RBF), so mirror nonce here.
+    if (rbfParams?.type === 'ethereum' && typeof rbfParams.ethereumNonce === 'number') {
+        const rbfNonce = rbfParams.ethereumNonce.toString();
+
+        return { nonce: rbfNonce, confirmedNonce: rbfNonce };
+    }
+
+    // Use the account's nonce from the last sync as the base. Optionally override with blockbook's
+    // mined-only nonce (trezor/blockbook#1562) when the caller opts in — it costs an extra backend
+    // call but is authoritative and unaffected by local pending-tx state.
+    let accountNonce = parseInt(selectedAccount.misc?.nonce ?? '0', 10);
+    let accountNonceIsConfirmed = false;
+    if (fetchConfirmedNonce) {
+        // A backend failure (rejection or unsuccessful response) must not block signing — swallow it
+        // and fall back to local derivation below.
+        try {
+            const accountInfoResponse = await TrezorConnect.getAccountInfo({
+                coin: selectedAccount.symbol,
+                descriptor: selectedAccount.descriptor,
+                identity: tryGetAccountIdentity(selectedAccount),
+                details: 'basic',
+                confirmedNonce: true,
+                suppressBackupWarning: true,
+            });
+
+            if (
+                accountInfoResponse?.success &&
+                accountInfoResponse.payload.misc?.confirmedNonce != null
+            ) {
+                accountNonce = parseInt(accountInfoResponse.payload.misc.confirmedNonce, 10);
+                accountNonceIsConfirmed = true;
+            }
+        } catch {
+            // ignore — local derivation below
+        }
+    }
+
+    // A properly mined-only nonce fetched above is already trustworthy: reconciling it further
+    // against local tx data (getEvmNonceInfo) would let a single bad locally-known nonce override
+    // an otherwise-correct backend answer. Only account.misc.nonce (unconfirmed/untrusted) needs
+    // that reconciliation.
+    const { nextNonce, confirmedNonce } = accountNonceIsConfirmed
+        ? getEvmNonceInfoFromConfirmedNonce(accountNonce, accountTransactions)
+        : getEvmNonceInfo(accountNonce, accountTransactions);
+
+    return { nonce: nextNonce.toString(), confirmedNonce: confirmedNonce.toString() };
+};
+
+interface EthereumGetCurrentNonceThunkParams {
+    selectedAccount: AccountWithNetworkType<'ethereum'>;
+    rbfParams?: RbfTransactionParams;
+    // See ResolveEthereumNonceParams: temporarily required so no caller can silently fall back to the stale nonce.
+    fetchConfirmedNonce?: boolean;
+}
+
 export const ethereumGetCurrentNonceThunk = createThunk<
-    { nonce: string },
-    { selectedAccount: Account & { networkType: 'ethereum' }; rbfParams?: RbfTransactionParams }
+    ResolveEthereumNonceResult,
+    EthereumGetCurrentNonceThunkParams
 >(
     `${SEND_MODULE_PREFIX}/ethereumGetCurrentNonceThunk`,
-    ({ selectedAccount, rbfParams }, { getState }) => {
-        // Ethereum account `misc.nonce` is not updated before pending tx is mined
-        // Calculate `pendingNonce`: greatest value in pending tx + 1
-        // This may lead to unexpected/unwanted behavior
-        // whenever pending tx gets rejected all following txs (with higher nonce) will be rejected as well
-        const transactions = selectTransactions(getState());
-        const pendingTxs = (transactions[selectedAccount.key] || [])
-            .filter(isPending)
-            .filter(isSentTransaction);
-        const pendingNonce = pendingTxs.reduce((value, tx) => {
-            if (!tx.ethereumSpecific) return value;
+    ({ selectedAccount, rbfParams, fetchConfirmedNonce }, { getState }) => {
+        // selectAccountTransactions (not the raw selectTransactions map) filters out the null
+        // pagination placeholders the reducer can hold, which getEvmNonceInfo doesn't guard against.
+        const accountTransactions = selectAccountTransactions(getState(), selectedAccount.key);
 
-            return Math.max(value, tx.ethereumSpecific.nonce + 1);
-        }, 0);
-
-        const pendingNonceBig = new BigNumber(pendingNonce);
-        const accountNonce = selectedAccount.misc?.nonce;
-
-        let nonce =
-            pendingNonceBig.gt(0) && pendingNonceBig.gt(accountNonce)
-                ? pendingNonceBig.toString()
-                : accountNonce;
-
-        if (rbfParams?.type === 'ethereum' && typeof rbfParams.ethereumNonce === 'number') {
-            nonce = rbfParams.ethereumNonce.toString();
-        }
-
-        return { nonce };
+        return resolveEthereumNonce({
+            selectedAccount,
+            rbfParams,
+            fetchConfirmedNonce,
+            accountTransactions,
+        });
     },
 );
 
@@ -399,12 +562,33 @@ export const signEthereumSendFormTransactionThunk = createThunk<
 
         const addressDisplayType = selectAddressDisplayType(getState());
 
-        const { nonce } = await dispatch(
+        // Re-check the backend right before signing: the confirmed nonce may have advanced since
+        // the form was composed (e.g. another wallet/session spent it), so this returns the
+        // next available nonce. When a custom nonce is provided, skip rbfParams so we get the
+        // actual confirmed nonce for validation instead of the RBF nonce.
+        const customNonce = formState.ethereumNonce;
+        const { nonce: resolvedNonce, confirmedNonce } = await dispatch(
             ethereumGetCurrentNonceThunk({
                 selectedAccount,
-                rbfParams: formState.rbfParams,
+                rbfParams: customNonce ? undefined : formState.rbfParams,
+                fetchConfirmedNonce: true,
             }),
         ).unwrap();
+
+        let nonce = resolvedNonce;
+        if (customNonce) {
+            if (parseInt(customNonce, 10) < parseInt(confirmedNonce, 10)) {
+                return rejectWithValue({
+                    error: 'sign-transaction-failed',
+                    message: `Custom nonce ${customNonce} is below the confirmed nonce ${confirmedNonce}.`,
+                });
+            }
+            nonce = customNonce;
+        }
+
+        // Store the exact nonce being signed so the review modal can display it without resolving
+        // it again (which would race this in-progress signing).
+        dispatch(sendFormActions.storeResolvedEthereumNonce(nonce));
 
         const { outputs: signOutputs } = formState;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess

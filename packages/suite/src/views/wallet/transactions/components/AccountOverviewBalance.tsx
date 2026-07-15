@@ -2,15 +2,8 @@ import { Translation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive, selectBaseCurrency } from '@suite-common/wallet-core';
 import { isTestnet } from '@suite-common/wallet-utils';
-import {
-    Column,
-    Icon,
-    Paragraph,
-    Row,
-    SkeletonCircle,
-    SkeletonRectangle,
-    Text,
-} from '@trezor/components';
+import { Column, Icon, Paragraph, Row, Skeleton, Text } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
 import { CoinLogo } from '@trezor/product-components';
 
 import { AmountUnitSwitchWrapper, FormattedCryptoAmount } from 'src/components/suite';
@@ -29,10 +22,10 @@ const AccountOverviewBalanceSkeleton = ({
     symbol,
 }: AccountOverviewBalanceSkeletonProps) => (
     <Column gap={4}>
-        <SkeletonRectangle width={100} height={50} animate={animate} />
+        <Skeleton width={100} height={50} animate={animate} />
         <Row gap={4}>
-            {symbol ? <CoinLogo size={16} symbol={symbol} /> : <SkeletonCircle size="20px" />}
-            <SkeletonRectangle height={20} animate={animate} />
+            {symbol ? <CoinLogo size={16} symbol={symbol} /> : <Skeleton type="circle" size={20} />}
+            <Skeleton height={20} animate={animate} />
         </Row>
     </Column>
 );
@@ -77,7 +70,11 @@ export const AccountOverviewBalance = ({ selectedAccount }: AccountOverviewBalan
     const shouldDisplayBaseCurrency = baseCurrency !== symbol;
     const isMainnet = !isTestnet(symbol);
     const hasTokens = !!account.tokens?.length;
-    const balanceExcludesTranslationId = getBalanceExcludesTranslationId(hasTokens, hasStaking);
+    const hasStakingExcludedFromBalance = hasStaking && account.networkType !== 'cardano';
+    const balanceExcludesTranslationId = getBalanceExcludesTranslationId(
+        hasTokens,
+        hasStakingExcludedFromBalance,
+    );
 
     return (
         <Row gap={16} justifyContent="space-between" alignItems="flex-end" flexWrap="wrap">
@@ -110,7 +107,7 @@ export const AccountOverviewBalance = ({ selectedAccount }: AccountOverviewBalan
             </Column>
             {balanceExcludesTranslationId && (
                 <Row gap={4}>
-                    <Icon name="info" size={16} intent="neutral" priority="secondary" />
+                    <Icon as={InfoIcon} size={16} intent="neutral" priority="secondary" />
                     <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                         <Translation id={balanceExcludesTranslationId} />
                     </Paragraph>

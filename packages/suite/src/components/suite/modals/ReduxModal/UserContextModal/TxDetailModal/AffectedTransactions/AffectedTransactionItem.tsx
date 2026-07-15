@@ -1,11 +1,12 @@
 import { Address } from '@suite/address';
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { type Transaction } from '@trezor/blockchain-link-types';
 import { Icon, InfoSegments, Row, Text } from '@trezor/components';
+import { ArrowDownIcon, ArrowUpIcon, ClockIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { FormattedDate } from 'src/components/suite/FormattedDate';
-import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 
 type RowIcon = {
     txType: Transaction['type'];
@@ -13,9 +14,9 @@ type RowIcon = {
 };
 
 const RowIcon = ({ txType, isAccountOwned }: RowIcon) => {
-    const iconType = txType === 'recv' ? 'arrowDown' : 'arrowUp';
+    const icon = txType === 'recv' ? ArrowDownIcon : ArrowUpIcon;
 
-    return <Icon size={16} isDisabled={true} name={isAccountOwned ? iconType : 'clock'} />;
+    return <Icon size={16} isDisabled={true} as={isAccountOwned ? icon : ClockIcon} />;
 };
 
 type AffectedTransactionItemProps = {

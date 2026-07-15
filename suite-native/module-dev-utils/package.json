@@ -13,7 +13,7 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native": "7.1.28",
-        "@reduxjs/toolkit": "2.11.2",
+        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/analytics-redux": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
@@ -23,6 +23,7 @@
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-sync-quota-manager": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite-common/validators": "workspace:*",
         "@suite-native/alerts": "workspace:*",
@@ -42,10 +43,10 @@
         "@suite-native/trading-state": "workspace:*",
         "@trezor/connect-common": "workspace:^",
         "@trezor/env-utils": "workspace:*",
-        "expo": "~55.0.3",
-        "react": "19.2.4",
-        "react-native": "0.83.2",
-        "react-redux": "9.2.0"
+        "expo": "~56.0.6",
+        "react": "19.2.3",
+        "react-native": "0.85.3",
+        "react-redux": "9.3.0"
     },
     "devDependencies": {
         "@trezor/requirements": "workspace:*"

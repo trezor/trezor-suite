@@ -1,5 +1,6 @@
 import '@suite-common/test-utils/src/globalOverrides';
 
+import { coinjoinReducer } from '@suite/coinjoin';
 import { initialRunCompleted, prepareFlagsReducer } from '@suite/flags';
 import { initialMetadataState, metadataReducer } from '@suite/metadata';
 import { receiveReducer } from '@suite/receive';
@@ -10,8 +11,7 @@ import { asEncryptedHex } from '@suite-common/platform-encryption';
 import { setSuiteSyncOwner } from '@suite-common/suite-sync';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { testMocks } from '@suite-common/test-utils';
-import { asWalletDescriptor } from '@suite-common/wallet';
+import { testMocks, wireEnabledNetworksMock } from '@suite-common/test-utils';
 import {
     changeCoinVisibility,
     prepareDiscoveryReducer,
@@ -22,15 +22,14 @@ import * as discoveryActions from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
-import { type StaticSessionId } from '@trezor/device-utils';
+import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
 
-import { deviceSlice } from 'src/actions/device/deviceSlice';
+import { prepareDesktopDeviceReducer } from 'src/actions/device/deviceSlice';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 import { SETTINGS } from 'src/config/suite';
 import storageMiddleware from 'src/middlewares/wallet/storageMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { accountsReducer, fiatRatesReducer, transactionsReducer } from 'src/reducers/wallet';
-import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
 import graphReducer from 'src/reducers/wallet/graphReducer';
 import { db } from 'src/storage';
 import { extraDependencies } from 'src/support/extraDependencies';
@@ -43,7 +42,7 @@ import * as storageActions from '../storageActions';
 const { getWalletTransaction } = testMocks;
 
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
-const deviceReducer = deviceSlice.prepareReducer(extraDependencies);
+const deviceReducer = prepareDesktopDeviceReducer(extraDependencies);
 const flagsReducer = prepareFlagsReducer(extraDependencies);
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
 const walletSettingsReducer = discoveryActions.prepareWalletSettingsReducer(extraDependencies);
@@ -229,7 +228,7 @@ describe('Storage actions', () => {
         const f = global.fetch;
         global.fetch = mockFetch({ TR_ID: 'Message' });
         await store.dispatch(storageActions.saveSuiteSettings());
-        await store.dispatch(initialRunCompleted());
+        await store.dispatch(initialRunCompleted({ isFreshDeviceSetup: true }));
         store.dispatch(await preloadStore());
 
         expect(store.getState().flags.initialRun).toEqual(false);
@@ -477,6 +476,8 @@ describe('Storage actions', () => {
         store.dispatch(await preloadStore());
         expect(store.getState().wallet.graph.data.length).toBe(2);
 
+        // changeCoinVisibility awaits updateConnectSettings; mock it as a no-op success.
+        wireEnabledNetworksMock();
         // disable btc network, enable ltc, triggering ACCOUNT.REMOVE
         await store.dispatch(changeCoinVisibility({ symbol: 'ltc', shouldBeVisible: true }));
         await store.dispatch(changeCoinVisibility({ symbol: 'btc', shouldBeVisible: false }));

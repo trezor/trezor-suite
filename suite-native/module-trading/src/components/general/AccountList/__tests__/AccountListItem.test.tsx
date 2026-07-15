@@ -1,5 +1,6 @@
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { getTranslation } from '@suite-native/intl';
 import { type TestStore, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { type ReceiveAccount } from '@suite-native/trading-types';
 import { type StaticSessionId } from '@trezor/connect';
@@ -94,8 +95,16 @@ describe('AccountListItem', () => {
 
         expect(getByText('My BTC account')).toBeTruthy();
         expect(queryByAccessibilityHint('Select to display account addresses')).toBeNull();
-        expect(getByLabelText('Balance in fiat')).toHaveTextContent('$10,000,000.00');
-        expect(getByLabelText('Balance in crypto')).toHaveTextContent('0.1 BTC');
+        expect(
+            getByLabelText(getTranslation('moduleTrading.accountScreen.balanceFiat')),
+        ).toHaveTextContent('$10,000,000.00');
+        expect(
+            getByLabelText(
+                getTranslation('moduleTrading.accountScreen.balanceCrypto', {
+                    coinLabel: 'crypto',
+                }),
+            ),
+        ).toHaveTextContent('0.1 BTC');
     });
 
     it('should display caret when account defines addresses', () => {

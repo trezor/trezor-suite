@@ -2,9 +2,9 @@ import { Provider as ReduxProvider } from 'react-redux';
 
 import { createRoot } from 'react-dom/client';
 
+import { useDebugLanguageShortcut } from '@suite/debug';
 import { ServicesProvider } from '@suite-common/dependency-injection';
-import TrezorConnect from '@trezor/connect';
-import { createIpcProxy } from '@trezor/ipc-proxy';
+import TrezorConnect from '@trezor/connect-electron';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { initBluetoothThunk } from 'src/actions/bluetooth/initBluetoothThunk';
@@ -19,7 +19,6 @@ import {
 import { BioAuthGuard } from 'src/components/suite/BioAuthGuard/BioAuthGuard';
 import { FindBar } from 'src/components/suite/FindBar/FindBar';
 import { Metadata } from 'src/components/suite/Metadata';
-import { useDebugLanguageShortcut } from 'src/hooks/suite';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
 import { Main } from 'src/support/suite/Main';
 import { preloadStore } from 'src/support/suite/preloadStore';
@@ -76,10 +75,7 @@ export const init = async (container: HTMLElement) => {
     }
 
     // start logging to file if Debug menu is active
-    if (
-        preloadAction?.type === STORAGE.LOAD &&
-        preloadAction.payload.suiteSettings?.settings.debug.showDebugMenu
-    ) {
+    if (preloadAction?.type === STORAGE.LOAD && preloadAction.payload.debug?.showDebugMenu) {
         desktopApi.configLogger({
             level: 'debug',
             options: {
@@ -113,20 +109,19 @@ export const init = async (container: HTMLElement) => {
     });
     if (!loadModules.success) {
         // loading failed, render error with theme provider without redux and do not continue
-        root.render(<ErrorScreen error={loadModules.error} />);
+        root.render(
+            <ServicesProvider services={services}>
+                <ErrorScreen error={loadModules.error} />
+            </ServicesProvider>,
+        );
 
         return;
     }
 
     store.dispatch(desktopHandshake(loadModules.payload));
 
-    // create ipc-proxy for @trezor/connect
-    const proxy = await createIpcProxy<typeof TrezorConnect>('TrezorConnect');
-    // override each method of @trezor/connect using ipc-proxy
-    Object.keys(TrezorConnect).forEach(method => {
-        // @ts-expect-error key vs union of values endless problem
-        TrezorConnect[method] = proxy[method];
-    });
+    // establish ipc connection with TrezorConnect living in main process
+    await TrezorConnect.initIpcProxy();
 
     // init bluetooth module
     // TODO should it really be here instead of initAction.ts?

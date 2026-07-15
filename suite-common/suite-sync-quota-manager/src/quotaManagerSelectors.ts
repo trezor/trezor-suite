@@ -1,6 +1,6 @@
 import { type DeviceRootState, selectDeviceId } from '@suite-common/device';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
-import { type WalletDescriptor } from '@suite-common/wallet';
+import { type WalletDescriptor } from '@trezor/device-utils';
 
 import { type SuiteSyncQuotaManagerState } from './quotaManagerReducer';
 
@@ -11,9 +11,6 @@ export type WithSuiteSyncQuotaManagerState = {
 const createMemoizedSelector = createWeakMapSelector.withTypes<
     DeviceRootState & WithSuiteSyncQuotaManagerState
 >();
-
-export const selectQuotaManagerBaseUrl = (state: WithSuiteSyncQuotaManagerState) =>
-    state.suiteSyncQuotaManager.baseUrl;
 
 export const selectIsDeviceRegistered = (state: WithSuiteSyncQuotaManagerState, deviceId: string) =>
     state.suiteSyncQuotaManager.registeredDevices.find(device => device.deviceId === deviceId) !==

@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgGitCommit = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M31 15h-8.073a7 7 0 0 0-13.854 0H1a1 1 0 0 0 0 2h8.072a7 7 0 0 0 13.855 0H31a1 1 0 1 0 0-2m-15 6a5 5 0 1 1 0-10 5 5 0 0 1 0 10"
+        />
+    </svg>
+);
+export { SvgGitCommit as ReactComponent };

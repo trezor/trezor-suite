@@ -56,8 +56,13 @@ const getAccountBalanceHistory = async (
 
 const getTransaction = async (request: Request<MessageTypes.GetTransaction>) => {
     const api = await request.connect();
-    const txData = await api.getTransaction(request.payload);
-    const tx = transformTransaction({ txData });
+    const { txid, descriptor } = request.payload;
+    const txData = await api.getTransaction(txid);
+    const account = descriptor ? request.state.getAccount(descriptor) : undefined;
+    const tx = transformTransaction(
+        { txData },
+        account?.addresses ?? account?.descriptor ?? descriptor,
+    );
 
     return {
         type: RESPONSES.GET_TRANSACTION,

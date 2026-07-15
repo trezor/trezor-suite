@@ -1,11 +1,7 @@
-import { type MouseEvent } from 'react';
-import { ReactSVG } from 'react-svg';
+import { type ComponentType, type KeyboardEvent, type MouseEvent, type SVGProps } from 'react';
 
 import styled, { css } from 'styled-components';
 
-// TODO: suite-common imports in non-suite packages should not be allowed
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { type IconName, icons } from '@suite-common/icons/src/icons';
 import { type Color } from '@trezor/theme';
 
 import {
@@ -26,6 +22,7 @@ import { type TransientProps } from '../../utils/transientProps';
 
 export { iconIntents, iconPriorities };
 export type { IconIntent, IconPriority, IconSize };
+export type IconComponent = ComponentType<SVGProps<SVGSVGElement>>;
 
 export const allowedIconFrameProps = [
     'margin',
@@ -52,6 +49,7 @@ type ContainerProps = {
     $size: IconSize;
     $intent?: IconIntent;
     $priority?: IconPriority;
+    $isInverse: boolean;
     $isDisabled: boolean;
     $color?: Color;
 } & TransientProps<AllowedFrameProps>;
@@ -63,7 +61,7 @@ const Container = styled.div<ContainerProps>`
     `}
 
     path {
-        fill: ${({ $intent, $priority = 'primary', $isDisabled, $color, theme }) => {
+        fill: ${({ $intent, $priority = 'primary', $isInverse, $isDisabled, $color, theme }) => {
             if ($color !== undefined) {
                 return theme[$color];
             }
@@ -72,46 +70,38 @@ const Container = styled.div<ContainerProps>`
                 return 'currentColor';
             }
 
-            return mapIntentToCSS($intent ?? 'neutral', $priority, $isDisabled, theme);
+            return mapIntentToCSS($intent ?? 'neutral', $priority, $isInverse, $isDisabled, theme);
         }};
         transition: fill 0.14s;
     }
 
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     ${withFrameProps}
 `;
 
-const SVG = styled(ReactSVG)`
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-
-    div {
-        display: flex;
-        justify-content: center;
-    }
-
-    path {
-        transition:
-            stroke 0.15s,
-            fill 0.15s;
-    }
-` as typeof ReactSVG;
-
-export type IconProps = AllowedFrameProps & {
-    name: IconName;
+export type IconBaseProps = AllowedFrameProps & {
     size?: IconSize;
-    onClick?: (e: any) => void;
+    isInverse?: boolean;
+    onClick?: (e: MouseEvent<HTMLDivElement> | KeyboardEvent<Element>) => void;
     'data-testid'?: string;
-} & ExclusiveColorOrIntent;
+};
+
+export type IconSharedProps = IconBaseProps & ExclusiveColorOrIntent;
+
+export type IconProps = IconSharedProps & {
+    as: IconComponent;
+};
 
 export const Icon = ({
-    name,
+    as: IconComponent,
     size = 24,
     intent,
     priority = 'primary',
+    isInverse = false,
     isDisabled = false,
     color,
     onClick,
@@ -119,18 +109,13 @@ export const Icon = ({
     cursor,
     ...rest
 }: IconProps) => {
-    const handleOnKeyDown = (e: React.KeyboardEvent) => {
+    const handleOnKeyDown = (e: KeyboardEvent<Element>) => {
         if (e.key === 'Enter' || e.key === ' ') {
             onClick?.(e);
         }
     };
 
-    const handleInjection = (svg: SVGSVGElement) => {
-        svg.setAttribute('width', '100%');
-        svg.setAttribute('height', '100%');
-    };
-
-    const handleClick = (e: MouseEvent<any>) => {
+    const handleClick = (e: MouseEvent<HTMLDivElement>) => {
         onClick?.(e);
 
         // We need to stop default/propagation in case the icon is rendered in popup/modal so it won't close it.
@@ -145,6 +130,7 @@ export const Icon = ({
             $size={size}
             $intent={intent}
             $priority={priority}
+            $isInverse={isInverse}
             $isDisabled={isDisabled}
             $color={color}
             data-testid={dataTest}
@@ -152,14 +138,12 @@ export const Icon = ({
             {...frameProps}
             $cursor={cursor ?? (onClick && !isDisabled ? 'pointer' : undefined)}
         >
-            <SVG
+            <IconComponent
+                width="100%"
+                height="100%"
                 tabIndex={onClick && !isDisabled ? 0 : undefined}
                 onKeyDown={handleOnKeyDown}
-                src={icons[name as IconName]}
-                beforeInjection={handleInjection}
             />
         </Container>
     );
 };
-
-export type { IconName };

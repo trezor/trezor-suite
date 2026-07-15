@@ -11,12 +11,13 @@
         "lint:js:fix": "yarn lint:js --fix",
         "type-check": "yarn g:tsc --build",
         "test:unit": "yarn g:jest:native",
-        "test:unit:watch": "yarn g:jest --watch"
+        "test:unit:coverage": "yarn g:jest:native --coverage",
+        "test:unit:watch": "yarn g:jest:native --watch"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native": "7.1.28",
-        "@reduxjs/toolkit": "2.11.2",
+        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
@@ -47,12 +48,12 @@
         "@trezor/theme": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "expo-linear-gradient": "~55.0.8",
-        "react": "19.2.4",
-        "react-hook-form": "^7.71.2",
-        "react-native": "0.83.2",
-        "react-native-reanimated": "~4.2.1",
-        "react-redux": "9.2.0"
+        "expo-linear-gradient": "~56.0.4",
+        "react": "19.2.3",
+        "react-hook-form": "^7.77.0",
+        "react-native": "0.85.3",
+        "react-native-reanimated": "4.3.1",
+        "react-redux": "9.3.0"
     },
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",

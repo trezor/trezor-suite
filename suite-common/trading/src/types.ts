@@ -30,6 +30,7 @@ import {
     type BaseCurrencyOption,
     type FormState,
     type GeneralPrecomposedTransactionFinal,
+    type TokenAddress,
 } from '@suite-common/wallet-types';
 import { type PROTO } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
@@ -55,6 +56,7 @@ type TradingAssetOptionBase = {
     coingeckoId: NonNullable<NetworkConfig['coingeckoId']>;
     networkName: NetworkConfig['name'];
     networkSymbol: NetworkSymbol;
+    displaySymbolName?: string;
 };
 
 export type TradingAssetOptionNativeToken = TradingAssetOptionBase & {
@@ -104,7 +106,7 @@ export type TradingUtilsProvidersProps = {
 
 export type TradingParsedCryptoIdProps = {
     networkId: CryptoId;
-    contractAddress: string | undefined;
+    contractAddress: TokenAddress | undefined;
 };
 
 export type TradingFiatCurrenciesProps = Map<FiatCurrencyCode, string>;
@@ -114,8 +116,6 @@ export type TradingPaymentMethodProps = TradingPaymentMethodType | '';
 export type TradingPaymentMethodListProps = {
     value: TradingPaymentMethodProps;
     label: string;
-    receiveAmount?: string;
-    symbol?: string;
 };
 
 type TradingCommonTransaction = {

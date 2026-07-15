@@ -39,7 +39,8 @@ const parseAddresses = ({ address, addresses, type, hex }: TxOut['scriptPubKey']
 type GetVout = (txid: string, vout: number) => TransactionVerbose['vout'][number];
 type GetSpent = (txid: string, n: number) => boolean;
 
-const isNotCoinbase = (item: TxIn | TxCoinbase): item is TxIn => (item as any).txid !== undefined;
+const isNotCoinbase = (item: TxIn | TxCoinbase): item is TxIn =>
+    'txid' in item && item.txid !== undefined;
 
 const formatTransaction =
     (getVout: GetVout, getSpent: GetSpent, currentHeight: number) =>

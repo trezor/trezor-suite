@@ -1,25 +1,19 @@
-import { numberToHex, toWei } from 'web3-utils';
-
-import { Calldata, asEvmAddress } from '@suite-common/calldata';
+import { asEvmAddress } from '@suite-common/calldata';
 import { getYieldVault } from '@suite-common/earn-stablecoin-api';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
-import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
+    type YieldFeeEstimationError,
     type YieldFlowResolvedData,
-    type YieldWithdrawInputUnit,
+    type YieldWithdrawFlowType,
+    buildYieldUnsignedTransaction,
+    buildYieldWithdrawCalldata,
+    estimateYieldFeeLevel,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import { type Account } from '@suite-common/wallet-types';
-import {
-    asAmountUnit,
-    getAccountIdentity,
-    getConvertedOrDefaultFeeInfo,
-    unitsToSubunits,
-} from '@suite-common/wallet-utils';
-import TrezorConnect from '@trezor/connect';
-import { BigNumber } from '@trezor/utils';
+import { getAccountIdentity, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+import { type Result, err, ok } from '@trezor/type-utils';
 
 import type { AppState, Dispatch } from 'src/types/suite';
 
@@ -27,7 +21,7 @@ export type ComposeYieldWithdrawTransactionParams = {
     account: Account & { networkType: 'ethereum' };
     flowData: YieldFlowResolvedData;
     amount: string;
-    withdrawInputUnit: YieldWithdrawInputUnit;
+    flowType: YieldWithdrawFlowType;
     dispatch: Dispatch;
     getState: () => AppState;
 };
@@ -36,11 +30,11 @@ export const composeYieldWithdrawTransaction = async ({
     account,
     flowData,
     amount,
-    withdrawInputUnit,
+    flowType,
     dispatch,
     getState,
-}: ComposeYieldWithdrawTransactionParams): Promise<string> => {
-    const { vault, token, receiptToken } = flowData;
+}: ComposeYieldWithdrawTransactionParams): Promise<Result<string, YieldFeeEstimationError>> => {
+    const { vault } = flowData;
 
     const { address: vaultAddress } = await getYieldVault({
         routeParams: {
@@ -60,65 +54,34 @@ export const composeYieldWithdrawTransaction = async ({
         );
     }
 
-    const isSharesInput = withdrawInputUnit === 'shares';
-    const decimals = isSharesInput ? receiptToken.decimals : token.decimals;
     const ownerAddress = asEvmAddress(account.descriptor);
-    const amountSubunits = unitsToSubunits({
-        value: asAmountUnit(new BigNumber(amount)),
-        decimals,
+    const calldata = buildYieldWithdrawCalldata({
+        amount,
+        flowData,
+        ownerAddress,
+        receiverAddress: ownerAddress,
+        flowType,
     });
 
-    const builderResult = isSharesInput
-        ? Calldata.evm.erc4626.redeem.encode(
-              {
-                  shares: amountSubunits,
-                  receiver: account.descriptor,
-                  owner: account.descriptor,
-              },
-              { sender: ownerAddress },
-          )
-        : Calldata.evm.erc4626.withdraw.encode(
-              {
-                  assets: amountSubunits,
-                  receiver: account.descriptor,
-                  owner: account.descriptor,
-              },
-              { sender: ownerAddress },
-          );
+    const nonceTask = dispatch(
+        ethereumGetCurrentNonceThunk({ selectedAccount: account, fetchConfirmedNonce: true }),
+    ).unwrap();
 
-    if (!builderResult.isValid || !builderResult.data) {
-        const issues = builderResult.errors.map(issue => issue.code).join(', ');
-
-        throw new Error(`Failed to encode withdraw calldata${issues ? `: ${issues}` : '.'}`);
-    }
-
-    const nonceTask = dispatch(ethereumGetCurrentNonceThunk({ selectedAccount: account })).unwrap();
-
-    const estimatedFeeTask = TrezorConnect.blockchainEstimateFee({
+    const estimatedFeeTask = estimateYieldFeeLevel({
         coin: account.symbol,
         identity: getAccountIdentity(account),
-        request: {
-            blocks: [2],
-            specific: {
-                from: account.descriptor,
-                to: vaultAddress,
-                data: builderResult.data,
-                value: '0x0',
-            },
-        },
+        from: account.descriptor,
+        to: vaultAddress,
+        data: calldata,
     });
 
-    const [{ nonce }, estimatedFee] = await Promise.all([nonceTask, estimatedFeeTask]);
+    const [{ nonce }, estimatedFeeLevel] = await Promise.all([nonceTask, estimatedFeeTask]);
 
-    const estimatedGasLimit = estimatedFee.success
-        ? estimatedFee.payload.levels[0]?.feeLimit
-        : undefined;
-
-    if (!estimatedGasLimit) {
-        dispatch(notificationsActions.addToast({ type: 'estimated-fee-error' }));
+    if (!estimatedFeeLevel.success) {
+        return err(estimatedFeeLevel.error);
     }
 
-    const gasLimit = estimatedGasLimit ?? ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT;
+    const gasLimit = estimatedFeeLevel.payload.feeLimit;
 
     const feeInfo = getConvertedOrDefaultFeeInfo({
         networkType: account.networkType,
@@ -130,30 +93,15 @@ export const composeYieldWithdrawTransaction = async ({
         throw new Error(`Fee info is not available.`);
     }
 
-    const commonFields = {
-        from: account.descriptor,
-        to: vaultAddress,
-        data: builderResult.data,
-        value: '0x0',
-        nonce: Number(nonce),
+    const unsignedTx = buildYieldUnsignedTransaction({
         chainId: network.chainId,
-        gasLimit: numberToHex(gasLimit),
-    };
+        data: calldata,
+        feeLevel: normalLevel,
+        from: account.descriptor,
+        gasLimit,
+        nonce: Number(nonce),
+        to: vaultAddress,
+    });
 
-    const unsignedTx =
-        normalLevel?.maxFeePerGas && normalLevel.maxPriorityFeePerGas
-            ? {
-                  ...commonFields,
-                  type: 2,
-                  maxFeePerGas: numberToHex(toWei(normalLevel.maxFeePerGas, 'gwei')),
-                  maxPriorityFeePerGas: numberToHex(
-                      toWei(normalLevel.maxPriorityFeePerGas, 'gwei'),
-                  ),
-              }
-            : {
-                  ...commonFields,
-                  gasPrice: numberToHex(toWei(normalLevel.feePerUnit, 'gwei')),
-              };
-
-    return JSON.stringify(unsignedTx);
+    return ok(JSON.stringify(unsignedTx));
 };

@@ -17,15 +17,6 @@ import { updateFeeInfoThunk } from './feesThunks';
 
 export type FeesRootState = { wallet: { fees: FeesState } };
 
-export const DEFAULT_FEE_INFO: FeeInfo = {
-    blockHeight: 0,
-    blockTime: 10,
-    minFee: 1,
-    maxFee: 100,
-    minPriorityFee: 0,
-    levels: [{ label: 'normal', feePerUnit: '1', blocks: 0 }],
-};
-
 export const feesInitialState: FeesState = {};
 
 export const feesReducer = createReducer<FeesState>(feesInitialState, builder => {

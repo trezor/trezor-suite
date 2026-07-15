@@ -1,11 +1,11 @@
 import { type Network, networks } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { type Account } from 'src/types/wallet';
 import { FIXTURE_ACCOUNT_OPTIONS } from 'src/utils/wallet/trading/__fixtures__/tradingUtils';
 import {
     getComposeAddressPlaceholder,
-    getCountryLabelParts,
     resolveAddressAndToken,
     tradingGetAccountLabel,
     tradingGetAmountLabels,
@@ -13,17 +13,6 @@ import {
 } from 'src/utils/wallet/trading/tradingUtils';
 
 describe('trading utils', () => {
-    it('getCountryLabelParts', () => {
-        expect(getCountryLabelParts('🇨🇿 Czech Republic')).toStrictEqual({
-            flag: '🇨🇿',
-            text: 'Czech Republic',
-        });
-        expect(getCountryLabelParts('aaa')).toStrictEqual({
-            flag: '',
-            text: 'aaa',
-        });
-    });
-
     it('tradingGetAmountLabels', () => {
         expect(tradingGetAmountLabels({ type: 'sell', amountInCrypto: true })).toEqual({
             inputLabel: 'TR_TRADING_YOU_PAY',
@@ -138,7 +127,6 @@ describe('trading utils', () => {
             { networkType: 'solana', descriptor: 'SolanaAddress123' },
             { networkType: 'ripple', descriptor: 'rRippleAddress123' },
             { networkType: 'stellar', descriptor: 'GStellarAddress123' },
-            { networkType: 'tron', descriptor: 'TTronAddress123' },
         ] as const)('$networkType', ({ networkType, descriptor }) => {
             it('returns account descriptor', async () => {
                 const account = {
@@ -150,6 +138,17 @@ describe('trading utils', () => {
 
                 expect(result).toBe(descriptor);
             });
+        });
+
+        it('returns empty string for tron (fee uses compose context recipient)', async () => {
+            const account = mockWalletAccount({
+                symbol: 'trx',
+                descriptor: asAccountDescriptor('TTronAddress123'),
+            });
+
+            const result = await getComposeAddressPlaceholder(account, {} as Network);
+
+            expect(result).toBe('');
         });
     });
 });

@@ -2,7 +2,7 @@ import { isTrezorDeviceWithState } from '@suite-common/device';
 import type { SelectAllLabelsForAccountParams } from '@suite-common/suite-sync';
 import type { TrezorDevice, TrezorDeviceWithState } from '@suite-common/suite-types';
 import type { Account } from '@suite-common/wallet-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
+import { parseStaticSessionId } from '@trezor/device-utils';
 
 export const normalizeLabel = (label: string | undefined) => {
     const trimmedLabel = label?.trim();
@@ -13,7 +13,7 @@ export const normalizeLabel = (label: string | undefined) => {
 };
 
 export const createAccountLabelsParams = (account: Account): SelectAllLabelsForAccountParams => {
-    const { walletDescriptor } = parseDeviceStaticSessionId(account.deviceState);
+    const { walletDescriptor } = parseStaticSessionId(account.deviceState);
 
     return {
         walletDescriptor,

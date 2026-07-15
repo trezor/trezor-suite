@@ -10,7 +10,8 @@ type Attributes = {
 
 export const settingsTorEvent: EventDef<Attributes, EventType.SettingsTor> = {
     name: EventType.SettingsTor,
-    descriptionTrigger: 'Desktop: Settings > Application > TOR > Tor switch or during onboarding',
+    descriptionTrigger:
+        'User toggles Tor network support in Settings > Application > TOR or during onboarding',
     changelog: [
         { version: '1.1.0', notes: 'added' },
         { version: '1.19.0', notes: 'Renamed from `menu/toggle-tor` to `settings/tor`' },
@@ -19,12 +20,17 @@ export const settingsTorEvent: EventDef<Attributes, EventType.SettingsTor> = {
 
     attributes: {
         value: {
+            description: 'Whether Tor is enabled (`true`) or disabled (`false`)',
             changelog: [{ version: '1.1.0', notes: 'added' }],
         },
         location: {
+            description:
+                'The router URL (pathname + search + hash) where the Tor toggle was triggered',
             changelog: [{ version: '25.4.0', notes: 'added' }],
         },
         modal: {
+            description:
+                'The type of the modal open at the moment Tor was toggled, or undefined if no modal was open',
             changelog: [{ version: '25.4.0', notes: 'added' }],
         },
     },

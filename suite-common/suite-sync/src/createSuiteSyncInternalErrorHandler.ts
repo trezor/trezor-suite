@@ -3,7 +3,7 @@ import { DeviceError, isTrezorDeviceWithState } from '@suite-common/device';
 import { type AllocateOwnerQuotaDep } from '@suite-common/suite-sync-quota-manager';
 import { type Errors, type SuiteSyncInternalErrorHandler } from '@suite-common/suite-sync-types';
 import { type TrezorDevice, asDelegatedIdentityKey } from '@suite-common/suite-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
+import { parseStaticSessionId } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { type SuiteSyncUncontrolledErrorHandlerDep } from './suiteSyncUncontrolledErrorHandler';
@@ -53,9 +53,7 @@ export const createSuiteSyncInternalErrorHandler =
                     return;
                 }
 
-                const { walletDescriptor } = parseDeviceStaticSessionId(
-                    device.state.staticSessionId,
-                );
+                const { walletDescriptor } = parseStaticSessionId(device.state.staticSessionId);
                 const result = await deps.allocateOwnerQuota({
                     ownerId: error.ownerId,
                     delegatedKey: asDelegatedIdentityKey(delegatedKey.payload),

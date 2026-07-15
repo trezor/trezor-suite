@@ -1,17 +1,18 @@
 import {
     Bundle,
     GetAddress as GetAddressSchema,
-    type MethodPermission,
+    type PermissionRequest,
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { fromHardenedPathPart } from '@trezor/crypto-utils';
 import { Assert } from '@trezor/schema-utils';
 
 import { bundlify } from './paramsValidator';
 import type { MethodContext, MethodMessage, MethodReturnType } from '../../core/AbstractMethod';
 import { AbstractMethod } from '../../core/AbstractMethod';
-import { fromHardened, getSerializedPath, validatePath } from '../../utils/pathUtils';
+import { getSerializedPath, validatePath } from '../../utils/pathUtils';
 
 export type MiscGetAddressMethodName =
     | 'rippleGetAddress'
@@ -54,12 +55,11 @@ export abstract class AbstractMiscGetAddress<
         super(message, params);
 
         this.hasBundle = hasBundle;
-        this.useUi = this.getUseUi(this.params, payload.useEventListener);
         this.confirmMissingBackup = true;
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_address', this.requiredFirmwareCoins);
     }
 
     protected getInfo(coinName: string, showAccountInInfo: boolean) {
@@ -74,7 +74,7 @@ export abstract class AbstractMiscGetAddress<
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
             const accountIndex: number = address_n[2];
 
-            return `Export ${coinName} address for account #${fromHardened(accountIndex) + 1}`;
+            return `Export ${coinName} address for account #${fromHardenedPathPart(accountIndex) + 1}`;
         }
 
         return `Export ${coinName} address`;
@@ -111,7 +111,7 @@ export abstract class AbstractMiscGetAddress<
 
         return {
             view: 'export-address' as const,
-            label: `Export ${coinName} address for account #${fromHardened(accountIndex) + 1}`,
+            label: `Export ${coinName} address for account #${fromHardenedPathPart(accountIndex) + 1}`,
         };
     }
 

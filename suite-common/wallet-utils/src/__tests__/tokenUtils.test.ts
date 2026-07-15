@@ -1,5 +1,9 @@
 import { getContractAddressForNetworkSymbolFixtures } from '../__fixtures__/tokenUtils';
-import { getAssetLogoContractAddresses, getContractAddressForNetworkSymbol } from '../tokenUtils';
+import {
+    getAssetLogoContractAddresses,
+    getContractAddressForNetworkSymbol,
+    sortTokensByName,
+} from '../tokenUtils';
 
 describe('getContractAddressForNetworkSymbol', () => {
     getContractAddressForNetworkSymbolFixtures.forEach(
@@ -13,20 +17,56 @@ describe('getContractAddressForNetworkSymbol', () => {
 });
 
 describe('getAssetLogoContractAddresses', () => {
-    it('returns [policyId, contract] for ada', () => {
+    it('returns [policyId, contract] for ada', async () => {
         const policyId = 'f43a62fdc3965df486de8a0d32fe800963589c41b38946602a0dc535';
         const contract = `${policyId}41474958`;
-        expect(getAssetLogoContractAddresses('ada', contract)).toEqual([policyId, contract]);
+        await expect(getAssetLogoContractAddresses('ada', contract)).resolves.toEqual([
+            policyId,
+            contract,
+        ]);
     });
 
-    it('returns [sacId, contract] for xlm', () => {
+    it('returns [sacId, contract] for xlm', async () => {
         const classic = 'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
         const expectedSACId = 'CCW67TSZV3SSS2HXMBQ5JFGCKJNXKZM7UQUWUZPUTHXSTZLEO7SJMI75';
-        expect(getAssetLogoContractAddresses('xlm', classic)).toEqual([classic, expectedSACId]);
+        await expect(getAssetLogoContractAddresses('xlm', classic)).resolves.toEqual([
+            classic,
+            expectedSACId,
+        ]);
     });
 
-    it('returns [contract] for eth', () => {
+    it('returns [contract] for eth', async () => {
         const contract = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
-        expect(getAssetLogoContractAddresses('eth', contract)).toEqual([contract.toLowerCase()]);
+        await expect(getAssetLogoContractAddresses('eth', contract)).resolves.toEqual([
+            contract.toLowerCase(),
+        ]);
+    });
+});
+
+describe('sortTokensByName', () => {
+    it('sorts tokens alphabetically by name regardless of case', () => {
+        const tokens = [
+            { name: 'Tether USD' },
+            { name: 'chainlink' },
+            { name: 'Aave' },
+            { name: 'USD Coin' },
+        ];
+
+        expect([...tokens].sort(sortTokensByName).map(token => token.name)).toEqual([
+            'Aave',
+            'chainlink',
+            'Tether USD',
+            'USD Coin',
+        ]);
+    });
+
+    it('places tokens without a name first', () => {
+        const tokens = [{ name: 'Aave' }, { name: undefined }, { name: 'chainlink' }];
+
+        expect([...tokens].sort(sortTokensByName).map(token => token.name)).toEqual([
+            undefined,
+            'Aave',
+            'chainlink',
+        ]);
     });
 });

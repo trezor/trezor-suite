@@ -116,6 +116,11 @@ export const TransactionReviewOutputList = ({
         ({ type }) => !['address', 'amount', 'opreturn'].includes(type),
     );
 
+    const isTronStakeFreeze =
+        networkType === 'tron' &&
+        (precomposedForm.tronStaking?.kind === 'freeze' ||
+            precomposedForm.tronStaking?.kind === 'unstake');
+
     const nativeToken =
         account.accountType === 'placeholder' && 'nativeToken' in precomposedTx
             ? precomposedTx.nativeToken
@@ -184,31 +189,33 @@ export const TransactionReviewOutputList = ({
                                 stakeType={stakeType}
                                 evmTxType={evmTxType}
                                 nativeToken={nativeToken}
+                                isTronStakeFreeze={isTronStakeFreeze}
                             />
                         </Column>
                     </Wrapper>
                 );
             })}
 
-            {!(isRbfAction && networkType === 'bitcoin') && networkType !== 'tron' && (
-                <Wrapper ref={totalOutputRef}>
-                    <Column gap={spacings.sm}>
-                        {isMultirecipient && summaryIndex === -1 && (
-                            <H4 margin={{ top: spacings.xs }}>
-                                <Translation id="TR_SUMMARY" />
-                            </H4>
-                        )}
-                        <TransactionReviewTotalOutput
-                            account={account}
-                            state={reviewState}
-                            precomposedTx={precomposedTx}
-                            precomposedForm={precomposedForm}
-                            stakeType={stakeType}
-                            isRbf={isRbfAction}
-                        />
-                    </Column>
-                </Wrapper>
-            )}
+            {!(isRbfAction && networkType === 'bitcoin') &&
+                (networkType !== 'tron' || isTronStakeFreeze) && (
+                    <Wrapper ref={totalOutputRef}>
+                        <Column gap={spacings.sm}>
+                            {isMultirecipient && summaryIndex === -1 && (
+                                <H4 margin={{ top: spacings.xs }}>
+                                    <Translation id="TR_SUMMARY" />
+                                </H4>
+                            )}
+                            <TransactionReviewTotalOutput
+                                account={account}
+                                state={reviewState}
+                                precomposedTx={precomposedTx}
+                                precomposedForm={precomposedForm}
+                                stakeType={stakeType}
+                                isRbf={isRbfAction}
+                            />
+                        </Column>
+                    </Wrapper>
+                )}
         </Column>
     );
 };

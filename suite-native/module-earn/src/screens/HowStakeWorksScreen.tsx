@@ -1,17 +1,14 @@
-import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
-import { useFormatters } from '@suite-common/formatters';
-import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { calculateRewards } from '@suite-common/wallet-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Button, InlineAlertBox, TimelineDetailsCard, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -24,11 +21,9 @@ import {
 } from '@suite-native/navigation';
 import {
     type NativeStakingRootState,
-    selectAccountCryptoBalanceWithStaking,
     selectApy,
     selectEntryPeriodInDaysBySymbol,
     selectUnstakingPeriodInDaysBySymbol,
-    useSelector as useNativeStakingSelector,
 } from '@suite-native/staking';
 
 import { HowEarnWorksBenefitsSection } from '../components/HowEarnWorks/HowEarnWorksBenefitsSection';
@@ -91,27 +86,11 @@ export const HowStakeWorksScreen = () => {
         selectApy(state, { networkSymbol: symbol }),
     );
 
-    const { CryptoAmountFormatter } = useFormatters();
     const displaySymbol = getNetworkDisplaySymbol(symbol);
-    const networkName = getNetworkDisplaySymbolName(symbol);
-    const totalBalance = useNativeStakingSelector(state =>
-        resolvedAccountKey ? selectAccountCryptoBalanceWithStaking(state, resolvedAccountKey) : '0',
-    );
-    const potentialRewards = useMemo(() => {
-        const amount = calculateRewards(totalBalance, apy);
 
-        return CryptoAmountFormatter.format(amount, {
-            symbol,
-            isBalance: true,
-            withSymbol: false,
-            isEllipsisAppended: false,
-            maxDisplayedDecimals: 8,
-        });
-    }, [CryptoAmountFormatter, apy, symbol, totalBalance]);
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(symbol);
     const { benefitItems, timelineSections } = createHowStakeWorksPreset({
-        displaySymbol,
-        potentialRewards,
+        symbol,
         entryPeriodInDays,
         unstakingPeriodInDays,
         apy,
@@ -132,7 +111,7 @@ export const HowStakeWorksScreen = () => {
                         subtitle={
                             <Translation
                                 id="earn.howStakeWorksScreen.subtitle"
-                                values={{ networkName }}
+                                values={{ displaySymbol }}
                             />
                         }
                     />
@@ -154,7 +133,7 @@ export const HowStakeWorksScreen = () => {
                     </HowEarnWorksTimelineCard>
                 </VStack>
                 {isStakingDisabled && stakingMessageContent && (
-                    <InlineAlertBox variant="warning" title={stakingMessageContent} />
+                    <InlineAlertBox intent="warning" title={stakingMessageContent} />
                 )}
                 <Button
                     onPress={handleContinue}

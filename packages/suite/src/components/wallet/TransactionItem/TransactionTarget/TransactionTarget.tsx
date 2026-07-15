@@ -26,6 +26,7 @@ import {
     isNftTokenTransfer,
 } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
+import { TagFilledIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
 import { BaseCurrencyValue, FormattedCryptoAmount, Sign } from 'src/components/suite';
@@ -204,7 +205,7 @@ export const TransactionTarget = ({
             addressLabel={
                 <Labeling
                     deviceStaticSessionId={transaction.deviceState}
-                    isDisabled={isActionDisabled}
+                    isDisabled={isActionDisabled || isPhishingTransaction}
                     displayValue={label}
                     placeholder={translationString('TR_LABELING_OUTPUT_LABEL')}
                     payload={{
@@ -219,7 +220,7 @@ export const TransactionTarget = ({
                     leftAddon={
                         outputLabel ? (
                             <Icon
-                                name="tagFilled"
+                                as={TagFilledIcon}
                                 size={14}
                                 intent="neutral"
                                 priority="secondary"

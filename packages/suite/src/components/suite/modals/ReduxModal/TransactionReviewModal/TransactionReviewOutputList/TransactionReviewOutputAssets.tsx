@@ -13,8 +13,12 @@ import {
 } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Card, Column, Divider, H4, InfoItem, Row, Text } from '@trezor/components';
-import { mapPaddingTypeToPadding } from '@trezor/components/src/components/Card/utils';
-import { AssetLogo, CoinLogo, isCoinSymbol } from '@trezor/product-components';
+import {
+    AssetLogo,
+    CoinLogo,
+    isCoinSymbol,
+    shouldShowNetworkIcon,
+} from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
@@ -25,7 +29,7 @@ export type TransactionReviewOutputAssetsProps = {
     title: ReactNode;
     state: 'active' | 'confirmed' | 'unconfirmed';
     send: FormStateTradingCryptoCurrency;
-    receive: FormStateTradingCryptoCurrency | FormStateTradingFiatCurrency;
+    receive?: FormStateTradingCryptoCurrency | FormStateTradingFiatCurrency;
     receiveAddress?: string;
 };
 
@@ -60,16 +64,17 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
         if (contractAddress) {
             return (
                 <AssetLogo
-                    size={20}
+                    size={24}
                     symbol={symbol}
                     contractAddress={contractAddress}
                     placeholder={displaySymbol ?? ''}
+                    showNetworkIcon={shouldShowNetworkIcon(symbol, contractAddress)}
                 />
             );
         }
 
         if (isCoinSymbol(symbol)) {
-            return <CoinLogo size={20} symbol={symbol} type="tokenWithNetwork" />;
+            return <CoinLogo size={24} symbol={symbol} type="tokenWithNetwork" />;
         }
 
         return null;
@@ -144,12 +149,12 @@ export const TransactionReviewOutputAssets = ({
     <>
         <Card
             paddingType="none"
-            fillType={state === 'confirmed' ? 'flat' : 'default'}
+            type={state === 'confirmed' ? 'contrast' : 'raised'}
             header={
-                <Row gap={spacings.sm} padding={mapPaddingTypeToPadding({ paddingType: 'small' })}>
+                <Row gap={12} padding={12}>
                     <TransactionReviewOutputStatus state={state} />
                     <H4
-                        margin={{ left: spacings.xxs }}
+                        margin={{ left: 4 }}
                         typographyStyle={state !== 'unconfirmed' ? 'body-sm-strong' : 'body-sm'}
                     >
                         {title}
@@ -158,20 +163,24 @@ export const TransactionReviewOutputAssets = ({
             }
         >
             <Column>
-                <Column padding={mapPaddingTypeToPadding({ paddingType: 'small' })}>
+                <Column padding={12}>
                     <TransactionReviewOutputAssetsCryptoCurrency
                         cryptoCurrency={send}
                         type="send"
                     />
                 </Column>
-                <Divider margin={{}} />
-                <Column padding={mapPaddingTypeToPadding({ paddingType: 'small' })}>
-                    <TransactionReviewOutputAssetsTo receive={receive} />
-                </Column>
+                {receive && (
+                    <>
+                        <Divider margin={{}} />
+                        <Column padding={12}>
+                            <TransactionReviewOutputAssetsTo receive={receive} />
+                        </Column>
+                    </>
+                )}
                 {receiveAddress && (
                     <>
                         <Divider margin={{}} />
-                        <Column padding={mapPaddingTypeToPadding({ paddingType: 'small' })}>
+                        <Column padding={12}>
                             <InfoItem
                                 label={
                                     <Text intent="neutral" padding={{ left: 32 }}>
@@ -186,6 +195,7 @@ export const TransactionReviewOutputAssets = ({
                                     value={receiveAddress}
                                     isChunked={false}
                                     isDeviceRendered
+                                    data-testid="@modal/assets/receive/address"
                                 />
                             </InfoItem>
                         </Column>

@@ -27,22 +27,6 @@ export const walletSettingsFixtures = [
         },
     },
     {
-        description: 'Set hide balance true',
-        initialState: { discreetMode: false },
-        action: () => walletSettingsActions.setDiscreetMode(true),
-        result: {
-            discreetMode: true,
-        },
-    },
-    {
-        description: 'Set hide balance false',
-        initialState: { discreetMode: true },
-        action: () => walletSettingsActions.setDiscreetMode(false),
-        result: {
-            discreetMode: false,
-        },
-    },
-    {
         description: 'Change networks',
         initialState: { enabledNetworks: [] },
         action: () => walletSettingsActions.changeNetworks(['ltc', 'eth']),

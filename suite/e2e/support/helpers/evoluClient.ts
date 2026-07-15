@@ -11,11 +11,12 @@ import {
     wipeAndRestartEvoluRelayServer,
 } from '@suite-common/e2e-evolu-client';
 import { Schema } from '@suite-common/suite-sync-evolu';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { step } from '../common';
 
 type TableName = keyof typeof Schema;
-const allTables = Object.keys(Schema) as TableName[];
+const allTables = typedObjectKeys(Schema);
 
 export class EvoluClient extends BaseEvoluClient {
     @step()
@@ -28,7 +29,7 @@ export class EvoluClient extends BaseEvoluClient {
         table: T,
         object: MutationValues<(typeof Schema)[T], 'upsert'>,
     ) {
-        super.writeTo(table, object as any);
+        super.writeTo(table, object);
     }
 
     @step()
@@ -102,5 +103,6 @@ export class EvoluClient extends BaseEvoluClient {
 
 export const wipeAndRestartEvoluServer = async () => {
     await checkEvoluRelayServerRunning();
+
     await test.step('Wipe and restart Evolu Relay server', wipeAndRestartEvoluRelayServer);
 };

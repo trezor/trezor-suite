@@ -9,7 +9,8 @@ export const transactionDetailInputOutputEvent: EventDef<
     EventType.TransactionDetailInputOutput
 > = {
     name: EventType.TransactionDetailInputOutput,
-    descriptionTrigger: 'On opening Transaction detail Inputs & Outputs sheet.',
+    descriptionTrigger:
+        'User opens the Transaction detail Inputs & Outputs sheet to view transaction inputs and outputs',
     changelog: [{ version: '23.4.1', notes: 'added' }],
     attributes: {},
 };

@@ -18,10 +18,6 @@ Either revert the original patch commit, or simply install a newer version `yarn
 
 ---
 
-## expo-device
-
-Fixes https://github.com/trezor/trezor-suite/issues/26487.
-
 ## expo-modules-core
 
 Native-only, but does not break any CI.

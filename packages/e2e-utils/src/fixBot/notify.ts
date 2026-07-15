@@ -1,13 +1,8 @@
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
 
 import { error, log, warn } from '../logger';
-import {
-    type AnalysisReport,
-    AnalysisReportSchema,
-    type SlackFixSummary,
-    SlackFixSummarySchema,
-} from './schemas';
+import { readSummaries } from './common';
+import { type AnalysisReport, AnalysisReportSchema, type SlackFixSummary } from './schemas';
 
 const DIVIDER = '──────────────────────────────────────';
 
@@ -22,29 +17,6 @@ function formatCost(usd: number): string {
     return `$${usd.toFixed(2)}`;
 }
 
-function readSummaries(summariesDir: string): SlackFixSummary[] {
-    if (!existsSync(summariesDir)) return [];
-
-    const parsedSummaries: SlackFixSummary[] = [];
-    const allSummariesFiles = readdirSync(summariesDir).filter(
-        n => n.startsWith('slack-fix-summary-') && n.endsWith('.json'),
-    );
-    for (const filename of allSummariesFiles) {
-        const parsed = SlackFixSummarySchema.safeParse(
-            JSON.parse(readFileSync(join(summariesDir, filename), 'utf-8')),
-        );
-
-        if (!parsed.success) {
-            warn(`[notify] Failed to parse ${filename}: ${parsed.error.message}`);
-            continue;
-        }
-
-        parsedSummaries.push(parsed.data);
-    }
-
-    return parsedSummaries;
-}
-
 function readAnalysisCost(costFile: string | undefined): number | null {
     if (!costFile || !existsSync(costFile)) return null;
     try {
@@ -56,7 +28,7 @@ function readAnalysisCost(costFile: string | undefined): number | null {
     }
 }
 
-function formatFixTestRef(validations: AnalysisReport['fixTasks'][number]['validations']): string {
+function formatTestRef(validations: AnalysisReport['fixTasks'][number]['validations']): string {
     const first = validations[0];
     if (!first) return 'Test reference not available';
     const extrasPart = validations.length > 1 ? ` (+${validations.length - 1})` : '';
@@ -64,12 +36,25 @@ function formatFixTestRef(validations: AnalysisReport['fixTasks'][number]['valid
     return `    ${first.spec} [${first.group}]${extrasPart}`;
 }
 
-function formatSkippedTestRef(affectedTests: string[]): string {
-    const first = affectedTests[0];
-    if (!first) return 'Test reference not available';
-    const extrasPart = affectedTests.length > 1 ? ` (+${affectedTests.length - 1})` : '';
+function runUrl(): string {
+    const runId = process.env.GITHUB_RUN_ID ?? '';
+    const repo = process.env.GITHUB_REPOSITORY ?? 'trezor/trezor-suite';
 
-    return `    ${first}${extrasPart}`;
+    return `https://github.com/${repo}/actions/runs/${runId}`;
+}
+
+function readReport(reportPath: string): AnalysisReport | null {
+    try {
+        const parsed = AnalysisReportSchema.safeParse(
+            JSON.parse(readFileSync(reportPath, 'utf-8')),
+        );
+
+        return parsed.success ? parsed.data : null;
+    } catch (err) {
+        error(`[notify] Could not read report at ${reportPath}: ${String(err)}`);
+
+        return null;
+    }
 }
 
 function buildMessage(
@@ -77,17 +62,27 @@ function buildMessage(
     summaries: SlackFixSummary[],
     analyzeCost: number | null,
 ): string {
-    const runId = process.env.GITHUB_RUN_ID ?? '';
-    const repo = process.env.GITHUB_REPOSITORY ?? 'trezor/trezor-suite';
-    const runUrl = `https://github.com/${repo}/actions/runs/${runId}`;
-
     const summaryById = new Map(summaries.map(s => [s.taskId, s]));
 
     const lines: string[] = [];
 
     // Header
-    lines.push(`🤖 *Nightly Fix Agent — ${report.runDate}*  <${runUrl}|GHA Run>`);
-    lines.push('');
+    lines.push(`🤖 *Nightly Fix Agent — ${report.runDate}*  <${runUrl()}|GHA Run>`);
+
+    // Cost summary
+    const fixCosts = summaries.map(s => s.costUsd).filter((c): c is number => c !== null);
+    const totalFixCost = fixCosts.reduce((a, b) => a + b, 0);
+    const hasCost = analyzeCost !== null || fixCosts.length > 0;
+
+    if (hasCost) {
+        const totalCost = (analyzeCost ?? 0) + totalFixCost;
+        const parts: string[] = [];
+
+        if (analyzeCost !== null) parts.push(`analysis ${formatCost(analyzeCost)}`);
+        if (fixCosts.length > 0) parts.push(`fixes ${formatCost(totalFixCost)}`);
+
+        lines.push(`💰 ~${formatCost(totalCost)} (${parts.join(' · ')})`);
+    }
 
     // Analyzer summary line
     const fixable = report.fixTasks.length;
@@ -106,7 +101,7 @@ function buildMessage(
             if (!summary) {
                 // Job was cancelled before publish.ts wrote the summary
                 lines.push(`❓ *${task.rootCause}*`);
-                lines.push(formatFixTestRef(task.validations));
+                lines.push(formatTestRef(task.validations));
                 lines.push(`    ${task.id} · job did not complete`);
                 continue;
             }
@@ -119,13 +114,17 @@ function buildMessage(
             const costPart = `${summary.costUsd !== null ? formatCost(summary.costUsd) : 'N/A'}`;
 
             lines.push(`${icon} *${task.rootCause}*`);
-            lines.push(formatFixTestRef(task.validations));
+            lines.push(formatTestRef(task.validations));
 
             if (result === 'not_duplicated') {
                 lines.push(`    ${task.id} · preflight passed — not flaky · ${costPart}`);
             } else {
                 const prPart = prUrl ? `<${prUrl}|PR link>` : 'no PR';
                 lines.push(`    ${task.id} · ${prPart} · ${iterStr} · ${countStr} · ${costPart}`);
+            }
+
+            if (summary.error) {
+                lines.push(`    ⚠️ publish failed: ${summary.error.split('\n')[0]}`);
             }
         }
     }
@@ -138,26 +137,8 @@ function buildMessage(
         for (const skip of report.skipped) {
             lines.push('');
             lines.push(`⛔ *${skip.reason}* — ${skip.rootCause}`);
-            const testRef = formatSkippedTestRef(skip.affectedTests);
-            if (testRef) lines.push(testRef);
+            lines.push(formatTestRef(skip.validations));
         }
-    }
-
-    // Cost footer
-    const fixCosts = summaries.map(s => s.costUsd).filter((c): c is number => c !== null);
-    const totalFixCost = fixCosts.reduce((a, b) => a + b, 0);
-    const hasCost = analyzeCost !== null || fixCosts.length > 0;
-
-    if (hasCost) {
-        const totalCost = (analyzeCost ?? 0) + totalFixCost;
-        const parts: string[] = [];
-
-        if (analyzeCost !== null) parts.push(`analysis ${formatCost(analyzeCost)}`);
-        if (fixCosts.length > 0) parts.push(`fixes ${formatCost(totalFixCost)}`);
-
-        lines.push('');
-        lines.push(DIVIDER);
-        lines.push(`💰 ~${formatCost(totalCost)} (${parts.join(' · ')})`);
     }
 
     return lines.join('\n');
@@ -196,8 +177,17 @@ async function main(): Promise<void> {
         process.exit(1);
     }
 
-    const report = AnalysisReportSchema.parse(JSON.parse(readFileSync(reportPath, 'utf-8')));
-    const summaries = summariesDir ? readSummaries(summariesDir) : [];
+    const report = readReport(reportPath);
+
+    if (!report) {
+        await sendSlackNotification(
+            `🤖 *Nightly Fix Agent*  <${runUrl()}|GHA Run>\n\n❓ Analysis agent did not complete correctly.`,
+        );
+
+        return;
+    }
+
+    const summaries = readSummaries(summariesDir);
     const analyzeCost = readAnalysisCost(analyzeCostFile);
 
     log(`[notify] ${report.fixTasks.length} fix tasks · ${summaries.length} summaries loaded`);

@@ -1,0 +1,32 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../suite-common/bip329" },
+        {
+            "path": "../../suite-common/bip329-types"
+        },
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
+        { "path": "../../suite-common/jsonl" },
+        {
+            "path": "../../suite-common/suite-sync"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        { "path": "../accounts" },
+        { "path": "../atoms" },
+        { "path": "../intl" },
+        { "path": "../labeling" },
+        { "path": "../suite-sync" },
+        { "path": "../toasts" },
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/utils" }
+    ]
+}

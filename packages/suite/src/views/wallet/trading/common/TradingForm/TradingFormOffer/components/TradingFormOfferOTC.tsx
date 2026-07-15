@@ -1,8 +1,10 @@
 import { type FiatCurrencyCode } from 'invity-api';
 
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { selectLanguage } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingTradeBuySellType,
     cryptoIdToNetworkAndContractAddress,
@@ -10,7 +12,6 @@ import {
     useFetchOtc,
 } from '@suite-common/trading';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
 
@@ -24,6 +25,7 @@ import {
 
 export const TradingFormOfferOTC = () => {
     const dispatch = useDispatch();
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
     const otcQuery = useFetchOtc();
     const { data: otcData, isSuccess } = otcQuery;
     const context = useTradingFormContext<TradingTradeBuySellType>();
@@ -70,7 +72,7 @@ export const TradingFormOfferOTC = () => {
     const { fiatAmount: fiatAmountConverted } = useFiatFromCryptoValue({
         amount: cryptoAmount || '0',
         symbol: network?.symbol || 'btc',
-        tokenAddress: contractAddress as TokenAddress | undefined,
+        tokenAddress: contractAddress,
         rateType: 'current',
     });
 
@@ -97,6 +99,21 @@ export const TradingFormOfferOTC = () => {
 
     const isBuy = context.type === 'buy';
 
+    const handleConciergeClick = () => {
+        dispatch(goto({ routeName: 'wallet-trading-concierge' }));
+
+        analytics.report({
+            type: events.tradeNavigateEvent.name,
+            payload: {
+                action: 'navigate',
+                type: 'concierge',
+                from: 'otc-banner',
+                networkSymbol: network?.symbol,
+                contractAddress,
+            },
+        });
+    };
+
     return (
         <Banner
             intent="info"
@@ -111,10 +128,7 @@ export const TradingFormOfferOTC = () => {
                             }}
                         />
                     </Text>
-                    <Banner.Button
-                        intent="info"
-                        onClick={() => dispatch(goto({ routeName: 'wallet-trading-concierge' }))}
-                    >
+                    <Banner.Button intent="info" onClick={handleConciergeClick}>
                         <Translation
                             id={isBuy ? 'TR_TRADING_OTC_LINK_BUY' : 'TR_TRADING_OTC_LINK_SELL'}
                         />

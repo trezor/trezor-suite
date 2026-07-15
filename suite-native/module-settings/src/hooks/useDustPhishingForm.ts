@@ -30,17 +30,17 @@ const getDustThresholdValidation = (translate: Translate) =>
         .string()
         .test({
             name: 'is-empty',
-            message: translate('moduleSettings.advanced.dustPhishing.errors.empty'),
+            message: translate('moduleSettings.security.dustPhishing.errors.empty'),
             test: validateIsEmpty,
         })
         .test({
             name: 'is-valid-number',
-            message: translate('moduleSettings.advanced.dustPhishing.errors.number'),
+            message: translate('moduleSettings.security.dustPhishing.errors.number'),
             test: validateIsNumber,
         })
         .test({
             name: 'is-positive-number',
-            message: translate('moduleSettings.advanced.dustPhishing.errors.positive'),
+            message: translate('moduleSettings.security.dustPhishing.errors.positive'),
             test: validateIsPositiveNumber,
         });
 

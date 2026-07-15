@@ -21,10 +21,13 @@ import { addLog } from '@suite-common/logger';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import {
     type ExtraDependencies,
+    type GetTransportsFactoriesDep,
+    type ThpHostNameDep,
     castExtraStore,
     createStoreWithExtraStoreMiddleware,
 } from '@suite-common/redux-utils';
 import { suiteSyncDataReducer } from '@suite-common/suite-sync';
+import { type ReloadAppDep } from '@suite-common/suite-types';
 import { prepareThpReducer } from '@suite-common/thp';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 import { accountsActions } from '@suite-common/wallet-core';
@@ -45,6 +48,7 @@ import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import { prepareBioAuthReducer } from './bioAuth';
 import { desktopReducer } from './desktop';
 import { bluetoothSlice } from '../actions/bluetooth/desktopBluetoothReducer';
+import { type CreateConnectLoggerFactoryDep } from '../support/createConnectLoggerFactory';
 import {
     createSuiteServicesCompositionRoot,
     extraDependencies,
@@ -128,7 +132,12 @@ type RootReducerShape = typeof rootReducer;
 export type PreloadedState = Partial<AppState>;
 type InferredAction = Parameters<RootReducerShape>[1];
 
-export type SuiteStoreDeps = HistoryDep & PlatformEncryptionDep;
+export type SuiteStoreDeps = HistoryDep &
+    PlatformEncryptionDep &
+    CreateConnectLoggerFactoryDep &
+    ReloadAppDep &
+    ThpHostNameDep &
+    GetTransportsFactoriesDep;
 
 export const initStore = (
     deps: SuiteStoreDeps,
@@ -157,6 +166,10 @@ export const initStore = (
             dispatch: api.dispatch,
             history: deps.history,
             platformEncryption: deps.platformEncryption,
+            reloadApp: deps.reloadApp,
+            createLogger: deps.createConnectLoggerFactory?.({ getState: api.getState }),
+            thpHostName: deps.thpHostName,
+            getTransportsFactories: deps.getTransportsFactories,
         }),
     });
 

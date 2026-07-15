@@ -45,7 +45,6 @@ export const HowTradingWorksSheet = ({ ref, closeModal }: HowTradingWorksSheetPr
         title={
             <Translation id="moduleTrading.tradingScreen.footer.howTradingWorksSheet.sheetTitle" />
         }
-        onClose={closeModal}
     >
         <VStack spacing="sp24">
             <VStack spacing="sp16">
@@ -74,7 +73,6 @@ export const HowTradingWorksSheet = ({ ref, closeModal }: HowTradingWorksSheetPr
                     <Translation id="moduleTrading.tradingScreen.footer.howTradingWorksSheet.item5" />
                 </ListItem>
             </VStack>
-
             <Button onPress={closeModal}>
                 <Translation id="generic.buttons.gotIt" />
             </Button>

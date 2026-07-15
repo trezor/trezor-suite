@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgFolderNotchFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M27 9H16.332l-3.467-2.6a2 2 0 0 0-1.197-.4H5a2 2 0 0 0-2 2v17a2 2 0 0 0 2 2h22a2 2 0 0 0 2-2V11a2 2 0 0 0-2-2M5 8h6.668l2.666 2-2.668 2H5z"
+        />
+    </svg>
+);
+export { SvgFolderNotchFilled as ReactComponent };

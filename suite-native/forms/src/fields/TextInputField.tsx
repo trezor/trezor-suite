@@ -1,9 +1,8 @@
 import { forwardRef } from 'react';
 
-import { type RequireOneOrNone } from 'type-fest';
-
 import {
     Input,
+    type InputLabelVariantProps,
     type InputProps,
     type InputType,
     InputWrapper,
@@ -15,26 +14,33 @@ import { type FieldName } from '../types';
 
 type AllowedTextInputFieldProps = Omit<
     Partial<InputProps>,
-    keyof ReturnType<typeof useField> | 'defaultValue'
+    keyof ReturnType<typeof useField> | 'defaultValue' | 'label' | 'placeholder' | 'labelType'
 >;
 type AllowedInputWrapperProps = Pick<InputWrapperProps, 'hint'>;
+
 export type FieldProps = AllowedTextInputFieldProps &
     AllowedInputWrapperProps &
-    RequireOneOrNone<
-        {
-            name: FieldName;
-            label?: string;
-            placeholder?: string;
-            onBlur?: () => void;
-            defaultValue?: string;
-            valueTransformer?: (value: string) => string;
-        },
-        'label' | 'placeholder'
-    >;
+    InputLabelVariantProps & {
+        name: FieldName;
+        onBlur?: () => void;
+        defaultValue?: string;
+        valueTransformer?: (value: string) => string;
+    };
 
 export const TextInputField = forwardRef<InputType, FieldProps>(
     (
-        { name, hint, onBlur, defaultValue = '', valueTransformer, onChangeText, ...otherProps },
+        {
+            name,
+            hint,
+            label,
+            placeholder,
+            onBlur,
+            valueTransformer,
+            onChangeText,
+            defaultValue = '',
+            labelType = 'innerLabel',
+            ...otherProps
+        },
         ref,
     ) => {
         const field = useField({
@@ -54,10 +60,15 @@ export const TextInputField = forwardRef<InputType, FieldProps>(
             onChangeText?.(text);
         };
 
+        const innerLabelOrPlaceholderProps =
+            labelType === 'innerLabel' ? { labelType, label } : { labelType, placeholder };
+        const wrapperLabel = labelType === 'outsideLabel' ? label : undefined;
+
         return (
-            <InputWrapper error={errorMessage} hint={hint}>
+            <InputWrapper error={errorMessage} hint={hint} label={wrapperLabel}>
                 <Input
                     {...otherProps}
+                    {...innerLabelOrPlaceholderProps}
                     onBlur={handleOnBlur}
                     onChangeText={handleOnChange}
                     value={value}

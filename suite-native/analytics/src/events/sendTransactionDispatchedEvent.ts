@@ -26,22 +26,54 @@ export const sendTransactionDispatchedEvent: EventDef<
     EventType.SendTransactionDispatched
 > = {
     name: EventType.SendTransactionDispatched,
-    descriptionTrigger: 'Dispatched when a user successfully send a transaction.',
-    changelog: [{ version: '24.10.1', notes: 'Added' }],
+    descriptionTrigger: 'User successfully sends a transaction',
+    changelog: [{ version: '24.10.1', notes: 'added' }],
     attributes: {
-        symbol: { changelog: [{ version: '24.10.1', notes: 'added' }] },
-        outputsCount: { changelog: [{ version: '24.10.1', notes: 'added' }] },
-        selectedFee: { changelog: [{ version: '24.10.1', notes: 'added' }] },
+        symbol: {
+            description:
+                'The blockchain network symbol for the transaction (e.g., `btc`, `eth`, `ada`)',
+            changelog: [{ version: '24.10.1', notes: 'added' }],
+        },
+        outputsCount: {
+            description: 'The number of outputs (recipients) in the transaction',
+            changelog: [{ version: '24.10.1', notes: 'added' }],
+        },
+        selectedFee: {
+            description:
+                'The fee level chosen for the transaction: `high`, `normal`, `economy`, `low`, or `custom`',
+            changelog: [{ version: '24.10.1', notes: 'added' }],
+        },
         wasAppLeftDuringReview: {
             changelog: [{ version: '24.10.1', notes: 'added' }],
             description:
-                'Note: false does not mean the user did not confirm the address with the source (e.g. can be face to face or source on desktop). Leaving the app does not imply checking the address.',
+                'Whether the user left the app during transaction review. Note: false does not mean the user confirmed the address with the source (e.g., can be done face to face or on desktop). Leaving the app does not imply address verification was skipped.',
         },
-        tokenSymbols: { changelog: [{ version: '24.10.1', notes: 'added' }] },
-        tokenAddresses: { changelog: [{ version: '24.10.1', notes: 'added' }] },
-        hasEthereumData: { changelog: [{ version: '24.10.1', notes: 'added' }] },
-        hasEthereumNonce: { changelog: [{ version: '24.10.1', notes: 'added' }] },
-        hasDestinationTag: { changelog: [{ version: '24.10.1', notes: 'added' }] },
-        hasBitcoinLocktime: { changelog: [{ version: '24.10.1', notes: 'added' }] },
+        tokenSymbols: {
+            description:
+                'List of token symbols included in the transaction (only for multi-token transactions)',
+            changelog: [{ version: '24.10.1', notes: 'added' }],
+        },
+        tokenAddresses: {
+            description:
+                'List of contract addresses for tokens included in the transaction (only for multi-token transactions)',
+            changelog: [{ version: '24.10.1', notes: 'added' }],
+        },
+        hasEthereumData: {
+            description: 'Whether the transaction includes Ethereum-specific data payload',
+            changelog: [{ version: '24.10.1', notes: 'added' }],
+        },
+        hasEthereumNonce: {
+            description: 'Whether the transaction includes an Ethereum nonce field',
+            changelog: [{ version: '24.10.1', notes: 'added' }],
+        },
+        hasDestinationTag: {
+            description:
+                'Whether the transaction includes a destination tag (specific to certain networks like Ripple)',
+            changelog: [{ version: '24.10.1', notes: 'added' }],
+        },
+        hasBitcoinLocktime: {
+            description: 'Whether the Bitcoin transaction includes a locktime/timelock parameter',
+            changelog: [{ version: '24.10.1', notes: 'added' }],
+        },
     },
 };

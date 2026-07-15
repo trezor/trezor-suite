@@ -11,8 +11,8 @@ import {
     setSuiteSyncOwner,
 } from '@suite-common/suite-sync';
 import { type AcquiredDevice } from '@suite-common/suite-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Code, Row, Text, Tooltip } from '@trezor/components';
+import { parseStaticSessionId } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
 type SuiteSyncWalletDebugProps = {
@@ -44,7 +44,7 @@ export const SuiteSyncWalletDebug = ({
         return;
     }
 
-    const { walletDescriptor, deviceId = '' } = parseDeviceStaticSessionId(deviceStaticSessionId);
+    const { walletDescriptor, deviceId = '' } = parseStaticSessionId(deviceStaticSessionId);
 
     const handleResetKeysRequest = () => {
         if (!device?.id || device.state?.staticSessionId === undefined) {

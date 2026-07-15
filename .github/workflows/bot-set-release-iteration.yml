@@ -60,7 +60,7 @@ jobs:
       - name: Generate GitHub App token
         if: steps.guard.outputs.proceed == 'true'
         id: trezor-bot-token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}

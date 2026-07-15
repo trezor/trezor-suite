@@ -10,6 +10,7 @@ import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
 import { useDappScan } from '@suite-common/tx-simulation';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { sortByCoin } from '@suite-common/wallet-utils';
 import {
     selectPendingProposal,
     sessionProposalApproveThunk,
@@ -21,7 +22,6 @@ import {
     Banner,
     Card,
     Column,
-    ElevationUp,
     Modal,
     type Option,
     Row,
@@ -29,6 +29,7 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
+import { ShieldCheckFilledIcon, ShieldWarningFilledIcon } from '@trezor/icons';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
@@ -53,11 +54,13 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
     const accounts = useSelector(selectAllAccountsToList);
     const selectableAccounts = useMemo<Account[]>(
         () =>
-            pendingProposal?.networks
-                .filter(network => network.status === 'active')
-                .flatMap(network =>
-                    accounts.filter(account => account.symbol === network.symbol),
-                ) ?? [],
+            sortByCoin(
+                pendingProposal?.networks
+                    .filter(network => network.status === 'active')
+                    .flatMap(network =>
+                        accounts.filter(account => account.symbol === network.symbol),
+                    ) ?? [],
+            ),
         [accounts, pendingProposal?.networks],
     );
     const [selectedDefaultAccount, setSelectedDefaultAccount] = useState<Account | null>(
@@ -159,19 +162,19 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                             <Row gap={spacings.sm}>
                                 {!pendingProposal.isScam &&
                                     pendingProposal.validation === 'VALID' && (
-                                        <Badge intent="info" iconLeft="shieldCheckFilled">
+                                        <Badge intent="info" iconLeft={ShieldCheckFilledIcon}>
                                             <Translation id="TR_WALLETCONNECT_SERVICE_VERIFIED" />
                                         </Badge>
                                     )}
                                 {!pendingProposal.isScam &&
                                     pendingProposal.validation === 'UNKNOWN' && (
-                                        <Badge intent="warning" iconLeft="shieldWarningFilled">
+                                        <Badge intent="warning" iconLeft={ShieldWarningFilledIcon}>
                                             <Translation id="TR_WALLETCONNECT_SERVICE_UNKNOWN" />
                                         </Badge>
                                     )}
                                 {(pendingProposal.isScam ||
                                     pendingProposal.validation === 'INVALID') && (
-                                    <Badge intent="critical" iconLeft="shieldWarningFilled">
+                                    <Badge intent="critical" iconLeft={ShieldWarningFilledIcon}>
                                         <Translation id="TR_WALLETCONNECT_SERVICE_DANGEROUS" />
                                     </Badge>
                                 )}
@@ -215,35 +218,28 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                 </Text>
                 {selectableAccounts.length > 0 && (
                     <Card paddingType="none">
-                        {/* Wrapped to keep consistent styling */}
-                        <ElevationUp>
-                            <Select
-                                isSearchable={false}
-                                isClearable={false}
-                                size="large"
-                                value={selectedDefaultAccount}
-                                options={selectableAccounts}
-                                formatOptionLabel={(account: Account) => (
-                                    <Row gap={spacings.xs}>
-                                        {account.symbol && (
-                                            <CoinLogo
-                                                type="token"
-                                                symbol={account.symbol}
-                                                size={24}
-                                            />
-                                        )}
-                                        <AccountLabel
-                                            account={account}
-                                            key={account.descriptor}
-                                            showAccountTypeBadge
-                                            accountTypeBadgeSize="small"
-                                        />
-                                    </Row>
-                                )}
-                                onChange={(option: Option) => setSelectedDefaultAccount(option)}
-                                closeMenuOnScroll={false}
-                            />
-                        </ElevationUp>
+                        <Select
+                            isSearchable={false}
+                            isClearable={false}
+                            size="large"
+                            value={selectedDefaultAccount}
+                            options={selectableAccounts}
+                            formatOptionLabel={(account: Account) => (
+                                <Row gap={spacings.xs}>
+                                    {account.symbol && (
+                                        <CoinLogo type="token" symbol={account.symbol} size={24} />
+                                    )}
+                                    <AccountLabel
+                                        account={account}
+                                        key={account.descriptor}
+                                        showAccountTypeBadge
+                                        accountTypeBadgeSize="small"
+                                    />
+                                </Row>
+                            )}
+                            onChange={(option: Option) => setSelectedDefaultAccount(option)}
+                            closeMenuOnScroll={false}
+                        />
                     </Card>
                 )}
 

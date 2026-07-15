@@ -9,15 +9,19 @@ type Attributes = {
 
 export const transactionCancelEvent: EventDef<Attributes, EventType.TransactionCancel> = {
     name: EventType.TransactionCancel,
-    descriptionTrigger: 'fired when a transaction is cancelled by the user',
+    descriptionTrigger: 'User cancels a transaction before confirming it on the device',
     changelog: [{ version: '25.4.0', notes: 'added' }],
 
     attributes: {
         txType: {
             changelog: [{ version: '25.4.0', notes: 'added' }],
+            description:
+                'Type of transaction being cancelled: `trade` for trading transactions, `stake` for staking transactions',
         },
         networkSymbol: {
             changelog: [{ version: '25.4.0', notes: 'added' }],
+            description:
+                'The blockchain network symbol of the transaction being cancelled (e.g., `btc`, `eth`)',
         },
     },
 };

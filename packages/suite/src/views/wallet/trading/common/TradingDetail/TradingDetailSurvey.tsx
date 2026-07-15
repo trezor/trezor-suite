@@ -1,3 +1,4 @@
+import { MessageSystemButton } from '@suite/message-system';
 import { selectLanguage } from '@suite/settings';
 import {
     Feature,
@@ -7,9 +8,9 @@ import {
     validateTradingSurvey,
 } from '@suite-common/message-system';
 import { Card, Column, H2, Paragraph } from '@trezor/components';
+import { ArrowSquareOutIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
-import { MessageSystemButton } from 'src/components/suite/banners/MessageSystemButton';
 import { useSelector } from 'src/hooks/suite';
 
 const safeValidateTradingSurvey = (data: unknown): TradingSurveyPayload | null => {
@@ -42,14 +43,14 @@ export const TradingDetailSurvey = () => {
         <Card>
             <Column gap={spacings.lg} padding={8}>
                 <Column gap={spacings.xs}>
-                    <H2>{title}</H2>
+                    <H2 typographyStyle="headline-sm">{title}</H2>
                     <Paragraph typographyStyle="body-sm" color="contentSecondary">
                         {description}
                     </Paragraph>
                 </Column>
                 <MessageSystemButton
                     cta={survey.cta}
-                    iconRight="arrowSquareOut"
+                    iconRight={ArrowSquareOutIcon}
                     intent="brand"
                     size="large"
                 />

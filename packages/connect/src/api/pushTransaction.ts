@@ -1,14 +1,14 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/PushTransaction.js
 
-import type { CoinInfo, MethodPermission } from '@trezor/connect-common';
+import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 import { PushTransaction as PushTransactionSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
+import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
-import { getCoinInfo } from '../data/coinInfo';
+import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
     tx: PushTransactionSchema['tx'];
@@ -23,12 +23,9 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
         // validate incoming parameters
         Assert(PushTransactionSchema, payload);
 
-        const coinInfo = getCoinInfo(payload.coin);
-        if (!coinInfo) {
-            throw ERRORS.TypedError('Method_UnknownCoin');
-        }
+        const coinInfo = getCoinInfoOrThrow(payload.coin);
         // validate backend
-        isBackendSupported(coinInfo);
+        assertBackendSupported(coinInfo);
 
         if (
             coinInfo.type === 'bitcoin' &&
@@ -47,8 +44,8 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
         this.useUi = false;
         this.useDevice = false;
     }
-    get requiredPermissions(): MethodPermission[] {
-        return ['push_tx'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [this.coinPerm('push_tx', this.params.coinInfo)];
     }
 
     async run({ sendCoreMessage }: MethodContext) {

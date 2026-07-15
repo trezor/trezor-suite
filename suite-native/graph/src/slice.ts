@@ -37,18 +37,18 @@ export const graphPersistTransform = createTransform<GraphState, GraphState>(
     { whitelist: ['graph'] },
 );
 
-export const graphSlice = createSlice({
+const graphSlice = createSlice({
     name: 'graph',
     initialState: graphInitialState,
     reducers: {
         setPortfolioGraphTimeframe: (
-            state,
+            state: GraphState,
             { payload: { timeframeHours } }: PayloadAction<{ timeframeHours: TimeframeHoursValue }>,
         ) => {
             state.portfolioGraphTimeframe = timeframeHours;
         },
         setAccountGraphTimeframe: (
-            state,
+            state: GraphState,
             {
                 payload: { accountKey, timeframeHours },
             }: PayloadAction<{ accountKey: AccountKey; timeframeHours: TimeframeHoursValue }>,

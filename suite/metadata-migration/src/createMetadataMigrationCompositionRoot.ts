@@ -9,10 +9,7 @@ import {
     selectSelectedProviderForLabels,
 } from '@suite/metadata';
 import { toGetter } from '@suite-common/dependency-injection';
-import {
-    type LabelingDep,
-    type WalletSuiteSyncOnEnsuredListener,
-} from '@suite-common/suite-sync-types';
+import { type OnStorageEnsured, type WriteLabelsDep } from '@suite-common/suite-sync-types';
 import { type TrezorDevice } from '@suite-common/suite-types';
 
 import { createMigrateLabelsIfAvailable } from './createMigrateLabelsIfAvailable';
@@ -48,10 +45,10 @@ type CreateMetadataMigrationCompositionRootDeps = {
     getDeviceByStaticSessionId: (
         deviceStaticSessionId: Parameters<GetLegacyWalletLabels>[0],
     ) => TrezorDevice | undefined;
-} & LabelingDep;
+} & WriteLabelsDep;
 
 type MetadataMigrationCompositionRootResult = MetadataMigrationDep & {
-    migrateLabelsIfAvailable: WalletSuiteSyncOnEnsuredListener;
+    migrateLabelsIfAvailable: OnStorageEnsured;
 };
 
 export const createMetadataMigrationCompositionRoot = (
@@ -68,16 +65,16 @@ export const createMetadataMigrationCompositionRoot = (
         migrateWalletLabels: createMigrateWalletLabels({
             getLegacyWalletLabels: toGetter(deps.getState, selectLabelingDataForWallet),
             getCurrentWalletLabel: deps.getCurrentWalletLabel,
-            updateWalletLabel: deps.labeling.updateWalletLabel,
+            writeWalletLabel: deps.writeWalletLabel,
         }),
         migrateAccountLabels: createMigrateAccountLabels({
-            updateAccountLabel: deps.labeling.updateAccountLabel,
+            writeAccountLabel: deps.writeAccountLabel,
         }),
         migrateAddressLabels: createMigrateAddressLabels({
-            updateAddressLabel: deps.labeling.updateAddressLabel,
+            writeAddressLabel: deps.writeAddressLabel,
         }),
         migrateOutputLabels: createMigrateOutputLabels({
-            updateOutputLabel: deps.labeling.updateOutputLabel,
+            writeOutputLabel: deps.writeOutputLabel,
         }),
     });
 

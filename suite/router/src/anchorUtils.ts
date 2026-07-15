@@ -2,7 +2,7 @@ import type { WalletAccountTransaction } from '@suite-common/wallet-types';
 
 import { AccountTransactionBaseAnchor, type AnchorType } from './anchors';
 
-export const getTxIdFromAnchor = (anchor?: string): string => anchor?.split('/').pop() || '';
+const getTxIdFromAnchor = (anchor?: string): string => anchor?.split('/').pop() || '';
 
 export const getTxAnchor = (txId?: string): AnchorType | undefined =>
     txId ? `${AccountTransactionBaseAnchor}/${txId}` : undefined;

@@ -1,7 +1,10 @@
+import { useCallback, useState } from 'react';
+
 import { type EarnParams } from '@suite/router';
-import { type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
     type YieldFlowCompleteValue,
+    type YieldWithdrawFlowType,
     getConvertedOutputTokenBalanceToInputTokenAmount,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -11,12 +14,14 @@ import { type YieldFlowContextValues, useYieldFlow } from '../hooks/useYieldFlow
 type UseYieldWithdrawProps = {
     account: Account;
     routeParams: EarnParams;
-    vault: YieldDto;
+    vault: YieldDtoV2;
 };
 
-export type YieldWithdrawContextValues = YieldFlowContextValues & {
+export type YieldWithdrawContextValues = Omit<YieldFlowContextValues, 'flowType'> & {
+    flowType: YieldWithdrawFlowType;
     completedInput: YieldFlowCompleteValue;
     completedOutput?: YieldFlowCompleteValue;
+    toggleWithdrawFlowType: () => void;
 };
 
 export const useYieldWithdraw = ({
@@ -24,20 +29,26 @@ export const useYieldWithdraw = ({
     routeParams,
     vault,
 }: UseYieldWithdrawProps): YieldWithdrawContextValues | null => {
+    const [flowType, setFlowType] = useState<YieldWithdrawFlowType>('withdraw');
+
     const flowResult = useYieldFlow({
         account,
         routeParams,
         vault,
-        flowType: 'withdraw',
+        flowType,
     });
     const { token, receiptToken } = flowResult;
+
+    const toggleWithdrawFlowType = useCallback(() => {
+        setFlowType(prev => (prev === 'redeem' ? 'withdraw' : 'redeem'));
+    }, []);
 
     if (!token || !receiptToken) {
         return null;
     }
 
-    const { completedAmount, withdrawInputUnit } = flowResult;
-    const isSharesInput = withdrawInputUnit === 'shares';
+    const { completedAmount } = flowResult;
+    const isSharesInput = flowType === 'redeem';
     const pricePerShareState = vault.state?.pricePerShareState;
     const completedInput = {
         token: isSharesInput ? receiptToken : token,
@@ -60,10 +71,12 @@ export const useYieldWithdraw = ({
 
     return {
         ...flowResult,
+        flowType,
         token,
         receiptToken,
         vault,
         completedInput,
         completedOutput,
+        toggleWithdrawFlowType,
     };
 };

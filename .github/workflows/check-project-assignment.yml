@@ -14,18 +14,19 @@ concurrency:
 
 jobs:
   check-project-or-issue:
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
       - name: Generate GitHub App token
         id: trezor-bot-token
-        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
 
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-      - name: Check if PR is assigned to a project or an issue
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+      - name: Check if PR is assigned to a project (with required fields) or an issue
         env:
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
         run: |
@@ -57,15 +58,122 @@ jobs:
             exit 0
           fi
 
-          # Check for associated projects
-          PROJECT_COUNT=$(gh pr view ${{ github.event.pull_request.number }} --json projectItems --jq '.projectItems | length')
+          # Project fields that must be filled in once a PR is assigned to the Suite project
+          REQUIRED_FIELDS=("Platform" "Team")
+          REQUIRED_FIELDS_PROJECT="Suite"
 
-          if [ "$PROJECT_COUNT" -gt 0 ]; then
-            echo "Pass: This PR is assigned to a project."
-            exit 0
+          # Fetch associated project items together with their populated field names.
+          # In Projects v2, unset fields are simply omitted from fieldValues.nodes,
+          # so the names returned below are exactly the fields that have a value.
+          PROJECT_ITEMS=$(gh api graphql -f query='
+          query($owner: String!, $repo: String!, $number: Int!) {
+            repository(owner: $owner, name: $repo) {
+              pullRequest(number: $number) {
+                projectItems(first: 10) {
+                  nodes {
+                    project { title }
+                    fieldValues(first: 50) {
+                      nodes {
+                        ... on ProjectV2ItemFieldTextValue { field { ... on ProjectV2FieldCommon { name } } }
+                        ... on ProjectV2ItemFieldDateValue { field { ... on ProjectV2FieldCommon { name } } }
+                        ... on ProjectV2ItemFieldNumberValue { field { ... on ProjectV2FieldCommon { name } } }
+                        ... on ProjectV2ItemFieldSingleSelectValue { field { ... on ProjectV2FieldCommon { name } } }
+                        ... on ProjectV2ItemFieldIterationValue { field { ... on ProjectV2FieldCommon { name } } }
+                        ... on ProjectV2ItemFieldLabelValue { field { ... on ProjectV2FieldCommon { name } } }
+                        ... on ProjectV2ItemFieldMilestoneValue { field { ... on ProjectV2FieldCommon { name } } }
+                        ... on ProjectV2ItemFieldPullRequestValue { field { ... on ProjectV2FieldCommon { name } } }
+                        ... on ProjectV2ItemFieldRepositoryValue { field { ... on ProjectV2FieldCommon { name } } }
+                        ... on ProjectV2ItemFieldReviewerValue { field { ... on ProjectV2FieldCommon { name } } }
+                        ... on ProjectV2ItemFieldUserValue { field { ... on ProjectV2FieldCommon { name } } }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }' -F owner=${{ github.repository_owner }} -F repo=${{ github.event.repository.name }} -F number=${{ github.event.pull_request.number }})
+
+          PROJECT_COUNT=$(echo "$PROJECT_ITEMS" | jq '.data.repository.pullRequest.projectItems.nodes | length')
+
+          if [ "$PROJECT_COUNT" -eq 0 ]; then
+            echo "Error: This PR is not assigned to any project, not linked to a valid issue, and does not have the 'no-project' label."
+            echo "Please assign the PR to a project or link it to an issue. Alternatively, add the 'no-project' label if not applicable."
+            exit 1
           fi
 
-          # If no condition passes
-          echo "Error: This PR is not assigned to any project, not linked to a valid issue, and does not have the 'no-project' label."
-          echo "Please assign the PR to a project or link it to an issue. Alternatively, add the 'no-project' label if not applicable."
-          exit 1
+          # Validate that the required fields are filled in on the Suite project item.
+          # Other projects only need to be assigned (no field validation).
+          HAS_ERROR=""
+          for i in $(seq 0 $((PROJECT_COUNT - 1))); do
+            TITLE=$(echo "$PROJECT_ITEMS" | jq -r ".data.repository.pullRequest.projectItems.nodes[$i].project.title")
+
+            if [ "$TITLE" != "$REQUIRED_FIELDS_PROJECT" ]; then
+              continue
+            fi
+
+            POPULATED=$(echo "$PROJECT_ITEMS" | jq -r ".data.repository.pullRequest.projectItems.nodes[$i].fieldValues.nodes[].field.name // empty")
+
+            MISSING=""
+            for f in "${REQUIRED_FIELDS[@]}"; do
+              if ! echo "$POPULATED" | grep -qx "$f"; then
+                MISSING="$MISSING $f"
+              fi
+            done
+
+            if [ -n "$MISSING" ]; then
+              echo "Error: Project '$TITLE' is missing required field(s):$MISSING"
+              HAS_ERROR="yes"
+            fi
+          done
+
+          if [ -n "$HAS_ERROR" ]; then
+            echo "Please fill in the following field(s) in the '$REQUIRED_FIELDS_PROJECT' project before merging: ${REQUIRED_FIELDS[*]}."
+            exit 1
+          fi
+
+          echo "Pass: PR is assigned to a project and all required fields are filled (when applicable)."
+          exit 0
+
+  check-pr-description:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR description has at least one section filled (Description / Notes for QA / Screenshots)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # The PR description must contain meaningful information for QA.
+          # We require at least one of these sections to be filled in, ignoring the
+          # template's HTML comment placeholders. CI-generated content (preview
+          # deployments, Currents, quarantine list) lives under its own "##" headings,
+          # so it is never counted as content of the "Screenshots" section.
+          PR_BODY=$(gh pr view ${{ github.event.pull_request.number }} -R ${{ github.repository }} --json body --jq '.body // ""')
+          printf '%s' "$PR_BODY" > pr_body.md
+
+          # Sections where at least one must be filled in by the author
+          REQUIRED_SECTIONS=("Description" "Notes for QA" "Screenshots")
+
+          FILLED=""
+          for section in "${REQUIRED_SECTIONS[@]}"; do
+            # Capture everything between this heading and the next "## " heading,
+            # strip HTML comments and whitespace, then check if anything remains.
+            CONTENT=$(awk -v h="$section" '
+              $0 ~ "^##[[:space:]]+" h "[[:space:]]*:?[[:space:]]*$" { capture=1; next }
+              capture && /^##[[:space:]]/ { capture=0 }
+              capture { print }
+            ' pr_body.md | perl -0777 -pe 's/<!--.*?-->//gs' | tr -d '[:space:]')
+
+            if [ -n "$CONTENT" ]; then
+              echo "Pass: Section '$section' is filled in."
+              FILLED="yes"
+            fi
+          done
+
+          if [ -z "$FILLED" ]; then
+            echo "Error: The PR description must have at least one of these sections filled in: 'Description', 'Notes for QA' or 'Screenshots'."
+            echo "Please describe your changes so the QA team can test them effectively."
+            exit 1
+          fi
+
+          echo "Pass: The PR description has at least one required section filled in."
+          exit 0

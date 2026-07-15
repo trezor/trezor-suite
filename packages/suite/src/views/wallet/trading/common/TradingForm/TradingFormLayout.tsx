@@ -1,12 +1,12 @@
 import { type ReactNode } from 'react';
 
+import { ContextMessage } from '@suite/message-system';
 import { selectInvityServerEnvironment } from '@suite/settings';
 import { TradingEnvironmentWarning } from '@suite/trading';
 import { Context } from '@suite-common/message-system';
 import { Box, Card, Column } from '@trezor/components';
 import { breakpoints, spacings } from '@trezor/theme';
 
-import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { ContentFlex } from 'src/support/suite/ContentFlex';
@@ -32,7 +32,9 @@ export const TradingFormLayout = ({ children }: TradingFormLayoutProps) => {
             <form onSubmit={e => e.preventDefault()}>
                 <ReceiveAddressModalControlsProvider>
                     <ContentFlex gap={16} breakpoint={breakpoints.tablet} alignItems="stretch">
-                        <Box flex="2">{children}</Box>
+                        <Box flex="2" minWidth={0}>
+                            {children}
+                        </Box>
                         <Card flex="1">
                             <TradingFormOffer />
                         </Card>

@@ -130,5 +130,5 @@ export const isYieldApprovalAllowanceUnlimited = ({
         return false;
     }
 
-    return isAllowanceUnlimited(allowanceAmount, token.decimals);
+    return isAllowanceUnlimited({ amount: allowanceAmount, decimals: token.decimals });
 };

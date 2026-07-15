@@ -13,30 +13,28 @@ import { exhaustive } from '@trezor/type-utils';
 import * as URLS from '@trezor/urls';
 import { hasProp, isArrayMember, unique } from '@trezor/utils';
 
-export const deviceStatuses = [
-    'acquired',
-    'unacquired',
-    'unreadable',
-    'disconnected',
-    'unavailable',
-    'bootloader',
-    'initialize',
-    'seedless',
-    'firmware-required',
-    'used-in-other-window',
-    'was-used-in-other-window',
-    'firmware-recommended',
-    'connected',
-    'device-busy',
-    'device-rebooting',
-    'device-bootloader-locked',
-    'device-hard-locked',
-    'device-pin-locked',
-    'device-thp-locked',
-    'firmware-corrupted',
-    'unknown',
-] as const;
-export type DeviceStatus = (typeof deviceStatuses)[number];
+export type DeviceStatus =
+    | 'acquired'
+    | 'unacquired'
+    | 'unreadable'
+    | 'disconnected'
+    | 'unavailable'
+    | 'bootloader'
+    | 'initialize'
+    | 'seedless'
+    | 'firmware-required'
+    | 'used-in-other-window'
+    | 'was-used-in-other-window'
+    | 'firmware-recommended'
+    | 'connected'
+    | 'device-busy'
+    | 'device-rebooting'
+    | 'device-bootloader-locked'
+    | 'device-hard-locked'
+    | 'device-pin-locked'
+    | 'device-thp-locked'
+    | 'firmware-corrupted'
+    | 'unknown';
 
 export const getStatus = (device: TrezorDevice): DeviceStatus => {
     if (!device.connected) {

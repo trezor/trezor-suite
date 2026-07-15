@@ -60,6 +60,17 @@ export class Parser {
         return image ? `/guide/${image}` : undefined;
     }
 
+    /** Returns the icon name (from @trezor/components) declared in the category README. */
+    private parseCategoryIcon(path: string): string | undefined {
+        if (this.isRootNode(path)) return;
+
+        const doc = fs.readFileSync(join(path, 'README.md')).toString();
+
+        // Authors declare the icon via an HTML comment in the category README,
+        // e.g. `<!-- icon: lifebuoy -->`. GitBook preserves HTML comments verbatim.
+        return doc.match(/<!--\s*icon:\s*([\w-]+)\s*-->/)?.[1];
+    }
+
     /** Returns a title of given page. */
     private parsePageTitle(path: string): string {
         const doc = fs.readFileSync(path);
@@ -122,6 +133,7 @@ export class Parser {
                     [locale]: this.parseDirTitle(path),
                 },
                 image: this.parseCategoryImage(path),
+                icon: this.parseCategoryIcon(path),
                 children,
             };
         }

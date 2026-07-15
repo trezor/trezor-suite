@@ -1,5 +1,7 @@
 import { createSelectorCreator, weakMapMemoize } from 'reselect';
 
+export { weakMapMemoize };
+
 const EMPTY_STABLE_ARRAY: unknown[] = [];
 
 /**

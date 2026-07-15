@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgFigmaLogoFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M23 12a5 5 0 0 0-3-9h-9a5 5 0 0 0-3 9 5 5 0 0 0 .171 8.125A5.5 5.5 0 1 0 17 24.5V20a5 5 0 1 0 6-8m-6-7h3a3 3 0 1 1 0 6h-3zm3 14a3 3 0 1 1 0-5.999A3 3 0 0 1 20 19"
+        />
+    </svg>
+);
+export { SvgFigmaLogoFilled as ReactComponent };

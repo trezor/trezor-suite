@@ -1,26 +1,34 @@
 import { selectIsSettingsDesktopAppPromoBannerShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { LabelingSettings } from '@suite/labeling';
+import { ContextMessage } from '@suite/message-system';
 import { selectIsLegacyLabelingVisible, selectSelectedProviderForLabels } from '@suite/metadata';
 import { selectHasExperimentalFeature } from '@suite/settings';
-import { selectTorState } from '@suite/tor';
+import { TorStatus, selectTorState } from '@suite/tor';
 import { Context } from '@suite-common/message-system';
 import { selectIsMevProtectionSettingsVisible } from '@suite-common/mev';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     selectEnabledNetworks,
-    selectIsDustPhishingThresholdSettingsVisible,
     selectIsNetworkReserveSettingsVisible,
 } from '@suite-common/wallet-core';
 import { isDesktop, isLinux, isWeb } from '@trezor/env-utils';
+import {
+    AppWindowIcon,
+    AtomIcon,
+    FlagIcon,
+    LockIcon,
+    PlugsIcon,
+    ShieldIcon,
+    ShieldWarningIcon,
+    TagIcon,
+} from '@trezor/icons';
 import { SettingsSection } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
-import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useSelector } from 'src/hooks/suite';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
-import { TorStatus } from 'src/types/suite';
 
 import { AddressDisplay } from './AddressDisplay';
 import { Analytics } from './Analytics';
@@ -42,8 +50,10 @@ import { LegacyLabelingMigration } from './LegacyLabelingMigration';
 import { McpServer } from './McpServer';
 import { MevProtection } from './MevProtection';
 import { NetworkReserve } from './NetworkReserve';
+import { NftSection } from './NftSection';
 import { ShowApplicationLog } from './ShowApplicationLog';
 import { ShowOnTray } from './ShowOnTray';
+import { TestnetNetworks } from './TestnetNetworks';
 import { Theme } from './Theme';
 import { Tor } from './Tor';
 import { TorExternal } from './TorExternal';
@@ -77,12 +87,6 @@ export const SettingsGeneral = () => {
     const isProviderConnected = useSelector(selectSelectedProviderForLabels);
     const isMevProtectionSettingsVisible = useSelector(selectIsMevProtectionSettingsVisible);
     const isNetworkReserveSettingsVisible = useSelector(selectIsNetworkReserveSettingsVisible);
-    const isDustPhishingThresholdSettingsVisible = useSelector(
-        selectIsDustPhishingThresholdSettingsVisible,
-    );
-
-    const isSecuritySettingsSectionVisible =
-        isMevProtectionSettingsVisible || isDustPhishingThresholdSettingsVisible;
 
     return (
         <SettingsLayout data-testid="@settings/index">
@@ -96,7 +100,7 @@ export const SettingsGeneral = () => {
                 <SettingsSection
                     hasVerticalLayout={hasContentBelowTabletWidth}
                     title={<Translation id="TR_PRIVACY" />}
-                    icon="lock"
+                    icon={LockIcon}
                 >
                     <AutoEject />
                     {isDesktop() && !isLinux() && <BioAuthSettings />}
@@ -115,7 +119,7 @@ export const SettingsGeneral = () => {
             <SettingsSection
                 hasVerticalLayout={hasContentBelowTabletWidth}
                 title={<Translation id="TR_LOCALIZATION" />}
-                icon="flag"
+                icon={FlagIcon}
             >
                 <Language />
                 <BaseCurrency />
@@ -125,7 +129,7 @@ export const SettingsGeneral = () => {
             <SettingsSection
                 hasVerticalLayout={hasContentBelowTabletWidth}
                 title={<Translation id="TR_LABELING" />}
-                icon="tag"
+                icon={TagIcon}
             >
                 <LabelingSettings />
                 {isLegacyLabelingVisible &&
@@ -140,10 +144,9 @@ export const SettingsGeneral = () => {
             <SettingsSection
                 hasVerticalLayout={hasContentBelowTabletWidth}
                 title={<Translation id="TR_APPLICATION" />}
-                icon="appWindow"
+                icon={AppWindowIcon}
             >
                 <Theme />
-                <AddressDisplay />
                 <Analytics />
                 <ShowApplicationLog />
                 <ClearStorage />
@@ -151,32 +154,32 @@ export const SettingsGeneral = () => {
                 <VersionWithUpdate />
             </SettingsSection>
 
-            {isSecuritySettingsSectionVisible && (
-                <SettingsSection
-                    title={<Translation id="TR_SECURITY" />}
-                    icon="shield"
-                    hasVerticalLayout={hasContentBelowTabletWidth}
-                >
-                    {isMevProtectionSettingsVisible && <MevProtection />}
-                    {isDustPhishingThresholdSettingsVisible && <DustPhishing />}
-                </SettingsSection>
-            )}
+            <SettingsSection
+                title={<Translation id="TR_SECURITY" />}
+                icon={ShieldIcon}
+                hasVerticalLayout={hasContentBelowTabletWidth}
+            >
+                {isMevProtectionSettingsVisible && <MevProtection />}
+                <DustPhishing />
+            </SettingsSection>
 
-            {isNetworkReserveSettingsVisible && (
-                <SettingsSection
-                    hasVerticalLayout={hasContentBelowTabletWidth}
-                    title={<Translation id="TR_NETWORKS" />}
-                    icon="graph"
-                >
-                    <NetworkReserve />
-                </SettingsSection>
-            )}
+            <SettingsSection
+                hasVerticalLayout={hasContentBelowTabletWidth}
+                title={<Translation id="TR_SETTINGS_ADVANCED" />}
+                icon={ShieldWarningIcon}
+            >
+                {desktopUpdate.enabled && <EarlyAccess />}
+                <AddressDisplay />
+                {isNetworkReserveSettingsVisible && <NetworkReserve />}
+                <TestnetNetworks />
+                <NftSection />
+            </SettingsSection>
 
             {isDesktop() && (
                 <SettingsSection
                     hasVerticalLayout={hasContentBelowTabletWidth}
                     title={<Translation id="TR_TREZOR_CONNECT" />}
-                    icon="plugs"
+                    icon={PlugsIcon}
                 >
                     <AutoStart />
                     <ShowOnTray />
@@ -186,9 +189,8 @@ export const SettingsGeneral = () => {
             <SettingsSection
                 hasVerticalLayout={hasContentBelowTabletWidth}
                 title={<Translation id="TR_EXPERIMENTAL_FEATURES" />}
-                icon="atom"
+                icon={AtomIcon}
             >
-                {desktopUpdate.enabled && <EarlyAccess />}
                 <Experimental />
             </SettingsSection>
 
@@ -196,7 +198,7 @@ export const SettingsGeneral = () => {
                 <SettingsSection
                     hasVerticalLayout={hasContentBelowTabletWidth}
                     title={<Translation id="TR_EXPERIMENTAL_MCP_SERVER" />}
-                    icon="plugs"
+                    icon={PlugsIcon}
                 >
                     <McpServer />
                 </SettingsSection>

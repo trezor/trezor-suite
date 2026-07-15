@@ -16,7 +16,7 @@ import {
 
 import { type NativeStakingRootState } from './types';
 
-export const createMemoizedSelector = createWeakMapSelector.withTypes<NativeStakingRootState>();
+const createMemoizedSelector = createWeakMapSelector.withTypes<NativeStakingRootState>();
 
 export const selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol = createMemoizedSelector(
     [selectDeviceAccounts, (_state, symbol: NetworkSymbol) => symbol],

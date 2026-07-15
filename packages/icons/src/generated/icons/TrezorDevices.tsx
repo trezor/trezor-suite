@@ -1,0 +1,18 @@
+import type { SVGProps } from 'react';
+const SvgTrezorDevices = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            fillRule="evenodd"
+            d="M11 9.5A1.5 1.5 0 0 1 12.5 8h7A1.5 1.5 0 0 1 21 9.5v7a1.5 1.5 0 0 1-1.5 1.5h-7a1.5 1.5 0 0 1-1.5-1.5zm2 .5v6h6v-6z"
+            clipRule="evenodd"
+        />
+        <path
+            fill="currentColor"
+            fillRule="evenodd"
+            d="M11 2a4 4 0 0 0-4 4H5a3 3 0 0 0-3 3v8.531a7 7 0 0 0 .792 3.234l2.026 3.89A2.5 2.5 0 0 0 7.035 26h2.519q.303.477.643.93L11.6 28.8A3 3 0 0 0 14 30h4a3 3 0 0 0 2.4-1.2l1.403-1.87q.339-.453.643-.93h2.519a2.5 2.5 0 0 0 2.217-1.345l2.026-3.89A7 7 0 0 0 30 17.53V9a3 3 0 0 0-3-3h-2a4 4 0 0 0-4-4zM7 8v8.918a17.6 17.6 0 0 0 1.426 6.948l.059.134h-1.45a.5.5 0 0 1-.443-.269l-2.027-3.89A5 5 0 0 1 4 17.531V9a1 1 0 0 1 1-1zm16-2v10.918a15.6 15.6 0 0 1-1.264 6.16 13 13 0 0 1-1.533 2.652L18.8 27.6a1 1 0 0 1-.8.4h-4a1 1 0 0 1-.8-.4l-1.403-1.87a13 13 0 0 1-1.533-2.652A15.6 15.6 0 0 1 9 16.918V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2m2 2h2a1 1 0 0 1 1 1v8.531a5 5 0 0 1-.565 2.31l-2.027 3.89a.5.5 0 0 1-.443.269h-1.45l.059-.134A17.6 17.6 0 0 0 25 16.918z"
+            clipRule="evenodd"
+        />
+    </svg>
+);
+export { SvgTrezorDevices as ReactComponent };

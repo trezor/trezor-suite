@@ -5,6 +5,7 @@ import { selectBaseCurrency, selectHasRunningDiscovery } from '@suite-common/wal
 import { type Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, isUtxoBased } from '@suite-common/wallet-utils';
 import { Column, Icon, Row, Text } from '@trezor/components';
+import { CaretRightIcon } from '@trezor/icons';
 import { CoinLogo } from '@trezor/product-components';
 
 import { CoinBalance, HiddenPlaceholder } from 'src/components/suite';
@@ -103,7 +104,7 @@ export const TradingReceiveAccountSuiteOption = ({
                 </Column>
 
                 {(isUtxoBasedNetwork || requiresExtraField) && (
-                    <Icon name="caretRight" size={20} intent="neutral" priority="secondary" />
+                    <Icon as={CaretRightIcon} size={20} intent="neutral" priority="secondary" />
                 )}
             </Row>
         </TradingReceiveOptionRow>

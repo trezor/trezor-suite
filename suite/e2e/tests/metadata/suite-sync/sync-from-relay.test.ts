@@ -23,7 +23,10 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
             evoluClient.writeTo('output', outputSeed);
             evoluClient.seedQuotaManagerData({ ownerId: mnemonic12Fixtures.ownerId });
         });
-        await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+
+        await onboardingPage.completeOnboarding();
+        await settingsPage.navigateTo('application');
+        await settingsPage.toggleDebugModeInSettings();
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
     });
 

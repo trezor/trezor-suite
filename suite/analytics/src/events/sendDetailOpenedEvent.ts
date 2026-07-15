@@ -9,12 +9,14 @@ type Attributes = {
 
 export const sendDetailOpenedEvent: EventDef<Attributes, EventType.SendDetailOpened> = {
     name: EventType.SendDetailOpened,
-    descriptionTrigger: 'Triggered when the transaction detail info screen is opened',
+    descriptionTrigger: 'User opens the detail information screen for a send transaction',
     changelog: [{ version: '25.5.0', notes: 'added' }],
 
     attributes: {
         assetSymbol: {
             changelog: [{ version: '25.5.0', notes: 'added' }],
+            description:
+                'The blockchain network symbol or token symbol being sent (e.g., `btc`, `eth`)',
         },
     },
 };

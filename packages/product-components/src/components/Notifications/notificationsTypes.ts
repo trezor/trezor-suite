@@ -18,6 +18,7 @@ export type ExchangeInfoAsset = Pick<ExchangeToastAssetData, 'symbol' | 'contrac
 
 export type TransactionNotificationType =
     | 'tx-sent'
+    | 'raw-tx-sent'
     | 'tx-received'
     | 'tx-confirmed'
     | 'tx-staked'
@@ -25,7 +26,7 @@ export type TransactionNotificationType =
     | 'tx-claimed'
     | 'tx-approved'
     | 'tx-revoked'
-    | 'tx-yield-supply'
+    | 'tx-yield-deposit'
     | 'tx-yield-withdraw'
     | 'tx-yield-claim';
 

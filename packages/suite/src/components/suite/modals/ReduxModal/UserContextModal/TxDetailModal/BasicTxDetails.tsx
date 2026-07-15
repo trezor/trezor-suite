@@ -1,10 +1,15 @@
 import styled from 'styled-components';
-import { fromWei } from 'web3-utils';
 
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { type Network } from '@suite-common/wallet-config';
-import { getFeeRate, getTxIcon, isEip1559, isPending } from '@suite-common/wallet-utils';
+import {
+    type PendingEvmNonceStatus,
+    fromWei,
+    getFeeRate,
+    isEip1559,
+    isPending,
+} from '@suite-common/wallet-utils';
 import {
     Card,
     Divider,
@@ -17,38 +22,48 @@ import {
     Link,
     Row,
     Text,
-    useElevation,
+    Tooltip,
 } from '@trezor/components';
+import {
+    CalendarIcon,
+    FingerprintIcon,
+    GasPumpIcon,
+    PencilIcon,
+    ReceiptIcon,
+    TagIcon,
+    WarningIcon,
+} from '@trezor/icons';
 import { CoinLogo, FeeRate } from '@trezor/product-components';
-import { type Elevation, borders, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
+import { borders, spacings, spacingsPx } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
 import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { type WalletAccountTransaction } from 'src/types/wallet';
+import { getTransactionIcon } from 'src/utils/wallet/transactionIconUtils';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
-const IconWrapper = styled.div<{ $elevation: Elevation }>`
+const IconWrapper = styled.div`
     display: flex;
     position: relative;
-    border: ${spacingsPx.xxs} solid ${mapElevationToBorder};
+    border: ${spacingsPx.xxs} solid ${({ theme }) => theme.elementBorderNeutralSofter};
     border-radius: ${borders.radii.full};
 `;
 
-const NestedIconWrapper = styled.div<{ $elevation: Elevation }>`
+const NestedIconWrapper = styled.div`
     position: absolute;
     top: -${spacingsPx.xxs};
     right: -${spacingsPx.xxs};
-    background: ${mapElevationToBorder};
+    background: ${({ theme }) => theme.elementFillElevated};
     border-radius: ${borders.radii.full};
     padding: ${spacingsPx.xxxs};
 `;
 
-const Item = ({ label, iconName, children }: Partial<InfoItemProps>) => (
+const Item = ({ label, icon, children }: Partial<InfoItemProps>) => (
     <InfoItem
         label={label}
-        iconName={iconName}
+        icon={icon}
         labelWidth={135}
         typographyStyle="body-xs"
         direction="row"
@@ -67,6 +82,9 @@ type BasicTxDetailsProps = {
     confirmations: number;
     explorerUrl: string;
     explorerUrlQueryString?: string;
+    // Whether this tx's own nonce is stuck (gapped or already superseded) — see useEvmNonceInfo.
+    nonceStatus?: PendingEvmNonceStatus;
+    nextNonce?: number;
 };
 
 export const BasicTxDetails = ({
@@ -75,8 +93,9 @@ export const BasicTxDetails = ({
     network,
     explorerUrl,
     explorerUrlQueryString,
+    nonceStatus,
+    nextNonce,
 }: BasicTxDetailsProps) => {
-    const { elevation } = useElevation();
     const { isBelowTablet } = useLayoutSize();
     const explorerLink = useExternalLink(`${explorerUrl}${tx.txid}${explorerUrlQueryString ?? ''}`);
     // all solana txs which are fetched are already confirmed
@@ -85,13 +104,13 @@ export const BasicTxDetails = ({
     return (
         <Card>
             <Row gap={spacings.sm}>
-                <IconWrapper $elevation={elevation}>
+                <IconWrapper>
                     <CoinLogo symbol={tx.symbol} size={48} type="tokenWithNetwork" />
-                    <NestedIconWrapper $elevation={elevation}>
+                    <NestedIconWrapper>
                         <Icon
                             size={14}
                             intent={tx.type === 'failed' ? 'critical' : 'neutral'}
-                            name={getTxIcon(tx, false)}
+                            as={getTransactionIcon(tx, false)}
                         />
                     </NestedIconWrapper>
                 </IconWrapper>
@@ -145,7 +164,7 @@ export const BasicTxDetails = ({
                             <Translation id="TR_FIRST_SEEN" />
                         )
                     }
-                    iconName="calendar"
+                    icon={CalendarIcon}
                 >
                     {tx.blockTime ? (
                         <FormattedDateWithBullet value={new Date(tx.blockTime * 1000)} />
@@ -156,7 +175,7 @@ export const BasicTxDetails = ({
 
                 {/* Fee level */}
                 {network.networkType === 'bitcoin' && (
-                    <Item label={<Translation id="TR_FEE_RATE" />} iconName="receipt">
+                    <Item label={<Translation id="TR_FEE_RATE" />} icon={ReceiptIcon}>
                         {/* tx.feeRate was added in @trezor/blockchain-link 2.1.5 meaning that users
                             might have locally saved old transactions without this field. since we
                             cant reliably migrate this data, we are keeping old way of displaying feeRate in place */}
@@ -170,8 +189,29 @@ export const BasicTxDetails = ({
                 {/* Ethereum */}
                 {network.networkType === 'ethereum' && tx.ethereumSpecific && (
                     <>
-                        <Item label={<Translation id="TR_NONCE" />} iconName="receipt">
-                            {tx.ethereumSpecific?.nonce}
+                        <Item label={<Translation id="TR_NONCE" />} icon={ReceiptIcon}>
+                            <Row gap={4}>
+                                {tx.ethereumSpecific?.nonce}
+                                {nonceStatus && nonceStatus !== 'ok' && (
+                                    <Tooltip
+                                        content={
+                                            nonceStatus === 'superseded' ? (
+                                                <Translation
+                                                    id="TR_PENDING_NONCE_SUPERSEDED_WARNING"
+                                                    values={{ nonce: nextNonce }}
+                                                />
+                                            ) : (
+                                                <Translation
+                                                    id="TR_BUMP_FEE_NONCE_GAP_WARNING"
+                                                    values={{ nonce: nextNonce }}
+                                                />
+                                            )
+                                        }
+                                    >
+                                        <Icon as={WarningIcon} size={16} intent="warning" />
+                                    </Tooltip>
+                                )}
+                            </Row>
                         </Item>
 
                         <Item
@@ -184,10 +224,10 @@ export const BasicTxDetails = ({
                                     }
                                 />
                             }
-                            iconName="gasPump"
+                            icon={GasPumpIcon}
                         >
                             {tx.ethereumSpecific.gasLimit}
-                            {tx.ethereumSpecific.gasUsed && (
+                            {tx.ethereumSpecific.gasUsed && tx.ethereumSpecific.gasLimit && (
                                 <>
                                     {' / '}
                                     {tx.ethereumSpecific.gasUsed} (
@@ -200,10 +240,10 @@ export const BasicTxDetails = ({
                             )}
                         </Item>
 
-                        <Item label={<Translation id="TR_GAS_PRICE" />} iconName="gasPump">
+                        <Item label={<Translation id="TR_GAS_PRICE" />} icon={GasPumpIcon}>
                             {isConfirmed || !isEip1559(tx.ethereumSpecific) ? (
                                 <FeeRate
-                                    feeRate={fromWei(tx.ethereumSpecific?.gasPrice || 0, 'gwei')}
+                                    feeRate={fromWei(tx.ethereumSpecific?.gasPrice || '0').toGwei()}
                                     networkType="ethereum"
                                     preserveDecimals
                                 />
@@ -216,13 +256,12 @@ export const BasicTxDetails = ({
                             <>
                                 <Item
                                     label={<Translation id="TR_MAX_FEE_PER_GAS" />}
-                                    iconName="gasPump"
+                                    icon={GasPumpIcon}
                                 >
                                     <FeeRate
                                         feeRate={fromWei(
                                             tx.ethereumSpecific?.maxFeePerGas ?? '0',
-                                            'gwei',
-                                        )}
+                                        ).toGwei()}
                                         networkType="ethereum"
                                         preserveDecimals
                                     />
@@ -230,14 +269,13 @@ export const BasicTxDetails = ({
 
                                 <Item
                                     label={<Translation id="TR_BLOCK_BASE_FEE" />}
-                                    iconName="gasPump"
+                                    icon={GasPumpIcon}
                                 >
                                     {isConfirmed ? (
                                         <FeeRate
                                             feeRate={fromWei(
                                                 tx.ethereumSpecific.baseFeePerGas || '0',
-                                                'gwei',
-                                            )}
+                                            ).toGwei()}
                                             networkType="ethereum"
                                             preserveDecimals
                                         />
@@ -248,13 +286,12 @@ export const BasicTxDetails = ({
 
                                 <Item
                                     label={<Translation id="TR_MAX_PRIORITY_FEE_PER_GAS" />}
-                                    iconName="gasPump"
+                                    icon={GasPumpIcon}
                                 >
                                     <FeeRate
                                         feeRate={fromWei(
                                             tx.ethereumSpecific?.maxPriorityFeePerGas ?? '0',
-                                            'gwei',
-                                        )}
+                                        ).toGwei()}
                                         networkType="ethereum"
                                         preserveDecimals
                                     />
@@ -265,25 +302,25 @@ export const BasicTxDetails = ({
                 )}
 
                 {tx.rippleSpecific && (
-                    <Item label={<Translation id="DESTINATION_TAG_SHORT" />} iconName="tag">
+                    <Item label={<Translation id="DESTINATION_TAG_SHORT" />} icon={TagIcon}>
                         {tx.rippleSpecific.destinationTag ?? '-'}
                     </Item>
                 )}
 
                 {tx.stellarSpecific?.memo && (
-                    <Item label={<Translation id="DESTINATION_TAG_SHORT" />} iconName="tag">
+                    <Item label={<Translation id="DESTINATION_TAG_SHORT" />} icon={TagIcon}>
                         <BlurUrls text={tx.stellarSpecific.memo} />
                     </Item>
                 )}
 
                 {tx.solanaSpecific?.memo && (
-                    <Item label={<Translation id="MEMO" />} iconName="tag">
+                    <Item label={<Translation id="MEMO" />} icon={TagIcon}>
                         <BlurUrls text={tx.solanaSpecific.memo} />
                     </Item>
                 )}
 
                 {/* TX ID */}
-                <Item label={<Translation id="TR_TXID" />} iconName="fingerprint">
+                <Item label={<Translation id="TR_TXID" />} icon={FingerprintIcon}>
                     <Link
                         href={explorerLink}
                         data-testid="@tx-detail/txid-value"
@@ -294,19 +331,19 @@ export const BasicTxDetails = ({
                 </Item>
 
                 {tx.tronSpecific?.energyUsage && (
-                    <Item label={<Translation id="TR_TRON_ENERGY" />} iconName="gasPump">
+                    <Item label={<Translation id="TR_TRON_ENERGY" />} icon={GasPumpIcon}>
                         {tx.tronSpecific.energyUsage}
                     </Item>
                 )}
 
                 {tx.tronSpecific?.bandwidthUsage && (
-                    <Item label={<Translation id="TR_TRON_BANDWIDTH" />} iconName="gasPump">
+                    <Item label={<Translation id="TR_TRON_BANDWIDTH" />} icon={GasPumpIcon}>
                         {tx.tronSpecific.bandwidthUsage}
                     </Item>
                 )}
 
                 {tx.tronSpecific?.note && (
-                    <Item label={<Translation id="TR_TRON_NOTE" />} iconName="pencil">
+                    <Item label={<Translation id="TR_TRON_NOTE" />} icon={PencilIcon}>
                         {tx.tronSpecific.note}
                     </Item>
                 )}

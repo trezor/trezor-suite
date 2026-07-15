@@ -1,4 +1,5 @@
 import { type TradingTransaction } from '@suite-common/trading';
+import { getTranslation } from '@suite-native/intl';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { getBuyTrade } from '@suite-native/trading-fixtures';
 
@@ -48,7 +49,9 @@ describe('HistoryButton', () => {
         it('should render button when at least one trade is specified', () => {
             const { getByText } = renderHistoryButton({});
 
-            expect(getByText('Trade history')).toBeOnTheScreen();
+            expect(
+                getByText(getTranslation('moduleTrading.tradeHistory.list.title')),
+            ).toBeOnTheScreen();
         });
 
         it('should render nothing when isAmountInputActive is true', () => {
@@ -66,7 +69,7 @@ describe('HistoryButton', () => {
         it('should navigate on press', () => {
             const { getByText } = renderHistoryButton({});
 
-            fireEvent.press(getByText('Trade history'));
+            fireEvent.press(getByText(getTranslation('moduleTrading.tradeHistory.list.title')));
 
             expect(mockNavigate).toHaveBeenCalledWith('TradingHistory');
         });

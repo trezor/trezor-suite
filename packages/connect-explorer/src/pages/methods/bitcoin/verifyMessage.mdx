@@ -1,4 +1,4 @@
-import { VerifyMessage } from '@trezor/connect-common/src/types/api/bitcoin';
+import { VerifyMessage } from '@trezor/connect-common/src/types/api/bitcoin/common';
 
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
@@ -16,7 +16,7 @@ export const paramDescriptions = {
     address: 'signer address,',
     message: 'signed message,',
     signature: 'signature in base64 format,',
-    coin: 'Determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-data/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used.',
+    coin: 'Determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-data/files/coins.json) file. Coin `shortcut` (a `CoinSymbol`, e.g. `btc`) is used.',
     hex: 'convert message from hex',
 };
 

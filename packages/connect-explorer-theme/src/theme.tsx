@@ -4,7 +4,8 @@ import { isValidElement } from 'react';
 import { useRouter } from 'next/router';
 import { DiscordIcon, GitHubIcon } from 'nextra/icons';
 
-import { Icon, type IconName } from '@trezor/components';
+import { Icon, type IconComponent } from '@trezor/components';
+import { BookIcon, LightningIcon, NewspaperIcon } from '@trezor/icons';
 
 import { Anchor } from './components/anchor';
 import { Flexsearch } from './components/flexsearch';
@@ -31,6 +32,12 @@ const PLACEHOLDER_LOCALES: Record<string, string> = {
     fr: 'Rechercher documents',
     ru: 'Поиск документации',
     'zh-CN': '搜索文档',
+};
+
+const SIDEBAR_ICONS: Partial<Record<string, IconComponent>> = {
+    book: BookIcon,
+    lightning: LightningIcon,
+    newspaper: NewspaperIcon,
 };
 
 export const DEFAULT_THEME: DocsThemeConfig = {
@@ -170,18 +177,22 @@ export const DEFAULT_THEME: DocsThemeConfig = {
     },
     sidebar: {
         defaultMenuCollapseLevel: 1,
-        titleComponent: ({ title, icon }) => (
-            <div
-                style={{
-                    alignItems: 'center',
-                    display: 'flex',
-                    gap: '0.5rem',
-                }}
-            >
-                {icon && <Icon name={icon as IconName} size={16} />}
-                {title}
-            </div>
-        ),
+        titleComponent: ({ title, icon }) => {
+            const IconComponent = icon ? SIDEBAR_ICONS[icon] : undefined;
+
+            return (
+                <div
+                    style={{
+                        alignItems: 'center',
+                        display: 'flex',
+                        gap: '0.5rem',
+                    }}
+                >
+                    {IconComponent && <Icon as={IconComponent} size={16} />}
+                    {title}
+                </div>
+            );
+        },
         toggleButton: false,
     },
     themeSwitch: {

@@ -6,11 +6,21 @@ import {
     isValidElement,
 } from 'react';
 
-import { Banner } from '@trezor/components';
+import { Banner, type BannerIntent } from '@trezor/components';
+import { typedObjectKeys } from '@trezor/utils';
 
-const BULB_EMOJI = '💡';
-const WARNING_EMOJI = '⚠️';
-const REGEX = new RegExp(`^(${BULB_EMOJI}|${WARNING_EMOJI})\\s*`);
+// The displayed Banner intent is determined by an emoji at the start of the markdown quote.
+// The mapping is exhaustive over BannerIntent so Guide hints support every Banner intent.
+const INTENT_EMOJI = {
+    brand: '💡',
+    info: 'ℹ️',
+    warning: '⚠️',
+    critical: '🚨',
+    neutral: '📝',
+} as const satisfies Record<BannerIntent, string>;
+
+const HINT_INTENTS = typedObjectKeys(INTENT_EMOJI);
+const EMOJI_REGEX = new RegExp(`^(${Object.values(INTENT_EMOJI).join('|')})\\s*`);
 
 // This is a hack to sneak a bit more complex component into the generated markup.
 // We use markdown quotes in the source to render hints and warnings in Guide.
@@ -27,13 +37,16 @@ export const GuideHint = ({ children }: BlockquoteHTMLAttributes<HTMLQuoteElemen
 
         return false;
     })?.filter(child => !!child);
-    const intent = message?.[0]?.startsWith(WARNING_EMOJI) ? 'warning' : 'brand';
+
+    const intent =
+        HINT_INTENTS.find(candidate => message?.[0]?.startsWith(INTENT_EMOJI[candidate])) ??
+        'brand';
 
     let updatedMessage: string[] | undefined;
     if (message?.[0]) {
         // Copy the array and mutate the first element so that it does not affect the original array nested in the children prop
         updatedMessage = [...message];
-        updatedMessage[0] = updatedMessage[0]?.replace(REGEX, '') ?? '';
+        updatedMessage[0] = updatedMessage[0]?.replace(EMOJI_REGEX, '') ?? '';
     } else {
         // If the object does not have the expected format, log an error but display the component anyway.
         console.error('Unexpected intent of Guide hint.');
@@ -51,5 +64,13 @@ export const GuideHint = ({ children }: BlockquoteHTMLAttributes<HTMLQuoteElemen
         return child;
     });
 
-    return <Banner icon intent={intent} description={clonedChildren} />;
+    return (
+        <Banner
+            data-testid="guide-banner"
+            icon
+            intent={intent}
+            description={clonedChildren}
+            margin={{ bottom: 16 }}
+        />
+    );
 };

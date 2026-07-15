@@ -1,7 +1,7 @@
 import { BLOCKCHAIN, createBlockchainMessage } from '@trezor/connect-common';
-import type { BlockchainLink, CoinInfo } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import type { BlockchainLink, CoinInfo, Proxy } from '@trezor/connect-common';
 import type { TimerId } from '@trezor/type-utils';
+import { deepEqual } from '@trezor/utils';
 
 import type { BlockchainOptions } from './Blockchain';
 import { Blockchain } from './Blockchain';
@@ -16,6 +16,8 @@ type BackendParams = Pick<BlockchainOptions, 'coinInfo' | 'postMessage' | 'ident
 const DEFAULT_IDENTITY = 'default';
 
 export class BackendManager {
+    private proxy?: Proxy;
+
     private readonly instances: { [shortcut: CoinShortcutIdentity]: Blockchain } = {};
     private readonly reconnect: { [shortcut: CoinShortcutIdentity]: Reconnect } = {};
     private readonly custom: { [shortcut: CoinShortcut]: BlockchainLink } = {};
@@ -33,7 +35,7 @@ export class BackendManager {
                 coinInfo: this.patchCoinInfo(coinInfo),
                 identity,
                 debug: settingsStore.get('debug'),
-                proxy: settingsStore.get('proxy'),
+                proxy: this.proxy,
                 postMessage,
                 onDisconnected: pendingSubscriptions => {
                     const reconnectAttempts = pendingSubscriptions ? 0 : undefined;
@@ -77,9 +79,8 @@ export class BackendManager {
 
     isSupported(coinInfo: CoinInfo) {
         const info = this.custom[coinInfo.shortcut] || coinInfo.blockchainLink;
-        if (!info) {
-            throw ERRORS.TypedError('Backend_NotSupported');
-        }
+
+        return !!info;
     }
 
     setCustom(shortcut: CoinShortcut, blockchainLink?: BlockchainLink) {
@@ -88,6 +89,13 @@ export class BackendManager {
             this.custom[shortcut] = blockchainLink;
         } else {
             delete this.custom[shortcut];
+        }
+    }
+
+    async updateProxy(proxy: Proxy | undefined) {
+        if (proxy !== undefined && !deepEqual(this.proxy, proxy)) {
+            this.proxy = proxy;
+            await this.reconnectAll();
         }
     }
 

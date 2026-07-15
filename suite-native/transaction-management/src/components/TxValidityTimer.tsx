@@ -37,7 +37,7 @@ export const TxValidityTimer = ({
         <HStack paddingVertical="sp8" justifyContent="space-between" alignItems="center">
             <Badge intent="warning" size="medium" label={getLabel()} />
             <Button
-                size="large"
+                size="medium"
                 intent="neutral"
                 priority="secondary"
                 iconLeft="arrowsCounterClockwise"

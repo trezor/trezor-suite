@@ -1,4 +1,4 @@
-import { forwardRef, useRef } from 'react';
+import { forwardRef, useLayoutEffect, useRef } from 'react';
 import { View, type ViewProps } from 'react-native';
 import Animated, {
     interpolateColor,
@@ -62,7 +62,9 @@ export const DebugView = forwardRef<View, ViewProps>(({ style, children, ...prop
         }),
     );
 
-    flashState.value = flashState.value === 0 ? 1 : 0;
+    useLayoutEffect(() => {
+        flashState.value = flashState.value === 0 ? 1 : 0;
+    });
 
     const rStyle = useAnimatedStyle(() => {
         const backgroundColor = interpolateColor(

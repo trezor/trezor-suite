@@ -1,23 +1,20 @@
 import { type JSX } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
-import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
+import { getNetwork } from '@suite-common/wallet-config';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
-import { Dropdown, type DropdownMenuItemProps, type IconName } from '@trezor/components';
-import { breakpoints } from '@trezor/theme';
+import { Dropdown, type DropdownMenuItemProps, type IconComponent } from '@trezor/components';
+import { PencilLineIcon, WalletConnectIcon } from '@trezor/icons';
 
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useConditionalRender } from 'src/support/suite/ConditionalRender';
+import { useSelector } from 'src/hooks/suite';
 
 import { useGoToWithAnalytics } from './useGoToWithAnalytics';
 
 type ActionItem = {
     id: string;
-    icon?: IconName;
+    icon?: IconComponent;
     callback: () => void;
     title: JSX.Element;
     'data-testid'?: string;
@@ -26,23 +23,11 @@ type ActionItem = {
 
 type HeaderDropdownProps = {
     isDisabled?: boolean;
-    isTradingDisabled?: boolean;
     showSignAndVerify?: boolean;
 };
-export const HeaderDropdown = ({
-    isDisabled,
-    isTradingDisabled,
-    showSignAndVerify,
-}: HeaderDropdownProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const dispatch = useDispatch();
+export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdownProps) => {
     const goToWithAnalytics = useGoToWithAnalytics();
     const account = useSelector(selectSelectedAccount);
-
-    const isBuyVisible = useConditionalRender({
-        container: 'content',
-        minWidth: breakpoints.laptop,
-    });
 
     const additionalActions: ActionItem[] = [
         ...(showSignAndVerify
@@ -56,37 +41,23 @@ export const HeaderDropdown = ({
                           });
                       },
                       title: <Translation id="TR_NAV_SIGN_AND_VERIFY" />,
-                      icon: 'pencilLine' as const,
+                      icon: PencilLineIcon,
                       isHidden: account ? !hasNetworkFeatures(account, 'sign-verify') : false,
                   },
               ]
             : []),
         {
-            id: 'wallet-trading-buy',
+            id: 'settings-connected-apps',
             callback: () => {
-                if (account) {
-                    dispatch(
-                        tradingActions.setTradingFromPrefilledAccount(
-                            getTradingPrefilledFromAccountData(account),
-                        ),
-                    );
-                }
-
-                goToWithAnalytics({ routeName: 'wallet-trading-buy' });
-
-                analytics.report({
-                    type: events.tradeNavigateEvent.name,
-                    payload: {
-                        action: 'navigate',
-                        type: 'buy/sell',
-                        from: account ? 'account/header' : 'dashboard/header',
-                        networkSymbol: account?.symbol,
-                    },
+                goToWithAnalytics({
+                    routeName: 'settings-connected-apps',
+                    preserveParams: true,
                 });
             },
-            title: <Translation id="TR_TRADING_BUY_AND_SELL" />,
-            icon: 'currencyCircleDollar',
-            isHidden: isBuyVisible || isTradingDisabled,
+            title: <Translation id="TR_WALLETCONNECT" />,
+            icon: WalletConnectIcon,
+            // caipId marks networks with a WalletConnect adapter (see suite-common/walletconnect)
+            isHidden: account ? !getNetwork(account.symbol).caipId : true,
         },
     ];
 

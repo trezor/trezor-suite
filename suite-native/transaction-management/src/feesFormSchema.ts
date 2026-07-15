@@ -21,7 +21,7 @@ const FeeLevelLabels: Array<FeeLevelLabel> = ['economy', 'low', 'normal', 'high'
 const validateFeeDecimalLength = (value: string | undefined, context: Partial<FeesFormContext>) => {
     if (!value) return true;
 
-    const { networkFeeInfo, symbol } = context!;
+    const { networkFeeInfo, symbol } = context;
 
     if (!symbol) return false;
 

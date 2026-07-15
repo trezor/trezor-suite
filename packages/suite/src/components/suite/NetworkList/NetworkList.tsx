@@ -10,7 +10,6 @@ import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-uti
 import { versionUtils } from '@trezor/utils';
 
 import { useDiscovery, useSelector } from 'src/hooks/suite';
-import { getCoinLabel } from 'src/utils/suite/getCoinLabel';
 
 import { NetworkCard } from './NetworkCard';
 import { getBackendStatus } from './getBackendStatus';
@@ -59,7 +58,7 @@ export const NetworkList = ({
     return (
         <Column gap={12} width="100%">
             {networks.map(network => {
-                const { symbol, name, support, features, testnet: isTestnet } = network;
+                const { symbol, name, support } = network;
                 const blockchainInfo = blockchain[symbol];
                 const hasCustomBackend = !!blockchainInfo.backends.selected;
                 const backendStatus = getBackendStatus(blockchainInfo);
@@ -84,8 +83,6 @@ export const NetworkList = ({
                     getCoinUnavailabilityMessage(unavailableReason);
                 const tooltipString = discoveryTooltip || lockedTooltip || unavailabilityTooltip;
 
-                const label = getCoinLabel(features, isTestnet);
-
                 return (
                     <Tooltip
                         key={symbol}
@@ -105,7 +102,6 @@ export const NetworkList = ({
                         <NetworkCard
                             symbol={symbol}
                             name={name}
-                            label={label}
                             backendStatus={hasCustomBackend ? backendStatus : undefined}
                             isDisabled={isDisabled}
                             isEnabled={isEnabled}

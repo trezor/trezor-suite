@@ -5,7 +5,7 @@ import {
     type TradingCountrySubdivisionOption,
     useCountrySubdivisionFilteredData,
 } from '@suite-common/trading';
-import { Divider } from '@suite-native/atoms';
+import { type BottomSheetFlashListHandleProps, Divider } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     BottomSheetSectionList,
@@ -15,7 +15,7 @@ import {
 
 import { CountrySubdivisionListItem } from './CountrySubdivisionListItem';
 
-export type CountrySubdivisionSheetProps = {
+type CountrySubdivisionSheetProps = {
     countryCode: string | undefined;
     isVisible: boolean;
     onClose: () => void;
@@ -44,9 +44,9 @@ export const CountrySubdivisionSheet = memo(
         const bottomSheetTestId = `${testID}/bottom-sheet`;
 
         const renderHandle = useCallback(
-            () => (
+            ({ closeSheet }: BottomSheetFlashListHandleProps) => (
                 <SearchableSheetHeader
-                    onClose={onClose}
+                    onClose={closeSheet}
                     title={<Translation id="tradingResidence.countrySubdivisionSheet.title" />}
                     onFilterChange={setFilterValue}
                     searchInputTestId={searchInputTestId}
@@ -55,14 +55,8 @@ export const CountrySubdivisionSheet = memo(
                     )}
                 />
             ),
-            [onClose, setFilterValue, translate, searchInputTestId],
+            [setFilterValue, translate, searchInputTestId],
         );
-
-        const onSubdivisionSelectCallback = (subdivision: TradingCountrySubdivisionOption) => {
-            Keyboard.dismiss();
-            onSubdivisionSelect(subdivision);
-            onClose();
-        };
 
         const listData = useMemo(
             () => [
@@ -75,8 +69,6 @@ export const CountrySubdivisionSheet = memo(
             ],
             [filteredData],
         );
-
-        const flashListKey = 'country_subdivisions_list-' + filterValue;
 
         return (
             <BottomSheetSectionList<TradingCountrySubdivisionOption>
@@ -93,15 +85,20 @@ export const CountrySubdivisionSheet = memo(
                     />
                 }
                 handleComponent={renderHandle}
-                renderItem={item => (
+                renderItem={(item, _config, { closeSheet }) => (
                     <CountrySubdivisionListItem
                         {...item}
-                        onPress={() => onSubdivisionSelectCallback(item)}
+                        onPress={() => {
+                            Keyboard.dismiss();
+                            onSubdivisionSelect(item);
+                            closeSheet();
+                        }}
                     />
                 )}
                 data={listData}
                 keyExtractor={keyExtractor}
-                flashListKey={flashListKey}
+                // reset scroll position when filterValue changes
+                scrollResetKey={filterValue}
                 extraData={selectedSubdivisionId}
                 testID={bottomSheetTestId}
                 noSingletonSectionHeader

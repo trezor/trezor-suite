@@ -1,0 +1,47 @@
+import { createThunk } from '@suite-common/redux-utils';
+import { type Account } from '@suite-common/wallet-types';
+
+import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
+import { invityAPI } from '../../invityAPI';
+import { tradingExchangeActions } from '../../reducers/exchangeReducer';
+import { selectTradingExchangeSelectedQuote } from '../../selectors/tradingSelectors';
+
+export type WatchExchangeApprovalThunkProps = {
+    account: Account;
+    refreshCount: number;
+};
+
+// Read-only watch poll: saves the quote only when the backend advances its status.
+export const watchExchangeApprovalThunk = createThunk(
+    `${TRADING_EXCHANGE_THUNK_PREFIX}/watchExchangeApproval`,
+    async ({ account, refreshCount }: WatchExchangeApprovalThunkProps, { dispatch, getState }) => {
+        const selectedQuote = selectTradingExchangeSelectedQuote(getState());
+
+        if (!selectedQuote) {
+            return undefined;
+        }
+
+        invityAPI.createInvityAPIKey(account.descriptor);
+
+        const response = await invityAPI.watchTrade<'exchange'>(
+            selectedQuote,
+            'exchange',
+            refreshCount,
+        );
+
+        if (!response.status || response.status === selectedQuote.status) {
+            return undefined;
+        }
+
+        const updatedQuote = {
+            ...selectedQuote,
+            status: response.status,
+            error: response.error,
+            approvalType: undefined,
+        };
+
+        dispatch(tradingExchangeActions.saveSelectedQuote(updatedQuote));
+
+        return updatedQuote;
+    },
+);

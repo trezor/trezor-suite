@@ -1,12 +1,16 @@
 import { Platform } from 'react-native';
 import { FadeIn, FadeInDown, FadeOutUp, StretchInY, StretchOutY } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
+import { selectTradingBuyIsLoading } from '@suite-common/trading';
 import { AnimatedBox, Card } from '@suite-native/atoms';
 import { useBottomSheetControls } from '@suite-native/trading-atoms';
 import { CountrySubdivisionPickerControlsContext } from '@suite-native/trading-residence';
+import { selectBuyBestQuotesForAvailablePaymentMethods } from '@suite-native/trading-state';
 
 import { BuyPaymentMethodPicker } from './BuyPaymentMethodPicker';
 import { BuyProviderPicker } from './BuyProviderPicker';
+import { BuyReceiveAccountPicker } from './BuyReceiveAccountPicker';
 import { TradingCountrySubdivisionPickerButton } from '../general/TradingCountrySubdivisionPickerButton';
 import { TradingLocationPickers } from '../general/TradingLocationPickers';
 
@@ -41,12 +45,17 @@ export const BuyPaymentCard = ({
     const enteringAnimation = getEnteringAnimation(isFormMountedRecently, shouldAnimateEntering);
     const exitingAnimation = getExitingAnimation();
 
+    const quotes = useSelector(selectBuyBestQuotesForAvailablePaymentMethods);
+    const isLoading = useSelector(selectTradingBuyIsLoading);
+    const noCountryBottomBorder = quotes.length === 0 && !isLoading;
+
     return (
         <CountrySubdivisionPickerControlsContext value={subdivisionPickerControls}>
             <AnimatedBox entering={enteringAnimation} exiting={exitingAnimation}>
                 <Card noPadding>
+                    <BuyReceiveAccountPicker />
+                    <TradingLocationPickers context="buy" noBottomBorder={noCountryBottomBorder} />
                     <BuyPaymentMethodPicker />
-                    <TradingLocationPickers context="buy" />
                     <BuyProviderPicker />
                 </Card>
             </AnimatedBox>

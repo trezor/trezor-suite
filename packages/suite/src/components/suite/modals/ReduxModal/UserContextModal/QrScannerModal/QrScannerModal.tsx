@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { Translation } from '@suite/intl';
 import { type UserContextPayload } from '@suite-common/suite-types';
 import { Column, Modal, type ModalProps, Row, SubTabs } from '@trezor/components';
+import { CameraIcon, ImageIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { CameraQRReader } from './CameraQRReader';
@@ -31,14 +32,14 @@ export const QrScannerModal = ({ decision, onCancel }: QrScannerModalProps) => {
                     <SubTabs activeItemId={activeTab} size="small">
                         <SubTabs.Item
                             id="camera"
-                            iconName="camera"
+                            icon={CameraIcon}
                             onClick={() => setActiveTab('camera')}
                         >
                             <Translation id="TR_QR_TAB_CAMERA" />
                         </SubTabs.Item>
                         <SubTabs.Item
                             id="image"
-                            iconName="image"
+                            icon={ImageIcon}
                             onClick={() => setActiveTab('image')}
                         >
                             <Translation id="TR_QR_TAB_IMAGE" />

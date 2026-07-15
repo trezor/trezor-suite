@@ -1,7 +1,7 @@
 import { Locator, Page, test } from '@playwright/test';
 
 import type { LabelingSelectValue } from '@suite/labeling';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
@@ -96,6 +96,7 @@ export class SettingsPage {
     readonly settingsLoader: Locator;
     readonly experimentalFeaturesSwitch: Locator;
     readonly resetAppButton: Locator;
+    readonly autoEjectWalletSwitch: Locator;
 
     constructor(
         private readonly page: Page,
@@ -148,6 +149,7 @@ export class SettingsPage {
             '@settings/experimental-features/toggle-switch',
         );
         this.resetAppButton = this.page.getByTestId('@settings/reset-app-button');
+        this.autoEjectWalletSwitch = this.page.getByTestId('@settings/auto-eject-switch');
     }
 
     @step()
@@ -250,10 +252,7 @@ export class SettingsPage {
     @step()
     async toggleTestnetNetworks() {
         await this.navigateTo('application');
-        await this.experimentalFeaturesSwitch.click();
-        await this.page
-            .getByTestId('@settings/experimental-features/testnet-networks-checkbox')
-            .click();
+        await this.page.getByTestId('@settings/testnet-networks-switch').click();
     }
 
     @step()
@@ -270,6 +269,21 @@ export class SettingsPage {
             await this.coinsTab.disableNetwork(network);
         }
 
+        await this.coinsTab.activateCoinsButton.click();
+        await this.page.discoveryShouldFinish();
+    }
+
+    @step()
+    async enableNetworkWithCustomBackend(
+        symbol: NetworkSymbol,
+        backendType: BackendType,
+        backendUrl: string,
+    ) {
+        await this.navigateTo('coins');
+        await this.coinsTab.enableNetwork(symbol);
+        await this.coinsTab.openNetworkAdvanceSettings(symbol);
+        await this.coinsTab.changeBackend(backendType, backendUrl);
+        await expect(this.coinsTab.modal).toBeHidden();
         await this.coinsTab.activateCoinsButton.click();
         await this.page.discoveryShouldFinish();
     }

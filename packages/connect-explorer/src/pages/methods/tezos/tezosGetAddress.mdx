@@ -67,23 +67,6 @@ TrezorConnect.tezosGetAddress({
 });
 ```
 
-Validate address using custom UI inside of your application:
-
-```javascript
-import TrezorConnect, { UI } from '@trezor/connect';
-
-TrezorConnect.on(UI.ADDRESS_VALIDATION, data => {
-    console.log('Handle button request', data.address, data.serializedPath);
-    // here you can display custom UI inside of your app
-});
-
-const result = await TrezorConnect.tezosGetAddress({
-    path: "m/44'/1729'/0'",
-    address: 'tz1Kef7BSg6fo75jk37WkKRYSnJDs69KVqt9',
-});
-// dont forget to hide your custom UI after you get the result!
-```
-
 ### Result
 
 [Address type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/params.ts)

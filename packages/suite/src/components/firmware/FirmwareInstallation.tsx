@@ -4,6 +4,7 @@ import { Banner, Card, Column } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- TODO: expose the browser-specific TrezorConnect type via the @trezor/connect barrel and remove this exception (see #27376)
 import type TrezorConnectBrowser from '@trezor/connect/src/index.browser';
+import { BluetoothIcon, TrezorDevicesFilledIcon } from '@trezor/icons';
 
 import { FirmwareOffer } from 'src/components/firmware/FirmwareOffer';
 import { ReconnectDevicePrompt } from 'src/components/firmware/ReconnectDevicePrompt';
@@ -51,7 +52,7 @@ export const FirmwareInstallation = ({
                 {isDeviceNotSelected && (
                     <Banner
                         intent="info"
-                        icon="trezorDevicesFilled"
+                        icon={TrezorDevicesFilledIcon}
                         rightContent={
                             <Banner.Button
                                 onClick={() => {
@@ -69,7 +70,7 @@ export const FirmwareInstallation = ({
                 {displayIsSlow && (
                     <Banner
                         intent="info"
-                        icon="bluetooth"
+                        icon={BluetoothIcon}
                         description={<Translation id="TR_INSTALLATION_FW_SLOW_TIP_BANNER" />}
                     />
                 )}

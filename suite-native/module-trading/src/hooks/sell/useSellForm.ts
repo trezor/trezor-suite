@@ -14,6 +14,7 @@ import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-commo
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
+import { truncateDecimals } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '@suite-native/trading-consts';
@@ -25,7 +26,6 @@ import {
 } from '@suite-native/trading-state';
 import { type SellFormType, type SellFormValues } from '@suite-native/trading-types';
 
-import { truncateDecimals } from '../../utils/general/amountUtils';
 import { sellFormValidationSchema } from '../../utils/sell/sellFormValidationSchema';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
 import { useCountryChangeEffect } from '../general/form/useCountryChangeEffect';
@@ -70,7 +70,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
                                     parameter: 'cryptoFrom',
                                 },
                             });
-                            prevCryptoId.current = sendAsset?.cryptoId as CryptoId | undefined;
+                            prevCryptoId.current = sendAsset?.cryptoId;
                             setValue('cryptoStringAmount', undefined, { shouldValidate: true });
                             dispatch(sellActions.sendAssetChanged());
                         }

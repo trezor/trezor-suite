@@ -33,12 +33,30 @@ export const SolanaGetPublicKey = Type.Object(
     { $id: 'SolanaGetPublicKey' },
 );
 
+export type SolanaMessageSignature = Static<typeof SolanaMessageSignature>;
+export const SolanaMessageSignature = Type.Object(
+    {
+        signature: Type.String(),
+    },
+    { $id: 'SolanaMessageSignature' },
+);
+
 export type SolanaPublicKey = Static<typeof SolanaPublicKey>;
 export const SolanaPublicKey = Type.Object(
     {
         public_key: Type.String(),
     },
     { $id: 'SolanaPublicKey' },
+);
+
+export type SolanaSignMessage = Static<typeof SolanaSignMessage>;
+export const SolanaSignMessage = Type.Object(
+    {
+        address_n: Type.Array(Type.Number()),
+        message: Type.String(),
+        chunkify: Type.Optional(Type.Boolean()),
+    },
+    { $id: 'SolanaSignMessage' },
 );
 
 export type SolanaTxTokenAccountInfo = Static<typeof SolanaTxTokenAccountInfo>;
@@ -68,6 +86,7 @@ export const SolanaSignTx = Type.Object(
         serialized_tx: Type.String(),
         additional_info: Type.Optional(SolanaTxAdditionalInfo),
         payment_req: Type.Optional(PaymentRequest),
+        chunkify: Type.Optional(Type.Boolean()),
     },
     { $id: 'SolanaSignTx' },
 );
@@ -78,4 +97,13 @@ export const SolanaTxSignature = Type.Object(
         signature: Type.String(),
     },
     { $id: 'SolanaTxSignature' },
+);
+
+export type SolanaVerifyMessage = Static<typeof SolanaVerifyMessage>;
+export const SolanaVerifyMessage = Type.Object(
+    {
+        envelope: Type.String(),
+        chunkify: Type.Optional(Type.Boolean()),
+    },
+    { $id: 'SolanaVerifyMessage' },
 );

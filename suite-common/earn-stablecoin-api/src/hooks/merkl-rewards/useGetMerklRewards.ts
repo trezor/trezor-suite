@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 
-import { type MerklUsersRewardsRequestBodyItem } from '@suite-common/earn-stablecoin-defs';
+import { type MerklUsersRewardsRequestBody } from '@suite-common/earn-stablecoin-defs';
 import { commonQueryKeys, useQuery, useQueryClient } from '@suite-common/react-query';
 import { useFreshRef } from '@trezor/react-utils';
-import { delay } from '@trezor/utils';
+import { resolveAfter } from '@trezor/utils';
 
 import { queriesStaleTime } from '../../config';
 import { getMerklUsersRewards } from '../../services';
@@ -51,7 +51,7 @@ export function useGetMerklRewards<Address extends string>(
                             address: entry.address,
                             chainId: entry.chainId,
                             reloadChainId: entry.chainId,
-                        }) satisfies MerklUsersRewardsRequestBodyItem,
+                        }) satisfies MerklUsersRewardsRequestBody[number],
                 ),
             });
 
@@ -59,7 +59,7 @@ export function useGetMerklRewards<Address extends string>(
                 break;
             }
 
-            await delay(2000);
+            await resolveAfter(2000);
             attempts--;
         }
 
@@ -70,7 +70,12 @@ export function useGetMerklRewards<Address extends string>(
     }, [queryClient, queryEntriesRef, chainsRewardsRef]);
 
     return {
-        ...queryResult,
+        data: queryResult.data,
+        error: queryResult.error,
+        isError: queryResult.isError,
+        isLoading: queryResult.isLoading,
+        isSuccess: queryResult.isSuccess,
+        refetch: queryResult.refetch,
         waitForMerklToResolveClaim,
     };
 }

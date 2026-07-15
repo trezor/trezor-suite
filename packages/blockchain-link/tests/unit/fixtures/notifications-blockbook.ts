@@ -31,6 +31,7 @@ const notifyBlocks = [
         result: {
             blockHash: 'abcd',
             blockHeight: 1,
+            evmData: null,
         },
     },
     {
@@ -51,6 +52,7 @@ const notifyBlocks = [
         result: {
             blockHash: 'efgh',
             blockHeight: 2,
+            evmData: null,
         },
     },
     {
@@ -86,6 +88,7 @@ const notifyBlocks = [
         result: {
             blockHash: 'efgh05',
             blockHeight: 5,
+            evmData: null,
         },
     },
     {
@@ -118,6 +121,7 @@ const notifyBlocks = [
         result: {
             blockHash: 'abcd',
             blockHeight: 1,
+            evmData: null,
         },
     },
 ] as const;

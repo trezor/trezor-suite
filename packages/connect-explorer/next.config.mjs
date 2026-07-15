@@ -57,12 +57,6 @@ export default withNextra({
                     /@trezor\/connect-web$/,
                     '@trezor/connect-webextension/src/proxy',
                 ),
-                // Replace the full icons bundle with a minimal version containing only used icons
-                // This prevents bundling 2,677 unused SVG files (11MB) into build
-                new webpack.NormalModuleReplacementPlugin(
-                    /@suite-common\/icons\/src\/icons$/,
-                    path.resolve('./src/icons/minimalIcons.ts'),
-                ),
             );
         }
         config.resolve.alias = {

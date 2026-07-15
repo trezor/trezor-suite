@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgArrowsInLineHorizontal = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M17 5v22a1 1 0 0 1-2 0V5a1 1 0 0 1 2 0m-8.293 6.293a1 1 0 0 0-1.415 1.415L9.587 15H2a1 1 0 0 0 0 2h7.586l-2.293 2.293a1 1 0 1 0 1.414 1.415l4-4a1 1 0 0 0 0-1.415zM30 15h-7.586l2.293-2.293a1 1 0 0 0-1.415-1.415l-4 4a1 1 0 0 0 0 1.415l4 4a1 1 0 0 0 1.415-1.415L22.415 17H30a1 1 0 0 0 0-2"
+        />
+    </svg>
+);
+export { SvgArrowsInLineHorizontal as ReactComponent };

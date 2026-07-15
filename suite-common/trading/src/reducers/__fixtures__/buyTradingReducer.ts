@@ -134,6 +134,7 @@ export const buyTradingFixtures = [
         initialState: {
             ...buyInitialState,
             quotes: buyQuotes,
+            selectedQuote: mercuryoBuyQuote,
         },
         actions: [
             {

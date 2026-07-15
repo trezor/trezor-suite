@@ -8,6 +8,7 @@ import {
     Paragraph,
     Text,
 } from '@trezor/components';
+import { CircleFilledIcon } from '@trezor/icons';
 import { borders } from '@trezor/theme';
 
 const Code = styled.span`
@@ -51,7 +52,7 @@ export const Markdown = ({ children: childrenMarkdown }: MarkdownProps) => (
                 </Paragraph>
             ),
             ul: ({ children }) => (
-                <List gap={0} bulletComponent={<Icon name="circleFilled" size={8} />}>
+                <List gap={0} bulletComponent={<Icon as={CircleFilledIcon} size={8} />}>
                     {children}
                 </List>
             ),

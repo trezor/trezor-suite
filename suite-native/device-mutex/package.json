@@ -7,8 +7,7 @@
     "sideEffects": false,
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "expo-keep-awake": "~55.0.4",
-        "uuid": "^13.0.0"
+        "expo-keep-awake": "~56.0.3"
     },
     "scripts": {
         "depcheck": "yarn g:depcheck",

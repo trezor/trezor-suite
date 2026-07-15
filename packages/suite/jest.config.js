@@ -41,10 +41,10 @@ module.exports = {
     setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
     moduleNameMapper: {
         '^@suite-common/(.+)': '<rootDir>/../../suite-common/$1',
-        '^@trezor/(?!coins-)(.+)': '<rootDir>/../$1',
+        '^@trezor/(?!network-)(.+)': '<rootDir>/../$1',
         '^src/(.+)': '<rootDir>/src/$1',
         '\\.(mp4)$': '<rootDir>/__mocks__/import-mp4.js',
-        '\\.(svg)$': '<rootDir>/__mocks__/import-svg.js',
+        '\\.(svg|webp)$': '<rootDir>/__mocks__/import-svg.js',
         ...baseConfig.moduleNameMapper,
     },
     moduleFileExtensions: ['js', 'ts', 'tsx'],

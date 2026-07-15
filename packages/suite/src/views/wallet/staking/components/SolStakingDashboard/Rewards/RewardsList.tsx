@@ -3,23 +3,15 @@ import React, { useRef } from 'react';
 import { Translation } from '@suite/intl';
 import { type SolanaRewardsHistory } from '@suite-common/earn-staking-api/src/staking';
 import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
-import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
-import {
-    Card,
-    Column,
-    Grid,
-    IconCircle,
-    Row,
-    SkeletonStack,
-    Text,
-    Tooltip,
-} from '@trezor/components';
+import { Card, Column, Grid, IconCircle, Row, Text } from '@trezor/components';
+import { PiggyBankIcon } from '@trezor/icons';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { BaseCurrencyValue, FormattedCryptoAmount, FormattedDate } from 'src/components/suite';
 import { Pagination } from 'src/components/wallet';
 import { TransactionTargetLayout } from 'src/components/wallet/TransactionItem/TransactionTargetLayout';
 import { type UsePagination } from 'src/hooks/general/usePagination';
+import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { type Account } from 'src/types/wallet';
 import SkeletonTransactionItem from 'src/views/wallet/transactions/TransactionList/SkeletonTransactionItem';
 
@@ -35,6 +27,7 @@ interface RewardsListProps {
 
 export const RewardsList = ({ account, rewardsQueryResult, pagination }: RewardsListProps) => {
     const sectionRef = useRef<HTMLDivElement>(null);
+    const { isBelowTablet } = useLayoutSize();
     const isSolanaMainnet = !isTestnet(account.symbol);
 
     const onPageSelected = (page: number) => {
@@ -64,11 +57,11 @@ export const RewardsList = ({ account, rewardsQueryResult, pagination }: Rewards
         >
             <Column gap={32}>
                 {rewardsQueryResult.isLoading || rewardsQueryResult.data === undefined ? (
-                    <SkeletonStack $col $childMargin="0px 0px 16px 0px">
+                    <Column gap={16}>
                         <SkeletonTransactionItem />
                         <SkeletonTransactionItem />
                         <SkeletonTransactionItem />
-                    </SkeletonStack>
+                    </Column>
                 ) : (
                     <Column gap={40}>
                         {rewardsQueryResult.data.rewards.map(reward => (
@@ -86,40 +79,36 @@ export const RewardsList = ({ account, rewardsQueryResult, pagination }: Rewards
                                         year="numeric"
                                     />
                                 </Text>
+
                                 <Card paddingType="none">
                                     <Row gap={32} padding={{ vertical: 16, horizontal: 24 }}>
-                                        <IconCircle name="piggyBank" intent="neutral" size={40} />
+                                        <IconCircle
+                                            icon={PiggyBankIcon}
+                                            intent="neutral"
+                                            size={40}
+                                        />
                                         <Column flex="1" gap={4}>
                                             <Text typographyStyle="body-md">
                                                 <Translation id="TR_REWARD" />
                                             </Text>
                                             <Grid
-                                                columns="1fr max-content minmax(110px, max-content)"
+                                                columns={
+                                                    isBelowTablet
+                                                        ? '1fr max-content'
+                                                        : '1fr max-content minmax(110px, max-content)'
+                                                }
                                                 rowGap={6}
                                                 columnGap={24}
                                                 flex="1"
                                             >
                                                 <TransactionTargetLayout
                                                     addressLabel={
-                                                        <Tooltip
-                                                            maxWidth={250}
-                                                            content={
-                                                                <Translation
-                                                                    id="TR_STAKE_REWARDS_TOOLTIP"
-                                                                    values={{
-                                                                        count: SOLANA_EPOCH_DAYS,
-                                                                    }}
-                                                                />
-                                                            }
-                                                            hasIcon
-                                                        >
-                                                            <span data-testid={`${TEST_ID}/epoch`}>
-                                                                <Translation
-                                                                    id="TR_STAKE_REWARDS_BADGE"
-                                                                    values={{ count: reward.epoch }}
-                                                                />
-                                                            </span>
-                                                        </Tooltip>
+                                                        <span data-testid={`${TEST_ID}/epoch`}>
+                                                            <Translation
+                                                                id="TR_STAKE_REWARDS_BADGE"
+                                                                values={{ count: reward.epoch }}
+                                                            />
+                                                        </span>
                                                     }
                                                     amount={
                                                         reward?.amount && (

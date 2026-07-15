@@ -13,6 +13,7 @@ const legacyResults = {
 
 export default {
     method: 'cardanoGetAddress',
+    enabledCoins: ['ada'] as const,
     setup: {
         mnemonic: 'mnemonic_all',
     },

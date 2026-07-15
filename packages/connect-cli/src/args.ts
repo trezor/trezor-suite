@@ -36,6 +36,8 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --method=get-features
                                                 --method=apply-settings
                                                 --method=authenticate-device
+                                                --method=nostr-get-public-key
+                                                --method=nostr-sign-event
     --params=<json>                           Extra params passed to the method (JSON object)
                                                 --params='{"use_passphrase": true}'
 `;

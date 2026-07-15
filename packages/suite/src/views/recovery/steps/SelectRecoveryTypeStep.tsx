@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { type RecoveryType, recoveryTypes } from '@suite/recovery';
 import { Card, Column, Grid, H4, Icon, Paragraph, RadioCard, Row } from '@trezor/components';
+import { RecoverySeedFilledIcon, TrezorModelOneFilledIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 type SelectRecoveryTypeStepProps = {
@@ -21,16 +22,16 @@ export const SelectRecoveryTypeStep = ({
                 {recoveryTypes.map(type => (
                     <RadioCard
                         key={type}
-                        isActive={recoveryType === type}
+                        isSelected={recoveryType === type}
                         onClick={() => setRecoveryType(type)}
                         dataTestId={`@recovery/select-type/${type}`}
                     >
                         <Row gap={spacings.md} padding={{ left: spacings.xxs }}>
                             <Icon
-                                name={
+                                as={
                                     type === 'standard'
-                                        ? 'recoverySeedFilled'
-                                        : 'trezorModelOneFilled'
+                                        ? RecoverySeedFilledIcon
+                                        : TrezorModelOneFilledIcon
                                 }
                                 size={32}
                                 intent="neutral"

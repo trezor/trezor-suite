@@ -89,12 +89,12 @@ const markAddressUnverified = (draft: ReceiveAccountState, path: string, address
     draft.currentFreshAddress = undefined;
 };
 
-export const receiveSlice = createSlice({
+const receiveSlice = createSlice({
     name: 'receive',
     initialState: receiveInitialState,
     reducers: {
         showAddress: {
-            reducer: (state, action: PayloadAction<ReceiveActionPayload>) => {
+            reducer: (state: ReceiveState, action: PayloadAction<ReceiveActionPayload>) => {
                 const accountState = getReceiveAccountState(state, action.payload.accountKey);
 
                 markAddressVerified(accountState, action.payload.path, action.payload.address);
@@ -104,7 +104,7 @@ export const receiveSlice = createSlice({
             }),
         },
         showUnverifiedAddress: {
-            reducer: (state, action: PayloadAction<ReceiveActionPayload>) => {
+            reducer: (state: ReceiveState, action: PayloadAction<ReceiveActionPayload>) => {
                 const accountState = getReceiveAccountState(state, action.payload.accountKey);
 
                 markAddressUnverified(accountState, action.payload.path, action.payload.address);
@@ -113,7 +113,10 @@ export const receiveSlice = createSlice({
                 payload: { accountKey, path, address },
             }),
         },
-        setCurrentFreshAddress: (state, action: PayloadAction<SetCurrentFreshAddressPayload>) => {
+        setCurrentFreshAddress: (
+            state: ReceiveState,
+            action: PayloadAction<SetCurrentFreshAddressPayload>,
+        ) => {
             const accountState = getReceiveAccountState(state, action.payload.accountKey);
 
             accountState.currentFreshAddress = action.payload.currentFreshAddress;

@@ -13,17 +13,19 @@ export const settingsChangeCoinEnabledEvent: EventDef<
     EventType.SettingsChangeCoinEnabled
 > = {
     name: EventType.SettingsChangeCoinEnabled,
-    descriptionTrigger: 'On changing whether network is enabled or not',
+    descriptionTrigger: 'User enables or disables a cryptocurrency network in mobile app settings',
     changelog: [{ version: '24.9.1', notes: 'added' }],
 
     attributes: {
         symbol: {
             changelog: [{ version: '24.9.1', notes: 'added' }],
-            description: 'The network symbol of the coin',
+            description:
+                'The network symbol of the cryptocurrency being enabled or disabled (e.g., `btc`, `eth`, `ada`)',
         },
         value: {
             changelog: [{ version: '24.9.1', notes: 'added' }],
-            description: 'Whether the coin is enabled',
+            description:
+                '`true` if the cryptocurrency network is enabled (visible in app), `false` if disabled (hidden from app)',
         },
     },
 };

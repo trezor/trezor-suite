@@ -6,7 +6,9 @@ import {
 } from './config';
 import { createAction, currentsRequest, getActions } from '../currentsApi/api';
 import type { Action, TestExplorerItem, TestsExplorerResponse } from '../currentsApi/types';
-import { debug } from '../logger';
+import { createLogger } from '../logger';
+
+const logger = createLogger('quarantine-api');
 
 export async function getAutoQuarantineActions(projectId: string): Promise<Action[]> {
     const actions = await getActions(projectId, 'active');
@@ -108,7 +110,7 @@ export async function findSignaturesForTitleKeys(
             `limit=${limit}`,
         ].join('&');
 
-        debug(
+        logger.trace(
             `  findSignaturesForTitleKeys: fetching page ${page}`,
             `(found ${found.size}/${titleKeys.size} so far)`,
         );
@@ -124,7 +126,7 @@ export async function findSignaturesForTitleKeys(
                 found.set(key, item.signature);
             }
         }
-        debug(
+        logger.trace(
             `  page ${page}: ${response.data.list.length} item(s),`,
             `resolved ${found.size - beforeSize} new signature(s)`,
         );

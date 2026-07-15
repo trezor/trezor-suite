@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { isErc4626, isTestnet } from '@suite-common/wallet-utils';
+import { isErc4626, isTestnet, sortTokensByName } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import {
@@ -42,16 +42,17 @@ export const CoinsTable = ({ selectedAccount, searchQuery }: CoinsTableProps) =>
         return tokensWithRates.sort(sortTokensWithRates);
     }, [account.tokens, account.symbol, baseCurrencyCode, fiatRates]);
 
-    const tokens = useMemo(
-        () =>
-            getTokens({
-                tokens: enhancedTokens,
-                symbol: account.symbol,
-                tokenDefinitions: coinDefinitions,
-                searchQuery,
-            }),
-        [enhancedTokens, account.symbol, coinDefinitions, searchQuery],
-    );
+    const tokens = useMemo(() => {
+        const groupedTokens = getTokens({
+            tokens: enhancedTokens,
+            symbol: account.symbol,
+            tokenDefinitions: coinDefinitions,
+            searchQuery,
+        });
+        groupedTokens.shownWithoutBalance.sort(sortTokensByName);
+
+        return groupedTokens;
+    }, [enhancedTokens, account.symbol, coinDefinitions, searchQuery]);
 
     const hiddenTokensCount =
         tokens.unverifiedWithBalance.length +

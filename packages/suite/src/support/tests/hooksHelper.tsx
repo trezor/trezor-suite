@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
     type RenderResult,
     act,
@@ -19,6 +20,10 @@ import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider
 import { type SuiteServices } from '../extraDependencies';
 import { ResponsiveContextProvider } from '../suite/ResponsiveContext';
 
+const testQueryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+});
+
 // used in hooks tests
 export const renderWithProviders = (
     store: any,
@@ -26,17 +31,19 @@ export const renderWithProviders = (
     children: ReactNode,
 ): RenderResult =>
     render(
-        <Provider store={store}>
-            <ServicesProvider services={services}>
-                <ConnectedThemeProvider>
-                    <ResponsiveContextProvider>
-                        <IntlProvider locale="en">
-                            <MockedFormatterProvider>{children}</MockedFormatterProvider>
-                        </IntlProvider>
-                    </ResponsiveContextProvider>
-                </ConnectedThemeProvider>
-            </ServicesProvider>
-        </Provider>,
+        <QueryClientProvider client={testQueryClient}>
+            <Provider store={store}>
+                <ServicesProvider services={services}>
+                    <ConnectedThemeProvider>
+                        <ResponsiveContextProvider>
+                            <IntlProvider locale="en">
+                                <MockedFormatterProvider>{children}</MockedFormatterProvider>
+                            </IntlProvider>
+                        </ResponsiveContextProvider>
+                    </ConnectedThemeProvider>
+                </ServicesProvider>
+            </Provider>
+        </QueryClientProvider>,
     );
 
 export const waitForLoader = (text = /Loading/i) => {

@@ -1,4 +1,5 @@
 import { goto } from '@suite/router';
+import { CheckIcon, DatabaseIcon } from '@trezor/icons';
 import { QuickActionButton } from '@trezor/product-components';
 
 import { useDispatch } from 'src/hooks/suite';
@@ -20,9 +21,9 @@ export const CustomBackend = () => {
             <QuickActionButton
                 tooltip={{ content: <NavBackends customBackends={enabledBackends} /> }}
                 onClick={handleClick}
-                iconName="database"
+                icon={DatabaseIcon}
                 subIconIntent="brand"
-                subIconName="check"
+                subIcon={CheckIcon}
             />
         )
     );

@@ -1,19 +1,18 @@
 {
     "required": false,
     "version": [2, 12, 0],
-    "min_bridge_version": [2, 0, 7],
     "min_bootloader_version": [2, 0, 0],
     "min_firmware_version": [2, 0, 8],
     "bootloader_version": [2, 1, 16],
     "firmware_revision": "4d89c11df37355bd2cb0f3b8e28cfc661b65f743",
+    "url": "firmware/t2t1/trezor-t2t1-2.12.0.bin",
+    "fingerprint": "3bef5f94d9f4bef90f3362ffff5a04026eea467f7b9798f38d87b27afd703161",
+    "changelog": "* Added UI flows for some ERC-4626 vault interactions.\n* Improved EVM address chunking.\n* Updated translations in Cardano flow.\n* Re-introduced initial blob confirmation layout for Ethereum.\n* Fixed out-of-memory failure when confirming large input data.\n* Cached confirmed EIP-712 domain.\n* Fixed Solana ALT recipient account parsing.\n* Fixed bug in Solana account type identification.",
     "translations": {
         "cs-CZ": "firmware/translations/t2t1/translation-T2T1-cs-CZ-2.12.0.bin",
         "de-DE": "firmware/translations/t2t1/translation-T2T1-de-DE-2.12.0.bin",
         "es-ES": "firmware/translations/t2t1/translation-T2T1-es-ES-2.12.0.bin",
         "fr-FR": "firmware/translations/t2t1/translation-T2T1-fr-FR-2.12.0.bin",
         "pt-BR": "firmware/translations/t2t1/translation-T2T1-pt-BR-2.12.0.bin"
-    },
-    "url": "firmware/t2t1/trezor-t2t1-2.12.0.bin",
-    "fingerprint": "3bef5f94d9f4bef90f3362ffff5a04026eea467f7b9798f38d87b27afd703161",
-    "changelog": "* Added UI flows for some ERC-4626 vault interactions.\n* Improved EVM address chunking.\n* Updated translations in Cardano flow.\n* Re-introduced initial blob confirmation layout for Ethereum.\n* Fixed out-of-memory failure when confirming large input data.\n* Cached confirmed EIP-712 domain.\n* Fixed Solana ALT recipient account parsing.\n* Fixed bug in Solana account type identification."
+    }
 }

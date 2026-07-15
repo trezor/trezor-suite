@@ -1,4 +1,5 @@
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import { type TestStore, fireEvent, screen } from '@suite-native/test-utils-store';
 import { type BuyFormType } from '@suite-native/trading-types';
 import { FirmwareType } from '@trezor/connect';
@@ -52,7 +53,11 @@ describe('BuyTradeableAssetPicker', () => {
         it('should render "Select asset" button with caret', () => {
             const { getByLabelText } = renderTradeableAssetPicker();
 
-            expect(getByLabelText('Select asset')).toHaveTextContent(/^Select asset.$/);
+            expect(
+                getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
+            ).toHaveTextContent(
+                new RegExp(`^${getTranslation('moduleTrading.selectCoin.buttonTitle')}.$`),
+            );
         });
 
         it('should render bottom sheet with all assets', () => {
@@ -72,7 +77,9 @@ describe('BuyTradeableAssetPicker', () => {
         it('should preselect BTC and do not render caret', () => {
             const { getByLabelText } = renderTradeableAssetPicker();
 
-            expect(getByLabelText('Select asset')).toHaveTextContent('BTC');
+            expect(
+                getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
+            ).toHaveTextContent('BTC');
         });
 
         it('should not render bottom sheet at all', () => {
@@ -85,10 +92,12 @@ describe('BuyTradeableAssetPicker', () => {
             const { getByLabelText } = renderTradeableAssetPicker();
 
             // no need to act as there should be no action
-            fireEvent.press(getByLabelText('Select asset'));
-            fireEvent.press(getByLabelText('You get'));
+            fireEvent.press(getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')));
+            fireEvent.press(getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')));
 
-            expect(getByLabelText('Select asset')).toHaveTextContent('BTC');
+            expect(
+                getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
+            ).toHaveTextContent('BTC');
         });
     });
 });

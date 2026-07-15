@@ -55,7 +55,7 @@ const preloadedState = preparePreloadedReduxState(
         : regtestDiscoveryFinishedStateT3W1,
 );
 
-describe('passphrase flow [@androidOnly @smoke @T3T1 @T3W1]', () => {
+describe('passphrase flow [@androidOnly @T3T1 @T3W1]', () => {
     beforeAll(async () => {
         // wallet without passphrase
         await TrezorUserEnvLink.sendToAddressAndMineBlock({

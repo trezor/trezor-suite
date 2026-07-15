@@ -249,7 +249,7 @@ export const RecoveryStep = () => {
                     </Column>
                 }
                 description={<Translation id="TR_RECOVERY_ERROR" values={{ error }} />}
-                variant="destructive"
+                intent="critical"
                 innerActions={
                     <OnboardingCard.Button
                         data-testid="@onboarding/recovery/retry-button"

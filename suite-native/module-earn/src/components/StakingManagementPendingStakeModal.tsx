@@ -1,7 +1,5 @@
-import { useEthereumValidatorsQueue } from '@suite-common/earn-staking-api';
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
-import { getDaysToAddToPool } from '@suite-common/staking';
-import { DAYS_TO_ADD_TO_POOL_DEFAULT } from '@suite-common/wallet-constants';
+import { useStakingEntryPeriodEstimateInDays } from '@suite-common/staking';
 import {
     selectAccountByKey,
     selectAccountNetworkSymbol,
@@ -9,7 +7,6 @@ import {
     useAccountsSelector,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { hasStakeInPendingDepositedState } from '@suite-common/wallet-utils';
 import {
     BottomSheetModal,
     type BottomSheetModalRef,
@@ -59,6 +56,12 @@ export const StakingManagementPendingStakeModal = ({
 }: StakingManagementPendingStakeModalProps) => {
     const { applyStyle } = useNativeStyles();
     const symbol = useAccountsSelector(state => selectAccountNetworkSymbol(state, accountKey));
+    const account = useSelector((state: NativeStakingRootState) =>
+        selectAccountByKey(state, accountKey),
+    );
+    const stakeTxs = useSelector((state: NativeStakingRootState) =>
+        selectAccountStakeTransactions(state, accountKey),
+    );
     const isStakeConfirming = useSelector((state: NativeStakingRootState) =>
         selectIsStakeConfirmingByAccountKey(state, accountKey),
     );
@@ -69,21 +72,7 @@ export const StakingManagementPendingStakeModal = ({
         useSelector((state: NativeStakingRootState) =>
             selectTotalStakePendingByAccountKey(state, accountKey),
         ) ?? '0';
-    const account = useSelector((state: NativeStakingRootState) =>
-        selectAccountByKey(state, accountKey),
-    );
-    const stakeTxs = useSelector((state: NativeStakingRootState) =>
-        selectAccountStakeTransactions(state, accountKey),
-    );
-    const lastTxBlockTime = stakeTxs[0]?.blockTime;
-    const timestamp =
-        account && hasStakeInPendingDepositedState(account) ? lastTxBlockTime : undefined;
-    const { data: validatorQueueData } = useEthereumValidatorsQueue({
-        account: account!,
-        timestamp,
-    });
-    const entryPeriodRemainingInDays =
-        getDaysToAddToPool(stakeTxs, validatorQueueData) ?? DAYS_TO_ADD_TO_POOL_DEFAULT;
+    const entryPeriodEstimateInDays = useStakingEntryPeriodEstimateInDays({ account, stakeTxs });
 
     const currentStep: StakingDetailModalStep = (() => {
         if (isStakeConfirming) return StakingDetailModalStep.TransactionConfirmed;
@@ -95,7 +84,7 @@ export const StakingManagementPendingStakeModal = ({
     const inProgressLabel = (
         <Translation
             id="earn.stakingManagementScreen.pendingItemModal.stepEntryPeriod"
-            values={{ days: entryPeriodRemainingInDays }}
+            values={{ days: entryPeriodEstimateInDays }}
         />
     );
 

@@ -6,13 +6,16 @@ import {
     type AbstractMessageChannel,
     type Message,
 } from '@trezor/connect-common/src/messageChannel/abstract';
-import type { ConnectSettings } from '@trezor/connect-common/src/types';
+import type { Manifest } from '@trezor/connect-common/src/types';
 import { type Log } from '@trezor/connect-common/src/utils/debug';
 import { getOrigin } from '@trezor/connect-common/src/utils/urlUtils';
 import type { IntervalId } from '@trezor/type-utils';
 import { type Deferred, createDeferred } from '@trezor/utils';
 
-export type Params = Pick<ConnectSettings, 'manifest' | 'popupSrc' | 'version'> & {
+export type Params = {
+    manifest: Manifest;
+    popupSrc: string;
+    version: string;
     logger: Log;
 };
 

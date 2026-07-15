@@ -3,6 +3,7 @@ import { closeModal } from '@suite/modal';
 import { networks } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, H2, Modal, Paragraph } from '@trezor/components';
+import { WarningIcon } from '@trezor/icons';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -67,7 +68,7 @@ export const ConfirmEvmExplanationModal = ({
                 </Modal.Button>
             }
             width={600}
-            iconName="warning"
+            icon={WarningIcon}
             intent="warning"
         >
             <Column gap={8}>

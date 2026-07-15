@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { BottomSheetModal, type BottomSheetModalRef, Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -15,7 +14,7 @@ import {
 } from '@suite-native/navigation';
 
 import { EarnAccountCard } from './EarnAccountCard';
-import { useStakingDetailNavigation } from '../hooks/useStakingDetailNavigation';
+import { type NavigateToStakingDetail } from '../hooks/useStakingDetailNavigation';
 import { useStakingNavigateAnalytics } from '../hooks/useStakingNavigateAnalytics';
 import { type EarnDepositsCardActiveItem } from '../types';
 
@@ -25,19 +24,18 @@ type EarnActiveItemsBottomSheetProps = {
     ref: BottomSheetModalRef;
     type: EarnDepositsCardActiveItem['type'];
     items: EarnDepositsCardActiveItem[];
+    navigateToStakingDetail: NavigateToStakingDetail;
     onClose: () => void;
-    onSolanaClaimPress?: () => void;
 };
 
 export const EarnActiveItemsBottomSheet = ({
     ref,
     type,
     items,
+    navigateToStakingDetail,
     onClose,
-    onSolanaClaimPress,
 }: EarnActiveItemsBottomSheetProps) => {
     const navigation = useNavigation<NavigationProp>();
-    const { navigateToStakingDetail } = useStakingDetailNavigation();
     const reportStakingNavigate = useStakingNavigateAnalytics();
     const store = useStore<AccountsRootState>();
 
@@ -83,22 +81,14 @@ export const EarnActiveItemsBottomSheet = ({
         (item: EarnDepositsCardActiveItem) => {
             if (item.type !== 'staking') return;
 
-            // Temporary: claiming Solana rewards is not yet available in the mobile app,
-            // so we point users to Trezor Suite desktop instead of opening the claim flow.
-            if (isSupportedSolStakingNetworkSymbol(item.symbol)) {
-                onClose();
-                onSolanaClaimPress?.();
-
-                return;
-            }
-
             onClose();
+
             navigation.navigate(RootStackRoutes.ClaimReview, {
                 accountKey: item.accountKey,
                 symbol: item.symbol,
             });
         },
-        [navigation, onClose, onSolanaClaimPress],
+        [navigation, onClose],
     );
 
     const renderItem = useCallback(

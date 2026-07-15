@@ -1,4 +1,4 @@
-import { type MethodPermission, UI_REQUEST } from '@trezor/connect-common';
+import { type PermissionRequest, UI_REQUEST } from '@trezor/connect-common';
 
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
@@ -10,7 +10,7 @@ export default class ShowDeviceTutorial extends AbstractMethod<'showDeviceTutori
         this.useDeviceState = false;
         this.allowDeviceMode = [UI_REQUEST.INITIALIZE];
     }
-    get requiredPermissions(): MethodPermission[] {
+    get requiredPermissions(): PermissionRequest[] {
         return [];
     }
 

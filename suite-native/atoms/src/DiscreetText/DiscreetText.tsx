@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { type LayoutChangeEvent } from 'react-native';
 
+import { useDiscreetMode } from '@suite-common/discreet-mode';
 import {
     mergeNativeStyleObjects,
     prepareNativeStyle,
@@ -11,7 +12,6 @@ import { nativeTypography } from '@trezor/theme';
 import { Box } from '../Box';
 import { Text, type TextProps } from '../Text';
 import { DiscreetCanvas } from './DiscreetCanvas';
-import { useDiscreetMode } from './useDiscreetMode';
 
 export type DiscreetTextProps = TextProps & {
     children?: string | null;

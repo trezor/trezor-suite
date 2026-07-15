@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { DISCREET_PLACEHOLDER, useShouldRedactNumbers } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { DISCREET_PLACEHOLDER, useShouldRedactNumbers } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Grid } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
@@ -44,6 +44,7 @@ type SummaryCardProps = {
     localCurrency: BaseCurrencyCode;
     account: Account;
     isLoading?: boolean;
+    isGraphDataLoaded?: boolean;
 };
 
 const DateWrapper = styled.span`
@@ -64,6 +65,7 @@ export const SummaryCards = ({
     localCurrency,
     account,
     isLoading,
+    isGraphDataLoaded,
 }: SummaryCardProps) => {
     const { isBelowDesktop } = useLayoutSize();
     const { BaseCurrencyAmountFormatter } = useFormatters();
@@ -71,8 +73,12 @@ export const SummaryCards = ({
 
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
 
-    // aggregate values from shown graph data
-    const numOfTransactions = data.reduce((acc, d) => (acc += d.txs), 0) || account.history.total;
+    // Aggregate values from shown graph data.
+    const txsFromData = data.reduce((acc, d) => (acc += d.txs), 0);
+    // only fall back to account.history.total before graph data has loaded.
+    const numOfTransactions = isGraphDataLoaded
+        ? txsFromData
+        : txsFromData || account.history.total;
 
     // on some networks it is not easy to get total number of txs (e.g. Ripple & Stellar)
     if (numOfTransactions === -1) {
@@ -124,7 +130,7 @@ export const SummaryCards = ({
                     shallDisplayBaseCurrency && totalReceivedFiatMap[localCurrency] ? (
                         <BaseCurrencyAmountFormatter
                             currency={localCurrency}
-                            value={totalReceivedFiatMap[localCurrency]!}
+                            value={totalReceivedFiatMap[localCurrency]}
                         />
                     ) : undefined
                 }
@@ -139,7 +145,7 @@ export const SummaryCards = ({
                     shallDisplayBaseCurrency && totalSentFiatMap[localCurrency] ? (
                         <BaseCurrencyAmountFormatter
                             currency={localCurrency}
-                            value={totalSentFiatMap[localCurrency]!}
+                            value={totalSentFiatMap[localCurrency]}
                         />
                     ) : undefined
                 }

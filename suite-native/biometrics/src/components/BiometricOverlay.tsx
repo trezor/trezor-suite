@@ -10,7 +10,7 @@ import { BiometricsIcon } from './BiometricsIcon';
 import { authenticateUserThunk } from '../biometricsThunks';
 
 const overlayWrapperStyle = prepareNativeStyle(utils => ({
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation0,

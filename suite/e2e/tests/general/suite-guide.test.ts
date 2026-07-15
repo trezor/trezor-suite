@@ -2,6 +2,7 @@ import { expect, test } from '../../support/fixtures';
 
 test.describe('Suite Guide', { tag: ['@noDevice'] }, () => {
     test.use({ startEmulator: false });
+
     /**
      * Test case:
      * 1. Go to Bug section in Suite Guide
@@ -30,7 +31,7 @@ test.describe('Suite Guide', { tag: ['@noDevice'] }, () => {
         const article = 'Install firmware';
         await guidePanel.openPanel();
         await guidePanel.lookupArticle(article);
-        await expect(guidePanel.articleHeader).toHaveText(article);
+        await expect(guidePanel.guideLabel).toHaveText(article);
         await guidePanel.closeGuide();
     });
 });

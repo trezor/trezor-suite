@@ -30,6 +30,7 @@ test.describe('Public Keys', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     testCases.forEach(({ symbol, xpub }) => {
         const tagOptions = symbol === 'ada' ? { tag: ['@nightlyOnly'] } : { tag: [] };
+
         test(
             `Check ${symbol} XPUB`,
             tagOptions,

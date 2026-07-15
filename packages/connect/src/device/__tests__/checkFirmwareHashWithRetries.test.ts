@@ -23,6 +23,7 @@ const getMockedDevice = (): Device => {
         id: 'mock-device-id' as DeviceUniquePath,
         transport,
         descriptor: {} as Descriptor,
+        createLogger: () => logger,
     });
 
     device.setAuthenticityChecks = jest.fn(device.setAuthenticityChecks);

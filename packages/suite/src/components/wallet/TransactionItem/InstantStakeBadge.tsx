@@ -8,6 +8,7 @@ import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config
 import { type StakeType } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Badge, Row } from '@trezor/components';
+import { LightningIcon } from '@trezor/icons';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { type WalletAccountTransaction } from 'src/types/wallet';
@@ -54,7 +55,7 @@ export const InstantStakeBadge = memo(({ transaction, symbol }: InstantStakeBadg
     const amount = internalTx.amount && formatNetworkAmount(internalTx.amount, symbol);
 
     return (
-        <Badge size="small" iconLeft="lightning">
+        <Badge size="small" iconLeft={LightningIcon}>
             <Row gap={4}>
                 <FormattedCryptoAmount value={amount} symbol={symbol} />
                 <Translation id={translationId} />

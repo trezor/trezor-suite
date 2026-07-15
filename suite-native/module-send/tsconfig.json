@@ -23,6 +23,9 @@
             "path": "../../suite-common/transaction-search"
         },
         {
+            "path": "../../suite-common/transfer-uri"
+        },
+        {
             "path": "../../suite-common/validators"
         },
         {

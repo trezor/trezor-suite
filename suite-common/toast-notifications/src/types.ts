@@ -32,6 +32,10 @@ type SentTransactionNotification = {
     token?: TokenInfo;
 } & TransactionNotificationPayload;
 
+type RawSentTransactionNotification = {
+    type: 'raw-tx-sent';
+} & BaseTransactionNotificationPayload;
+
 type RevokeTransactionNotification = {
     type: 'tx-revoked';
     token: TokenInfo;
@@ -65,8 +69,8 @@ type ClaimedTransactionNotification = {
     type: 'tx-claimed';
 } & TransactionNotificationPayload;
 
-type YieldSupplyTransactionNotification = {
-    type: 'tx-yield-supply';
+type YieldDepositTransactionNotification = {
+    type: 'tx-yield-deposit';
 } & BaseTransactionNotificationPayload;
 
 type YieldWithdrawTransactionNotification = {
@@ -136,6 +140,7 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
               | 'thp-credentials-reset'
               | 'sign-transaction-timeout'
               | 'suite-sync-keys-error'
+              | 'suite-sync-enabled'
               | 'bip-329-labels-imported';
       }
     | {
@@ -147,11 +152,14 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
     | ApproveTransactionNotification
     | RevokeTransactionNotification
     | ExchangeTransactionNotification
-    | {
-          type: 'raw-tx-sent';
-          txid: string;
-      }
+    | RawSentTransactionNotification
     | ErrorToastPayload
+    | {
+          type: 'trading-error';
+          errorCode: string;
+          values?: Record<string, string | number | boolean | undefined>;
+          message?: string;
+      }
     | {
           type: 'auto-updater-error';
           state: DesktopAppUpdateState;
@@ -176,7 +184,7 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
           type: 'coin-scheme-protocol';
           scheme: Protocol;
           address: string;
-          amount?: number;
+          amount?: string;
       }
     | {
           type: 'suite-sync-keys-error';
@@ -196,7 +204,7 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
     | StakedTransactionNotification
     | UnstakedTransactionNotification
     | ClaimedTransactionNotification
-    | YieldSupplyTransactionNotification
+    | YieldDepositTransactionNotification
     | YieldWithdrawTransactionNotification
     | YieldClaimTransactionNotification
     | {
@@ -236,7 +244,7 @@ export type ToastNotification<
     context: 'toast';
 } & CommonNotificationPayload &
     ToastPayload<TranslationKey>;
-export type EventNotification = { context: 'event' } & CommonNotificationPayload &
+type EventNotification = { context: 'event' } & CommonNotificationPayload &
     NotificationEventPayload;
 
 export type NotificationEntry<TranslationKey extends string = UnknownTranslationKey> =

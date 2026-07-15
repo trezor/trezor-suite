@@ -19,23 +19,21 @@ jobs:
     name: Setup and Cache Dependencies
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
       - name: Install node and yarn
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
-      - name: Install Socket Firewall
-        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
         continue-on-error: true
         with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
+          version: v0.19.1
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
       - name: Yarn Cache
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
@@ -44,7 +42,7 @@ jobs:
       # We can skip the build for all dependencies, even for those whitelisted, because this process is used only to validate the yarn.lock file and populate the cache.
       - name: Install deps
         run: |
-          $(command -v sfw > /dev/null && echo sfw --verbose) yarn --immutable --mode=skip-build
+          yarn --immutable --mode=skip-build
 
   type-check:
     name: Type Checking
@@ -54,7 +52,7 @@ jobs:
       NODE_OPTIONS: --max-old-space-size=6144
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           submodules: true
       - name: "Checkout branches for Nx"
@@ -63,6 +61,8 @@ jobs:
         uses: ./.github/actions/minimal-yarn-install
       - name: Type Check
         run: yarn type-check --output-style=stream
+      - name: Check Type Declaration Sizes
+        run: yarn requirements:verify --only=type-declaration-size
 
   lint:
     name: Linting and formatting
@@ -70,13 +70,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
       - name: "Checkout branches for Nx"
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
       - name: ESlint Cache
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
           # Most of the ESLint cache is handled by Nx. However, it can't handle the root cache.
           # That's why we include only the root .eslintcache (and only root eslint config hash as cache key)
@@ -106,7 +106,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           submodules: true
       - name: "Checkout branches for Nx"
@@ -114,6 +114,7 @@ jobs:
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
       - name: Check for new Circular Imports
+        # safedep/pmg covers also the `npx` running inside the shell script
         run: ./scripts/circular-dependencies/check-circular-dependencies.sh
 
   unit-tests-suite:
@@ -127,7 +128,7 @@ jobs:
         test-task: [suite, native, "native:trading"]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           submodules: true
       - name: "Checkout branches for Nx"
@@ -143,7 +144,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           submodules: true
       - name: "Checkout branches for Nx"
@@ -159,7 +160,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
       - name: "Checkout branches for Nx"
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
@@ -172,15 +173,13 @@ jobs:
         run: yarn verify-project-references
       - name: Detect unused dependencies
         run: yarn depcheck
-      - name: Install Socket Firewall
-        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
         continue-on-error: true
         with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
+          version: v0.19.1
       - name: Yarn Dedupe check
-        run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn dedupe --check
+        run: yarn dedupe --check
       - name: Check dependency domain lists
         run: ./scripts/ci/list-missing-dependencies.sh
       - name: Verify Workspace Resolutions
@@ -189,6 +188,8 @@ jobs:
         run: yarn workspace @suite-common/message-system validate-config
       - name: Translation Duplicates
         run: yarn workspace @suite/intl translations:list-duplicates
+      - name: Translation Unused
+        run: yarn workspace @suite/intl translations:list-unused
       - name: Check mobile translation source changes
         uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4
         id: native-intl-changes
@@ -206,7 +207,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
       - name: Check releases.json files changes
         uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4
         id: changes

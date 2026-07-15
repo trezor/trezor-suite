@@ -11,7 +11,7 @@ import { RootStackRoutes, Screen } from '@suite-native/navigation';
 import { TradingEnvironmentWarning } from '@suite-native/trading-debug';
 import { Footer } from '@suite-native/trading-provider-utils';
 import {
-    selectActiveTradingType,
+    selectHasActiveTradingType,
     selectIsTradingEnabled,
     selectTradeToBeOpened,
 } from '@suite-native/trading-state';
@@ -22,15 +22,14 @@ import { LegalGatewayContextMessage } from '../components/general/LegalGatewayCo
 import { TradingTabContent } from '../components/general/TradingTabContent';
 import { TradingTypeAwareContextMessage } from '../components/general/TradingTypeAwareContextMessage';
 import { useActiveTradingTypeReaction } from '../hooks/general/useActiveTradingTypeReaction';
-import { useMountedRecentlyFlag } from '../hooks/general/useMountedRecentlyFlag';
 
 const TradingScreenContent = () => {
     const tradeToBeOpened = useSelector(selectTradeToBeOpened);
-    const activeTradingType = useSelector(selectActiveTradingType);
+    const hasActiveTradingType = useSelector(selectHasActiveTradingType);
     const navigation = useNavigation<NavigationProps>();
-    const isScreenMountedRecently = useMountedRecentlyFlag(activeTradingType);
     useActiveTradingTypeReaction();
     const { analytics } = useServices(selectNativeAnalyticsDep);
+
     useEffect(() => {
         if (tradeToBeOpened) {
             analytics.report({
@@ -41,17 +40,19 @@ const TradingScreenContent = () => {
         }
     }, [tradeToBeOpened, navigation, analytics]);
 
-    if (!activeTradingType) {
+    if (!hasActiveTradingType) {
         return null;
     }
 
     return (
-        <VStack spacing="sp16">
+        <VStack spacing="sp16" flex={1}>
             <TradingEnvironmentWarning />
-            <Header isFormMountedRecently={isScreenMountedRecently} />
-            <TradingTabContent />
-            <HistoryButton isFormMountedRecently={isScreenMountedRecently} />
-            <Footer isFormMountedRecently={isScreenMountedRecently} />
+            <Header />
+            <VStack spacing="sp16" paddingHorizontal="sp16" flex={1}>
+                <TradingTabContent />
+                <HistoryButton />
+                <Footer />
+            </VStack>
         </VStack>
     );
 };
@@ -65,6 +66,7 @@ export const TradingScreen = () => {
 
     return (
         <Screen
+            noHorizontalPadding
             header={
                 <>
                     <DeviceManagerScreenHeader />
@@ -73,7 +75,7 @@ export const TradingScreen = () => {
             }
         >
             <TradingScreenContent />
-            <LegalGatewayContextMessage marginVertical="sp16" />
+            <LegalGatewayContextMessage marginVertical="sp16" paddingHorizontal="sp16" />
         </Screen>
     );
 };

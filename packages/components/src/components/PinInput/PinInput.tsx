@@ -9,7 +9,7 @@ import { Row } from '../Flex/Flex';
 const SymbolBox = styled.input<{ $fakeDisabled?: boolean }>`
     height: 60px;
     width: 50px;
-    background: ${({ theme }) => theme.legacyBackgroundNeutralSubtleOnElevation0};
+    background: ${({ theme }) => theme.elementFillField};
     border: 1px solid ${({ theme }) => theme.elementBorderField};
     border-radius: ${borders.radii.lg};
     outline: 0;
@@ -24,7 +24,7 @@ const SymbolBox = styled.input<{ $fakeDisabled?: boolean }>`
 
     &:focus,
     &:focus-within {
-        border: 2px solid ${({ theme }) => theme.borderBrand};
+        border: 2px solid ${({ theme }) => theme.elementBorderFieldFocused};
     }
 
     ${({ theme, $fakeDisabled }) =>
@@ -35,8 +35,9 @@ const SymbolBox = styled.input<{ $fakeDisabled?: boolean }>`
         `
         pointer-events: none;
         cursor: default;
-        border: 0;
         color: ${theme.contentDisabled};
+        background: ${theme.elementFillFieldDisabled};
+        border-color: ${theme.elementBorderFieldDisabled};
     `}
 `;
 

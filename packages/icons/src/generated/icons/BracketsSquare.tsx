@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgBracketsSquare = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M6 6v20h4a1 1 0 0 1 0 2H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5a1 1 0 1 1 0 2zm21-2h-5a1 1 0 1 0 0 2h4v20h-4a1 1 0 0 0 0 2h5a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1"
+        />
+    </svg>
+);
+export { SvgBracketsSquare as ReactComponent };

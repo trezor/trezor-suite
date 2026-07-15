@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { BulletList, Card, Column, H3, H4 } from '@trezor/components';
+import { Card, Column, H3, H4, StepList } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { TransactionReviewOutputTimer } from './TransactionReviewOutputTimer';
@@ -31,27 +31,22 @@ export const TransactionReviewVerifyAddress = ({
                     />
                 )}
             </Column>
-            <BulletList
-                isOrdered
-                bulletGap={spacings.md}
-                titleGap={spacings.zero}
-                gap={spacings.xxl}
-            >
-                <BulletList.Item
+            <StepList isOrdered bulletGap={spacings.md} titleGap={spacings.zero} gap={spacings.xxl}>
+                <StepList.Item
                     title={
                         <H4 typographyStyle="body-sm">
                             <Translation id="TR_SEND_ADDRESS_CONFIRMATION_ITEM_1_HEADING" />
                         </H4>
                     }
                 />
-                <BulletList.Item
+                <StepList.Item
                     title={
                         <H4 typographyStyle="body-sm">
                             <Translation id="TR_SEND_ADDRESS_CONFIRMATION_ITEM_2_HEADING" />
                         </H4>
                     }
                 />
-                <BulletList.Item
+                <StepList.Item
                     state="done"
                     title={
                         <H4 typographyStyle="body-sm">
@@ -59,7 +54,7 @@ export const TransactionReviewVerifyAddress = ({
                         </H4>
                     }
                 />
-            </BulletList>
+            </StepList>
         </Column>
     </Card>
 );

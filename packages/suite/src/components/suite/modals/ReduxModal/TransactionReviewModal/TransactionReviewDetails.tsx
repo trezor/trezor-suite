@@ -46,7 +46,7 @@ export const TransactionReviewDetails = ({ tx, txHash }: TransactionReviewDetail
                 </InfoItem>
                 {txHash && (
                     <InfoItem label={<Translation id="RAW_TRANSACTION" />}>
-                        <Card paddingType="small">
+                        <Card paddingType="small" type="contrast">
                             <Text typographyStyle="body-xs" as="div">
                                 <Pre>{txHash}</Pre>
                             </Text>

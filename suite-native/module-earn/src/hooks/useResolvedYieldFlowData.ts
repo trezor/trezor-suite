@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { type YieldDto, useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
+import {
+    type YieldDtoV2,
+    getBonusRewardToken,
+    useAllYieldOpportunities,
+} from '@suite-common/earn-stablecoin-api';
 import { getNetworkByYieldXyzId } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -20,6 +24,8 @@ import { useTranslate } from '@suite-native/intl';
 import { type YieldFlowParams } from '@suite-native/navigation';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
+import { getAccountTokenByContract } from '../utils/contractTokenBalanceUtils';
+
 export type YieldFlowResolutionStatus =
     | 'resolved'
     | 'missing-vault'
@@ -30,29 +36,37 @@ export type YieldFlowResolutionStatus =
 type UnresolvedYieldFlowData = {
     account: Account | null;
     apy: number | null;
+    bonusRewardTokenName: string | null;
     flowKey: string | null;
     providerName: string | null;
     receiptToken: YieldFlowDisplayToken | null;
     resolutionStatus: Exclude<YieldFlowResolutionStatus, 'resolved'>;
     flowData: YieldFlowResolvedData | null;
+    depositedSharesAmount: string | null;
     token: YieldFlowToken | null;
     tokenSymbol: TokenSymbol | null;
-    vault: YieldDto | null;
+    vault: YieldDtoV2 | null;
     vaultTokenName: string | null;
+    vaultTokenSymbol: string | null;
+    vaultName: string | null;
 };
 
 type YieldFlowDataResolved = {
     account: Account;
     apy: number | null;
+    bonusRewardTokenName: string | null;
     flowKey: string;
     providerName: string;
     receiptToken: YieldFlowDisplayToken;
     flowData: YieldFlowResolvedData;
     resolutionStatus: 'resolved';
+    depositedSharesAmount: string;
     token: YieldFlowToken;
     tokenSymbol: TokenSymbol;
-    vault: YieldDto;
+    vault: YieldDtoV2;
     vaultTokenName: string;
+    vaultTokenSymbol: string;
+    vaultName: string;
 };
 
 export type ResolvedYieldFlowData = UnresolvedYieldFlowData | YieldFlowDataResolved;
@@ -61,12 +75,7 @@ type ResolveYieldFlowDataParams = {
     account: Account | null;
     tokenContract: string;
     yieldId?: string;
-    yieldOpportunities: YieldDto[];
-};
-
-type GetMatchingTokenParams = {
-    account: Account;
-    tokenContract: string;
+    yieldOpportunities: YieldDtoV2[];
 };
 
 type YieldFlowProps = { displayError?: boolean } & YieldFlowParams;
@@ -74,26 +83,20 @@ type YieldFlowProps = { displayError?: boolean } & YieldFlowParams;
 const defaultFlowData: ResolvedYieldFlowData = {
     account: null,
     apy: null,
+    bonusRewardTokenName: null,
     flowKey: null,
     providerName: null,
     receiptToken: null,
     resolutionStatus: 'missing-vault',
+    depositedSharesAmount: null,
     token: null,
     flowData: null,
     tokenSymbol: null,
     vault: null,
     vaultTokenName: null,
+    vaultTokenSymbol: null,
+    vaultName: null,
 };
-
-const getMatchingToken = ({ account, tokenContract }: GetMatchingTokenParams) =>
-    account.tokens?.find(token => {
-        const normalizedAccountTokenContract = getContractAddressForNetworkSymbol(
-            account.symbol,
-            token.contract,
-        );
-
-        return normalizedAccountTokenContract === tokenContract;
-    }) ?? null;
 
 export const resolveYieldFlowData = ({
     account,
@@ -121,7 +124,7 @@ export const resolveYieldFlowData = ({
                   ) === normalizedContract,
           );
 
-    if (!vault?.outputToken) {
+    if (!vault?.outputToken?.address) {
         return defaultFlowData;
     }
 
@@ -129,12 +132,18 @@ export const resolveYieldFlowData = ({
     const apy = getApyPercent(vault.rewardRate.total);
     const providerName = capitalizeFirstLetter(vault.providerId);
     const vaultTokenName = vault.outputToken?.name;
+    const vaultTokenSymbol = vault.outputToken.symbol;
+    const vaultName = vault.metadata.name ?? vaultTokenName;
+    const bonusRewardToken = getBonusRewardToken(vault.rewardRate.components, vault.token);
     const resolvedVaultData = {
         apy,
+        bonusRewardTokenName: bonusRewardToken?.name ?? null,
         providerName,
         tokenSymbol: toTokenSymbol(vault.token.symbol.toUpperCase()),
         vault,
         vaultTokenName,
+        vaultTokenSymbol,
+        vaultName,
     };
 
     if (!network) {
@@ -144,16 +153,17 @@ export const resolveYieldFlowData = ({
             resolutionStatus: 'missing-network',
         };
     }
-    const flowTokenContract =
-        yieldId && vault.token.address
-            ? getContractAddressForNetworkSymbol(account.symbol, vault.token.address)
-            : normalizedContract;
-    const token = getMatchingToken({
-        account,
-        tokenContract: flowTokenContract,
-    });
+    const underlyingTokenContract = vault.token.address
+        ? getContractAddressForNetworkSymbol(account.symbol, vault.token.address)
+        : normalizedContract;
+    const outputTokenContract = getContractAddressForNetworkSymbol(
+        account.symbol,
+        vault.outputToken.address,
+    );
+    const token = getAccountTokenByContract(account, underlyingTokenContract);
+    const outputToken = getAccountTokenByContract(account, outputTokenContract);
 
-    if (!token && !yieldId) {
+    if (!outputToken && !yieldId) {
         return {
             ...defaultFlowData,
             account,
@@ -163,14 +173,15 @@ export const resolveYieldFlowData = ({
     }
 
     const receiptToken = {
-        symbol: vault.outputToken.symbol,
-        decimals: vault.outputToken.decimals,
-        contractAddress: vault.outputToken.address,
+        symbol: outputToken?.symbol ?? vault.outputToken.symbol,
+        decimals: outputToken?.decimals ?? vault.outputToken.decimals,
+        contractAddress: outputToken?.contract ?? vault.outputToken.address,
         coingeckoId: vault.outputToken.coinGeckoId ?? vault.token.coinGeckoId,
     };
+
     const tokenSymbol = toTokenSymbol((token?.symbol ?? vault.token.symbol).toUpperCase());
     const flowKey = getStablecoinYieldFlowKey({
-        tokenContract: flowTokenContract,
+        tokenContract: yieldId ? underlyingTokenContract : normalizedContract,
         accountKey: account.key,
         yieldId: vault.id,
     });
@@ -180,7 +191,7 @@ export const resolveYieldFlowData = ({
         account,
         token: {
             balance: token?.balance ?? '0',
-            contractAddress: token?.contract ?? flowTokenContract,
+            contractAddress: token?.contract ?? underlyingTokenContract,
             decimals: token?.decimals ?? vault.token.decimals,
             networkSymbol: account.symbol,
             symbol: token?.symbol ?? tokenSymbol,
@@ -199,9 +210,12 @@ export const resolveYieldFlowData = ({
         flowData,
         flowKey,
         resolutionStatus: 'resolved',
+        depositedSharesAmount: outputToken?.balance ?? '0',
         tokenSymbol,
     };
 };
+
+const emptyYieldOpportunities: YieldDtoV2[] = [];
 
 export const useResolvedYieldFlowData = ({
     accountKey,
@@ -224,7 +238,7 @@ export const useResolvedYieldFlowData = ({
                 account,
                 tokenContract,
                 yieldId,
-                yieldOpportunities,
+                yieldOpportunities: yieldOpportunities ?? emptyYieldOpportunities,
             }),
         [account, tokenContract, yieldId, yieldOpportunities],
     );

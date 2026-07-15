@@ -7,7 +7,8 @@ type Attributes = Record<never, never>;
 export const settingsDeviceChangePinEvent: EventDef<Attributes, EventType.SettingsDeviceChangePin> =
     {
         name: EventType.SettingsDeviceChangePin,
-        descriptionTrigger: 'Settings > Device > SECURITY > Change PIN (Only when PIN is set)',
+        descriptionTrigger:
+            'User changes or configures PIN protection in Settings > Device > Security > Change PIN',
         changelog: [{ version: '1.0.0', notes: 'added' }],
 
         attributes: {},

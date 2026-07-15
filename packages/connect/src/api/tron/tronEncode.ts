@@ -1,7 +1,7 @@
 import { create, toBinary } from '@bufbuild/protobuf';
 import { hexToBytes } from '@noble/hashes/utils.js';
 
-import type { TronContracts } from '@trezor/connect-common/src/types/api/tron';
+import type { TronContracts } from '@trezor/connect-common';
 import { protobufManager } from '@trezor/protobuf';
 import { TronRawContractType } from '@trezor/protobuf/src/definitions/messages-tron';
 
@@ -53,6 +53,86 @@ const encodeInnerContract = (contract: TronContracts): InnerContract => {
                         ownerAddress: hexToBytes(owner_address ?? ''),
                         contractAddress: hexToBytes(contract_address ?? ''),
                         data: hexToBytes(data ?? ''),
+                    }),
+                ),
+            };
+        }
+        case 'FreezeBalanceV2Contract': {
+            const { owner_address, balance, resource } = contract.parameter.value;
+            const schema = getSchema('TronFreezeBalanceV2Contract');
+
+            return {
+                type: TronRawContractType.FreezeBalanceV2Contract,
+                bytes: toBinary(
+                    schema,
+                    create(schema, {
+                        ownerAddress: hexToBytes(owner_address ?? ''),
+                        balance: BigInt(balance ?? 0),
+                        // The default BANDWIDTH (0) is omitted to match the firmware signature.
+                        resource: resource || undefined,
+                    }),
+                ),
+            };
+        }
+        case 'UnfreezeBalanceV2Contract': {
+            const { owner_address, balance, resource } = contract.parameter.value;
+            const schema = getSchema('TronUnfreezeBalanceV2Contract');
+
+            return {
+                type: TronRawContractType.UnfreezeBalanceV2Contract,
+                bytes: toBinary(
+                    schema,
+                    create(schema, {
+                        ownerAddress: hexToBytes(owner_address ?? ''),
+                        balance: BigInt(balance ?? 0),
+                        // The default BANDWIDTH (0) is omitted to match the firmware signature.
+                        resource: resource || undefined,
+                    }),
+                ),
+            };
+        }
+        case 'WithdrawExpireUnfreezeContract': {
+            const { owner_address } = contract.parameter.value;
+            const schema = getSchema('TronWithdrawUnfreeze');
+
+            return {
+                type: TronRawContractType.WithdrawExpireUnfreezeContract,
+                bytes: toBinary(
+                    schema,
+                    create(schema, {
+                        ownerAddress: hexToBytes(owner_address ?? ''),
+                    }),
+                ),
+            };
+        }
+        case 'WithdrawBalanceContract': {
+            const { owner_address } = contract.parameter.value;
+            const schema = getSchema('TronWithdrawBalance');
+
+            return {
+                type: TronRawContractType.WithdrawBalanceContract,
+                bytes: toBinary(
+                    schema,
+                    create(schema, {
+                        ownerAddress: hexToBytes(owner_address ?? ''),
+                    }),
+                ),
+            };
+        }
+        case 'VoteWitnessContract': {
+            const { owner_address, votes } = contract.parameter.value;
+            const schema = getSchema('TronVoteWitnessContract');
+
+            return {
+                type: TronRawContractType.VoteWitnessContract,
+                bytes: toBinary(
+                    schema,
+                    create(schema, {
+                        ownerAddress: hexToBytes(owner_address ?? ''),
+                        votes: (votes ?? []).map(({ address, count }) => ({
+                            address: hexToBytes(address ?? ''),
+                            count: BigInt(count ?? 0),
+                        })),
                     }),
                 ),
             };

@@ -33,8 +33,8 @@ const messageSystemMockFile = path.join(
 );
 
 const config: webpack.Configuration = {
-    // Electron 41 runs on Chromium 146 https://www.electronjs.org/blog/electron-41-0
-    target: 'browserslist:Chrome >= 146',
+    // Electron 42 runs on Chromium 148 https://www.electronjs.org/blog/electron-42-0
+    target: 'browserslist:Chrome >= 148',
     entry: { main: [path.join(baseDirUI, 'src', 'index.tsx')] },
     output: {
         path: path.join(baseDir, 'build'),
@@ -42,7 +42,7 @@ const config: webpack.Configuration = {
     },
     resolve: {
         alias: {
-            '@trezor/connect$': '@trezor/connect/src/index.renderer',
+            '@trezor/connect$': '@trezor/connect-electron',
             // conditionally mocks message-system config that is being used during build
             ...(isTestBuild ? { [messageSystemFile]: messageSystemMockFile } : {}),
         },

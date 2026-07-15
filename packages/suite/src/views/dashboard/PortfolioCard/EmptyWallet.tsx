@@ -1,12 +1,14 @@
 import styled from 'styled-components';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectIsOnboardingFeedbackBannerShown, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Box, Button, Column, H3, Illustration, Paragraph, Row } from '@trezor/components';
+import { ArrowDownIcon, CurrencyCircleDollarIcon } from '@trezor/icons';
 import { NetworkIconSet } from '@trezor/product-components';
 import { borders } from '@trezor/theme';
 
@@ -23,8 +25,16 @@ export const EmptyWallet = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
+    const isOnboardingFeedbackBannerShown = useSelector(selectIsOnboardingFeedbackBannerShown);
+
+    const clearOnboardingFeedbackBanner = () => {
+        if (isOnboardingFeedbackBannerShown) {
+            dispatch(setFlag({ key: 'showOnboardingFeedbackBanner', value: false }));
+        }
+    };
 
     const handleReceive = () => {
+        clearOnboardingFeedbackBanner();
         analytics.report({
             type: events.dashboardReceiveModalEvent.name,
             payload: { source: 'empty-wallet' },
@@ -33,6 +43,7 @@ export const EmptyWallet = () => {
     };
 
     const handleBuy = () => {
+        clearOnboardingFeedbackBanner();
         analytics.report({
             type: events.tradeNavigateEvent.name,
             payload: {
@@ -80,7 +91,7 @@ export const EmptyWallet = () => {
             <Row gap={12} margin={{ top: 16 }}>
                 <Button
                     intent="brand"
-                    iconLeft="currencyCircleDollar"
+                    iconLeft={CurrencyCircleDollarIcon}
                     size="medium"
                     onClick={handleBuy}
                     data-testid="@dashboard/empty-wallet/buy"
@@ -89,7 +100,7 @@ export const EmptyWallet = () => {
                 </Button>
                 <Button
                     intent="brand"
-                    iconLeft="arrowDown"
+                    iconLeft={ArrowDownIcon}
                     size="medium"
                     onClick={handleReceive}
                     data-testid="@dashboard/empty-wallet/receive"

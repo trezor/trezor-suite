@@ -29,12 +29,14 @@ const buttonStyle = prepareNativeStyle(() => ({
 type YieldConsentsProviderCardProps = {
     providerName: string;
     tokenSymbol: string;
+    isConfirmLoading?: boolean;
     onConfirm: () => void;
 };
 
 export const YieldConsentsProviderCard = ({
     providerName,
     tokenSymbol,
+    isConfirmLoading,
     onConfirm,
 }: YieldConsentsProviderCardProps) => {
     const { applyStyle } = useNativeStyles();
@@ -63,9 +65,20 @@ export const YieldConsentsProviderCard = ({
                         values={{ providerName }}
                     />
                 </EarnConsentsItem>
+                <EarnConsentsItem iconName="warningCircle" color="contentPrimary">
+                    <Translation
+                        id="earn.yieldConsentsScreen.providerCard.thirdItem"
+                        values={{ providerName }}
+                    />
+                </EarnConsentsItem>
             </VStack>
             <HStack style={applyStyle(buttonRowStyle)}>
-                <Button intent="info" onPress={onConfirm} style={applyStyle(buttonStyle)}>
+                <Button
+                    intent="info"
+                    isLoading={isConfirmLoading}
+                    onPress={onConfirm}
+                    style={applyStyle(buttonStyle)}
+                >
                     <Translation id="generic.buttons.understand" />
                 </Button>
             </HStack>

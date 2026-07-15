@@ -11,7 +11,7 @@ type TradingNetworkFeeInfoItemProps = {
 
 export const TradingNetworkFeeInfoItem = ({ amount, symbol }: TradingNetworkFeeInfoItemProps) => (
     <InfoItem label={<Translation id="TR_TRADING_NETWORK_FEE" />} direction="row">
-        <Text typographyStyle="body-sm">
+        <Text typographyStyle="body-sm" data-testid="@trading/offer/info/network-fee">
             <BaseCurrencyValue
                 disableHiddenPlaceholder
                 amount={amount}

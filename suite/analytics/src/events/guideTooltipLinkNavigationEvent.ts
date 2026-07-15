@@ -11,11 +11,13 @@ export const guideTooltipLinkNavigationEvent: EventDef<
     EventType.GuideTooltipLinkNavigation
 > = {
     name: EventType.GuideTooltipLinkNavigation,
-    descriptionTrigger: 'Learn button in tooltip. E.g. in Send raw transaction',
+    descriptionTrigger:
+        'User clicks on a `Learn` button within a context tooltip to access in-app guide information (e.g., in Send raw transaction form)',
     changelog: [{ version: '1.12.0', notes: 'added' }],
 
     attributes: {
         id: {
+            description: 'Identifier of the guide topic or tooltip being accessed',
             changelog: [{ version: '1.12.0', notes: 'added' }],
         },
     },

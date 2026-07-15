@@ -1,4 +1,4 @@
-import { type Reducer, combineReducers } from '@reduxjs/toolkit';
+import { type Reducer, combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { torReducer } from '@suite/tor';
 import { prepareDeviceReducer } from '@suite-common/device';
@@ -73,6 +73,7 @@ const reducer = combineReducers({
     messageSystem: messageSystemReducer,
     suite: suiteReducer,
     tor: torReducer,
+    discreetMode: createReducer({ isActive: false }, () => {}),
     device: deviceReducer,
     geolocation: geolocationReducer,
 });

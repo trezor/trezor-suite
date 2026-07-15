@@ -7,7 +7,7 @@ const inputs = [
         address_n: PATH,
         prev_hash: '50f6f1209ca92d7359564be803cb2c932cde7d370f7cee50fd1fad6790f6206d',
         prev_index: 1,
-        amount: '1',
+        amount: '50000',
     },
 ];
 

@@ -18,7 +18,9 @@ import {
     selectHasDeviceSuiteSyncError,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
+    type AccountsRootState,
     type DiscoveryRootState,
     selectHasOnlyEmptyPortfolioTracker,
     selectHasRunningDiscovery,
@@ -27,12 +29,25 @@ import {
 } from '@suite-common/wallet-core';
 import { type NativeDeviceRootState, selectIsDeviceSetupSupported } from '@suite-native/device';
 import { selectIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
+import { selectDeviceHistoryIgnoredNetworkSymbols } from '@suite-native/graph';
 
 import { type HomeScreenState } from './homescreenTypes';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
-    DeviceRootState & DiscoveryRootState & WithSuiteSyncState & MessageSystemRootState
+    DeviceRootState &
+        AccountsRootState &
+        DiscoveryRootState &
+        WithSuiteSyncState &
+        MessageSystemRootState
 >();
+
+export const selectDeviceHistoryIgnoredNetworksString = createMemoizedSelector(
+    [selectDeviceHistoryIgnoredNetworkSymbols],
+    networkSymbols =>
+        networkSymbols.length === 0
+            ? null
+            : networkSymbols.map(networkSymbol => getNetwork(networkSymbol).name).join(', '),
+);
 
 export const selectShouldDisplayUpgradeFirmwareAlert = createMemoizedSelector(
     [

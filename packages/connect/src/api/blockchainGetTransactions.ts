@@ -1,18 +1,18 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainGetTransactions.js
 
-import type { CoinInfo, MethodPermission } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
-import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import { getCoinInfo } from '../data/coinInfo';
+import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
+import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
     txs: string[];
     coinInfo: CoinInfo;
     identity?: string;
+    descriptor?: string;
 };
 
 export default class BlockchainGetTransactions extends AbstractMethod<
@@ -27,19 +27,18 @@ export default class BlockchainGetTransactions extends AbstractMethod<
             { name: 'txs', type: 'array', required: true },
             { name: 'coin', type: 'string', required: true },
             { name: 'identity', type: 'string' },
+            { name: 'descriptor', type: 'string' },
         ]);
 
-        const coinInfo = getCoinInfo(payload.coin);
-        if (!coinInfo) {
-            throw ERRORS.TypedError('Method_UnknownCoin');
-        }
+        const coinInfo = getCoinInfoOrThrow(payload.coin);
         // validate backend
-        isBackendSupported(coinInfo);
+        assertBackendSupported(coinInfo);
 
         const params = {
             txs: payload.txs,
             coinInfo,
             identity: payload.identity,
+            descriptor: payload.descriptor,
         };
 
         super(message, params);
@@ -47,7 +46,7 @@ export default class BlockchainGetTransactions extends AbstractMethod<
         this.useUi = false;
     }
 
-    get requiredPermissions(): MethodPermission[] {
+    get requiredPermissions(): PermissionRequest[] {
         return [];
     }
 
@@ -60,6 +59,6 @@ export default class BlockchainGetTransactions extends AbstractMethod<
             this.params.identity,
         );
 
-        return backend.getTransactions(this.params.txs);
+        return backend.getTransactions(this.params.txs, this.params.descriptor);
     }
 }

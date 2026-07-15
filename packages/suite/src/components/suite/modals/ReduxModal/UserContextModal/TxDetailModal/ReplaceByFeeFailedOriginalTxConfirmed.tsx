@@ -2,6 +2,7 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { type RbfTransactionType } from '@suite-common/wallet-types';
 import { Box, Card, Column, IconCircle, Text, TextButton } from '@trezor/components';
+import { WarningIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 import {
     HELP_CENTER_CANCEL_TRANSACTION,
@@ -51,10 +52,10 @@ export const ReplaceByFeeFailedOriginalTxConfirmed = ({
     const link = helpLink[networkType]?.[type];
 
     return (
-        <Card fillType="flat">
+        <Card type="contrast">
             <Column gap={spacings.xs}>
                 <Box margin={{ bottom: spacings.md }}>
-                    <IconCircle name="warning" size={112} intent="critical" />
+                    <IconCircle icon={WarningIcon} size={112} intent="critical" />
                 </Box>
 
                 <Text typographyStyle="headline-sm">

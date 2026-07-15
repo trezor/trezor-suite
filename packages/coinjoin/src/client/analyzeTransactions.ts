@@ -26,14 +26,14 @@ const transformVinVout = (vinvout: EnhancedVinVout, network: Network) => {
     const Address: string = addresses[0];
     const Value = Number(vinvout.value);
 
-    if (vinvout.isAccountOwned) return { Address, Value } as AnalyzeInternalVinVout;
+    if (vinvout.isAccountOwned) return { Address, Value };
 
     const ScriptPubKey = addressBjs.toOutputScript(Address, network).toString('hex');
 
     return {
         ScriptPubKey,
         Value,
-    } as AnalyzeExternalVinVout;
+    };
 };
 
 const isInternal = (

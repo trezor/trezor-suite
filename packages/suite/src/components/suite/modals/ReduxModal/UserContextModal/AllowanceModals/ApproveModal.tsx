@@ -1,15 +1,27 @@
 import { FormProvider } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { type CryptoId, type DexApprovalType } from 'invity-api';
 
+import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { Banner, Box, Column, Modal, Row } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
+import { isAllowanceUnlimited } from '@suite-common/wallet-utils';
+import {
+    Banner,
+    Card,
+    CardList,
+    CollapsibleBox,
+    Column,
+    Modal,
+    Row,
+    Text,
+} from '@trezor/components';
+import { CaretDownIcon, InfoIcon, WarningIcon } from '@trezor/icons';
+import { AssetLogo, NetworkIcon } from '@trezor/product-components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
-import { borders } from '@trezor/theme';
 
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 import { Fees } from 'src/components/wallet/Fees/Fees';
@@ -18,7 +30,6 @@ import { useAllowanceModal } from 'src/hooks/wallet/allowance';
 import {
     type AllowanceModalProvider,
     AllowanceModalProviderInfo,
-    type ProviderLogoSourceType,
 } from './AllowanceModalProviderInfo';
 import { ApproveModalTypeSelector } from './ApproveModalTypeSelector';
 
@@ -28,17 +39,22 @@ interface ApproveModalProps {
     account: Account;
     provider: AllowanceModalProvider;
     spender: string;
-    logoSourceType?: ProviderLogoSourceType;
+    showSpender?: boolean;
+    preapprovedAmount?: string;
+    heading: TranslationKey;
+    description: TranslationKey;
     onSelectApprovalType?: (type: DexApprovalType) => void;
     onConfirm?: (approvalType: DexApprovalType) => void;
     onCancel?: () => void;
 }
 
 export const ApproveModal = (props: ApproveModalProps) => {
-    const { account, provider, spender, cryptoId, logoSourceType } = props;
+    const { account, provider, spender, preapprovedAmount, showSpender, heading, description } =
+        props;
     const { device } = useDevice();
     const { handleClick, disabled: isConfirmInProgress } = useAsyncClickHandler();
     const context = useAllowanceModal({ ...props, type: 'APPROVE' });
+    const isDebug = useSelector(selectIsDebugModeActive);
 
     const {
         inputAmount,
@@ -59,18 +75,20 @@ export const ApproveModal = (props: ApproveModalProps) => {
 
     if (!token?.symbol) return null;
 
+    const displaySymbol = getDisplaySymbol(token.symbol, token.contract);
+    const hasPreapprovedAmount = !!preapprovedAmount && preapprovedAmount !== '0';
+    const isPreapprovedAmountUnlimited =
+        hasPreapprovedAmount &&
+        isAllowanceUnlimited({ amount: preapprovedAmount, decimals: token.decimals });
+
     return (
         <FormProvider {...methods}>
             <Modal
                 onCancel={handleClose}
                 intent="brand"
-                width={600}
-                heading={
-                    <Translation
-                        id="TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING"
-                        values={{ displaySymbol: getDisplaySymbol(token.symbol, token.contract) }}
-                    />
-                }
+                width={480}
+                heading={<Translation id={heading} values={{ displaySymbol }} />}
+                description={<Translation id={description} values={{ displaySymbol }} />}
                 bottomContent={
                     <>
                         <Modal.Button
@@ -86,62 +104,115 @@ export const ApproveModal = (props: ApproveModalProps) => {
                         </Modal.Button>
                     </>
                 }
-                description={
-                    <Row margin={{ top: 8 }} gap={4}>
-                        <CoinLogo size={20} symbol={account.symbol} />
-                        <AccountLabeling
-                            account={account}
-                            showAccountTypeBadge
-                            accountTypeBadgeSize="small"
-                        />
-                    </Row>
-                }
                 // Disable shadow bottom to make `Fees` component fully visible
                 shadowBottom={false}
             >
-                <Column gap={12}>
-                    <AllowanceModalProviderInfo
-                        spender={spender}
-                        provider={provider}
-                        logoSourceType={logoSourceType}
-                    />
-                    <ApproveModalTypeSelector
-                        approvalType={approvalType}
-                        isLoading={isLoading}
-                        data={data}
-                        cryptoId={cryptoId}
-                        onSelect={selectApprovalType}
-                        provider={provider}
-                        token={token}
-                        displayAmount={inputAmount}
-                    />
-
-                    <Box
-                        padding={12}
-                        borderWidth={borders.widths.large}
-                        borderRadius={borders.radii.sm}
-                    >
-                        <Fees
-                            label="TR_TX_FEE"
-                            feeInfo={feeInfo}
-                            account={account}
-                            composedLevels={composedLevels}
-                            changeFeeLevel={handleFeeChange}
-                        />
-                    </Box>
-
-                    {composedLevelsError && (
+                <Column gap={8}>
+                    {hasPreapprovedAmount && (
                         <Banner
-                            intent="critical"
-                            icon="warning"
-                            description={
-                                <Translation
-                                    id={composedLevelsError.id}
-                                    values={composedLevelsError.values}
-                                />
-                            }
+                            intent="info"
+                            icon={InfoIcon}
+                            description={<Translation id="TR_APPROVAL_MODAL_APPROVE_BANNER" />}
                         />
                     )}
+                    <CardList>
+                        <CardList.Item>
+                            <Text typographyStyle="body-sm">
+                                <Translation id="TR_ACCOUNT" />
+                            </Text>
+                            <Row gap={8}>
+                                <NetworkIcon networkSymbol={account.symbol} size={20} />
+                                <AccountLabeling
+                                    account={account}
+                                    showAccountTypeBadge
+                                    accountTypeBadgeSize="small"
+                                    typographyStyle="body-sm"
+                                />
+                            </Row>
+                        </CardList.Item>
+                        <AllowanceModalProviderInfo
+                            provider={provider}
+                            spender={spender}
+                            showSpender={showSpender}
+                        />
+                        {hasPreapprovedAmount && (
+                            <CardList.Item>
+                                <Text typographyStyle="body-sm">
+                                    <Translation id="TR_APPROVAL_CURRENT_LIMIT" />
+                                </Text>
+                                <Row gap={8}>
+                                    <AssetLogo
+                                        symbol={account.symbol}
+                                        contractAddress={token.contract}
+                                        size={20}
+                                        placeholder={displaySymbol}
+                                    />
+                                    <Text typographyStyle="body-sm-strong">
+                                        {isPreapprovedAmountUnlimited ? (
+                                            <Translation id="TR_APPROVE_AMOUNT_UNLIMITED" />
+                                        ) : (
+                                            `${preapprovedAmount} ${displaySymbol}`
+                                        )}
+                                    </Text>
+                                </Row>
+                            </CardList.Item>
+                        )}
+                        <ApproveModalTypeSelector
+                            approvalType={approvalType}
+                            isLoading={isLoading}
+                            data={data}
+                            networkSymbol={account.symbol}
+                            onSelect={selectApprovalType}
+                            provider={provider}
+                            token={token}
+                            displayAmount={inputAmount}
+                            hasPreapprovedAmount={hasPreapprovedAmount}
+                        />
+                    </CardList>
+
+                    {isDebug && (
+                        <CollapsibleBox
+                            heading={
+                                <Text typographyStyle="body-sm">
+                                    <DebugOnlyBadge>
+                                        <Translation id="TR_APPROVAL_DATA" />
+                                    </DebugOnlyBadge>
+                                </Text>
+                            }
+                            toggleIcon={CaretDownIcon}
+                            toggleIconSize={20}
+                        >
+                            <Text wordBreak="break-all" isMonospaced>
+                                {data}
+                            </Text>
+                        </CollapsibleBox>
+                    )}
+
+                    <Column gap={12}>
+                        <Card>
+                            <Fees
+                                label="TR_TX_FEE"
+                                feeInfo={feeInfo}
+                                account={account}
+                                composedLevels={composedLevels}
+                                changeFeeLevel={handleFeeChange}
+                                headerTypographyStyle="body-sm"
+                            />
+                        </Card>
+
+                        {composedLevelsError && (
+                            <Banner
+                                intent="critical"
+                                icon={WarningIcon}
+                                description={
+                                    <Translation
+                                        id={composedLevelsError.id}
+                                        values={composedLevelsError.values}
+                                    />
+                                }
+                            />
+                        )}
+                    </Column>
                 </Column>
             </Modal>
         </FormProvider>

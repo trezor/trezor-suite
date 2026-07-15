@@ -2,7 +2,12 @@ import { Page } from '@playwright/test';
 import { cloneDeep } from 'lodash';
 
 import { invityEndpoint, invityGeneralResponses } from '../../fixtures/invity';
-import { SellTradeResponse, SwapTradeResponse, TradeResponse } from '../../fixtures/invity/types';
+import {
+    SellTradeResponse,
+    SwapDexTradeResponse,
+    SwapTradeResponse,
+    TradeResponse,
+} from '../../fixtures/invity/types';
 import {
     getSignatureStatusesResponse,
     sendTransactionResponse,
@@ -44,7 +49,7 @@ export class TradingMock {
     }
 
     @step()
-    async routeSwapTrade(tradeResponse: SwapTradeResponse) {
+    async routeSwapTrade(tradeResponse: SwapTradeResponse | SwapDexTradeResponse) {
         await this.routeInvityGeneralEndpoints();
         await this.page.route(invityEndpoint.swapTrade, async (route, request) => {
             const modifiedTradeResponse = this.updateSwapTradeResponseIds(tradeResponse, request);
@@ -115,7 +120,10 @@ export class TradingMock {
         return modifiedResponse;
     };
 
-    updateSwapTradeResponseIds = (response: SwapTradeResponse, request: any) => {
+    updateSwapTradeResponseIds = (
+        response: SwapTradeResponse | SwapDexTradeResponse,
+        request: any,
+    ) => {
         const modifiedTradeResponse = cloneDeep(response);
         const requestPayload = request.postDataJSON();
         modifiedTradeResponse.orderId = requestPayload.trade.orderId;

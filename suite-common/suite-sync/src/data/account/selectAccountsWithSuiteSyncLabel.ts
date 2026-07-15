@@ -1,5 +1,7 @@
-import { createWeakMapSelector } from '@suite-common/redux-utils';
+import { type DeviceRootState, selectDeviceStaticSessionId } from '@suite-common/device';
+import { createWeakMapSelector, weakMapMemoize } from '@suite-common/redux-utils';
 import { type SuiteSyncAccount } from '@suite-common/suite-sync-storage';
+import { type AccountsRootState, selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';
 
@@ -12,22 +14,28 @@ export type AccountWithSuiteSyncLabel = Account & {
 };
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<SuiteSyncDataRootState>();
+const createVisibleDeviceAccountsSelector = createWeakMapSelector.withTypes<
+    SuiteSyncDataRootState & AccountsRootState & DeviceRootState
+>();
+
+const createAccountWithSuiteSyncLabel = weakMapMemoize(
+    (account: Account, label: string | null): AccountWithSuiteSyncLabel => ({ ...account, label }),
+);
 
 const mapAccountsToSuiteSyncLabel = (
     accounts: readonly Account[],
     suiteSyncAccountLabels: SuiteSyncAccount[],
 ): AccountWithSuiteSyncLabel[] =>
-    accounts.map(account => ({
-        ...account,
-        label:
+    accounts.map(account => {
+        const label =
             findSuiteSyncAccountLabel({
                 accounts: suiteSyncAccountLabels,
                 accountDescriptor: account.descriptor,
                 networkSymbol: account.symbol,
-            })?.label ??
-            // account.accountLabel ??
-            null,
-    }));
+            })?.label ?? null;
+
+        return createAccountWithSuiteSyncLabel(account, label);
+    });
 
 export const selectAccountsWithSuiteSyncLabel = createMemoizedSelector(
     [
@@ -37,6 +45,14 @@ export const selectAccountsWithSuiteSyncLabel = createMemoizedSelector(
             _accounts: readonly Account[],
             deviceStaticSessionId: StaticSessionId | null,
         ) => selectSuiteSyncAccounts(state, deviceStaticSessionId),
+    ],
+    mapAccountsToSuiteSyncLabel,
+);
+
+export const selectVisibleDeviceAccountsWithSuiteSyncLabel = createVisibleDeviceAccountsSelector(
+    [
+        selectVisibleDeviceAccounts,
+        state => selectSuiteSyncAccounts(state, selectDeviceStaticSessionId(state)),
     ],
     mapAccountsToSuiteSyncLabel,
 );

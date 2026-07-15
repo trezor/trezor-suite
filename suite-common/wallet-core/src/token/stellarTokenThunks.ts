@@ -8,11 +8,8 @@ import {
     isTestnet,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import {
-    buildAddTrustlineTransaction,
-    buildRemoveTrustlineTransaction,
-} from '@trezor/blockchain-link-utils/src/stellar';
 import TrezorConnect from '@trezor/connect';
+import stellar from '@trezor/network-stellar/runtime';
 import { StellarAssetType } from '@trezor/protobuf/src/definitions';
 
 import { selectRawNetworkFeeInfo } from '../fees/feesReducer';
@@ -72,23 +69,22 @@ const manageTrustline = async (
         issuer,
     };
 
+    const { buildAddTrustlineTransaction, buildRemoveTrustlineTransaction } = await stellar();
+
     // Build the appropriate trustline transaction
     const misc = account.misc as { stellarSequence: string };
     const transactionBuilder =
         operation === 'activate' ? buildAddTrustlineTransaction : buildRemoveTrustlineTransaction;
 
+    const testnet = isTestnet(account.symbol);
     const transaction = transactionBuilder({
         descriptor: account.descriptor,
         sequence: misc.stellarSequence,
         fee: feePerUnit,
         asset,
-        isTestnet: isTestnet(account.symbol),
+        isTestnet: testnet,
     });
-
-    const limit =
-        operation === 'activate'
-            ? '9223372036854775807' // max int64 in stroops for activation
-            : '0'; // 0 to deactivate trustline
+    const xdrBase64 = transaction.toXDR();
 
     const response = await TrezorConnect.stellarSignTransaction({
         device: {
@@ -98,24 +94,8 @@ const manageTrustline = async (
             useEmptyPassphrase: device.useEmptyPassphrase,
         },
         path: account.path,
-        networkPassphrase: transaction.networkPassphrase,
-        transaction: {
-            source: transaction.source,
-            fee: Number.parseInt(transaction.fee, 10),
-            sequence: transaction.sequence,
-            memo: { type: 0 },
-            timebounds: {
-                minTime: 0,
-                maxTime: 0,
-            },
-            operations: [
-                {
-                    type: 'changeTrust',
-                    line: asset,
-                    limit,
-                },
-            ],
-        },
+        xdrBase64,
+        testnet,
     });
 
     if (!response.success) {

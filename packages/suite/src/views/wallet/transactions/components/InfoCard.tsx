@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { Card, Column, H4, Row, SkeletonRectangle, Text } from '@trezor/components';
+import { Card, Column, H4, Row, Skeleton, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount, HiddenPlaceholder, Sign } from 'src/components/suite';
@@ -35,7 +35,7 @@ export const InfoCard = (props: InfoCardProps) => {
                 >
                     {props.title}
                 </H4>
-                {props.isLoading && <SkeletonRectangle width="160px" />}
+                {props.isLoading && <Skeleton width={160} />}
 
                 {!props.isLoading && (
                     <>

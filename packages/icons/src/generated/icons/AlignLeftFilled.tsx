@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgAlignLeftFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M29 19v5a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h17a2 2 0 0 1 2 2M5 4a1 1 0 0 0-1 1v22a1 1 0 1 0 2 0V5a1 1 0 0 0-1-1m5 11h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H10a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2"
+        />
+    </svg>
+);
+export { SvgAlignLeftFilled as ReactComponent };

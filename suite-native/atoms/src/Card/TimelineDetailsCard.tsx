@@ -1,19 +1,22 @@
 import { type ReactNode } from 'react';
+import { Pressable } from 'react-native';
 
 import { Icon, type IconName } from '@suite-native/icons';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { type NativeStyle, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Box } from '../Box';
-import { Card } from './Card';
 import { OrderedListIcon } from '../OrderedListIcon';
 import { HStack, VStack } from '../Stack';
 import { Text } from '../Text';
+import { Card } from './Card';
 
 export type TimelineDetailsCardItem = {
     id: string;
     title: ReactNode;
     description?: ReactNode;
     icon?: ReactNode;
+    style?: NativeStyle<any>;
+    onPress?: () => void;
 };
 
 type TimelineDetailsCardProps = {
@@ -88,35 +91,43 @@ export const TimelineDetailsCard = ({
                 <Box style={applyStyle(separatorStyle)} />
                 <VStack spacing="sp16" padding="sp16">
                     {items.map((item, index) => (
-                        <HStack
-                            key={item.id}
-                            spacing="sp8"
-                            alignItems="flex-start"
-                            style={applyStyle(itemRowStyle)}
-                        >
+                        <Pressable key={item.id} onPress={item.onPress}>
                             <HStack
-                                spacing="sp12"
+                                spacing="sp8"
                                 alignItems="flex-start"
-                                style={applyStyle(itemTitleContainerStyle)}
+                                style={applyStyle(itemRowStyle)}
                             >
-                                {item.icon ??
-                                    renderItemIcon?.({ item, index }) ??
-                                    renderDefaultItemIcon(index)}
-                                <Text variant="body-sm-strong" style={applyStyle(itemTitleStyle)}>
-                                    {item.title}
-                                </Text>
-                            </HStack>
-                            {item.description && (
-                                <Text
-                                    variant="body-sm"
-                                    color="contentSecondary"
-                                    numberOfLines={1}
-                                    style={applyStyle(itemDescriptionStyle)}
+                                <HStack
+                                    spacing="sp12"
+                                    alignItems="flex-start"
+                                    style={applyStyle(itemTitleContainerStyle)}
                                 >
-                                    {item.description}
-                                </Text>
-                            )}
-                        </HStack>
+                                    {item.icon ??
+                                        renderItemIcon?.({ item, index }) ??
+                                        renderDefaultItemIcon(index)}
+                                    <Text
+                                        variant="body-sm-strong"
+                                        style={applyStyle(itemTitleStyle)}
+                                    >
+                                        {item.title}
+                                    </Text>
+                                </HStack>
+                                {item.description && (
+                                    <Text
+                                        variant="body-sm"
+                                        color="contentSecondary"
+                                        numberOfLines={1}
+                                        style={applyStyle(
+                                            item.style
+                                                ? [itemDescriptionStyle, item.style]
+                                                : itemDescriptionStyle,
+                                        )}
+                                    >
+                                        {item.description}
+                                    </Text>
+                                )}
+                            </HStack>
+                        </Pressable>
                     ))}
                 </VStack>
             </VStack>

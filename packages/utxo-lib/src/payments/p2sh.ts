@@ -8,13 +8,7 @@ import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import {
-    type Payment,
-    type PaymentFunction,
-    type PaymentOpts,
-    type Stack,
-    type StackFunction,
-} from '../types';
+import { type Payment, type PaymentOpts, type Stack } from '../types';
 import { BufferNSchema, BufferSchema, Type, assertType } from '../types/validation';
 
 const { OPS } = bscript;
@@ -74,7 +68,7 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
 
     const _address = lazy.value(() => bs58check.decodeAddress(a.address!, a.network));
 
-    const _chunks = lazy.value(() => bscript.decompile(a.input!)) as StackFunction;
+    const _chunks = lazy.value(() => bscript.decompile(a.input!));
 
     const _redeem = lazy.value((): Payment => {
         const chunks = _chunks();
@@ -85,13 +79,13 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
             input: bscript.compile(chunks.slice(0, -1)),
             witness: a.witness || [],
         };
-    }) as PaymentFunction;
+    });
 
     // output dependents
     lazy.prop(o, 'address', () => {
         if (!o.hash) return;
 
-        return bs58check.encodeAddress(o.hash, network!.scriptHash, network);
+        return bs58check.encodeAddress(o.hash, network.scriptHash, network);
     });
     lazy.prop(o, 'hash', () => {
         // in order of least effort
@@ -115,7 +109,7 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
         if (!a.redeem?.input || !a.redeem.output) return;
 
         return bscript.compile(
-            ([] as Stack).concat(bscript.decompile(a.redeem.input) as Stack, a.redeem.output),
+            ([] as Stack).concat(bscript.decompile(a.redeem.input), a.redeem.output),
         );
     });
     lazy.prop(o, 'witness', () => {
@@ -124,7 +118,7 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
     });
     lazy.prop(o, 'name', () => {
         const nameParts = ['p2sh'];
-        if (o.redeem?.name !== undefined) nameParts.push(o.redeem.name!);
+        if (o.redeem?.name !== undefined) nameParts.push(o.redeem.name);
 
         return nameParts.join('-');
     });
@@ -178,7 +172,7 @@ export function p2sh(a: Payment, opts?: PaymentOpts): Payment {
                 if (!hasInput && !hasWitness) throw new TypeError('Empty input');
                 if (hasInput && hasWitness) throw new TypeError('Input and witness provided');
                 if (hasInput) {
-                    const richunks = bscript.decompile(redeem.input) as Stack;
+                    const richunks = bscript.decompile(redeem.input);
                     if (!bscript.isPushOnly(richunks))
                         throw new TypeError('Non push-only scriptSig');
                 }

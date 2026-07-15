@@ -1,6 +1,7 @@
-export * from './api';
+export type * from './api';
 export type * from './account';
 export * from './coinInfo';
+export * from './definitions';
 export * from './device';
 export * from './fees';
 export type * from './firmware';
@@ -9,15 +10,16 @@ export * from './params';
 export * from './settings';
 
 // altcoin related types. these exports should satisfy needs of 3rd party apps
-export * from './api/cardano';
-export * from './api/bitcoin';
-export * from './api/ripple';
-export * from './api/ethereum';
-export * from './api/monero';
-export * from './api/solana';
-export * from './api/stellar';
-export * from './api/tezos';
-export * from './api/tron';
+export * from './api/cardano/common';
+export * from './api/bitcoin/common';
+export * from './api/ripple/common';
+export * from './api/ethereum/common';
+export * from './api/monero/common';
+export * from './api/solana/common';
+export * from './api/stellar/common';
+export * from './api/tezos/common';
+export * from './api/tron/common';
+export * from './api/nostr/common';
 
 // types used in @trezor/suite. if you need a type, reexport it from ./api/<method>
 export type {
@@ -26,29 +28,32 @@ export type {
     PrecomposeResultNonFinal,
     PrecomposeResultFinal,
     PrecomposedResult,
-} from './api/composeTransaction';
+} from './api/bitcoin/composeTransaction';
 export type {
     PrecomposedTransactionCardano,
     PrecomposedTransactionErrorCardano,
     PrecomposedTransactionFinalCardano,
     PrecomposedTransactionNonFinalCardano,
-} from './api/cardanoComposeTransaction';
-export type { RecoveryDevice } from './api/recoveryDevice';
-export type { AuthenticateDeviceParams, AuthenticateDeviceResult } from './api/authenticateDevice';
-export { CipherKeyValue } from './api/cipherKeyValue';
-export { ApplySettings } from './api/applySettings';
-export { AuthorizeCoinjoin } from './api/authorizeCoinjoin';
-export * from './api/uiResponse';
+} from './api/cardano/cardanoComposeTransaction';
+export type { RecoveryDevice } from './api/management/recoveryDevice';
+export type {
+    AuthenticateDeviceParams,
+    AuthenticateDeviceResult,
+} from './api/management/authenticateDevice';
+export { CipherKeyValue } from './api/device/cipherKeyValue';
+export { ApplySettings } from './api/management/applySettings';
+export { AuthorizeCoinjoin } from './api/bitcoin/authorizeCoinjoin';
+export * from './api/internal/uiResponse';
 export type {
     ComposeUtxo,
     ComposeResultFinal,
     ComposeResult,
     ComposedInputs,
     PrecomposeParams,
-} from './api/composeTransaction';
-export { CancelCoinjoinAuthorization } from './api/cancelCoinjoinAuthorization';
-export { ChangeLanguage } from './api/changeLanguage';
-export type { GetAccountInfo } from './api/getAccountInfo';
+} from './api/bitcoin/composeTransaction';
+export { CancelCoinjoinAuthorization } from './api/bitcoin/cancelCoinjoinAuthorization';
+export { ChangeLanguage } from './api/management/changeLanguage';
+export type { GetAccountInfo } from './api/account/getAccountInfo';
 export {
     ACCOUNT_TYPES,
     type AccountTypeItem,
@@ -56,14 +61,14 @@ export {
     type AdditionalParams,
     type DiscoverAccountsProgress,
     CARDANO_DERIVATIONS,
-} from './api/discoverAccounts';
-export { type FirmwareUpdateResponse } from './api/firmwareUpdate';
-export { type UpdateConnectSettings } from './api/updateConnectSettings';
-export { GetOwnershipId } from './api/getOwnershipId';
-export { GetOwnershipProof } from './api/getOwnershipProof';
-export { PushTransaction } from './api/pushTransaction';
-export { RequestLoginSchema } from './api/requestLogin';
-export { UnlockPathParams } from './api/unlockPath';
+} from './api/account/discoverAccounts';
+export { type FirmwareUpdateResponse } from './api/device/firmwareUpdate';
+export { type UpdateConnectSettings } from './api/internal/updateConnectSettings';
+export { GetOwnershipId } from './api/device/getOwnershipId';
+export { GetOwnershipProof } from './api/device/getOwnershipProof';
+export { PushTransaction } from './api/blockchain/pushTransaction';
+export { RequestLoginSchema } from './api/device/requestLogin';
+export { UnlockPathParams } from './api/device/unlockPath';
 export { FirmwareType } from '@trezor/device-utils';
 
 export type {

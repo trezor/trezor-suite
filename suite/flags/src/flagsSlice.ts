@@ -1,8 +1,9 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import { DEVICE } from '@trezor/connect';
 
-export interface FlagsState {
+export type FlagsState = {
     initialRun: boolean;
     taprootBannerClosed: boolean;
     firmwareTypeBannerClosed: boolean;
@@ -13,11 +14,13 @@ export interface FlagsState {
     showTEXDashboardPromoBanner: boolean;
     showTS7DashboardPromoBanner: boolean;
     showStablecoinYieldDashboardPromoBanner: boolean;
+    showOnboardingFeedbackBanner: boolean;
     showSettingsDesktopAppPromoBanner: boolean;
     activateAssetsBannerClosed: boolean;
     stakeEthBannerClosed: boolean;
     stakeSolBannerClosed: boolean;
     stakeCardanoBannerClosed: boolean;
+    stakeTronBannerClosed: boolean;
     showDashboardStakingPromoBanner: boolean;
     suspiciousTransactionsTooltipClosed: boolean;
     showUnhideTokenModal: boolean;
@@ -27,7 +30,9 @@ export interface FlagsState {
     stellarLimitedHistoryBannerClosed: boolean;
     solanaLimitedHistoryBannerClosed: boolean;
     hasSeenDisconnectTooltip: boolean;
-}
+    showNoDeviceEshopSidebarBanner: boolean;
+    areNoDeviceEshopBannersDisabled: boolean;
+};
 
 export type FlagsRootState = { flags: FlagsState };
 
@@ -42,11 +47,13 @@ export const flagsInitialState: FlagsState = {
     showTEXDashboardPromoBanner: true,
     showTS7DashboardPromoBanner: true,
     showStablecoinYieldDashboardPromoBanner: true,
+    showOnboardingFeedbackBanner: false,
     showSettingsDesktopAppPromoBanner: true,
     activateAssetsBannerClosed: false,
     stakeEthBannerClosed: false,
     stakeSolBannerClosed: false,
     stakeCardanoBannerClosed: false,
+    stakeTronBannerClosed: false,
     showDashboardStakingPromoBanner: true,
     suspiciousTransactionsTooltipClosed: false,
     showCopyAddressModal: true,
@@ -56,18 +63,30 @@ export const flagsInitialState: FlagsState = {
     stellarLimitedHistoryBannerClosed: false,
     solanaLimitedHistoryBannerClosed: false,
     hasSeenDisconnectTooltip: false,
+    showNoDeviceEshopSidebarBanner: true,
+    areNoDeviceEshopBannersDisabled: false,
 };
 
 const flagsSlice = createSliceWithExtraDeps({
     name: 'flags',
     initialState: flagsInitialState,
     reducers: {
-        setFlag: (state, { payload }: PayloadAction<{ key: keyof FlagsState; value: boolean }>) => {
+        setFlag: (
+            state: FlagsState,
+            { payload }: PayloadAction<{ key: keyof FlagsState; value: boolean }>,
+        ) => {
             state[payload.key] = payload.value;
         },
     },
     extraReducers: (builder, extra) => {
-        builder.addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadFlags);
+        builder
+            .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadFlags)
+            .addCase(DEVICE.CONNECT, state => {
+                state.areNoDeviceEshopBannersDisabled = true;
+            })
+            .addCase(DEVICE.CONNECT_UNACQUIRED, state => {
+                state.areNoDeviceEshopBannersDisabled = true;
+            });
     },
 });
 
@@ -83,6 +102,8 @@ export const selectIsTS7DashboardPromoBannerShown = (state: FlagsRootState) =>
     state.flags.showTS7DashboardPromoBanner;
 export const selectIsStablecoinYieldDashboardPromoBannerShown = (state: FlagsRootState) =>
     state.flags.showStablecoinYieldDashboardPromoBanner;
+export const selectIsOnboardingFeedbackBannerShown = (state: FlagsRootState) =>
+    state.flags.showOnboardingFeedbackBanner;
 export const selectIsSettingsDesktopAppPromoBannerShown = (state: FlagsRootState) =>
     state.flags.showSettingsDesktopAppPromoBanner;
 export const selectIsActivateAssetsBannerClosed = (state: FlagsRootState) =>
@@ -91,3 +112,7 @@ export const selectIsUnhideTokenModalShown = (state: FlagsRootState) =>
     state.flags.showUnhideTokenModal;
 export const selectIsCopyAddressModalShown = (state: FlagsRootState) =>
     state.flags.showCopyAddressModal;
+export const selectIsNoDeviceEshopSidebarBannerShown = (state: FlagsRootState) =>
+    state.flags.showNoDeviceEshopSidebarBanner;
+export const selectAreNoDeviceEshopBannersDisabled = (state: FlagsRootState) =>
+    state.flags.areNoDeviceEshopBannersDisabled;

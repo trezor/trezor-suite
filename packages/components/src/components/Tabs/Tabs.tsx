@@ -2,7 +2,7 @@ import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import styled from 'styled-components';
 
-import { type Elevation, borders, mapElevationToBorder, spacings } from '@trezor/theme';
+import { borders, spacings } from '@trezor/theme';
 
 import { TabsContext } from './TabsContext';
 import { TabsItem } from './TabsItem';
@@ -15,7 +15,6 @@ import {
     withFrameProps,
 } from '../../utils/frameProps';
 import { type TransientProps } from '../../utils/transientProps';
-import { useElevation } from '../ElevationContext/ElevationContext';
 import { Row } from '../Flex/Flex';
 
 export const allowedTabsFrameProps = ['margin'] as const satisfies FramePropsKeys[];
@@ -23,7 +22,6 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedTabsFrameProps)[number]
 
 type ContainerProps = TransientProps<AllowedFrameProps> & {
     $hasBorder?: boolean;
-    $elevation: Elevation;
     $indicatorWidth: number;
     $size: TabsSize;
     $indicatorPosition: number;
@@ -32,7 +30,7 @@ type ContainerProps = TransientProps<AllowedFrameProps> & {
 const Container = styled.div<ContainerProps>`
     width: 100%;
     padding-bottom: ${mapSizeToContainerPaddingBottom};
-    border-bottom: ${borders.widths.small} solid ${mapElevationToBorder};
+    border-bottom: ${borders.widths.small} solid ${({ theme }) => theme.borderNeutral};
     position: relative;
 
     ${({ $hasBorder }) => !$hasBorder && `border-bottom: 0;`}
@@ -70,7 +68,6 @@ const Tabs = ({
     children,
     ...rest
 }: TabsProps) => {
-    const { elevation } = useElevation();
     const [indicatorWidth, setIndicatorWidth] = useState(0);
     const [indicatorPosition, setIndicatorPosition] = useState(0);
     const tabsRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
@@ -114,7 +111,6 @@ const Tabs = ({
             <Container
                 ref={containerRef}
                 $hasBorder={hasBorder}
-                $elevation={elevation}
                 $indicatorWidth={indicatorWidth}
                 $indicatorPosition={indicatorPosition}
                 $size={size}

@@ -1,10 +1,21 @@
 {
     "extends": "../../tsconfig.lib.json",
     "include": ["./src"],
-    "compilerOptions": { "outDir": "./lib" },
+    "compilerOptions": {
+        "outDir": "./lib",
+        "rootDir": "./src"
+    },
     "references": [
-        { "path": "../../coins/coins-solana" },
         { "path": "../env-utils" },
+        {
+            "path": "../../networks/ripple/network-ripple"
+        },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
         { "path": "../utils" },
         { "path": "../blockchain-link-types" },
         { "path": "../eslint" },

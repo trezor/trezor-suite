@@ -47,7 +47,6 @@ jobs:
     with:
       target: "desktop"
       pw-config: "./playwright-config/playwright-desktop-connect-pr.config.ts"
-      workspace-dependencies: "@trezor/suite-desktop"
       test-group: ${{ matrix.TEST_GROUP }}
       fail-fast: "false"
       currents-project-id: "4ytF0E"

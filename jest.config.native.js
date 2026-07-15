@@ -25,7 +25,7 @@ module.exports = {
         '^@evolu/react-native$': '<rootDir>/../../suite-native/test-utils/src/mocks/evoluMock.ts',
         '^@evolu/react-native/expo-sqlite$':
             '<rootDir>/../../suite-native/test-utils/src/mocks/evoluMock.ts',
-        '^(@formatjs/[^/]+)/(polyfill|locale-data/.+)$': '<rootDir>/../../node_modules/$1/$2.js',
+        '^(@formatjs/[^/]+)/(polyfill|locale-data/.+)$': '<rootDir>/../../node_modules/$1/$2',
         '^@rozenite/redux-devtools-plugin$':
             '<rootDir>/../../suite-native/test-utils/src/mocks/rozeniteReduxDevtoolsPluginMock.ts',
     },
@@ -46,6 +46,7 @@ module.exports = {
         '<rootDir>/../../suite-native/test-utils/src/mocks/expoAndRNMock.jsx',
         '<rootDir>/../../suite-native/test-utils/src/mocks/everstakeJestSetup.js',
         '<rootDir>/../../suite-native/test-utils/src/mocks/TextEncoderMock.js',
+        '<rootDir>/../../suite-native/test-utils/src/mocks/randomUUIDMock.js',
         '<rootDir>/../../suite-common/tx-simulation/src/jestSetup.ts',
         '<rootDir>/../../node_modules/@shopify/react-native-skia/jestSetup.js',
         '<rootDir>/../../node_modules/@shopify/flash-list/jestSetup.js',

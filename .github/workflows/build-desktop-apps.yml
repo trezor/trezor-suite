@@ -33,31 +33,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           lfs: true
           submodules: true
       - name: Install node and yarn
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
-      - name: Install Socket Firewall
-        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
         continue-on-error: true
         with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
+          version: v0.19.1
       - name: Install deps and build libs
+        # not installing @trezor/suite-desktop and @trezor/suite-desktop-core, because this is only the renderer process
         run: |
-          $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
+          yarn workspaces focus trezor-suite @trezor/suite-desktop-ui @trezor/suite-build @trezor/suite-data @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/transport-bridge build:lib
       - name: Build Electron Renderer bundle
-        run: yarn workspace @trezor/suite-desktop build:ui
+        run: yarn workspace @trezor/suite-build build:desktop
       - name: Cache Electron renderer bundle
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
           path: packages/suite-desktop/build
           key: renderer-bundle-${{ github.sha }}
@@ -79,32 +78,26 @@ jobs:
             platform: mac
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           lfs: true
           submodules: true
       - name: Install node and yarn
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
 
       - name: Restore Electron renderer bundle
-        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
           path: packages/suite-desktop/build
           key: renderer-bundle-${{ github.sha }}
           fail-on-cache-miss: true
 
-      - name: Install Socket Firewall
-        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
-        continue-on-error: true
-        with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
+      # safedep/pmg not available on macOS (that's ok, it already guards the `build-and-cache-renderer` job)
       - name: Install deps and build libs
         run: |
-          $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
+          yarn workspaces focus trezor-suite @trezor/suite-desktop @trezor/suite-desktop-ui @trezor/suite-desktop-core @trezor/suite-build @trezor/suite-data @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/transport-bridge build:lib
@@ -148,25 +141,23 @@ jobs:
       options: --user 1001
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           lfs: true
           submodules: true
       - name: Install node and yarn
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
 
-      - name: Install Socket Firewall
-        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
         continue-on-error: true
         with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
+          version: v0.19.1
       - name: Install deps and build libs
         run: |
-          $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
+          yarn workspaces focus trezor-suite @trezor/suite-desktop @trezor/suite-desktop-ui @trezor/suite-desktop-core @trezor/suite-build @trezor/suite-data @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
 
       - name: Build libs

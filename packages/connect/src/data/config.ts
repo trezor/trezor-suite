@@ -212,6 +212,15 @@ export const config: Config = {
             comment: ['Cardano SignMessage call added in 2.9.1'],
         },
         {
+            methods: ['nostrGetPublicKey', 'nostrSignEvent'],
+            firmwareType: 'production',
+            min: { T1B1: '0', T2T1: '0', T2B1: '0', T3B1: '0', T3T1: '0', T3W1: '0' },
+            comment: [
+                'Nostr is only available on debug / unsigned firmware builds.',
+                'On production firmware the method is rejected as FIRMWARE_NOT_SUPPORTED.',
+            ],
+        },
+        {
             capabilities: ['evolu'],
             methods: [
                 'evoluGetNode',

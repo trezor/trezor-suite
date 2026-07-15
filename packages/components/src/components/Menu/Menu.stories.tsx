@@ -1,5 +1,7 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
+import { MoonIcon, SunIcon } from '@trezor/icons';
+
 import { Menu as MenuComponent, type MenuProps, allowedMenuFrameProps } from './Menu';
 import { getFramePropsStory } from '../../utils/frameProps';
 
@@ -14,12 +16,12 @@ export const Menu: StoryObj<MenuProps> = {
         items: [
             {
                 label: 'Light mode',
-                icon: 'sun',
+                icon: SunIcon,
                 onClick: () => {},
             },
             {
                 label: 'Dark mode',
-                icon: 'moon',
+                icon: MoonIcon,
                 onClick: () => {},
             },
         ],

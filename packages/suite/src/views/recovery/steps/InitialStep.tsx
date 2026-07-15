@@ -2,7 +2,7 @@ import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { getCheckBackupUrl } from '@suite-common/suite-utils';
-import { BulletList, Card, Paragraph } from '@trezor/components';
+import { Card, Paragraph, StepList } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
@@ -46,8 +46,8 @@ export const InitialStep = ({ isUnderstood, setIsUnderstood }: InitialStepProps)
 
     return (
         <>
-            <BulletList gap={spacings.xl} titleGap={spacings.xxxs} bulletGap={spacings.lg}>
-                <BulletList.Item
+            <StepList gap={spacings.xl} titleGap={spacings.xxxs} bulletGap={spacings.lg}>
+                <StepList.Item
                     title={
                         <Paragraph typographyStyle="body-sm" textWrap="pretty">
                             <Translation id={checkRecoverySeedMap[deviceModelInternal]} />
@@ -68,8 +68,8 @@ export const InitialStep = ({ isUnderstood, setIsUnderstood }: InitialStepProps)
                             }
                         />
                     </Paragraph>
-                </BulletList.Item>
-                <BulletList.Item
+                </StepList.Item>
+                <StepList.Item
                     title={
                         <Paragraph typographyStyle="body-sm" textWrap="pretty">
                             <Translation id={enterSeedInstructionsMap[deviceModelInternal]} />
@@ -84,8 +84,8 @@ export const InitialStep = ({ isUnderstood, setIsUnderstood }: InitialStepProps)
                     >
                         <Translation id="TR_ENTER_ALL_WORDS_IN_CORRECT" />
                     </Paragraph>
-                </BulletList.Item>
-            </BulletList>
+                </StepList.Item>
+            </StepList>
             <Card margin={{ top: spacings.xxl }}>
                 <CheckItem
                     data-testid="@recovery/user-understands-checkbox"

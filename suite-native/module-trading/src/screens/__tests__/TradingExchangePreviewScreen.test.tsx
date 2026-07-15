@@ -17,6 +17,7 @@ import {
     exchangeQuotes,
     getBtcAccount,
     getEthAccount,
+    mercuryoDexQuote,
     mercuryoFixedWorstQuote,
     oneInchFusionPlusWithEip712SignDataQuote,
 } from '@suite-native/trading-fixtures';
@@ -56,7 +57,7 @@ jest.mock('@suite-common/device', () => ({
 }));
 
 const mockConfirmTrade = jest.fn().mockResolvedValue(Promise.resolve());
-const mockFetchFeesAndCompose = jest.fn();
+const mockComposeTradingTransaction = jest.fn();
 const mockSignAndSendTransaction = jest.fn();
 const mockResolveConsent = jest.fn();
 const mockAbortConfirmTrade = jest.fn();
@@ -66,7 +67,7 @@ jest.mock('../../hooks/exchange/useExchangeFlow', () => ({
     useExchangeFlow: () => ({
         abortConfirmTrade: mockAbortConfirmTrade,
         confirmTrade: mockConfirmTrade,
-        fetchFeesAndCompose: mockFetchFeesAndCompose,
+        composeTradingTransaction: mockComposeTradingTransaction,
         signAndSendTransaction: mockSignAndSendTransaction,
         signDataAndConfirm: jest.fn(),
         isConsentRequested: false,
@@ -208,11 +209,12 @@ describe('TradingExchangePreviewScreen', () => {
     });
 
     it('should render transaction details section', () => {
-        const { result } = renderTradingExchangePreviewScreen();
+        const {
+            result: { getByText },
+        } = renderTradingExchangePreviewScreen();
 
-        expect(
-            result.getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.details')),
-        ).toBeOnTheScreen();
+        // 1st line of trade info is provider
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.provider'))).toBeOnTheScreen();
     });
 
     describe('Error Alert Functionality', () => {
@@ -334,7 +336,9 @@ describe('TradingExchangePreviewScreen', () => {
         const { result, reportMock } = renderTradingExchangePreviewScreen();
         reportMock.mockClear();
 
-        await userEvent.press(result.getByText('Continue'));
+        await userEvent.press(
+            result.getByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
+        );
 
         expect(reportMock).toHaveBeenCalledTimes(1);
         expect(reportMock).toHaveBeenCalledWith({
@@ -450,5 +454,24 @@ describe('TradingExchangePreviewScreen', () => {
             expect(result.getByText('Transaction error occurred')).toBeOnTheScreen();
             expect(result.queryByText('Quote error message')).toBeNull();
         });
+    });
+
+    it('should not confirm DEX quote without slippage', async () => {
+        const testStore = createStore({ ...mercuryoDexQuote, swapSlippage: undefined });
+
+        renderTradingExchangePreviewScreen(false, testStore);
+
+        await waitFor(() => {
+            expect(mockConfirmTrade).toHaveBeenCalled();
+        });
+
+        expect(mockConfirmTrade).toHaveBeenCalledTimes(1);
+        expect(mockConfirmTrade).toHaveBeenCalledWith(
+            expect.objectContaining({
+                trade: expect.objectContaining({
+                    swapSlippage: '1',
+                }),
+            }),
+        );
     });
 });

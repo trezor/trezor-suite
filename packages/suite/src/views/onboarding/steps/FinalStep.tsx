@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectDeviceName } from '@suite-common/device';
+import { CheckIcon } from '@trezor/icons';
 
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 
@@ -10,7 +11,7 @@ export const FinalStep = () => {
 
     return (
         <OnboardingCard
-            iconName="check"
+            icon={CheckIcon}
             heading={<Translation id="TR_ONBOARDING_FINAL_HEADING" />}
             description={
                 <Translation

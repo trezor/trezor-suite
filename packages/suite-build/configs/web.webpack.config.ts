@@ -1,5 +1,4 @@
 import CopyWebpackPlugin from 'copy-webpack-plugin';
-import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
@@ -111,7 +110,6 @@ const config: webpack.Configuration = {
             template: path.resolve(__dirname, '../../connect-web/src/bootstrap/bootstrap.html'),
             filename: path.join(baseDir, 'build/connect-popup/bootstrap.html'),
         }),
-        ...(!isDev ? [new CssMinimizerPlugin()] : []),
     ],
 };
 

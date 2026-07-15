@@ -36,6 +36,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
     test.use({
         deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
     });
+
     test.beforeEach(
         async ({
             page,
@@ -55,6 +56,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
                     await route.fulfill({ json: sellWatchEthereum });
                 });
             });
+
             await onboardingPage.completeOnboarding();
 
             await test.step('Enable Ethereum and open its token sell trading', async () => {

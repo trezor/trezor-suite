@@ -21,11 +21,11 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "expo-haptics": "~55.0.8",
-        "expo-linear-gradient": "~55.0.8",
-        "react": "19.2.4",
-        "react-native": "0.83.2",
+        "expo-haptics": "~56.0.3",
+        "expo-linear-gradient": "~56.0.4",
+        "react": "19.2.3",
+        "react-native": "0.85.3",
         "react-native-gesture-handler": "2.31.1",
-        "react-native-reanimated": "~4.2.1"
+        "react-native-reanimated": "4.3.1"
     }
 }

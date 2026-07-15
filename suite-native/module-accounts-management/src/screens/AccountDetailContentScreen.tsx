@@ -46,6 +46,8 @@ export const AccountDetailContentScreen = ({
 
     return (
         <Screen
+            /** Adding scrollable wraps content in ScrollView which is unwanted for this screen because list component already adds the scrollview **/
+            isScrollable={false}
             header={
                 tokenContract ? (
                     <TokenAccountDetailScreenHeader
@@ -57,9 +59,11 @@ export const AccountDetailContentScreen = ({
                 )
             }
             noHorizontalPadding
+            noBottomPadding
+            hasBottomInset={false}
         >
             <TransactionList
-                accountKey={account.key}
+                account={account}
                 tokenContract={tokenContract}
                 listHeaderComponent={listHeaderComponent}
             />

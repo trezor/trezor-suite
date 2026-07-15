@@ -9,7 +9,7 @@ export default {
         {
             description: 'Bcash: 1 input, 1 output, 1 change',
             params: {
-                coin: 'Bcash',
+                coin: 'bch',
                 inputs: [
                     {
                         address_n: "m/44'/145'/0'/0/0",
@@ -45,7 +45,7 @@ export default {
         {
             description: 'Bcash: 2 inputs, 1 output, no change',
             params: {
-                coin: 'Bcash',
+                coin: 'bch',
                 inputs: [
                     {
                         address_n: "m/44'/145'/0'/1/0",
@@ -85,7 +85,7 @@ export default {
         {
             description: 'Bcash: legacy address in output',
             params: {
-                coin: 'Bcash',
+                coin: 'bch',
                 inputs: [
                     {
                         address_n: "m/44'/145'/0'/1/0",

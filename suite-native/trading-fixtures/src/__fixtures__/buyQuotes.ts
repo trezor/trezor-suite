@@ -72,7 +72,7 @@ export const mercuryoCreditCardBuyQuote: BuyTrade = {
     paymentId: 'e709df77-ee9e-4d12-98c2-84004a19c546',
 };
 
-export const mercuryoGooglePayBuyQuote: BuyTrade = {
+const mercuryoGooglePayBuyQuote: BuyTrade = {
     fiatStringAmount: '10',
     fiatCurrency: 'EUR',
     receiveCurrency: 'bitcoin' as CryptoId,

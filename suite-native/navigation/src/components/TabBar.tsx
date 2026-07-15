@@ -1,9 +1,7 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useSelector } from 'react-redux';
 
 import { type BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
-import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { Box } from '@suite-native/atoms';
 import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -45,10 +43,6 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
 
-    const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
-
-    const shouldHideEarnTab = isBitcoinOnlyFirmware;
-
     return (
         <Box
             style={applyStyle(tabBarStyle, {
@@ -58,10 +52,6 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
             })}
         >
             {state.routes.map((route, index) => {
-                if (route.name === AppTabsRoutes.EarnStack && shouldHideEarnTab) {
-                    return null;
-                }
-
                 const isFocused = state.index === index;
                 const tabOption = tabItemOptions[route.name];
                 if (!tabOption) return null;

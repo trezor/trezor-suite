@@ -31,9 +31,12 @@ export enum EthereumABIType {
     ABI_UINT16 = 14,
     ABI_UINT8 = 15,
     ABI_BOOL = 16,
-    ABI_BYTES32 = 17,
-    ABI_BYTES = 20,
-    ABI_STRING = 21,
+    ABI_BYTES32 = 20,
+    ABI_BYTES16 = 21,
+    ABI_BYTES8 = 22,
+    ABI_BYTES4 = 23,
+    ABI_BYTES = 30,
+    ABI_STRING = 31,
 }
 
 export type EnumEthereumABIType = Static<typeof EnumEthereumABIType>;
@@ -53,6 +56,8 @@ export enum EthereumERC7730FieldFormatterType {
     FORMATTER_AMOUNT = 1,
     FORMATTER_TOKEN_AMOUNT = 2,
     FORMATTER_UNIT = 3,
+    FORMATTER_RAW = 4,
+    FORMATTER_DATE = 5,
 }
 
 export type EnumEthereumERC7730FieldFormatterType = Static<
@@ -80,6 +85,7 @@ export const EthereumERC7730FieldInfo = Type.Object(
         decimals: Type.Optional(Type.Number()),
         base: Type.Optional(Type.String()),
         prefix: Type.Optional(Type.Boolean()),
+        const_token_address: Type.Optional(Type.String()),
     },
     { $id: 'EthereumERC7730FieldInfo' },
 );

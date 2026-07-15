@@ -1,5 +1,5 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { type Discovery, type DiscoveryStatus, type Timestamp } from '@suite-common/wallet-types';
+import { type Discovery, type DiscoveryStatus } from '@suite-common/wallet-types';
 import { type DeviceUniquePath } from '@trezor/connect';
 
 import { discoveryActions } from './discoveryActions';
@@ -46,7 +46,8 @@ export const prepareDiscoveryReducer = createReducerWithExtraDeps(
                 status: 'starting',
                 isAddingHiddenWallet: payload.isAddingHiddenWallet,
                 isAddingExistingWallet: payload.isAddingExistingWallet,
-                startTimestamp: Date.now() as Timestamp,
+                useScopedCallIds: payload.useScopedCallIds,
+                startTimestamp: Date.now(),
             };
         });
         builder.addCase(discoveryActions.updateDiscovery, (state, { payload }) => {

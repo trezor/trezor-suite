@@ -15,7 +15,7 @@ export default {
             // "error": "signing.c:1021:Unsupported script type.",
             skip: ['1', '<2.3.2'],
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         amount: '31000000',
@@ -79,7 +79,7 @@ export default {
             // "error": "signing.c:1021:Unsupported script type.",
             skip: ['1', '<2.3.2'],
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         amount: '123456789',
@@ -136,7 +136,7 @@ export default {
             // "error": "signing.c:1021:Unsupported script type.",
             skip: ['1', '<2.3.2'],
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/84'/1'/0'/0/0",
@@ -188,7 +188,7 @@ export default {
             // "error": "messages.c:231:bytes overflow",
             skip: ['1', '<2.3.2'],
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/84'/1'/0'/0/0",
@@ -235,7 +235,7 @@ export default {
             // "error": "signing.c:1021:Unsupported script type.",
             skip: ['1', '<2.4.3'],
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/86'/1'/0'/0/1",
@@ -299,7 +299,7 @@ export default {
             // "error": "signing.c:1021:Unsupported script type.",
             skip: ['1', '<2.4.4'], // bug in prev implementation https://github.com/trezor/trezor-firmware/pull/2034
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         amount: '100000',
@@ -353,7 +353,7 @@ export default {
                 mnemonic: 'mnemonic_abandon', // <- important, external input is from all-all (previous case)
             },
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         amount: '100892',

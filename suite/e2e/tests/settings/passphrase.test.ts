@@ -11,6 +11,7 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
         await devicePrompt.confirmOnDevicePromptIsShown();
         await device.pressYes();
         await devicePrompt.confirmOnDevicePromptIsHidden();
+
         await test.step('Verifies notification toast is displayed and then disappears', async () => {
             await expect(page.getByTestId('@toast/settings-applied')).toBeVisible();
             await page.getByTestId('@toast/settings-applied').waitFor({ state: 'detached' });

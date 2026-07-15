@@ -3,24 +3,18 @@ import { type CryptoId } from 'invity-api';
 import { AccountLabel } from '@suite/account';
 import { Address } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
-import {
-    type TradingType,
-    cryptoIdToNetworkSymbolAndContractAddress,
-    useTradingAssets,
-} from '@suite-common/trading';
-import { type NetworkSymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
-import { Box, Column, Row, SkeletonRectangle, Text } from '@trezor/components';
+import { cryptoIdToNetworkSymbolAndContractAddress, useTradingAssets } from '@suite-common/trading';
+import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
+import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
 import { AssetLogo, CoinLogo } from '@trezor/product-components';
-import { borders } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite';
 import { type TradingPayGetLabelType } from 'src/types/trading/trading';
 import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
 
-interface TradingInfoItemProps {
+type TradingInfoItemProps = {
     account?: Account;
-    type: TradingType;
     label: TradingPayGetLabelType;
     currency?: CryptoId;
     amount?: string;
@@ -28,11 +22,10 @@ interface TradingInfoItemProps {
     receiveAddress?: string;
     cryptoAmountTestId?: string;
     accountInfoTestId?: string;
-}
+};
 
 export const TradingInfoItem = ({
     account,
-    type,
     isReceive,
     label,
     currency,
@@ -47,7 +40,7 @@ export const TradingInfoItem = ({
     const accountLabelPrefix = translationString(isReceive ? 'TR_TO' : 'TR_FROM').toLowerCase();
 
     const showAccountLabel = !!account;
-    const isExternalExchange = type === 'exchange' && !account && !!receiveAddress;
+    const isExternalAddress = !account && !!receiveAddress;
     const testIdPrefix = `@trading/detail/${isReceive ? 'receive' : 'send'}`;
 
     const {
@@ -73,7 +66,7 @@ export const TradingInfoItem = ({
                 <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                     <Translation id={label} />
                 </Text>
-                {(showAccountLabel || isExternalExchange) && (
+                {(showAccountLabel || isExternalAddress) && (
                     <Text
                         intent="neutral"
                         priority="secondary"
@@ -83,10 +76,10 @@ export const TradingInfoItem = ({
                     >
                         <Row>
                             {accountLabelPrefix}&nbsp;
-                            {isExternalExchange && (
+                            {isExternalAddress && (
                                 <Address isCopyAllowed isTruncated value={receiveAddress} />
                             )}
-                            {!isExternalExchange && account && (
+                            {!isExternalAddress && account && (
                                 <Text maxWidth={200} as="div">
                                     <AccountLabel
                                         account={account}
@@ -100,22 +93,13 @@ export const TradingInfoItem = ({
                 )}
             </Row>
             {id !== currency ? (
-                <SkeletonRectangle width="100%" height={75} />
+                <Skeleton width="100%" height={75} />
             ) : (
-                <Box
-                    borderWidth={borders.widths.medium}
-                    borderRadius={borders.radii.sm}
-                    padding={16}
-                    backgroundColor="legacyBackgroundSurfaceElevation2"
-                >
-                    <Row gap={8} justifyContent="space-between">
+                <Card type="contrast" paddingType="none">
+                    <Row padding={16} gap={8} justifyContent="space-between">
                         <Row gap={8} alignItems="center">
                             {isNativeToken ? (
-                                <CoinLogo
-                                    size={40}
-                                    symbol={symbol as NetworkSymbol}
-                                    type="tokenWithNetwork"
-                                />
+                                <CoinLogo size={40} symbol={symbol} type="tokenWithNetwork" />
                             ) : (
                                 <AssetLogo
                                     size={40}
@@ -158,16 +142,14 @@ export const TradingInfoItem = ({
                                         amount={amount}
                                         symbol={currencyInfo.symbol}
                                         rateType="current"
-                                        tokenAddress={
-                                            currencyInfo.contractAddress as TokenAddress | undefined
-                                        }
+                                        tokenAddress={currencyInfo.contractAddress}
                                         showApproximationIndicator
                                     />
                                 </Text>
                             )}
                         </Column>
                     </Row>
-                </Box>
+                </Card>
             )}
         </Column>
     );

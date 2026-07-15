@@ -8,12 +8,14 @@ type Attributes = {
 
 export const settingsGeneralBioAuthEvent: EventDef<Attributes, EventType.SettingsGeneralBioAuth> = {
     name: EventType.SettingsGeneralBioAuth,
-    descriptionTrigger: 'User set bio auth in App settings',
+    descriptionTrigger: 'User enables or disables biometric authentication in app settings',
     changelog: [{ version: '25.9.0', notes: 'added' }],
 
     attributes: {
         value: {
             changelog: [{ version: '25.9.0', notes: 'added' }],
+            description:
+                'Whether biometric authentication is enabled (`true`) or disabled (`false`)',
         },
     },
 };

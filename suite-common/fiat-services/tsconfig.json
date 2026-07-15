@@ -11,6 +11,9 @@
             "path": "../../packages/blockchain-link-utils"
         },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
         { "path": "../../packages/utils" }
     ]
 }

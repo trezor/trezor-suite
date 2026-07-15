@@ -17,7 +17,7 @@ import {
 } from '../../utils/frameProps';
 import { Box } from '../Box/Box';
 import { Row } from '../Flex/Flex';
-import { Icon, type IconName } from '../Icon/Icon';
+import { Icon, type IconComponent } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
 
 export const allowedBadgeFrameProps = ['margin', 'cursor'] as const satisfies FramePropsKeys[];
@@ -26,8 +26,8 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedBadgeFrameProps)[number
 export type BadgeProps = AllowedFrameProps & {
     size?: BadgeSize;
     intent?: BadgeIntent;
-    iconLeft?: IconName;
-    iconRight?: IconName;
+    iconLeft?: IconComponent;
+    iconRight?: IconComponent;
     children?: React.ReactNode;
     'data-testid'?: string;
 };
@@ -58,7 +58,7 @@ export const Badge = ({
             {...frameProps}
         >
             <Row gap={4} padding={mapSizeToPadding(size)}>
-                {iconLeft && <Icon name={iconLeft} {...iconProps} />}
+                {iconLeft && <Icon as={iconLeft} {...iconProps} />}
                 <Text
                     as="div"
                     typographyStyle={mapSizeToTypographyStyle(size)}
@@ -68,7 +68,7 @@ export const Badge = ({
                 >
                     {children}
                 </Text>
-                {iconRight && <Icon name={iconRight} {...iconProps} />}
+                {iconRight && <Icon as={iconRight} {...iconProps} />}
             </Row>
         </Box>
     );

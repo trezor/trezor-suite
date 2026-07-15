@@ -29,7 +29,7 @@ type PackageJson = {
 
 const getExpectedExport = (exportKey: string): ExportValue | null => {
     if (exportKey === '.') {
-        return { types: './lib/index.d.mts', default: './lib/index.mjs' };
+        return { types: './lib/index.d.ts', default: './lib/index.js' };
     }
 
     const match = LIB_EXPORT_KEY_PATTERN.exec(exportKey);
@@ -47,7 +47,7 @@ const getExpectedExport = (exportKey: string): ExportValue | null => {
 
     const basePath = exportKey.slice(0, -1);
 
-    // ESM imports already include the .mjs extension, so the wildcard is a passthrough.
+    // ESM imports already include the .js extension, so the wildcard is a passthrough.
     return `${basePath}*`;
 };
 
@@ -65,8 +65,8 @@ const validatePublicPackage = (packageJson: PackageJson): ReadonlyArray<string> 
         errors.push('"files" must include "lib/"');
     }
 
-    const expectedMain = './lib/index.mjs';
-    const expectedTypes = './lib/index.d.mts';
+    const expectedMain = './lib/index.js';
+    const expectedTypes = './lib/index.d.ts';
 
     if (!publishConfig?.main) {
         errors.push('Missing "publishConfig.main" field');

@@ -1,12 +1,10 @@
 import { useState } from 'react';
 
-import styled from 'styled-components';
-
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { Button, Column, Divider } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { Box, Column, IconCircle, useMediaQuery } from '@trezor/components';
+import { CommandIcon, LifebuoyIcon } from '@trezor/icons';
 
 import { setView } from 'src/actions/suite/guideActions';
 import {
@@ -14,13 +12,12 @@ import {
     GuideContent,
     GuideHeader,
     GuideSearch,
+    GuideSectionHeadline,
     GuideViewWrapper,
 } from 'src/components/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-const FeedbackLinkWrapper = styled.div`
-    padding: ${spacingsPx.md};
-`;
+import { GuideItem } from './GuideItem';
 
 export const Guide = () => {
     const [searchActive, setSearchActive] = useState(false);
@@ -35,30 +32,57 @@ export const Guide = () => {
         });
     };
 
+    const handleShortcutsClick = () => {
+        dispatch(setView('KEYBOARD_SHORTCUTS'));
+    };
+
+    // Keyboard shortcuts are irrelevant on touch devices without a physical keyboard.
+    const isTouchDevice = useMediaQuery('(hover: none) and (pointer: coarse)');
+
     return (
         <GuideViewWrapper>
             <GuideHeader label={<Translation id="TR_GUIDE_VIEW_HEADLINE_LEARN_AND_DISCOVER" />} />
             <Column justifyContent="space-between" height="100%">
                 <GuideContent>
                     <GuideSearch pageRoot={indexNode} setSearchActive={setSearchActive} />
-                    {!searchActive && <GuideCategories node={indexNode} />}
+                    {!searchActive && (
+                        <>
+                            <Box>
+                                <GuideSectionHeadline id="TR_GUIDE_HELP_TITLE" />
+                                <Column gap={8}>
+                                    <GuideItem
+                                        onClick={handleFeedbackButtonClick}
+                                        data-testid="@guide/button-feedback"
+                                        icon={
+                                            <IconCircle
+                                                icon={LifebuoyIcon}
+                                                size={32}
+                                                intent="neutral"
+                                            />
+                                        }
+                                    >
+                                        <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
+                                    </GuideItem>
+                                </Column>
+                            </Box>
+                            <Box margin={{ top: 16 }}>
+                                <GuideSectionHeadline id="TR_GUIDE_GUIDES_TITLE" />
+                                <GuideCategories node={indexNode} />
+                            </Box>
+                        </>
+                    )}
                 </GuideContent>
-
-                <div>
-                    <Divider margin={{ bottom: 0, top: 0 }} />
-                    <FeedbackLinkWrapper>
-                        <Button
-                            data-testid="@guide/button-feedback"
-                            onClick={handleFeedbackButtonClick}
-                            iconLeft="lifebuoy"
-                            intent="neutral"
-                            priority="secondary"
-                            width="100%"
+                {!isTouchDevice && (
+                    <Box padding={16}>
+                        <GuideItem
+                            onClick={handleShortcutsClick}
+                            data-testid="@guide/button-shortcuts"
+                            icon={<IconCircle icon={CommandIcon} size={32} intent="neutral" />}
                         >
-                            <Translation id="TR_GUIDE_SUPPORT_AND_FEEDBACK" />
-                        </Button>
-                    </FeedbackLinkWrapper>
-                </div>
+                            <Translation id="TR_GUIDE_KEYBOARD_SHORTCUTS" />
+                        </GuideItem>
+                    </Box>
+                )}
             </Column>
         </GuideViewWrapper>
     );

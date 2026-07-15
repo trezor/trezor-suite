@@ -18,7 +18,6 @@
         "@react-navigation/routers": "^7.5.3",
         "@rozenite/react-navigation-plugin": "^1.4.0",
         "@suite-common/dependency-injection": "workspace:*",
-        "@suite-common/device": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/trading": "workspace:*",
@@ -36,14 +35,17 @@
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "expo-system-ui": "~55.0.9",
-        "react": "19.2.4",
-        "react-native": "0.83.2",
+        "expo-system-ui": "~56.0.5",
+        "react": "19.2.3",
+        "react-native": "0.85.3",
         "react-native-edge-to-edge": "1.7.0",
         "react-native-keyboard-controller": "1.20.7",
-        "react-native-reanimated": "~4.2.1",
+        "react-native-reanimated": "4.3.1",
         "react-native-safe-area-context": "5.6.2",
-        "react-redux": "9.2.0",
+        "react-redux": "9.3.0",
         "type-fest": "5.5.0"
+    },
+    "devDependencies": {
+        "@suite-native/test-utils": "workspace:*"
     }
 }

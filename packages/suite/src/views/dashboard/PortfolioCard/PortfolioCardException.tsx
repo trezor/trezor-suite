@@ -13,11 +13,12 @@ import {
     Column,
     H3,
     IconCircle,
-    type IconName,
+    type IconComponent,
     Illustration,
     Paragraph,
     Row,
 } from '@trezor/components';
+import { PlusIcon, RepeatIcon, WarningIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
@@ -28,7 +29,7 @@ interface CTA {
     label?: TranslationKey;
     intent?: ComponentProps<typeof Button>['intent'];
     action: () => void;
-    icon?: IconName;
+    icon?: IconComponent;
     isDisabled?: boolean;
     size?: ComponentProps<typeof Button>['size'];
 }
@@ -48,7 +49,7 @@ const Container = ({ title, description, cta, dataTestBase, image }: ContainerPr
 
     return (
         <Column gap={spacings.xxs} data-testid={`@exception/${dataTestBase}`} alignItems="center">
-            {image ? image : <IconCircle name="warning" size={96} intent="warning" />}
+            {image ? image : <IconCircle icon={WarningIcon} size={96} intent="warning" />}
             <H3 data-testid={`@exception/${dataTestBase}/header`} margin={{ top: spacings.md }}>
                 <Translation id={title} />
             </H3>
@@ -177,7 +178,10 @@ export const PortfolioCardException = ({
                             values={{ details: discoveryFailedMessage(discovery, failed) }}
                         />
                     }
-                    cta={{ action: () => dispatch(startOrRestartDiscoveryThunk()), icon: 'repeat' }}
+                    cta={{
+                        action: () => dispatch(startOrRestartDiscoveryThunk()),
+                        icon: RepeatIcon,
+                    }}
                     dataTestBase={exception.type}
                 />
             );
@@ -200,7 +204,7 @@ export const PortfolioCardException = ({
                             dispatch(startOrRestartDiscoveryThunk());
                         },
                         label: 'TR_ACCOUNT_ENABLE_PASSPHRASE',
-                        icon: 'plus',
+                        icon: PlusIcon,
                     }}
                     dataTestBase={exception.type}
                 />

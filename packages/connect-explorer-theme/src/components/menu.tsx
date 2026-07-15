@@ -13,6 +13,7 @@ import styled from 'styled-components';
 import { Select } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
+import { arrayPartition } from '@trezor/utils';
 
 import { Anchor } from './anchor';
 import { Collapse } from './collapse';
@@ -121,10 +122,9 @@ export function Menu({
         tezos: 'xtz',
         tron: 'trx',
     };
+    const coinNames = Object.keys(coinSymbols);
     const routeCoinSegment = route.split('/')[2] ?? '';
-    const defaultActiveCoin = Object.keys(coinSymbols).includes(routeCoinSegment)
-        ? routeCoinSegment
-        : 'bitcoin';
+    const defaultActiveCoin = coinNames.includes(routeCoinSegment) ? routeCoinSegment : 'bitcoin';
     const [activeCoin, setActiveCoin] = useState(defaultActiveCoin);
     useEffect(() => {
         // Only on route change
@@ -137,16 +137,20 @@ export function Menu({
     const topLevelItems = directories.filter(item => item.kind !== 'Folder');
     const methodsItems =
         directories.find(item => item.kind === 'Folder' && item.name === 'methods')?.children ?? [];
-    const methodsOptions = methodsItems
-        ?.filter(item => item.kind === 'Folder' && Object.keys(coinSymbols).includes(item.name))
-        .map(item => ({
-            label: item.title,
-            value: item.name,
-        }));
-    const activeCoinItems = methodsItems?.find(item => item.name === activeCoin)?.children;
-    const otherMethods = methodsItems?.filter(
-        item => item.kind !== 'Folder' || !Object.keys(coinSymbols).includes(item.name),
+    const [coinMethods, nonCoinMethods] = arrayPartition(
+        methodsItems,
+        item => item.kind === 'Folder' && coinNames.includes(item.name),
     );
+    const methodsOptions = coinMethods.map(item => ({
+        label: item.title,
+        value: item.name,
+    }));
+    const activeCoinItems = methodsItems.find(item => item.name === activeCoin)?.children;
+    const [commonMethods, otherMethods] = arrayPartition(
+        nonCoinMethods,
+        item => item.kind === 'Folder' && item.name === 'common',
+    );
+    const commonMethodsItems = commonMethods[0]?.children ?? [];
     const otherFolders = directories.filter(
         item => item.kind === 'Folder' && item.name !== 'methods',
     );
@@ -189,6 +193,12 @@ export function Menu({
             </SelectWrapper>
             <MenuInner
                 directories={activeCoinItems ?? []}
+                anchors={anchors}
+                onlyCurrentDocs={onlyCurrentDocs}
+            />
+            <MenuCategory>Common Methods</MenuCategory>
+            <MenuInner
+                directories={commonMethodsItems}
                 anchors={anchors}
                 onlyCurrentDocs={onlyCurrentDocs}
             />

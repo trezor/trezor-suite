@@ -6,17 +6,9 @@ import {
     type PrecomposedLevels,
     type PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
+import { type TronAccountExtraData } from '@trezor/blockchain-link-types';
 import { type FeeLevel } from '@trezor/connect';
 import { throwError } from '@trezor/utils';
-
-export type TronResources = {
-    availableFreeBandwidth: number;
-    totalFreeBandwidth: number;
-    availableStakedBandwidth: number;
-    totalStakedBandwidth: number;
-    availableEnergy: number;
-    totalEnergy: number;
-};
 
 export type FeesContextType = {
     networkSymbol: NetworkSymbol;
@@ -25,7 +17,7 @@ export type FeesContextType = {
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano | null;
     feeInfo: FeeInfo;
     changeFeeLevel: (level: FeeLevel['label']) => void;
-    tronResources?: TronResources;
+    tronResources?: TronAccountExtraData;
 };
 
 export const FeesContext = createContext<FeesContextType | null>(null);

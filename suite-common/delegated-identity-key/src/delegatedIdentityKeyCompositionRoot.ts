@@ -12,7 +12,7 @@ import {
 } from './retrieveDelegatedIdentityKeyFromDevice';
 import { createSaveDelegatedIdentityKey } from './saveDelegatedIdentityKey';
 
-export type DelegatedIdentityKeyCompositionRootDeps = {
+type DelegatedIdentityKeyCompositionRootDeps = {
     dispatch: Dispatch;
     getState: () => DeviceRootState;
     trezorConnect: RetrieveDelegatedIdentityKeyFromDeviceDeps['trezorConnect'];

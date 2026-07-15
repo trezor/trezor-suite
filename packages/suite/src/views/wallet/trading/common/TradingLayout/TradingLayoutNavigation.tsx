@@ -2,7 +2,8 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { type Route, goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { type IconName, SubTabs } from '@trezor/components';
+import { type IconComponent, SubTabs } from '@trezor/components';
+import { HandshakeIcon, MinusIcon, PlusIcon, RepeatIcon } from '@trezor/icons';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -12,29 +13,29 @@ type TradingLayoutNavigationProps = {
 
 type NavigationItem = {
     id: Route['name'];
-    icon: IconName;
+    icon: IconComponent;
     translationId: TranslationKey;
 };
 
 const navigationItems: NavigationItem[] = [
     {
         id: 'wallet-trading-exchange',
-        icon: 'repeat',
+        icon: RepeatIcon,
         translationId: 'TR_TRADING_SWAP',
     },
     {
         id: 'wallet-trading-buy',
-        icon: 'plus',
+        icon: PlusIcon,
         translationId: 'TR_NAV_BUY',
     },
     {
         id: 'wallet-trading-sell',
-        icon: 'minus',
+        icon: MinusIcon,
         translationId: 'TR_NAV_SELL',
     },
     {
         id: 'wallet-trading-concierge',
-        icon: 'handshake',
+        icon: HandshakeIcon,
         translationId: 'TR_NAV_CONCIERGE',
     },
 ];
@@ -92,7 +93,7 @@ export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps)
                     key={item.id}
                     data-testid={`@trading/menu/${item.id}`}
                     id={item.id}
-                    iconName={item.icon}
+                    icon={item.icon}
                     onClick={goToRoute(item.id)}
                 >
                     <Translation id={item.translationId} />

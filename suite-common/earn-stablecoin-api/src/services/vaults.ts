@@ -1,4 +1,4 @@
-import { getYieldVaultResponse } from '@suite-common/earn-stablecoin-defs';
+import { GetYieldVaultResponse } from '@suite-common/earn-stablecoin-defs';
 import { createHttpClient } from '@suite-common/http-client';
 import { getSuiteVersion } from '@trezor/env-utils';
 
@@ -15,5 +15,5 @@ export const vaultsApi = createHttpClient({
 
 export const getYieldVault = vaultsApi('/:networkSymbol/:vaultId', {
     method: 'GET',
-    schema: getYieldVaultResponse,
+    schema: GetYieldVaultResponse,
 });

@@ -1,6 +1,6 @@
 import { type JSX } from 'react';
 
-import { useShouldRedactNumbers } from '@suite-common/wallet-utils';
+import { useShouldRedactNumbers } from '@suite-common/discreet-mode';
 
 export type DataContext = Record<string, unknown>;
 

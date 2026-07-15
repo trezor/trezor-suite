@@ -5,9 +5,7 @@
         {
             "path": "../../suite-common/analytics-redux"
         },
-        {
-            "path": "../../suite-common/bip329-types"
-        },
+        { "path": "../../suite-common/bip329" },
         {
             "path": "../../suite-common/connect-popup"
         },
@@ -18,6 +16,9 @@
             "path": "../../suite-common/dependency-injection"
         },
         { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/discreet-mode"
+        },
         { "path": "../../suite-common/firmware" },
         {
             "path": "../../suite-common/geolocation"
@@ -59,7 +60,6 @@
         { "path": "../biometrics" },
         { "path": "../blockchain" },
         { "path": "../bluetooth" },
-        { "path": "../config" },
         { "path": "../device" },
         { "path": "../device-authorization" },
         { "path": "../device-onboarding" },

@@ -10,7 +10,9 @@
         { "path": "../earn-staking-api" },
         { "path": "../fiat-services" },
         { "path": "../firmware" },
+        { "path": "../react-query" },
         { "path": "../redux-utils" },
+        { "path": "../schemas" },
         { "path": "../staking" },
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
@@ -35,13 +37,18 @@
         {
             "path": "../../packages/blockchain-link-utils"
         },
-        { "path": "../../coins/coins-solana" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
         },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
         { "path": "../../packages/protobuf" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }

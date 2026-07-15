@@ -16,7 +16,4 @@ export const FEEDBACK_FEATURE_CONFIGS: Record<ExperimentalFeature, { titleKey: T
     'suite-sync': {
         titleKey: 'moduleSettings.advanced.experimentalFeatures.suiteSync.title',
     },
-    'testnet-networks': {
-        titleKey: 'moduleSettings.experimental.testnets.title',
-    },
 };

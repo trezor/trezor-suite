@@ -17,7 +17,12 @@ export const settingsDeviceMultiShareBackupEvent: EventDef<
 
     attributes: {
         action: {
-            changelog: [{ version: '?', notes: 'added' }],
+            changelog: [{ version: '24.6.1', notes: 'added' }],
+            description: `The action taken in the Multi-Share backup flow:
+- \`start\`: flow begins
+- \`done\`: backup completed
+- \`learn-more\`: user clicks the information button
+- \`close-modal\`: user dismisses the modal`,
         },
     },
 };

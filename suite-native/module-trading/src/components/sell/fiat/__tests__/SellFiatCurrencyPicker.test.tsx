@@ -1,5 +1,6 @@
 import { type useListDataFilter } from '@suite-common/trading';
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import {
     act,
     fireEvent,
@@ -48,19 +49,23 @@ describe('SellFiatCurrencyPicker', () => {
     it('should display selected currency', () => {
         const { getByLabelText } = renderFiatCurrencyPicker();
 
-        expect(getByLabelText('Select fiat currency')).toHaveTextContent(/USD/);
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectFiat.buttonTitle')),
+        ).toHaveTextContent(/USD/);
     });
 
     it('should allow to select currency', async () => {
         const { getByText, getByLabelText } = renderFiatCurrencyPicker();
 
-        fireEvent.press(getByLabelText('Select fiat currency'));
+        fireEvent.press(getByLabelText(getTranslation('moduleTrading.selectFiat.buttonTitle')));
         fireEvent.press(getByText('PLN'));
 
         // wait for validators to run
         await act(() => Promise.resolve());
 
-        expect(getByLabelText('Select fiat currency')).toHaveTextContent(/PLN/);
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectFiat.buttonTitle')),
+        ).toHaveTextContent(/PLN/);
     });
 
     it('should display empty component when filtered data is empty', () => {
@@ -72,9 +77,11 @@ describe('SellFiatCurrencyPicker', () => {
 
         const { getByText } = renderFiatCurrencyPicker();
 
-        expect(getByText('Currency not found')).toBeTruthy();
         expect(
-            getByText('Check the spelling or browse the list to select an option.'),
+            getByText(getTranslation('moduleTrading.fiatCurrencySheet.emptyTitle')),
+        ).toBeTruthy();
+        expect(
+            getByText(getTranslation('moduleTrading.fiatCurrencySheet.emptyDescription')),
         ).toBeTruthy();
     });
 });

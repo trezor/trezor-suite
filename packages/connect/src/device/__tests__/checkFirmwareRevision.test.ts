@@ -1,5 +1,3 @@
-import { FetchError } from 'node-fetch';
-
 import type { FirmwareRevisionCheckResult } from '@trezor/connect-common/src/types/device';
 import type { FirmwareRelease } from '@trezor/device-utils';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
@@ -12,6 +10,9 @@ jest.mock('../../utils/assets', () => ({
     ...jest.requireActual('../../utils/assets'),
     httpRequest: jest.fn(jest.requireActual('../../utils/assets').httpRequest),
 }));
+
+const EXPECTED_BOOTLOADER_HASH = '94f1c90db28db1f8ce5dca966976343658f5dadee83834987c8b049c49d1edd0';
+const MISMATCHED_BOOTLOADER_HASH = '1234567890';
 
 const ONLINE_RELEASES_JSON_MOCK: FirmwareRelease = {
     required: false,
@@ -33,14 +34,21 @@ const ONLINE_RELEASES_JSON_MOCK: FirmwareRelease = {
     changelog: '* A\n* B\n* C',
 };
 
+const ONLINE_RELEASES_JSON_WITH_BOOTLOADER_HASH_MOCK: FirmwareRelease = {
+    ...ONLINE_RELEASES_JSON_MOCK,
+    bootloader_hash: EXPECTED_BOOTLOADER_HASH,
+};
+
 const DeviceNames = Object.values(DeviceModelInternal);
 
 type CreateDeviceParams = Omit<CheckFirmwareRevisionParams, 'internalModel' | 'firmwareType'>;
 
 const createDeviceParams = (params: Partial<CreateDeviceParams>): CreateDeviceParams => ({
-    deviceRevision: '1eb0eb9d91b092e571aac63db4ebff2a07fd8a1f',
     firmwareVersion: [2, 7, 2],
+    deviceRevision: '1eb0eb9d91b092e571aac63db4ebff2a07fd8a1f',
     expectedRevision: '1eb0eb9d91b092e571aac63db4ebff2a07fd8a1f',
+    deviceBootloaderHash: null,
+    expectedBootloaderHash: undefined,
     ...params,
 });
 
@@ -72,6 +80,29 @@ describe.each(DeviceNames)(`${checkFirmwareRevision.name} for device %s`, intern
             expected: { success: false, error: 'revision-mismatch' },
         },
         {
+            it: 'errors when expected bootloader hash is provided in params, but device bootloader hash is missing',
+            params: createDeviceParams({
+                expectedBootloaderHash: EXPECTED_BOOTLOADER_HASH,
+            }),
+            expected: { success: false, error: 'bootloader-hash-mismatch' },
+        },
+        {
+            it: 'errors when expected bootloader hash is provided in params, but device bootloader hash does not match',
+            params: createDeviceParams({
+                deviceBootloaderHash: MISMATCHED_BOOTLOADER_HASH,
+                expectedBootloaderHash: EXPECTED_BOOTLOADER_HASH,
+            }),
+            expected: { success: false, error: 'bootloader-hash-mismatch' },
+        },
+        {
+            it: 'passes when matching bootloader hashes are provided in params',
+            params: createDeviceParams({
+                deviceBootloaderHash: EXPECTED_BOOTLOADER_HASH,
+                expectedBootloaderHash: EXPECTED_BOOTLOADER_HASH,
+            }),
+            expected: { success: true },
+        },
+        {
             it: 'passes when firmware version is not found locally, but found in the online release',
             httpRequestMock: () => Promise.resolve(ONLINE_RELEASES_JSON_MOCK),
             params: createDeviceParams({
@@ -89,6 +120,24 @@ describe.each(DeviceNames)(`${checkFirmwareRevision.name} for device %s`, intern
             expected: { success: false, error: 'revision-mismatch' },
         },
         {
+            it: 'errors when bootloader hash is not provided in params, but online release provides a mismatched one',
+            httpRequestMock: () => Promise.resolve(ONLINE_RELEASES_JSON_WITH_BOOTLOADER_HASH_MOCK),
+            params: createDeviceParams({
+                deviceBootloaderHash: MISMATCHED_BOOTLOADER_HASH,
+                expectedRevision: undefined, // firmware not known by local releases.json file
+            }),
+            expected: { success: false, error: 'bootloader-hash-mismatch' },
+        },
+        {
+            it: 'passes when bootloader hash is not provided in params, but matches the online release',
+            httpRequestMock: () => Promise.resolve(ONLINE_RELEASES_JSON_WITH_BOOTLOADER_HASH_MOCK),
+            params: createDeviceParams({
+                deviceBootloaderHash: EXPECTED_BOOTLOADER_HASH,
+                expectedRevision: undefined, // firmware not known by local releases.json file
+            }),
+            expected: { success: true },
+        },
+        {
             it: 'errors when firmware version is not found locally, and also not in the online release',
             httpRequestMock: () => Promise.resolve(ONLINE_RELEASES_JSON_MOCK),
             params: createDeviceParams({
@@ -101,11 +150,22 @@ describe.each(DeviceNames)(`${checkFirmwareRevision.name} for device %s`, intern
         {
             it: 'errors with a specific error message when the check cannot be performed because the revision is not found locally and the user is offline',
             httpRequestMock: () => {
-                throw new FetchError('You are offline!', 'network', {
-                    code: 'ENOTFOUND',
-                    name: 'FetchError',
-                    message: 'You are offline!',
+                // Native `fetch` throws `TypeError: fetch failed` with the underlying
+                // system error exposed on `cause`.
+                throw new TypeError('fetch failed', {
+                    cause: Object.assign(new Error('You are offline!'), { code: 'ENOTFOUND' }),
                 });
+            },
+            params: createDeviceParams({
+                expectedRevision: undefined, // firmware not known by local releases.json file
+            }),
+            expected: { success: false, error: 'cannot-perform-check-offline' },
+        },
+        {
+            it: 'errors with a specific error message when the check cannot be performed because the revision is not found locally and the browser is offline',
+            httpRequestMock: () => {
+                // Browser/Chromium `fetch` throws `TypeError: Failed to fetch` for offline failures.
+                throw new TypeError('Failed to fetch');
             },
             params: createDeviceParams({
                 expectedRevision: undefined, // firmware not known by local releases.json file

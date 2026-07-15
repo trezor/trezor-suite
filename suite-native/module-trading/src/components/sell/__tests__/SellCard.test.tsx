@@ -1,11 +1,12 @@
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import {
     act,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
     screen,
 } from '@suite-native/test-utils-store';
-import { banxaCreditCardSellQuote, sellQuotes, usdcAsset } from '@suite-native/trading-fixtures';
+import { sellQuotes, usdcAsset } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
 
 import { createTradingPreloadedState } from '../../../__tests__/tradingTestUtils';
@@ -52,30 +53,20 @@ describe('SellCard', () => {
         });
         const { getByText, getByLabelText } = renderSellCard(false);
 
-        expect(getByText('You pay')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
+        ).toBeOnTheScreen();
         expect(getByText('$99.00')).toBeOnTheScreen();
-        expect(getByLabelText('Select asset')).toHaveTextContent(/USDC/);
-        expect(getByLabelText('Network name')).toHaveTextContent('Ethereum');
-        expect(getByLabelText('You pay')).toHaveDisplayValue('100');
-        expect(getByText('Balance:')).toBeOnTheScreen();
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
+        ).toHaveTextContent(/USDC/);
+        expect(getByLabelText(getTranslation('moduleTrading.networkName'))).toHaveTextContent(
+            'Ethereum',
+        );
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
+        ).toHaveDisplayValue('100');
+        expect(getByText(getTranslation('moduleTrading.tradingScreen.balance'))).toBeOnTheScreen();
         expect(getByText('- USDC')).toBeOnTheScreen();
-    });
-
-    describe('with selected quote', () => {
-        beforeEach(() => {
-            act(() => {
-                form.setValue('sendAsset', usdcAsset);
-                form.setValue('amountInCrypto', true);
-                form.setValue('cryptoStringAmount', '100');
-
-                form.setValue('quote', banxaCreditCardSellQuote);
-            });
-        });
-
-        it('should render receive method', () => {
-            const { getByText } = renderSellCard(false);
-
-            expect(getByText('Receive method')).toBeOnTheScreen();
-        });
     });
 });

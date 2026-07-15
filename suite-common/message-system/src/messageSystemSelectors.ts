@@ -55,8 +55,7 @@ const makeSelectActiveMessagesByCategory = (category: Category) =>
     );
 
 export const selectActiveBannerMessages = makeSelectActiveMessagesByCategory('banner');
-export const selectActiveContextMessages = makeSelectActiveMessagesByCategory('context');
-export const selectActiveModalMessages = makeSelectActiveMessagesByCategory('modal');
+const selectActiveContextMessages = makeSelectActiveMessagesByCategory('context');
 export const selectActiveFeatureMessages = makeSelectActiveMessagesByCategory('feature');
 
 export const selectIsAnyBannerMessageActive = createMemoizedSelector(
@@ -102,7 +101,7 @@ export const selectFeatureMessage = createMemoizedSelector(
         ),
 );
 
-export const selectFeatureMessages = createMemoizedSelector(
+const selectFeatureMessages = createMemoizedSelector(
     [selectActiveFeatureMessages, (_state, domain: FeatureDomain) => domain],
     (activeFeatureMessages, domain) =>
         activeFeatureMessages.filter(message =>
@@ -142,7 +141,7 @@ export const selectYieldFeatureMessage = createMemoizedSelector(
         ),
 );
 
-export const selectYieldFeatureConfig = createMemoizedSelector(
+const selectYieldFeatureConfig = createMemoizedSelector(
     [
         selectYieldFeatureMessage,
         (_state, domain: FeatureDomain) => domain,
@@ -202,6 +201,12 @@ export const selectIsFeatureDisabled = (
 
     return featureFlag !== undefined ? !featureFlag : (defaultValue ?? false);
 };
+
+export const selectActiveKillswitchMessage = createMemoizedSelector(
+    [selectActiveFeatureMessages],
+    messages =>
+        messages.find(m => m.feature?.some(item => item.domain === 'killswitch' && item?.flag)),
+);
 
 export const selectAllManuallyAddedMessageIds = (state: MessageSystemRootState) =>
     state.messageSystem.manuallyAddedMessageIds;

@@ -1,4 +1,4 @@
-import { getDaysToAddToPool, getDaysToAddToPoolInitial } from '@suite-common/staking';
+import { getDaysToAddToPoolInitial } from '@suite-common/staking';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -139,14 +139,4 @@ export const selectEthereumEntryPeriodInDays = (state: NativeStakingRootState) =
     }
 
     return getDaysToAddToPoolInitial(validatorsQueue);
-};
-
-export const selectEntryPeriodRemainingInDaysByAccountKey = (
-    state: NativeStakingRootState,
-    accountKey: AccountKey,
-) => {
-    const validatorsQueue = selectEthValidatorsQueue(state);
-    const stakeTxs = selectAccountStakeTransactions(state, accountKey);
-
-    return getDaysToAddToPool(stakeTxs, validatorsQueue);
 };

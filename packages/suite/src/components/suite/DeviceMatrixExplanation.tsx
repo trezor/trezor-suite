@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Icon, type IconName, type IconProps, Image, variables } from '@trezor/components';
+import { Icon, type IconComponent, type IconProps, Image, variables } from '@trezor/components';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 import { typography } from '@trezor/theme';
 
@@ -12,7 +12,7 @@ const Wrapper = styled.div<{ $isGuideOpen?: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: ${({ theme }) => theme.legacyBackgroundNeutralBoldInverted};
+    background: ${({ theme }) => theme.surfaceFillRaised};
     padding: 20px 24px;
     margin-right: 34px;
     width: 100%;
@@ -60,7 +60,7 @@ interface DeviceImageItem extends CommonItemProps {
 
 interface IconItem extends CommonItemProps {
     deviceModelInternal?: DeviceModelInternal;
-    icon: IconName;
+    icon: IconComponent;
     iconColor?: IconProps['color'];
     iconSize?: IconProps['size'];
 }
@@ -81,7 +81,7 @@ export const DeviceMatrixExplanation = ({ items }: DeviceMatrixExplanationProps)
                     <ItemIconWrapper>
                         {item.icon ? (
                             <Icon
-                                name={item.icon}
+                                as={item.icon}
                                 color={item.iconColor}
                                 size={item.iconSize ?? 26}
                             />

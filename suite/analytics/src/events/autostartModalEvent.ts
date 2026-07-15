@@ -9,12 +9,14 @@ type Attributes = {
 export const autostartModalEvent: EventDef<Attributes, EventType.AutostartModal> = {
     name: EventType.AutostartModal,
     descriptionTrigger:
-        'appears before quitting the app if used connect popup, offers the user to leave the app to run in background',
+        'A modal appears before quitting the app after using Connect popup, offering the user to leave the app running in the background',
     changelog: [{ version: '25.5.0', notes: 'added' }],
 
     attributes: {
         action: {
-            changelog: [{ version: '?', notes: 'added' }],
+            description:
+                "User's choice: `background-always` to always run in background, `background-now` to keep in background this time, `quit-always` to always quit, `quit-now` to quit this time",
+            changelog: [{ version: '25.5.0', notes: 'added' }],
         },
     },
 };

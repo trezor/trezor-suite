@@ -30,6 +30,8 @@ export class MetadataPage {
     readonly closeSuiteSyncNotificationButton: Locator;
     readonly migrateLabelsButton: Locator;
     readonly migrateFromLocalFileButton: Locator;
+    readonly unsupportedBanner: Locator;
+    readonly suiteSyncBannerDismissButton: Locator;
 
     constructor(
         private readonly page: Page,
@@ -57,6 +59,10 @@ export class MetadataPage {
         this.migrateLabelsButton = page.getByTestId('@settings/metadata/migrate-button');
         this.migrateFromLocalFileButton = page.getByTestId(
             '@modal/legacy-labeling-migration/file-system-button',
+        );
+        this.unsupportedBanner = page.getByTestId('@notification/suite-sync-unsupported-device');
+        this.suiteSyncBannerDismissButton = page.getByTestId(
+            '@notification/suite-sync-unsupported-device/dismiss',
         );
     }
 
@@ -101,13 +107,6 @@ export class MetadataPage {
             this.settingsPage.metadataSelectInputOption('legacy'),
         );
         await this.passThroughInitMetadata(provider);
-        await this.closeLegacyUpgradeNotification();
-    }
-
-    @step()
-    async closeLegacyUpgradeNotification() {
-        await expect(this.legacyNotification).toBeVisible();
-        await this.closeLegacyNotificationButton.click();
     }
 
     @step()

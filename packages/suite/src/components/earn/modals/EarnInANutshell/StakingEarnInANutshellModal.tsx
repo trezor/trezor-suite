@@ -16,7 +16,7 @@ import {
     EarnInANutshellProcesses,
 } from './components/EarnInANutshellProcesses';
 import { EarnInANutshellWithdrawalBadge } from './components/EarnInANutshellWithdrawalBadge';
-import { EarnSupplyingInfo } from './components/EarnSupplyingInfo';
+import { EarnStakingInfo } from './components/EarnStakingInfo';
 import { EarnWithdrawingInfo } from './components/EarnWithdrawingInfo';
 import { StakingEarnInANutshellHighlights } from './components/StakingEarnInANutshellHighlights';
 import { useEarnInANutshell } from './hooks/useEarnInANutshell';
@@ -57,7 +57,7 @@ export const StakingEarnInANutshellModal = ({
         {
             heading: <Translation id="TR_EARN_STAKING_PROCESS" />,
             badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 1 }} />,
-            content: <EarnSupplyingInfo account={account} flow={EarnFlow.Stake} />,
+            content: <EarnStakingInfo account={account} flow={EarnFlow.Stake} />,
         },
         {
             heading: <Translation id="TR_EARN_UNSTAKING_PROCESS" />,

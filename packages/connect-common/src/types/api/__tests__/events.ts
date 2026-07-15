@@ -1,6 +1,6 @@
 import { ThpPairingMethod } from '@trezor/protocol';
 
-import type { TrezorConnect } from '../../..';
+import type { TrezorConnectPrivilegedAPI as TrezorConnect } from '../../..';
 import {
     BLOCKCHAIN,
     BLOCKCHAIN_EVENT,
@@ -61,7 +61,7 @@ export const events = (api: TrezorConnect) => {
             payload.status.toLowerCase();
 
             // features
-            payload.features.vendor.toLowerCase();
+            payload.features.vendor?.toLowerCase();
             // @ts-expect-error: error does not exist
             payload.error.toLowerCase();
         }

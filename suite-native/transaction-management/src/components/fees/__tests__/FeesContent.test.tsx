@@ -2,6 +2,7 @@ import { yup } from '@suite-common/validators';
 import { type FormState } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { Form, useForm } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { createFeeLevels } from '../../../__fixtures__/feeLevels';
@@ -77,9 +78,11 @@ describe('FeesContent', () => {
     it('should render title and description', () => {
         const { getByText } = renderFeesContent();
 
-        expect(getByText('Transaction fee')).toBeTruthy();
         expect(
-            getByText('Fees are paid directly to validators for processing your transactions.'),
+            getByText(getTranslation('transactionManagement.fees.description.title.general')),
+        ).toBeTruthy();
+        expect(
+            getByText(getTranslation('transactionManagement.fees.description.body')),
         ).toBeTruthy();
     });
 
@@ -126,7 +129,9 @@ describe('FeesContent', () => {
             symbol: 'eth',
         });
 
-        expect(getByText('Transaction fee')).toBeTruthy();
+        expect(
+            getByText(getTranslation('transactionManagement.fees.description.title.general')),
+        ).toBeTruthy();
     });
 
     it('should render with form draft data', () => {

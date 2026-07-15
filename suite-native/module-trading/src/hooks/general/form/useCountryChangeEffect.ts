@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 
 import {
-    type TradingCountryCode,
     type TradingCountryOption,
     type TradingCountrySubdivisionOption,
 } from '@suite-common/trading';
@@ -16,7 +15,7 @@ export const useCountryChangeEffect = (watch: CountrySubdivisionFormWatch) => {
     const dispatch = useDispatch();
 
     const [countryOption, countrySubdivisionOption] = watch(['country', 'countrySubdivision']);
-    const country = countryOption?.value as TradingCountryCode | undefined;
+    const country = countryOption?.value;
     const countrySubdivision = countrySubdivisionOption?.value;
 
     const prevCountryCode = useRef(country);

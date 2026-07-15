@@ -8,6 +8,7 @@ import type {
     FirmwareCapability,
     MethodInfo,
     MethodPermission,
+    PermissionRequest,
     PrecomposeResultFinal,
     StaticSessionId,
     UiRequestButtonData,
@@ -18,8 +19,10 @@ import type { Capability } from '@trezor/protobuf/src/definitions';
 import { isNotUndefined, isUUID, versionUtils } from '@trezor/utils';
 
 import { DEFAULT_FIRMWARE_RANGE, getFirmwareRange } from '../api/common/paramsValidator';
+import * as enabledNetworksStore from '../data/enabledNetworksStore';
 import type { Device } from '../device/Device';
 import type { UiPromiseCreator } from '../events/ui-promise';
+import { isDebugFirmware } from '../utils/firmwareUtils';
 
 export { DEFAULT_FIRMWARE_RANGE };
 
@@ -132,7 +135,39 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public useEmptyPassphrase: boolean;
 
-    abstract get requiredPermissions(): MethodPermission[];
+    abstract get requiredPermissions(): PermissionRequest[];
+
+    // Build a `PermissionRequest` for a single coin (or coin-less when `coin`
+    // is undefined). The coin key is `coinInfo.shortcut`.
+    protected coinPerm(permission: MethodPermission, coin?: CoinInfo): PermissionRequest {
+        return coin ? { permission, coin: coin.shortcut } : { permission };
+    }
+
+    // Build a list of `PermissionRequest` entries from a list of coins,
+    // deduplicating by `coinInfo.shortcut`. Undefined coins collapse to a
+    // single coin-less entry.
+    protected coinPerms(
+        permission: MethodPermission,
+        coins: (CoinInfo | undefined)[],
+    ): PermissionRequest[] {
+        const seen = new Set<string>();
+        const out: PermissionRequest[] = [];
+        let hasCoinless = false;
+        for (const c of coins) {
+            if (!c) {
+                if (!hasCoinless) {
+                    hasCoinless = true;
+                    out.push({ permission });
+                }
+                continue;
+            }
+            if (seen.has(c.shortcut)) continue;
+            seen.add(c.shortcut);
+            out.push({ permission, coin: c.shortcut });
+        }
+
+        return out;
+    }
 
     public allowDeviceMode: DeviceMode[]; // used in device management (like ResetDevice allow !UI_REQUEST.INITIALIZED)
 
@@ -169,28 +204,17 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         this.useDevice = true;
         this.useDeviceState = true;
         this.useUi = true;
-        // should derive cardano seed? respect provided option or fall back to do it only when cardano method is called
-        this.useCardanoDerivation =
-            typeof payload.useCardanoDerivation === 'boolean'
-                ? payload.useCardanoDerivation
-                : payload.method.startsWith('cardano');
+        this.useCardanoDerivation = false;
         this.confirmMissingBackup = false;
     }
 
-    // Used in *getAddress methods
-    protected getUseUi(
-        params: { address?: string; proto: { show_display?: boolean } }[],
-        useEventListener: boolean | undefined,
-    ) {
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstParam: (typeof params)[number] = params[0];
-        const notUseUi =
-            useEventListener &&
-            params.length === 1 &&
-            typeof firstParam.address === 'string' &&
-            firstParam.proto.show_display;
-
-        return !notUseUi;
+    // Resolves the Cardano session capability against the runtime enabled-networks set. MUST run on
+    // the real device-call path (NOT the constructor): keeps `__info` unblocked, and reflects any
+    // enablement applied between introspection and the call (e.g. a permission grant projected into
+    // the store). Sets `useCardanoDerivation` (→ `derive_cardano` at session create).
+    public resolveCardanoCapability(): void {
+        this.useCardanoDerivation =
+            enabledNetworksStore.has('ada') || enabledNetworksStore.has('tada');
     }
 
     public setDevice(device: Device) {
@@ -217,6 +241,8 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         const firmwareRange = getFirmwareRange(
             [this.name, ...this.requiredFirmwareCapabilities],
             this.requiredFirmwareCoins.filter(isNotUndefined),
+            DEFAULT_FIRMWARE_RANGE,
+            isDebugFirmware(device.features),
         );
         const range = firmwareRange[device.features.internal_model];
 

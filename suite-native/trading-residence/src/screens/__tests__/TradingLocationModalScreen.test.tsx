@@ -5,7 +5,7 @@ import { messageSystemInitialState } from '@suite-common/message-system';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import { localeReducer } from '@suite-native/intl';
+import { getTranslation, localeReducer } from '@suite-native/intl';
 import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
 import {
     createLightStore,
@@ -83,17 +83,25 @@ describe('TradingLocationModalScreen', () => {
     it('should render all components', () => {
         const { getByText, queryByLabelText } = renderTradingLocationModalScreen();
 
-        expect(getByText('Trading is now available')).toBeOnTheScreen();
-        expect(getByText('Confirm location')).toBeOnTheScreen();
-        expect(getByText('Not now')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('tradingResidence.locationSettings.title')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('tradingResidence.locationSettings.confirmButton')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('tradingResidence.locationSettings.skipButton')),
+        ).toBeOnTheScreen();
 
-        expect(queryByLabelText('Go back')).toBeNull();
+        expect(queryByLabelText(getTranslation('generic.buttons.goBack'))).toBeNull();
     });
 
     it('should log analytics event on country change', async () => {
         const { getByText } = renderTradingLocationModalScreen();
 
-        await userEvent.press(getByText('Country of residence'));
+        await userEvent.press(
+            getByText(getTranslation('tradingResidence.locationSettings.countryOfResidence')),
+        );
         await userEvent.press(getByText('Argentina'));
 
         expect(reportMock).toHaveBeenCalledTimes(1);
@@ -109,7 +117,9 @@ describe('TradingLocationModalScreen', () => {
     it('should reset navigation on button press', async () => {
         const { getByText } = renderTradingLocationModalScreen();
 
-        await userEvent.press(getByText('Not now'));
+        await userEvent.press(
+            getByText(getTranslation('tradingResidence.locationSettings.skipButton')),
+        );
 
         expect(mockNavigationDispatch).toHaveBeenCalledTimes(1);
         expect(mockNavigationDispatch).toHaveBeenCalledWith({

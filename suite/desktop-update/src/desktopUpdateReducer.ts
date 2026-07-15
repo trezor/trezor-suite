@@ -57,50 +57,59 @@ const desktopUpdateSlice = createSlice({
     name: 'desktopUpdate',
     initialState,
     reducers: {
-        checking: state => {
+        checking: (state: DesktopUpdateState) => {
             state.state = UpdateState.Checking;
         },
-        available: (state, action: PayloadAction<UpdateInfo>) => {
+        available: (state: DesktopUpdateState, action: PayloadAction<UpdateInfo>) => {
             state.state = UpdateState.Available;
             state.latest = action.payload;
         },
-        notAvailable: (state, action: PayloadAction<UpdateInfo | undefined>) => {
+        notAvailable: (
+            state: DesktopUpdateState,
+            action: PayloadAction<UpdateInfo | undefined>,
+        ) => {
             state.state = UpdateState.NotAvailable;
             state.latest = action.payload;
         },
-        download: state => {
+        download: (state: DesktopUpdateState) => {
             state.state = UpdateState.Downloading;
         },
-        downloading: (state, action: PayloadAction<UpdateProgress>) => {
+        downloading: (state: DesktopUpdateState, action: PayloadAction<UpdateProgress>) => {
             state.progress = action.payload;
         },
-        ready: (state, action: PayloadAction<UpdateInfo>) => {
+        ready: (state: DesktopUpdateState, action: PayloadAction<UpdateInfo>) => {
             state.state = UpdateState.Ready;
             state.latest = action.payload;
         },
-        justUpdated: state => {
+        justUpdated: (state: DesktopUpdateState) => {
             state.state = UpdateState.JustUpdated;
             state.isModalVisible = true;
             state.justUpdatedInteractedWith = true;
         },
-        setIsUpdateModalVisible: (state, action: PayloadAction<boolean>) => {
+        setIsUpdateModalVisible: (state: DesktopUpdateState, action: PayloadAction<boolean>) => {
             state.isModalVisible = action.payload;
         },
-        setIsVersionInfoModalVisible: (state, action: PayloadAction<boolean>) => {
+        setIsVersionInfoModalVisible: (
+            state: DesktopUpdateState,
+            action: PayloadAction<boolean>,
+        ) => {
             state.isVersionInfoModalVisible = action.payload;
         },
-        openEarlyAccessEnable: state => {
+        openEarlyAccessEnable: (state: DesktopUpdateState) => {
             state.state = UpdateState.EarlyAccessEnable;
             state.isModalVisible = true;
         },
-        openEarlyAccessDisable: state => {
+        openEarlyAccessDisable: (state: DesktopUpdateState) => {
             state.state = UpdateState.EarlyAccessDisable;
             state.isModalVisible = true;
         },
-        allowPrerelease: (state, action: PayloadAction<boolean>) => {
+        allowPrerelease: (state: DesktopUpdateState, action: PayloadAction<boolean>) => {
             state.allowPrerelease = action.payload;
         },
-        setAutomaticUpdates: (state, action: PayloadAction<{ isEnabled: boolean }>) => {
+        setAutomaticUpdates: (
+            state: DesktopUpdateState,
+            action: PayloadAction<{ isEnabled: boolean }>,
+        ) => {
             state.isAutomaticUpdateEnabled = action.payload.isEnabled;
         },
     },

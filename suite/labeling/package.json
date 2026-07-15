@@ -12,7 +12,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.11.2",
+        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
@@ -37,12 +37,13 @@
         "@suite/suite-sync": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/icons": "workspace:*",
         "@trezor/product-components": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react": "19.2.4",
-        "react-redux": "9.2.0",
+        "react": "19.2.3",
+        "react-redux": "9.3.0",
         "react-select": "^5.10.2",
         "redux": "^5.0.1"
     }

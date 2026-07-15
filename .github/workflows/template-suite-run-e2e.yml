@@ -20,11 +20,6 @@ on:
         default: "trezor-user-env-unix bitcoin-regtest electrum-regtest quota-db suite-sync"
         required: false
         type: string
-      workspace-dependencies:
-        description: "Additional workspaces to install"
-        required: false
-        default: ""
-        type: string
       test-group:
         description: "Test group for orchestration"
         required: true
@@ -93,13 +88,13 @@ jobs:
       - name: Generate GitHub App token
         if: inputs.run-reporter == 'true'
         id: trezor-bot-token
-        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
         with:
           app-id: ${{ secrets.trezor-bot-app-id }}
           private-key: ${{ secrets.trezor-bot-private-key }}
 
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           submodules: true
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -112,22 +107,22 @@ jobs:
           echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
 
       - name: Setup Node.js
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
 
       - name: Cache node_modules
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        id: node-modules-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
           path: node_modules
-          key: node_modules-${{ hashFiles('yarn.lock') }}
-          restore-keys: node_modules-
+          key: node_modules-suite-e2e-${{ hashFiles('yarn.lock') }}
 
       - name: Cache Playwright Browsers
         id: playwright-cache
         if: inputs.target == 'web'
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ hashFiles('**/yarn.lock') }}
@@ -150,17 +145,15 @@ jobs:
           rm -rf ${{ github.workspace }}/packages/connect-explorer/build-webextension
           mv ${{ github.workspace }}/artifact-download ${{ github.workspace }}/packages/connect-explorer/build-webextension
 
-      - name: Install Socket Firewall
-        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
         continue-on-error: true
         with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
+          version: v0.19.1
       - name: Install PW Dependencies
         shell: bash
         run: |
-          $(command -v sfw > /dev/null && echo sfw --verbose) yarn workspaces focus @trezor/suite-e2e ${{ inputs.workspace-dependencies }}
+          yarn workspaces focus @trezor/suite-e2e
 
       - name: Install Playwright Browsers
         if: inputs.target == 'web' && steps.playwright-cache.outputs.cache-hit != 'true'
@@ -200,6 +193,7 @@ jobs:
           PASSPHRASE_LIVE: ${{ secrets.e2e-passphrase-live }}
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token || secrets.github-token }}
           RELEASE_BUILD: ${{ inputs.release-build }}
+          RUN_GITHUB_REPORTER: ${{ inputs.run-reporter }} # Read by playwright-base.config.ts to enable the GitHub reporter
           ELECTRON_DISABLE_SANDBOX: 1
           COLLECT_COVERAGE_MAP: ${{ inputs.enable-coverage == 'true' && 'true' || '' }}
           COVERAGE_MAP_DIR: ${{ github.workspace }}/coverage-map
@@ -217,12 +211,6 @@ jobs:
              export CURRENTS_CI_BUILD_ID="pr-run-${{ inputs.target }}-${{ github.run_id }}-${{ github.run_attempt }}"
           fi
 
-          if [[ "${{ inputs.run-reporter }}" == "true" ]]; then
-            REPORTER_OPT="--reporter=./support/reporters/gitHubReporter.ts"
-          else
-            REPORTER_OPT=""
-          fi
-
           if [[ "${{ inputs.enable-coverage }}" == "true" ]]; then
             COVERAGE_OPT="--pwc-coverage"
           else
@@ -235,8 +223,30 @@ jobs:
           if [[ -n "${{ inputs.spec-list }}" ]]; then
             # Strip suite/e2e/ prefix (pwc-p CWD is suite/e2e/ via yarn workspace)
             # then convert comma-separated list to space-separated positional args
-            SPEC_ARGS=$(echo "${{ inputs.spec-list }}" | tr ',' '\n' | sed 's|^suite/e2e/||' | tr '\n' ' ')
+            RESOLVED_SPECS=$(echo "${{ inputs.spec-list }}" | tr ',' '\n' | sed 's|^suite/e2e/||')
+            SPEC_ARGS=$(echo "$RESOLVED_SPECS" | tr '\n' ' ')
             echo "Running focused spec list: $SPEC_ARGS"
+
+            # Guard: verify at least one resolved path exists before enabling --pass-with-no-tests.
+            # If every path is missing (deleted, mistyped, or bad normalisation), fail fast
+            # rather than silently running zero tests and exiting 0.
+            FOUND_ANY=0
+            while IFS= read -r spec; do
+              [[ -z "$spec" ]] && continue
+              if [[ -f "suite/e2e/$spec" ]]; then
+                FOUND_ANY=1
+                break
+              fi
+            done <<< "$RESOLVED_SPECS"
+
+            if [[ "$FOUND_ANY" -eq 0 ]]; then
+              echo "ERROR: spec-list was provided but none of the resolved paths exist on disk."
+              echo "  spec-list: ${{ inputs.spec-list }}"
+              echo "  Resolved:  $SPEC_ARGS"
+              echo "Check for deleted files, typos, or normalisation issues in the upstream selector."
+              exit 1
+            fi
+
             # A focused spec list may not match every Playwright project's grep filter,
             # so allow projects that find zero tests to exit cleanly instead of failing.
             PASS_WITH_NO_TESTS="--pass-with-no-tests"
@@ -246,15 +256,30 @@ jobs:
           docker compose up -d ${{ inputs.containers }}
 
           echo "Starting ${{ inputs.target }} Playwright tests with config ${{ inputs.pw-config }} for test group ${{ inputs.test-group }}"
-          yarn workspace @trezor/suite-e2e test:orchestrated:e2e \
+
+          # Currents orchestration is a two-step process since @currents/playwright v2:
+          #   1. discover: list/select the tests (all test-selection flags live here)
+          #   2. run: orchestrate the selected tests across machines (execution flags + CURRENTS_* env)
+          DISCOVERY_FILE="$(mktemp)"
+
+          yarn workspace @trezor/suite-e2e test:orchestrated:e2e discover \
+            --pwc-discovery-file "$DISCOVERY_FILE" \
+            --config=${{ inputs.pw-config }} \
+            $PASS_WITH_NO_TESTS \
+            $SPEC_ARGS
+
+          if grep -qE "Total: 0 tests" "$DISCOVERY_FILE"; then
+            echo "Discovery selected 0 tests for the focused spec list - skipping orchestration run."
+            exit 0
+          fi
+
+          yarn workspace @trezor/suite-e2e test:orchestrated:e2e run \
+            --pwc-discovery-file "$DISCOVERY_FILE" \
             --config=${{ inputs.pw-config }} \
             --pwc-cancel-after-failures ${{ inputs.fail-fast }} \
             --pwc-disable-test-tags \
-            $COVERAGE_OPT \
-            --forbid-only \
-            $REPORTER_OPT \
-            $PASS_WITH_NO_TESTS \
-            $SPEC_ARGS
+            --pwc-skip-reporter-injection \
+            $COVERAGE_OPT
 
       - name: Extract and Upload Logs
         if: ${{ !cancelled() }}

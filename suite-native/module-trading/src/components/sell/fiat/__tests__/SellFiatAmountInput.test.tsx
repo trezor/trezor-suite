@@ -1,4 +1,5 @@
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import { userEvent } from '@suite-native/test-utils-store';
 import { type SellFormType } from '@suite-native/trading-types';
 
@@ -30,7 +31,10 @@ describe('SellFiatAmountInput', () => {
         const form = renderUseTradingSellForm();
         const { getByLabelText } = renderFiatAmountInput(form);
 
-        await userEvent.type(getByLabelText('You get'), '100');
+        await userEvent.type(
+            getByLabelText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),
+            '100',
+        );
 
         expect(form.getValues('fiatStringAmount')).toEqual('100');
     });
@@ -39,27 +43,40 @@ describe('SellFiatAmountInput', () => {
         const form = renderUseTradingSellForm();
         const { getByLabelText } = renderFiatAmountInput(form);
 
-        await userEvent.type(getByLabelText('You get'), 'asd1.123');
+        await userEvent.type(
+            getByLabelText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),
+            'asd1.123',
+        );
 
         expect(form.getValues('fiatStringAmount')).toEqual('1.123');
-        expect(getByLabelText('You get')).toHaveDisplayValue('1.123');
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),
+        ).toHaveDisplayValue('1.123');
     });
 
     it('should always escape non-numeric characters', async () => {
         const form = renderUseTradingSellForm();
         const { getByLabelText } = renderFiatAmountInput(form);
 
-        await userEvent.type(getByLabelText('You get'), 'asd');
+        await userEvent.type(
+            getByLabelText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),
+            'asd',
+        );
 
         expect(form.getValues('fiatStringAmount')).toBeUndefined();
-        expect(getByLabelText('You get')).toHaveDisplayValue('');
+        expect(
+            getByLabelText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),
+        ).toHaveDisplayValue('');
     });
 
     it('should limit value to 3 decimals', async () => {
         const form = renderUseTradingSellForm();
         const { getByLabelText } = renderFiatAmountInput(form);
 
-        await userEvent.type(getByLabelText('You get'), '1.0123456789');
+        await userEvent.type(
+            getByLabelText(getTranslation('moduleTrading.selectFiat.sell.amountLabel')),
+            '1.0123456789',
+        );
 
         expect(form.getValues('fiatStringAmount')).toEqual('1.012');
     });

@@ -9,7 +9,7 @@ import {
     toTokenAddress,
     toTokenSymbol,
 } from '@suite-common/wallet-types';
-import { useAlert } from '@suite-native/alerts';
+import { isApyAvailable } from '@suite-common/wallet-utils';
 import {
     Box,
     Button,
@@ -20,19 +20,27 @@ import {
     Text,
     VStack,
 } from '@suite-native/atoms';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { TokenAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork, Icon } from '@suite-native/icons';
-import { Translation, useTranslate } from '@suite-native/intl';
-import { useResolvedYieldFlowData, useWorkInProgressAlert } from '@suite-native/module-earn';
+import { Translation } from '@suite-native/intl';
+import {
+    useApyBreakdownAlert,
+    useResolvedYieldFlowData,
+    useStablecoinYieldFirmwareUpdateAlert,
+} from '@suite-native/module-earn';
 import {
     type RootStackParamList,
     RootStackRoutes,
     type StackNavigationProps,
     YieldStackRoutes,
 } from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { StablecoinYieldApyBreakdown } from './StablecoinYieldApyBreakdown';
+const abbrStyle = prepareNativeStyle(({ colors }) => ({
+    borderStyle: 'dotted',
+    borderBottomWidth: 1,
+    borderColor: colors.contentSecondary,
+}));
 
 type StablecoinYieldTokenOverviewProps = {
     accountKey: AccountKey;
@@ -45,46 +53,28 @@ export const StablecoinYieldTokenOverview = ({
     accountKey,
     tokenContract,
 }: StablecoinYieldTokenOverviewProps) => {
-    const handleShowWithdrawWorkInProgressAlert = useWorkInProgressAlert();
     const navigation = useNavigation<NavigationProps>();
-    const { showAlert } = useAlert();
-    const { translate } = useTranslate();
-    const isEnabled = useFeatureFlag(FeatureFlag.IsStablecoinYieldEnabled);
-    const { account, apy, resolutionStatus, token, vault } = useResolvedYieldFlowData({
-        accountKey,
-        tokenContract,
-        displayError: false,
-    });
-    const apyValueText = apy !== null ? `~${apy.toFixed(2)}%` : null;
-
-    const handleOpenApyAlert = useCallback(() => {
-        if (!account || !vault) {
-            return;
-        }
-
-        showAlert({
-            title: vault.outputToken?.name ?? '',
-            description: translate(
-                'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.apyLabel',
-                { apy: apyValueText },
-            ),
-            appendix: (
-                <StablecoinYieldApyBreakdown
-                    networkSymbol={account.symbol}
-                    rewards={vault.rewardRate.components}
-                    underlyingToken={vault.token}
-                    tokenSymbol={vault.token.symbol}
-                />
-            ),
-            textAlign: 'center',
-            titleSpacing: 'sp4',
-            primaryButtonTitle: translate('generic.buttons.close'),
-            testID: '@account-detail/stablecoin-yield/apy-breakdown-alert',
+    const { applyStyle } = useNativeStyles();
+    const { isFirmwareSupported, showFirmwareUpdateAlert } =
+        useStablecoinYieldFirmwareUpdateAlert();
+    const { account, apy, resolutionStatus, depositedSharesAmount, vault } =
+        useResolvedYieldFlowData({
+            accountKey,
+            tokenContract,
+            displayError: false,
         });
-    }, [account, apyValueText, showAlert, translate, vault]);
+    const apyValueText = apy && isApyAvailable(apy) ? `~${apy.toFixed(2)}%` : null;
+
+    const apyBreakdownAlert = useApyBreakdownAlert({ account, vault, apy });
 
     const handleDepositMorePress = useCallback(() => {
         if (!vault?.token.address) {
+            return;
+        }
+
+        if (!isFirmwareSupported('deposit')) {
+            showFirmwareUpdateAlert();
+
             return;
         }
 
@@ -98,20 +88,36 @@ export const StablecoinYieldTokenOverview = ({
                 yieldId: vault.id,
             },
         });
-    }, [accountKey, navigation, vault]);
+    }, [accountKey, isFirmwareSupported, navigation, showFirmwareUpdateAlert, vault]);
+
+    const handleWithdrawPress = useCallback(() => {
+        if (!isFirmwareSupported('withdraw')) {
+            showFirmwareUpdateAlert();
+
+            return;
+        }
+
+        navigation.navigate(RootStackRoutes.YieldNavigator, {
+            screen: YieldStackRoutes.YieldWithdraw,
+            params: {
+                accountKey,
+                tokenContract,
+            },
+        });
+    }, [accountKey, isFirmwareSupported, navigation, showFirmwareUpdateAlert, tokenContract]);
 
     if (resolutionStatus !== 'resolved' || !vault?.token.address) return null;
 
     const apyColor = apyValueText === null ? 'contentSecondary' : 'contentPrimary';
-    const apyValue = apyValueText ?? <Translation id="earn.notAvailable" />;
+    const apyValue = apyValueText ?? <Translation id="earn.notAvailableShort" />;
     const depositedPosition =
-        account && token?.balance !== undefined
+        account && depositedSharesAmount !== null
             ? {
                   balance: getConvertedOutputTokenBalanceToInputTokenAmount({
                       networkSymbol: account.symbol,
                       token: vault.token,
                       outputToken: vault.outputToken,
-                      outputTokenBalance: token.balance,
+                      outputTokenBalance: depositedSharesAmount,
                       pricePerShareState: vault.state?.pricePerShareState,
                   }),
                   contractAddress: toTokenAddress(vault.token.address),
@@ -143,7 +149,7 @@ export const StablecoinYieldTokenOverview = ({
                     </HStack>
                     <CardDivider />
                     <PressableOpacity
-                        onPress={handleOpenApyAlert}
+                        onPress={apyBreakdownAlert.onPress}
                         disabled={isApyRowDisabled}
                         testID="@account-detail/stablecoin-yield/apy-row"
                     >
@@ -151,7 +157,7 @@ export const StablecoinYieldTokenOverview = ({
                             <Text variant="body-sm" color="contentSecondary">
                                 <Translation id="moduleAccounts.accountDetail.stablecoinYield.apy" />
                             </Text>
-                            <Text variant="body-sm" color={apyColor}>
+                            <Text variant="body-sm" color={apyColor} style={applyStyle(abbrStyle)}>
                                 {apyValue}
                             </Text>
                         </HStack>
@@ -177,7 +183,7 @@ export const StablecoinYieldTokenOverview = ({
                             </HStack>
                         )}
                     </HStack>
-                    {isEnabled && depositedPosition && (
+                    {depositedPosition && (
                         <HStack spacing="sp12">
                             <Box flex={1}>
                                 <Button
@@ -192,8 +198,7 @@ export const StablecoinYieldTokenOverview = ({
                             </Box>
                             <Box flex={1}>
                                 <Button
-                                    // TODO: Remove once the stablecoin yield withdraw flow is implemented.
-                                    onPress={handleShowWithdrawWorkInProgressAlert}
+                                    onPress={handleWithdrawPress}
                                     intent="brand"
                                     priority="secondary"
                                     size="medium"

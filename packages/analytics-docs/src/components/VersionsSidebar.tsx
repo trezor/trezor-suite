@@ -9,13 +9,13 @@ import {
     Column,
     H3,
     Icon,
-    type IconProps,
     Paragraph,
     type SuiteThemeColors,
     Text,
     Tooltip,
     variables,
 } from '@trezor/components';
+import { ArrowsClockwiseFilledIcon, PlusIcon } from '@trezor/icons';
 
 import type { EventDoc } from '../types';
 import type { VersionWithEvents } from '../utils/filterUtils';
@@ -130,8 +130,8 @@ const getTooltipContent = (changeInfo: ChangeInfo) => {
 
 const getEventChangeProps = (changeInfo: ChangeInfo) =>
     changeInfo.isEventAdded
-        ? { name: 'plus' as const, intent: 'brand' as const }
-        : { name: 'arrowsClockwiseFilled' as const, intent: 'warning' as const };
+        ? { as: PlusIcon, intent: 'brand' as const }
+        : { as: ArrowsClockwiseFilledIcon, intent: 'warning' as const };
 
 const SidebarWrapper = styled.aside<{ theme: SuiteThemeColors }>`
     width: 100%;
@@ -195,10 +195,7 @@ export const VersionsSidebar = ({ versionsWithEvents, onEventClick }: VersionsSi
                                         <Text typographyStyle="body-xs">{event.name}</Text>
 
                                         <Tooltip content={getTooltipContent(changeInfo)}>
-                                            <Icon
-                                                {...(getEventChangeProps(changeInfo) as IconProps)}
-                                                size={12}
-                                            />
+                                            <Icon {...getEventChangeProps(changeInfo)} size={12} />
                                         </Tooltip>
                                     </CardList.Item>
                                 );

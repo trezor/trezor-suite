@@ -1,9 +1,9 @@
 {
     "extends": "../../tsconfig.lib.json",
     "include": ["./src"],
-    "compilerOptions": { "outDir": "./lib" },
-    "references": [
-        { "path": "../utils" },
-        { "path": "../eslint" }
-    ]
+    "compilerOptions": {
+        "outDir": "./lib",
+        "rootDir": "./src"
+    },
+    "references": []
 }

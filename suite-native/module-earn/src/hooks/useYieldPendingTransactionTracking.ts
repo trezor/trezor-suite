@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -15,9 +15,7 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
 
-const DEFAULT_PENDING_TX_POLL_INTERVAL_MS = 3_000;
-const MIN_PENDING_TX_POLL_INTERVAL_MS = 2_000;
-const BLOCK_TIME_TO_POLL_INTERVAL_RATIO = 2;
+import { getPollIntervalMs } from '../utils/getPollIntervalMs';
 
 type YieldPendingTrackingRootState = TransactionsRootState & AccountsRootState & FeesRootState;
 
@@ -29,15 +27,7 @@ type UseYieldPendingTransactionTrackingParams = {
     onApprovalConfirmed?: () => void;
     onRevokeConfirmed?: () => void;
     pendingTransaction: YieldPendingTransactionState | undefined;
-};
-
-const getPollIntervalMs = (blockTime: number | undefined): number => {
-    if (!blockTime) return DEFAULT_PENDING_TX_POLL_INTERVAL_MS;
-
-    return Math.max(
-        (blockTime / BLOCK_TIME_TO_POLL_INTERVAL_RATIO) * 1000,
-        MIN_PENDING_TX_POLL_INTERVAL_MS,
-    );
+    waitForMerklToResolveClaim?: () => Promise<unknown>;
 };
 
 export const useYieldPendingTransactionTracking = ({
@@ -48,8 +38,11 @@ export const useYieldPendingTransactionTracking = ({
     flowType,
     isScreenFocused,
     pendingTransaction,
+    waitForMerklToResolveClaim,
 }: UseYieldPendingTransactionTrackingParams) => {
     const dispatch = useDispatch();
+    const pendingTxidRef = useRef(pendingTransaction?.txid);
+    const claimCompletionTxidRef = useRef<string | null>(null);
     const accountKey = account?.key;
     const accountSymbol = account?.symbol;
     const trackedPendingTransaction = useSelector((state: YieldPendingTrackingRootState) => {
@@ -67,6 +60,14 @@ export const useYieldPendingTransactionTracking = ({
         !!flowKey &&
         !!pendingTransaction &&
         (!trackedPendingTransaction || isPending(trackedPendingTransaction));
+
+    useEffect(() => {
+        pendingTxidRef.current = pendingTransaction?.txid;
+
+        if (claimCompletionTxidRef.current !== pendingTransaction?.txid) {
+            claimCompletionTxidRef.current = null;
+        }
+    }, [pendingTransaction?.txid]);
 
     useEffect(() => {
         if (!accountKey || !shouldPollPendingTransaction) {
@@ -97,13 +98,42 @@ export const useYieldPendingTransactionTracking = ({
             return;
         }
 
-        if (pendingTransaction.type === 'revoke' || pendingTransaction.type === 'revoke-only') {
+        if (pendingTransaction.type === 'revoke') {
             dispatch(stablecoinYieldActions.revokeSuccess(sessionParams));
             dispatch(stablecoinYieldActions.invalidateAllowance(sessionParams));
 
             if (isScreenFocused && onRevokeConfirmed) {
                 onRevokeConfirmed();
             }
+
+            return;
+        }
+
+        if (pendingTransaction.type === 'claim' && flowType === 'claim') {
+            if (claimCompletionTxidRef.current === pendingTransaction.txid) {
+                return;
+            }
+
+            claimCompletionTxidRef.current = pendingTransaction.txid;
+
+            const completeClaimAction = async () => {
+                try {
+                    await waitForMerklToResolveClaim?.();
+                } catch {
+                    // Merkl can lag after on-chain success; the claim transaction is already confirmed.
+                } finally {
+                    if (pendingTxidRef.current === pendingTransaction.txid) {
+                        dispatch(
+                            stablecoinYieldActions.completeAction({
+                                ...sessionParams,
+                                amount: pendingTransaction.amount,
+                            }),
+                        );
+                    }
+                }
+            };
+
+            void completeClaimAction();
 
             return;
         }
@@ -143,5 +173,6 @@ export const useYieldPendingTransactionTracking = ({
         onRevokeConfirmed,
         pendingTransaction,
         trackedPendingTransaction,
+        waitForMerklToResolveClaim,
     ]);
 };

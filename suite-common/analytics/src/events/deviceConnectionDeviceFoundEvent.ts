@@ -11,12 +11,14 @@ export const deviceConnectionDeviceFoundEvent: EventDef<
 > = {
     name: EventType.DeviceConnectionDeviceFound,
     descriptionTrigger:
-        'User clicks on Connect button for any  nearby Trezor on Device Found Screen',
+        'User clicks the connect button for a nearby Trezor device on the Device Found screen',
     changelog: [{ version: '25.11.1', notes: 'added' }],
 
     attributes: {
         option: {
-            changelog: [{ version: '25.4.0', notes: 'added' }],
+            description:
+                'The user action: `connect` to establish connection, `close` to dismiss the screen',
+            changelog: [{ version: '25.11.1', notes: 'added' }],
         },
     },
 };

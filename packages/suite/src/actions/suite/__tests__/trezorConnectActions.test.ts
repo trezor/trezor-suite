@@ -1,3 +1,4 @@
+import { debugInitialState } from '@suite/debug';
 import { lockDevice } from '@suite/locks';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { connectInitThunk } from '@suite-common/connect-init';
@@ -6,12 +7,12 @@ import { messageSystemInitialState } from '@suite-common/message-system';
 import { testMocks } from '@suite-common/test-utils';
 import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
 
-import { deviceSlice } from 'src/actions/device/deviceSlice';
+import { prepareDesktopDeviceReducer } from 'src/actions/device/deviceSlice';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
 
-const deviceReducer = deviceSlice.prepareReducer(extraDependencies);
+const deviceReducer = prepareDesktopDeviceReducer(extraDependencies);
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type DevicesState = ReturnType<typeof deviceReducer>;
@@ -21,6 +22,7 @@ const getInitialState = (suite?: Partial<SuiteState>, device?: Partial<DevicesSt
         ...suite,
     },
     suiteSettings: suiteSettingsInitialState,
+    debug: debugInitialState,
     device: {
         ...deviceReducerInitialState,
         devices: device?.devices || [],
@@ -68,31 +70,7 @@ describe('TrezorConnect Actions', () => {
         const store = initStore(state);
         try {
             await store.dispatch(connectInitThunk()).unwrap();
-        } catch (error) {
-            expect(error.message).toEqual('Iframe error');
-        }
-    });
-
-    it('TypedError', async () => {
-        testMocks.setTrezorConnectFixtures(() => ({
-            message: 'Iframe error',
-            code: 'SomeCode',
-        }));
-        const state = getInitialState();
-        const store = initStore(state);
-        try {
-            await store.dispatch(connectInitThunk()).unwrap();
-        } catch (error) {
-            expect(error.message).toEqual('SomeCode: Iframe error');
-        }
-    });
-
-    it('Error as string', async () => {
-        testMocks.setTrezorConnectFixtures(() => 'Iframe error');
-        const state = getInitialState();
-        const store = initStore(state);
-        try {
-            await store.dispatch(connectInitThunk()).unwrap();
+            throw new Error('Unreachable!');
         } catch (error) {
             expect(error.message).toEqual('Iframe error');
         }
@@ -121,6 +99,7 @@ describe('TrezorConnect Actions', () => {
     });
 
     it('Wrapped method', async () => {
+        testMocks.setTrezorConnectFixtures();
         const state = getInitialState();
         const store = initStore(state);
         await store.dispatch(connectInitThunk());

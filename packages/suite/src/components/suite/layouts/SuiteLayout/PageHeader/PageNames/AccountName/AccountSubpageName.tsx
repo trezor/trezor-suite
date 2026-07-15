@@ -2,6 +2,7 @@ import { Translation } from '@suite/intl';
 import { goto, selectSettingsBackRoute } from '@suite/router';
 import { type Account } from '@suite-common/wallet-types';
 import { IconButton, Row } from '@trezor/components';
+import { CaretLeftIcon } from '@trezor/icons';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -21,7 +22,7 @@ export const AccountSubpageName = ({ selectedAccount }: AccountSubpageNameProps)
     return (
         <Row alignItems="center" gap={16}>
             <IconButton
-                icon="caretLeft"
+                icon={CaretLeftIcon}
                 intent="neutral"
                 priority="secondary"
                 size="large"

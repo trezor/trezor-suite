@@ -5,12 +5,13 @@ import type { CryptoId } from 'invity-api';
 import { Translation } from '@suite/intl';
 import {
     requiresTokenApproval,
-    selectTradingComposedTransactionInfo,
+    selectIsTradingNetworkFeeMissing,
     tradingExchangeActions,
 } from '@suite-common/trading';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { Button } from '@trezor/components';
 
+import { selectExchangeQuoteThunk } from 'src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingStellarActivation } from 'src/hooks/wallet/trading/useTradingStellarActivation';
@@ -33,16 +34,13 @@ export const TradingFormOfferExchangeActions = () => {
         isLoadingQuote,
         setIsLoadingQuote,
         confirmTrade,
-        form: { state },
+        isComposing,
+        form: { state, helpers },
     } = context;
 
     const modalControls = useReceiveAddressModalControls();
 
-    const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
-    const fee = composedTransactionInfo?.composed?.fee;
-    const isFeeRequiredButMissingValue = fee === undefined || fee === '';
-
-    const { outputs, sendCryptoSelect } = watch();
+    const { outputs, sendCryptoSelect, receiveCryptoSelect, exchangeType, rateType } = watch();
     const { amount, tokenAddress } = getTradingFirstOutput(outputs);
     const areSatsUsed = !!shouldSendInSats;
 
@@ -55,6 +53,10 @@ export const TradingFormOfferExchangeActions = () => {
         isBaseButtonDisabled,
     } = useTradingFormOfferCommon<'exchange'>();
 
+    const isNetworkFeeMissing = useSelector(reduxState =>
+        selectIsTradingNetworkFeeMissing(reduxState, quote),
+    );
+
     const { stellarActivateButton, stellarActivateModal } = useTradingStellarActivation({
         account: tradingReceiveAddress.selectedAccount ?? undefined,
         receiveCryptoId: selectedAssetCryptoId ?? undefined,
@@ -63,6 +65,7 @@ export const TradingFormOfferExchangeActions = () => {
     const isReceiveAddressSelected = !!tradingReceiveAddress.receiveAddress;
     const shouldShowApprovalStep = quote !== undefined && requiresTokenApproval(quote);
     const isQuoteOutdated = quote?.send !== sendCryptoSelect?.id;
+    const isQuoteForSelectedReceive = quote?.receive === receiveCryptoSelect?.id;
     const amountTooHigh = isAmountTooHigh({
         amount,
         contractAddress: tokenAddress,
@@ -75,17 +78,21 @@ export const TradingFormOfferExchangeActions = () => {
         : state.isFormLoading || isLoadingQuote;
 
     const isButtonDisabled =
-        isBaseButtonDisabled || amountTooHigh || isFeeRequiredButMissingValue || isLoading;
+        isBaseButtonDisabled || amountTooHigh || isNetworkFeeMissing || isComposing || isLoading;
 
     useEffect(() => {
         const initConfirmTrade = async () => {
-            if (shouldShowApprovalStep && tradingReceiveAddress.receiveAddress) {
+            if (
+                shouldShowApprovalStep &&
+                tradingReceiveAddress.receiveAddress &&
+                isQuoteForSelectedReceive
+            ) {
                 dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
                 const { receiveAddress } = tradingReceiveAddress;
 
                 setIsLoadingQuote(true);
                 try {
-                    await confirmTrade({ trade: quote, receiveAddress });
+                    await confirmTrade({ trade: quote, receiveAddress, approvalFlow: true });
                 } catch {
                     console.error('Failed to confirm trade on quote change');
                 } finally {
@@ -96,7 +103,12 @@ export const TradingFormOfferExchangeActions = () => {
 
         initConfirmTrade();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [quote, shouldShowApprovalStep, tradingReceiveAddress.receiveAddress]);
+    }, [
+        quote,
+        shouldShowApprovalStep,
+        tradingReceiveAddress.receiveAddress,
+        isQuoteForSelectedReceive,
+    ]);
 
     const onSelectQuote = async () => {
         if (!quote || !tradingReceiveAddress.receiveAddress) return;
@@ -107,7 +119,14 @@ export const TradingFormOfferExchangeActions = () => {
 
             if (!newTrade) return;
 
-            context.selectQuote(newTrade);
+            dispatch(
+                selectExchangeQuoteThunk({
+                    quote: newTrade,
+                    exchangeType,
+                    rateType,
+                    fractionButton: helpers.fractionButton,
+                }),
+            );
         } catch {
             // error already logged by confirmTrade thunk
         }
@@ -125,7 +144,7 @@ export const TradingFormOfferExchangeActions = () => {
                     intent="brand"
                     margin={{ top: 16 }}
                     isDisabled={isButtonDisabled}
-                    isLoading={areFeesLoading || state.isFormLoading}
+                    isLoading={areFeesLoading || state.isFormLoading || isComposing}
                     size="large"
                     minWidth={160}
                     width="100%"
@@ -146,6 +165,7 @@ export const TradingFormOfferExchangeActions = () => {
         return (
             <TradingFormOfferConfirmButton
                 {...confirmButtonData}
+                isLoading={confirmButtonData.isLoading || isComposing}
                 onClick={onSelectQuote}
                 isDisabled={isButtonDisabled}
                 testId="@trading/form/exchange-button"

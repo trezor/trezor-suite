@@ -15,13 +15,12 @@
         "test:unit:watch": "yarn g:jest --watch"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.11.2",
+        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/device": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
-        "@suite-common/suite-utils": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
@@ -39,12 +38,12 @@
         "@trezor/device-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react-native": "0.83.2"
+        "react-native": "0.85.3"
     },
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
         "@suite-native/trading-types": "workspace:*",
-        "@types/invity-api": "^1.1.15"
+        "@types/invity-api": "^1.1.19"
     }
 }

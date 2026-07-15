@@ -47,9 +47,9 @@ describe('ExchangeConfirmationHeader', () => {
     it('should render empty label when quote is not available', () => {
         store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
 
-        const { queryByTestId } = renderHeader({ flowType: 'approve' });
+        const { getByTestId } = renderHeader({ flowType: 'approve' });
 
-        expect(queryByTestId('@screen/sub-header/title')).not.toBeOnTheScreen();
+        expect(getByTestId('@screen/sub-header/title')).toHaveTextContent('');
     });
 
     it('should render empty label when symbol was not found', () => {
@@ -59,8 +59,8 @@ describe('ExchangeConfirmationHeader', () => {
         } as ExchangeTrade;
         store.dispatch(tradingExchangeActions.saveSelectedQuote(quoteWithUnknownSend));
 
-        const { queryByTestId } = renderHeader({ flowType: 'revoke' });
+        const { getByTestId } = renderHeader({ flowType: 'revoke' });
 
-        expect(queryByTestId('@screen/sub-header/title')).not.toBeOnTheScreen();
+        expect(getByTestId('@screen/sub-header/title')).toHaveTextContent('');
     });
 });

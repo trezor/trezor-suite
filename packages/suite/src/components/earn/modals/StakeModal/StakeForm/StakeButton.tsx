@@ -5,10 +5,11 @@ import { useServices } from '@suite-common/dependency-injection';
 import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Modal, Tooltip } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
-import { useSupplyFormContext } from 'src/hooks/earn/useSupplyForm';
+import { useStakeFormContext } from 'src/hooks/earn/useStakeForm';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
@@ -30,7 +31,7 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
         watch,
         currency,
         isStakingDisabled: isCardanoStakingDisabled,
-    } = useSupplyFormContext();
+    } = useStakeFormContext();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(network.symbol);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
@@ -47,7 +48,7 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
     const isFormInputsValid = !isCardano ? formIsValid && hasValues : !isCardanoStakingDisabled;
     const isDisabled = !isFormInputsValid || isSubmitting || (isDeviceConnected && isLocked());
 
-    const onSupplyClick = () => {
+    const onStakeClick = () => {
         if (!isDeviceConnected) {
             if (device?.descriptor?.apiType === 'bluetooth') {
                 dispatch(setConnectionMode('bluetooth'));
@@ -82,8 +83,8 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
             <Modal.Button
                 isDisabled={isDisabled || isStakingDisabled}
                 isLoading={isLoading}
-                onClick={onSupplyClick}
-                iconLeft={isStakingDisabled ? 'info' : undefined}
+                onClick={onStakeClick}
+                iconLeft={isStakingDisabled ? InfoIcon : undefined}
                 data-testid="@modal/staking/continue-button"
             >
                 <Translation id="TR_CONTINUE" />

@@ -35,7 +35,7 @@ const setupDeviceMode = async (
         } else {
             // otherwise wait for start pairing request
             device.setBusy('thp-locked');
-            device.lifecycle.emit(DEVICE.CHANGED);
+            device.emitDeviceChanged();
         }
 
         await device.release();
@@ -66,7 +66,7 @@ export const trezorPushNotificationHandler = async ({ device, message }: TpnWork
         device.setBusy(
             mode === TrezorPushNotificationMode.BootloaderMode ? 'bootloader-locked' : 'rebooting',
         );
-        device.lifecycle.emit(DEVICE.CHANGED);
+        device.emitDeviceChanged();
     }
 
     switch (type) {
@@ -86,18 +86,18 @@ export const trezorPushNotificationHandler = async ({ device, message }: TpnWork
                     ? 'bootloader-locked'
                     : 'hard-locked',
             );
-            device.lifecycle.emit(DEVICE.CHANGED);
+            device.emitDeviceChanged();
             break;
         case TrezorPushNotificationType.UNLOCK:
             await setupDeviceMode(device, decoded.mode);
             break;
         case TrezorPushNotificationType.SOFTLOCK:
             device.setBusy('pin-locked');
-            device.lifecycle.emit(DEVICE.CHANGED);
+            device.emitDeviceChanged();
             break;
         case TrezorPushNotificationType.SOFTUNLOCK:
             device.setBusy(device.features ? undefined : 'thp-locked');
-            device.lifecycle.emit(DEVICE.CHANGED);
+            device.emitDeviceChanged();
             break;
         default:
             break;

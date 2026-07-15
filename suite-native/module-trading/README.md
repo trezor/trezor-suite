@@ -47,6 +47,7 @@ Provides logic shared between trading and send flow.
 - **@suite-native/trading-atoms:** Reusable components.
 - **@suite-native/trading-browser-auth:** Hooks and components for handling browser authentication in trading features.
 - **@suite-native/trading-debug:** Debug UI components for displaying information while `IsTradingDebugEnabled` FF is set.
+- **@suite-native/trading-slippage:** Slippage picker, bottom sheet, summary, and form hook for DEX exchange trades.
 - **@suite-native/trading-types:** Types used across trading modules.
 - **@suite-native/trading-consts:** Constants used across trading modules.
 - **@suite-native/trading-fixtures:** Fixtures for testing trading features.
@@ -73,6 +74,7 @@ graph TD
         trading-analytics["@suite-native/trading-analytics"]
         trading-browser-auth["@suite-native/trading-browser-auth"]
         trading-debug["@suite-native/trading-debug"]
+        trading-slippage["@suite-native/trading-slippage"]
         trading-fixtures["@suite-native/trading-fixtures"]
         trading-types["@suite-native/trading-types"]
         trading-consts["@suite-native/trading-consts"]
@@ -99,6 +101,7 @@ graph TD
     module-trading --> trading-consts
     module-trading -.-> trading-fixtures
     module-trading --> trading-atoms
+    module-trading --> trading-slippage
     module-trading --> trading-analytics
     module-trading --> trading-debug
     module-trading --> trading-browser-auth
@@ -133,6 +136,9 @@ graph TD
     trading-debug -.-> trading-types
     trading-debug -.-> trading-consts
     trading-debug --> trading-state
+    trading-slippage -.-> trading-fixtures
+    trading-slippage --> trading-atoms
+    trading-slippage --> trading-state
     trading-atoms -.-> trading-fixtures
     trading-fixtures --> trading-consts
     trading-fixtures -.-> trading-types

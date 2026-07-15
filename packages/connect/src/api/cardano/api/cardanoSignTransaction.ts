@@ -2,17 +2,16 @@
 
 // allow for...of statements
 
-import { trezorUtils } from '@fivebinaries/coin-selection';
-
 import {
     type CardanoAuxiliaryDataSupplement,
     CardanoSignTransactionExtended,
     CardanoSignTransaction as CardanoSignTransactionSchema,
     type CardanoSignedTxData,
     type CardanoSignedTxWitness,
-    type MethodPermission,
+    type PermissionRequest,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import cardano from '@trezor/network-cardano/runtime';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert, Type } from '@trezor/schema-utils';
 
@@ -234,11 +233,11 @@ export default class CardanoSignTransaction extends AbstractMethod<
         super(message, params);
 
         this.requiredDeviceCapabilities = ['Capability_Cardano'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Cardano')];
+        this.requiredFirmwareCoins = [getMiscNetwork('ada')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     get info() {
@@ -441,6 +440,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
             );
         }
 
+        const { trezorUtils } = await cardano();
         const serializedTx = trezorUtils.signTransaction(unsignedTx.body, witnesses, { testnet });
 
         return {

@@ -1,14 +1,12 @@
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import { transformTx, verifyEthereumStakingCalldata } from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
+import { WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
 import {
     ethereumGetCurrentNonceThunk,
-    pushSendFormTransactionThunk,
     selectAccountByKey,
     selectFormDraft,
-    selectIsMevProtectionEnabled,
     sendFormActions,
 } from '@suite-common/wallet-core';
 import {
@@ -17,20 +15,18 @@ import {
     type PrecomposedTransactionFinal,
     type StakeFormState,
 } from '@suite-common/wallet-types';
-import { getFormDraftKey } from '@suite-common/wallet-utils';
+import { fromEther, getFormDraftKey } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { STAKE_NATIVE_MODULE_PREFIX } from './constants';
 import {
-    type EthereumAccount,
     type EthereumStakingVariant,
     type Failure,
     type PreparedEthereumStakingContext,
 } from './stakeFormEthereumNativeTypes';
 import { type SignStakeNativeRejectValue, type StakeNativeType } from './stakeNativeTypes';
-import { ethToWei } from './utils';
 
 const LOG_PREFIX = 'signEthereumStakingTransactionNativeThunk';
 
@@ -85,7 +81,7 @@ const readVariantFromComposeDraft = (
         stakeType,
         calldata,
         contractAddress,
-        value: stakeType === 'stake' ? ethToWei(composeAmount) : '0',
+        value: stakeType === 'stake' ? fromEther(composeAmount).toWei() : '0',
     };
 };
 
@@ -101,10 +97,7 @@ const prepareEthereumStakingContext = (
 
     const account = selectAccountByKey(state, accountKey);
     if (account?.networkType !== 'ethereum') {
-        return failed(
-            'Ethereum account not found.',
-            `Ethereum account not found for key ${accountKey}`,
-        );
+        return failed('Ethereum account not found.');
     }
 
     const { chainId } = getNetwork(account.symbol);
@@ -124,13 +117,14 @@ const prepareEthereumStakingContext = (
     if (!variant) {
         return failed(
             `Compose draft for ${stakeType} is missing.`,
-            `Form draft '${getFormDraftKey(stakeType, accountKey)}' is missing or incomplete.`,
+            `Compose draft for ${stakeType} is missing or incomplete.`,
         );
     }
 
     const calldataCheck = verifyEthereumStakingCalldata({
         stakeType,
         calldata: variant.calldata,
+        source: WALLET_SDK_SOURCE_MOBILE,
     });
     if (!calldataCheck.isValid) {
         return failed(
@@ -158,7 +152,7 @@ const prepareEthereumStakingContext = (
     return {
         ok: true,
         context: {
-            account: account as EthereumAccount,
+            account,
             chainId,
             gasLimit,
             variant,
@@ -169,7 +163,7 @@ const prepareEthereumStakingContext = (
 };
 
 export const signEthereumStakingTransactionNativeThunk = createThunk<
-    { txid: string },
+    void,
     {
         accountKey: AccountKey;
         stakeType: StakeNativeType;
@@ -203,7 +197,10 @@ export const signEthereumStakingTransactionNativeThunk = createThunk<
                 const device = selectSelectedDevice(getState());
 
                 const { nonce } = await dispatch(
-                    ethereumGetCurrentNonceThunk({ selectedAccount: account }),
+                    ethereumGetCurrentNonceThunk({
+                        selectedAccount: account,
+                        fetchConfirmedNonce: true,
+                    }),
                 ).unwrap();
 
                 const tx = transformTx(
@@ -266,26 +263,6 @@ export const signEthereumStakingTransactionNativeThunk = createThunk<
                     serializedTx: { tx: serializedTx, symbol: account.symbol },
                 }),
             );
-
-            const isMevProtectionEnabled =
-                selectIsMevProtectionEnabled(getState()) &&
-                selectIsMevProtectionFeatureEnabled(getState());
-
-            const pushAction = await dispatch(
-                pushSendFormTransactionThunk({
-                    selectedAccount: account,
-                    isMevProtectionEnabled,
-                }),
-            );
-
-            if (pushSendFormTransactionThunk.rejected.match(pushAction)) {
-                const message = pushAction.payload?.metadata.error.message;
-                console.error(`${LOG_PREFIX}: Push transaction failed: ${message}`);
-
-                return rejectWithValue(pushAction.payload);
-            }
-
-            return { txid: pushAction.payload.payload.txid };
         } catch (error) {
             console.error(`${LOG_PREFIX}: Unexpected error: ${error}`);
 

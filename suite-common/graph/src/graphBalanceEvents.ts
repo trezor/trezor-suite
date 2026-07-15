@@ -38,7 +38,7 @@ export const formatBalanceMovementEventsAmounts = (
                 sent: Math.abs(sentTotal - sentToSelf),
                 received: Math.abs(receivedTotal - sentToSelf),
             },
-        } as BalanceMovementEvent;
+        };
     });
 
 /**
@@ -117,7 +117,7 @@ export const mergeGroups = ({
                     accountKey,
                 },
             ),
-        } as GroupedBalanceMovementEvent;
+        };
     });
 
 /**  Relative number that ensure that there is no more than 30 points in each graph.  */

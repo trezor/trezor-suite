@@ -56,7 +56,7 @@ export const YieldEarnProviderConsentModal = ({
     const tokenSymbolFromTrading = useSelector(state =>
         selectTradingCoinSymbolByCryptoId(state, tokenCryptoId),
     );
-    const { proceedToSupply, onCancelClick } = useEarnProviderConsentActions({
+    const { proceedToEarnFlow, onCancelClick } = useEarnProviderConsentActions({
         flow: EarnFlow.Yield,
         onCancel,
         account,
@@ -64,7 +64,7 @@ export const YieldEarnProviderConsentModal = ({
         yieldContext,
     });
     const displaySymbol = getNetworkDisplaySymbol(account.symbol);
-    const supplySymbol = tokenSymbolFromAccount ?? tokenSymbolFromTrading ?? displaySymbol;
+    const depositSymbol = tokenSymbolFromAccount ?? tokenSymbolFromTrading ?? displaySymbol;
     const providerName = getEarnProviderName(provider);
 
     const handleOnConfirm = () => {
@@ -79,7 +79,7 @@ export const YieldEarnProviderConsentModal = ({
             },
         });
 
-        proceedToSupply();
+        proceedToEarnFlow();
     };
 
     const handleOnCancel = () => {
@@ -99,7 +99,7 @@ export const YieldEarnProviderConsentModal = ({
 
     return (
         <EarnProviderConsentModalLayout
-            heading={<Translation id="TR_EARN_SUPPLY_TOKEN" values={{ symbol: supplySymbol }} />}
+            heading={<Translation id="TR_EARN_DEPOSIT_TOKEN" values={{ symbol: depositSymbol }} />}
             banners={
                 <YieldProviderConsentBanners
                     networkType={account.networkType}

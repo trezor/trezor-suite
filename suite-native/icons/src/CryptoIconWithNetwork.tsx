@@ -11,7 +11,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { CryptoIcon, type CryptoIconSize, cryptoIconSizes } from './CryptoIcon';
 import { NetworkIcon, networkIconSizes } from './NetworkIcon';
 
-export interface CryptoIconWithNetworkProps {
+interface CryptoIconWithNetworkProps {
     symbol: NetworkSymbol;
     contractAddress?: TokenAddress;
     size?: CryptoIconSize;

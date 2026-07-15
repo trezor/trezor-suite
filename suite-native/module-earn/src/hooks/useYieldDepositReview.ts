@@ -4,9 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
+import { selectIsDeviceConnected } from '@suite-common/device';
 import {
     type StablecoinYieldRootState,
     type YieldFlowResolvedData,
+    isYieldTxReviewForFlow,
     selectStablecoinYieldTxReview,
 } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
@@ -16,11 +18,16 @@ import type {
     YieldStackRoutes,
 } from '@suite-native/navigation';
 
-import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
-import { useYieldDepositReviewBackNavigation } from './useYieldDepositReviewBackNavigation';
-import { type YieldDepositReviewStatus, type YieldReviewSigningResult } from '../types';
-import { isUserCancelledSignError } from '../utils';
+import {
+    type YieldReviewActionStatus,
+    type YieldReviewSigningResult,
+    type YieldReviewStatus,
+} from '../types';
+import { handleEarnReviewError, isUserCancelledSignError } from '../utils';
 import { pushYieldActionReviewThunk, signYieldActionReviewThunk } from '../yieldTransactionThunks';
+import { useShowDeviceDisconnectedDuringEarnReviewAlert } from './useShowDeviceDisconnectedDuringEarnReviewAlert';
+import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
+import { useYieldActionReviewBackNavigation } from './useYieldActionReviewBackNavigation';
 
 type UseYieldDepositReviewParams = {
     flowData: YieldFlowResolvedData;
@@ -28,10 +35,8 @@ type UseYieldDepositReviewParams = {
     onReviewLeave?: () => void;
 };
 
-type YieldDepositReviewActionStatus = 'idle' | 'signing' | 'sending';
-
 type UseYieldDepositReviewResult = {
-    depositStatus: YieldDepositReviewStatus;
+    depositStatus: YieldReviewStatus;
     handleDepositSubmitted: () => Promise<void>;
     leaveReviewFromDeviceCancel: () => void;
     startDepositReview: () => Promise<YieldReviewSigningResult>;
@@ -49,23 +54,30 @@ export const useYieldDepositReview = ({
 }: UseYieldDepositReviewParams): UseYieldDepositReviewResult => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
-    const {
-        showPendingTransactionConflictAlert,
-        showPushTransactionFailedAlert,
-        showSignTransactionFailedAlert,
-    } = useShowPushTransactionFailedDuringReviewAlert('yield-deposit');
-    const [depositActionStatus, setDepositActionStatus] =
-        useState<YieldDepositReviewActionStatus>('idle');
+    const { showPendingTransactionConflictAlert, showPushTransactionFailedAlert } =
+        useShowPushTransactionFailedDuringReviewAlert('yield-deposit');
+    const showDeviceDisconnectedAlert = useShowDeviceDisconnectedDuringEarnReviewAlert();
+    const [depositActionStatus, setDepositActionStatus] = useState<YieldReviewActionStatus>('idle');
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const txReview = useSelector((state: StablecoinYieldRootState) =>
         selectStablecoinYieldTxReview(state),
     );
-    const isDepositSigned = txReview.accountKey === flowData.account.key && !!txReview.serializedTx;
-    const depositStatus: YieldDepositReviewStatus =
+    // A leftover signed tx from a previous review of the same account must not appear
+    // as signed here, hence the flow identity and `notBefore` guard.
+    const [reviewOpenedAt] = useState(() => Date.now());
+    const isDepositSigned =
+        isYieldTxReviewForFlow(txReview, {
+            accountKey: flowData.account.key,
+            flowKey,
+            flowType: 'deposit',
+            notBefore: reviewOpenedAt,
+        }) && !!txReview.serializedTx;
+    const depositStatus: YieldReviewStatus =
         depositActionStatus === 'idle' && isDepositSigned ? 'signed' : depositActionStatus;
     const { leaveReviewFromDeviceCancel, markReviewNavigationSuccess } =
-        useYieldDepositReviewBackNavigation({
-            depositStatus,
+        useYieldActionReviewBackNavigation({
             onReviewLeave,
+            reviewStatus: depositStatus,
         });
 
     const startDepositReview = useCallback(async (): Promise<YieldReviewSigningResult> => {
@@ -79,6 +91,12 @@ export const useYieldDepositReview = ({
 
         if (depositStatus !== 'idle') {
             return 'not-ready';
+        }
+
+        if (!isDeviceConnected) {
+            showDeviceDisconnectedAlert();
+
+            return 'failed';
         }
 
         setDepositActionStatus('signing');
@@ -96,7 +114,16 @@ export const useYieldDepositReview = ({
         setDepositActionStatus('idle');
 
         if (!deviceAccessResponse.success) {
-            showSignTransactionFailedAlert();
+            handleEarnReviewError({
+                payload: {
+                    error: 'sign-transaction-failed',
+                    message: 'Prioritized device access failed.',
+                },
+                navigation,
+                showPushTransactionFailedAlert,
+                showPendingTransactionConflictAlert,
+                showDeviceDisconnectedAlert,
+            });
 
             return 'failed';
         }
@@ -109,13 +136,29 @@ export const useYieldDepositReview = ({
         }
 
         if (isSignRejected) {
-            showSignTransactionFailedAlert();
+            handleEarnReviewError({
+                payload: signResponse.payload,
+                navigation,
+                showPushTransactionFailedAlert,
+                showPendingTransactionConflictAlert,
+                showDeviceDisconnectedAlert,
+            });
 
             return 'failed';
         }
 
         return 'signed';
-    }, [depositStatus, dispatch, flowData, flowKey, showSignTransactionFailedAlert]);
+    }, [
+        depositStatus,
+        dispatch,
+        flowData,
+        flowKey,
+        isDeviceConnected,
+        navigation,
+        showDeviceDisconnectedAlert,
+        showPendingTransactionConflictAlert,
+        showPushTransactionFailedAlert,
+    ]);
 
     const handleDepositSubmitted = useCallback(async () => {
         if (depositStatus !== 'signed') {

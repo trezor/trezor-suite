@@ -53,7 +53,7 @@ export class RewardsList {
         const expectedItemsCount = endIndex - startIndex;
 
         const rewardItems = await this.getRewardsFromPage();
-        expect(rewardItems.length).toBe(expectedItemsCount);
+        expect(rewardItems).toHaveLength(expectedItemsCount);
 
         // Loop through all items on the page and verify their content
         // with corresponding reward from response

@@ -24,7 +24,8 @@ const Section = styled.div<{ $selected?: boolean; $isSidebarCollapsed?: boolean 
     border-radius: ${borders.radii.sm};
 
     outline: 1px solid
-        ${({ theme, $selected }) => ($selected ? theme.borderNeutral : 'transparent')};
+        ${({ theme, $selected }) => ($selected ? theme.elementBorderNeutralSofter : 'transparent')};
+    outline-offset: -1px;
     padding: ${spacingsPx.xxs};
     margin: 0 -${spacingsPx.xxs};
 
@@ -34,7 +35,8 @@ const Section = styled.div<{ $selected?: boolean; $isSidebarCollapsed?: boolean 
         top: 24px;
         bottom: 28px;
         left: ${({ $isSidebarCollapsed }) => ($isSidebarCollapsed ? '50%' : '24px')};
-        border-left: 2px dotted ${({ theme }) => theme.borderNeutral};
+        border-left: 2px dotted ${({ theme }) => theme.elementBorderNeutralSofter};
+        transform: translateX(-50%);
     }
 `;
 

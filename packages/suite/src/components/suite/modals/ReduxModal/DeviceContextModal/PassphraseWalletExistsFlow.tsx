@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { cancelDiscoveryThunk, startDiscoveryThunk } from '@suite-common/wallet-core';
+import { cancelDiscoveryThunk, startAddWalletDiscoveryThunk } from '@suite-common/wallet-core';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
 
 import { useDispatch } from 'src/hooks/suite';
@@ -36,9 +36,10 @@ export const PassphraseWalletExistsFlow = ({
     const toExistEnterPassphrase = () => {
         dispatch(cancelDiscoveryThunk(device));
         dispatch(
-            startDiscoveryThunk({
+            startAddWalletDiscoveryThunk({
                 device,
-                ...discovery,
+                isAddingHiddenWallet: discovery.isAddingHiddenWallet,
+                isAddingExistingWallet: discovery.isAddingExistingWallet,
             }),
         );
     };

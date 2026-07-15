@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
 import {
     FirmwareWarningsList,
@@ -8,12 +9,12 @@ import {
 } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
-import { selectIsDebugModeActive } from '@suite/settings';
 import { selectDevices } from '@suite-common/device';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { type ButtonProps, Card, Column, Link, Note, Row, Tooltip } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal, isBitcoinOnlyDevice } from '@trezor/device-utils';
+import { CircuitryIcon } from '@trezor/icons';
 import { unique } from '@trezor/utils';
 
 import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
@@ -307,7 +308,7 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
                     <SkipStepConfirmation onCancel={() => setShowSkipConfirmation(false)} />
                 )}
                 <OnboardingCard
-                    iconName="circuitry"
+                    icon={CircuitryIcon}
                     heading={content.heading}
                     description={content.description}
                     innerActions={content.innerActions}
@@ -316,7 +317,7 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
                 >
                     <Column gap={32}>
                         {deviceWillBeWiped && <FirmwareWipeWarning />}
-                        <Card>
+                        <Card type="contrast">
                             <FirmwareOffer targetFirmwareType={targetType} />
                         </Card>
                         <FirmwareWarningsList />

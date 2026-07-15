@@ -5,12 +5,13 @@ import { DEVICE_RENDERED_EVM_INDENT } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
+test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
         contextOptions: {
             permissions: ['clipboard-read', 'clipboard-write'],
         },
     });
+
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
     });

@@ -70,7 +70,26 @@ export const buildMainMenu = (mainWindowProxy: MainWindowProxy) => {
         role: 'help',
         submenu: [
             {
-                label: 'Learn More',
+                label: 'Guide',
+                click: () => {
+                    mainWindowProxy.getInstance()?.webContents.send('guide/open');
+                },
+            },
+            {
+                label: 'Support and feedback',
+                click: () => {
+                    mainWindowProxy.getInstance()?.webContents.send('guide/open-support-feedback');
+                },
+            },
+            {
+                label: 'Keyboard shortcuts',
+                click: () => {
+                    mainWindowProxy.getInstance()?.webContents.send('guide/open-shortcuts');
+                },
+            },
+            { type: 'separator' },
+            {
+                label: 'Trezor website',
                 click: () => shell.openExternal('https://trezor.io/'),
             },
         ],

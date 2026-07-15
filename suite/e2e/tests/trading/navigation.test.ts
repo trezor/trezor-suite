@@ -3,6 +3,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
+
     test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({
@@ -35,10 +36,6 @@ test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Buy from global header', async () => {
                 await dashboardPage.navigateTo();
-                const isBuyButtonUnderDropDown = await walletPage.walletExtraDropDown.isVisible();
-                if (isBuyButtonUnderDropDown) {
-                    await walletPage.walletExtraDropDown.click();
-                }
                 await walletPage.openTradingGlobalButton.click();
                 await tradingPage.verifyBuyFormOpened(/Bitcoin|Ethereum|Litecoin/);
             });
@@ -56,6 +53,12 @@ test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             // SELL
             // We don't test cases where navigation goes first thru buy form
+            await test.step('Sell from global header', async () => {
+                await dashboardPage.navigateTo();
+                await walletPage.openSellGlobalButton.click();
+                await tradingPage.verifySellFormOpened(/Bitcoin|Ethereum|Litecoin/);
+            });
+
             await test.step('Sell from account trade section', async () => {
                 await walletPage.openAccount({ symbol: 'btc' });
                 await walletPage.sellButton.click();

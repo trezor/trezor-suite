@@ -7,6 +7,7 @@
 @formatjs/intl-listformat
 @formatjs/intl-locale
 @gorhom/bottom-sheet
+@lottiefiles/dotlottie-react
 @originjs/vite-plugin-commonjs
 @react-native-community/datetimepicker
 @react-native-community/slider
@@ -26,7 +27,6 @@
 autoprefixer
 babel-plugin-styled-components
 css-loader
-css-minimizer-webpack-plugin
 date-fns
 fantasticon
 fela

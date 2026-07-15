@@ -5,17 +5,12 @@ import styled from 'styled-components';
 import { selectShouldDisplayDeviceCompromised } from '@suite/authenticity-checks';
 import { TrafficLightOffset } from '@suite/macos';
 import { suiteSettingsActions } from '@suite/settings';
-import { selectDevicesCount, selectSelectedDevice } from '@suite-common/device';
-import { Box, ElevationUp, Icon, ResizableBox, useElevation } from '@trezor/components';
+import { selectIsAnyDeviceSelected, selectSelectedDevice } from '@suite-common/device';
+import { Box, Icon, ResizableBox } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
+import { TrezorLogoIcon } from '@trezor/icons';
 import { TrezorLogo } from '@trezor/product-components';
-import {
-    type Elevation,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    spacingsPx,
-    zIndices,
-} from '@trezor/theme';
+import { spacingsPx, zIndices } from '@trezor/theme';
 
 import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
 import { MIN_CONTENT_WIDTH } from 'src/constants/suite/layout';
@@ -33,20 +28,20 @@ import {
 } from './consts';
 import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
 
-const Container = styled.nav<{ $elevation: Elevation }>`
-    overflow-x: hidden;
+const Container = styled.nav`
     display: flex;
     flex-direction: column;
     flex: 0 0 auto;
     height: 100%;
-    background: ${mapElevationToBackground};
-    border-right: 1px solid ${mapElevationToBorder};
+    background: ${({ theme }) => theme.surfaceFillSunken};
+    border-right: 1px solid ${({ theme }) => theme.surfaceBorderSunken};
 `;
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
 `;
+
 const Content = styled.div`
     height: 100%;
     display: flex;
@@ -67,15 +62,15 @@ type WalletSwitcherProps = {
 };
 
 const WalletSwitcher = ({ isCollapsed }: WalletSwitcherProps) => {
-    const devicesCount = useSelector(selectDevicesCount);
+    const isAnyDeviceSelected = useSelector(selectIsAnyDeviceSelected);
 
-    if (devicesCount > 0) {
+    if (isAnyDeviceSelected) {
         return <DeviceSelector />;
     }
 
     return isCollapsed ? (
         <Box margin={{ left: 'auto', right: 'auto', top: isDesktop() ? 24 : 12, bottom: 12 }}>
-            <Icon name="trezorLogo" size={24} pointerEvents="none" />
+            <Icon as={TrezorLogoIcon} size={24} pointerEvents="none" />
         </Box>
     ) : (
         <Box margin={{ left: 20, right: 12, top: isDesktop() ? 24 : 12, bottom: 12 }}>
@@ -108,8 +103,6 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
 
     const [maxResizableSidebarWidth, setMaxResizableSidebarWidth] =
         useState<number>(SIDEBAR_MAX_WIDTH);
-
-    const { elevation } = useElevation();
 
     const shouldDisplayDeviceCompromised = useSelector(selectShouldDisplayDeviceCompromised);
     const selectedDevice = useSelector(selectSelectedDevice);
@@ -207,13 +200,12 @@ export const Sidebar = ({ showAccounts = true }: SidebarProps) => {
                 flex="1"
                 forcedWidth={forcedSidebarWidth}
             >
-                <Container $elevation={elevation}>
+                <Container>
                     <TrafficLightOffset>
                         <Content>
                             <WalletSwitcher isCollapsed={isSidebarCollapsed} />
-                            <ElevationUp>
-                                <Navigation />
-                            </ElevationUp>
+
+                            <Navigation />
                             <HorizontalSpacer>
                                 {showAccountsAndIsDeviceReady && <AccountsMenu />}
                             </HorizontalSpacer>

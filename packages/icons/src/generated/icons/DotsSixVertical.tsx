@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgDotsSixVertical = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M13 7.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0M20.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m-9 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m9 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m-9 8.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m9 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3"
+        />
+    </svg>
+);
+export { SvgDotsSixVertical as ReactComponent };

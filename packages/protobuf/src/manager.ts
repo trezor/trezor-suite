@@ -141,7 +141,8 @@ const transformSchemaFields = (
         } else if (schemaField.fieldKind === 'scalar') {
             transformedData[schemaField.name] = transformField(schemaField, fieldValue);
         } else if (schemaField.fieldKind === 'enum') {
-            transformedData[schemaField.name] = fieldValue;
+            // [compatibility]: normalize absent optional enum fields to `null` (protobufjs sometimes returned the 0/first value)
+            transformedData[schemaField.name] = transformField(schemaField, fieldValue);
         } else {
             transformedData[schemaField.name] = fieldValue; // map
         }

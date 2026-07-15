@@ -16,9 +16,10 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type MetadataProviderType } from '@suite-common/metadata-types';
 import { type AnyAction, type ExtraDependencies } from '@suite-common/redux-utils';
+import { selectEnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
+import { parseStaticSessionId } from '@trezor/device-utils';
 
 import { selectMetadataMigrationDep } from './createMetadataMigrationCompositionRoot';
 import type { MigrationError } from './legacyLabelsMigration';
@@ -42,6 +43,7 @@ export const LegacyLabelingMigrationModal = ({
 }: LegacyLabelingMigrationModalProps) => {
     const dispatch = useDispatch<MetadataDispatch>();
     const { migrateLegacyLabelsToSuiteSync } = useServices(selectMetadataMigrationDep);
+    const { ensureWalletSuiteSyncOn } = useServices(selectEnsureWalletSuiteSyncOnDep);
     const selectedProvider = useSelector(selectSelectedProviderForLabels);
     const selectedDevice = useSelector(selectSelectedDevice);
     const [providerLoading, setProviderLoading] = useState<MetadataProviderType | null>(null);
@@ -96,12 +98,26 @@ export const LegacyLabelingMigrationModal = ({
             return;
         }
 
-        const result = await migrateLegacyLabelsToSuiteSync(selectedDevice);
+        const ensureResult = await ensureWalletSuiteSyncOn({
+            deviceStaticSessionId: selectedDevice.state.staticSessionId,
+            isWriteMode: true,
+        });
+
+        if (!ensureResult.success) {
+            onSuiteSyncError({
+                error: ensureResult.error,
+                deviceStaticSessionId: selectedDevice.state.staticSessionId,
+            });
+            setError('Migration failed. Try again.');
+            setProviderLoading(null);
+
+            return;
+        }
+
+        const result = await migrateLegacyLabelsToSuiteSync(selectedDevice, ensureResult.payload);
 
         if (result.success) {
-            const { walletDescriptor } = parseDeviceStaticSessionId(
-                selectedDevice.state.staticSessionId,
-            );
+            const { walletDescriptor } = parseStaticSessionId(selectedDevice.state.staticSessionId);
 
             dispatch(metadataActions.setLegacyLabelsMigrationForWallet(walletDescriptor));
             dispatch(

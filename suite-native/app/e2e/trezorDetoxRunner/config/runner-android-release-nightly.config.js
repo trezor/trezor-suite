@@ -2,7 +2,7 @@ const target = 'android.emu.release';
 
 /*
  * Android Release Nightly config
- * This config is used to run all tests nightly, including non-smoke T3T1 tests.
+ * This config is used to run all tests nightly, including the full T3T1 set (PR runs only T3T1-only tests).
  * There are projects for all supported device models with the latest firmware versions
  */
 /** @type {import('../types').RunnerConfig} */

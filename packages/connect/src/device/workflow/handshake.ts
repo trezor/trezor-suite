@@ -1,8 +1,7 @@
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
-import type { Log } from '@trezor/connect-common/src/utils/debug';
 import { PROTOCOL_MALFORMED } from '@trezor/protocol/src/errors';
 import { TRANSPORT_ERROR } from '@trezor/transport-common';
-import { resolveAfter, versionUtils } from '@trezor/utils';
+import { type Logger, resolveAfter, versionUtils } from '@trezor/utils';
 
 import type { WorkflowContext } from '../../types/workflow';
 
@@ -12,7 +11,7 @@ const ATTEMPTS_LIMIT = 10;
 type Context = {
     device: WorkflowContext['device'];
     signal: AbortSignal;
-    logger?: Log;
+    logger?: Logger;
 };
 
 const isLegacyBridge = (transport: Context['device']['transport']) =>

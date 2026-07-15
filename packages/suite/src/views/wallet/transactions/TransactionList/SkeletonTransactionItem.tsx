@@ -1,15 +1,15 @@
-import { SkeletonRectangle, SkeletonSpread, SkeletonStack } from '@trezor/components';
+import { Column, Row, Skeleton } from '@trezor/components';
 
 export const SkeletonTransactionItem = () => (
-    <SkeletonStack $col $childMargin="0px 0px 8px 0px">
-        <SkeletonSpread>
-            <SkeletonRectangle width="120px" height="18px" />
-            <SkeletonRectangle width="80px" height="18px" />
-        </SkeletonSpread>
-        <SkeletonRectangle width="100%" height="70px" animate />
-        <SkeletonRectangle width="100%" height="70px" animate />
-        <SkeletonRectangle width="100%" height="70px" animate />
-    </SkeletonStack>
+    <Column gap={8}>
+        <Row justifyContent="space-between">
+            <Skeleton width={120} height={18} />
+            <Skeleton width={80} height={18} />
+        </Row>
+        <Skeleton width="100%" height={70} animate />
+        <Skeleton width="100%" height={70} animate />
+        <Skeleton width="100%" height={70} animate />
+    </Column>
 );
 
 export default SkeletonTransactionItem;

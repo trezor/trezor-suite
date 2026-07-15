@@ -24,10 +24,11 @@ import { err, ok } from '@trezor/type-utils';
 
 const suiteSyncMock: SuiteSync = {
     changeRelayUrl: () => Promise.resolve(),
+    disconnectAllRelays: () => Promise.resolve(),
+    reconnectAllRelays: () => Promise.resolve(),
     ensureWalletSuiteSyncOn: () =>
         Promise.resolve(err({ type: 'SuiteSyncUnavailableOnDeviceError' })),
     ensureWalletSuiteSyncOnUncontrolled: () => Promise.resolve(),
-    onWalletSuiteSyncOnEnsured: () => {},
     turnOffSuiteSyncForWallet: () => Promise.resolve(),
     turnOnSuiteSync: () => Promise.resolve(ok()),
     turnOffSuiteSync: () => Promise.resolve(),
@@ -47,13 +48,13 @@ const bip329Mock: Bip329 = {
 
 const platformEncryptionMock: PlatformEncryption = {
     encrypt: <T extends EncryptableBranded>({ value }: { value: T }) =>
-        Promise.resolve(ok(asEncryptedHex(value as T))),
+        Promise.resolve(ok(asEncryptedHex(value))),
 
     decrypt: <T extends EncryptableBranded>({ value }: { value: EncryptedHex<T> }) =>
         Promise.resolve(ok(value as unknown as T)),
 };
 
-export const analyticsMock = mockAnalytics<AnalyticsSharedEvents>();
+const analyticsMock = mockAnalytics<AnalyticsSharedEvents>();
 
 const connectInitSettings: ConnectInitSettings = {
     debug: false,
@@ -80,11 +81,14 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         analytics: analyticsMock,
         reportSecurityCheck: ({ level, checkType }: ReportSecurityCheckParams) =>
             console.warn(`Mock reporting ${checkType} check ${level} to Sentry.`),
+        reloadApp: () => {},
         saveAs: (data, fileName) =>
             console.warn(
                 `Save data: ${data} into file: ${fileName}. Implementation on phone not ready.`,
             ),
         connectInitSettings,
+        connectInitHooks: { deviceEvent: {}, uiEvent: {} },
+        createTransports: () => [],
         migrateSuiteSyncLabelsForRbfTransaction: () => Promise.resolve([[], []]),
     },
     selectors: {
@@ -113,6 +117,7 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         ),
         selectIsWindowVisible: notImplementedSelector('selectIsWindowVisible', true),
         selectTradingEnvironment: notImplementedSelector('selectTradingEnvironment', 'localhost'),
+        selectTradedAccountKeys: notImplementedSelector('selectTradedAccountKeys', []),
         selectIsViewOnlyByDefaultEnabled: notImplementedSelector(
             'selectIsViewOnlyByDefaultEnabled',
             true,

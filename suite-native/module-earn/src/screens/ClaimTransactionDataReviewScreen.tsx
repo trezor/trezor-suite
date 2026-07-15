@@ -1,16 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { CommonActions } from '@react-navigation/native';
-
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type AccountsRootState,
-    type TransactionsRootState,
-    selectAccountByKey,
-    selectTransactionByAccountKeyAndTxid,
-} from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { Button, Card, LottieAnimation, Text, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
@@ -18,68 +9,31 @@ import {
 } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
 import {
-    AppTabsRoutes,
     type RootStackParamList,
-    RootStackRoutes,
+    type RootStackRoutes,
     ScreenHeader,
     type StackProps,
-    TransactionDetailStackRoutes,
-    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import {
-    type TransactionReviewOutputsState,
+    TxValidityTimer,
     selectIsTransactionAlreadySigned,
-    selectIsTransactionReviewInProgress,
     sendArrowsLottie,
 } from '@suite-native/transaction-management';
 
 import { ClaimTransactionDataReviewStepList } from '../components/ClaimTransactionDataReviewStepList';
-import { getEarnPostSignParentRoute } from '../utils';
-
-const navigateToClaimedTransactionAction = ({
-    accountKey,
-    symbol,
-    txid,
-}: {
-    accountKey: AccountKey;
-    symbol: NetworkSymbol;
-    txid: string;
-}) =>
-    CommonActions.reset({
-        index: 2,
-        routes: [
-            {
-                name: RootStackRoutes.AppTabs,
-                params: { screen: AppTabsRoutes.EarnStack },
-            },
-            getEarnPostSignParentRoute(symbol, accountKey),
-            {
-                name: RootStackRoutes.TransactionDetailStack,
-                params: {
-                    screen: TransactionDetailStackRoutes.TransactionDetail,
-                    params: {
-                        accountKey,
-                        txid,
-                        closeActionType: 'close',
-                    },
-                },
-            },
-        ],
-    });
+import { useEarnReviewAutoStart } from '../hooks/useEarnReviewAutoStart';
+import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedPrecomposedTransaction';
+import { useEarnTxValidityFlow } from '../hooks/useEarnTxValidityFlow';
+import { useHandleOnEarnTransactionReview } from '../hooks/useHandleOnEarnTransactionReview';
+import { useNavigateAfterPushedTransaction } from '../hooks/useNavigateAfterPushedTransaction';
 
 export const ClaimTransactionDataReviewScreen = ({
     route,
-    navigation,
 }: StackProps<RootStackParamList, RootStackRoutes.ClaimTransactionDataReview>) => {
     const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, closeSheet } =
         useConfirmOnTrezorController();
     const { accountKey } = route.params;
-    const navigateToInitialScreen = useNavigateToInitialScreen();
-    const [txid, setTxid] = useState<string>('');
-
-    const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
-        selectIsTransactionReviewInProgress(state, 'claim', accountKey),
-    );
+    const [isPushing, setIsPushing] = useState(false);
 
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
 
@@ -87,36 +41,62 @@ export const ClaimTransactionDataReviewScreen = ({
         selectAccountByKey(state, accountKey),
     );
 
-    const isTransactionProcessedByBackend = !!useSelector((state: TransactionsRootState) =>
-        selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
-    );
+    const precomposedTransaction = useEarnSelectedPrecomposedTransaction('claim', accountKey);
 
-    const showSignSuccessMessage = isTransactionAlreadySigned && !!account;
+    const { handleSign, handlePush, closeReview } = useHandleOnEarnTransactionReview({
+        accountKey,
+        stakeType: 'claim',
+    });
+
+    const { trackPushedTransaction } = useNavigateAfterPushedTransaction({ accountKey });
+
+    const { showTimer, secondsLeft, isPastDeadline, isBroadcasting, onRetry, isRetryDisabled } =
+        useEarnTxValidityFlow({
+            accountKey,
+            stakeType: 'claim',
+            revealConfirmOnTrezorSheet,
+            isPushing,
+        });
+
+    const isSolanaAccount = account?.networkType === 'solana';
+
+    // Once signed, the user reviews the summary and taps "Claim now" to broadcast the transaction.
+    const isReadyToClaim = isTransactionAlreadySigned && !!account;
+
+    useEarnReviewAutoStart({
+        handleSign,
+        isSigned: isTransactionAlreadySigned,
+        canStart: !!precomposedTransaction,
+        onDeviceReviewReady: revealConfirmOnTrezorSheet,
+        onSignFailed: closeSheet,
+    });
 
     useEffect(() => {
-        if (isTransactionReviewInProgress) {
-            revealConfirmOnTrezorSheet();
-        }
-    }, [isTransactionReviewInProgress, revealConfirmOnTrezorSheet]);
-
-    useEffect(() => {
-        if (showSignSuccessMessage) {
+        if (isTransactionAlreadySigned) {
             closeSheet();
         }
-    }, [closeSheet, showSignSuccessMessage]);
+    }, [closeSheet, isTransactionAlreadySigned]);
 
-    const handleViewTransaction = useCallback(() => {
-        if (!account) return;
-        navigation.dispatch(
-            navigateToClaimedTransactionAction({ accountKey, symbol: account.symbol, txid }),
-        );
-    }, [account, accountKey, navigation, txid]);
+    const handleClaimNow = useCallback(async () => {
+        setIsPushing(true);
+
+        const pushedTxid = await handlePush();
+
+        if (pushedTxid) {
+            trackPushedTransaction(pushedTxid);
+
+            return;
+        }
+
+        setIsPushing(false);
+    }, [handlePush, trackPushedTransaction]);
 
     return (
         <ConfirmOnTrezorWrapper
             isManualControlEnabled
             controlRef={confirmOnTrezorRef}
             closeActionType="close"
+            closeAction={closeReview}
             defaultHeader={
                 <ScreenHeader
                     customContent={
@@ -125,15 +105,24 @@ export const ClaimTransactionDataReviewScreen = ({
                         </Text>
                     }
                     closeActionType="close"
-                    closeAction={navigateToInitialScreen}
+                    closeAction={closeReview}
                 />
             }
         >
             <VStack flex={1} justifyContent="space-between">
                 <VStack justifyContent="center" spacing="sp24">
-                    <ClaimTransactionDataReviewStepList onTransactionSubmitted={setTxid} />
+                    {showTimer && (
+                        <TxValidityTimer
+                            secondsLeft={secondsLeft}
+                            isPastDeadline={isPastDeadline}
+                            isBroadcasting={isBroadcasting}
+                            onRetry={onRetry}
+                            isRetryDisabled={isRetryDisabled}
+                        />
+                    )}
+                    <ClaimTransactionDataReviewStepList />
                 </VStack>
-                {txid && (
+                {isReadyToClaim && (
                     <Card>
                         <VStack
                             paddingTop="sp8"
@@ -148,8 +137,10 @@ export const ClaimTransactionDataReviewScreen = ({
                             </Text>
                         </VStack>
                         <Button
-                            isLoading={!isTransactionProcessedByBackend}
-                            onPress={handleViewTransaction}
+                            isLoading={isPushing}
+                            isDisabled={isSolanaAccount && isPastDeadline}
+                            onPress={handleClaimNow}
+                            testID="@earn/claim-now"
                         >
                             <Translation id="earn.claimTransactionDataReviewScreen.viewTransactionButton" />
                         </Button>

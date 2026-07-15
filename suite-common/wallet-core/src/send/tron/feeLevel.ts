@@ -1,5 +1,4 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { tronUtils } from '@trezor/blockchain-link-utils';
 import TrezorConnect from '@trezor/connect';
 
 import { type EstimateFeeLevel } from './types';
@@ -39,22 +38,4 @@ export const estimateContractCallFeeLevel = async ({
     }
 
     return firstLevel;
-};
-
-export const computeBandwidthFeeLevel = ({
-    availableStakedBandwidth,
-    availableFreeBandwidth,
-    bytes,
-}: {
-    availableStakedBandwidth: number;
-    availableFreeBandwidth: number;
-    bytes: number;
-}): EstimateFeeLevel => {
-    const availableBandwidth = Math.max(availableStakedBandwidth, availableFreeBandwidth);
-    const feeInSun = availableBandwidth < bytes ? bytes * tronUtils.TRON_BANDWIDTH_SUN_PRICE : 0;
-
-    return {
-        feePerTx: String(feeInSun),
-        feePerUnit: String(tronUtils.TRON_BANDWIDTH_SUN_PRICE),
-    };
 };

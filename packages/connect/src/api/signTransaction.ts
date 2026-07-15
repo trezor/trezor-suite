@@ -3,8 +3,8 @@
 import type {
     AccountAddresses,
     BitcoinNetworkInfo,
-    MethodPermission,
     PROTO,
+    PermissionRequest,
     RefTransaction,
     TransactionOptions,
 } from '@trezor/connect-common';
@@ -16,7 +16,6 @@ import {
     createPendingTransaction,
     deriveOutputScript,
     enhanceSignTx,
-    enhanceTrezorInputs,
     getOrigTransactions,
     getReferencedTransactions,
     parseTransactionHexes,
@@ -31,7 +30,7 @@ import {
     verifyTx,
 } from './bitcoin';
 import type { Blockchain } from '../backend/BlockchainLink';
-import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
+import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
@@ -178,10 +177,10 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         this.preauthorized = payload.preauthorized;
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        const permissions: MethodPermission[] = ['read', 'write'];
+    get requiredPermissions(): PermissionRequest[] {
+        const permissions: PermissionRequest[] = [this.coinPerm('sign', this.params.coinInfo)];
         if (this.params.push) {
-            permissions.push('push_tx');
+            permissions.push(this.coinPerm('push_tx', this.params.coinInfo));
         }
 
         return permissions;
@@ -284,7 +283,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         }
 
         // validate and initialize backend
-        isBackendSupported(coinInfo);
+        assertBackendSupported(coinInfo);
         const blockchain = await initBlockchain(coinInfo, sendCoreMessage, identity);
 
         const refTxs = !refTxsIds.length
@@ -292,11 +291,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             : await blockchain
                   .getTransactionHexes(refTxsIds)
                   .then(parseTransactionHexes(coinInfo.network))
-                  .then(rawTxs => {
-                      enhanceTrezorInputs(this.params.inputs, rawTxs);
-
-                      return transformReferencedTransactions(rawTxs);
-                  });
+                  .then(rawTxs => transformReferencedTransactions(rawTxs));
 
         const origTxs = !origTxsIds.length
             ? []
@@ -384,7 +379,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
 
         if (params.push) {
             // validate backend
-            isBackendSupported(coinInfo);
+            assertBackendSupported(coinInfo);
             const blockchain = await initBlockchain(coinInfo, sendCoreMessage, params.identity);
             const txid = await blockchain.pushTransaction(response.serializedTx);
 

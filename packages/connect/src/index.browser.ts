@@ -1,15 +1,20 @@
-import { ERRORS, type UpdateConnectSettings, factory } from '@trezor/connect-common';
-import { TRANSPORT } from '@trezor/transport-common';
+import { ERRORS, type UpdateConnectSettings, factoryPrivileged } from '@trezor/connect-common';
+// Deep import bypasses the `@trezor/transport` barrel so browser bundlers
+// do not resolve sibling node-only modules (`UdpTransport`/`dgram`,
+// `NodeUsbTransport`/`usb`).
+import { BridgeTransport } from '@trezor/transport/src/transports/bridge';
+import { type AbstractTransportParams, TRANSPORT } from '@trezor/transport-common';
+import { WebUsbTransport } from '@trezor/transport-web';
 
 import { config } from './data/config';
 import { CoreInModule } from './impl/core-in-module';
 
 class CoreInModuleWeb extends CoreInModule {
-    protected get defaultTransports() {
-        return ['BridgeTransport' as const, 'WebUsbTransport' as const];
+    protected defaultTransports(params: AbstractTransportParams) {
+        return [new BridgeTransport(params), new WebUsbTransport(params)];
     }
 
-    updateProxy(proxy: UpdateConnectSettings['proxy']) {
+    protected updateProxy(proxy: UpdateConnectSettings['proxy']) {
         if (proxy !== undefined) {
             throw ERRORS.TypedError(
                 'Method_InvalidPackage',
@@ -30,23 +35,8 @@ class CoreInModuleWeb extends CoreInModule {
     }
 }
 
-const impl = new CoreInModuleWeb();
-
 // Exported to enable using directly
-const TrezorConnect = factory(
-    {
-        eventEmitter: impl.eventEmitter,
-        init: impl.init.bind(impl),
-        call: impl.call.bind(impl),
-        updateConnectSettings: impl.updateConnectSettings.bind(impl),
-        uiResponse: impl.uiResponse.bind(impl),
-        cancel: impl.cancel.bind(impl),
-        dispose: impl.dispose.bind(impl),
-    },
-    {
-        requestWebUSBDevice: impl.requestWebUSBDevice.bind(impl),
-    },
-);
+const TrezorConnect = factoryPrivileged(new CoreInModuleWeb());
 
 export default TrezorConnect;
 
@@ -56,6 +46,6 @@ export * from './exports';
 
 if (typeof window !== 'undefined') {
     window.addEventListener('beforeunload', () => {
-        impl.dispose();
+        TrezorConnect.dispose();
     });
 }

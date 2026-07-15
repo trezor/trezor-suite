@@ -2,7 +2,7 @@ import { deviceActions } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getBrowserName, getBrowserVersion, getOsVersion } from '@suite-common/suite-utils';
 import { accountsActions } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type DiscoveryStatus } from '@suite-common/wallet-types';
 import { DEVICE } from '@trezor/connect';
 import {
     getCommitHash,
@@ -26,7 +26,39 @@ export const startTime = new Date().toUTCString();
 
 export const prettifyLog = (json: Record<any, any>) => JSON.stringify(json, null, 2);
 
-export const redactAccount = (account: DeepPartial<Account> | undefined) => {
+/** Prevents redacted data from expanding complete account and device unions in declarations. */
+type RedactedAccount = Omit<
+    DeepPartial<Account>,
+    | 'descriptor'
+    | 'deviceState'
+    | 'addresses'
+    | 'balance'
+    | 'availableBalance'
+    | 'formattedBalance'
+    | 'history'
+    | 'tokens'
+    | 'utxo'
+    | 'metadata'
+    | 'key'
+    | 'misc'
+> & {
+    descriptor: string;
+    deviceState: string;
+    addresses: string;
+    balance: string;
+    availableBalance: string;
+    formattedBalance: string;
+    history: string;
+    tokens: object[] | undefined;
+    utxo: string;
+    metadata: string;
+    key: string;
+    misc: object | undefined;
+};
+
+export const redactAccount = (
+    account: DeepPartial<Account> | undefined,
+): RedactedAccount | undefined => {
     if (!account) return undefined;
 
     return {
@@ -62,7 +94,21 @@ export const redactAccount = (account: DeepPartial<Account> | undefined) => {
     };
 };
 
-export const redactDevice = (device: DeepPartial<TrezorDevice> | undefined) => {
+type RedactedDevice = Omit<
+    DeepPartial<TrezorDevice>,
+    'id' | 'label' | 'state' | 'firmwareReleaseConfigInfo' | 'features' | 'metadata'
+> & {
+    id: string;
+    label: string | undefined;
+    state: string;
+    firmwareReleaseConfigInfo: string | undefined;
+    features: object | undefined;
+    metadata: string | undefined;
+};
+
+export const redactDevice = (
+    device: DeepPartial<TrezorDevice> | undefined,
+): RedactedDevice | undefined => {
     if (!device) return undefined;
 
     return {
@@ -85,8 +131,32 @@ export const redactDevice = (device: DeepPartial<TrezorDevice> | undefined) => {
     };
 };
 
-export const redactAction = (action: LogEntry) => {
-    let payload;
+type RedactedPassphraseDuplicateDiscoveryStatus = Omit<
+    Extract<DiscoveryStatus, { status: 'passphrase-duplicate' }>,
+    'duplicateDeviceStaticSessionId'
+> & {
+    duplicateDeviceStaticSessionId: string;
+};
+
+export type RedactedDiscoveryStatus =
+    | Exclude<DiscoveryStatus, { status: 'passphrase-duplicate' }>
+    | RedactedPassphraseDuplicateDiscoveryStatus;
+
+export const redactDiscovery = (
+    discovery: DiscoveryStatus | undefined,
+): RedactedDiscoveryStatus | undefined => {
+    if (discovery?.status !== 'passphrase-duplicate') {
+        return discovery;
+    }
+
+    return {
+        ...discovery,
+        duplicateDeviceStaticSessionId: REDACTED_REPLACEMENT,
+    };
+};
+
+export const redactAction = (action: LogEntry): LogEntry => {
+    let payload: LogEntry['payload'];
 
     if (accountsActions.updateSelectedAccount.match(action)) {
         payload = {

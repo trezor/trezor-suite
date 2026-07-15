@@ -1,0 +1,11 @@
+import type { SVGProps } from 'react';
+const SvgTrezorSafe3Filled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M7 5a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12.468a9 9 0 0 1-.851 3.82l-3.275 6.986A3 3 0 0 1 18.157 30h-4.314a3 3 0 0 1-2.717-1.726l-3.275-6.986A9 9 0 0 1 7 17.468zm3 1.5v8a1.5 1.5 0 0 0 1.5 1.5h9a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 20.5 5h-9A1.5 1.5 0 0 0 10 6.5M11 18a1 1 0 1 0 0 2h10a1 1 0 1 0 0-2z"
+            className="trezorSafe3Filled_svg__prefix__path"
+        />
+    </svg>
+);
+export { SvgTrezorSafe3Filled as ReactComponent };

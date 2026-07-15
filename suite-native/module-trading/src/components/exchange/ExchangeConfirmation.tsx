@@ -1,7 +1,8 @@
-import { FadeIn, FadeOut } from 'react-native-reanimated';
+import { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
 import { type ApprovalStatus, getApprovalStatus } from '@suite-common/trading';
 import { AnimatedBox, Button, VStack } from '@suite-native/atoms';
+import { useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
@@ -13,12 +14,18 @@ export const REVOKE_TEST_ID = '@trading/exchange/revoke-button';
 
 export const ExchangeConfirmation = () => {
     const form = useExchangeFormContext();
-    const receiveAsset = form.watch('receiveAsset');
+    const receiveAsset = useWatch({ name: 'receiveAsset', control: form.control });
+    const quote = useWatch({ name: 'quote', control: form.control });
+
+    const {
+        canProceed,
+        selectQuote,
+        selectQuoteForRevoke,
+        isLoading,
+        isDexQuoteApprovalPrefetchLoadingForCandidateQuote,
+    } = useExchangeSelectQuote(form);
+
     const receiveCryptoId = receiveAsset?.cryptoId;
-
-    const { canProceed, selectQuote, selectQuoteForRevoke } = useExchangeSelectQuote(form);
-
-    const quote = form.watch('quote');
     const approvalStatus = getApprovalStatus(quote);
     const canRevoke =
         (['approved', 'needs_increase', 'needs_revoke'] as ApprovalStatus[]).includes(
@@ -32,21 +39,38 @@ export const ExchangeConfirmation = () => {
             buttonTestId: CONFIRMATION_TEST_ID,
         });
 
+    if (
+        !isLoading &&
+        !isDexQuoteApprovalPrefetchLoadingForCandidateQuote &&
+        !canProceed &&
+        !canRevoke &&
+        !isReceivingInactiveStellarToken
+    ) {
+        return null;
+    }
+
     return (
-        <VStack spacing="sp16">
+        <>
             {isReceivingInactiveStellarToken ? (
                 activateButtonElement
             ) : (
-                <>
-                    {canProceed && (
-                        <AnimatedBox entering={FadeIn} exiting={FadeOut}>
-                            <Button onPress={selectQuote} testID={CONFIRMATION_TEST_ID}>
+                <VStack spacing="sp16">
+                    <AnimatedBox entering={FadeIn} exiting={FadeOut} layout={LinearTransition}>
+                        <Button
+                            onPress={selectQuote}
+                            testID={CONFIRMATION_TEST_ID}
+                            isDisabled={!canProceed}
+                            isLoading={
+                                isLoading || isDexQuoteApprovalPrefetchLoadingForCandidateQuote
+                            }
+                        >
+                            {!(isLoading || isDexQuoteApprovalPrefetchLoadingForCandidateQuote) && (
                                 <Translation id="moduleTrading.tradingScreen.buttons.continue" />
-                            </Button>
-                        </AnimatedBox>
-                    )}
+                            )}
+                        </Button>
+                    </AnimatedBox>
                     {canRevoke && (
-                        <AnimatedBox entering={FadeIn} exiting={FadeOut}>
+                        <AnimatedBox entering={FadeIn} exiting={FadeOut} layout={LinearTransition}>
                             <Button
                                 onPress={selectQuoteForRevoke}
                                 testID={REVOKE_TEST_ID}
@@ -57,8 +81,8 @@ export const ExchangeConfirmation = () => {
                             </Button>
                         </AnimatedBox>
                     )}
-                </>
+                </VStack>
             )}
-        </VStack>
+        </>
     );
 };

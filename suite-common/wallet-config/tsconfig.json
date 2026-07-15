@@ -4,8 +4,10 @@
     "references": [
         { "path": "../earn-stablecoin-defs" },
         { "path": "../wallet-constants" },
-        { "path": "../../coins/coins-solana" },
         { "path": "../../packages/device-utils" },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]

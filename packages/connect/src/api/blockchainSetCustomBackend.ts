@@ -1,13 +1,12 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainSetCustomBackend.js
 
-import type { CoinInfo, MethodPermission } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
 import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 import { reconnectAllBackends, setCustomBackend } from '../backend/BlockchainLink';
-import { getCoinInfo } from '../data/coinInfo';
+import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
     coinInfo: CoinInfo;
@@ -30,14 +29,9 @@ export default class BlockchainSetCustomBackend extends AbstractMethod<
             { name: 'blockchainLink', type: 'object' },
         ]);
 
-        const coinInfo = getCoinInfo(payload.coin);
-        if (!coinInfo) {
-            throw ERRORS.TypedError('Method_UnknownCoin');
-        }
+        const coinInfo = getCoinInfoOrThrow(payload.coin);
 
         const { blockchainLink } = payload;
-
-        setCustomBackend(coinInfo, payload.blockchainLink);
 
         const params = { coinInfo, blockchainLink };
 
@@ -46,8 +40,8 @@ export default class BlockchainSetCustomBackend extends AbstractMethod<
         this.useUi = false;
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['internal'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'internal' }];
     }
 
     get info() {

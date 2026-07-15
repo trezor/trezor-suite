@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { isDesktop } from '@trezor/env-utils';
+import { TrezorLogoIcon } from '@trezor/icons';
 import { QuickActionButton, mapTrezorModelToIcon } from '@trezor/product-components';
 
 import { UpdateTooltip } from './UpdateTooltip';
@@ -74,13 +75,13 @@ export const UpdateStatusActionBarIcon = ({
                     />
                 ),
             }}
-            iconName={
+            icon={
                 updateStatusSuite !== 'up-to-date' || !device?.features
-                    ? 'trezorLogo'
+                    ? TrezorLogoIcon
                     : mapTrezorModelToIcon[device.features.internal_model]
             }
             subIconIntent={mapUpdateStatusToIntent[updateStatus]}
-            subIconName={updateSubIcon}
+            subIcon={updateSubIcon}
         />
     );
 };

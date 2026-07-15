@@ -53,8 +53,6 @@ type YieldPendingTransactionModalProps = {
     vaultTokenContract?: TokenAddress;
 };
 
-const VAULT_NAME_MAX_WIDTH = 150;
-
 const pendingIconStyle = prepareNativeStyle(utils => ({
     width: 56,
     height: 56,
@@ -65,8 +63,7 @@ const pendingIconStyle = prepareNativeStyle(utils => ({
     ...utils.boxShadows.small,
 }));
 
-const constrainedValueStyle = prepareNativeStyle(() => ({
-    maxWidth: VAULT_NAME_MAX_WIDTH,
+const valueStyle = prepareNativeStyle(() => ({
     minWidth: 0,
     flexShrink: 1,
 }));
@@ -211,7 +208,7 @@ export const YieldPendingTransactionModal = ({
                             <HStack
                                 spacing="sp4"
                                 alignItems="center"
-                                style={applyStyle(constrainedValueStyle)}
+                                style={applyStyle(valueStyle)}
                             >
                                 <CryptoIcon
                                     symbol={accountSymbol}
@@ -237,7 +234,7 @@ export const YieldPendingTransactionModal = ({
                                 <HStack
                                     spacing="sp4"
                                     alignItems="center"
-                                    style={applyStyle(constrainedValueStyle)}
+                                    style={applyStyle(valueStyle)}
                                 >
                                     <CryptoIcon
                                         symbol={accountSymbol}

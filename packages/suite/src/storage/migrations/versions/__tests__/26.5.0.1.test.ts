@@ -1,6 +1,7 @@
 import '@suite-common/test-utils/src/globalOverrides';
 import { type IDBPDatabase, deleteDB, openDB } from 'idb';
 
+import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { type SuiteDBSchema } from 'src/storage/definitions';
@@ -77,6 +78,31 @@ describe('migration 26.5.0.1', () => {
 
         const wallet = await migratedDb.get('walletSettings', 'wallet');
         expect(wallet?.addressDisplayType).toBe(AddressDisplayOptions.CHUNKED);
+
+        migratedDb.close();
+    });
+
+    test('creates walletSettings entry if the store is empty', async () => {
+        const db = await openDB(DB_NAME, INITIAL_VERSION, {
+            upgrade(db) {
+                db.createObjectStore('suiteSettings');
+                db.createObjectStore('walletSettings');
+            },
+        });
+        await db.put(
+            'suiteSettings',
+            { settings: { addressDisplayType: AddressDisplayOptions.ORIGINAL } },
+            'suite',
+        );
+        db.close();
+
+        const migratedDb = await runMigration();
+
+        const wallet = await migratedDb.get('walletSettings', 'wallet');
+        expect(wallet).toEqual({
+            ...initialWalletSettingsState,
+            addressDisplayType: AddressDisplayOptions.ORIGINAL,
+        });
 
         migratedDb.close();
     });

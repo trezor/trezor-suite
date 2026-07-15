@@ -1,10 +1,10 @@
-import solana from '@trezor/coins-solana/runtime';
 import {
     SolanaSignTransaction as SolanaSignTransactionSchema,
     SolanaTxAdditionalInfo,
 } from '@trezor/connect-common';
-import type { MethodPermission, PROTO, TokenInfo } from '@trezor/connect-common';
+import type { PROTO, PermissionRequest, TokenInfo } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import solana from '@trezor/network-solana/runtime';
 import { Assert } from '@trezor/schema-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -61,6 +61,7 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
                       PAYMENT_REQUEST_AMOUNT_BYTES.DEFAULT,
                   )
                 : undefined,
+            chunkify: typeof payload.chunkify === 'boolean' ? payload.chunkify : false,
         };
 
         const params = { proto, serialize: !!payload.serialize, symbols };
@@ -68,11 +69,11 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
         super(message, params);
 
         this.requiredDeviceCapabilities = ['Capability_Solana'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Solana')];
+        this.requiredFirmwareCoins = [getMiscNetwork('sol')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     async initAsync(): Promise<void> {

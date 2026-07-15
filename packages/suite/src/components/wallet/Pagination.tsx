@@ -5,6 +5,7 @@ import styled, { css } from 'styled-components';
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { Button, Row } from '@trezor/components';
+import { CaretLeftIcon, CaretRightIcon } from '@trezor/icons';
 import { NumberInput } from '@trezor/product-components';
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 
@@ -26,7 +27,7 @@ const PageItem = styled.div<{ $isActive?: boolean }>`
     height: ${spacingsPx.xxl};
     padding: ${spacingsPx.xxs} ${spacingsPx.xs};
     background: ${({ $isActive, theme }) =>
-        $isActive ? theme.legacyBackgroundSecondaryDefault : 'transparent'};
+        $isActive ? theme.elementFillBrandBold : 'transparent'};
     text-align: center;
     color: ${({ $isActive, theme }) => $isActive && theme.contentPrimaryInverse};
     border-radius: ${borders.radii.md};
@@ -40,7 +41,7 @@ const PageItem = styled.div<{ $isActive?: boolean }>`
         !$isActive &&
         css`
             &:hover {
-                background: ${theme.legacyBackgroundTertiaryDefaultOnElevation0};
+                background: ${theme.elementFillNeutralSofter};
                 color: ${theme.contentNeutral};
             }
         `};
@@ -95,6 +96,9 @@ interface PaginationProps {
     perPage: number;
     totalItems: number;
     explicitNavigation?: boolean;
+    // `totalItems` is a lower-bound estimate rather than a true count (e.g. accounts that can
+    // always be derived further), so the page-input shouldn't reject pages beyond it.
+    noUpperBound?: boolean;
     onPageSelected: (page: number) => void;
 }
 
@@ -106,13 +110,14 @@ export const Pagination = ({
     perPage,
     totalItems,
     explicitNavigation = false,
+    noUpperBound = false,
     ...rest
 }: PaginationProps) => {
     const locale = useSelector(selectLanguage);
 
     const totalPages = Math.ceil(totalItems / perPage);
     const showPrev = currentPage > 1;
-    const showNext = currentPage < totalPages;
+    const showNext = noUpperBound || currentPage < totalPages;
 
     const { control, watch } = useForm({
         defaultValues: {
@@ -125,7 +130,7 @@ export const Pagination = ({
     const isPageInputInvalid =
         !Number.isInteger(Number(pageInput)) ||
         Number(pageInput) < 1 ||
-        Number(pageInput) > totalPages;
+        (!noUpperBound && Number(pageInput) > totalPages);
 
     const pageNumbers = getPages({ currentPage, totalPages });
 
@@ -139,7 +144,7 @@ export const Pagination = ({
                 <Actions $isActive={showPrev}>
                     <Button
                         onClick={() => onPageSelected(currentPage - 1)}
-                        iconLeft="caretLeft"
+                        iconLeft={CaretLeftIcon}
                         intent="neutral"
                         priority="secondary"
                     >
@@ -149,7 +154,7 @@ export const Pagination = ({
                 <Actions $isActive={!isLastPage}>
                     <Button
                         onClick={() => onPageSelected(currentPage + 1)}
-                        iconRight="caretRight"
+                        iconRight={CaretRightIcon}
                         intent="neutral"
                         priority="secondary"
                     >

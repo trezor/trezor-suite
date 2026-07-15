@@ -26,7 +26,7 @@ export const LimitPickerUnlimitedAlert = ({ cryptoId }: LimitPickerUnlimitedAler
                     values={{ coinSymbol }}
                 />
             }
-            variant="warning"
+            intent="warning"
         />
     );
 };

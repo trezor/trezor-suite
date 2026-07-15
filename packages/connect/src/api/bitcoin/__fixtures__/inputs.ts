@@ -85,22 +85,9 @@ export const validateTrezorInputs = [
         params: [{ address_n: [0], amount: '1', prev_index: 1 }],
     },
     {
-        description: 'missing amount on non segwit path. valid only because of legacy reasons',
-        params: [{ address_n: [0], prev_index: 1, prev_hash: 'txid' }],
-        result: [{ prev_index: 1 }],
-    },
-    {
-        description: 'missing amount p2sh',
+        description: 'missing amount',
         params: [{ address_n: [49 | 0x80000000], prev_index: 1, prev_hash: 'txid' }],
     },
-    // {
-    //     description: 'missing amount p2wpkh',
-    //     params: [{ address_n: [84 | 0x80000000], prev_index: 1, prev_hash: 'txid' }],
-    // },
-    // {
-    //     description: 'missing amount p2tr',
-    //     params: [{ address_n: [86 | 0x80000000], prev_index: 1, prev_hash: 'txid' }],
-    // },
     {
         description: 'missing script_pubkey in EXTERNAL',
         params: [{ amount: '1', prev_index: 1, prev_hash: 'txid', script_type: 'EXTERNAL' }],

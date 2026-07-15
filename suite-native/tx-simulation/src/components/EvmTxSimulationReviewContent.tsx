@@ -81,7 +81,7 @@ export function EvmTxSimulationReviewContent({
     if (!simulation) {
         return (
             <FullAlertBox
-                variant="critical"
+                intent="critical"
                 title={<Translation id="moduleConnectPopup.simulation.simulationStatusError" />}
             />
         );
@@ -198,7 +198,7 @@ export function EvmTxSimulationReviewContent({
 
                     {simulationData.payload.validation?.result_type === 'Malicious' && (
                         <TxSimulationRiskBanner
-                            type="critical"
+                            intent="critical"
                             title={
                                 <Translation id="moduleConnectPopup.simulation.simulationStatusMalicious" />
                             }
@@ -210,7 +210,7 @@ export function EvmTxSimulationReviewContent({
 
                     {simulationData.payload.validation?.result_type === 'Warning' && (
                         <TxSimulationRiskBanner
-                            type="warning"
+                            intent="warning"
                             title={
                                 <Translation id="moduleConnectPopup.simulation.simulationStatusWarning" />
                             }
@@ -222,7 +222,7 @@ export function EvmTxSimulationReviewContent({
 
                     {evmSimulation?.status === 'Error' && (
                         <TxSimulationRiskBanner
-                            type="critical"
+                            intent="critical"
                             title={
                                 <Translation id="moduleConnectPopup.simulation.simulationStatusError" />
                             }
@@ -236,7 +236,7 @@ export function EvmTxSimulationReviewContent({
 
             {txSimulationQuery.error && (
                 <FullAlertBox
-                    variant="critical"
+                    intent="critical"
                     title={<Translation id="moduleConnectPopup.simulation.simulationStatusError" />}
                     description={txSimulationQuery.error.message}
                 />

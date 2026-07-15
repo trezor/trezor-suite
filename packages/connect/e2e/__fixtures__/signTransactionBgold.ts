@@ -20,7 +20,7 @@ export default {
         {
             description: 'Bgold: 1 input, 1output, 1 change',
             params: {
-                coin: 'Bgold',
+                coin: 'btg',
                 inputs: [
                     {
                         address_n: "m/44'/156'/0'/0/0",
@@ -54,7 +54,7 @@ export default {
         {
             description: 'Bgold: 2 inputs, 1 output, no change',
             params: {
-                coin: 'Bgold',
+                coin: 'btg',
                 inputs: [
                     {
                         address_n: "m/44'/156'/0'/0/0",
@@ -91,7 +91,7 @@ export default {
         {
             description: 'Bgold (P2SH): 1 input, 2 outputs, no change',
             params: {
-                coin: 'Bgold',
+                coin: 'btg',
                 inputs: [
                     {
                         address_n: "m/49'/156'/0'/1/0",
@@ -125,7 +125,7 @@ export default {
         {
             description: 'Bgold (P2SH): 1 input, 1output, 1 change',
             params: {
-                coin: 'Bgold',
+                coin: 'btg',
                 inputs: [
                     {
                         address_n: "m/49'/156'/0'/1/0",
@@ -159,7 +159,7 @@ export default {
         {
             description: 'Bgold (P2SH): spend multisig input',
             params: {
-                coin: 'Bgold',
+                coin: 'btg',
                 inputs: [
                     {
                         address_n: "m/49'/156'/1'/1/0",

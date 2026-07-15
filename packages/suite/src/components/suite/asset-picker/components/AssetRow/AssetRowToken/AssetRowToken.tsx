@@ -32,7 +32,7 @@ export function AssetRowToken({
             padding={isHiddenToken ? { left: 16, vertical: 8, right: 16 } : undefined}
             isDisabled={!onClick}
         >
-            <Row data-testid={dataTestId} gap={12} overflow="hidden">
+            <Row data-testid={dataTestId} gap={12} overflow="hidden" flex="1" minWidth={0}>
                 <AssetLogo
                     size={40}
                     symbol={account.symbol}
@@ -47,13 +47,17 @@ export function AssetRowToken({
                 />
             </Row>
             {token.balance && (
-                <AssetAmount
-                    symbol={token.symbol!}
-                    fiatAmount={token.fiatRate ? asBaseCurrencyAmount(token.fiatValue) : undefined}
-                    contractAddress={token.contract}
-                    amount={token.balance}
-                    fiatFallackText={isHiddenToken}
-                />
+                <Row flex="0 0 auto">
+                    <AssetAmount
+                        symbol={token.symbol!}
+                        fiatAmount={
+                            token.fiatRate ? asBaseCurrencyAmount(token.fiatValue) : undefined
+                        }
+                        contractAddress={token.contract}
+                        amount={token.balance}
+                        fiatFallackText={isHiddenToken}
+                    />
+                </Row>
             )}
         </ItemClickableContainer>
     );

@@ -16,6 +16,7 @@ export const allowedCardListFrameProps = [
     'position',
     'flex',
     'zIndex',
+    'borderRadius',
 ] as const satisfies FramePropsKeys[];
 export type AllowedCardListFrameProps = Pick<
     FrameProps,
@@ -40,7 +41,7 @@ export type CardListProps = AllowedCardListFrameProps &
         | 'onClick'
         | 'tabIndex'
         | 'variant'
-        | 'fillType'
+        | 'type'
     >;
 
 export const CardList = ({ children, typographyStyle = 'body-md', ...rest }: CardListProps) => (

@@ -11,27 +11,27 @@ import {
     isSupportedSolStakingNetworkSymbol,
     networkAmountToSmallestUnit,
 } from '@suite-common/wallet-utils';
+import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import {
     MIN_SOL_AMOUNT_FOR_STAKING,
     MIN_SOL_BALANCE_FOR_STAKING,
     MIN_SOL_FOR_WITHDRAWALS,
     SOL_STAKING_OPERATION_FEE,
-} from '@trezor/coins-solana/constants';
-import solana from '@trezor/coins-solana/runtime';
+} from '@trezor/network-solana/constants';
+import solana from '@trezor/network-solana/runtime';
 import type {
     EstimatedFee,
     Fee,
     PrepareStakeSolTxResponse,
     SolanaTxMeta,
     SupportedSolanaNetworkSymbols,
-} from '@trezor/coins-solana/types';
-import TrezorConnect, { type FeeLevel } from '@trezor/connect';
+} from '@trezor/network-solana/types';
 import { BigNumber } from '@trezor/utils';
 
 import { calculate, composeStakingTransaction } from './stakeFormActions';
 
 // Rent-aware Solana stake fee calc for `composeStakingTransaction` / `calculate`.
-export const calculateSolanaStakeTransaction = (
+const calculateSolanaStakeTransaction = (
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: FeeLevel,
@@ -72,7 +72,7 @@ export const calculateSolanaStakeTransaction = (
 };
 
 // Merges solanaTxMeta (rent, fee) into each fee level for device review amounts.
-export const applySolanaTxMeta = (
+const applySolanaTxMeta = (
     composed: PrecomposedLevels,
     solanaTxMeta: SolanaTxMeta,
 ): PrecomposedLevels =>
@@ -102,18 +102,20 @@ export const applySolanaTxMeta = (
     );
 
 // Turns a prepared staking transaction into a message and asks the backend to estimate its fee.
-export const estimateSolanaStakeFee = async (
+const estimateSolanaStakeFee = async (
     symbol: NetworkSymbol,
     txData?: PrepareStakeSolTxResponse,
 ): Promise<EstimatedFee> => {
     if (!txData?.success) return { success: false };
+
+    const createsStakeAccount = txData.solanaTxMeta.rentLamports !== '0';
 
     const estimatedFee = await TrezorConnect.blockchainEstimateFee({
         coin: symbol,
         request: {
             specific: {
                 data: txData.txShim.serialize(),
-                newAccountProgramName: 'staking',
+                ...(createsStakeAccount ? { newAccountProgramName: 'staking' } : {}),
             },
         },
     });
@@ -134,6 +136,7 @@ type PrepareSolanaStakeTxDataParams = {
     blockchainUrl: string;
     userAgent: string;
     estimatedFee?: Fee;
+    source?: string;
 };
 
 // Builds stake/unstake/claim tx via Solana runtime; `userAgent` differs for Suite vs Lite.
@@ -145,6 +148,7 @@ export const prepareSolanaStakeTxData = async ({
     blockchainUrl,
     userAgent,
     estimatedFee,
+    source,
 }: PrepareSolanaStakeTxDataParams): Promise<PrepareStakeSolTxResponse | undefined> => {
     const {
         selectSolanaConnection,
@@ -158,11 +162,11 @@ export const prepareSolanaStakeTxData = async ({
     const validator = selectSolanaValidator(symbol);
 
     if (stakeType === 'stake') {
-        return prepareStakeSolTx({ from, amount, connection, validator, estimatedFee });
+        return prepareStakeSolTx({ from, amount, connection, validator, estimatedFee, source });
     }
 
     if (stakeType === 'unstake') {
-        return prepareUnstakeSolTx({ from, amount, connection, validator, estimatedFee });
+        return prepareUnstakeSolTx({ from, amount, connection, validator, estimatedFee, source });
     }
 
     if (stakeType === 'claim') {
@@ -177,6 +181,7 @@ type ComposeSolanaStakingTransactionParams = {
     composeContext: ComposeActionContext;
     blockchainUrl: string;
     userAgent: string;
+    source?: string;
 };
 
 // Solana stake compose: build tx, estimate fee, rebuild with fee and solanaTxMeta (not send-form).
@@ -185,6 +190,7 @@ export const composeSolanaStakingTransaction = async ({
     composeContext,
     blockchainUrl,
     userAgent,
+    source,
 }: ComposeSolanaStakingTransactionParams): Promise<PrecomposedLevels | undefined> => {
     const { account, feeInfo } = composeContext;
     const amount = formValues.outputs[0]?.amount;
@@ -203,6 +209,7 @@ export const composeSolanaStakingTransaction = async ({
         stakeType,
         blockchainUrl,
         userAgent,
+        source,
     });
 
     const estimatedFee = await estimateSolanaStakeFee(account.symbol, txData);
@@ -227,6 +234,7 @@ export const composeSolanaStakingTransaction = async ({
             stakeType,
             blockchainUrl,
             userAgent,
+            source,
             estimatedFee: estimatedFee.payload,
         });
 

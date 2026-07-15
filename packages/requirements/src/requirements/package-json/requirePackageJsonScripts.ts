@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { typedObjectEntries } from '@trezor/utils';
@@ -8,8 +8,37 @@ import type { Requirement } from '../Requirement';
 const PACKAGE_JSON_FILE = 'package.json';
 
 type RequiredScriptConfig = {
-    readonly command: string | RegExp;
+    readonly command?: string | RegExp;
     readonly ignoredPackages?: ReadonlyArray<string>;
+    readonly isRequired?: (workspaceDir: string) => boolean;
+};
+
+const IGNORED_TEST_FILE_DIRECTORIES = new Set([
+    'e2e',
+    'lib',
+    'node_modules',
+    'package-template',
+    'package-template-native',
+]);
+
+const hasUnitTestFile = (directoryPath: string): boolean => {
+    for (const entry of readdirSync(directoryPath, { withFileTypes: true })) {
+        if (entry.isDirectory()) {
+            if (IGNORED_TEST_FILE_DIRECTORIES.has(entry.name)) {
+                continue;
+            }
+
+            if (hasUnitTestFile(join(directoryPath, entry.name))) {
+                return true;
+            }
+        }
+
+        if (entry.isFile() && entry.name.endsWith('.test.ts')) {
+            return true;
+        }
+    }
+
+    return false;
 };
 
 const REQUIRED_SCRIPTS: Record<string, RequiredScriptConfig> = {
@@ -35,6 +64,10 @@ const REQUIRED_SCRIPTS: Record<string, RequiredScriptConfig> = {
             'connect-example-node',
         ],
     },
+    'test:unit': {
+        ignoredPackages: ['@trezor/suite-e2e'],
+        isRequired: hasUnitTestFile,
+    },
 };
 
 type PackageJson = {
@@ -43,9 +76,11 @@ type PackageJson = {
 
 const matchesScriptCommand = (
     actualCommand: string | undefined,
-    expectedCommand: string | RegExp,
+    expectedCommand: string | RegExp | undefined,
 ) => {
     if (typeof actualCommand !== 'string') return false;
+
+    if (expectedCommand === undefined) return actualCommand.length > 0;
 
     if (typeof expectedCommand === 'string') return actualCommand === expectedCommand;
 
@@ -54,6 +89,14 @@ const matchesScriptCommand = (
 
 const formatExpectedCommand = (expectedCommand: string | RegExp) =>
     typeof expectedCommand === 'string' ? `"${expectedCommand}"` : `matching ${expectedCommand}`;
+
+const formatScriptRequirement = (scriptName: string, scriptConfig: RequiredScriptConfig) => {
+    if (scriptConfig.command === undefined) {
+        return `scripts.${scriptName} must be defined`;
+    }
+
+    return `scripts.${scriptName} must be ${formatExpectedCommand(scriptConfig.command)}`;
+};
 
 export const requirePackageJsonScripts: Requirement<'workspace'> = {
     name: 'package-json-scripts',
@@ -77,11 +120,15 @@ export const requirePackageJsonScripts: Requirement<'workspace'> = {
                     return false;
                 }
 
+                if (scriptConfig.isRequired?.(context.workspaceDir) === false) {
+                    return false;
+                }
+
                 return !matchesScriptCommand(parsed.scripts?.[scriptName], scriptConfig.command);
             })
             .map(
                 ([scriptName, scriptConfig]) =>
-                    `${context.workspaceName}: scripts.${scriptName} must be ${formatExpectedCommand(scriptConfig.command)} in ${PACKAGE_JSON_FILE}.`,
+                    `${context.workspaceName}: ${formatScriptRequirement(scriptName, scriptConfig)} in ${PACKAGE_JSON_FILE}.`,
             );
 
         return Promise.resolve(errors);

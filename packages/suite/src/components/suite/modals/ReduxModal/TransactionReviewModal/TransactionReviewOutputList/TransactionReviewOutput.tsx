@@ -22,8 +22,8 @@ import {
     type EvmApprovalPurpose,
     findAccountsByAddress,
     getCardanoFingerprint,
+    isAllowanceUnlimited,
     isEvmApprovalTxByTextSignature,
-    isMaxAllowance,
     isTestnet,
     localizeNumber,
 } from '@suite-common/wallet-utils';
@@ -98,9 +98,9 @@ const yieldStrings: Record<
     Record<'value' | 'label' | 'amount', TranslationKey>
 > = {
     deposit: {
-        value: 'TR_EARN_YIELD_REVIEW_SUPPLY_DESCRIPTION',
-        label: 'TR_EARN_YIELD_REVIEW_SUPPLY_TITLE',
-        amount: 'TR_EARN_YIELD_REVIEW_SUPPLY_AMOUNT',
+        value: 'TR_EARN_YIELD_REVIEW_DEPOSIT_DESCRIPTION',
+        label: 'TR_EARN_YIELD_REVIEW_DEPOSIT_TITLE',
+        amount: 'TR_EARN_YIELD_REVIEW_DEPOSIT_AMOUNT',
     },
     withdraw: {
         value: 'TR_EARN_YIELD_REVIEW_WITHDRAW_DESCRIPTION',
@@ -124,6 +124,7 @@ const getTranslationValues = (
     stakeType?: StakeType,
     evmTxType?: EvmTransactionPurpose,
     device?: TrezorDevice,
+    isTronStakeFreeze?: boolean,
 ): Record<'value' | 'label', TranslationKey> | null => {
     const isEvmApproval = isEvmApprovalTxByTextSignature(evmTxType);
 
@@ -148,6 +149,10 @@ const getTranslationValues = (
             value: 'TR_EARN_YIELD_REVIEW_CLAIM_TITLE',
             label: 'TR_EARN_YIELD_REVIEW_CLAIM_TITLE',
         };
+    }
+
+    if (isTronStakeFreeze) {
+        return { value: 'TR_ADDRESS', label: 'TR_ADDRESS' };
     }
 
     return null;
@@ -176,8 +181,15 @@ const getOutputTitle = (
     evmTxType?: EvmTransactionPurpose,
     device?: TrezorDevice,
     receiveAddress?: string,
+    isTronStakeFreeze?: boolean,
 ): ReactNode | undefined => {
-    const translation = getTranslationValues(networkType, stakeType, evmTxType, device);
+    const translation = getTranslationValues(
+        networkType,
+        stakeType,
+        evmTxType,
+        device,
+        isTronStakeFreeze,
+    );
     const contractTitle = getContractTitle(networkType, isApprovalFlowSupported(device), evmTxType);
 
     switch (type) {
@@ -250,6 +262,12 @@ const getOutputTitle = (
             return <Translation id="TR_SUMMARY" />;
         case 'rewards':
             return <Translation id="TR_REWARD_TOKENS" />;
+        case 'tron-vote':
+            return <Translation id="TR_SUMMARY" />;
+        case 'tron-withdraw':
+            return <Translation id="TR_SUMMARY" />;
+        case 'tron-claim':
+            return <Translation id="TR_STAKE_CLAIM" />;
         default:
             return exhaustive(type);
     }
@@ -500,7 +518,9 @@ const getOutputLines = ({
             return output;
         }
         case 'approve_data': {
-            const isMaxApproval = isMaxAllowance(value);
+            const isMaxApproval =
+                typeof token?.decimals === 'number' &&
+                isAllowanceUnlimited({ amount: value, decimals: token.decimals, isSubunit: true });
             const isApprovalTx = evmTxType === 'approve';
             const type = isMaxApproval || !isApprovalTx ? 'data' : 'amount';
             const getValue = () => {
@@ -549,6 +569,39 @@ const getOutputLines = ({
                 value: reward.tokenSymbol || reward.tokenAddress,
                 type: 'default' as const,
             }));
+        case 'tron-vote':
+            return [
+                {
+                    id: 'address',
+                    type: 'safe-address',
+                    label: <Translation id="TR_ADDRESS" />,
+                    value,
+                    isChunked: false,
+                },
+                {
+                    id: 'votes',
+                    type: 'default',
+                    label: <Translation id="TR_TRON_VOTES" />,
+                    value: value2,
+                },
+            ];
+        case 'tron-withdraw':
+            return [
+                {
+                    id: 'address',
+                    type: 'safe-address',
+                    label: <Translation id="TR_EARN_TRON_CLAIM_ADDRESS" />,
+                    value,
+                },
+            ];
+        case 'tron-claim':
+            return [
+                {
+                    id: 'tron-claim',
+                    type: 'data',
+                    value: translationString('TR_EARN_TRON_CLAIM_CONFIRM'),
+                },
+            ];
         default:
             return exhaustive(type);
     }
@@ -562,6 +615,7 @@ export type TransactionReviewOutputProps = {
     isTrading?: boolean;
     evmTxType?: EvmTransactionPurpose;
     nativeToken?: TokenInfo;
+    isTronStakeFreeze?: boolean;
 } & ReviewOutput;
 
 export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => {
@@ -580,6 +634,7 @@ export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => 
         isTrading,
         evmTxType,
         nativeToken,
+        isTronStakeFreeze,
     } = props;
     const rewards = type === 'rewards' ? props.rewards : undefined;
     const receiveAddress = type === 'traded_assets' ? props.receiveAddress : undefined;
@@ -603,6 +658,7 @@ export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => 
         evmTxType,
         device,
         receiveAddress,
+        isTronStakeFreeze,
     );
 
     const outputLines = getOutputLines({
@@ -623,12 +679,12 @@ export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => 
         if (line.type === 'address') {
             const relevantAccounts = findAccountsByAddress(symbol, line.value, accounts);
 
+            const type: OutputElementLine['type'] =
+                isTrading || stakeType || relevantAccounts.length > 0 ? 'safe-address' : line.type;
+
             return {
                 ...line,
-                type:
-                    isTrading || stakeType || relevantAccounts.length > 0
-                        ? ('safe-address' as OutputElementLine['type'])
-                        : line.type,
+                type,
             };
         }
 

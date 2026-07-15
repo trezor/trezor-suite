@@ -60,7 +60,6 @@ export const AccountImportOverview = ({ balance, symbol, formControl }: AssetsOv
                         name="accountLabel"
                         label={coinLabelFieldLabel}
                         maxLength={MAX_ACCOUNT_LABEL_LENGTH}
-                        elevation="1"
                     />
                     <AccountLabelFieldHint formControl={formControl} />
                 </VStack>

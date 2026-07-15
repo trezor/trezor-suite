@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    playwright-web-flake.url = "github:pietdevries94/playwright-web-flake/1.58.2";
+    playwright-web-flake.url = "github:pietdevries94/playwright-web-flake/1.60.0";
     old-gcc-nixpkgs.url = "github:NixOS/nixpkgs/a78ed5cbdd5427c30ca02a47ce6cccc9b7d17de4"; # For GCC 10.2.0
   };
 
@@ -36,8 +36,12 @@
 
         androidEnv = import ./.nix/android.nix { inherit pkgs; };
 
+        # Keep in sync with the electron version pinned in package.json
+        electron = pkgs.electron_42;
+
         commonBuildInputs = [
           pkgs.bash
+          pkgs.jq
           pkgs.git
           pkgs.git-lfs
           pkgs.gnupg
@@ -48,7 +52,7 @@
           (pkgs.yarn.override { nodejs = null; })
           pkgs.python3
           pkgs.python3Packages.pip
-          pkgs.electron_39
+          electron
           pkgs.pkg-config
           pkgs.pixman # build dependencies for node-canvas
           pkgs.cairo # build dependencies for node-canvas
@@ -89,10 +93,10 @@
           export PLAYWRIGHT_BROWSERS_PATH="${pkgs.playwright-driver.browsers}"
         ''
         + pkgs.lib.optionalString pkgs.stdenv.isDarwin ''
-          export ELECTRON_OVERRIDE_DIST_PATH="${pkgs.electron_39}/Applications/"
+          export ELECTRON_OVERRIDE_DIST_PATH="${electron}/Applications/"
         ''
         + pkgs.lib.optionalString pkgs.stdenv.isLinux ''
-          export ELECTRON_OVERRIDE_DIST_PATH="${pkgs.electron_39}/bin/"
+          export ELECTRON_OVERRIDE_DIST_PATH="${electron}/bin/"
           export npm_config_build_from_source=true
         '';
 

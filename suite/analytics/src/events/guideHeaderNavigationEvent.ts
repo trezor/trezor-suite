@@ -9,15 +9,19 @@ type Attributes = {
 
 export const guideHeaderNavigationEvent: EventDef<Attributes, EventType.GuideHeaderNavigation> = {
     name: EventType.GuideHeaderNavigation,
-    descriptionTrigger: 'Fired on navigation in Guide using Guide header elements',
+    descriptionTrigger: 'User navigates using the header elements within the in-app Guide',
     changelog: [{ version: '1.11.0', notes: 'added' }],
 
     attributes: {
         type: {
             changelog: [{ version: '1.11.0', notes: 'added' }],
+            description:
+                'Type of navigation action: `back` to go to previous page, `close` to exit guide, `category` to navigate to a category',
         },
         id: {
             changelog: [{ version: '1.11.0', notes: 'added' }],
+            description:
+                'Identifier of the category or page being navigated to (optional, only present for `category` type)',
         },
     },
 };

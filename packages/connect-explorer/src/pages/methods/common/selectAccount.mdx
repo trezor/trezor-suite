@@ -1,0 +1,170 @@
+import { SelectAccount } from '@trezor/connect-common/src/types/api/selectAccount';
+
+import { ApiPlayground } from '../../../components/ApiPlayground';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ParamsTable } from '../../../components/ParamsTable';
+import selectAccount from '../../../data/methods/common/selectAccount.ts';
+
+<ApiPlayground
+    options={[
+        { title: 'Select account', legacyConfig: selectAccount[0] },
+        { title: 'Select multiple accounts', legacyConfig: selectAccount[1] },
+        { title: 'Advanced schema', method: 'selectAccount', schema: SelectAccount },
+    ]}
+/>
+
+export const paramDescriptions = {
+    coin: 'network to select an account for, e.g. `eth`',
+    selectionType:
+        '`single` (default) selects one account, `multi` selects any number, or an object bounds how many',
+    accountType:
+        "allowed account types; either built-in names (e.g. `segwit`) or custom `{ bip43Path, label }` entries. If omitted, all of the network's account types are allowed",
+    bip43Path:
+        "derivation path template for a custom account type, with `i` standing in for the account index, e.g. `m/44'/60'/i'/0/0`",
+    label: "label shown on the custom account type's tab in the picker",
+    addressSelection:
+        'UTXO networks only — `fullAccount` (default) shares the whole account as an xpub; `firstFresh` or `manual` switch to exporting an individual address instead. Ignored for account-based networks',
+    requireOnDeviceVerification:
+        'require the selected address(es) to be confirmed on the device. Default `true`',
+    minCount:
+        'minimum number of accounts to select, when `selectionType` is an object. Default `1`',
+    maxCount: 'maximum number of accounts to select, when `selectionType` is an object',
+};
+
+## Select account
+
+Opens Trezor Suite's account picker so the user chooses which account(s) to share with the
+connecting app. The picker is rendered by Suite — addresses can be verified on the Trezor before
+they are shared.
+
+```javascript
+const result = await TrezorConnect.selectAccount(params);
+```
+
+### Selection mode
+
+`selectionType` controls how many accounts the user can pick, before any coin-specific behavior
+(UTXO flows, custom account types) comes into play:
+
+- **`single`** (default) — the user picks exactly one account.
+- **`multi`** — the user picks any number of accounts.
+- **An object (`{ minCount, maxCount }`)** — the user picks a bounded number of accounts;
+  `minCount` defaults to `1`, `maxCount` defaults to unbounded.
+
+The result is always an array, even for a `single` selection (mirrors `eth_requestAccounts`), so
+the response shape doesn't depend on what `selectionType` resolves to.
+
+Let the user pick a single Ethereum account:
+
+```javascript
+TrezorConnect.selectAccount({
+    coin: 'eth',
+});
+```
+
+Let the user pick several accounts:
+
+```javascript
+TrezorConnect.selectAccount({
+    coin: 'eth',
+    selectionType: 'multi',
+});
+```
+
+Let the user pick between 2 and 5 accounts:
+
+```javascript
+TrezorConnect.selectAccount({
+    coin: 'eth',
+    selectionType: { minCount: 2, maxCount: 5 },
+});
+```
+
+### UTXO coins
+
+For account-based networks (e.g. Ethereum and its L2s), `selectAccount` always exports an
+individual address per selected account. UTXO networks (Bitcoin, Litecoin, …), where one account
+holds many addresses, support two separate flows, chosen with `addressSelection`:
+
+- **Whole-account flow (`addressSelection: 'fullAccount'`, the default when omitted)** — the
+  account is shared as an extended public key (xpub), the same way a watch-only wallet import
+  works. The integrator derives every address of the account on its own; no individual address is
+  picked or verified as part of this call. This requests the broader `read_xpub` permission.
+- **Address-selection flow (`addressSelection: 'firstFresh' | 'manual'`)** — only the individual
+  address(es) the user picks are exported, exactly like the account-based flow above.
+  `'firstFresh'` auto-selects the next unused receive address for each picked account. `'manual'`
+  adds an extra step: the user first picks which account to browse (same account-index list as
+  `'firstFresh'`, but nothing is exported by picking one), then picks one of that account's
+  previously-used addresses from a second list. The xpub is never exported, and only the narrower
+  `read_address` permission is requested.
+
+These two flows are mutually exclusive per call: pass `addressSelection: 'firstFresh' | 'manual'`
+to get individual address(es), or `'fullAccount'`/omit it to get the account xpub — not both.
+
+### Custom account types
+
+Each entry in `accountType` becomes its own tab in the picker. An entry is either the name of one of
+the network's built-in types (`normal`, `segwit`, `taproot`, `legacy`, `ledger` — availability
+depends on the coin), or a custom derivation path not covered by any of them, given as
+`{ bip43Path, label }`. A custom entry's tab is labeled with `label` instead of a translated
+account-type name.
+
+`bip43Path` is a [BIP-43](https://github.com/bitcoin/bips/blob/master/bip-0043.mediawiki)
+derivation path template, written with `i` as a placeholder for the account index, e.g.:
+
+```
+m/44'/60'/i'/0/0
+m/84'/0'/i'
+```
+
+When deriving account `N`, `i` is replaced with `N` — account `0` of the first template above
+resolves to `m/44'/60'/0'/0/0`, account `1` to `m/44'/60'/1'/0/0`, and so on. An apostrophe (`'`)
+marks a hardened level; keep the same hardening as the levels around `i` unless you have a reason
+to deviate from the coin's usual derivation scheme.
+
+```javascript
+TrezorConnect.selectAccount({
+    coin: 'eth',
+    accountType: [{ bip43Path: "m/44'/60'/i'/0/1", label: 'Address #1' }],
+});
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### SelectAccount
+
+<ParamsTable schema={SelectAccount} descriptions={paramDescriptions} />
+
+### Result
+
+Each entry carries either `address` (account-based networks, and UTXO with `addressSelection:
+'firstFresh' | 'manual'`) or `xpub` (UTXO, `addressSelection: 'fullAccount'`/omitted) — never both:
+
+```javascript
+{
+    success: true,
+    payload: [
+        {
+            symbol: string,
+            path: string,         // serialized path, e.g. "m/44'/60'/0'/0/0"
+            address?: string,     // address-selection flow
+            xpub?: string,        // UTXO whole-account flow
+            accountType?: string,
+            mac?: string,         // only set alongside `address`
+        },
+    ]
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    error: {
+        message: string // error message
+    }
+}
+```

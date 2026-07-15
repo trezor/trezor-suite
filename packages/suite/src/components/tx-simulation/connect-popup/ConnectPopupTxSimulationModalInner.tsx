@@ -17,7 +17,7 @@ import {
     useTxSimulation,
 } from '@suite-common/tx-simulation';
 import { type Account, type TxSimulationAction } from '@suite-common/wallet-types';
-import { Column, Modal } from '@trezor/components';
+import { Card, Column, Modal } from '@trezor/components';
 import { ERRORS } from '@trezor/connect-common';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
@@ -162,14 +162,16 @@ export function ConnectPopupTxSimulationModalInner({
 
                         {areTxSimulationMethods(TX_METHODS_WITH_FEES, action) && (
                             <FormProvider {...form}>
-                                <Fees
-                                    account={account}
-                                    feeInfo={feeInfo}
-                                    changeFeeLevel={changeFeeLevel}
-                                    composedLevels={
-                                        txSimulationQuery.isSuccess ? composedLevels : null
-                                    }
-                                />
+                                <Card>
+                                    <Fees
+                                        account={account}
+                                        feeInfo={feeInfo}
+                                        changeFeeLevel={changeFeeLevel}
+                                        composedLevels={
+                                            txSimulationQuery.isSuccess ? composedLevels : null
+                                        }
+                                    />
+                                </Card>
                             </FormProvider>
                         )}
 

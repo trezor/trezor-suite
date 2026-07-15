@@ -30,7 +30,7 @@ class ChainAddressKey {
 }
 
 /**
- * Account with nonce 1 sent only 1 tx (when user supplies, first tx is approval)
+ * Account with nonce 1 sent only 1 tx (when user deposits, first tx is approval)
  */
 function isEmptyEvmAccount(account: AccountWithNetworkType<'ethereum'>) {
     return Number(account?.misc?.nonce ?? 0) <= 1;
@@ -39,6 +39,11 @@ function isEmptyEvmAccount(account: AccountWithNetworkType<'ethereum'>) {
 export type MerklRewardsSource = {
     symbol: NetworkSymbol;
     address: string;
+};
+
+type MerklRewardsQueryEntriesOptions = {
+    isDebugMode?: boolean;
+    skipEmptyAccountCheck?: boolean;
 };
 
 function getMerklRewardsQueryEntries(sources: MerklRewardsSource[]) {
@@ -65,20 +70,35 @@ function getMerklRewardsQueryEntries(sources: MerklRewardsSource[]) {
         .filter((queryEntry): queryEntry is NonNullable<typeof queryEntry> => Boolean(queryEntry));
 }
 
-export function useGetMerklRewardsQueryEntries(accounts: Account[], isDebugMode?: boolean) {
-    return useMemo(() => {
-        const accountsRewardSources = accounts
-            .filter(
-                (account): account is AccountWithNetworkType<'ethereum'> =>
-                    account?.networkType === 'ethereum' &&
-                    isEarnYieldClaimSupported(account.symbol, { isDebugMode }) &&
-                    !isEmptyEvmAccount(account),
-            )
-            .map(account => ({
-                symbol: account.symbol,
-                address: account.descriptor,
-            }));
+export function getMerklRewardsQueryEntriesForAccounts(
+    accounts: Account[],
+    { isDebugMode, skipEmptyAccountCheck = false }: MerklRewardsQueryEntriesOptions = {},
+) {
+    const accountsRewardSources = accounts
+        .filter(
+            (account): account is AccountWithNetworkType<'ethereum'> =>
+                account?.networkType === 'ethereum' &&
+                isEarnYieldClaimSupported(account.symbol, { isDebugMode }) &&
+                (skipEmptyAccountCheck || !isEmptyEvmAccount(account)),
+        )
+        .map(account => ({
+            symbol: account.symbol,
+            address: account.descriptor,
+        }));
 
-        return getMerklRewardsQueryEntries(accountsRewardSources);
-    }, [accounts, isDebugMode]);
+    return getMerklRewardsQueryEntries(accountsRewardSources);
+}
+
+export function useGetMerklRewardsQueryEntries(
+    accounts: Account[],
+    { isDebugMode, skipEmptyAccountCheck }: MerklRewardsQueryEntriesOptions = {},
+) {
+    return useMemo(
+        () =>
+            getMerklRewardsQueryEntriesForAccounts(accounts, {
+                isDebugMode,
+                skipEmptyAccountCheck,
+            }),
+        [accounts, isDebugMode, skipEmptyAccountCheck],
+    );
 }

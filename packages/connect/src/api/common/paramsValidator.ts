@@ -8,10 +8,10 @@ import type {
     FirmwareRule,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { fromHardenedPathPart } from '@trezor/crypto-utils';
 import { typedObjectTransformValues, versionUtils } from '@trezor/utils';
 
 import { config } from '../../data/config';
-import { fromHardened } from '../../utils/pathUtils';
 
 type MethodOrCapability = CallMethodKeys | FirmwareCapability;
 
@@ -114,7 +114,7 @@ export function validateParams<P extends Record<string, any>>(params: P, schema:
 export const validateCoinPath = (path: number[], coinInfo?: CoinInfo) => {
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const slip44Component: number = path[1];
-    if (coinInfo && coinInfo.slip44 !== fromHardened(slip44Component)) {
+    if (coinInfo && coinInfo.slip44 !== fromHardenedPathPart(slip44Component)) {
         throw invalidParameter('Parameters "path" and "coin" do not match.');
     }
 };
@@ -162,11 +162,14 @@ const filterByMethods = (methodsOrCapabilities: MethodOrCapability[]) => {
         ensureArray(rule.capabilities).some(methodSet.has.bind(methodSet));
 };
 
+export const filterByFirmwareType = (isDebug: boolean) => (rule: FirmwareRule) =>
+    !rule.firmwareType || (rule.firmwareType === 'debug') === isDebug;
+
 const getCoinRules = (coins: CoinInfo[], currentRange: FirmwareRange): FirmwareRange[] =>
     coins.map(({ support = typedObjectTransformValues(DEFAULT_FIRMWARE_RANGE, () => false) }) => ({
         ...currentRange,
         ...typedObjectTransformValues(support, value => ({
-            min: (value || '0') as FirmwareBoundary,
+            min: value || '0',
             max: '0' as const,
         })),
     }));
@@ -175,10 +178,12 @@ const getConfigRules = (
     methodsOrCapabilities: MethodOrCapability[],
     coins: CoinInfo[],
     currentRange: FirmwareRange,
+    isDebug: boolean,
 ): FirmwareRange[] =>
     config.supportedFirmware
         .filter(filterByCoins(coins))
         .filter(filterByMethods(methodsOrCapabilities))
+        .filter(filterByFirmwareType(isDebug))
         .map(({ min, max }) =>
             typedObjectTransformValues(currentRange, (value, key) => ({
                 min: min?.[key] ?? value.min,
@@ -190,7 +195,8 @@ export const getFirmwareRange = (
     methodsOrCapabilities: MethodOrCapability[],
     coins: CoinInfo[],
     currentRange = DEFAULT_FIRMWARE_RANGE,
+    isDebug = false,
 ) =>
     getCoinRules(coins, currentRange)
-        .concat(getConfigRules(methodsOrCapabilities, coins, currentRange))
+        .concat(getConfigRules(methodsOrCapabilities, coins, currentRange, isDebug))
         .reduce(intersectRange, currentRange);

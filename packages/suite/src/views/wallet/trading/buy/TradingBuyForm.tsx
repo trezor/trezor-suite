@@ -1,10 +1,10 @@
 import { FormProvider } from 'react-hook-form';
 
 import { selectIsDeviceCompromised } from '@suite/authenticity-checks';
+import { ContextMessage } from '@suite/message-system';
 import { Context } from '@suite-common/message-system';
 import { type TradingType } from '@suite-common/trading';
 
-import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemTrading } from 'src/hooks/suite/useMessageSystemTrading';
 import { useTradingBuyForm } from 'src/hooks/wallet/trading/form/useTradingBuyForm';
@@ -16,19 +16,17 @@ import { TradingLayout } from 'src/views/wallet/trading/common/TradingLayout/Tra
 import { TradingDisabled } from '../common/TradingDisabled';
 import { TradingBuyFormInputs } from '../common/TradingForm/TradingBuyFormInputs';
 
-export const TradingBuyFormContent = () => (
-    <TradingFormLayout>
-        <TradingBuyFormInputs />
-    </TradingFormLayout>
-);
-
 const TradingBuyFormWrapper = () => {
     const tradingBuyContextValues = useTradingBuyForm();
 
     return (
         <TradingFormContext.Provider value={tradingBuyContextValues}>
             <FormProvider {...tradingBuyContextValues.methods}>
-                <TradingContainer SectionComponent={TradingBuyFormContent} />
+                <TradingContainer>
+                    <TradingFormLayout>
+                        <TradingBuyFormInputs />
+                    </TradingFormLayout>
+                </TradingContainer>
             </FormProvider>
         </TradingFormContext.Provider>
     );

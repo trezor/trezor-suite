@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Button, Column, DotIndicator, Input, List, Row, Text } from '@trezor/components';
+import { PlusIcon, TrashIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { useDefaultUrls } from 'src/hooks/settings/backends';
@@ -56,7 +57,7 @@ export function BackendUrls({
                                         intent="neutral"
                                         priority="secondary"
                                         size="small"
-                                        iconLeft="trash"
+                                        iconLeft={TrashIcon}
                                         onClick={() => removeUrl(url)}
                                     >
                                         <Translation id="TR_REMOVE" />
@@ -80,7 +81,7 @@ export function BackendUrls({
                             <Button
                                 intent="brand"
                                 size="small"
-                                iconLeft="plus"
+                                iconLeft={PlusIcon}
                                 data-testid="@settings/advance/button/add"
                                 onClick={() => {
                                     addUrl(input.value);

@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import { Icon, Paragraph, Row } from '@trezor/components';
+import { WarningIcon } from '@trezor/icons';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 
@@ -9,7 +10,7 @@ type EarnStakingOutdatedProviderProps = {
 
 export const EarnStakingOutdatedProvider = ({ apy }: EarnStakingOutdatedProviderProps) => (
     <Row gap={4}>
-        <Icon name="warning" size={24} intent="warning" />
+        <Icon as={WarningIcon} size={24} intent="warning" />
         <Paragraph typographyStyle="body-md" intent="warning">
             <Translation
                 id="TR_EARN_STAKING_DASHBOARD_OUTDATED_PROVIDER"

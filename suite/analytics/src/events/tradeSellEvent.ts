@@ -19,7 +19,8 @@ type Attributes = {
 
 export const tradeSellEvent: EventDef<Attributes, EventType.TradeSell> = {
     name: EventType.TradeSell,
-    descriptionTrigger: 'fired on every step during the sell flow',
+    descriptionTrigger:
+        'User navigates through the sell flow, with tracking at each step of the process',
     changelog: [{ version: '25.5.2', notes: 'added' }],
 
     attributes: {
@@ -28,8 +29,7 @@ export const tradeSellEvent: EventDef<Attributes, EventType.TradeSell> = {
             changelog: [{ version: '25.5.2', notes: 'added' }],
         },
         step: {
-            description:
-                'sell flow step: `sell-form` | `sell-terms-modal` | `confirm-and-send-transaction` | `status-pending` | `status-success` | `status-error`',
+            description: 'sell flow step: `sell-form` | `confirm-and-send-transaction`',
             changelog: [
                 { version: '25.5.2', notes: 'added' },
                 { version: '26.6.1', notes: 'removed `offers-form` value' },

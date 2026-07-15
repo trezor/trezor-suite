@@ -27,7 +27,7 @@ const File = ({ disabled, field, onChange }: FileProps) => {
 
     return (
         <Row style={{ cursor: disabled ? 'default' : 'pointer' }}>
-            <Button onClick={() => document!.getElementById('files')?.click()}>Chose File</Button>
+            <Button onClick={() => document.getElementById('files')?.click()}>Choose File</Button>
 
             <input
                 style={{ display: 'none' }}

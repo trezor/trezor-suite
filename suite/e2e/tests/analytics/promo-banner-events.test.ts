@@ -7,7 +7,9 @@ import { PromoBannerType } from '../../support/pageObjects/dashboardPage';
 
 test.describe('Analytics Events - Promo Banner', { tag: ['@T3T1', '@nightlyOnly'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
-        await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+        await onboardingPage.completeOnboarding();
+        await settingsPage.navigateTo('application');
+        await settingsPage.toggleDebugModeInSettings();
         await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
         await settingsPage.navigateTo('debug');
     });

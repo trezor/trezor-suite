@@ -1,0 +1,75 @@
+import styled from 'styled-components';
+
+import { toCommaSeparated } from '@suite-common/message-system';
+import { type Action } from '@suite-common/suite-types';
+import { InfoItem } from '@trezor/components';
+import { CheckFatIcon, CodeBlockFilledIcon, CursorClickIcon, NoteIcon } from '@trezor/icons';
+
+import { MessageSystemManagerTranslations } from './MessageSystemManagerTranslations';
+
+const StyledList = styled.ul`
+    list-style: none;
+`;
+
+type MessageSystemManagerDetailProps = {
+    message: Action['message'];
+};
+
+export const MessageSystemManagerDetail = ({ message }: MessageSystemManagerDetailProps) => (
+    <>
+        <InfoItem
+            label={message.id}
+            typographyStyle="body-md-strong"
+            icon={NoteIcon}
+            intent="neutral"
+            priority="primary"
+        >
+            <MessageSystemManagerTranslations messages={message.content} />
+        </InfoItem>
+        {message.context && (
+            <InfoItem
+                label="Context"
+                icon={CodeBlockFilledIcon}
+                typographyStyle="body-md-strong"
+                intent="neutral"
+                priority="primary"
+            >
+                {toCommaSeparated(message.context.domain)}
+            </InfoItem>
+        )}
+        {message.feature && (
+            <InfoItem
+                label="Features"
+                icon={CheckFatIcon}
+                typographyStyle="body-md-strong"
+                intent="neutral"
+                priority="primary"
+            >
+                <StyledList>
+                    {message.feature.map(feature => (
+                        <li key={feature.domain}>
+                            <strong>{feature.domain}:</strong>{' '}
+                            {feature.flag ? 'enabled' : 'disabled'}
+                        </li>
+                    ))}
+                </StyledList>
+            </InfoItem>
+        )}
+        {message.cta && (
+            <InfoItem
+                label="CTA"
+                icon={CursorClickIcon}
+                typographyStyle="body-md-strong"
+                intent="neutral"
+                priority="primary"
+            >
+                <div>
+                    <MessageSystemManagerTranslations messages={message.cta.label} />
+                    <div>
+                        <strong>{message.cta.action}:</strong> {message.cta.link}
+                    </div>
+                </div>
+            </InfoItem>
+        )}
+    </>
+);

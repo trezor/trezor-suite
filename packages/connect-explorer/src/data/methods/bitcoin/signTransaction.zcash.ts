@@ -8,7 +8,7 @@ export default [
             {
                 name: 'coin',
                 type: 'hidden',
-                value: 'zcash',
+                value: 'zec',
             },
             {
                 name: 'inputs',

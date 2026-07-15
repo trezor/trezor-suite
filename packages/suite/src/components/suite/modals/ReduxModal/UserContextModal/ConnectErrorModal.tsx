@@ -7,6 +7,7 @@ import {
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
 import { UI_REQUEST } from '@trezor/connect';
+import { WarningIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
@@ -183,7 +184,7 @@ export const ConnectErrorModal = () => {
             >
                 <Column gap={spacings.xs}>
                     <Row alignItems="center" gap={spacings.sm}>
-                        <Icon name="warning" size={32} intent={getIconIntent()} />
+                        <Icon as={WarningIcon} size={32} intent={getIconIntent()} />
                         <H3 intent={isCancelled ? 'warning' : 'critical'}>{getTitle()}</H3>
                     </Row>
                     <ConnectCallSource />

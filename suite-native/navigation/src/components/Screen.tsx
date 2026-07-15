@@ -15,11 +15,11 @@ import { type Color } from '@trezor/theme';
 
 import { type DynamicScreenHeaderProps } from './DynamicHeader/DynamicScreenHeader';
 import { DynamicHeaderProvider } from './DynamicHeader/DynamicScreenHeaderContext';
+import { DynamicScrollableScreenContentHeader } from './DynamicHeader/DynamicScrollableScreenContentHeader';
+import { isScreenHeaderPropDynamic } from './DynamicHeader/dynamicHeaderUtils';
 import { ScreenContentWrapper } from './ScreenContentWrapper';
 import { useAndroidNavigationBarStyle } from '../hooks/useAndroidNavigationBarStyle';
 import { useIsKeyboardShown } from '../hooks/useIsKeyboardShown';
-import { DynamicScrollableScreenContentHeader } from './DynamicHeader/DynamicScrollableScreenContentHeader';
-import { isScreenHeaderPropDynamic } from './DynamicHeader/dynamicHeaderUtils';
 
 export type ScreenProps = {
     children: ReactNode;
@@ -34,6 +34,7 @@ export type ScreenProps = {
     hasBottomInset?: boolean;
     refreshControl?: ScrollViewProps['refreshControl'];
     containerStyle?: ViewProps['style'];
+    shouldKeepScrolledToEnd?: boolean;
 };
 
 const screenContainerStyle = prepareNativeStyle<{
@@ -93,6 +94,7 @@ export const Screen = ({
     noBottomPadding = false,
     focusedInputBottomOffset,
     hasBottomInset = true,
+    shouldKeepScrolledToEnd = false,
 }: ScreenProps) => {
     const {
         applyStyle,
@@ -115,7 +117,7 @@ export const Screen = ({
     // We have to extract dynamic header props from header prop. While not ideal, this allows us to only send one header prop to the screen.
     const dynamicHeaderProps = ((): DynamicScreenHeaderProps | null => {
         if (isScreenHeaderPropDynamic(header)) {
-            return header.props as DynamicScreenHeaderProps;
+            return header.props;
         }
 
         return null;
@@ -146,6 +148,7 @@ export const Screen = ({
                     focusedInputBottomOffset={focusedInputBottomOffset}
                     refreshControl={refreshControl}
                     isDynamicHeader={isScreenHeaderPropDynamic(header)}
+                    shouldKeepScrolledToEnd={shouldKeepScrolledToEnd}
                 >
                     {shouldRenderDynamicScrollableHeader && (
                         <DynamicScrollableScreenContentHeader {...dynamicHeaderProps} />

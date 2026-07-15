@@ -5,6 +5,7 @@ import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 test.describe('Onboarding - create wallet', { tag: ['@T3W1'] }, () => {
     test.use({ setupEmulator: false });
+
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.disableNecessaryFirmwareChecks();
     });
@@ -63,11 +64,14 @@ test.describe('Onboarding - create wallet', { tag: ['@T3W1'] }, () => {
 
             await test.step('Finish wallet creation', async () => {
                 await onboardingPage.finalButton.click();
+                await expect(onboardingPage.onboardingFeedbackBanner).toBeVisible();
+                await onboardingPage.onboardingFeedbackBannerCTAButton.click();
                 await dashboardPage.discoveryEmptyPrimaryButton.click();
                 await assetsSection.enableNetworkViaActivateAssetsModal(['btc', 'eth']);
 
                 await expect(onboardingPage.suiteLoadedIndicator).toBeVisible({ timeout: 30_000 });
                 await expect(dashboardPage.walletReady).toBeVisible({ timeout: 30_000 });
+                await expect(onboardingPage.onboardingFeedbackBanner).toBeHidden();
             });
         },
     );

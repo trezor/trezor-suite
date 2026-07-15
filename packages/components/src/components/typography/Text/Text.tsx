@@ -69,6 +69,7 @@ type ColorProps = {
 } & {
     $intent?: TextIntent;
     $priority?: TextPriority;
+    $isInverse?: boolean;
     $isDisabled?: boolean;
     $color?: Color;
 };
@@ -76,6 +77,7 @@ type ColorProps = {
 const getColorForText = ({
     $intent,
     $priority = 'primary',
+    $isInverse,
     $isDisabled,
     theme,
     $color,
@@ -86,6 +88,12 @@ const getColorForText = ({
         `;
     }
 
+    if ($isDisabled) {
+        return css`
+            color: ${theme.contentDisabled};
+        `;
+    }
+
     if ($intent === undefined) {
         return css`
             color: inherit;
@@ -93,13 +101,14 @@ const getColorForText = ({
     }
 
     return css`
-        color: ${mapIntentToCSS($intent, $priority, Boolean($isDisabled), theme)};
+        color: ${mapIntentToCSS($intent, $priority, $isInverse ?? false, theme)};
     `;
 };
 
 type StyledTextProps = {
     $intent?: TextIntent;
     $priority?: TextPriority;
+    $isInverse?: boolean;
     $isDisabled?: boolean;
     $color?: Color;
     $isMonospaced?: boolean;
@@ -127,7 +136,7 @@ const StyledText = styled.span<StyledTextProps>`
             display: inline;
             padding: 0 ${spacingsPx.xxs};
             border-radius: ${borders.radii.xxs};
-            background-color: ${({ theme }) => theme.legacyBackgroundNeutralSubtleOnElevation0};
+            background-color: ${({ theme }) => theme.elementFillNeutralSoft};
             box-decoration-break: clone;
         `}
         ${withTextProps} ${withFrameProps};
@@ -135,6 +144,7 @@ const StyledText = styled.span<StyledTextProps>`
 
 export type TextProps = Pick<HTMLProps<HTMLElement>, 'onCopy' | 'onClick'> & {
     children: ReactNode;
+    isInverse?: boolean;
     isMonospaced?: boolean;
     isHighlighted?: boolean;
     isTabular?: boolean;
@@ -148,6 +158,7 @@ export type TextProps = Pick<HTMLProps<HTMLElement>, 'onCopy' | 'onClick'> & {
 export const Text = ({
     intent,
     priority = 'primary',
+    isInverse = false,
     isDisabled = false,
     color,
     children,
@@ -168,6 +179,7 @@ export const Text = ({
         <StyledText
             $intent={intent}
             $priority={priority}
+            $isInverse={isInverse}
             $isDisabled={isDisabled}
             $color={color}
             as={as}

@@ -7,7 +7,7 @@ export default class SolanaGetAddress extends AbstractMiscGetAddress<'solanaGetA
     constructor(message: MethodMessage<'solanaGetAddress'>) {
         super(message, 2);
         this.requiredDeviceCapabilities = ['Capability_Solana'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Solana')];
+        this.requiredFirmwareCoins = [getMiscNetwork('sol')];
     }
 
     get info() {

@@ -14,28 +14,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  translations-unused:
-    runs-on: ubuntu-latest
-    if: github.repository == 'trezor/trezor-suite'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-
-      - name: Setup node
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
-        with:
-          node-version-file: ".nvmrc"
-
-      - name: Install Socket Firewall
-        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
-        continue-on-error: true
-        with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
-      - run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
-      - run: yarn workspace @suite/intl translations:list-unused
-
   media-duplicates:
     runs-on: ubuntu-latest
     if: github.repository == 'trezor/trezor-suite'
@@ -45,7 +23,7 @@ jobs:
         extension: [".png", ".jpg", ".mp4", ".webm", ".svg"]
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
 
       - run: ./scripts/ci/find_duplicates.sh ./packages/suite-data/files ${{ matrix.extension }}
 
@@ -54,64 +32,87 @@ jobs:
     if: github.repository == 'trezor/trezor-suite'
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
 
       - name: Setup node
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
 
-      - name: Install Socket Firewall
-        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
         continue-on-error: true
         with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
-      - run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
-      - run: ./scripts/circular-dependencies/check-circular-dependencies.sh
+          version: v0.19.1
+      - run: yarn install --immutable
+      - name: Check for Circular Imports
+        # safedep/pmg covers also the `npx` running inside the shell script
+        run: ./scripts/circular-dependencies/check-circular-dependencies.sh
 
   test-unit:
     runs-on: ubuntu-latest
     if: github.repository == 'trezor/trezor-suite'
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           submodules: recursive
 
       - name: Setup node
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
 
-      - name: Install Socket Firewall
-        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
         continue-on-error: true
         with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
-      - run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
+          version: v0.19.1
+      - run: yarn install --immutable
       - run: yarn message-system-sign-config
       - name: Unit Tests - Suite, Connect, Common
         run: yarn test:unit:all --exclude='@suite-native/*' -- --silent
       - name: Unit Tests - Native
         run: yarn test:unit:all --exclude='@trezor/*,@suite/*,@suite-common/*' -- --silent
 
+  test-fuzz:
+    # Randomized property/fuzz tests are excluded from the unit suite and run
+    # here on the nightly schedule (and on demand via workflow_dispatch). A fresh
+    # seed each night widens the explored interleavings over time; a failure
+    # prints the seed + shrunk counterexample for deterministic reproduction.
+    runs-on: ubuntu-latest
+    if: github.repository == 'trezor/trezor-suite'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+
+      - name: Setup node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+        continue-on-error: true
+        with:
+          version: v0.19.1
+      - run: yarn install --immutable
+      - name: Fuzz Tests - Transport sessions lock
+        run: yarn workspace @trezor/transport-common test:fuzz
+
   test-unit-windows:
     runs-on: windows-latest
     if: github.repository == 'trezor/trezor-suite'
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
 
       - name: Setup node
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
 
-      # sfw not working on windows runners
+      # safedep/pmg not available on Windows (that's ok, PMG must be run on PR workflows but here it's optional)
       - run: yarn install --immutable
       - run: yarn workspace @trezor/node-utils test:unit
 
@@ -120,21 +121,19 @@ jobs:
     if: github.repository == 'trezor/trezor-suite'
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
 
       - name: Setup node
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
 
-      - name: Install Socket Firewall
-        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
         continue-on-error: true
         with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
-      - run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
+          version: v0.19.1
+      - run: yarn install --immutable
       - run: yarn generate-package @trezor/meow-package
       - run: rm -rf packages/meow-package
 
@@ -143,18 +142,16 @@ jobs:
     if: github.repository == 'trezor/trezor-suite'
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
       - name: Setup node
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
 
-      - name: Install Socket Firewall
-        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
         continue-on-error: true
         with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
-      - run: $(command -v sfw > /dev/null && echo sfw --verbose) yarn install --immutable
+          version: v0.19.1
+      - run: yarn install --immutable
       - run: yarn tsx ./packages/components/scripts/test-img-paths-exist.ts

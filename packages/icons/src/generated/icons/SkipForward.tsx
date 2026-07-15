@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgSkipForward = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M25 4a1 1 0 0 0-1 1v8.654L9.054 4.306A1.994 1.994 0 0 0 6 5.985v20.03a2 2 0 0 0 3.054 1.679L24 18.346V27a1 1 0 0 0 2 0V5a1 1 0 0 0-1-1M8 25.991V6.006l15.98 10z"
+        />
+    </svg>
+);
+export { SvgSkipForward as ReactComponent };

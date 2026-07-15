@@ -12,11 +12,14 @@ export const settingsNetworkReserveToggleEvent: EventDef<
 > = {
     name: EventType.SettingsNetworkReserveToggle,
     descriptionTrigger:
-        'Triggered by network reserve switch in app settings under advanced section. When user changes behaviour of network reserve feature.',
+        'User toggles the network reserve protection feature on or off in app settings under the advanced section',
     changelog: [{ version: '26.2.1', notes: 'Added' }],
     attributes: {
         enabled: {
-            changelog: [{ version: '26.2.1', notes: 'Boolean values for new value: true / false' }],
+            changelog: [
+                { version: '26.2.1', notes: 'Boolean values for new value: `true` / `false`' },
+            ],
+            description: '`true` if network reserve protection is enabled, `false` if disabled',
         },
     },
 };

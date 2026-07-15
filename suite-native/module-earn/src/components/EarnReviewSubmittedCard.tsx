@@ -5,7 +5,7 @@ import { sendArrowsLottie } from '@suite-native/transaction-management';
 type EarnReviewSubmittedCardProps = {
     buttonTranslationId: TxKeyPath;
     isButtonLoading?: ButtonProps['isLoading'];
-    messageTranslationId: TxKeyPath;
+    messageTranslationId?: TxKeyPath;
     onButtonPress: ButtonProps['onPress'];
 };
 
@@ -24,9 +24,11 @@ export const EarnReviewSubmittedCard = ({
             spacing="sp24"
         >
             <LottieAnimation source={sendArrowsLottie} size="small" />
-            <Text variant="body-md-strong" textAlign="center">
-                <Translation id={messageTranslationId} />
-            </Text>
+            {messageTranslationId && (
+                <Text variant="body-md-strong" textAlign="center">
+                    <Translation id={messageTranslationId} />
+                </Text>
+            )}
         </VStack>
         <Button isLoading={isButtonLoading} onPress={onButtonPress}>
             <Translation id={buttonTranslationId} />

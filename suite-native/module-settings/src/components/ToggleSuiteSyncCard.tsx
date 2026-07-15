@@ -14,12 +14,13 @@ import { events as nativeEvents, selectNativeAnalyticsDep } from '@suite-native/
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { StorageContext } from '@suite-native/storage';
-import { useSuiteSyncErrorHandler } from '@suite-native/suite-sync';
+import { useShowSuiteSyncEnabledToast, useSuiteSyncErrorHandler } from '@suite-native/suite-sync';
 
 export const ToggleSuiteSyncCard = () => {
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const storageContext = useContext(StorageContext);
     const { showAlert } = useAlert();
+    const { showSuiteSyncEnabledToast } = useShowSuiteSyncEnabledToast();
 
     const { turnOffSuiteSync, turnOnSuiteSync } = useServices(
         selectTurnOffSuiteSyncDep,
@@ -66,7 +67,9 @@ export const ToggleSuiteSyncCard = () => {
                 },
             });
 
-            if (!result.success) {
+            if (result.success) {
+                showSuiteSyncEnabledToast();
+            } else {
                 handleSuiteSyncError(result.error);
             }
         }

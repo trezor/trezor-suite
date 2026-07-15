@@ -1,8 +1,9 @@
 import * as Sentry from '@sentry/core';
 
+import { setAnalyticsConfirmedAndEnabled } from '@suite/sentry';
 import { selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
 import { selectSelectedDevice } from '@suite-common/device';
-import { redactDevice, selectRedactedActionsLog } from '@suite-common/logger';
+import { redactDevice, redactDiscovery, selectRedactedActionsLog } from '@suite-common/logger';
 import { ALLOW_REPORT_TAG } from '@suite-common/sentry';
 import { type ReportSecurityCheckParams } from '@suite-common/suite-types';
 import { selectDiscoveryForSelectedDevice, selectEnabledNetworks } from '@suite-common/wallet-core';
@@ -26,6 +27,8 @@ export const captureSentryMessage = Sentry.captureMessage;
  */
 export const allowSentryReport = (value: boolean) => {
     Sentry.setTag(ALLOW_REPORT_TAG, value);
+    // synchronize the newly set value to localStorage (`value` may have been also be retrieved from IDB, which effectively synces it)
+    setAnalyticsConfirmedAndEnabled(value);
 };
 
 export const setSentryUser = (instanceId: string) => {
@@ -43,7 +46,7 @@ export const reportToSentry = (error: any) => (_: Dispatch, getState: GetState) 
         scope.setUser({ id: instanceId });
         scope.setContext('suiteState', {
             device: redactDevice(device) ?? null,
-            discovery,
+            discovery: redactDiscovery(discovery) ?? null,
             enabledCoins: enabledNetworks,
             suiteLog: redactedActionsLog?.slice(-30), // send only the last 30 actions to avoid "413 Request Entity Too Large" response from Sentry
         });

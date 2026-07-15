@@ -5,7 +5,7 @@ import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { selectIsMetadataEnabled } from '@suite/metadata';
 import { suiteSyncErrorHandler } from '@suite/suite-sync';
-import { shouldDisplayExportBip329Labels } from '@suite-common/bip329';
+import { shouldDisplayExportImportBip329Labels } from '@suite-common/bip329';
 import { type Bip329Label, bip329LabelSchema, selectBip329Dep } from '@suite-common/bip329-types';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
@@ -46,7 +46,7 @@ export const Bip329Labels = ({ account, isLoading }: Bip329LabelsProps) => {
 
     const canImportBip329Labels = isSuiteSyncEnabled;
 
-    const shouldDisplayExport = shouldDisplayExportBip329Labels({
+    const shouldDisplayExport = shouldDisplayExportImportBip329Labels({
         account,
         isSuiteSyncEnabled,
         isMetadataEnabled,
@@ -61,7 +61,8 @@ export const Bip329Labels = ({ account, isLoading }: Bip329LabelsProps) => {
 
     const handleImportBip329 = async (bip329Labels: Bip329Label[]) => {
         const result = await bip329.import({
-            account,
+            deviceStaticSessionId: account.deviceState,
+            accountDescriptor: account.descriptor,
             bip329Labels,
         });
 

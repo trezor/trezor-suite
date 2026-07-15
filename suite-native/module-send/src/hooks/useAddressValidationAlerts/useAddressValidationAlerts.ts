@@ -2,9 +2,8 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
-import { checkAddressCheckSum } from 'web3-utils';
 
-import { isAddressValid } from '@suite-common/address';
+import { checkAddressChecksum, isAddressValid } from '@suite-common/address';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { useFormContext } from '@suite-native/forms';
@@ -56,7 +55,7 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
 
         const shouldChecksumAddress =
             networkType === 'ethereum' &&
-            !checkAddressCheckSum(addressValue || '') &&
+            !checkAddressChecksum(addressValue ?? '') &&
             !wasAddressChecksummed;
 
         const shouldCheckContractAddress =

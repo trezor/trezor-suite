@@ -54,7 +54,7 @@ export const OverviewRow = ({
             <VStack spacing={0}>
                 <HStack paddingHorizontal="sp12" justifyContent="space-between">
                     <Box paddingVertical="sp20" paddingHorizontal="sp8" flex={0}>
-                        <Text color="contentPrimary" variant="body-sm">
+                        <Text color="contentSecondary" variant="body-sm">
                             {title}
                         </Text>
                     </Box>
@@ -72,7 +72,7 @@ export const OverviewRow = ({
                 {warning && (
                     <Box paddingHorizontal="sp16" paddingBottom="sp12">
                         <InlineAlertBox
-                            variant="warning"
+                            intent="warning"
                             title={warning}
                             accessibilityHint={translate('generic.warning')}
                         />

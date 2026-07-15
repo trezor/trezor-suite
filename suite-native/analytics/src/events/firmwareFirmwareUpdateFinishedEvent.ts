@@ -21,33 +21,45 @@ export const firmwareFirmwareUpdateFinishedEvent: EventDef<
     EventType.FirmwareFirmwareUpdateFinished
 > = {
     name: EventType.FirmwareFirmwareUpdateFinished,
-    descriptionTrigger: 'Update finished - either success or error',
-    changelog: [{ version: '25.5.1', notes: 'Added attribute - @location (fw)' }],
+    descriptionTrigger: 'Device firmware update completes, either successfully or with an error',
+    changelog: [{ version: '25.5.1', notes: 'added attribute - @location (fw)' }],
     attributes: {
-        model: { changelog: [{ version: '25.5.1', notes: 'added' }] },
+        model: {
+            description: 'The device model identifier',
+            changelog: [{ version: '25.5.1', notes: 'added' }],
+        },
         fromBootloaderVersion: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'Bootloader version string aka 1.2.3',
+            description: 'Bootloader version string before update (e.g., 1.2.3)',
         },
         fromFwVersion: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'FW version or `none`',
+            description: 'Firmware version before update, or `none` if not applicable',
         },
         toFwVersion: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'FW version aka 1.2.3',
+            description: 'Target firmware version (e.g., 1.2.3)',
         },
-        fromFwType: { changelog: [{ version: '25.5.1', notes: 'added' }] },
-        toFwType: { changelog: [{ version: '25.5.1', notes: 'added' }] },
+        fromFwType: {
+            description: 'The firmware type before update: `bitcoin-only`, `universal`, or `none`',
+            changelog: [{ version: '25.5.1', notes: 'added' }],
+        },
+        toFwType: {
+            description: 'The target firmware type: `bitcoin-only` or `universal`',
+            changelog: [{ version: '25.5.1', notes: 'added' }],
+        },
         location: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
             description:
-                'Determines from which app flow was the FW installed/updated. Possible values: `settings` | `onboarding`',
+                'Where the firmware update was initiated: `settings` from settings screen, `onboarding` during device setup, or `null` if unknown',
         },
         duration: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'Duration of FW update in seconds',
+            description: 'Duration of the firmware update process in seconds',
         },
-        error: { changelog: [{ version: '25.5.1', notes: 'added' }] },
+        error: {
+            description: 'Error message if the update failed, null or empty if successful',
+            changelog: [{ version: '25.5.1', notes: 'added' }],
+        },
     },
 };

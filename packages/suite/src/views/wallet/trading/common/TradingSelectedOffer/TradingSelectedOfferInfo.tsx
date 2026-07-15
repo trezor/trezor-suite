@@ -2,8 +2,7 @@ import { Translation } from '@suite/intl';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import type { TradingOfferSellProps } from 'src/types/trading/tradingForm';
-import type { Account } from 'src/types/wallet';
+import type { TradingSelectedOfferInfoProps } from 'src/types/trading/tradingForm';
 import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
 
 import { TradingFiatAmountInfoItem } from './TradingInfo/TradingFiatAmountInfoItem';
@@ -11,31 +10,30 @@ import { TradingInfoItem } from './TradingInfo/TradingInfoItem';
 import { TradingPaymentMethodInfoItem } from './TradingInfo/TradingPaymentMethodInfoItem';
 import { TradingProviderInfoItem } from './TradingInfo/TradingProviderInfoItem';
 
-type TradingSelectedOfferInfoProps = TradingOfferSellProps & {
-    selectedAccount?: Account;
-};
-
 export const TradingSelectedOfferInfo = ({
+    type,
     selectedQuote,
     providers,
     quoteAmounts,
     selectedAccount,
+    receiveAddress,
     paymentMethod,
     paymentMethodName,
 }: TradingSelectedOfferInfoProps) => {
     const { exchange } = selectedQuote;
 
     const amountInCrypto = quoteAmounts?.amountInCrypto ?? true;
-    const amountLabels = tradingGetAmountLabels({ type: 'sell', amountInCrypto });
+    const amountLabels = tradingGetAmountLabels({ type, amountInCrypto });
 
     return (
         <Column gap={spacings.lg} data-testid="@trading/form/info">
             <TradingInfoItem
                 account={selectedAccount}
-                type="sell"
                 label={amountLabels.receiveLabel}
                 currency={quoteAmounts?.receiveCurrency}
                 amount={quoteAmounts?.receiveAmount}
+                receiveAddress={receiveAddress}
+                isReceive={type === 'buy'}
             />
 
             <Column gap={spacings.xs}>
@@ -45,14 +43,14 @@ export const TradingSelectedOfferInfo = ({
                     label={<Translation id={amountLabels.sendLabel} />}
                 />
 
-                <TradingProviderInfoItem providers={providers} exchange={exchange} />
-
                 {paymentMethod && (
                     <TradingPaymentMethodInfoItem
                         paymentMethod={paymentMethod}
                         paymentMethodName={paymentMethodName}
                     />
                 )}
+
+                <TradingProviderInfoItem providers={providers} exchange={exchange} />
             </Column>
         </Column>
     );

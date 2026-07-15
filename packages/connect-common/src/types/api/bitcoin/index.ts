@@ -1,122 +1,16 @@
-import type { AccountAddresses } from '@trezor/blockchain-link';
-import type { BlockbookTransaction } from '@trezor/blockchain-link-types';
-import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
-import type { AccountTransaction } from '../../account';
-import type { ProtoWithDerivationPath } from '../../params';
-import { DerivationPath } from '../../params';
+import type { authorizeCoinjoin } from './authorizeCoinjoin';
+import type { cancelCoinjoinAuthorization } from './cancelCoinjoinAuthorization';
+import type { composeTransaction } from './composeTransaction';
+import type { signTransaction } from './signTransaction';
 
-// signMessage
-
-export type SignMessage = Static<typeof SignMessage>;
-export const SignMessage = Type.Object({
-    path: DerivationPath,
-    coin: Type.Optional(Type.String()),
-    message: Type.String(),
-    hex: Type.Optional(Type.Boolean()),
-    no_script_type: Type.Optional(Type.Boolean()),
+// Bitcoin-specific operations
+export const TrezorConnectBitcoin = Type.Object({
+    signTransaction: Type.Unsafe<typeof signTransaction>(),
+    composeTransaction: Type.Unsafe<typeof composeTransaction>(),
+    authorizeCoinjoin: Type.Unsafe<typeof authorizeCoinjoin>(),
+    cancelCoinjoinAuthorization: Type.Unsafe<typeof cancelCoinjoinAuthorization>(),
 });
-
-// signTransaction
-
-// based on PROTO.TransactionType, with required fields
-export type RefTransaction =
-    | {
-          hash: string;
-          version: number;
-          inputs: PROTO.PrevInput[];
-          bin_outputs: PROTO.TxOutputBinType[];
-          outputs?: never;
-          lock_time: number;
-          extra_data?: string;
-          expiry?: number;
-          overwintered?: boolean;
-          version_group_id?: number;
-          timestamp?: number;
-          branch_id?: number;
-      }
-    | {
-          hash: string;
-          version: number;
-          inputs: PROTO.TxInput[];
-          bin_outputs?: never;
-          outputs: PROTO.TxOutputType[];
-          lock_time: number;
-          extra_data?: string;
-          expiry?: number;
-          overwintered?: boolean;
-          version_group_id?: number;
-          timestamp?: number;
-          branch_id?: number;
-      };
-
-// based on PROTO.SignTx, only optional fields
-export interface TransactionOptions {
-    version?: number;
-    lock_time?: number;
-    expiry?: number;
-    overwintered?: boolean;
-    version_group_id?: number;
-    timestamp?: number;
-    branch_id?: number;
-    amount_unit?: PROTO.AmountUnit;
-    serialize?: boolean;
-    coinjoin_request?: PROTO.CoinJoinRequest;
-    chunkify?: boolean;
-}
-
-export interface PaymentRequest extends Omit<PROTO.PaymentRequest, 'amount'> {
-    /**
-     * Decimal string of the SLIP-24 send amount in the smallest unit (e.g. satoshis).
-     * Encoded internally to a little-endian byte string of length determined by the coin.
-     */
-    amount?: string;
-}
-
-export interface SignTransaction {
-    inputs: ProtoWithDerivationPath<PROTO.TxInputType>[];
-    outputs: ProtoWithDerivationPath<PROTO.TxOutputType>[];
-    paymentRequests?: PaymentRequest[];
-    refTxs?: RefTransaction[];
-    account?: {
-        addresses: AccountAddresses;
-        transactions?: AccountTransaction[]; // refTxs in different format. see refTxs/validateReferencedTransactions
-    };
-    coin: string;
-    identity?: string;
-    locktime?: number;
-    timestamp?: number;
-    version?: number;
-    expiry?: number;
-    overwintered?: boolean;
-    versionGroupId?: number;
-    branchId?: number;
-    push?: boolean;
-    preauthorized?: boolean;
-    amountUnit?: PROTO.AmountUnit;
-    unlockPath?: PROTO.UnlockPath;
-    serialize?: boolean;
-    coinjoinRequest?: PROTO.CoinJoinRequest;
-    chunkify?: boolean;
-}
-
-export type SignedTransaction = {
-    signatures: string[];
-    serializedTx: string;
-    witnesses?: (string | undefined)[];
-    txid?: string;
-    signedTransaction?: BlockbookTransaction;
-};
-
-// verifyMessage
-
-export type VerifyMessage = Static<typeof VerifyMessage>;
-export const VerifyMessage = Type.Object({
-    address: Type.String(),
-    signature: Type.String(),
-    message: Type.String(),
-    coin: Type.String(),
-    hex: Type.Optional(Type.Boolean()),
-});
+export type TrezorConnectBitcoin = Static<typeof TrezorConnectBitcoin>;

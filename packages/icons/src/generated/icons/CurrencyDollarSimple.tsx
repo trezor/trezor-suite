@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgCurrencyDollarSimple = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M25 21a6.006 6.006 0 0 1-6 6h-2v2a1 1 0 0 1-2 0v-2h-2a6.006 6.006 0 0 1-6-6 1 1 0 1 1 2 0 4 4 0 0 0 4 4h6a4 4 0 1 0 0-8h-5a6 6 0 1 1 0-12h1V3a1 1 0 0 1 2 0v2h1a6.006 6.006 0 0 1 6 6 1 1 0 0 1-2 0 4 4 0 0 0-4-4h-4a4 4 0 1 0 0 8h5a6.006 6.006 0 0 1 6 6"
+        />
+    </svg>
+);
+export { SvgCurrencyDollarSimple as ReactComponent };

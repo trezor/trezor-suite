@@ -33,16 +33,13 @@ describe('BuyCard', () => {
     });
 
     it('should render default BuyCard', () => {
-        const { getByLabelText, getByTestId, getByText, queryByText } = renderBuyCard();
+        const { getByLabelText, getByTestId, getByText } = renderBuyCard();
 
         expect(getByText(getTranslation('moduleTrading.selectFiat.buy.title'))).toBeOnTheScreen();
         expect(getByText(getTranslation('moduleTrading.selectCoin.title'))).toBeOnTheScreen();
         expect(
             getByLabelText(getTranslation('moduleTrading.selectFiat.buttonTitle')),
         ).toHaveTextContent(/CZK/);
-        expect(
-            queryByText(getTranslation('moduleTrading.tradingScreen.receiveAccount')),
-        ).toBeNull();
         expect(getByTestId('@trading/buyCard/fiatSection')).toHaveStyle({
             borderBottomWidth: 1,
         });

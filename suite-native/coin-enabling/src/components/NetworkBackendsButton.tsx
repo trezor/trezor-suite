@@ -44,13 +44,15 @@ export const NetworkBackendsButton = ({ symbol }: NetworkBackendsButtonProps) =>
 
     const navigateToNetworkBackends = () =>
         navigation.navigate(RootStackRoutes.SettingsScreenStack, {
-            screen: SettingsStackRoutes.BitcoinBackends,
+            screen: SettingsStackRoutes.SettingsNetworkBackends,
+            params: { networkSymbol: symbol },
         });
 
     return (
         <Box>
             <IconButton
                 iconName="sliders"
+                // @ts-expect-error `small` icon button size was deprecated, but there is no replacement for this usage yet.
                 size="small"
                 intent="neutral"
                 priority="secondary"

@@ -2,47 +2,48 @@ import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Button, Tooltip } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
 
 type EarnYieldActionButtonsProps = {
-    hasSuppliedBalance: boolean;
+    hasDepositedBalance: boolean;
     hasAdditionalDepositAmount: boolean;
     isDepositMoreDisabled: boolean;
     isDepositDisabled: boolean;
-    isSupplyNowDisabled: boolean;
+    isDepositNowDisabled: boolean;
     isWithdrawDisabled: boolean;
     depositMessageContent: ReactNode;
     withdrawMessageContent: ReactNode;
-    onSupplyMore: () => void;
+    onDepositMore: () => void;
     onWithdraw: () => void;
-    onSupplyNow: () => void;
+    onDepositNow: () => void;
     onBuy: () => void;
 };
 
 export const EarnYieldActionButtons = ({
-    hasSuppliedBalance,
+    hasDepositedBalance,
     hasAdditionalDepositAmount,
     isDepositMoreDisabled,
     isDepositDisabled,
-    isSupplyNowDisabled,
+    isDepositNowDisabled,
     isWithdrawDisabled,
     depositMessageContent,
     withdrawMessageContent,
-    onSupplyMore,
+    onDepositMore,
     onWithdraw,
-    onSupplyNow,
+    onDepositNow,
     onBuy,
 }: EarnYieldActionButtonsProps) => (
     <>
-        {hasSuppliedBalance && (
+        {hasDepositedBalance && (
             <>
                 <Tooltip content={depositMessageContent}>
                     <Button
                         size="small"
                         isDisabled={isDepositMoreDisabled}
-                        iconLeft={isDepositDisabled ? 'info' : undefined}
-                        onClick={onSupplyMore}
+                        iconLeft={isDepositDisabled ? InfoIcon : undefined}
+                        onClick={onDepositMore}
                     >
-                        <Translation id="TR_EARN_YIELD_DASHBOARD_SUPPLY_MORE" />
+                        <Translation id="TR_EARN_YIELD_DASHBOARD_DEPOSIT_MORE" />
                     </Button>
                 </Tooltip>
                 <Tooltip content={withdrawMessageContent}>
@@ -51,7 +52,7 @@ export const EarnYieldActionButtons = ({
                         intent="brand"
                         priority="secondary"
                         isDisabled={isWithdrawDisabled}
-                        iconLeft={isWithdrawDisabled ? 'info' : undefined}
+                        iconLeft={isWithdrawDisabled ? InfoIcon : undefined}
                         onClick={onWithdraw}
                     >
                         <Translation id="TR_EARN_YIELD_DASHBOARD_WITHDRAW" />
@@ -60,20 +61,20 @@ export const EarnYieldActionButtons = ({
             </>
         )}
 
-        {!hasSuppliedBalance && hasAdditionalDepositAmount && (
+        {!hasDepositedBalance && hasAdditionalDepositAmount && (
             <Tooltip content={depositMessageContent}>
                 <Button
                     size="small"
-                    isDisabled={isSupplyNowDisabled}
-                    iconLeft={isDepositDisabled ? 'info' : undefined}
-                    onClick={onSupplyNow}
+                    isDisabled={isDepositNowDisabled}
+                    iconLeft={isDepositDisabled ? InfoIcon : undefined}
+                    onClick={onDepositNow}
                 >
-                    <Translation id="TR_EARN_YIELD_DASHBOARD_SUPPLY_NOW" />
+                    <Translation id="TR_EARN_YIELD_DASHBOARD_DEPOSIT_NOW" />
                 </Button>
             </Tooltip>
         )}
 
-        {!hasSuppliedBalance && !hasAdditionalDepositAmount && (
+        {!hasDepositedBalance && !hasAdditionalDepositAmount && (
             <Button size="small" intent="neutral" priority="secondary" onClick={onBuy}>
                 <Translation id="TR_BUY" />
             </Button>

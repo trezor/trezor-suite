@@ -1,8 +1,8 @@
 import { useForm } from 'react-hook-form';
 
-import { Translation, useTranslation } from '@suite/intl';
-import { isValidAddress, isValidAssetCode } from '@trezor/blockchain-link-utils/src/stellar';
+import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { Button, Column, Input, Modal, Row, Text } from '@trezor/components';
+import stellar from '@trezor/network-stellar/runtime';
 import { spacings } from '@trezor/theme';
 
 type StellarTokenInputModalProps = {
@@ -14,6 +14,19 @@ type FormData = {
     assetCode: string;
     assetIssuer: string;
 };
+
+const validateAssetCode = (translate: (id: TranslationKey) => string) => async (value: string) => {
+    const { isValidAssetCode } = await stellar();
+
+    return !value || isValidAssetCode(value) || translate('TR_ASSET_CODE_INVALID');
+};
+
+const validateAssetIssuer =
+    (translate: (id: TranslationKey) => string) => async (value: string) => {
+        const { isValidAddress } = await stellar();
+
+        return !value || isValidAddress(value) || translate('TR_ISSUER_ADDRESS_INVALID');
+    };
 
 export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInputModalProps) => {
     const { translationString } = useTranslation();
@@ -42,14 +55,12 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
 
     const { ref: assetCodeRef, ...assetCodeField } = register('assetCode', {
         required: true,
-        validate: value =>
-            !value || isValidAssetCode(value) || translationString('TR_ASSET_CODE_INVALID'),
+        validate: validateAssetCode(translationString),
     });
 
     const { ref: assetIssuerRef, ...assetIssuerField } = register('assetIssuer', {
         required: true,
-        validate: value =>
-            !value || isValidAddress(value) || translationString('TR_ISSUER_ADDRESS_INVALID'),
+        validate: validateAssetIssuer(translationString),
     });
 
     const handleContinue = handleSubmit((data: FormData) => {

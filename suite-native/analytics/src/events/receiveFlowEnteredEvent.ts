@@ -15,12 +15,29 @@ type Attributes = {
 
 export const receiveFlowEnteredEvent: EventDef<Attributes, EventType.ReceiveFlowEntered> = {
     name: EventType.ReceiveFlowEntered,
-    descriptionTrigger: '?',
-    changelog: [{ version: '?', notes: 'Added' }],
+    descriptionTrigger:
+        'User enters the receive cryptocurrency flow to generate a receiving address',
+    changelog: [{ version: '26.2.2', notes: 'added' }],
     attributes: {
-        location: { changelog: [{ version: '?', notes: 'added' }] },
-        assetSymbol: { changelog: [{ version: '?', notes: 'added' }] },
-        tokenSymbol: { changelog: [{ version: '?', notes: 'added' }] },
-        tokenContract: { changelog: [{ version: '?', notes: 'added' }] },
+        location: {
+            description:
+                'Where the receive flow was initiated from: `dashboard` from the main dashboard, `accountDetail` from an account detail page',
+            changelog: [{ version: '26.2.2', notes: 'added' }],
+        },
+        assetSymbol: {
+            description:
+                'The blockchain network symbol for which the user is generating a receive address (e.g., `btc`, `eth`, `ada`)',
+            changelog: [{ version: '26.2.2', notes: 'added' }],
+        },
+        tokenSymbol: {
+            description:
+                'The symbol of the token for which the user is generating a receive address, only present when receiving a specific token rather than the native asset',
+            changelog: [{ version: '26.2.2', notes: 'added' }],
+        },
+        tokenContract: {
+            description:
+                'The contract address of the token for which the user is generating a receive address, only present for non-native tokens',
+            changelog: [{ version: '26.2.2', notes: 'added' }],
+        },
     },
 };

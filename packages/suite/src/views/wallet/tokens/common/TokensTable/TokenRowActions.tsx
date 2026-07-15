@@ -12,7 +12,7 @@ import { showAddressThunk } from '@suite/receive';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
     DefinitionType,
     type EnhancedTokenInfo,
@@ -46,6 +46,19 @@ import {
     Link,
     Row,
 } from '@trezor/components';
+import {
+    ArrowDownIcon,
+    ArrowUpIcon,
+    ArrowUpRightIcon,
+    CurrencyCircleDollarIcon,
+    EyeIcon,
+    EyeSlashIcon,
+    MinusIcon,
+    NewspaperIcon,
+    PlusIcon,
+    RepeatIcon,
+    XIcon,
+} from '@trezor/icons';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
@@ -62,7 +75,7 @@ interface TokenRowBasicActionsProps {
     account: Account;
     network: Network;
     isUnverifiedTable?: boolean;
-    yieldOpportunities?: YieldDto[];
+    yieldOpportunities?: YieldDtoV2[];
     setShowDeactivateModal: (value: boolean) => void;
 }
 
@@ -100,7 +113,7 @@ const TokenRowBasicActions = ({
 
     const canBuyToken = !!tokenTradingOptions && tokenTradingOptions.buy;
     const canSwapToken =
-        (!!tokenTradingOptions && tokenTradingOptions.exchange) || token.balance === '0';
+        !!tokenTradingOptions && tokenTradingOptions.exchange && token.balance !== '0';
     const canSellToken = !!tokenTradingOptions && tokenTradingOptions.sell;
     const canReceiveToken = !isDeviceLocked && !isDeviceCompromised;
 
@@ -113,7 +126,7 @@ const TokenRowBasicActions = ({
                 getContractAddressForNetworkSymbol(account.symbol, token.contract),
     );
 
-    const isSupplyButtonDisabled = !availableVault?.status.enter;
+    const isDepositButtonDisabled = !availableVault?.status.enter;
     const isWithdrawButtonDisabled = !availableVault?.status.exit;
 
     if (!unusedAddress || !device) return null;
@@ -128,7 +141,7 @@ const TokenRowBasicActions = ({
         dispatch(goto(payload));
     };
 
-    const navigateToYieldSupply = () => {
+    const navigateToYieldDeposit = () => {
         if (!availableVault) return;
 
         const yieldId = availableVault.id;
@@ -358,21 +371,21 @@ const TokenRowBasicActions = ({
                     {
                         label: <Translation id="TR_BUY" />,
                         'data-testid': '@trading/tokens/buy-button',
-                        icon: 'currencyCircleDollar',
+                        icon: CurrencyCircleDollarIcon,
                         onClick: onBuyButtonClick,
                         isDisabled: !canBuyToken,
                     },
                     {
                         label: <Translation id="TR_TRADING_SELL" />,
                         'data-testid': '@trading/tokens/sell-button',
-                        icon: 'currencyCircleDollar',
+                        icon: CurrencyCircleDollarIcon,
                         onClick: onSellButtonClick,
                         isDisabled: token.balance === '0' || !canSellToken,
                     },
                     {
                         label: <Translation id="TR_TRADING_SWAP" />,
                         'data-testid': '@trading/tokens/swap-button',
-                        icon: 'repeat',
+                        icon: RepeatIcon,
                         onClick: onSwapButtonClick,
                         isHidden: type === 'defi' ? false : !isBelowTablet,
                         isDisabled: !canSwapToken,
@@ -380,7 +393,7 @@ const TokenRowBasicActions = ({
                     {
                         label: <Translation id="TR_NAV_RECEIVE" />,
                         'data-testid': '@trading/tokens/receive-button',
-                        icon: 'arrowDown',
+                        icon: ArrowDownIcon,
                         onClick: onReceiveButtonClick,
                         isDisabled: !canReceiveToken,
                         isHidden:
@@ -392,7 +405,7 @@ const TokenRowBasicActions = ({
                     {
                         label: <Translation id="TR_NAV_SEND" />,
                         'data-testid': '@trading/tokens/send-button',
-                        icon: 'arrowUp',
+                        icon: ArrowUpIcon,
                         onClick: onSendButtonClick,
                         isDisabled: token.balance === '0',
                         isHidden:
@@ -402,15 +415,15 @@ const TokenRowBasicActions = ({
                                 : true),
                     },
                     {
-                        label: <Translation id="TR_EARN_YIELD_SUPPLY" />,
-                        icon: 'plus',
+                        label: <Translation id="TR_EARN_YIELD_DEPOSIT" />,
+                        icon: PlusIcon,
                         onClick: () => {},
-                        isDisabled: type === 'defi' ? isSupplyButtonDisabled : true,
+                        isDisabled: type === 'defi' ? isDepositButtonDisabled : true,
                         isHidden: type === 'defi' ? !isBelowTablet : !isErc4626(token),
                     },
                     {
                         label: <Translation id="TR_EARN_YIELD_WITHDRAW" />,
-                        icon: 'minus',
+                        icon: MinusIcon,
                         onClick: () => {},
                         isDisabled: type === 'defi' ? isWithdrawButtonDisabled : true,
                         isHidden: type === 'defi' ? !isBelowTablet : !isErc4626(token),
@@ -425,24 +438,24 @@ const TokenRowBasicActions = ({
                                 }
                             />
                         ),
-                        icon: 'eyeSlash',
+                        icon: EyeSlashIcon,
                         onClick: onShowHideButtonClick,
                         isHidden: tokenStatusType === TokenManagementAction.SHOW && !isBelowTablet,
                     },
                     {
                         label: <Translation id="TR_VIEW_ALL_TRANSACTION" />,
                         'data-testid': '@trading/tokens/transactions-button',
-                        icon: 'newspaper',
+                        icon: NewspaperIcon,
                         onClick: onViewAllTransactionsButtonClick,
                     },
                     {
                         label: <Translation id="TR_VIEW_IN_EXPLORER" />,
-                        icon: 'arrowUpRight',
+                        icon: ArrowUpRightIcon,
                         onClick: onViewInExplorerButtonClick,
                     },
                     {
                         label: <Translation id="TR_DEACTIVATE_TOKEN" />,
-                        icon: 'x',
+                        icon: XIcon,
                         onClick: onDeactivateTokenButtonClick,
                         // Only show for Stellar tokens
                         isHidden: network.networkType !== 'stellar',
@@ -456,7 +469,7 @@ const TokenRowBasicActions = ({
                     key="swap"
                     intent="neutral"
                     priority="secondary"
-                    icon="repeat"
+                    icon={RepeatIcon}
                     onClick={onSwapButtonClick}
                     tooltip={{
                         content: canSwapToken ? (
@@ -471,7 +484,7 @@ const TokenRowBasicActions = ({
             {!isBelowTablet &&
                 (tokenStatusType === TokenManagementAction.SHOW ? (
                     <Button
-                        iconLeft="eye"
+                        iconLeft={EyeIcon}
                         onClick={() =>
                             isUnverifiedTable && shouldShowUnhideTokenModal
                                 ? dispatch(
@@ -499,22 +512,28 @@ const TokenRowBasicActions = ({
                         {type === 'defi' ? (
                             <ButtonGroup intent="neutral" priority="secondary">
                                 <IconButton
-                                    icon="plus"
-                                    isDisabled={isSupplyButtonDisabled}
-                                    onClick={navigateToYieldSupply}
+                                    icon={PlusIcon}
+                                    isDisabled={isDepositButtonDisabled}
+                                    onClick={navigateToYieldDeposit}
                                     tooltip={{
-                                        content: <Translation id="TR_DEFI_NO_VAULT_TOOLTIP" />,
-                                        isActive: isSupplyButtonDisabled,
+                                        content: isDepositButtonDisabled ? (
+                                            <Translation id="TR_DEFI_NO_VAULT_TOOLTIP" />
+                                        ) : (
+                                            <Translation id="TR_EARN_YIELD_DEPOSIT" />
+                                        ),
                                     }}
                                 />
 
                                 <IconButton
-                                    icon="minus"
+                                    icon={MinusIcon}
                                     isDisabled={isWithdrawButtonDisabled}
                                     onClick={navigateToYieldWithdraw}
                                     tooltip={{
-                                        content: <Translation id="TR_DEFI_NO_VAULT_TOOLTIP" />,
-                                        isActive: isWithdrawButtonDisabled,
+                                        content: isWithdrawButtonDisabled ? (
+                                            <Translation id="TR_DEFI_NO_VAULT_TOOLTIP" />
+                                        ) : (
+                                            <Translation id="TR_EARN_YIELD_WITHDRAW" />
+                                        ),
                                     }}
                                 />
                             </ButtonGroup>
@@ -522,7 +541,7 @@ const TokenRowBasicActions = ({
                             <ButtonGroup intent="neutral" priority="secondary">
                                 <IconButton
                                     key="token-receive"
-                                    icon="arrowDown"
+                                    icon={ArrowDownIcon}
                                     isDisabled={!canReceiveToken}
                                     onClick={onReceiveButtonClick}
                                     tooltip={{
@@ -541,7 +560,7 @@ const TokenRowBasicActions = ({
                                 <IconButton
                                     isDisabled={token.balance === '0'}
                                     key="token-send"
-                                    icon="arrowUp"
+                                    icon={ArrowUpIcon}
                                     onClick={onSendButtonClick}
                                     tooltip={{
                                         content: <Translation id="TR_NAV_SEND" />,
@@ -561,7 +580,7 @@ interface TokenRowActionsProps {
     tokenStatusType: TokenManagementAction;
     account: Account;
     network: Network;
-    yieldOpportunities?: YieldDto[];
+    yieldOpportunities?: YieldDtoV2[];
     isUnverifiedTable?: boolean;
     setShowDeactivateModal: (value: boolean) => void;
 }

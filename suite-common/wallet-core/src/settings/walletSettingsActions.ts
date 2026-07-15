@@ -57,11 +57,6 @@ export type ChangeCoinVisibilityAction = {
     };
 };
 
-export type SetHideBalanceAction = {
-    type: typeof WALLET_SETTINGS.SET_HIDE_BALANCE;
-    toggled: boolean;
-};
-
 export type SetBitcoinAmountUnitsAction = {
     type: typeof WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS;
     payload: PROTO.AmountUnit;
@@ -76,13 +71,7 @@ export type WalletSettingsAction =
     | ReturnType<typeof setNetworkReserve>
     | ReturnType<typeof setAddressDisplayType>
     | ChangeCoinVisibilityAction
-    | SetHideBalanceAction
     | SetBitcoinAmountUnitsAction;
-
-export const setDiscreetMode = (toggled: boolean): SetHideBalanceAction => ({
-    type: WALLET_SETTINGS.SET_HIDE_BALANCE,
-    toggled,
-});
 
 export const setBitcoinAmountUnits = (units: PROTO.AmountUnit): SetBitcoinAmountUnitsAction => ({
     type: WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS,

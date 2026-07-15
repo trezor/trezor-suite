@@ -5,7 +5,7 @@ import { useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { BulletList, Column, H2, Modal, Paragraph, Row } from '@trezor/components';
+import { Column, H2, Modal, Paragraph, Row, StepList } from '@trezor/components';
 import { type Device } from '@trezor/connect';
 import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
 import {
@@ -207,7 +207,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                 {!isRebootDone && (
                     <Column gap={spacings.lg}>
                         {isManualRebootRequired ? (
-                            <BulletList
+                            <StepList
                                 isOrdered
                                 margin={{ top: spacings.md }}
                                 gap={spacings.xl}
@@ -215,19 +215,19 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                                 bulletGap={spacings.md}
                             >
                                 {/* First step asks for disconnecting a device */}
-                                <BulletList.Item
+                                <StepList.Item
                                     title={<Translation id="TR_DISCONNECT_YOUR_DEVICE" />}
                                     data-testid="@firmware/disconnect-message"
                                     state={rebootPhase === 'disconnected' ? 'done' : 'default'}
                                 />
 
                                 {/* Second step reconnect in bootloader */}
-                                <BulletList.Item
+                                <StepList.Item
                                     title={<Translation id={getSecondStep()} />}
                                     data-testid="@firmware/connect-in-bootloader-message"
                                     state={rebootPhase === 'disconnected' ? 'default' : 'pending'}
                                 />
-                            </BulletList>
+                            </StepList>
                         ) : (
                             <Paragraph
                                 typographyStyle="body-sm"

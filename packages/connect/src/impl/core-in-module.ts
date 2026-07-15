@@ -1,22 +1,20 @@
 import {
     BLOCKCHAIN_EVENT,
     CORE_CALL,
-    CORE_CALL_CANCEL,
     DEVICE_EVENT,
     RESPONSE_EVENT,
+    SET_ENABLED_NETWORKS,
     TRANSPORT_EVENT,
     UI_EVENT,
     createErrorMessage,
 } from '@trezor/connect-common';
 import type {
     CallMethodPayload,
-    ConnectFactoryDependencies,
     ConnectSettings,
-    ConnectSettingsPublic,
-    ConnectSettingsTransport,
     CoreEventMessage,
     CoreRequestMessage,
     MethodResponseMessage,
+    TrezorConnectCore,
     UiResponseEvent,
     UpdateConnectSettings,
 } from '@trezor/connect-common';
@@ -25,38 +23,53 @@ import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSet
 import { ConnectEmitter } from '@trezor/connect-common/src/types/emitter';
 import {
     type CancelParams,
-    normalizeCancelParams,
+    createCoreCallCancelMessage,
 } from '@trezor/connect-common/src/utils/cancelParams';
-import { initLog } from '@trezor/connect-common/src/utils/debug';
-import { TRANSPORT } from '@trezor/transport-common';
-import { cloneObject, createDeferredManager } from '@trezor/utils';
+import { noopLogger } from '@trezor/connect-common/src/utils/debug';
+import { createUUIDDeferredManager } from '@trezor/connect-common/src/utils/deferred';
+import { type AbstractTransportParams, TRANSPORT, type Transport } from '@trezor/transport-common';
+import { type Logger, cloneObject } from '@trezor/utils';
 
 import { initCoreState } from '../core';
 
-export abstract class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsPublic> {
-    public readonly eventEmitter = new ConnectEmitter();
+export abstract class CoreInModule implements TrezorConnectCore<ConnectSettings> {
+    private readonly eventEmitter = new ConnectEmitter();
 
-    private settings;
+    public on = this.eventEmitter.on.bind(this.eventEmitter);
+    public off = this.eventEmitter.removeListener.bind(this.eventEmitter);
+    public removeAllListeners = this.eventEmitter.removeAllListeners.bind(this.eventEmitter);
+
+    protected settings;
     private coreManager;
-    private log;
+    private log: Logger;
     private messagePromises;
 
     private readonly boundOnCoreEvent = this.onCoreEvent.bind(this);
 
-    protected abstract get defaultTransports(): ConnectSettingsTransport[];
+    // Connect's per-environment fallback when the host passes no transports.
+    // Built here (not at module load) so the connect-supplied logger and a
+    // manifest-derived id can be injected into the instances — the one place
+    // where connect still constructs transports, and only its own defaults.
+    protected abstract defaultTransports(params: AbstractTransportParams): Transport[];
+
+    private buildDefaultTransports(): Transport[] {
+        return this.defaultTransports({
+            logger: this.settings.createLogger?.('@trezor/transport'),
+            id: this.settings.manifest?.appName || this.settings.manifest?.appUrl || 'unknown app',
+        });
+    }
 
     public constructor() {
         this.settings = parseConnectSettings();
-        this.log = initLog('@trezor/connect');
+        // No-op until init() resolves the host logger settings.
+        this.log = noopLogger;
         this.coreManager = initCoreState();
-        this.messagePromises = createDeferredManager<
-            Omit<MethodResponseMessage, 'event' | 'type'>,
-            string
-        >({ generateId: (): string => crypto.randomUUID() });
+        this.messagePromises =
+            createUUIDDeferredManager<Omit<MethodResponseMessage, 'event' | 'type'>>();
     }
 
     // handle messages to core
-    public handleCoreMessage(message: CoreRequestMessage) {
+    protected handleCoreMessage(message: CoreRequestMessage) {
         const core = this.coreManager.get();
         if (!core) {
             throw ERRORS.TypedError('Runtime', 'postMessage: _core not found');
@@ -120,11 +133,12 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
             throw ERRORS.TypedError('Init_ManifestMissing');
         }
 
-        if (!this.settings.transports?.length) {
-            this.settings.transports = this.defaultTransports;
-        }
+        // `createLogger` is optional. Without it, connect stays silent.
+        this.log = this.settings.createLogger?.('@trezor/connect') ?? noopLogger;
 
-        this.log.enabled = !!this.settings.debug;
+        if (!this.settings.transports?.length) {
+            this.settings.transports = this.buildDefaultTransports();
+        }
 
         await this.coreManager.getOrInit(this.settings, this.boundOnCoreEvent);
     }
@@ -132,7 +146,7 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
     protected abstract updateProxy(proxy: UpdateConnectSettings['proxy']): Promise<void>;
 
     public async updateConnectSettings(params: UpdateConnectSettings) {
-        const { proxy, transports: newTransports } = params;
+        const { proxy, transports: newTransports, enabledNetworks } = params;
 
         try {
             await this.updateProxy(proxy);
@@ -140,11 +154,32 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
             return Promise.resolve(createErrorMessage(err));
         }
 
-        if (newTransports !== undefined) {
-            const transports = newTransports?.length ? newTransports : this.defaultTransports;
+        // Mirror `call`: if init() is in progress but not yet complete, wait for it. Otherwise a
+        // settings update issued during the init window hits the empty-Core window and
+        // `handleCoreMessage` throws before the message is applied (and callers such as
+        // changeCoinVisibility silently swallow the returned error).
+        if (!this.coreManager.get()) {
+            const pending = this.coreManager.getPending();
+            if (pending) {
+                await pending;
+            }
+        }
 
-            this.settings = parseConnectSettings({ ...this.settings, transports });
-            this.handleCoreMessage({ type: TRANSPORT.SET_TRANSPORTS, payload: { transports } });
+        try {
+            if (newTransports !== undefined) {
+                const transports = newTransports?.length
+                    ? newTransports
+                    : this.buildDefaultTransports();
+
+                this.settings = parseConnectSettings({ ...this.settings, transports });
+                this.handleCoreMessage({ type: TRANSPORT.SET_TRANSPORTS, payload: { transports } });
+            }
+
+            if (enabledNetworks !== undefined) {
+                this.handleCoreMessage({ type: SET_ENABLED_NETWORKS, payload: enabledNetworks });
+            }
+        } catch (err) {
+            return Promise.resolve(createErrorMessage(err));
         }
 
         return { success: true as const, payload: { message: 'success' } } as const;
@@ -182,11 +217,7 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
     }
 
     public cancel(params?: CancelParams) {
-        const { reason, callId } = normalizeCancelParams(params);
-        this.handleCoreMessage({
-            type: CORE_CALL_CANCEL,
-            payload: reason || callId ? { reason, callId } : null,
-        });
+        this.handleCoreMessage(createCoreCallCancelMessage(params));
     }
 
     public dispose() {

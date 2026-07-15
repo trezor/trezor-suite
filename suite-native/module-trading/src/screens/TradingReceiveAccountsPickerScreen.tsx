@@ -58,7 +58,7 @@ export const TradingReceiveAccountsPickerScreen = () => {
         );
 
     return (
-        <Screen header={<ScreenHeader title={title} closeActionType="close" />}>
+        <Screen header={<ScreenHeader title={title} closeActionType="back" />}>
             <AccountList
                 symbol={symbol}
                 pickerMode={pickerMode}

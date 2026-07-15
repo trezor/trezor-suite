@@ -35,7 +35,6 @@
         "react-native-launch-arguments",
         "react-native-nitro-modules",
         "react-native-permissions",
-        "react-native-restart",
         "react-native-screens",
         "react-native-svg",
         "redux-persist",

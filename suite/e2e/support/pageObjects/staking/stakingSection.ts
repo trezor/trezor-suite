@@ -1,6 +1,6 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import { paletteV1 } from '@trezor/theme';
+import { colorVariants } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
 import { RewardsList } from './rewardList';
@@ -158,21 +158,22 @@ export class StakingSection {
     async expectProgressIndicatorsToMatchPhase(
         phase: 'pendingTransaction' | 'addingToPool' | 'receivingRewards',
     ) {
+        const colors = colorVariants.standard;
         const phaseIndicatorColors = {
             pendingTransaction: {
-                transactionStep: paletteV1.lightAccentYellow300,
-                addingStep: paletteV1.lightGray100,
-                rewardsStep: paletteV1.lightGray100,
+                transactionStep: colors.elementFillWarningSoft,
+                addingStep: colors.surfaceFillSunken,
+                rewardsStep: colors.surfaceFillSunken,
             },
             addingToPool: {
-                transactionStep: paletteV1.lightPrimaryForest200,
-                addingStep: paletteV1.lightAccentYellow300,
-                rewardsStep: paletteV1.lightGray100,
+                transactionStep: colors.elementFillBrandSoft,
+                addingStep: colors.elementFillWarningSoft,
+                rewardsStep: colors.surfaceFillSunken,
             },
             receivingRewards: {
-                transactionStep: paletteV1.lightPrimaryForest200,
-                addingStep: paletteV1.lightPrimaryForest200,
-                rewardsStep: paletteV1.lightAccentYellow300,
+                transactionStep: colors.elementFillBrandSoft,
+                addingStep: colors.elementFillBrandSoft,
+                rewardsStep: colors.elementFillWarningSoft,
             },
         };
         const currentPhaseColors = phaseIndicatorColors[phase];
@@ -192,15 +193,33 @@ export class StakingSection {
     }
 
     @step()
-    async expectStakingAmounts(expected: {
-        pending: string | 'hidden';
-        staked: string | 'hidden';
-        rewards: string | 'hidden';
-        unstaking: string | 'hidden';
+    async expectStakingAmounts({
+        expected,
+        options,
+    }: {
+        expected: {
+            pending: string | 'hidden';
+            staked: string | 'hidden';
+            rewards: string | 'hidden';
+            unstaking: string | 'hidden';
+        };
+        options?: { fastForward?: string; timeout?: number };
     }) {
         await expect(async () => {
-            const getStatus = async (locator: Locator) =>
-                (await locator.isVisible()) ? locator.innerText() : 'hidden';
+            if (options?.fastForward) {
+                await this.page.clock.fastForward(options.fastForward);
+            }
+
+            const getStatus = async (locator: Locator) => {
+                if ((await locator.count()) === 0) return 'hidden';
+                try {
+                    return await locator.innerText({ timeout: 100 });
+                } catch (error) {
+                    // Unmounted mid-read -> 'hidden'; any other error must surface.
+                    if ((await locator.count()) === 0) return 'hidden';
+                    throw error;
+                }
+            };
 
             const [pending, staked, rewards, unstaking] = await Promise.all([
                 getStatus(this.pendingAmount),
@@ -213,6 +232,6 @@ export class StakingSection {
                 { pending, staked, rewards, unstaking },
                 'expected Staking dashboard to show correct values',
             ).toEqual(expected);
-        }).toPass();
+        }).toPass({ timeout: options?.timeout ?? 15_000 });
     }
 }

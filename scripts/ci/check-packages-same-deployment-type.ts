@@ -2,19 +2,19 @@ import semver from 'semver';
 
 import { getLocalVersion } from './helpers';
 
+const getReleaseType = (version: string): string => {
+    const prerelease = semver.prerelease(version);
+    if (!prerelease) {
+        return 'stable';
+    }
+
+    return prerelease[0] === 'alpha' ? 'alpha' : 'canary';
+};
+
 const checkVersions = (packages: string[], deploymentType: string): void => {
     const versions = packages.map(packageName => getLocalVersion(packageName));
 
-    const isCorrectType = versions.every(version => {
-        const prerelease = semver.prerelease(version);
-        const releaseType = prerelease
-            ? prerelease[0] === 'alpha'
-                ? 'alpha'
-                : 'canary'
-            : 'stable';
-
-        return deploymentType === releaseType;
-    });
+    const isCorrectType = versions.every(version => deploymentType === getReleaseType(version));
 
     if (!isCorrectType) {
         console.error(

@@ -1,3 +1,4 @@
+import { selectCoinjoinAccountByKey } from '@suite/coinjoin';
 import { selectSuiteSettings } from '@suite/settings';
 import { selectKnownDevices } from '@suite-common/bluetooth';
 import { deviceActions, selectDevices, selectPersistentDeviceData } from '@suite-common/device';
@@ -23,13 +24,12 @@ import type {
 import {
     getFormDraftKey,
     isAccountSuccessful,
-    parseDeviceStaticSessionId,
     selectHistoricRatesByTransactions,
 } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
+import { parseStaticSessionId } from '@trezor/device-utils';
 import { cloneObject, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
-import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer';
 import { db } from 'src/storage';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import type { AppState, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
@@ -266,7 +266,7 @@ export const forgetDevice = (device: TrezorDevice) => (_: Dispatch, getState: Ge
 
     // forget device metadata stuff
     const { metadata } = getState();
-    const { walletDescriptor } = parseDeviceStaticSessionId(staticSessionId);
+    const { walletDescriptor } = parseStaticSessionId(staticSessionId);
 
     const hasLegacyLabelsMigrated = cloneObject(metadata.hasLegacyLabelsMigrated);
     delete hasLegacyLabelsMigrated[walletDescriptor];
@@ -287,10 +287,34 @@ export const forgetDevice = (device: TrezorDevice) => (_: Dispatch, getState: Ge
     ]);
 };
 
-export const saveAccounts = (accounts: SuccessfulAccount[]) => {
+// The 'accounts' store keys records by these fields (its IndexedDB keyPath). `satisfies` ensures
+// they stay valid account fields, so a rename/typo is a compile error here rather than at runtime.
+const ACCOUNT_KEY_PATH_FIELDS = [
+    'descriptor',
+    'symbol',
+    'deviceState',
+] as const satisfies readonly (keyof SuccessfulAccount)[];
+
+export const saveAccounts = async (accounts: SuccessfulAccount[]) => {
     if (!db.isAccessible()) return;
 
-    return db.addItems('accounts', accounts, true);
+    try {
+        return await db.addItems('accounts', accounts, true);
+    } catch (error) {
+        // IndexedDB throws an opaque "Evaluating the object store's key path did not yield a value"
+        // DataError when a keyPath field is missing. Report only WHICH key fields are missing - never
+        // their values (descriptor / deviceState etc. are sensitive and must not reach Sentry/logs).
+        const missingKeyPathFields = ACCOUNT_KEY_PATH_FIELDS.filter(field =>
+            accounts.some(account => !account[field]),
+        );
+
+        throw new Error(
+            missingKeyPathFields.length
+                ? `Cannot save account(s) to storage, missing keyPath field(s): ${missingKeyPathFields.join(', ')}`
+                : `Cannot save account(s) to storage: ${error?.message ?? ''}`,
+            { cause: error },
+        );
+    }
 };
 
 export const saveTradingTrade = (trade: TradingTransaction) => {
@@ -403,6 +427,11 @@ export const saveWalletSettings = () => async (_dispatch: Dispatch, getState: Ge
     );
 };
 
+export const saveDiscreetMode = () => async (_dispatch: Dispatch, getState: GetState) => {
+    if (!db.isAccessible()) return;
+    await db.addItem('discreetMode', getState().discreetMode, 'discreetMode', true);
+};
+
 export const saveBackend =
     (symbol: NetworkSymbol) => async (_dispatch: Dispatch, getState: GetState) => {
         if (!db.isAccessible()) return;
@@ -439,6 +468,11 @@ export const saveSuiteSettings =
 
         return result.then(() => {});
     };
+
+export const saveDebugSettings = () => async (_dispatch: Dispatch, getState: GetState) => {
+    if (!db.isAccessible()) return;
+    await db.addItem('debug', getState().debug, 'debug', true);
+};
 
 export const saveTokenManagement =
     (symbol: NetworkSymbol, type: DefinitionType, status: TokenManagementAction) =>

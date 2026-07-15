@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgDiceFiveFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M24 4H8a4 4 0 0 0-4 4v16a4 4 0 0 0 4 4h16a4 4 0 0 0 4-4V8a4 4 0 0 0-4-4M11.5 22a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m0-9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m4.5 4.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m4.5 4.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m0-9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"
+        />
+    </svg>
+);
+export { SvgDiceFiveFilled as ReactComponent };

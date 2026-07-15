@@ -14,14 +14,13 @@ import { Loading } from './Loading';
 import { BundleLoader } from './BundleLoader';
 import { BaseCurrencyValue } from './BaseCurrencyValue';
 import { WebUsbButton } from './WebUsbButton';
-import { HiddenPlaceholder } from './HiddenPlaceholder';
+import { HiddenPlaceholder, RedactNumericalValue } from '@suite/discreet-mode';
 import { QuestionTooltip } from './QuestionTooltip';
 import { TrendTicker } from './Ticker/TrendTicker';
 import { PriceTicker } from './Ticker/PriceTicker';
 import { FormattedCryptoAmount } from './FormattedCryptoAmount';
 import { FormattedNftAmount } from './FormattedNftAmount';
 import { Sign } from './Sign';
-import { RedactNumericalValue } from './RedactNumericalValue';
 import { FormattedDate } from './FormattedDate';
 import { FormattedDateWithBullet } from './FormattedDateWithBullet';
 import { Metadata } from './Metadata';
@@ -34,7 +33,6 @@ import { StatusLight } from './StatusLight';
 import { AmountUnitSwitchWrapper } from './AmountUnitSwitchWrapper';
 import { TorLoader } from './TorLoader/TorLoader';
 import { CountdownTimer } from './CountdownTimer';
-import { QrCode } from './QrCode';
 import { CoinBalance } from './CoinBalance';
 import { Preloader } from './Preloader/Preloader';
 import { TrafficLightDraggableWindowHeader } from '@suite/macos';
@@ -74,7 +72,6 @@ export {
     AmountUnitSwitchWrapper,
     TorLoader,
     CountdownTimer,
-    QrCode,
     CoinBalance,
     Preloader,
     TrafficLightDraggableWindowHeader,

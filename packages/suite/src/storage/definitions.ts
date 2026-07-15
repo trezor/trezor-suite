@@ -2,12 +2,15 @@ import { type FieldValues } from 'react-hook-form';
 
 import type { DBSchema } from 'idb';
 
+import { type CoinjoinAccount, type CoinjoinDebugSettings } from '@suite/coinjoin';
+import { type DebugState } from '@suite/debug';
 import type { FlagsState } from '@suite/flags';
 import type { ReceiveAccountState } from '@suite/receive';
 import type { SuiteSettingsState } from '@suite/settings';
 import { type DesktopSuiteSyncState } from '@suite/suite-sync';
 import { type AnalyticsState } from '@suite-common/analytics-redux';
 import { type AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
+import type { DiscreetModeState } from '@suite-common/discreet-mode';
 import { type FeatureFeedbackState } from '@suite-common/feedback';
 import type { MessageState } from '@suite-common/message-system';
 import type { MetadataState } from '@suite-common/metadata-types';
@@ -37,7 +40,6 @@ import { type FirmwareChannel } from '@trezor/connect-common/src/types/firmware'
 import type { BioAuthState } from 'src/reducers/bioAuth';
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
 import type { Account, WalletAccountTransaction } from 'src/types/wallet';
-import { type CoinjoinAccount, type CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
 
 import { type DesktopBluetoothDevice } from '../actions/bluetooth/DesktopBluetoothDevice';
 import { type GraphData } from '../types/wallet/graph';
@@ -47,6 +49,15 @@ export interface DBWalletAccountTransaction {
     order: number;
 }
 
+/**
+ * IDB Schema definition used in Suite Web & Desktop.
+ *
+ * Note that some stores are singletons – only one specific `key` is expected to hold the entire serialized payload,
+ * those must have `key` typed as a constant string, to ensure consistency in `preloadStore`, migrations, etc.
+ * Meanwhile, some stores contain a collection of keys, those have `key` as a broader type.
+ *
+ * Note that this is the latest schema, but actual app IDB may carry outdated values not removed in migrations.
+ */
 export interface SuiteDBSchema extends DBSchema {
     bioAuth: {
         key: 'bioAuth';
@@ -57,7 +68,7 @@ export interface SuiteDBSchema extends DBSchema {
         value: string[];
     };
     phishingMetadata: {
-        key: string;
+        key: 'phishingMetadata';
         value: PhishingState;
     };
     txs: {
@@ -84,7 +95,7 @@ export interface SuiteDBSchema extends DBSchema {
         value: ReceiveAccountState;
     };
     suiteSettings: {
-        key: string;
+        key: 'suite';
         value: {
             settings: SuiteSettingsState;
             flags: FlagsState;
@@ -97,7 +108,7 @@ export interface SuiteDBSchema extends DBSchema {
         value: RatesByTimestamps;
     };
     walletSettings: {
-        key: string;
+        key: 'wallet';
         value: WalletSettings;
     };
     backendSettings: {
@@ -109,13 +120,13 @@ export interface SuiteDBSchema extends DBSchema {
         value: DeviceWithEmptyPath;
     };
     thp: {
-        key: string;
+        key: 'value';
         value: {
             credentials: ThpSuiteCredentials[];
         };
     };
     bluetooth: {
-        key: string;
+        key: 'value';
         value: {
             knownDevices: DesktopBluetoothDevice[];
         };
@@ -140,7 +151,7 @@ export interface SuiteDBSchema extends DBSchema {
         value: CoinjoinDebugSettings;
     };
     analytics: {
-        key: string;
+        key: 'suite';
         value: AnalyticsState;
     };
     graph: {
@@ -173,7 +184,7 @@ export interface SuiteDBSchema extends DBSchema {
         value: SuiteSyncQuotaManagerState;
     };
     messageSystem: {
-        key: string;
+        key: 'suite';
         value: {
             currentSequence: number;
             config: MessageSystem | null;
@@ -205,5 +216,13 @@ export interface SuiteDBSchema extends DBSchema {
     featureFeedback: {
         key: 'featureFeedback';
         value: FeatureFeedbackState;
+    };
+    discreetMode: {
+        key: 'discreetMode';
+        value: DiscreetModeState;
+    };
+    debug: {
+        key: 'debug';
+        value: DebugState;
     };
 }

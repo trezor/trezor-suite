@@ -20,6 +20,7 @@ const getMockedDevice = (typedCallMock?: TypedCallProvider['typedCall']): Device
         id: 'mock-device-id' as DeviceUniquePath,
         transport,
         descriptor: {} as Descriptor,
+        createLogger: () => logger,
     });
 
     device.getCurrentSession = () => ({ typedCall: typedCallMock }) as TypedCallProvider;

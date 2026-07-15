@@ -9,8 +9,9 @@ import type {
 } from '@trezor/blockchain-link-types';
 import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
-import { tokenProgramsInfo } from '@trezor/coins-solana/constants';
-import solana from '@trezor/coins-solana/runtime';
+import { getSuiteVersion } from '@trezor/env-utils';
+import { tokenProgramsInfo } from '@trezor/network-solana/constants';
+import solana from '@trezor/network-solana/runtime';
 import type {
     AccountInfoBase,
     Address,
@@ -21,8 +22,7 @@ import type {
     SolanaRpcResponse,
     SolanaTokenAccountInfo,
     SolanaValidParsedTxWithMeta,
-} from '@trezor/coins-solana/types';
-import { getSuiteVersion } from '@trezor/env-utils';
+} from '@trezor/network-solana/types';
 import { type IntervalId } from '@trezor/type-utils';
 import { BigNumber, createDeferred, createLazy, isNotNullOrUndefined } from '@trezor/utils';
 
@@ -299,8 +299,8 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
 
     const tokenAccountsInfos = tokenAccounts.map(a => ({
         address: a.pubkey,
-        mint: a.account.data.parsed?.info?.mint as string | undefined,
-        decimals: a.account.data.parsed?.info?.tokenAmount?.decimals as number | undefined,
+        mint: a.account.data.parsed?.info?.mint,
+        decimals: a.account.data.parsed?.info?.tokenAmount?.decimals,
     }));
 
     const transactionPage =

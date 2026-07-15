@@ -1,4 +1,6 @@
-import { LogsManager } from '@trezor/utils';
+import { type Logger, LogsManager } from '@trezor/utils';
+
+import type { CreateLogger } from '../types/settings';
 
 const green = '#bada55';
 const blue = '#20abd8';
@@ -26,5 +28,15 @@ export const setLogWriter = logsManager.setLogWriter.bind(logsManager);
 export const enableLog = logsManager.enableLog.bind(logsManager);
 export const enableLogByPrefix = logsManager.enableLogByPrefix.bind(logsManager);
 export const getLog = logsManager.getLog.bind(logsManager);
+
+export const noopLogger: Logger = {
+    info: () => {},
+    debug: () => {},
+    log: () => {},
+    warn: () => {},
+    error: () => {},
+};
+
+export const noopCreateLogger: CreateLogger = () => noopLogger;
 
 export type { LogMessage, LogWriter, Log } from '@trezor/utils';

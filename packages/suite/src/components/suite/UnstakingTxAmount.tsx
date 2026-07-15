@@ -1,11 +1,13 @@
-import React from 'react';
+import { useMemo } from 'react';
 
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
-    formatNetworkAmount,
+    asAmountSubunit,
     getUnstakeAmountByEthereumDataHex,
     isUnstakeTx,
+    subunitsToUnits,
 } from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from './FormattedCryptoAmount';
 
@@ -14,37 +16,32 @@ interface UnstakingTxAmountProps {
 }
 
 export const UnstakingTxAmount = ({ transaction }: UnstakingTxAmountProps) => {
-    const { ethereumSpecific, solanaSpecific, symbol } = transaction;
+    const { ethereumSpecific, solanaSpecific, tronSpecific, symbol } = transaction;
 
-    const solanaStakeType = solanaSpecific?.stakeOperation?.type;
+    const unstakeAmount = useMemo(() => {
+        if (tronSpecific?.unstakeAmount) return tronSpecific.unstakeAmount;
 
-    // Handle Solana unstake transaction
-    if (solanaStakeType === 'unstake') {
-        const unstakeAmount = solanaSpecific?.stakeOperation?.amount ?? '0';
+        if (solanaSpecific?.stakeOperation?.type === 'unstake') {
+            return solanaSpecific.stakeOperation.amount ?? '0';
+        }
 
-        return (
-            <>
-                {' '}
-                <FormattedCryptoAmount
-                    value={formatNetworkAmount(unstakeAmount, symbol)}
-                    symbol={symbol}
-                />
-            </>
-        );
-    }
+        if (isUnstakeTx(ethereumSpecific?.parsedData?.methodId)) {
+            return getUnstakeAmountByEthereumDataHex(ethereumSpecific?.data);
+        }
 
-    // Handle Ethereum unstake transaction
-    const txSignature = ethereumSpecific?.parsedData?.methodId;
-    if (!isUnstakeTx(txSignature)) return null;
+        return undefined;
+    }, [ethereumSpecific, solanaSpecific, tronSpecific]);
 
-    const unstakeEthAmount = getUnstakeAmountByEthereumDataHex(ethereumSpecific?.data);
-    if (!unstakeEthAmount) return null;
+    if (!unstakeAmount) return null;
 
     return (
         <>
             {' '}
             <FormattedCryptoAmount
-                value={formatNetworkAmount(unstakeEthAmount, symbol)}
+                value={subunitsToUnits({
+                    value: asAmountSubunit(new BigNumber(unstakeAmount)),
+                    symbol,
+                })}
                 symbol={symbol}
             />
         </>

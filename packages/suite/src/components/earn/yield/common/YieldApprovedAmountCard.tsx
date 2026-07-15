@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import type { YieldFlowDisplayToken } from '@suite-common/wallet-core';
 import { Card, IconButton, Row, Text } from '@trezor/components';
+import { XIcon } from '@trezor/icons';
 import { AssetLogo } from '@trezor/product-components';
 
 import { ApprovedAmountValue } from './ApprovedAmountValue';
@@ -20,7 +21,7 @@ export const YieldApprovedAmountCard = ({
     hasError = false,
     onRevoke,
 }: YieldApprovedAmountCardProps) => (
-    <Card fillType="flat" paddingType="small">
+    <Card type="contrast" paddingType="small">
         <Row justifyContent="space-between" alignItems="center" width="100%">
             <Text typographyStyle="body-md">
                 <Translation id="TR_EARN_YIELD_APPROVED_AMOUNT" />
@@ -42,7 +43,7 @@ export const YieldApprovedAmountCard = ({
                 />
                 {onRevoke && (
                     <IconButton
-                        icon="x"
+                        icon={XIcon}
                         size="small"
                         intent="neutral"
                         priority="secondary"

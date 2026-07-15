@@ -17,11 +17,11 @@ type WalletParams = {
 export class WalletPage {
     readonly transactionSearch: Locator;
     readonly accountSearch: Locator;
-    readonly accountChevron: Locator;
     readonly walletStakingButton: Locator;
     readonly stakeAddress: Locator;
     readonly walletExtraDropDown: Locator;
     readonly openTradingGlobalButton: Locator;
+    readonly openSellGlobalButton: Locator;
     readonly openSwapSidebarButton: Locator;
     readonly tradingDropdownBuyButton: Locator;
     readonly balanceOfAccount = (params: WalletParams) =>
@@ -53,7 +53,6 @@ export class WalletPage {
     readonly showMoreButton: Locator;
     readonly topPanelBalance: Locator;
     readonly topPanelBalanceWithSymbol: Locator;
-    readonly segwitGroupButton: Locator;
     readonly addAccountButton: Locator;
     readonly addAccountConfirmButton: Locator;
     readonly filterAccountsButton: Locator;
@@ -80,11 +79,11 @@ export class WalletPage {
     constructor(private readonly page: Page) {
         this.transactionSearch = this.page.getByTestId('@wallet/accounts/search-icon');
         this.accountSearch = this.page.getByTestId('@account-menu/search-input');
-        this.accountChevron = this.page.getByTestId('@account-menu/arrow');
         this.walletStakingButton = this.page.getByTestId('@wallet/menu/staking');
         this.stakeAddress = this.page.getByTestId('@cardano/staking/address');
         this.walletExtraDropDown = this.page.getByTestId('@wallet/menu/extra-dropdown');
         this.openTradingGlobalButton = this.page.getByTestId('@wallet/menu/wallet-trading-buy');
+        this.openSellGlobalButton = this.page.getByTestId('@wallet/menu/wallet-trading-sell');
         this.openSwapSidebarButton = this.page.getByTestId('@suite/menu/wallet-trading-exchange');
         this.tradingDropdownBuyButton = this.page
             .getByRole('list')
@@ -116,7 +115,6 @@ export class WalletPage {
         );
         this.copyToCliboardToast = this.page.getByTestId('@toast/copy-to-clipboard');
         this.verifyAddressErrorToast = this.page.getByTestId('@toast/verify-address-error');
-        this.segwitGroupButton = this.page.getByTestId('@account-menu/segwit');
         this.addAccountButton = this.page.getByTestId('@account-menu/add-account');
         this.addAccountConfirmButton = this.page.getByTestId('@add-account');
         this.filterAccountsButton = this.page.getByTestId('@account-menu/filter-accounts');
@@ -168,13 +166,6 @@ export class WalletPage {
     }
 
     @step()
-    async expandAllAccountsInMenu() {
-        for (const chevron of await this.accountChevron.all()) {
-            await chevron.click();
-        }
-    }
-
-    @step()
     async checkStakesOfCardanoAccounts() {
         const cardanoAccounts = [
             { symbol: 'ada' },
@@ -196,19 +187,13 @@ export class WalletPage {
     }
 
     @step()
-    getAccountsInTypeGroupCount(type: string) {
-        return this.page
-            .getByTestId(`@account-menu/${type}/group`)
-            .locator(':scope > *:not([data-testid="@account-menu/account-item-skeleton"])')
-            .count();
+    getAccountsInTypeCount(type: string) {
+        return this.page.getByTestId(new RegExp(`^@account-menu/[^/]+/${type}/\\d+$`)).count();
     }
 
     @step()
-    getAccountsForCoinInTypeGroupCount(type: string, symbol: NetworkSymbol) {
-        return this.page
-            .getByTestId(`@account-menu/${type}/group`)
-            .locator(`> [data-testid^="@account-menu/${symbol}/${type}/"]`)
-            .count();
+    getAccountsForCoinInTypeCount(type: string, symbol: NetworkSymbol) {
+        return this.page.getByTestId(new RegExp(`^@account-menu/${symbol}/${type}/\\d+$`)).count();
     }
 
     @step()

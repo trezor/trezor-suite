@@ -14,7 +14,7 @@ const FORMATTED_ADDRESS = formatAddressWithNewlines(RECIPIENT_ADDRESS);
 const TRANSFORMED_ADDRESS = transformAddress(RECIPIENT_ADDRESS, 'fullLine');
 const SOL_DECIMALS = getNetwork('sol').decimals;
 
-test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1', '@smoke'] }, () => {
+test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
     test.use({
         deviceSetup: {
             mnemonic: 'mnemonic_academic',

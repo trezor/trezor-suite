@@ -1,10 +1,9 @@
 import React, { forwardRef, useEffect, useState } from 'react';
 
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
-import { borders, spacings } from '@trezor/theme';
+import { borders, spacings, spacingsPx, typography, zIndices } from '@trezor/theme';
 
-import { menuStyle } from './menuStyle';
 import {
     type FrameProps,
     type FramePropsKeys,
@@ -13,10 +12,21 @@ import {
 } from '../../utils/frameProps';
 import { type TransientProps } from '../../utils/transientProps';
 import { Box } from '../Box/Box';
-import { ElevationUp } from '../ElevationContext/ElevationContext';
 import { Column, Row } from '../Flex/Flex';
-import { Icon, type IconName } from '../Icon/Icon';
+import { Icon, type IconComponent } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
+
+export const DROPDOWN_MENU = keyframes`
+    0% {
+        opacity: 0;
+        transform: translateY(-12px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+`;
 
 export const allowedMenuFrameProps = [
     'width',
@@ -26,7 +36,22 @@ export const allowedMenuFrameProps = [
 type AllowedMenuFrameProps = Pick<FrameProps, (typeof allowedMenuFrameProps)[number]>;
 
 const Container = styled.div<TransientProps<AllowedMenuFrameProps>>`
-    ${menuStyle};
+    display: flex;
+    flex-direction: column;
+    padding: ${spacingsPx.sm};
+    min-width: 180px;
+    border-radius: ${borders.radii.md};
+    background: ${({ theme }) => theme.surfaceFillModeless};
+    box-shadow: ${({ theme }) => theme.surfaceShadowModeless};
+    outline: 1px solid ${({ theme }) => theme.surfaceBorderModeless};
+    z-index: ${zIndices.modal};
+    animation: ${DROPDOWN_MENU} 0.15s ease-in-out;
+    list-style-type: none;
+    overflow: hidden;
+
+    /* when theme changes from light to dark */
+    transition: background 0.3s;
+    ${typography['body-sm']}
 
     ${withFrameProps}
 `;
@@ -39,8 +64,8 @@ const MenuList = styled.ul`
 export type DropdownMenuItemProps = {
     label: React.ReactNode;
     onClick?: () => unknown | Promise<unknown>;
-    icon?: IconName;
-    iconRight?: IconName;
+    icon?: IconComponent;
+    iconRight?: IconComponent;
     isDisabled?: boolean;
     isHidden?: boolean;
     closeOnClick?: boolean;
@@ -74,7 +99,7 @@ const MenuItem = ({
         <Row gap={spacings.sm} padding={{ vertical: spacings.xs, horizontal: spacings.sm }}>
             {icon && (
                 <Icon
-                    name={icon}
+                    as={icon}
                     size={spacings.md}
                     {...(isDisabled ? { isDisabled: true } : { intent: 'neutral' })}
                 />
@@ -85,7 +110,7 @@ const MenuItem = ({
             {iconRight && (
                 <Icon
                     margin={{ left: 'auto' }}
-                    name={iconRight}
+                    as={iconRight}
                     size={spacings.md}
                     {...(isDisabled ? { isDisabled: true } : { intent: 'neutral' })}
                 />
@@ -175,30 +200,28 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
                 onClick={e => e.stopPropagation()} // prevent closing the menu when clicking on the menu itself or within the menu
                 {...frameProps}
             >
-                <ElevationUp>
-                    <Column gap={spacings.md}>
-                        {content}
-                        {visibleItems?.length && (
-                            <MenuList ref={ref}>
-                                {visibleItems?.map((item, index) => (
-                                    <MenuItem
-                                        isKeyboardSelected={index === focusedItemIndex}
-                                        onMouseEnter={() =>
-                                            !item.isDisabled && setFocusedItemIndex(index)
-                                        }
-                                        data-testid={item['data-testid']}
-                                        {...item}
-                                        onClick={() => {
-                                            if (item.closeOnClick !== false) onClose?.();
-                                            item.onClick?.();
-                                        }}
-                                        key={index}
-                                    />
-                                ))}
-                            </MenuList>
-                        )}
-                    </Column>
-                </ElevationUp>
+                <Column gap={spacings.md}>
+                    {content}
+                    {!!visibleItems?.length && (
+                        <MenuList ref={ref}>
+                            {visibleItems?.map((item, index) => (
+                                <MenuItem
+                                    isKeyboardSelected={index === focusedItemIndex}
+                                    onMouseEnter={() =>
+                                        !item.isDisabled && setFocusedItemIndex(index)
+                                    }
+                                    data-testid={item['data-testid']}
+                                    {...item}
+                                    onClick={() => {
+                                        if (item.closeOnClick !== false) onClose?.();
+                                        item.onClick?.();
+                                    }}
+                                    key={index}
+                                />
+                            ))}
+                        </MenuList>
+                    )}
+                </Column>
             </Container>
         );
     },

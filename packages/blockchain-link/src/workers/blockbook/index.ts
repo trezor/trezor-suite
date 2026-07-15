@@ -126,8 +126,13 @@ const getFiatRatesTickersList = async (request: Request<MessageTypes.GetFiatRate
 
 const getTransaction = async (request: Request<MessageTypes.GetTransaction>) => {
     const api = await request.connect();
-    const rawtx = await api.getTransaction(request.payload);
-    const tx = utils.transformTransaction(rawtx);
+    const { txid, descriptor } = request.payload;
+    const rawtx = await api.getTransaction(txid);
+    const account = descriptor ? request.state.getAccount(descriptor) : undefined;
+    const tx = utils.transformTransaction(
+        rawtx,
+        account?.addresses ?? account?.descriptor ?? descriptor,
+    );
 
     return {
         type: RESPONSES.GET_TRANSACTION,
@@ -196,6 +201,7 @@ const onNewBlock = ({ post }: Context, event: BlockNotification) => {
             payload: {
                 blockHeight: event.height,
                 blockHash: event.hash,
+                evmData: event.evmData ?? null,
             },
         },
     });

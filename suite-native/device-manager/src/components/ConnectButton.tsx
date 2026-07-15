@@ -36,10 +36,6 @@ export const ConnectButton = ({ onSelectDevice }: ConnectButtonProps) => {
 
     const { onConnectDevicePress } = useConnectDeviceHandler();
 
-    if (hasDiscovery) {
-        return null;
-    }
-
     const handleConnectDevice = () => {
         if (device) {
             onSelectDevice(device);
@@ -67,6 +63,7 @@ export const ConnectButton = ({ onSelectDevice }: ConnectButtonProps) => {
                     intent="neutral"
                     priority="secondary"
                     isFullWidth
+                    isDisabled={hasDiscovery}
                     onPress={handleConnectDevice}
                 >
                     <Translation id="deviceManager.connectButton" />

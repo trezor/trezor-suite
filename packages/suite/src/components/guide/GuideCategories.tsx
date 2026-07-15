@@ -1,46 +1,36 @@
 import { type ReactNode } from 'react';
 
-import styled from 'styled-components';
-
 import { type GuideCategory } from '@suite-common/suite-types';
-import { typography } from '@trezor/theme';
+import { Box, CardList, Column } from '@trezor/components';
 
-import { GuideNode } from 'src/components/guide';
-
-const Section = styled.section`
-    padding-bottom: 20px;
-`;
-
-const SectionHeading = styled.h3`
-    ${typography['body-sm-strong']}
-    color: ${({ theme }) => theme.contentSecondary};
-    padding: 0 0 18px;
-`;
-
-const Nodes = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-`;
+import { GuideNode } from './GuideNode';
+import { GuideSectionHeadline } from './GuideSectionHeadline';
 
 type GuideCategoriesProps = {
     node: GuideCategory | null;
     label?: string | ReactNode;
+    variant?: 'default' | 'cardList';
 };
 
-export const GuideCategories = ({ node, label }: GuideCategoriesProps) => {
+export const GuideCategories = ({ node, label, variant = 'default' }: GuideCategoriesProps) => {
     if (node?.type !== 'category') {
         return null;
     }
 
+    const children = node.children.map(child => (
+        <GuideNode key={child.id} node={child} itemVariant={variant} />
+    ));
+
     return (
-        <Section>
-            {label && <SectionHeading>{label}</SectionHeading>}
-            <Nodes data-testid="@guide/nodes">
-                {node.children.map(child => (
-                    <GuideNode key={child.id} node={child} />
-                ))}
-            </Nodes>
-        </Section>
+        <Box as="section" padding={{ bottom: 20 }}>
+            {label && <GuideSectionHeadline>{label}</GuideSectionHeadline>}
+            {variant === 'cardList' ? (
+                <CardList data-testid="@guide/nodes">{children}</CardList>
+            ) : (
+                <Column gap={12} data-testid="@guide/nodes">
+                    {children}
+                </Column>
+            )}
+        </Box>
     );
 };

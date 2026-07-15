@@ -2,6 +2,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import {
+    useAccountsWithTokenDisplayNames,
     useFilterAccountsWithTokens,
     useInsertGroupLabelsAndSpaces,
 } from 'src/components/suite/asset-picker/hooks';
@@ -28,7 +29,11 @@ export function useBuildTradingAssetOptions({
         expandedNonTradableTokensGroups,
     });
 
-    const filteredAccountsWithTokens = useFilterAccountsWithTokens(accountsWithTokens, search);
+    const accountsWithTokensAndDisplayNames = useAccountsWithTokenDisplayNames(accountsWithTokens);
+    const filteredAccountsWithTokens = useFilterAccountsWithTokens(
+        accountsWithTokensAndDisplayNames,
+        search,
+    );
     const listItems = useInsertGroupLabelsAndSpaces(filteredAccountsWithTokens);
 
     return { listItems, networks };

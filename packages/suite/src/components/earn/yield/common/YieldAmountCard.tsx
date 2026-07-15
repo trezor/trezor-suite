@@ -75,12 +75,7 @@ export const YieldAmountCard = ({
             <Column gap={8} width="100%" padding={{ vertical: 16, horizontal: 20 }}>
                 <Row justifyContent="space-between" alignItems="center" gap={16}>
                     <Text typographyStyle="body-md">
-                        <Translation
-                            id={
-                                heading?.amountLabelTranslationId ??
-                                'TR_EARN_YIELD_AMOUNT_TO_SUPPLY'
-                            }
-                        />
+                        <Translation id={heading?.amountLabelTranslationId ?? 'AMOUNT'} />
                     </Text>
                     {unitToggle && (
                         <TextButton

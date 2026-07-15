@@ -9,7 +9,8 @@ export const bytesToHumanReadable = (bytes: number): string => {
     let size = Math.abs(bytes);
     let i = 0;
 
-    while (size >= 1024 || i >= units.length) {
+    // divide down until the value fits, but stop at the largest unit ('TB')
+    while (size >= 1024 && i < units.length - 1) {
         size /= 1024;
         i++;
     }

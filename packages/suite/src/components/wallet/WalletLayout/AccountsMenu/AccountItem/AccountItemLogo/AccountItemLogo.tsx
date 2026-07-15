@@ -1,4 +1,5 @@
 import { Column, Icon } from '@trezor/components';
+import { PiggyBankFilledIcon } from '@trezor/icons';
 import { CoinLogo } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -20,7 +21,7 @@ export const AccountItemLogo = ({ type, account }: AccountItemLogoProps) => {
             );
 
         case 'staking':
-            return <Icon name="piggyBankFilled" intent="neutral" priority="secondary" />;
+            return <Icon as={PiggyBankFilledIcon} intent="neutral" priority="secondary" />;
 
         case 'tokens':
             return <TokenIconSetWrapper accounts={[account]} symbol={account.symbol} />;

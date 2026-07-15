@@ -11,10 +11,16 @@ export type FormOptions =
     | 'utxoSelection'
     | 'bitcoinLocktime'
     | 'transactionData'
-    | 'ethereumNonce' // TODO
+    | 'ethereumNonce'
     | 'destinationTag';
 
 export type UtxoSorting = 'newestFirst' | 'oldestFirst' | 'smallestFirst' | 'largestFirst';
+
+export type TronStakingFormState =
+    | { kind: 'freeze' | 'unstake'; resource: 'bandwidth' | 'energy' }
+    | { kind: 'vote'; votes: string }
+    | { kind: 'withdraw' }
+    | { kind: 'claim' };
 
 export type FormStateTradingCryptoCurrency = {
     cryptoId: CryptoId | undefined;
@@ -29,7 +35,7 @@ export type FormStateTradingFiatCurrency = {
     fiatCurrency: string;
 };
 
-export type FormStateTradingDefault = {
+type FormStateTradingDefault = {
     activeSection: 'sell' | 'exchange';
     isSlip24Active: boolean;
 };
@@ -83,6 +89,7 @@ export interface FormState {
     ethereumAdjustGasLimit?: string; // if used, final gas limit = estimated limit * ethereumAdjustGasLimit
     transactionData?: string; // used for solana serialized txn from trading api, ethereum or tron txn hex data
     destinationTag?: string; // For Ripple, Stellar, Solana, and Tron
+    tronStaking?: TronStakingFormState;
     rbfParams?: RbfTransactionParams;
     isCoinControlEnabled: boolean;
     hasCoinControlBeenOpened: boolean;

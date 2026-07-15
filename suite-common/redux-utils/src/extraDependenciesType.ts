@@ -11,17 +11,30 @@ import { type MetadataAddPayload } from '@suite-common/metadata-types';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption'; // also only types
 import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
-import { type ReportSecurityCheckDep, type UserContextPayload } from '@suite-common/suite-types';
+import {
+    type ReloadAppDep,
+    type ReportSecurityCheckDep,
+    type UserContextPayload,
+} from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, type SelectedAccountStatus } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type AccountKey,
+    type SelectedAccountStatus,
+} from '@suite-common/wallet-types';
 import { type Analytics } from '@trezor/analytics-uploader';
 import {
     type BluetoothDeviceId,
     type ConnectSettings,
+    type CreateLogger,
+    type CreateLoggerDep,
     type Manifest,
     type StaticSessionId,
+    type ThpSettings,
 } from '@trezor/connect';
+import type { Transport } from '@trezor/transport-common';
 
+import { type ConnectInitHooks } from './connectInitHooksType';
 import { type ActionType, type SuiteCompatibleSelector, type SuiteCompatibleThunk } from './types';
 
 type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
@@ -32,6 +45,29 @@ export type ConnectInitSettings = {
     manifest: Manifest;
 } & Partial<ConnectSettings>;
 
+export type ThpHostNameDep = { thpHostName?: string };
+
+export type TransportName =
+    | 'BridgeTransport'
+    | 'NodeUsbTransport'
+    | 'UdpTransport'
+    | 'WebUsbTransport';
+
+// Web/native yield a constructed Transport instance. The desktop renderer can't build node-only
+// transports (`usb`/`dgram`), so it yields the identifier string — the main process maps it to an
+// instance below the IPC boundary (see suite-desktop-core/src/modules/trezor-connect.ts).
+export type DebugTransportFactory = (logger?: CreateLogger) => Transport | TransportName;
+
+export type GetTransportsFactories = () => Partial<Record<TransportName, DebugTransportFactory>>;
+
+export type GetTransportsFactoriesDep = {
+    getTransportsFactories: GetTransportsFactories;
+};
+
+export type CreateTransports = (debugTransports: TransportName[]) => ConnectSettings['transports'];
+
+export type TransportsDep = { createTransports: CreateTransports };
+
 export type CommonServices = SuiteSyncDep &
     Bip329Dep &
     EnsureDelegatedIdentityKeyDep &
@@ -39,8 +75,13 @@ export type CommonServices = SuiteSyncDep &
         analytics: Analytics<AnalyticsSharedEvents>;
         saveAs: (data: Blob, fileName: string) => void;
         connectInitSettings: ConnectInitSettings;
+        connectInitHooks: ConnectInitHooks;
     } & ReportSecurityCheckDep &
-    MigrateSuiteSyncLabelsForRbfTransactionDep;
+    ReloadAppDep &
+    MigrateSuiteSyncLabelsForRbfTransactionDep &
+    CreateLoggerDep &
+    ThpHostNameDep &
+    TransportsDep;
 
 export type ExtraDependenciesStatic = {
     /** @deprecated Do not add any thunks here, this is antipattern. */
@@ -72,8 +113,9 @@ export type ExtraDependenciesStatic = {
         selectTradingEnvironment: SuiteCompatibleSelector<
             'production' | 'staging' | 'dev' | 'localhost' | undefined
         >;
+        selectTradedAccountKeys: SuiteCompatibleSelector<AccountKey[]>;
         selectIsViewOnlyByDefaultEnabled: SuiteCompatibleSelector<boolean>;
-        selectThpSettings: SuiteCompatibleSelector<NonNullable<ConnectSettings['thp']>>;
+        selectThpSettings: SuiteCompatibleSelector<ThpSettings>;
         selectAllowPrerelease: SuiteCompatibleSelector<boolean>;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!

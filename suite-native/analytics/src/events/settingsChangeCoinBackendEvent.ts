@@ -13,14 +13,18 @@ export const settingsChangeCoinBackendEvent: EventDef<
     EventType.SettingsChangeCoinBackend
 > = {
     name: EventType.SettingsChangeCoinBackend,
-    descriptionTrigger: 'A user confirms custom backend settings.',
-    changelog: [{ version: '26.2.0', notes: 'added' }],
+    descriptionTrigger: 'User confirms custom backend settings for a cryptocurrency network',
+    changelog: [{ version: '26.2.1', notes: 'added' }],
     attributes: {
         symbol: {
-            changelog: [{ version: '26.2.0', notes: 'added' }],
+            description:
+                'The cryptocurrency network symbol for which the backend is configured (e.g., `btc`, `eth`)',
+            changelog: [{ version: '26.2.1', notes: 'added' }],
         },
         type: {
-            changelog: [{ version: '26.2.0', notes: 'added' }],
+            description:
+                'The backend type being configured: `default` for standard backend, or a custom backend type identifier',
+            changelog: [{ version: '26.2.1', notes: 'added' }],
         },
     },
 };

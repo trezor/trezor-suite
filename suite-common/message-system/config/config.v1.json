@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-06-02T00:00:00+00:00",
-    "sequence": 142,
+    "timestamp": "2026-07-13T12:00:00+00:00",
+    "sequence": 148,
     "actions": [
         {
             "conditions": [
@@ -376,18 +376,18 @@
                 "variant": "info",
                 "category": ["banner"],
                 "content": {
-                    "en": "Keep your Trezor secure and smooth — update firmware now for the latest features and enhancements.",
-                    "es": "Mantén tu Trezor seguro y funcionando sin problemas — actualiza el firmware ahora para obtener las últimas funciones y mejoras.",
-                    "cs": "Udržujte svůj Trezor bezpečný a plynulý — aktualizujte firmware nyní a získejte nejnovější funkce a vylepšení.",
-                    "ru": "Поддерживайте безопасность и стабильную работу вашего Trezor — обновите прошивку сейчас, чтобы получить новые функции и улучшения.",
-                    "ja": "Trezor を安全かつ快適に保ちましょう — 最新の機能と改善を利用するために、今すぐファームウェアを更新してください。",
-                    "hu": "Tartsa Trezorját biztonságosan és gördülékenyen — frissítse most a firmware-t a legújabb funkciókért és fejlesztésekért.",
-                    "it": "Mantieni il tuo Trezor sicuro e fluido — aggiorna ora il firmware per le ultime funzionalità e miglioramenti.",
-                    "fr": "Gardez votre Trezor sécurisé et fluide — mettez à jour le firmware maintenant pour profiter des dernières fonctionnalités et améliorations.",
-                    "de": "Halten Sie Ihr Trezor sicher und reibungslos — aktualisieren Sie jetzt die Firmware, um die neuesten Funktionen und Verbesserungen zu erhalten.",
-                    "tr": "Trezor'unuzu güvenli ve sorunsuz tutun — en son özellikler ve iyileştirmeler için firmware'i şimdi güncelleyin.",
-                    "pt": "Mantenha seu Trezor seguro e fluido — atualize o firmware agora para obter os recursos e melhorias mais recentes.",
-                    "uk": "Зберігайте свій Trezor безпечним і плавним — оновіть прошивку зараз, щоб отримати найновіші функції та вдосконалення."
+                    "en": "Update your Trezor firmware to get the latest security improvements and features.",
+                    "es": "Actualice el firmware de su Trezor para obtener las últimas mejoras de seguridad y funciones.",
+                    "cs": "Aktualizujte firmware svého zařízení Trezor pro nejnovější bezpečnostní vylepšení a funkce.",
+                    "ru": "Обновите прошивку вашего Trezor, чтобы получить последние улучшения безопасности и новые функции.",
+                    "ja": "Trezorのファームウェアをアップデートして、最新のセキュリティ改善と機能をご利用ください。",
+                    "hu": "Frissítse Trezor firmware-jét, hogy megkapja a legújabb biztonsági fejlesztéseket és funkciókat.",
+                    "it": "Aggiorna il firmware del tuo Trezor per ottenere gli ultimi miglioramenti di sicurezza e nuove funzionalità.",
+                    "fr": "Mettez à jour le firmware de votre Trezor pour bénéficier des dernières améliorations de sécurité et fonctionnalités.",
+                    "de": "Aktualisieren Sie Ihre Trezor-Firmware, um die neuesten Sicherheitsverbesserungen und Funktionen zu erhalten.",
+                    "tr": "En son güvenlik iyileştirmelerini ve özellikleri almak için Trezor donanım yazılımınızı güncelleyin.",
+                    "pt": "Atualize o firmware do seu Trezor para obter as mais recentes melhorias de segurança e recursos.",
+                    "uk": "Оновіть прошивку вашого Trezor, щоб отримати останні покращення безпеки та нові функції."
                 },
                 "cta": {
                     "action": "internal-link",
@@ -1153,6 +1153,41 @@
             }
         },
         {
+            "message": {
+                "id": "d41518e0-a21f-43ce-872c-4bf250f59d90",
+                "priority": 92,
+                "dismissible": true,
+                "variant": "info",
+                "category": "context",
+                "content": {
+                    "en": "The minimum amount you can stake is 1 SOL.",
+                    "es": "La cantidad mínima que puede poner en staking es 1 SOL.",
+                    "cs": "Minimální částka pro staking je 1 SOL.",
+                    "ru": "Минимальная сумма, которую вы можете отправить в стейкинг, составляет 1 SOL.",
+                    "ja": "ステーキングできる最小額は1 SOLです。",
+                    "hu": "A legkisebb összeg, amit stakelhet, az 1 SOL.",
+                    "it": "L'importo minimo che puoi mettere in staking è 1 SOL.",
+                    "fr": "Le montant minimum que vous pouvez mettre en staking est de 1 SOL.",
+                    "de": "Der Mindestbetrag, den Sie staken können, beträgt 1 SOL.",
+                    "tr": "Stake edebileceğiniz minimum miktar 1 SOL'dur.",
+                    "pt": "O valor mínimo que você pode colocar em staking é 1 SOL.",
+                    "uk": "Мінімальна сума, яку ви можете відправити у стейкінг, становить 1 SOL."
+                },
+                "context": {
+                    "domain": "accounts.sol.staking"
+                }
+            },
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "<26.7.1",
+                        "mobile": "!",
+                        "web": "*"
+                    }
+                }
+            ]
+        },
+        {
             "conditions": [
                 {
                     "os": {
@@ -1512,46 +1547,6 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": ">=25.8.1",
-                        "mobile": "!",
-                        "web": "*"
-                    }
-                }
-            ],
-            "message": {
-                "id": "ab804171-6266-4618-be4f-a7c25d4c19ce",
-                "priority": 1,
-                "dismissible": true,
-                "variant": "info",
-                "category": "feature",
-                "content": {
-                    "en-GB": "Placehodler",
-                    "en": "Placehodler",
-                    "es": "Placehodler",
-                    "cs": "Placehodler",
-                    "de": "Placehodler",
-                    "fr": "Placehodler",
-                    "it": "Placehodler",
-                    "pt": "Placehodler",
-                    "tr": "Placehodler",
-                    "ru": "Placehodler",
-                    "ja": "Placehodler",
-                    "uk": "Placehodler",
-                    "hu": "Placehodler"
-                },
-                "feature": [
-                    {
-                        "domain": "dashboard.promoBanner",
-                        "visibleBanner": "tex",
-                        "flag": true
-                    }
-                ]
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
                         "desktop": ">=26.5.1",
                         "mobile": "!",
                         "web": "*"
@@ -1731,6 +1726,62 @@
                         "flag": false
                     }
                 ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "tor": true
+                        }
+                    ],
+                    "environment": {
+                        "desktop": "<26.3.1",
+                        "mobile": "!",
+                        "web": "!"
+                    }
+                }
+            ],
+            "message": {
+                "id": "8155b6f1-d8da-45d5-83b3-0d8663a130d0",
+                "priority": 95,
+                "dismissible": false,
+                "variant": "warning",
+                "category": "banner",
+                "content": {
+                    "en": "Tor release included in this app will stop working on September 1st, 2026. Update Trezor Suite to continue using Tor.",
+                    "es": "La versión de Tor incluida en esta aplicación dejará de funcionar el 1 de septiembre de 2026. Actualiza Trezor Suite para seguir usando Tor.",
+                    "cs": "Verze Tor obsažená v této aplikaci přestane fungovat 1. září 2026. Aktualizujte Trezor Suite, abyste mohli Tor nadále používat.",
+                    "ru": "Версия Tor, включённая в это приложение, перестанет работать 1 сентября 2026 года. Обновите Trezor Suite, чтобы продолжить использовать Tor.",
+                    "ja": "このアプリに含まれるTorのバージョンは2026年9月1日に動作を停止します。Torを引き続き使用するには、Trezor Suiteをアップデートしてください。",
+                    "hu": "Az alkalmazásban lévő Tor verzió 2026. szeptember 1-jén leáll. Frissítse a Trezor Suite-ot a Tor további használatához.",
+                    "it": "La versione di Tor inclusa in questa app smetterà di funzionare il 1° settembre 2026. Aggiorna Trezor Suite per continuare a usare Tor.",
+                    "fr": "La version de Tor incluse dans cette application cessera de fonctionner le 1er septembre 2026. Mettez à jour Trezor Suite pour continuer à utiliser Tor.",
+                    "de": "Die in dieser App enthaltene Tor-Version funktioniert ab dem 1. September 2026 nicht mehr. Aktualisiere Trezor Suite, um Tor weiterhin nutzen zu können.",
+                    "tr": "Bu uygulamadaki Tor sürümü 1 Eylül 2026'da çalışmayı durduracak. Tor'u kullanmaya devam etmek için Trezor Suite'i güncelleyin.",
+                    "pt": "A versão do Tor incluída neste aplicativo deixará de funcionar em 1º de setembro de 2026. Atualize o Trezor Suite para continuar usando o Tor.",
+                    "uk": "Версія Tor, що входить до цього додатку, перестане працювати 1 вересня 2026 року. Оновіть Trezor Suite, щоб продовжити використовувати Tor."
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "settings-index",
+                    "anchor": "@general-settings/version-with-update",
+                    "label": {
+                        "en": "Update Trezor Suite",
+                        "es": "Actualizar Trezor Suite",
+                        "cs": "Aktualizovat Trezor Suite",
+                        "ru": "Обновить Trezor Suite",
+                        "ja": "Trezor Suiteのアップデート",
+                        "hu": "Frissítés Trezor Suite",
+                        "it": "Aggiorna Trezor Suite",
+                        "fr": "Mettre à jour Trezor Suite",
+                        "de": "Trezor Suite aktualisieren",
+                        "tr": "Trezor Suite'i Güncelle",
+                        "pt": "Atualizar Trezor Suite",
+                        "uk": "Оновити Trezor Suite"
+                    }
+                }
             }
         }
     ],

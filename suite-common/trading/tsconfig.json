@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../address" },
         { "path": "../device" },
         { "path": "../geolocation" },
         { "path": "../react-query" },
@@ -9,6 +10,8 @@
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
         { "path": "../toast-notifications" },
+        { "path": "../token-definitions" },
+        { "path": "../validators" },
         { "path": "../wallet-config" },
         { "path": "../wallet-constants" },
         { "path": "../wallet-core" },
@@ -20,12 +23,14 @@
         {
             "path": "../../packages/blockchain-link-types"
         },
-        { "path": "../../coins/coins-solana" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
         },
         { "path": "../../packages/env-utils" },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
         { "path": "../../packages/react-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },

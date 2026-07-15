@@ -2,6 +2,8 @@ import { type ComponentProps } from 'react';
 
 import { render, screen } from '@testing-library/react';
 
+import { ThemeProvider } from 'src/support/suite/ThemeProvider';
+
 import { EarnDashboardTableHeader } from '../EarnDashboardTableHeader';
 
 jest.mock('@suite/intl', () => ({
@@ -14,12 +16,14 @@ const renderHeader = ({
     showRewardsColumns,
 }: Partial<ComponentProps<typeof EarnDashboardTableHeader>> = {}) =>
     render(
-        <table>
-            <EarnDashboardTableHeader
-                accountColumnTranslationId={accountColumnTranslationId}
-                showRewardsColumns={showRewardsColumns}
-            />
-        </table>,
+        <ThemeProvider>
+            <table>
+                <EarnDashboardTableHeader
+                    accountColumnTranslationId={accountColumnTranslationId}
+                    showRewardsColumns={showRewardsColumns}
+                />
+            </table>
+        </ThemeProvider>,
     );
 
 describe('EarnDashboardTableHeader', () => {
@@ -45,7 +49,7 @@ describe('EarnDashboardTableHeader', () => {
         renderHeader({ showRewardsColumns: false });
 
         expect(screen.getByText('TR_EARN_DASHBOARD_TABLE_ACCOUNT_VAULT')).toBeInTheDocument();
-        expect(screen.getByText('TR_EARN_DASHBOARD_TABLE_APY')).toBeInTheDocument();
+        expect(screen.getByText('TR_EARN_DASHBOARD_TABLE_RATE')).toBeInTheDocument();
     });
 
     it('should render account balance column header when configured', () => {
@@ -55,6 +59,6 @@ describe('EarnDashboardTableHeader', () => {
         });
 
         expect(screen.getByText('TR_EARN_DASHBOARD_TABLE_ACCOUNT_BALANCE')).toBeInTheDocument();
-        expect(screen.getByText('TR_EARN_DASHBOARD_TABLE_APY')).toBeInTheDocument();
+        expect(screen.getByText('TR_EARN_DASHBOARD_TABLE_RATE')).toBeInTheDocument();
     });
 });

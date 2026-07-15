@@ -1,12 +1,13 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 import { action } from 'storybook/actions';
 
+import * as generatedIcons from '@trezor/icons';
+
 import {
     IconButton as IconButtonComponent,
     type IconButtonProps,
     allowedIconButtonFrameProps,
 } from './IconButton';
-import { variables } from '../../../config';
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { buttonIntents, buttonPriorities, buttonSizes } from '../types';
 
@@ -20,7 +21,7 @@ export default meta;
 export const IconButton: StoryObj<IconButtonProps> = {
     args: {
         onClick: action('onClick'),
-        icon: 'addressBookFilled',
+        icon: generatedIcons.AddressBookFilledIcon,
         intent: 'brand',
         priority: 'primary',
         size: 'medium',
@@ -32,15 +33,16 @@ export const IconButton: StoryObj<IconButtonProps> = {
         ...getFramePropsStory(allowedIconButtonFrameProps).args,
     },
     argTypes: {
+        icon: {
+            options: Object.keys(generatedIcons),
+            mapping: generatedIcons,
+            control: { type: 'select' },
+        },
         href: {
             type: 'string',
         },
         target: {
             type: 'string',
-        },
-        icon: {
-            options: variables.ICONS,
-            control: { type: 'select' },
         },
         intent: {
             control: { type: 'select' },

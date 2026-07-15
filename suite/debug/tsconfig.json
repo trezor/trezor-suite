@@ -1,0 +1,19 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        { "path": "../intl" },
+        { "path": "../settings" },
+        { "path": "../../packages/components" },
+        {
+            "path": "../../packages/suite-desktop-api"
+        },
+        { "path": "../../packages/theme" }
+    ]
+}

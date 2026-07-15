@@ -35,10 +35,14 @@ const settings = enhanceTabOption({
     focusedIconName: 'gearFilled',
 });
 
-export const rootTabsOptions = {
+export const rootTabsOptionsWithoutEarn = {
     ...homeStack,
     ...accountsStack,
     ...tradeStack,
-    ...earnStack,
     ...settings,
+};
+
+export const rootTabsOptions = {
+    ...rootTabsOptionsWithoutEarn,
+    ...earnStack,
 };

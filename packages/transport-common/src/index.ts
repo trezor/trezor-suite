@@ -41,6 +41,8 @@ export type {
 export { AbstractApiTransport } from './transports/abstractApi';
 export { AbstractApi } from './api/abstract';
 export type {
+    AbstractApiArgs,
+    AbstractApiArgsOmitPath,
     AbstractApiAwaitedResult,
     AbstractApiConstructorParams,
     OpenDeviceChannel,

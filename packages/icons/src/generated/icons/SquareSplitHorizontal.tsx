@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgSquareSplitHorizontal = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M25 5H7a2 2 0 0 0-2 2v18a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2M7 7h8v18H7zm18 18h-8V7h8z"
+        />
+    </svg>
+);
+export { SvgSquareSplitHorizontal as ReactComponent };

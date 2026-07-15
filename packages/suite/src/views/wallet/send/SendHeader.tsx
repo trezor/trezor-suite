@@ -1,8 +1,10 @@
+import { useEffect } from 'react';
 import { useWatch } from 'react-hook-form';
 
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { type NetworkType } from '@suite-common/wallet-config';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { Button, Dropdown, type DropdownMenuItemProps, Switch, Text } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/src/config/animations';
@@ -10,6 +12,13 @@ import { FADE_IN } from '@trezor/components/src/config/animations';
 import { WalletSubpageHeading } from 'src/components/wallet';
 import { useDispatch } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
+
+const BROADCAST_SUPPORTED_NETWORK_TYPES: NetworkType[] = [
+    'bitcoin',
+    'ethereum',
+    'ripple',
+    'stellar',
+];
 
 const ClearButtonWrapper = styled.div`
     display: inline-flex;
@@ -23,11 +32,14 @@ export const SendHeader = () => {
         control,
         account: { networkType },
         formState: { isDirty },
+        watch,
+        resetDefaultValue,
         toggleOption,
 
         addOpReturn,
         resetContext,
         loadTransaction,
+        composeTransaction,
     } = useSendFormContext();
 
     const enabledFormOptions = useWatch({
@@ -39,6 +51,19 @@ export const SendHeader = () => {
     const opreturnOutput = (outputs || []).find(o => o.type === 'opreturn');
     const locktimeEnabled = enabledFormOptions.includes('bitcoinLocktime');
     const broadcastEnabled = enabledFormOptions.includes('broadcast');
+    const dataEnabled = enabledFormOptions.includes('transactionData');
+    const nonceEditEnabled = enabledFormOptions.includes('ethereumNonce');
+    const destinationTagEnabled = enabledFormOptions.includes('destinationTag');
+    const token = watch('outputs.0.token');
+
+    useEffect(() => {
+        // disable data option if sending Tron token
+        if (networkType === 'tron' && token && dataEnabled) {
+            toggleOption('transactionData');
+            resetDefaultValue('transactionData');
+        }
+    }, [networkType, dataEnabled, token, toggleOption, resetDefaultValue]);
+
     const options: Array<DropdownMenuItemProps> = [
         {
             'data-testid': '@send/header-dropdown/import',
@@ -62,12 +87,35 @@ export const SendHeader = () => {
                 if (broadcastEnabled) toggleOption('broadcast');
             },
             label: <Translation id="LOCKTIME_ADD" />,
-            isDisabled: !!locktimeEnabled,
+            isDisabled: locktimeEnabled,
             isHidden: networkType !== 'bitcoin',
         },
         {
+            onClick: () => {
+                toggleOption('transactionData');
+                composeTransaction();
+            },
+            closeOnClick: true,
+            label: <Translation id="DATA_ADD" />,
+            isDisabled: dataEnabled || !!token,
+            isHidden: networkType !== 'ethereum' && networkType !== 'tron',
+        },
+        {
+            onClick: () => {
+                toggleOption('destinationTag');
+                composeTransaction();
+            },
+            closeOnClick: true,
+            label: <Translation id={networkType === 'tron' ? 'TR_TRON_NOTE_ADD' : 'MEMO_SWITCH'} />,
+            isDisabled: destinationTagEnabled,
+            isHidden: networkType !== 'tron' && networkType !== 'solana',
+        },
+        {
             'data-testid': '@send/header-dropdown/broadcast',
-            onClick: () => toggleOption('broadcast'),
+            onClick: () => {
+                toggleOption('broadcast');
+                composeTransaction();
+            },
             closeOnClick: false,
             label: (
                 <Switch
@@ -86,8 +134,15 @@ export const SendHeader = () => {
                     }
                 />
             ),
-            isDisabled: !!locktimeEnabled,
-            isHidden: networkType !== 'bitcoin',
+            isDisabled: locktimeEnabled,
+            isHidden: !BROADCAST_SUPPORTED_NETWORK_TYPES.includes(networkType),
+        },
+        {
+            'data-testid': '@send/header-dropdown/ethereum-nonce',
+            onClick: () => toggleOption('ethereumNonce'),
+            label: <Translation id="EVM_NONCE_EDIT" />,
+            isDisabled: nonceEditEnabled,
+            isHidden: networkType !== 'ethereum',
         },
         {
             'data-testid': '@send/header-dropdown/raw',

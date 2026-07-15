@@ -5,7 +5,6 @@ import {
     type TradingAssetOption,
     type TradingAssetSellOption,
 } from '@suite-common/trading';
-import { type NetworkSymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { Column, Row, Text } from '@trezor/components';
 import { AssetLogo, CoinLogo } from '@trezor/product-components';
 
@@ -31,14 +30,14 @@ export function AssetPickerInputContent({ value }: AssetPickerInputContentProps)
         name,
         contractAddress,
         networkName,
+        displaySymbolName,
     } = value;
-    const displayName = isNativeToken ? getNetworkDisplaySymbolName(networkSymbol) : name;
     const showNetwork = networkSymbol !== displaySymbol.toLowerCase();
 
     return (
         <Row gap={12}>
             {isNativeToken ? (
-                <CoinLogo size={32} symbol={symbol as NetworkSymbol} type="tokenWithNetwork" />
+                <CoinLogo size={32} symbol={symbol} type="tokenWithNetwork" />
             ) : (
                 <AssetLogo
                     size={32}
@@ -49,7 +48,14 @@ export function AssetPickerInputContent({ value }: AssetPickerInputContentProps)
                 />
             )}
             <Column alignItems="start">
-                <Text data-testid="@asset-picker/display-symbol">{displayName}</Text>
+                <Text
+                    intent="neutral"
+                    priority="primary"
+                    typographyStyle="body-md"
+                    data-testid="@asset-picker/display-symbol"
+                >
+                    {displaySymbolName ?? name}
+                </Text>
                 {showNetwork && (
                     <Text intent="neutral" priority="secondary" typographyStyle="body-xs">
                         {networkName}

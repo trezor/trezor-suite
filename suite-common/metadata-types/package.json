@@ -11,6 +11,6 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@suite-common/wallet": "workspace:*"
+        "@trezor/device-utils": "workspace:*"
     }
 }

@@ -2,7 +2,10 @@ import { Address } from '@suite/address';
 import type { TranslationKey } from '@suite/intl';
 import { Translation } from '@suite/intl';
 import type { YieldPendingTransactionState } from '@suite-common/wallet-core';
-import { PendingTransactionInfo } from '@trezor/product-components';
+import {
+    PENDING_TRANSACTION_TIME_ESTIMATE_SECONDS,
+    PendingTransactionInfo,
+} from '@trezor/product-components';
 
 type YieldPendingTransactionProps = {
     pendingTransaction: YieldPendingTransactionState;
@@ -14,11 +17,11 @@ const getPendingTransactionLabel = (kind: YieldPendingTransactionState['type']):
         case 'approve':
             return 'TR_EXCHANGE_APPROVAL_FORM_CONFIRMING_APPROVAL';
         case 'revoke':
-        case 'revoke-only':
             return 'TR_EXCHANGE_APPROVAL_FORM_REVOKING_APPROVAL';
         case 'deposit':
-            return 'TR_EARN_YIELD_PENDING_SUPPLY';
+            return 'TR_EARN_YIELD_PENDING_DEPOSIT';
         case 'withdraw':
+        case 'redeem':
             return 'TR_EARN_YIELD_PENDING_WITHDRAW';
         case 'claim':
             return 'TR_EARN_YIELD_PENDING_CLAIM';
@@ -41,6 +44,7 @@ export const YieldPendingTransaction = ({
                 typographyStyle="body-md"
             />
         }
+        timeEstimateSeconds={PENDING_TRANSACTION_TIME_ESTIMATE_SECONDS}
         onTxClick={() => onTxClick(pendingTransaction.txid)}
     />
 );

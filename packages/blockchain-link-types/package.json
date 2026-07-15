@@ -6,17 +6,17 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "publishConfig": {
-        "main": "./lib/index.mjs",
-        "types": "./lib/index.d.mts",
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
         "exports": {
             ".": {
-                "types": "./lib/index.d.mts",
-                "default": "./lib/index.mjs"
+                "types": "./lib/index.d.ts",
+                "default": "./lib/index.js"
             },
             "./lib/*": "./lib/*",
             "./lib/constants": {
-                "types": "./lib/constants/index.d.mts",
-                "default": "./lib/constants/index.mjs"
+                "types": "./lib/constants/index.d.ts",
+                "default": "./lib/constants/index.js"
             }
         }
     },

@@ -6,7 +6,7 @@ import {
 } from '@suite-common/assets';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { localizePercentage } from '@suite-common/wallet-utils';
-import { Row, SkeletonCircle, Tooltip } from '@trezor/components';
+import { Row, Skeleton, Tooltip } from '@trezor/components';
 import { AssetShareIndicator } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
@@ -53,6 +53,6 @@ type AssetCoinLogoSkeletonProps = {
 
 export const AssetCoinLogoSkeleton = ({ animate }: AssetCoinLogoSkeletonProps) => (
     <Row alignItems="center" justifyContent="center">
-        <SkeletonCircle animate={animate} size={44} />
+        <Skeleton type="circle" animate={animate} size={44} />
     </Row>
 );

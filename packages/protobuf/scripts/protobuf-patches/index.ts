@@ -19,26 +19,6 @@ export const FIELD_TYPES = {
     // 'bytes': 'Uint8Array | number[] | Buffer | string', // protobuf will handle conversion
 };
 
-// Types needs reordering (used before defined).
-// The Type in the Value NEEDs (depends on) the Type in the Key.
-export const ORDER = {
-    HDNodeType: 'HDNodePathType',
-    TxAck: 'TxAckInputWrapper',
-    EthereumFieldType: 'EthereumStructMember',
-    EthereumDataType: 'EthereumFieldType',
-    TextMemo: 'AmountUnit',
-    RefundMemo: 'AmountUnit',
-    CoinPurchaseMemo: 'AmountUnit',
-    TextDetailsMemo: 'AmountUnit',
-    PaymentRequestMemo: 'AmountUnit',
-    PaymentRequest: 'AmountUnit',
-    RecoveryDevice: 'Features',
-    RecoveryType: 'RecoveryDevice',
-    RecoveryDeviceInputMethod: 'RecoveryType',
-    EthereumDefinitions: 'EthereumSignTypedData',
-    TronResourceCode: 'TronFreezeBalanceV2Contract',
-};
-
 // enums used as keys (string), used as values (number) by default
 export const ENUM_KEYS = [
     'InputScriptType',
@@ -63,9 +43,6 @@ export const RULE_PATCH = {
     'BackupDevice.groups': 'optional', // protobuf repeated bytes are always optional (fallback to [])
     'MultisigRedeemScriptType.nodes': 'optional', // its valid to be undefined according to implementation/tests
     'MultisigRedeemScriptType.address_n': 'optional', // its valid to be undefined according to implementation/tests
-    'TxRequestDetailsType.request_index': 'required',
-    'TxRequest.request_type': 'required',
-    'TxRequest.details': 'required',
     'PaymentRequest.memos': 'optional', // protobuf repeated bytes are always optional (fallback to [])
     'CardanoPoolOwnerType.staking_key_path': 'optional',
     'CardanoPoolOwner.staking_key_path': 'optional',
@@ -85,43 +62,9 @@ export const RULE_PATCH = {
     'EthereumAddress.address': 'required', // address is transformed from legacy type _old_address
     // TODO: Features should be union: bootloader|normal
     // fields below are marked as required because of backward compatibility (suite implementation)
-    'Features.vendor': 'required',
-    'Features.bootloader_mode': 'required',
     'Features.device_id': 'required',
-    'Features.major_version': 'required',
-    'Features.minor_version': 'required',
-    'Features.patch_version': 'required',
-    'Features.pin_protection': 'required',
-    'Features.passphrase_protection': 'required',
-    'Features.language': 'required',
-    'Features.label': 'required',
-    'Features.initialized': 'required',
-    'Features.revision': 'required',
-    'Features.bootloader_hash': 'required',
-    'Features.imported': 'required',
-    'Features.unlocked': 'required',
-    'Features.firmware_present': 'required',
-    'Features.backup_availability': 'required',
-    'Features.flags': 'required',
-    'Features.fw_major': 'required',
-    'Features.fw_minor': 'required',
-    'Features.fw_patch': 'required',
-    'Features.fw_vendor': 'required',
     'Features.model': 'required',
     'Features.internal_model': 'required',
-    'Features.unfinished_backup': 'required',
-    'Features.no_backup': 'required',
-    'Features.recovery_status': 'required',
-    'Features.backup_type': 'required',
-    'Features.sd_card_present': 'required',
-    'Features.sd_protection': 'required',
-    'Features.wipe_code_protection': 'required',
-    'Features.session_id': 'required',
-    'Features.passphrase_always_on_device': 'required',
-    'Features.safety_checks': 'required',
-    'Features.auto_lock_delay_ms': 'required',
-    'Features.display_rotation': 'required',
-    'Features.experimental_features': 'required',
     'GetOwnershipProof.ownership_ids': 'optional', // protobuf repeated bytes are always optional (fallback to [])
     'StellarAssetType.code': 'required',
     'StellarPathPaymentStrictReceiveOp.paths': 'optional', // its valid to be undefined according to implementation/tests
@@ -173,6 +116,8 @@ export const TYPE_PATCH = {
     'Features.display_rotation': 'DisplayRotation | null',
     'Features.experimental_features': 'boolean | null',
     'Features.internal_model': DeviceModelInternal,
+    'Features.homescreen_format': 'HomescreenFormat | null',
+    'Features.recovery_type': 'RecoveryType | null',
     'ApplySettings.display_rotation': 'DisplayRotation | Enum_DisplayRotation',
     'HDNodePathType.node': 'HDNodeType | string',
     'FirmwareUpload.payload': 'Buffer | ArrayBuffer',
@@ -265,7 +210,6 @@ export const TYPE_PATCH = {
     'TezosDelegationOp.source': 'Uint8Array',
     'TezosDelegationOp.delegate': 'Uint8Array',
     'TezosSignTx.branch': 'Uint8Array',
-    'Features.recovery_type': 'RecoveryType',
     'MoneroKeyImageExportInitRequest.hash': 'Uint8Array',
     'MoneroTransferDetails.out_key': 'Uint8Array',
     'MoneroTransferDetails.tx_pub_key': 'Uint8Array',

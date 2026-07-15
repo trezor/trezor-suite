@@ -1,7 +1,5 @@
 export {
     selectIsSuiteSyncEnabled,
-    selectSuiteSyncCustomRelayUrl,
-    selectSuiteSyncRelayUrl,
     selectSuiteSyncInteraction,
     selectSuiteSyncOwnerForDeviceStaticId,
     selectIsSuiteSyncDebugEnabled,
@@ -9,7 +7,19 @@ export {
     selectIsSuiteSyncFeatureAvailable,
     selectIsSuiteSyncInitPossible,
 } from './suiteSyncSelectors';
-export type { WithSuiteSyncAndDeviceState, WithSuiteSyncState } from './suiteSyncSelectors';
+export {
+    selectIsSuiteSyncRelayConnected,
+    selectLastSuiteSyncRelayDisconnectedTimestamp,
+    selectSuiteSyncRelayConnectionStatuses,
+} from './relay/relayConnectionSelectors';
+export { createUpdateRelayConnectionStatus } from './relay/createUpdateRelayConnectionStatus';
+export {
+    getSuiteSyncDefaultRelayUrl,
+    getSuiteSyncRelayUrl,
+    selectSuiteSyncCustomRelayUrl,
+    selectSuiteSyncRelayUrl,
+} from './relay/relayUrl';
+export type { WithSuiteSyncAndDeviceState } from './suiteSyncSelectors';
 export type { SuiteSyncInteraction } from './suiteSyncTypes';
 export { createSuiteSyncCompositionRoot } from './createSuiteSyncCompositionRoot';
 export type { SuiteSyncAnalytics, SuiteSyncAnalyticsDep } from './createSuiteSyncCompositionRoot';
@@ -20,15 +30,21 @@ export {
     updateSuiteSyncDebugEnabled,
     updateSuiteSyncEnabled,
     setSuiteSyncRelayUrl,
+    setSuiteSyncRelayConnection,
+    addSuiteSyncRelayConnection,
+    removeSuiteSyncRelayConnection,
     setSuiteSyncOwner,
 } from './suiteSyncSlice';
-export type { SuiteSyncState, SuiteSyncSettings } from './suiteSyncSlice';
-export {
-    DEFAULT_SUITE_SYNC_RELAY_URL,
-    DEFAULT_SUITE_SYNC_RELAY_URL_DEV,
-    DEFAULT_SUITE_SYNC_RELAY_URL_PROD,
-    SUITE_SYNC_RELAY_SERVERS,
-} from './relay/relayUrl';
+export type { SuiteSyncState, SuiteSyncSettings, WithSuiteSyncState } from './suiteSyncSlice';
+export type {
+    SuiteSyncRelayConnection,
+    SuiteSyncRelayConnectionEvent,
+    SuiteSyncRelayConnectionLogEntry,
+} from './relay/relayConnectionStatus';
+export type {
+    UpdateRelayConnectionStatus,
+    UpdateRelayConnectionStatusDeps,
+} from './relay/createUpdateRelayConnectionStatus';
 export type {
     SuiteSyncServerTypeSelectValue,
     SuiteSyncServerTypeOption,
@@ -54,6 +70,7 @@ export {
 } from './data/wallet/suiteSyncWalletSelectors';
 export {
     selectAccountsWithSuiteSyncLabel,
+    selectVisibleDeviceAccountsWithSuiteSyncLabel,
     type AccountWithSuiteSyncLabel,
 } from './data/account/selectAccountsWithSuiteSyncLabel';
 export { selectSuiteSyncAccountLabel } from './data/account/selectSuiteSyncAccountLabel';
@@ -76,6 +93,11 @@ export {
     fromSuiteSyncToSearchAccountLabels,
     fromSuiteSyncToSearchOutputLabels,
 } from './data/labeling/fromSuiteSyncToSearchAccountLabels';
+export {
+    createSuiteSyncWriteLabels,
+    type SuiteSyncWriteLabels,
+    type CreateSuiteSyncWriteLabelsDeps,
+} from './data/labeling/createSuiteSyncWriteLabels';
 export {
     isSuiteSyncSupportedByDevice,
     isFwUpgradeNeededForSuiteSync,

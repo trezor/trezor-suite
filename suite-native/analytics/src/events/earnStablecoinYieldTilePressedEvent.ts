@@ -7,7 +7,7 @@ export const earnStablecoinYieldTilePressedEvent: EventDef<
     EventType.EarnStablecoinYieldTilePressed
 > = {
     name: EventType.EarnStablecoinYieldTilePressed,
-    descriptionTrigger: 'On Earn Stablecoin Yield Tile pressed',
+    descriptionTrigger: 'User taps the Earn Stablecoin Yield tile',
     changelog: [{ version: '26.2.1', notes: 'added' }],
     attributes: {},
 };

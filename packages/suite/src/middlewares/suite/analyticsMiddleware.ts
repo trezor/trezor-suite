@@ -1,7 +1,11 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
-import { setFlag } from '@suite/flags';
+import {
+    selectAnonymityGainToReportByAccountKey,
+    selectCoinjoinAccountByKey,
+    updateLastAnonymityReportTimestamp,
+} from '@suite/coinjoin';
 import {
     anchorChange,
     routerLocationChange,
@@ -36,12 +40,7 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { updateLastAnonymityReportTimestamp } from 'src/actions/wallet/coinjoinAccountActions';
 import { COINJOIN } from 'src/actions/wallet/constants';
-import {
-    selectAnonymityGainToReportByAccountKey,
-    selectCoinjoinAccountByKey,
-} from 'src/reducers/wallet/coinjoinReducer';
 import { type Action, type AppState } from 'src/types/suite';
 import {
     getSuiteReadyPayload,
@@ -297,16 +296,6 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                     type: action.payload.remember
                         ? events.switchDeviceRememberEvent.name
                         : events.switchDeviceForgetEvent.name,
-                });
-                break;
-
-            case WALLET_SETTINGS.SET_HIDE_BALANCE:
-                if (!state.flags.discreetModeCompleted) {
-                    dispatch(setFlag({ key: 'discreetModeCompleted', value: true }));
-                }
-                asTypedDesktopAnalytics(analytics).report({
-                    type: events.menuToggleDiscreetEvent.name,
-                    payload: { value: action.toggled },
                 });
                 break;
 

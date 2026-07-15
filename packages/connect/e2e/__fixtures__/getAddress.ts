@@ -28,7 +28,7 @@ export default {
             description: 'Bitcoin p2sh first address (path as array)',
             params: {
                 path: [2147483697, 2147483648, 2147483648, 0, 0],
-                coin: 'Bitcoin',
+                coin: 'btc',
             },
             result: {
                 address: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
@@ -68,7 +68,7 @@ export default {
             description: 'Testnet p2sh first address',
             params: {
                 path: "m/49'/1'/0'/0/0",
-                coin: 'tbtc',
+                coin: 'test',
             },
             result: {
                 address: '2N4dH9yn4eYnnjHTYpN9xDmuMRS2k1AHWd8',
@@ -78,7 +78,7 @@ export default {
             description: 'Bitcoin Cash first address',
             params: {
                 path: "m/44'/145'/0'/0/0",
-                coin: 'bcash',
+                coin: 'bch',
             },
             result: {
                 address: 'bitcoincash:qzqxk2q6rhy3j9fnnc00m08g4n5dm827xv2dmtjzzp',

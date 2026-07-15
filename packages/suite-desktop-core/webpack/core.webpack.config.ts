@@ -4,8 +4,8 @@ import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
 import childProcess from 'child_process';
 import fs from 'fs';
 import { sync } from 'glob';
+import TerserPlugin from 'minimizer-webpack-plugin';
 import path from 'path';
-import TerserPlugin from 'terser-webpack-plugin';
 import webpack from 'webpack';
 
 import { suiteVersion } from '../../suite/package.json';
@@ -76,6 +76,7 @@ const dependencies = Object.keys(pkg.dependencies);
 const config: webpack.Configuration = {
     target: 'electron-main',
     mode: isDev ? 'development' : 'production',
+    ...(isDev ? { parallelism: 3 } : {}),
     devtool: 'source-map',
     // Note that the entries key is important, it sets the the output file name in dist/
     entry: [

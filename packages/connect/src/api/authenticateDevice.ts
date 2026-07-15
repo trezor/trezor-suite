@@ -1,5 +1,5 @@
 import { UI_REQUEST } from '@trezor/connect-common';
-import type { MethodPermission } from '@trezor/connect-common';
+import type { PermissionRequest } from '@trezor/connect-common';
 import type { VerifyAuthenticityProofResult } from '@trezor/device-authenticity';
 import {
     AuthenticateDeviceParams,
@@ -37,8 +37,8 @@ export default class AuthenticateDevice extends AbstractMethod<
         this.skipFinalReload = false;
         this.useDeviceState = false;
     }
-    get requiredPermissions(): MethodPermission[] {
-        return ['management'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'management' }];
     }
 
     async streamAuthenticityProofs(challenge: Buffer) {
@@ -116,7 +116,7 @@ export default class AuthenticateDevice extends AbstractMethod<
         for (const { name, type, certSizes, sigSize } of proofTypes) {
             for (const [i, certSize] of certSizes.entries()) {
                 const cert = await getChunk({ proof_type: type, index: i }, certSize);
-                (authenticityProof[`${name}_certificates`] as string[]).push(cert);
+                authenticityProof[`${name}_certificates`].push(cert);
             }
 
             if (sigSize) {

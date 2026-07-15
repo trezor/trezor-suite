@@ -6,7 +6,7 @@ import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-na
 import { getNetwork } from '@suite-common/wallet-config';
 import { getYieldApprovalAction, stablecoinYieldActions } from '@suite-common/wallet-core';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
-import { Box, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { Box, FullAlertBox, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -66,10 +66,11 @@ export const YieldDepositApprovalScreen = () => {
         account,
         flowData,
         apy,
+        bonusRewardTokenName,
         flowKey,
         token,
         tokenSymbol,
-        vault,
+        vaultTokenSymbol,
         vaultTokenName,
         resolutionStatus,
     } = resolvedFlowData;
@@ -113,6 +114,7 @@ export const YieldDepositApprovalScreen = () => {
     const {
         formState: { isValid },
     } = form;
+    const shouldShowApprovalFee = isValid && !!amountValue;
     const footerApprovalAction =
         allowanceStatus === 'loaded'
             ? getYieldApprovalAction({
@@ -248,7 +250,7 @@ export const YieldDepositApprovalScreen = () => {
                     closeAction={handleCloseApproval}
                     onInfoPress={openInfoBottomSheet}
                     tokenContract={route.params.tokenContract}
-                    vaultName={vault.metadata.name}
+                    vaultName={vaultTokenName}
                 />
             }
             footer={
@@ -294,17 +296,30 @@ export const YieldDepositApprovalScreen = () => {
                             />
                         </Box>
 
-                        <Box paddingHorizontal="sp16">
-                            <FeeSelector
-                                accountKey={account.key}
-                                tokenContract={route.params.tokenContract}
-                                updateThunk={updateApprovalFeeLevelThunk}
-                                selectedFee={selectedApprovalFee}
-                                selectedFeePerUnit={approvalFeeFormDraft?.feePerUnit}
-                                formDraft={approvalFeeFormDraft}
-                                formDraftKey={approvalFeeFormDraftKey}
-                            />
-                        </Box>
+                        {footerApprovalAction === 'revoke' && (
+                            <Box paddingHorizontal="sp16">
+                                <FullAlertBox
+                                    intent="warning"
+                                    title={
+                                        <Translation id="earn.yieldDepositFlowScreen.alerts.approvalIncreaseRequiresRevoke.title" />
+                                    }
+                                />
+                            </Box>
+                        )}
+
+                        {shouldShowApprovalFee && (
+                            <Box paddingHorizontal="sp16">
+                                <FeeSelector
+                                    accountKey={account.key}
+                                    tokenContract={route.params.tokenContract}
+                                    updateThunk={updateApprovalFeeLevelThunk}
+                                    selectedFee={selectedApprovalFee}
+                                    selectedFeePerUnit={approvalFeeFormDraft?.feePerUnit}
+                                    formDraft={approvalFeeFormDraft}
+                                    formDraftKey={approvalFeeFormDraftKey}
+                                />
+                            </Box>
+                        )}
                     </VStack>
                 </Form>
             </Box>
@@ -324,16 +339,19 @@ export const YieldDepositApprovalScreen = () => {
                     title={
                         <Translation id="moduleTrading.tradingConfirmationScreen.approveTitle" />
                     }
-                    vaultName={vault.metadata.name}
+                    vaultName={vaultTokenName}
                     vaultTokenContract={route.params.tokenContract}
                 />
             )}
             <YieldDepositInfoBottomSheet
                 ref={infoBottomSheetRef}
                 apy={apy}
+                bonusRewardTokenName={bonusRewardTokenName}
                 onClose={handleCloseInfoBottomSheet}
                 tokenSymbol={tokenSymbol}
-                vaultTokenName={vaultTokenName}
+                vaultTokenSymbol={vaultTokenSymbol}
+                account={account}
+                vault={resolvedFlowData.vault}
             />
             <YieldDepositApprovalLimitBottomSheet
                 ref={approvalLimitBottomSheetRef}

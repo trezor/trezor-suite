@@ -6,7 +6,7 @@ import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { selectTradingBuyReceiveAccountKey } from '@suite-common/trading';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
-import { localeReducer } from '@suite-native/intl';
+import { getTranslation, localeReducer } from '@suite-native/intl';
 import {
     type TestStore,
     createLightStore,
@@ -90,6 +90,7 @@ describe('AccountList', () => {
     const createTestStore = (preloadedState = defaultPreloadedState) =>
         createLightStore({
             reducer: {
+                discreetMode: createStaticReducer({ isActive: false }),
                 locale: localeReducer,
                 device: createStaticReducer(preloadedState.device),
                 messageSystem: createStaticReducer(messageSystemInitialState),
@@ -273,7 +274,11 @@ describe('AccountList', () => {
                 pickerMode: 'account',
             });
 
-            expect(getByText('Add new')).toBeTruthy();
+            expect(
+                getByText(
+                    getTranslation('moduleAddAccounts.coinDiscoveryFinishedScreen.addButton'),
+                ),
+            ).toBeTruthy();
         });
 
         it('should NOT display footer with "Add new" button in "address" mode', () => {
@@ -285,7 +290,11 @@ describe('AccountList', () => {
                 getStateMockupBuy({ account: btc1NormalAccount }),
             );
 
-            expect(queryByText('Add new')).toBeNull();
+            expect(
+                queryByText(
+                    getTranslation('moduleAddAccounts.coinDiscoveryFinishedScreen.addButton'),
+                ),
+            ).toBeNull();
         });
     });
 

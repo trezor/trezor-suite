@@ -8,8 +8,8 @@ const buildArtifactPatterns = {
         'Import from the package root instead. Deep paths into "lib/" or "libDev/" target build artifacts that may not exist or may diverge from the workspace source.',
 };
 
-const coinsPackagePatterns = {
-    regex: '^@trezor/coins-[a-z]+$',
+const networksPackagePattern = {
+    regex: '^@trezor/network-[a-z]+$',
     message: 'Import from /constants, /runtime or /types subpath.',
 };
 
@@ -48,7 +48,7 @@ const suiteInternalPatterns = {
 export const restrictedImportsPatterns = [
     buildArtifactPatterns,
     suiteInternalPatterns,
-    coinsPackagePatterns,
+    networksPackagePattern,
     ...connectDeepImportPatterns,
 ];
 
@@ -72,7 +72,7 @@ export const typescriptConfig = [
                     paths: [{ name: '.' }, { name: '..' }, { name: '../..' }],
                     patterns: [
                         buildArtifactPatterns,
-                        coinsPackagePatterns,
+                        networksPackagePattern,
                         ...connectDeepImportPatterns,
                     ],
                 },
@@ -138,6 +138,17 @@ export const typescriptConfig = [
                 },
             ],
             '@typescript-eslint/prefer-optional-chain': ['error'],
+            // Known limitation: the rule mis-reports some load-bearing widening assertions
+            // (removing them breaks tsc); such spots carry a scoped disable with a justification.
+            '@typescript-eslint/no-unnecessary-type-assertion': ['error'],
+        },
+    },
+    {
+        // Type assertions on partial mocks and fixtures are idiomatic in tests,
+        // so scope the rule out of test and fixture files.
+        files: ['**/__tests__/**', '**/__fixtures__/**', '**/tests/**', '**/*.test.{ts,tsx}'],
+        rules: {
+            '@typescript-eslint/no-unnecessary-type-assertion': 'off',
         },
     },
 ];

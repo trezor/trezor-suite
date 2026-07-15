@@ -1,6 +1,8 @@
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 import type { BuyTrade, SellFiatTrade } from 'invity-api';
 
-import { BottomSheetFlashList } from '@suite-native/atoms';
+import { BottomSheetFlashList, type BottomSheetFlashListHandleProps } from '@suite-native/atoms';
 
 import {
     ESTIMATED_HEADER_HEIGHT,
@@ -21,8 +23,11 @@ export type PaymentMethodsSheetProps<T extends BuyTrade | SellFiatTrade> = {
 const EXTRA_LIST_PADDING = 20;
 
 const keyExtractor = (item: BuyTrade | SellFiatTrade) => item.orderId ?? '';
-const getEstimatedListHeight = (itemsCount: number) =>
-    itemsCount * PAYMENT_METHOD_LIST_ITEM_HEIGHT + ESTIMATED_HEADER_HEIGHT + EXTRA_LIST_PADDING;
+const getEstimatedListHeight = (itemsCount: number, insetBottom: number) =>
+    itemsCount * PAYMENT_METHOD_LIST_ITEM_HEIGHT +
+    ESTIMATED_HEADER_HEIGHT +
+    EXTRA_LIST_PADDING +
+    insetBottom;
 
 export const PaymentMethodSheet = <T extends BuyTrade | SellFiatTrade>({
     quotes,
@@ -32,26 +37,28 @@ export const PaymentMethodSheet = <T extends BuyTrade | SellFiatTrade>({
     selectedQuote,
     title,
 }: PaymentMethodsSheetProps<T>) => {
-    const onQuoteSelectCallback = (quote: T) => {
-        onQuoteSelect(quote);
-        onClose();
-    };
+    const { bottom: insetBottom } = useSafeAreaInsets();
 
     return (
         <BottomSheetFlashList<T>
             isVisible={isVisible}
             onClose={onClose}
-            renderItem={({ item, index }) => (
+            renderItem={({ item, index }, { closeSheet }) => (
                 <PaymentMethodListItem
                     quote={item}
-                    onPress={() => onQuoteSelectCallback(item)}
+                    onPress={() => {
+                        onQuoteSelect(item);
+                        closeSheet();
+                    }}
                     isFirst={index === 0}
                     isLast={index === quotes.length - 1}
                 />
             )}
-            handleComponent={() => <SimpleSheetHeader onClose={onClose} title={title} />}
+            handleComponent={({ closeSheet }: BottomSheetFlashListHandleProps) => (
+                <SimpleSheetHeader onClose={closeSheet} title={title} />
+            )}
             data={quotes}
-            estimatedListHeight={getEstimatedListHeight(quotes.length)}
+            estimatedListHeight={getEstimatedListHeight(quotes.length, insetBottom)}
             keyExtractor={keyExtractor}
             extraData={selectedQuote?.orderId}
         />

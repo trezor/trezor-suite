@@ -11,7 +11,10 @@ import { type ExchangeFlowType } from '@suite-native/navigation';
 import { exhaustive } from '@trezor/type-utils';
 
 import { ReviewOutputCard } from './ReviewOutputCard';
-import { ReviewOutputItemContent } from './ReviewOutputItemContent';
+import {
+    ReviewOutputItemContent,
+    type ReviewOutputItemContentProps,
+} from './ReviewOutputItemContent';
 import { type StatefulReviewOutput } from '../../types';
 
 export type ReviewOutputItemProps = {
@@ -20,6 +23,7 @@ export type ReviewOutputItemProps = {
     onLayout: (event: LayoutChangeEvent) => void;
     tokenContract?: TokenAddress;
     flowType?: ExchangeFlowType;
+    contentBuilder?: ReviewOutputItemContentProps['contentBuilder'];
 };
 
 const OutputLabel = ({
@@ -105,6 +109,8 @@ const OutputLabel = ({
             return <Translation id="transactionManagement.review.outputs.feeLimitSummaryLabel" />;
         case 'note':
             return <Translation id="transactionManagement.review.outputs.noteLabel" />;
+        case 'swap_intent':
+            return <Translation id="transactionManagement.review.outputs.swapIntentLabel" />;
         default:
             return type;
     }
@@ -116,6 +122,7 @@ export const ReviewOutputItem = ({
     onLayout,
     tokenContract,
     flowType,
+    contentBuilder,
 }: ReviewOutputItemProps) => {
     if (reviewOutput.type === 'rewards') {
         return null;
@@ -142,6 +149,7 @@ export const ReviewOutputItem = ({
                     flowType={flowType}
                     send={tradedSend}
                     receive={tradedReceive}
+                    contentBuilder={contentBuilder}
                 />
             </ReviewOutputCard>
         </View>

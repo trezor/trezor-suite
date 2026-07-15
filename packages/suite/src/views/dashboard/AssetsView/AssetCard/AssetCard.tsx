@@ -1,9 +1,9 @@
-import React from 'react';
 import { useDispatch } from 'react-redux';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { type AssetFiatBalance } from '@suite-common/assets';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
@@ -12,17 +12,9 @@ import { selectAnyAccountIsStakingActive, useDisplayBaseCurrency } from '@suite-
 import { type Account, type RatesByKey } from '@suite-common/wallet-types';
 import { type AmountUnit } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import {
-    Card,
-    Column,
-    Icon,
-    InfoItem,
-    Note,
-    Row,
-    SkeletonRectangle,
-    Text,
-} from '@trezor/components';
+import { Card, Column, Icon, InfoItem, Note, Row, Skeleton, Text } from '@trezor/components';
 import { type TokenInfo } from '@trezor/connect';
+import { ArrowRightIcon, WarningIcon } from '@trezor/icons';
 
 import {
     AmountUnitSwitchWrapper,
@@ -31,12 +23,12 @@ import {
     TrendTicker,
 } from 'src/components/suite';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
-import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
-import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
-import { AssetCardTokensAndStakingInfo } from './AssetCardTokensAndStakingInfo';
 import { AssetActionButton } from '../AssetActionButton';
 import { handleTokensAndStakingData } from '../assetsViewUtils';
+import { AssetCardInfo, AssetCardInfoSkeleton } from './AssetCardInfo';
+import { AssetCardTokensAndStakingInfo } from './AssetCardTokensAndStakingInfo';
 
 type AmountComponentProps = {
     failed: boolean;
@@ -64,7 +56,7 @@ const AmountComponent = ({ failed, cryptoValue, symbol, localCurrency }: AmountC
             </Text>
         </Column>
     ) : (
-        <Note intent="critical" iconName="warning">
+        <Note intent="critical" icon={WarningIcon}>
             <Translation id="TR_DASHBOARD_ASSET_FAILED" />
         </Note>
     );
@@ -157,11 +149,16 @@ export const AssetCard = ({
 
     return (
         <Card
-            paddingType="small"
+            paddingType="none"
             onClick={handleCardClick}
             data-testid={`@dashboard/asset-item/${symbol}`}
         >
-            <Column justifyContent="space-between" height="100%" gap={20} padding={{ top: 8 }}>
+            <Column
+                justifyContent="space-between"
+                height="100%"
+                gap={20}
+                padding={{ bottom: 12, horizontal: 12, top: 20 }}
+            >
                 <Column gap={40} flex="1" margin={{ horizontal: 8 }}>
                     <Row justifyContent="space-between">
                         <AssetCardInfo
@@ -169,7 +166,7 @@ export const AssetCard = ({
                             assetsFiatBalances={assetsFiatBalances}
                             index={index}
                         />
-                        <Icon size={16} name="arrowRight" isDisabled={true} />
+                        <Icon size={16} as={ArrowRightIcon} isDisabled={true} />
                     </Row>
                     <AmountComponent
                         symbol={symbol}
@@ -190,7 +187,7 @@ export const AssetCard = ({
                     />
                 )}
                 {shallDisplayBaseCurrency && (
-                    <Card data-testid="@dashboard/asset/bottom-info">
+                    <Card data-testid="@dashboard/asset/bottom-info" type="contrast">
                         <Row justifyContent="space-between" flexWrap="wrap" gap={16}>
                             <InfoItem
                                 data-testid="@dashboard/asset/exchange-rate"
@@ -237,7 +234,7 @@ export const AssetCard = ({
 };
 
 export const AssetCardSkeleton = (props: { animate?: boolean }) => {
-    const { shouldAnimate } = useLoadingSkeleton();
+    const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
     const animate = props.animate ?? shouldAnimate;
 
     return (
@@ -248,13 +245,13 @@ export const AssetCardSkeleton = (props: { animate?: boolean }) => {
                 </Row>
                 <Column>
                     <Row>
-                        <SkeletonRectangle animate={animate} width={95} height={32} />
+                        <Skeleton animate={animate} width={95} height={32} />
                     </Row>
-                    <SkeletonRectangle animate={animate} width={50} height={16} />
+                    <Skeleton animate={animate} width={50} height={16} />
                 </Column>
             </Column>
             <Card>
-                <SkeletonRectangle animate={animate} width="100%" height={40} />
+                <Skeleton animate={animate} width="100%" height={40} />
             </Card>
         </Card>
     );

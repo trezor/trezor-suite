@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgVibrate = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M20 4h-8a3 3 0 0 0-3 3v18a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3m1 21a1 1 0 0 1-1 1h-8a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1zm6-14v10a1 1 0 0 1-2 0V11a1 1 0 0 1 2 0m4 2v6a1 1 0 0 1-2 0v-6a1 1 0 0 1 2 0M7 11v10a1 1 0 1 1-2 0V11a1 1 0 1 1 2 0m-4 2v6a1 1 0 1 1-2 0v-6a1 1 0 1 1 2 0"
+        />
+    </svg>
+);
+export { SvgVibrate as ReactComponent };

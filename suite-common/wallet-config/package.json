@@ -14,8 +14,8 @@
     "dependencies": {
         "@suite-common/earn-stablecoin-defs": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",
-        "@trezor/coins-solana": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/network-solana": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     }

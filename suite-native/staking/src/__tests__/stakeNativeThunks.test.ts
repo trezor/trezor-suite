@@ -4,6 +4,7 @@ import { messageSystemInitialState } from '@suite-common/message-system';
 import { buildStakeData } from '@suite-common/staking';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { WALLET_SDK_SOURCE_MOBILE } from '@suite-common/wallet-constants';
 import { prepareSendFormReducer } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -15,7 +16,10 @@ import { getFormDraftKey } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import { signStakeTransactionNativeThunk } from '../stakeNativeThunks';
+import {
+    pushStakeTransactionNativeThunk,
+    signStakeTransactionNativeThunk,
+} from '../stakeNativeThunks';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
@@ -28,6 +32,10 @@ jest.mock('@trezor/connect', () => ({
         solanaSignTransaction: jest.fn().mockResolvedValue({
             success: true,
             payload: { signature: 'ed25519signature' },
+        }),
+        blockchainGetInfo: jest.fn().mockResolvedValue({
+            success: true,
+            payload: { url: 'http://localhost:8899' },
         }),
         blockchainEstimateFee: jest.fn().mockResolvedValue({
             success: true,
@@ -46,7 +54,7 @@ const solanaTxShim = {
     addSignature: jest.fn(),
 };
 
-jest.mock('@trezor/coins-solana/runtime', () => ({
+jest.mock('@trezor/network-solana/runtime', () => ({
     __esModule: true,
     default: () =>
         Promise.resolve({
@@ -178,7 +186,7 @@ const buildEthStakeFormDraft = (): FormState =>
             },
         ],
         options: ['transactionData'],
-        transactionData: buildStakeData(),
+        transactionData: buildStakeData(WALLET_SDK_SOURCE_MOBILE),
         isCoinControlEnabled: false,
         hasCoinControlBeenOpened: false,
         selectedUtxos: [],
@@ -215,6 +223,16 @@ const dispatchDispatcher = async (
     args: Parameters<typeof signStakeTransactionNativeThunk>[0],
 ) => {
     const action = await store.dispatch(signStakeTransactionNativeThunk(args) as any);
+    if (isFulfilled(action)) return { ok: true as const };
+    if (isRejected(action)) return { ok: false as const, error: action.payload };
+    throw new Error('Unexpected dispatch outcome');
+};
+
+const dispatchPush = async (
+    store: ReturnType<typeof buildStore>,
+    args: Parameters<typeof pushStakeTransactionNativeThunk>[0],
+) => {
+    const action = await store.dispatch(pushStakeTransactionNativeThunk(args) as any);
     if (isFulfilled(action)) return { ok: true as const, txid: action.payload.txid };
     if (isRejected(action)) return { ok: false as const, error: action.payload };
     throw new Error('Unexpected dispatch outcome');
@@ -240,7 +258,7 @@ beforeEach(() => {
 });
 
 describe('signStakeTransactionNativeThunk', () => {
-    it('routes ethereum accounts to the ethereum staking thunk', async () => {
+    it('routes ethereum accounts to the ethereum staking thunk and signs without broadcasting', async () => {
         const store = buildStore({
             formDrafts: {
                 [getFormDraftKey('stake', ETH_ACCOUNT_KEY)]: buildEthStakeFormDraft(),
@@ -253,11 +271,12 @@ describe('signStakeTransactionNativeThunk', () => {
             precomposedTransaction: buildPrecomposedTransaction(),
         });
 
-        expect(result).toEqual({ ok: true, txid: '0xpushedtxid' });
+        expect(result).toEqual({ ok: true });
         expect(ethereumSignTransactionMock).toHaveBeenCalledTimes(1);
+        expect(pushTransactionMock).not.toHaveBeenCalled();
     });
 
-    it('routes solana accounts to the solana staking thunk', async () => {
+    it('routes solana accounts to the solana staking thunk and signs without broadcasting', async () => {
         const store = buildStore({
             accounts: [solAccount],
             blockchain: { sol: { url: 'http://localhost:8899' } },
@@ -269,12 +288,13 @@ describe('signStakeTransactionNativeThunk', () => {
             precomposedTransaction: buildSolanaPrecomposedTransaction(),
         });
 
-        expect(result).toEqual({ ok: true, txid: '0xpushedtxid' });
+        expect(result).toEqual({ ok: true });
         expect(solanaSignTransactionMock).toHaveBeenCalledTimes(1);
         expect(ethereumSignTransactionMock).not.toHaveBeenCalled();
+        expect(pushTransactionMock).not.toHaveBeenCalled();
     });
 
-    it('routes solana unstake to the solana staking thunk', async () => {
+    it('routes solana unstake to the solana staking thunk and signs without broadcasting', async () => {
         const store = buildStore({
             accounts: [solAccount],
             blockchain: { sol: { url: 'http://localhost:8899' } },
@@ -286,9 +306,10 @@ describe('signStakeTransactionNativeThunk', () => {
             precomposedTransaction: buildSolanaPrecomposedTransaction(),
         });
 
-        expect(result).toEqual({ ok: true, txid: '0xpushedtxid' });
+        expect(result).toEqual({ ok: true });
         expect(solanaSignTransactionMock).toHaveBeenCalledTimes(1);
         expect(ethereumSignTransactionMock).not.toHaveBeenCalled();
+        expect(pushTransactionMock).not.toHaveBeenCalled();
     });
 
     it('rejects solana claim (out of scope on mobile)', async () => {
@@ -351,6 +372,94 @@ describe('signStakeTransactionNativeThunk', () => {
         expect(result).toEqual({
             ok: false,
             error: { error: 'sign-transaction-failed', message: 'Account not found.' },
+        });
+        errorSpy.mockRestore();
+    });
+});
+
+describe('pushStakeTransactionNativeThunk', () => {
+    it('broadcasts the transaction signed during a deferred sign', async () => {
+        const store = buildStore({
+            formDrafts: {
+                [getFormDraftKey('stake', ETH_ACCOUNT_KEY)]: buildEthStakeFormDraft(),
+            },
+        });
+
+        // Sign without broadcasting so the signed transaction is stored in the send slice.
+        await dispatchDispatcher(store, {
+            accountKey: ETH_ACCOUNT_KEY,
+            stakeType: 'stake',
+            precomposedTransaction: buildPrecomposedTransaction(),
+        });
+        expect(pushTransactionMock).not.toHaveBeenCalled();
+
+        const result = await dispatchPush(store, { accountKey: ETH_ACCOUNT_KEY });
+
+        expect(result).toEqual({ ok: true, txid: '0xpushedtxid' });
+        expect(pushTransactionMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('broadcasts a solana transaction signed during a deferred sign', async () => {
+        const store = buildStore({
+            accounts: [solAccount],
+            blockchain: { sol: { url: 'http://localhost:8899' } },
+        });
+
+        // Sign without broadcasting so the signed solana transaction is stored.
+        await dispatchDispatcher(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'stake',
+            precomposedTransaction: buildSolanaPrecomposedTransaction(),
+        });
+        expect(pushTransactionMock).not.toHaveBeenCalled();
+
+        const result = await dispatchPush(store, { accountKey: SOL_ACCOUNT_KEY });
+
+        expect(result).toEqual({ ok: true, txid: '0xpushedtxid' });
+        expect(pushTransactionMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('rejects when the account is not found', async () => {
+        const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        const store = buildStore({ accounts: [] });
+
+        const result = await dispatchPush(store, { accountKey: ETH_ACCOUNT_KEY });
+
+        expect(result).toEqual({
+            ok: false,
+            error: { error: 'sign-transaction-failed', message: 'Account not found.' },
+        });
+        expect(pushTransactionMock).not.toHaveBeenCalled();
+        errorSpy.mockRestore();
+    });
+
+    it('rejects with push-transaction-pending-conflict when the broadcast hits a replacement', async () => {
+        const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        pushTransactionMock.mockResolvedValue({
+            success: false,
+            error: { message: 'could not replace existing tx' },
+        });
+        const store = buildStore({
+            formDrafts: {
+                [getFormDraftKey('stake', ETH_ACCOUNT_KEY)]: buildEthStakeFormDraft(),
+            },
+        });
+
+        // Sign without broadcasting so the signed transaction is stored before the push.
+        await dispatchDispatcher(store, {
+            accountKey: ETH_ACCOUNT_KEY,
+            stakeType: 'stake',
+            precomposedTransaction: buildPrecomposedTransaction(),
+        });
+
+        const result = await dispatchPush(store, { accountKey: ETH_ACCOUNT_KEY });
+
+        expect(result).toMatchObject({
+            ok: false,
+            error: {
+                error: 'push-transaction-pending-conflict',
+                metadata: { error: { message: 'could not replace existing tx' } },
+            },
         });
         errorSpy.mockRestore();
     });

@@ -32,7 +32,7 @@ export const ConciergeProviderPicker = () => {
                     testID={PROVIDER_PICKER_TEST_ID}
                 >
                     <Text
-                        color="contentSecondary"
+                        color="contentPrimary"
                         variant="body-sm"
                         numberOfLines={1}
                         testID={PROVIDER_PICKER_TEST_ID + '/value'}
@@ -43,7 +43,7 @@ export const ConciergeProviderPicker = () => {
             ) : (
                 <Box paddingHorizontal="sp20" paddingVertical="sp18">
                     <InlineAlertBox
-                        variant="warning"
+                        intent="warning"
                         title={
                             <Translation id="moduleTrading.tradingScreen.concierge.noProvidersAvailable" />
                         }

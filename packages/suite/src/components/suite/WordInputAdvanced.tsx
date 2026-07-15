@@ -14,6 +14,7 @@ import {
     Paragraph,
 } from '@trezor/components';
 import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
+import { CaretLeftIcon, DotOutlineFilledIcon, QuestionIcon } from '@trezor/icons';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import { resolveAfter } from '@trezor/utils';
 
@@ -104,7 +105,7 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
         <Column gap={16} maxWidth={380}>
             <Banner
                 intent="info"
-                icon="question"
+                icon={QuestionIcon}
                 rightContent={
                     <Banner.Button href={learnMoreUrl} size="small">
                         <Translation id="TR_LEARN_MORE" />
@@ -133,7 +134,7 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
                                 key={num}
                                 onClick={() => onSubmit(String(num))}
                                 data-testid={`@recovery/word-input-advanced/${num}`}
-                                icon="dotOutlineFilled"
+                                icon={DotOutlineFilledIcon}
                                 intent="neutral"
                                 priority="secondary"
                                 size="large"
@@ -146,7 +147,7 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
                         priority="secondary"
                         onClick={backspace}
                         size="small"
-                        iconLeft="caretLeft"
+                        iconLeft={CaretLeftIcon}
                     >
                         <Translation id="TR_BACKSPACE" />
                     </Button>

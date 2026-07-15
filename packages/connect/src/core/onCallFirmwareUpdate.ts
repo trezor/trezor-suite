@@ -8,10 +8,9 @@ import type {
 } from '@trezor/connect-common';
 import { FirmwareType, UI_REQUEST, UI_RESPONSE, createUiMessage } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import type { Log } from '@trezor/connect-common/src/utils/debug';
 import { getFirmwareOrBootloaderVersionArray } from '@trezor/device-utils';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
-import { resolveAfter } from '@trezor/utils';
+import { type Logger, resolveAfter } from '@trezor/utils';
 import { isEqual, isNewer } from '@trezor/utils/src/versionUtils';
 
 import {
@@ -41,7 +40,7 @@ type ReconnectContext = {
     device: Device;
     registerEvents: (device: Device) => void;
     postMessage: PostMessage;
-    log: Log;
+    log: Logger;
     abortSignal: AbortSignal;
     uiPromises: { create: UiPromiseCreator; rejectAll: (e: Error) => void };
 };
@@ -324,7 +323,7 @@ type BinaryHelperParams = {
     params: Params;
     firmwareType: FirmwareType;
     isIntermediary: boolean;
-    log: Log;
+    log: Logger;
 };
 
 const getBinaryHelper = async ({
@@ -393,7 +392,7 @@ type Context = {
     registerEvents: (device: Device) => void;
     postMessage: PostMessage;
     selectDevice: (path?: DeviceUniquePath) => Device;
-    log: Log;
+    log: Logger;
     abortSignal: AbortSignal;
     uiPromises: ReconnectContext['uiPromises'];
 };

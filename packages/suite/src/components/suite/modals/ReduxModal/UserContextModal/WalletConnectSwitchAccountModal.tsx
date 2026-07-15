@@ -6,6 +6,7 @@ import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { sortByCoin } from '@suite-common/wallet-utils';
 import {
     getSessionNetworks,
     selectSessions,
@@ -33,11 +34,13 @@ export const WalletConnectSwitchAccountModal = ({
     const selectableAccounts = useMemo<Account[]>(
         () =>
             session
-                ? getSessionNetworks(session)
-                      .filter(network => network.status === 'active')
-                      .flatMap(network =>
-                          accounts.filter(account => account.symbol === network.symbol),
-                      )
+                ? sortByCoin(
+                      getSessionNetworks(session)
+                          .filter(network => network.status === 'active')
+                          .flatMap(network =>
+                              accounts.filter(account => account.symbol === network.symbol),
+                          ),
+                  )
                 : [],
         [accounts, session],
     );

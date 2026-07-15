@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from 'react';
+import { type ReactNode } from 'react';
 import { View } from 'react-native';
 import Animated, {
     type EntryExitAnimationFunction,
@@ -19,6 +19,8 @@ import { FilterCountBadge } from './FilterCountBadge';
 type SearchableAccountsListHeaderProps = {
     title: ReactNode;
     onSearchInputChange: (value: string) => void;
+    isSearchActive: boolean;
+    onSearchActiveChange: (value: boolean) => void;
     flowType?: AddCoinFlowType;
     closeActionType?: CloseActionType;
     closeAction?: () => void;
@@ -29,14 +31,14 @@ type SearchableAccountsListHeaderProps = {
 const HEADER_ANIMATION_DURATION = 100;
 
 const searchFormContainerStyle = prepareNativeStyle(({ spacings }) => ({
-    height: 48,
     marginBottom: spacings.sp8,
-    paddingTop: spacings.sp4,
 }));
 
 export const SearchableAccountsListHeader = ({
     title,
     onSearchInputChange,
+    isSearchActive,
+    onSearchActiveChange,
     flowType,
     closeActionType,
     closeAction,
@@ -46,10 +48,8 @@ export const SearchableAccountsListHeader = ({
     const isFirstRender = useSharedValue(true);
     const { applyStyle } = useNativeStyles();
 
-    const [isSearchActive, setIsSearchActive] = useState(false);
-
     const handleHideFilter = () => {
-        setIsSearchActive(false);
+        onSearchActiveChange(false);
         onSearchInputChange('');
     };
 
@@ -97,7 +97,8 @@ export const SearchableAccountsListHeader = ({
                             )}
                             <IconButton
                                 iconName="magnifyingGlass"
-                                onPress={() => setIsSearchActive(true)}
+                                onPress={() => onSearchActiveChange(true)}
+                                size="medium"
                                 intent="neutral"
                                 priority="secondary"
                             />
@@ -115,6 +116,7 @@ export const SearchableAccountsListHeader = ({
                                 <View>
                                     <IconButton
                                         iconName="funnelSimple"
+                                        size="medium"
                                         onPress={onFilterPress}
                                         intent="neutral"
                                         priority="secondary"

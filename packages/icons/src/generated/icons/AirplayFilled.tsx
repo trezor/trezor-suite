@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgAirplayFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M22.759 26.349A1 1 0 0 1 22 28H10a1 1 0 0 1-.759-1.651l6-7a1 1 0 0 1 1.519 0zM26 5H6a3 3 0 0 0-3 3v14a3 3 0 0 0 3 3h1.532a.5.5 0 0 0 .375-.175l5.81-6.777a3 3 0 0 1 4.556 0l5.814 6.777a.5.5 0 0 0 .375.175H26a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3"
+        />
+    </svg>
+);
+export { SvgAirplayFilled as ReactComponent };

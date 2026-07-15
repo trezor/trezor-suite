@@ -2,18 +2,16 @@ import { useMemo } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
-import type { ExperimentalFeature } from '@suite/experimental';
+import { selectIsDebugModeActive } from '@suite/debug';
+import { type ExperimentalFeature } from '@suite/experimental';
 import { LearnMoreButton } from '@suite/external-links';
 import { feedbackRequested } from '@suite/feature-feedback';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
-import {
-    selectExperimentalFeatures,
-    selectIsDebugModeActive,
-    suiteSettingsActions,
-} from '@suite/settings';
+import { selectExperimentalFeatures, suiteSettingsActions } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { Banner, Button, Checkbox, Column, Row, Switch } from '@trezor/components';
+import { WarningIcon } from '@trezor/icons';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
@@ -56,6 +54,7 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
             console.error('Could not turn on an experimental feature: ', error);
         }
     };
+
     const handleClick = () => {
         if (!config.routeName) return;
         dispatch(goto({ routeName: config.routeName }));
@@ -164,7 +163,7 @@ export const Experimental = () => {
                                 {isExperimentalEnabled && (
                                     <motion.div {...bannerMotionDivProps}>
                                         <Banner
-                                            icon="warning"
+                                            icon={WarningIcon}
                                             intent="warning"
                                             description={
                                                 <Translation id="TR_EXPERIMENTAL_FEATURES_WARNING_IF_ENABLED" />
@@ -192,7 +191,7 @@ export const Experimental = () => {
                             {experimentalFeatures.map(feature => (
                                 <FeatureLine
                                     key={feature}
-                                    feature={feature as ExperimentalFeature}
+                                    feature={feature}
                                     enabledFeatures={enabledFeatures}
                                 />
                             ))}

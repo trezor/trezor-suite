@@ -1,12 +1,7 @@
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import {
-    selectAutodetectTheme,
-    selectIsDebugModeActive,
-    selectThemeSettings,
-    suiteSettingsActions,
-} from '@suite/settings';
+import { selectAutodetectTheme, selectThemeSettings, suiteSettingsActions } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -20,7 +15,6 @@ type Option = { value: ThemeColorVariantWithSystem; label: string };
 
 const useThemeOptions = () => {
     const { translationString } = useTranslation();
-    const isDebug = useSelector(selectIsDebugModeActive);
 
     const systemOption: Option = {
         value: 'system',
@@ -31,16 +25,11 @@ const useThemeOptions = () => {
         value: 'standard',
         label: translationString('TR_COLOR_SCHEME_LIGHT'),
     };
-    const debugOption: Option = { value: 'debug', label: 'Debug' };
 
-    const optionGroups = [
-        { options: [systemOption] },
-        { options: [lightOption, darkOption, ...(isDebug ? [debugOption] : [])] },
-    ];
+    const optionGroups = [{ options: [systemOption] }, { options: [lightOption, darkOption] }];
 
     const getOption = (theme: ThemeColorVariantWithSystem) => {
         const map: Record<ThemeColorVariantWithSystem, Option> = {
-            debug: debugOption,
             standard: lightOption,
             dark: darkOption,
             system: systemOption,
@@ -90,9 +79,7 @@ export const Theme = () => {
         }
 
         if (desktopApi.available) {
-            // Remove `debug` option
-            const nativeThemeValue = themeValue === 'debug' ? 'light' : themeValue;
-            desktopApi.themeChange(nativeThemeValue);
+            desktopApi.themeChange(themeValue);
         }
     };
 

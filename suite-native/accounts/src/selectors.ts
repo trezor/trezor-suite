@@ -1,16 +1,16 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import { getFirstFreshAddress } from '@suite-common/address';
+import { type DeviceRootState, selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import {
-    type DeviceRootState,
-    selectDeviceStaticSessionId,
-    selectIsPortfolioTrackerDevice,
-} from '@suite-common/device';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
+    createWeakMapSelector,
+    returnStableArrayIfEmpty,
+    weakMapMemoize,
+} from '@suite-common/redux-utils';
 import {
     type SuiteSyncDataRootState,
-    selectAccountsWithSuiteSyncLabel,
     selectSuiteSyncAccountLabel,
+    selectVisibleDeviceAccountsWithSuiteSyncLabel,
 } from '@suite-common/suite-sync';
 import {
     type SimpleTokenStructure,
@@ -19,7 +19,7 @@ import {
     isTokenDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FiatRatesRootState,
@@ -40,6 +40,7 @@ import {
     type RatesByKey,
     type TokenAddress,
     type TokenInfoBranded,
+    asBaseCurrencyAmount,
     createAccountKey,
 } from '@suite-common/wallet-types';
 import {
@@ -47,22 +48,24 @@ import {
     getAccountFiatBalance,
     getAccountTotalStakingBalance,
     getFiatRateKey,
+    isAccountFailed,
     isCardanoStakingActive,
     isErc4626,
     isStakingSymbol,
-    parseDeviceStaticSessionId,
+    sortTokensByName,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { type CombinedLabelingState, selectIsLabellingAllowed } from '@suite-native/labeling';
 import { isNetworkWithTokens, selectAccountTokenInfo } from '@suite-native/tokens';
 import { type StaticSessionId } from '@trezor/connect';
+import { parseStaticSessionId } from '@trezor/device-utils';
+import { BigNumber } from '@trezor/utils';
 
-import { type AccountListSection, type GroupedByTypeAccounts } from './types';
+import { type AccountListSection } from './types';
 import {
     filterAccountsByLabelAndNetworkNames,
     filterAccountsByNetworkSymbols,
     filterSendAvailableAccounts,
-    groupAccountsByNetworkAccountType,
     sortAccountsByNetworksAndAccountTypes,
 } from './utils';
 
@@ -84,7 +87,7 @@ export const selectAccountLabel = (
 ) => {
     const isLabellingAllowed = selectIsLabellingAllowed(state);
 
-    const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+    const { walletDescriptor } = parseStaticSessionId(deviceStaticSessionId);
 
     const syncedLabel = selectSuiteSyncAccountLabel(
         state,
@@ -110,21 +113,30 @@ export const selectAccountLabel = (
     return account?.accountLabel ?? null;
 };
 
-export const selectVisibleAccountsWithLabel = (state: NativeAccountsRootState) =>
-    selectAccountsWithSuiteSyncLabel(
-        state,
-        selectVisibleDeviceAccounts(state),
-        selectDeviceStaticSessionId(state),
-    );
-
 // TODO: It searches for filterValue even in tokens without fiat rates.
 // These are currently hidden in UI, but they should be made accessible in some way.
-export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = createMemoizedSelector(
+const selectFilteredDeviceAccounts = createMemoizedSelector(
     [
-        selectVisibleAccountsWithLabel,
+        selectVisibleDeviceAccountsWithSuiteSyncLabel,
         (_state: NativeAccountsRootState, filterValue: string) => filterValue,
         (_state: NativeAccountsRootState, _filterValue: string, isSendFlow: boolean = false) =>
             isSendFlow,
+    ],
+    (accounts, filterValue, isSendFlow) => {
+        const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts);
+        const sendFilteredAccounts = isSendFlow
+            ? filterSendAvailableAccounts(sortedAccounts)
+            : sortedAccounts;
+
+        return filterAccountsByLabelAndNetworkNames(sendFilteredAccounts, filterValue);
+    },
+);
+
+const createStableArray = weakMapMemoize(<T>(...items: T[]) => items);
+
+export const selectFilteredDeviceNetworkSymbols = createMemoizedSelector(
+    [
+        selectFilteredDeviceAccounts,
         (
             _state: NativeAccountsRootState,
             _filterValue: string,
@@ -132,19 +144,63 @@ export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = createMem
             networkSymbols: NetworkSymbol[],
         ) => networkSymbols,
     ],
-    (accounts, filterValue, isSendFlow, networkSymbols) => {
-        const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts);
-        const sendFilteredAccounts = isSendFlow
-            ? filterSendAvailableAccounts(sortedAccounts)
-            : sortedAccounts;
+    (accounts, networkSymbols) => {
+        const networkFilteredAccounts = filterAccountsByNetworkSymbols(accounts, networkSymbols);
 
-        return pipe(
-            sendFilteredAccounts,
-            accountsSorted => filterAccountsByNetworkSymbols(accountsSorted, networkSymbols),
-            accountsSorted => filterAccountsByLabelAndNetworkNames(accountsSorted, filterValue),
-            groupAccountsByNetworkAccountType,
-        ) as GroupedByTypeAccounts;
+        return returnStableArrayIfEmpty(
+            createStableArray(...A.uniq(networkFilteredAccounts.map(account => account.symbol))),
+        );
     },
+);
+
+export const selectFilteredDeviceAccountTypesByNetworkSymbol = createMemoizedSelector(
+    [
+        selectFilteredDeviceAccounts,
+        (
+            _state: NativeAccountsRootState,
+            _filterValue: string,
+            _isSendFlow: boolean = false,
+            networkSymbol: NetworkSymbol,
+        ) => networkSymbol,
+    ],
+    (accounts, networkSymbol) =>
+        returnStableArrayIfEmpty(
+            createStableArray(
+                ...A.uniq(
+                    accounts
+                        .filter(account => account.symbol === networkSymbol)
+                        .map(account => account.accountType),
+                ),
+            ),
+        ),
+);
+
+export const selectFilteredDeviceAccountsByNetworkSymbolAndAccountType = createMemoizedSelector(
+    [
+        selectFilteredDeviceAccounts,
+        (
+            _state: NativeAccountsRootState,
+            _filterValue: string,
+            _isSendFlow: boolean = false,
+            networkSymbol: NetworkSymbol,
+        ) => networkSymbol,
+        (
+            _state: NativeAccountsRootState,
+            _filterValue: string,
+            _isSendFlow: boolean = false,
+            _networkSymbol: NetworkSymbol,
+            accountType: AccountType,
+        ) => accountType,
+    ],
+    (accounts, networkSymbol, accountType) =>
+        returnStableArrayIfEmpty(
+            createStableArray(
+                ...accounts.filter(
+                    account =>
+                        account.symbol === networkSymbol && account.accountType === accountType,
+                ),
+            ),
+        ),
 );
 
 export type NetworkFilterOption = {
@@ -152,9 +208,16 @@ export type NetworkFilterOption = {
     accountCount: number;
 };
 
+const createNetworkFilterOption = weakMapMemoize(
+    (symbol: NetworkSymbol, accountCount: number): NetworkFilterOption => ({
+        symbol,
+        accountCount,
+    }),
+);
+
 export const selectNetworkFilterOptions = createMemoizedSelector(
     [
-        selectVisibleAccountsWithLabel,
+        selectVisibleDeviceAccountsWithSuiteSyncLabel,
         (_state: NativeAccountsRootState, isSendFlow: boolean = false) => isSendFlow,
     ],
     (accounts, isSendFlow) => {
@@ -163,24 +226,28 @@ export const selectNetworkFilterOptions = createMemoizedSelector(
             ? filterSendAvailableAccounts(sortedAccounts)
             : sortedAccounts;
 
-        const seen = new Set<NetworkSymbol>();
-        const options: NetworkFilterOption[] = [];
+        const accountCounts = new Map<NetworkSymbol, number>();
 
         for (const account of filteredAccounts) {
-            if (!seen.has(account.symbol)) {
-                seen.add(account.symbol);
-                options.push({
-                    symbol: account.symbol,
-                    accountCount: filteredAccounts.filter(a => a.symbol === account.symbol).length,
-                });
-            }
+            accountCounts.set(account.symbol, (accountCounts.get(account.symbol) ?? 0) + 1);
         }
 
-        return options;
+        return returnStableArrayIfEmpty(
+            createStableArray(
+                ...Array.from(accountCounts, ([symbol, accountCount]) =>
+                    createNetworkFilterOption(symbol, accountCount),
+                ),
+            ),
+        );
     },
 );
 
-export const selectAccountFiatBalance = createMemoizedSelector(
+export const selectIsAccountsListNetworkFilterVisible = createMemoizedSelector(
+    [selectNetworkFilterOptions],
+    networkFilterOptions => networkFilterOptions.length > 1,
+);
+
+const selectAccountFiatBalanceValue = createMemoizedSelector(
     [
         selectCurrentFiatRates,
         selectAccountByKey,
@@ -196,7 +263,7 @@ export const selectAccountFiatBalance = createMemoizedSelector(
     ],
     (fiatRates, account, localCurrency, shouldIncludeStaking, shouldIncludeTokens) => {
         if (!account) {
-            return BASE_CURRENCY_ZERO;
+            return BASE_CURRENCY_ZERO.toFixed();
         }
 
         const totalBalance = getAccountFiatBalance({
@@ -208,11 +275,16 @@ export const selectAccountFiatBalance = createMemoizedSelector(
         });
 
         if (!totalBalance) {
-            return BASE_CURRENCY_ZERO;
+            return BASE_CURRENCY_ZERO.toFixed();
         }
 
-        return totalBalance;
+        return totalBalance.toFixed();
     },
+);
+
+export const selectAccountFiatBalance = createMemoizedSelector(
+    [selectAccountFiatBalanceValue],
+    fiatBalance => asBaseCurrencyAmount(new BigNumber(fiatBalance)),
 );
 
 export const selectAccountTokenFiatBalance = createMemoizedSelector(
@@ -320,9 +392,7 @@ export const getAccountListSections = (
             sections.push({
                 type: 'zeroBalance',
                 account,
-                tokens: [...zeroBalanceTokens].sort((a, b) =>
-                    (a.name ?? '').localeCompare(b.name ?? ''),
-                ),
+                tokens: [...zeroBalanceTokens].sort(sortTokensByName),
             });
         }
     }
@@ -364,6 +434,20 @@ export const selectFreshAccountAddress = createMemoizedSelector(
     [selectAccountByKey, selectPendingAccountAddresses, selectIsAccountUtxoBased],
     (account, pendingAddresses, isAccountUtxoBased) =>
         account ? getFirstFreshAddress(account, [], pendingAddresses, isAccountUtxoBased) : null,
+);
+
+export const selectIsAccountDiscoveryFailed = createMemoizedSelector(
+    [selectAccountByKey],
+    account => !!account && isAccountFailed(account),
+);
+
+export const selectHasDeviceAnyFailedAccountForNetworkSymbol = createMemoizedSelector(
+    [
+        selectVisibleDeviceAccounts,
+        (_state: NativeAccountsRootState, networkSymbol: NetworkSymbol) => networkSymbol,
+    ],
+    (accounts, networkSymbol) =>
+        accounts.some(account => account.symbol === networkSymbol && isAccountFailed(account)),
 );
 
 export const selectHasDeviceAnySendAvailableAccount = createMemoizedSelector(

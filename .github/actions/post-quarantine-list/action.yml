@@ -15,6 +15,11 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Install SafeDep PMG
+      uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
+      continue-on-error: true
+      with:
+        version: v0.19.1
     - name: Fetch quarantined tests
       shell: bash
       env:
@@ -25,6 +30,7 @@ runs:
           PROJECT_ARGS+=(--project "${{ inputs.project_name }}")
         fi
         # npx used because `yarn` does not run in this action; the pinned version may be updated if it changes in root package.json
+        npm i -g tsx@4.21.0
         npx tsx@4.21.0 \
           "${{ github.workspace }}/packages/e2e-utils/src/quarantineBot/index.ts" \
           --list "${PROJECT_ARGS[@]}" > "${{ runner.temp }}/quarantine.json"

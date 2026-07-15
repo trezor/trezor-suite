@@ -6,7 +6,7 @@ import {
 
 export type ExchangeTradeableAssetsSheetProps = Omit<
     TradeableAssetsSheetProps,
-    'assets' | 'onFilterChange' | 'onSelectedNetworkFilter' | 'flashListKey'
+    'assets' | 'onFilterChange' | 'onSelectedNetworkFilter' | 'scrollResetKey'
 >;
 
 const SHEET_TEST_ID = '@trading/exchange/receive-asset-sheet';
@@ -15,16 +15,14 @@ export const ExchangeTradeableAssetsSheet = (props: ExchangeTradeableAssetsSheet
     const { filteredData, filterValue, setFilterValue, setFilterSymbol } =
         useExchangeBuyTradeableAssetsFilteredData();
 
-    // re-mount FlashList component when filterValue changes (resets scroll position)
-    const flashListKey = 'exchange_tradeable_assets-' + filterValue;
-
     return (
         <TradeableAssetSheet
             assets={filteredData}
             onFilterChange={setFilterValue}
             {...props}
             onSelectedNetworkFilter={setFilterSymbol}
-            flashListKey={flashListKey}
+            // reset scroll position when filterValue changes
+            scrollResetKey={filterValue}
             testID={SHEET_TEST_ID}
         />
     );

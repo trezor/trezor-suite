@@ -21,7 +21,7 @@ export type YieldApproveModalProps = {
     vaultId: string;
     spender: string;
     preapprovedAmount?: string;
-    txType: 'approve' | 'revoke' | 'revoke-only';
+    txType: 'approve' | 'revoke';
     onCancel: () => void;
     onSuccess: (txid: string) => void;
 };
@@ -68,7 +68,6 @@ export const YieldApproveModal = ({
 
                 break;
             case 'revoke':
-            case 'revoke-only':
                 openRevokeModal();
 
                 break;
@@ -153,22 +152,29 @@ export const YieldApproveModal = ({
                 account={account}
                 provider={provider}
                 spender={spender}
-                logoSourceType="url"
+                showSpender
+                preapprovedAmount={preapprovedAmount}
+                heading="TR_APPROVAL_APPROVE_TOKEN_SPENDING"
+                description="TR_EARN_YIELD_APPROVE_TOKEN_SPENDING_DESCRIPTION"
                 onCancel={handleOnApproveCancel}
                 onConfirm={handleOnApproveConfirm}
             />
         );
     }
 
-    if ((txType === 'revoke' || txType === 'revoke-only') && isRevokeModalOpen) {
+    if (txType === 'revoke' && isRevokeModalOpen) {
         return (
             <RevokeModal
                 cryptoId={cryptoId}
                 account={account}
                 provider={provider}
                 spender={spender}
-                logoSourceType="url"
+                showSpender
                 preapprovedAmount={preapprovedAmount}
+                approveAmount={amount}
+                followedByApproval={false}
+                heading="TR_APPROVAL_REVOKE_TOKEN_SPENDING"
+                description="TR_EARN_YIELD_REVOKE_TOKEN_SPENDING_DESCRIPTION"
                 onCancel={handleOnRevokeCancel}
                 onConfirm={handleOnRevokeConfirm}
             />

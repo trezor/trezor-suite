@@ -10,6 +10,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { wipeDeviceThunk } from '@suite-common/wallet-core';
 import { Button, Column, Modal } from '@trezor/components';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
+import { NewspaperIcon, TrashIcon } from '@trezor/icons';
 import { StepCard } from '@trezor/product-components';
 
 import { useDispatch } from 'src/hooks/suite';
@@ -86,7 +87,7 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
                             </Button>
                         </>
                     }
-                    icon="trash"
+                    icon={TrashIcon}
                     state={isConfirmed ? 'confirmed' : 'default'}
                 />
                 <StepCard
@@ -114,7 +115,7 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
                             </Button>
                         </>
                     }
-                    icon="newspaper"
+                    icon={NewspaperIcon}
                     state={isConfirmed ? 'default' : 'pending'}
                 />
             </Column>

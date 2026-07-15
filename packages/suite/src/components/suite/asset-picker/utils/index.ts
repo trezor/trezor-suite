@@ -1,19 +1,22 @@
-import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
 import { ASSET_ROW_HEIGHT, EXPANDABLE_ASSET_ROW_TOKENS_HEADER_HEIGHT } from '../constants';
-import { type AccountWithTokensOption } from '../types';
+import { type AccountWithOptionalLabel, type AccountWithTokensOption } from '../types';
 
-export function calculateExpandableTokensHeight(expanded: boolean, hiddenTokensLength: number) {
-    const tokensHeight = expanded ? hiddenTokensLength * (ASSET_ROW_HEIGHT - 8) : 0;
+export function getExpandableTokensContentHeight(tokenCount: number) {
+    return tokenCount * (ASSET_ROW_HEIGHT - 8);
+}
+
+export function calculateExpandableTokensHeight(expanded: boolean, tokenCount: number) {
+    const tokensHeight = expanded ? getExpandableTokensContentHeight(tokenCount) : 0;
 
     return EXPANDABLE_ASSET_ROW_TOKENS_HEADER_HEIGHT + tokensHeight;
 }
 
 interface CreateHiddenTokensOptionProps {
-    account: AccountWithSuiteSyncLabel;
+    account: AccountWithOptionalLabel;
     hiddenTokens: TokensWithRates[];
     expandedHiddenTokensGroups: AccountKey[];
 }
@@ -35,7 +38,7 @@ export function createHiddenTokensOption({
 }
 
 interface CreateNonradableTokensOptionProps {
-    account: AccountWithSuiteSyncLabel;
+    account: AccountWithOptionalLabel;
     nonTradableTokens: TokensWithRates[];
     expandedNonTradableTokensGroups: AccountKey[];
 }
@@ -56,14 +59,14 @@ export function createNonTradableTokensOption({
     } satisfies Extract<AccountWithTokensOption, { type: 'non-tradable-tokens' }>;
 }
 
-export const createAccountOption = (account: AccountWithSuiteSyncLabel) =>
+export const createAccountOption = (account: AccountWithOptionalLabel) =>
     ({
         type: 'account',
         account,
         height: ASSET_ROW_HEIGHT,
     }) satisfies Extract<AccountWithTokensOption, { type: 'account' }>;
 
-export const createTokenOption = (account: AccountWithSuiteSyncLabel, token: TokensWithRates) =>
+export const createTokenOption = (account: AccountWithOptionalLabel, token: TokensWithRates) =>
     ({
         type: 'token',
         account,

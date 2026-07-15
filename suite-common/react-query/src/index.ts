@@ -2,6 +2,7 @@ export {
     QueryClient,
     QueryClientProvider,
     useQuery,
+    useInfiniteQuery,
     useMutation,
     useQueryClient,
     type MutationOptions,

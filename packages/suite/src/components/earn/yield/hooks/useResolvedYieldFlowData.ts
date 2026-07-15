@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { type EarnParams } from '@suite/router';
-import { type TokenDto, type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { type TokenDtoV2, type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowDisplayToken,
@@ -23,7 +23,7 @@ const getMatchedAccountToken = ({
     token,
 }: {
     account: Account;
-    token?: Pick<TokenDto, 'address' | 'symbol' | 'decimals'>;
+    token?: Pick<TokenDtoV2, 'address' | 'symbol' | 'decimals'>;
 }) => {
     if (!account.tokens?.length || !token) {
         return undefined;
@@ -49,15 +49,15 @@ type UseResolvedYieldFlowDataResult = {
     token: YieldFlowToken | null;
     receiptToken: YieldFlowDisplayToken | null;
     apy: number | null;
-    suppliedAmount: string;
-    suppliedSharesAmount: string;
+    depositedAmount: string;
+    depositedSharesAmount: string;
     flowKey: string;
 };
 
 type UseResolvedYieldFlowDataProps = {
     account: Account;
     routeParams: EarnParams;
-    vault: YieldDto;
+    vault: YieldDtoV2;
 };
 
 export const useResolvedYieldFlowData = ({
@@ -126,7 +126,7 @@ export const useResolvedYieldFlowData = ({
         };
     }, [account, token, vault]);
 
-    const suppliedAmount = getConvertedOutputTokenBalanceToInputTokenAmount({
+    const depositedAmount = getConvertedOutputTokenBalanceToInputTokenAmount({
         networkSymbol: account.symbol,
         token: vault.token,
         outputToken: vault.outputToken,
@@ -134,7 +134,7 @@ export const useResolvedYieldFlowData = ({
         pricePerShareState: vault.state?.pricePerShareState,
     });
 
-    const suppliedSharesAmount = matchedOutputToken?.balance ?? '0';
+    const depositedSharesAmount = matchedOutputToken?.balance ?? '0';
 
     const flowKey = getStablecoinYieldFlowKey({
         accountKey: account.key,
@@ -149,8 +149,8 @@ export const useResolvedYieldFlowData = ({
         token,
         receiptToken,
         apy,
-        suppliedAmount,
-        suppliedSharesAmount,
+        depositedAmount,
+        depositedSharesAmount,
         flowKey,
     };
 };

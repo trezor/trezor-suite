@@ -16,7 +16,7 @@ node_modules
 *.sublime-workspace
 .vscode/**/*
 !.vscode/*.code-snippets
-tags*
+/tags*
 
 # Logs
 logs
@@ -58,6 +58,7 @@ public
 !packages/analytics-docs/public/
 coverage
 tmp
+*.tgz
 
 
 ## React Native section ##
@@ -152,6 +153,10 @@ packages/suite-data/files/translations/master.json
 
 # local config for Claude
 .claude/
+.mcp.json
+
+# playwright trace CLI extraction dir
+.playwright-cli/
 
 # AI agent plans
 /plans

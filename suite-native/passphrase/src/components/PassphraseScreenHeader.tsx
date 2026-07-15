@@ -5,7 +5,10 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { cancelDiscoveryThunk } from '@suite-common/wallet-core';
+import {
+    cancelDiscoveryThunk,
+    selectIsCreatingNewPassphraseWallet,
+} from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
@@ -22,8 +25,6 @@ import {
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
-
-import { selectIsCreatingNewPassphraseWallet } from '../passphraseSelectors';
 
 type NavigationProp = StackToTabCompositeProps<
     AuthorizeDeviceStackParamList,
@@ -90,6 +91,7 @@ export const PassphraseScreenHeader = () => {
                 iconName="x"
                 intent="neutral"
                 priority="secondary"
+                size="medium"
                 accessibilityRole="button"
                 accessibilityLabel="close"
                 onPress={handleCancel}

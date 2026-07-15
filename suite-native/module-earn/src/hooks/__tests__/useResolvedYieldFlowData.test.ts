@@ -1,4 +1,4 @@
-import { type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/connect';
 
@@ -35,13 +35,8 @@ const vault = {
     providerId: 'morpho',
     metadata: {
         name: 'Steakhouse USDC Prime',
-        description: '',
         underMaintenance: false,
         deprecated: false,
-        logoURI: '',
-        documentation: '',
-        supportedStandards: [],
-        supportsCampaigns: false,
     },
     token: {
         address: underlyingTokenAddress,
@@ -59,7 +54,6 @@ const vault = {
         network: 'ethereum',
         coinGeckoId: 'usd-coin',
     },
-    inputTokens: [],
     rewardRate: {
         total: 0.05,
         rateType: 'APY',
@@ -69,7 +63,7 @@ const vault = {
         enter: true,
         exit: true,
     },
-} satisfies Omit<YieldDto, 'tokens' | 'mechanics'> as unknown as YieldDto;
+} satisfies YieldDtoV2 as unknown as YieldDtoV2;
 
 const resolve = ({
     tokenContract,
@@ -103,7 +97,10 @@ describe('resolveYieldFlowData', () => {
         expect(result.token.contractAddress).toBe(underlyingTokenAddress);
         expect(result.receiptToken.symbol).toBe('trSHUSDCp');
         expect(result.receiptToken.contractAddress).toBe(receiptTokenAddress);
+        expect(result.vaultTokenName).toBe('Trezor Steakhouse USDC Prime');
+        expect(result.vaultTokenSymbol).toBe('trSHUSDCp');
         expect(result.flowData.token.symbol).toBe('USDC');
+        expect(result.depositedSharesAmount).toBe('1.5');
     });
 
     it('keeps receipt token data for the existing output-token overview entry', () => {
@@ -117,9 +114,11 @@ describe('resolveYieldFlowData', () => {
             throw new Error('Expected resolved yield flow data.');
         }
 
-        expect(result.token.symbol).toBe('trSHUSDCp');
-        expect(result.token.decimals).toBe(18);
-        expect(result.token.balance).toBe('1.5');
+        expect(result.token.symbol).toBe('USDC');
+        expect(result.token.decimals).toBe(6);
+        expect(result.token.balance).toBe('25');
+        expect(result.receiptToken.symbol).toBe('trSHUSDCp');
+        expect(result.depositedSharesAmount).toBe('1.5');
         expect(result.flowKey).toContain(receiptTokenAddress);
     });
 });

@@ -4,7 +4,7 @@ import { deviceActions } from '@suite-common/device';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { networks } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { accountEqualTo, enhanceHistory } from '@suite-common/wallet-utils';
+import { accountEqualTo, compareAccountsByCoin, enhanceHistory } from '@suite-common/wallet-utils';
 
 import { accountsActions } from './accountsActions';
 
@@ -39,7 +39,8 @@ const update = (state: Account[], account: Account) => {
         }
     } else {
         console.warn(
-            `Tried to update account that does not exist: ${account.descriptor} (symbol: ${account.symbol})`,
+            // do not log the descriptor: it is confidential and would leak into Sentry breadcrumbs
+            `Tried to update account that does not exist (symbol: ${account.symbol}, type: ${account.accountType}, index: ${account.index})`,
         );
     }
 };
@@ -47,7 +48,11 @@ const update = (state: Account[], account: Account) => {
 const remove = (state: Account[], accounts: Account[]) => {
     accounts.forEach(a => {
         const index = state.findIndex(accountEqualTo(a));
-        state.splice(index, 1);
+        // a missing account yields index -1, and splice(-1, 1) would delete the
+        // last, unrelated account instead of being a no-op
+        if (index !== -1) {
+            state.splice(index, 1);
+        }
     });
 };
 
@@ -74,10 +79,22 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
                 const account = { ...action.payload, accountLabel, history };
 
                 if (state.some(accountEqualTo(account))) {
-                    console.warn('Duplicated account found, updating instead: ', account);
+                    console.warn(
+                        // do not log the whole account: descriptor/addresses/balance are confidential and would leak into Sentry breadcrumbs
+                        `Duplicated account found, updating instead (symbol: ${account.symbol}, type: ${account.accountType}, index: ${account.index})`,
+                    );
                     update(state, account);
                 } else {
-                    state.push(account);
+                    // Keep the state sorted by coin so that consumers get the canonical order for free.
+                    const insertAtIndex = state.findIndex(
+                        existingAccount => compareAccountsByCoin(account, existingAccount) < 0,
+                    );
+
+                    if (insertAtIndex === -1) {
+                        state.push(account);
+                    } else {
+                        state.splice(insertAtIndex, 0, account);
+                    }
                 }
             })
             .addCase(accountsActions.updateAccount, (state, action) => {

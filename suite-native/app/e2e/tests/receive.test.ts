@@ -19,7 +19,7 @@ const preloadedState = preparePreloadedReduxState(
         : btcDiscoveryFinishedStateT3T1,
 );
 
-describe('Receive [@androidOnly @smoke @T3T1 @T3W1]', () => {
+describe('Receive [@androidOnly @T3T1 @T3W1]', () => {
     beforeEach(async () => {
         await prepareTrezorEmulator();
         await openApp({ args: { preloadedState } });

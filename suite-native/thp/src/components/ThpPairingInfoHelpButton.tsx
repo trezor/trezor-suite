@@ -15,9 +15,10 @@ export const ThpPairingInfoHelpButton = () => {
     return (
         <Box>
             <IconButton
+                iconName="question"
                 intent="neutral"
                 priority="secondary"
-                iconName="question"
+                size="medium"
                 onPress={openModal}
             />
             <BottomSheetModal ref={bottomSheetRef} isCloseDisplayed={false}>

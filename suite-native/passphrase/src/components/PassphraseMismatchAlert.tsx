@@ -66,7 +66,7 @@ export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNo
                             isAddingExistingWallet: false,
                         }),
                     );
-                    dispatch(runDiscoveryThunk(device));
+                    dispatch(runDiscoveryThunk({ device }));
                     navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
                         screen: AuthorizeDeviceStackRoutes.PassphraseForm,
                     });

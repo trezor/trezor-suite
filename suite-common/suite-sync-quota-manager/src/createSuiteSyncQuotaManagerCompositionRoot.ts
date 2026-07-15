@@ -1,8 +1,8 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
-import { toGetter } from '@suite-common/dependency-injection';
 import { type DeviceRootState } from '@suite-common/device';
-import { type TrezorConnect } from '@trezor/connect';
+import { type GetIsTorEnabledDep } from '@suite-common/suite-sync-types';
+import { type TrezorConnectCallable } from '@trezor/connect';
 
 import { createPrepareChallengeSessionFetch } from './challenge/createPrepareChallengeSessionFetch';
 import { createEnsureQuota } from './createEnsureQuota';
@@ -26,15 +26,16 @@ import {
     selectHasDeviceRegisteredAndOwnerHasAllowance,
     selectHasOwnerAllowance,
     selectLeftDeviceQuota,
-    selectQuotaManagerBaseUrl,
 } from './quotaManagerSelectors';
+import { selectQuotaManagerUrl } from './quotaManagerUrl';
 import { generateSessionId } from './session/generateSessionId';
 
 type CreateSuiteSyncQuotaManagerCompositionRootDeps = {
     dispatch: Dispatch;
     getState: () => DeviceRootState & WithSuiteSyncQuotaManagerState;
-    trezorConnect: Pick<TrezorConnect, 'evoluSignRegistrationRequest'>;
+    trezorConnect: Pick<TrezorConnectCallable, 'evoluSignRegistrationRequest'>;
 } & GetDeviceForStaticSessionIdDep &
+    GetIsTorEnabledDep &
     GetIsUsingTrezorRelayDep &
     FetchDep;
 
@@ -43,7 +44,7 @@ export const createSuiteSyncQuotaManagerCompositionRoot = (
 ) => {
     const quotaManagerFetch = createQuotaManagerFetch({
         fetch: deps.fetch,
-        getQuotaManagerBaseUrl: toGetter(deps.getState, selectQuotaManagerBaseUrl),
+        getQuotaManagerUrl: () => selectQuotaManagerUrl(deps.getState(), deps.getIsTorEnabled()),
     });
 
     // We only want to use QM for our own relay servers. In case custom URL has been set, QM is ignored,

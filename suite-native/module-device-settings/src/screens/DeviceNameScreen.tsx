@@ -21,7 +21,7 @@ export const DeviceNameScreen = () => {
                         <TextInputField
                             //  eslint-disable-next-line jsx-a11y/no-autofocus
                             autoFocus
-                            keepPlaceholderOnFocus
+                            labelType="noLabel"
                             placeholder={device?.name || ''}
                             name="deviceName"
                             autoCorrect={false}

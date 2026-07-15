@@ -15,7 +15,7 @@ import {
     selectRawNetworkFeeInfo,
     useFormDraft,
 } from '@suite-common/wallet-core';
-import { type Account, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     fromBaseCurrencyToCryptoUnit,
     getConvertedOrDefaultFeeInfo,
@@ -33,7 +33,7 @@ import type { AmountLimitProps } from 'src/utils/suite/validation';
 import {
     type WithdrawalContextValues as WithdrawalContextValuesBase,
     type WithdrawalFormState,
-} from '../../components/earn/forms/SupplyFormContext';
+} from '../../components/earn/forms/StakeFormContext';
 import { useFees } from '../wallet/form/useFees';
 import { useStakeCompose } from '../wallet/form/useStakeCompose';
 
@@ -206,6 +206,12 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
 
     const onCryptoAmountChange = useCallback(
         async (amount: string) => {
+            setValue(CRYPTO_INPUT, amount, {
+                shouldDirty: true,
+                shouldValidate: true,
+            });
+            setValue(OUTPUT_AMOUNT, amount || '', { shouldDirty: true, shouldValidate: true });
+
             if (currentRate) {
                 const fiatValue = toFiatCurrency({ amount, rate: currentRate?.rate })?.toFixed(
                     2,
@@ -217,11 +223,6 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
                 });
             }
 
-            setValue(CRYPTO_INPUT, amount, {
-                shouldDirty: true,
-                shouldValidate: true,
-            });
-            setValue(OUTPUT_AMOUNT, amount || '', { shouldDirty: true, shouldValidate: true });
             await composeRequest(CRYPTO_INPUT);
         },
         [composeRequest, currentRate, setValue],
@@ -273,9 +274,7 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
-            const result = await dispatch(
-                signTransaction(values, composedTx as PrecomposedTransactionFinal),
-            );
+            const result = await dispatch(signTransaction(values, composedTx));
 
             if (result?.success) {
                 clearForm();

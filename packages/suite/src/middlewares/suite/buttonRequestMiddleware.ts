@@ -1,6 +1,6 @@
 import { type MiddlewareAPI } from 'redux';
 
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { PAYMENT_REQUEST_BUTTON_NAMES, selectAccountByKey } from '@suite-common/wallet-core';
 import { UI_REQUEST } from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
@@ -17,6 +17,11 @@ const SIGN_TX_ROUTES = [
     'earn-yield-deposit',
     'earn-yield-withdraw',
     'earn-yield-claim',
+    'earn-tron-stake',
+    'earn-tron-vote',
+    'earn-tron-unstake',
+    'earn-tron-withdraw',
+    'earn-tron-claim',
 ] as const;
 
 const SIGN_TX_CONNECT_METHODS = [
@@ -31,6 +36,9 @@ const getAccountForButtonRequest = (state: AppState) => {
 
     const yieldAccountKey = state.wallet.stablecoinYield.txReview.accountKey;
     if (yieldAccountKey) return selectAccountByKey(state, yieldAccountKey);
+
+    const tronStakeAccountKey = state.wallet.tronStake.txReview.accountKey;
+    if (tronStakeAccountKey) return selectAccountByKey(state, tronStakeAccountKey);
 
     const sendAccountKey = state.wallet.send.accountKey;
     if (sendAccountKey) return selectAccountByKey(state, sendAccountKey);
@@ -51,6 +59,13 @@ const shouldRemapToSignTx = (
     }
 
     if (code !== 'ButtonRequest_Other') return false;
+
+    // SLIP-24 payment request review screens. Without remapping they route to ConfirmActionModal
+    // instead of the transaction review modal. Detected by name so it works on bitcoin-like networks
+    // (absent from SIGN_TX_NETWORK_TYPES) without affecting regular sends.
+    if (name !== undefined && PAYMENT_REQUEST_BUTTON_NAMES.includes(name)) {
+        return true;
+    }
 
     const account = getAccountForButtonRequest(state);
     const { activeCall } = state.connectPopup;

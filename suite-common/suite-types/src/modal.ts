@@ -67,6 +67,10 @@ export type UserContextPayload =
           symbol: Account['symbol'];
           deviceState: Account['deviceState'];
           flow: 'detail' | 'bump-fee' | 'cancel-transaction';
+          // Cancel is only offered from the account tx list; other entry points (trade detail,
+          // trading approval, earn, notifications, coin control) can't reflect a cancel, so they
+          // leave this unset and the Cancel button stays hidden.
+          showCancelButton?: boolean;
       }
     | {
           type: 'review-transaction';
@@ -161,7 +165,7 @@ export type UserContextPayload =
           account: Account;
           analyticsStep: Extract<
               EarnAnalyticsStep,
-              'earn-dashboard' | 'yield-supply' | 'yield-withdraw'
+              'earn-dashboard' | 'yield-deposit' | 'yield-withdraw'
           >;
           actionType?: EarnModalAction;
           yieldContext?: EarnYieldContext;
@@ -169,6 +173,12 @@ export type UserContextPayload =
     | {
           type: 'tron-stake-in-a-nutshell';
           actionType?: EarnModalAction;
+      }
+    | {
+          type: 'tron-vote-consent';
+          representativeName: string;
+          termsOfServiceUrl: string;
+          decision: Deferred<boolean>;
       }
     | {
           type: 'stake';
@@ -215,6 +225,9 @@ export type UserContextPayload =
       }
     | {
           type: 'connect-address-confirmation';
+      }
+    | {
+          type: 'connect-select-account';
       }
     | {
           type: 'connect-error';

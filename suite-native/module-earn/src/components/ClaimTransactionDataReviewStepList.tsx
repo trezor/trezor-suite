@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 
@@ -7,8 +6,7 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 import { getNetworkDecimals } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
-import { Button, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { VStack } from '@suite-native/atoms';
 import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
 import {
     selectClaimableAmountByAccountKey,
@@ -18,34 +16,23 @@ import {
     LIST_VERTICAL_SPACING,
     SlidingFooterOverlay,
     type TransactionReviewOutputsState,
-    selectIsTransactionReviewInProgress,
+    selectIsTransactionAlreadySigned,
     selectReviewSummaryOutput,
     useActiveStepOffset,
 } from '@suite-native/transaction-management';
 import { BigNumber } from '@trezor/utils';
 
 import { ClaimOutputItem } from './ClaimOutputItem';
-import { ClaimSummaryOutputItem } from './ClaimSummaryOutputItem';
+import { EarnSummaryOutputItem } from './EarnSummaryOutputItem';
 import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedPrecomposedTransaction';
-import { useHandleOnClaimTransactionReview } from '../hooks/useHandleOnClaimTransactionReview';
-
-const NUMBER_OF_STEPS = 2;
 
 type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.ClaimTransactionDataReview>;
 
-type ClaimTransactionDataReviewStepListProps = {
-    onTransactionSubmitted: (txid: string) => void;
-};
-
-export const ClaimTransactionDataReviewStepList = ({
-    onTransactionSubmitted,
-}: ClaimTransactionDataReviewStepListProps) => {
+export const ClaimTransactionDataReviewStepList = () => {
     const route = useRoute<RouteProps>();
     const { accountKey } = route.params;
 
-    const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
-        selectIsTransactionReviewInProgress(state, 'claim', accountKey),
-    );
+    const isSigned = useSelector(selectIsTransactionAlreadySigned);
 
     const summaryOutput = useSelector((state: TransactionReviewOutputsState) =>
         selectReviewSummaryOutput(state, 'claim', accountKey),
@@ -61,30 +48,17 @@ export const ClaimTransactionDataReviewStepList = ({
 
     const precomposedTransaction = useEarnSelectedPrecomposedTransaction('claim', accountKey);
 
-    const [stepIndex, setStepIndex] = useState(0);
+    // The summary card only unlocks once every device output has been confirmed, which is exactly when
+    // selectReviewSummaryOutput exposes a state.
+    const isSummaryActive = !!summaryOutput?.state;
+    const activeStep = isSummaryActive ? 1 : 0;
 
-    const { activeStepBottomOffset, handleReadListItemHeight } = useActiveStepOffset(stepIndex);
-
-    const handleOnClaimTransactionReview = useHandleOnClaimTransactionReview({
-        accountKey,
-        onTransactionSubmitted,
-    });
-
-    const areAllStepsDone = stepIndex === NUMBER_OF_STEPS - 1 || isTransactionReviewInProgress;
-
-    const handleNextStep = () => {
-        setStepIndex(prevStepIndex => prevStepIndex + 1);
-
-        if (stepIndex === NUMBER_OF_STEPS - 2) {
-            handleOnClaimTransactionReview();
-        }
-    };
+    const { activeStepBottomOffset, handleReadListItemHeight } = useActiveStepOffset(activeStep);
 
     const networkDecimals = accountSymbol ? (getNetworkDecimals(accountSymbol) ?? 18) : 18;
     const isSolanaClaim = !!accountSymbol && isSupportedSolStakingNetworkSymbol(accountSymbol);
 
-    // Solana: show composed lamports (totalSpent − fee)
-    // Ethereum: show claimable amount (calldata-only)
+    // Solana: show composed lamports (totalSpent − fee), fall back to the claimable amount.
     const claimableAmountInWei =
         isSolanaClaim && precomposedTransaction
             ? new BigNumber(precomposedTransaction.totalSpent)
@@ -100,28 +74,23 @@ export const ClaimTransactionDataReviewStepList = ({
                 {!!accountSymbol && (
                     <ClaimOutputItem
                         symbol={accountSymbol}
-                        outputState={stepIndex > 0 ? 'success' : 'active'}
+                        outputState={isSigned || isSummaryActive ? 'success' : 'active'}
                         onLayout={event => handleReadListItemHeight(event, 0)}
                     />
                 )}
 
                 {!!accountSymbol && (
-                    <ClaimSummaryOutputItem
+                    <EarnSummaryOutputItem
                         accountKey={accountKey}
-                        claimableAmountInWei={claimableAmountInWei}
-                        fee={summaryOutput?.fee ?? '0'}
+                        stakeType="claim"
+                        amount={claimableAmountInWei}
+                        fee={summaryOutput?.fee ?? precomposedTransaction?.fee ?? '0'}
                         outputState={summaryOutput?.state}
                         onLayout={event => handleReadListItemHeight(event, 1)}
                     />
                 )}
             </VStack>
-            {!areAllStepsDone && (
-                <SlidingFooterOverlay activeStepOffset={activeStepBottomOffset}>
-                    <Button onPress={handleNextStep} testID="@earn/claim-review-continue">
-                        <Translation id="generic.buttons.next" />
-                    </Button>
-                </SlidingFooterOverlay>
-            )}
+            {!isSigned && <SlidingFooterOverlay activeStepOffset={activeStepBottomOffset} />}
         </View>
     );
 };

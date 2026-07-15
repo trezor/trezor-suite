@@ -38,17 +38,6 @@ export const getIsRevisionCheckErrorWithNotification = (
 ): error is RevisionCheckErrorWithNotification =>
     revisionCheckErrorScenarios[error].shouldNotify === true;
 
-export type HashCheckErrorWithNotification = keyof FilterPropertiesByType<
-    typeof hashCheckErrorScenarios,
-    { shouldNotify: true }
->;
-
-export const getIsHashCheckErrorWithNotification = (
-    error: FirmwareHashCheckError,
-): error is HashCheckErrorWithNotification =>
-    // @ts-expect-error if this no longer gives error, then TODO hash check notifications must be implemented
-    hashCheckErrorScenarios[error].shouldNotify === true;
-
 type AuthenticityChecks = AcquiredDevice['authenticityChecks'];
 
 export const filterInconclusiveAuthenticityChecks = (

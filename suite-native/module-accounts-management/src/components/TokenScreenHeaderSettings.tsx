@@ -19,6 +19,7 @@ export const TokenScreenHeaderSettings = ({
             <IconButton
                 intent="neutral"
                 priority="secondary"
+                size="medium"
                 iconName="gear"
                 onPress={openModal}
                 testID="@token-detail/settings-button"

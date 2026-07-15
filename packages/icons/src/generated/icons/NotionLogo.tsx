@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgNotionLogo = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M27 5h-6a1 1 0 1 0 0 2h2v15.106L13.875 5.518A1 1 0 0 0 13 5H5a1 1 0 0 0 0 2h2v18H5a1 1 0 0 0 0 2h6a1 1 0 0 0 0-2H9V9.894l9.125 16.589A1 1 0 0 0 19 27h5a1 1 0 0 0 1-1V7h2a1 1 0 1 0 0-2M9.691 7h2.718l9.9 18H19.59L9.69 7z"
+        />
+    </svg>
+);
+export { SvgNotionLogo as ReactComponent };

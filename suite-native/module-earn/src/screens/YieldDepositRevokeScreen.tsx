@@ -29,7 +29,7 @@ export const YieldDepositRevokeScreen = () => {
         shouldShowLowLimitWarning,
         tokenContract,
         tokenSymbol,
-        vault,
+        vaultTokenName,
     } = revokeScreen;
 
     const pendingModalAmount = isApprovedAmountUnlimited ? (
@@ -79,7 +79,7 @@ export const YieldDepositRevokeScreen = () => {
                 <VStack spacing="sp12">
                     {shouldShowLowLimitWarning && (
                         <InlineAlertBox
-                            variant="warning"
+                            intent="warning"
                             title={
                                 <Translation id="earn.yieldDepositRevokeScreen.lowLimitInfoAlert" />
                             }
@@ -114,7 +114,7 @@ export const YieldDepositRevokeScreen = () => {
                     onExplorePress={pendingModal.onExplorePress}
                     submittedAt={pendingModal.submittedAt}
                     title={<Translation id="earn.yieldDepositRevokeScreen.pendingTitle" />}
-                    vaultName={vault.metadata.name}
+                    vaultName={vaultTokenName}
                     vaultTokenContract={tokenContract}
                 />
             )}

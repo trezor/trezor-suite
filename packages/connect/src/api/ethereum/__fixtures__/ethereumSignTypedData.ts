@@ -61,6 +61,28 @@ export const getFieldType = [
         },
     },
     {
+        description: `should parse bare uint as uint256`,
+        input: {
+            typeName: 'uint',
+            types: {},
+        },
+        output: {
+            data_type: PROTO.EthereumDataType.UINT,
+            size: 32,
+        },
+    },
+    {
+        description: `should parse bare int as int256`,
+        input: {
+            typeName: 'int',
+            types: {},
+        },
+        output: {
+            data_type: PROTO.EthereumDataType.INT,
+            size: 32,
+        },
+    },
+    {
         description: `should parse booleans`,
         input: {
             typeName: 'bool',
@@ -283,6 +305,22 @@ export const encodeData = [
             data: '0xc000000000000000000000000000000000000000000000000000000000000001',
         },
         output: 'c000000000000000000000000000000000000000000000000000000000000001',
+    },
+    {
+        description: `should encode bare uint as 32 bytes (uint256 alias)`,
+        input: {
+            typeName: 'uint',
+            data: 255,
+        },
+        output: '00000000000000000000000000000000000000000000000000000000000000ff',
+    },
+    {
+        description: `should encode bare int as 32 bytes (int256 alias)`,
+        input: {
+            typeName: 'int',
+            data: 127,
+        },
+        output: '000000000000000000000000000000000000000000000000000000000000007f',
     },
     {
         description: `should throw overflow error when signed int is too large`,

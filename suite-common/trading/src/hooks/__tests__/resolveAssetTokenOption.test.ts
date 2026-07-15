@@ -13,7 +13,6 @@ const renderHook = (preloadedCoins: Coins | null = coins as Coins) =>
             info: {
                 coins: preloadedCoins ?? undefined,
                 platforms: undefined,
-                paymentMethods: [],
             },
         }),
     });
@@ -31,6 +30,7 @@ describe('resolveAssetTokenOption', () => {
         expect(option.symbol).toBe('ausdc');
         expect(option.displaySymbol).toBe('AUSDC');
         expect(option.name).toBe('aEthUSDC');
+        expect(option.displaySymbolName).toBe('aEthUSDC');
         expect(option.contractAddress).toBe(AUSDC_CONTRACT);
         expect(option.networkSymbol).toBe('eth');
         expect(option.isNativeToken).toBe(false);
@@ -47,6 +47,7 @@ describe('resolveAssetTokenOption', () => {
 
         expect(option.symbol).toBe('aEthUSDC');
         expect(option.displaySymbol).toBe('aEthUSDC');
+        expect(option.displaySymbolName).toBe('Aave Ethereum USDC');
         expect(option.contractAddress).toBe(UNKNOWN_TOKEN_CONTRACT);
         expect(option.networkSymbol).toBe('eth');
         expect(option.isNativeToken).toBe(false);

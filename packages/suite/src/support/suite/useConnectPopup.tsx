@@ -104,7 +104,7 @@ export const useConnectPopup = (
                 dispatch(
                     connectPopupCallThunk({
                         method: method as CallMethodKeys,
-                        payload: params as Parameters<typeof connectPopupCallThunk>[0]['payload'],
+                        payload: params,
                         source: {
                             type: CALL_SOURCE_WEB,
                             origin: popupLink.origin,

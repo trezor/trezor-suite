@@ -34,10 +34,45 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             }),
         ),
     ),
-    'earn-staking-tron': lazy(() =>
-        import(/* webpackChunkName: "earn" */ 'src/views/earn/staking/tron/index').then(
-            ({ EarnStakingTron }) => ({
-                default: EarnStakingTron,
+    'earn-tron': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/tron/index').then(
+            ({ EarnTronRedirect }) => ({
+                default: EarnTronRedirect,
+            }),
+        ),
+    ),
+    'earn-tron-stake': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/tron/index').then(
+            ({ EarnTronStake }) => ({
+                default: EarnTronStake,
+            }),
+        ),
+    ),
+    'earn-tron-vote': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/tron/index').then(
+            ({ EarnTronVote }) => ({
+                default: EarnTronVote,
+            }),
+        ),
+    ),
+    'earn-tron-unstake': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/tron/index').then(
+            ({ EarnTronUnstake }) => ({
+                default: EarnTronUnstake,
+            }),
+        ),
+    ),
+    'earn-tron-withdraw': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/tron/index').then(
+            ({ EarnTronWithdraw }) => ({
+                default: EarnTronWithdraw,
+            }),
+        ),
+    ),
+    'earn-tron-claim': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/tron/index').then(
+            ({ EarnTronClaim }) => ({
+                default: EarnTronClaim,
             }),
         ),
     ),

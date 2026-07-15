@@ -1,7 +1,9 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
+import * as generatedIcons from '@trezor/icons';
+
 import { allowedBannerFrameProps } from './Banner';
-import { Banner as BannerComponent, variables } from '../../index';
+import { Banner as BannerComponent } from '../../index';
 import { getFramePropsStory } from '../../utils/frameProps';
 import { Row } from '../Flex/Flex';
 
@@ -33,7 +35,8 @@ export const Banner: StoryObj<typeof meta> = {
             control: 'boolean',
         },
         icon: {
-            options: [undefined, true, ...variables.ICONS],
+            options: [undefined, true, ...Object.keys(generatedIcons)],
+            mapping: generatedIcons,
             control: {
                 type: 'select',
             },
@@ -47,20 +50,26 @@ export const Banner: StoryObj<typeof meta> = {
                     <Row gap={10}>
                         <BannerComponent.Button>Button</BannerComponent.Button>
                         <BannerComponent.IconButton
-                            icon="x"
+                            icon={generatedIcons.XIcon}
                             priority="secondary"
                             tooltip={{ content: 'Dismiss' }}
                         />
                     </Row>
                 ),
                 iconButton: (
-                    <BannerComponent.IconButton icon="x" tooltip={{ content: 'Dismiss' }} />
+                    <BannerComponent.IconButton
+                        icon={generatedIcons.XIcon}
+                        tooltip={{ content: 'Dismiss' }}
+                    />
                 ),
                 iconButtons: (
                     <Row gap={10}>
-                        <BannerComponent.IconButton icon="x" tooltip={{ content: 'Dismiss' }} />
                         <BannerComponent.IconButton
-                            icon="asterisk"
+                            icon={generatedIcons.XIcon}
+                            tooltip={{ content: 'Dismiss' }}
+                        />
+                        <BannerComponent.IconButton
+                            icon={generatedIcons.AsteriskIcon}
                             priority="secondary"
                             tooltip={{ content: 'Details' }}
                         />

@@ -9,8 +9,9 @@ import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/sta
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectEthValidatorsQueue } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { SOLANA_EPOCH_DAYS } from '@trezor/coins-solana/constants';
 import { Banner, Card, Checkbox, Column, Modal } from '@trezor/components';
+import { ClockIcon, HandIcon } from '@trezor/icons';
+import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
 import { getStakingHelpCenterLink } from 'src/components/earn/utils/getStakingHelpCenterLink';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
@@ -107,7 +108,7 @@ export const ConfirmStakeModal = ({
         >
             <Column gap={12} margin={{ top: 4, bottom: 20 }}>
                 <Banner
-                    icon="clock"
+                    icon={ClockIcon}
                     description={
                         <Translation
                             id={getStakeEnteringMessage(account.networkType)}
@@ -122,7 +123,7 @@ export const ConfirmStakeModal = ({
                     }
                 />
                 <Banner
-                    icon="hand"
+                    icon={HandIcon}
                     rightContent={
                         <Banner.Button href={learnMoreLink}>
                             <Translation id="TR_LEARN_MORE" />

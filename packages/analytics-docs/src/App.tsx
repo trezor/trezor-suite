@@ -16,6 +16,7 @@ import {
     useMediaQuery,
     variables,
 } from '@trezor/components';
+import { BroadcastIcon, ClockCounterClockwiseIcon, PlusIcon } from '@trezor/icons';
 
 import { AnalyticsContent } from './app/AnalyticsContent';
 import { ContentArea, EventCardWrapper, MainWithSidebar, SidebarOuter, TopBar } from './app/layout';
@@ -73,10 +74,15 @@ export const App = ({ theme }: AppProps) => {
         setQuery,
         setSort,
         setPlatform,
+        setVersion,
+        setSearchMode,
         clearAll,
         query,
         platform,
         sort,
+        version,
+        searchMode,
+        availableVersions,
         debouncedQuery,
         allEvents,
         isFiltering,
@@ -91,7 +97,7 @@ export const App = ({ theme }: AppProps) => {
         setIsSidebarLoading,
     } = useFilteredEvents();
 
-    const hasActiveFilters = !!query || platform !== 'all' || sort !== 'az';
+    const hasActiveFilters = !!query || platform !== 'all' || sort !== 'az' || version !== 'all';
 
     const versionsWithEvents = useMemo(
         () => getVersionsWithEvents(filteredEvents),
@@ -273,11 +279,11 @@ export const App = ({ theme }: AppProps) => {
                                     {isMobile ? (
                                         <IconButton
                                             tooltip={{ content: 'Add event' }}
-                                            icon="plus"
+                                            icon={PlusIcon}
                                             {...addButtonProps}
                                         />
                                     ) : (
-                                        <Button iconLeft="plus" {...addButtonProps}>
+                                        <Button iconLeft={PlusIcon} {...addButtonProps}>
                                             Add event
                                         </Button>
                                     )}
@@ -289,7 +295,7 @@ export const App = ({ theme }: AppProps) => {
                                                     ? 'Hide live log'
                                                     : 'Show live analytics log',
                                             }}
-                                            icon="broadcast"
+                                            icon={BroadcastIcon}
                                             onClick={() => {
                                                 startTransition(() => {
                                                     const next = !isLiveLogOpen;
@@ -307,7 +313,7 @@ export const App = ({ theme }: AppProps) => {
                                                     ? 'Hide changelog'
                                                     : 'Show versions by changelog',
                                             }}
-                                            icon="clockCounterClockwise"
+                                            icon={ClockCounterClockwiseIcon}
                                             onClick={() => {
                                                 setIsSidebarLoading(true);
                                                 if (isSidebarOpen) {
@@ -346,6 +352,11 @@ export const App = ({ theme }: AppProps) => {
                                     platform={platform}
                                     setSort={setSort}
                                     sort={sort}
+                                    version={version}
+                                    setVersion={setVersion}
+                                    versions={availableVersions}
+                                    searchMode={searchMode}
+                                    setSearchMode={setSearchMode}
                                 />
                             </Row>
                         </ContentContainer>

@@ -3,17 +3,18 @@
 import {
     Bundle,
     GetPublicKey as GetPublicKeySchema,
-    type MethodPermission,
+    type PermissionRequest,
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';
+import { fromHardenedPathPart } from '@trezor/crypto-utils';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodContext, MethodMessage, MethodReturnType } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import { fromHardened, getSerializedPath, validatePath } from '../../../utils/pathUtils';
+import { getSerializedPath, validatePath } from '../../../utils/pathUtils';
 import { bundlify } from '../../common/paramsValidator';
 
 export default class TezosGetPublicKey extends AbstractMethod<
@@ -42,11 +43,11 @@ export default class TezosGetPublicKey extends AbstractMethod<
 
         this.hasBundle = hasBundle;
         this.requiredDeviceCapabilities = ['Capability_Tezos'];
-        this.requiredFirmwareCoins = [getMiscNetwork('Tezos')];
+        this.requiredFirmwareCoins = [getMiscNetwork('xtz')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
     }
 
     init() {}
@@ -71,7 +72,7 @@ export default class TezosGetPublicKey extends AbstractMethod<
 
         return {
             view: 'export-address' as const,
-            label: `Export Tezos public key for account #${fromHardened(accountIndex) + 1}`,
+            label: `Export Tezos public key for account #${fromHardenedPathPart(accountIndex) + 1}`,
         };
     }
 

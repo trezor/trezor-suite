@@ -20,7 +20,6 @@ import {
     SAVED_STATUS_TIMEOUT,
     escapeCssContent,
     extractTextFromNode,
-    useShortcuts,
     useTextTruncation,
 } from './utils';
 
@@ -337,6 +336,22 @@ export const EditableText = ({
         setSavingStatus('idle');
     }, []);
 
+    const handleKeyDown = useCallback(
+        (e: React.KeyboardEvent<HTMLElement>) => {
+            if (e.key !== 'Enter' && e.key !== 'Escape') return;
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (e.key === 'Enter' && isDirty) {
+                handleSave();
+            } else if (e.key === 'Enter' || e.key === 'Escape') {
+                handleCancel();
+            }
+        },
+        [handleSave, handleCancel, isDirty],
+    );
+
     const handleContainerClick = useCallback(
         (e: React.MouseEvent<HTMLElement>) => {
             if (isEditable) {
@@ -393,8 +408,6 @@ export const EditableText = ({
         };
     }, [isEditable, handleCancel, handleSave, isDirty]);
 
-    useShortcuts({ isEditable, isDirty, handleSave, handleCancel });
-
     return (
         <Container
             ref={containerRef}
@@ -439,6 +452,7 @@ export const EditableText = ({
                         onInput={e => {
                             setCurrentValueTextContent(e.currentTarget.textContent || '');
                         }}
+                        onKeyDown={handleKeyDown}
                         onPaste={handlePaste}
                         $placeholder={placeholder}
                         $isEmpty={isEmpty}

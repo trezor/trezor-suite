@@ -2,15 +2,9 @@ import React from 'react';
 
 import { type Meta, type StoryObj } from '@storybook/react';
 
-// TODO: suite-common imports in non-suite packages should not be allowed
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { type IconName, icons } from '@suite-common/icons/src/icons';
+import * as generatedIcons from '@trezor/icons';
 
-import {
-    IconCircle as IconCircleComponent,
-    type IconCircleProps,
-    allowedIconCircleFrameProps,
-} from './IconCircle';
+import { IconCircle as IconCircleComponent, allowedIconCircleFrameProps } from './IconCircle';
 import { iconCircleIntents, iconCircleSizes } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
 
@@ -20,14 +14,19 @@ const meta: Meta<typeof IconCircleComponent> = {
 export default meta;
 
 export const IconCircle: StoryObj<typeof meta> = {
-    render: props => <IconCircleComponent {...(props as IconCircleProps)} />,
+    render: props => <IconCircleComponent {...props} />,
     args: {
         intent: 'brand',
-        name: 'butterfly',
+        icon: generatedIcons.ButterflyIcon,
         size: 40,
         ...getFramePropsStory(allowedIconCircleFrameProps).args,
     },
     argTypes: {
+        icon: {
+            options: Object.keys(generatedIcons),
+            mapping: generatedIcons,
+            control: { type: 'select' },
+        },
         intent: {
             control: {
                 type: 'select',
@@ -39,12 +38,6 @@ export const IconCircle: StoryObj<typeof meta> = {
                 type: 'select',
             },
             options: iconCircleSizes,
-        },
-        name: {
-            control: {
-                type: 'select',
-            },
-            options: Object.keys(icons) as IconName[],
         },
         ...getFramePropsStory(allowedIconCircleFrameProps).argTypes,
     },

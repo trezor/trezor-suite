@@ -1,5 +1,3 @@
-import { toWei } from 'web3-utils';
-
 import { asTypedDesktopAnalytics, events } from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type ExtraDependencies } from '@suite-common/redux-utils';
@@ -21,7 +19,7 @@ import {
     MIN_ETH_FOR_WITHDRAWALS,
     UNSTAKE_INTERCHANGES,
 } from '@suite-common/wallet-constants';
-import { selectAddressDisplayType } from '@suite-common/wallet-core';
+import { selectAddressDisplayType, stakeActions } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import {
     AddressDisplayOptions,
@@ -31,7 +29,12 @@ import {
     type PrecomposedTransactionFinal,
     type StakeFormState,
 } from '@suite-common/wallet-types';
-import { calculateTotalGasCost, getAccountIdentity } from '@suite-common/wallet-utils';
+import {
+    calculateTotalGasCost,
+    fromEther,
+    fromGwei,
+    getAccountIdentity,
+} from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 
 import { type Dispatch, type GetState } from 'src/types/suite';
@@ -44,15 +47,15 @@ const calculateStakingTransaction = (
     symbol: NetworkSymbol,
 ): PrecomposedTransaction => {
     const totalGasCostInWei = calculateTotalGasCost(
-        toWei(feeLevel.maxFeePerGas || feeLevel.feePerUnit, 'gwei'),
+        fromGwei(feeLevel.maxFeePerGas || feeLevel.feePerUnit).toWei(),
         feeLevel.feeLimit,
     );
 
     const stakingParams = {
         feeInBaseUnits: totalGasCostInWei,
-        minBalanceForStakingInBaseUnits: toWei(MIN_ETH_BALANCE_FOR_STAKING.toString(), 'ether'),
-        minAmountForStakingInBaseUnits: toWei(MIN_ETH_AMOUNT_FOR_STAKING.toString(), 'ether'),
-        minAmountForWithdrawalInBaseUnits: toWei(MIN_ETH_FOR_WITHDRAWALS.toString(), 'ether'),
+        minBalanceForStakingInBaseUnits: fromEther(MIN_ETH_BALANCE_FOR_STAKING.toString()).toWei(),
+        minAmountForStakingInBaseUnits: fromEther(MIN_ETH_AMOUNT_FOR_STAKING.toString()).toWei(),
+        minAmountForWithdrawalInBaseUnits: fromEther(MIN_ETH_FOR_WITHDRAWALS.toString()).toWei(),
     };
 
     return calculate(availableBalance, output, feeLevel, compareWithAmount, symbol, stakingParams);
@@ -127,8 +130,13 @@ export const signTransaction =
             ethereumGetCurrentNonceThunk({
                 selectedAccount: account,
                 rbfParams: formValues.rbfParams,
+                fetchConfirmedNonce: true,
             }),
         ).unwrap();
+
+        // Store the signed-with nonce (decimal) so the review modal can display it, mirroring the
+        // Send flow. Set before ethereumSignTransaction fires the device button-request below.
+        dispatch(stakeActions.setResolvedEthereumNonce(nonce));
 
         const identity = getAccountIdentity(account);
 

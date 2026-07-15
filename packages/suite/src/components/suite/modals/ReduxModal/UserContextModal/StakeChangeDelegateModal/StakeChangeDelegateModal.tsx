@@ -145,10 +145,5 @@ export const StakeChangeDelegateModal = ({
         return null;
     }
 
-    return (
-        <StakeChangeDelegateModalLoaded
-            onCancel={onCancel}
-            selectedAccount={selectedAccount as SelectedAccountLoaded}
-        />
-    );
+    return <StakeChangeDelegateModalLoaded onCancel={onCancel} selectedAccount={selectedAccount} />;
 };

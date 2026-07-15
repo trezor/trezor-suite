@@ -9,7 +9,8 @@ type Attributes = {
 
 export const suiteSyncLabelCreatedEvent: EventDef<Attributes, EventType.SuiteSyncLabelCreated> = {
     name: EventType.SuiteSyncLabelCreated,
-    descriptionTrigger: 'When user saves a non-empty label to any entity in Suite Sync',
+    descriptionTrigger:
+        'User successfully saves a non-empty label for an entity (wallet, account, receive_address, or output) in Suite Sync. Only fires on a successful save with a non-empty label value; failed saves and label clears are not reported.',
     changelog: [{ version: '26.4.1', notes: 'added' }],
     attributes: {
         entity_type: {

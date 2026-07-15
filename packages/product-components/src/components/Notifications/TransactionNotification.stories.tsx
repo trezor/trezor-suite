@@ -1,6 +1,8 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
-import { type IconName, Toast, type ToastProps } from '@trezor/components';
+import { type IconComponent, Toast, type ToastProps } from '@trezor/components';
+import { ArrowDownIcon, ArrowUpIcon } from '@trezor/icons';
+import { typedObjectKeys } from '@trezor/utils';
 
 import {
     TransactionNotification,
@@ -23,7 +25,7 @@ type TransactionToastStoryArgs = {
 const transactionNotificationConfig: Record<
     TransactionNotificationProps['notificationType'],
     {
-        toastIcon?: IconName;
+        toastIcon?: IconComponent;
         intent: ToastProps['intent'];
         message: string;
         amount: string;
@@ -31,7 +33,7 @@ const transactionNotificationConfig: Record<
     }
 > = {
     'tx-received': {
-        toastIcon: 'arrowDown',
+        toastIcon: ArrowDownIcon,
         intent: 'info',
         message: 'Received',
         amount: '4.6 ETH',
@@ -50,7 +52,7 @@ const transactionNotificationConfig: Record<
         },
     },
     'tx-revoked': {
-        toastIcon: 'arrowUp',
+        toastIcon: ArrowUpIcon,
         intent: 'brand',
         message: 'Revoke transaction was broadcasted',
         amount: '',
@@ -65,7 +67,7 @@ const transactionNotificationConfig: Record<
         },
     },
     'tx-claimed': {
-        toastIcon: 'arrowUp',
+        toastIcon: ArrowUpIcon,
         intent: 'brand',
         message: 'Claimed',
         amount: '101.6 SOL',
@@ -75,7 +77,7 @@ const transactionNotificationConfig: Record<
         },
     },
     'tx-unstaked': {
-        toastIcon: 'arrowUp',
+        toastIcon: ArrowUpIcon,
         intent: 'brand',
         message: 'Unstaked',
         amount: '4.6 ETH',
@@ -85,7 +87,7 @@ const transactionNotificationConfig: Record<
         },
     },
     'tx-staked': {
-        toastIcon: 'arrowUp',
+        toastIcon: ArrowUpIcon,
         intent: 'brand',
         message: 'Staked from Ethereum #1',
         amount: '4.6 ETH',
@@ -95,7 +97,7 @@ const transactionNotificationConfig: Record<
         },
     },
     'tx-approved': {
-        toastIcon: 'arrowUp',
+        toastIcon: ArrowUpIcon,
         intent: 'brand',
         message: 'Approve transaction was broadcasted',
         amount: '0.46024759',
@@ -110,7 +112,7 @@ const transactionNotificationConfig: Record<
         },
     },
     'tx-sent': {
-        toastIcon: 'arrowUp',
+        toastIcon: ArrowUpIcon,
         intent: 'brand',
         message: 'Sent from Ethereum #1',
         amount: '0.46024759 LINK',
@@ -124,13 +126,23 @@ const transactionNotificationConfig: Record<
             },
         },
     },
-    'tx-yield-supply': {
-        toastIcon: 'arrowUp',
+    'raw-tx-sent': {
+        toastIcon: ArrowUpIcon,
         intent: 'brand',
-        message: 'Supplied from Base #1',
+        message: 'Raw transaction sent from Ethereum #1',
+        amount: '',
+        transaction: {
+            notificationType: 'raw-tx-sent',
+            symbol: 'eth',
+        },
+    },
+    'tx-yield-deposit': {
+        toastIcon: ArrowUpIcon,
+        intent: 'brand',
+        message: 'Deposited from Base #1',
         amount: '150 USDC',
         transaction: {
-            notificationType: 'tx-yield-supply',
+            notificationType: 'tx-yield-deposit',
             symbol: 'base',
             token: {
                 contract: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
@@ -140,7 +152,7 @@ const transactionNotificationConfig: Record<
         },
     },
     'tx-yield-withdraw': {
-        toastIcon: 'arrowUp',
+        toastIcon: ArrowUpIcon,
         intent: 'brand',
         message: 'Withdrawn from Base #1',
         amount: '150 USDC',
@@ -155,7 +167,7 @@ const transactionNotificationConfig: Record<
         },
     },
     'tx-yield-claim': {
-        toastIcon: 'arrowUp',
+        toastIcon: ArrowUpIcon,
         intent: 'brand',
         message: 'Claimed from Base #1',
         amount: '150 USDC',
@@ -194,9 +206,7 @@ export const InToast: StoryObj<TransactionToastStoryArgs> = {
             control: {
                 type: 'select',
             },
-            options: Object.keys(
-                transactionNotificationConfig,
-            ) as (keyof typeof transactionNotificationConfig)[],
+            options: typedObjectKeys(transactionNotificationConfig),
         },
     },
     render: ({ notificationType }) => {

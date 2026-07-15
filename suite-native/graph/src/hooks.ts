@@ -26,13 +26,12 @@ import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 
 import { timeSwitchItems } from './components/TimeSwitch';
-import { selectPortfolioGraphAccountItems } from './selectors';
+import { selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning } from './selectors';
 import {
     type GraphSliceRootState,
     selectAccountGraphTimeframe,
     selectPortfolioGraphTimeframe,
     setAccountGraphTimeframe,
-    setPortfolioGraphTimeframe,
 } from './slice';
 import { type TimeframeHoursValue } from './types';
 import { omitErrorMessageSensitiveData } from './utils';
@@ -156,9 +155,10 @@ export const useGraphForSingleAccount = ({
 };
 
 export const useGraphForAllDeviceAccounts = ({ baseCurrencyCode }: CommonUseGraphParams) => {
-    const dispatch = useDispatch();
-    // if we memoize selectPortfolioGraphAccountItems, it will randomly break so we need to use deep comparison instead to prevent unnecessary rerenders
-    const accountItems = useSelectorDeepComparison(selectPortfolioGraphAccountItems);
+    // Use deep comparison because account items are rebuilt from account data.
+    const accountItems = useSelectorDeepComparison(
+        selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning,
+    );
     const portfolioGraphTimeframe = useSelector(selectPortfolioGraphTimeframe);
     const isElectrumBackend = useSelector((state: BlockchainRootState) =>
         selectIsElectrumBackendSelected(state, 'btc'),
@@ -166,15 +166,6 @@ export const useGraphForAllDeviceAccounts = ({ baseCurrencyCode }: CommonUseGrap
 
     const { startOfTimeFrameDate, endOfTimeFrameDate } =
         useGetTimeFrameForHistoryHours(portfolioGraphTimeframe);
-
-    const handleSelectPortfolioTimeframe = useCallback(
-        (timeframeHours: TimeframeHoursValue) => {
-            if (portfolioGraphTimeframe !== timeframeHours) {
-                dispatch(setPortfolioGraphTimeframe({ timeframeHours }));
-            }
-        },
-        [dispatch, portfolioGraphTimeframe],
-    );
 
     useWatchTimeframeChangeForAnalytics(portfolioGraphTimeframe);
 
@@ -193,7 +184,6 @@ export const useGraphForAllDeviceAccounts = ({ baseCurrencyCode }: CommonUseGrap
         ...graphForAccounts,
         isAnyMainnetAccountPresent: A.isNotEmpty(accountItems),
         timeframe: portfolioGraphTimeframe,
-        onSelectTimeFrame: handleSelectPortfolioTimeframe,
     };
 };
 

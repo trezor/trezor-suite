@@ -7,7 +7,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type ThemeColorVariant } from '@trezor/theme';
 
 const bluetoothPairingAnimations = {
-    debug: require('../../assets/bluetooth-pairing-standard.mp4'),
     standard: require('../../assets/bluetooth-pairing-standard.mp4'),
     dark: require('../../assets/bluetooth-pairing-dark.mp4'),
 } as const satisfies Record<ThemeColorVariant, string>;

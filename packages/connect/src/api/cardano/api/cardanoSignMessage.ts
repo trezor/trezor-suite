@@ -1,10 +1,12 @@
-import { CARDANO, type MethodPermission } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
 import {
+    CARDANO,
     type CardanoMessageHeaders,
     CardanoSignMessage as CardanoSignMessageSchema,
     type CardanoSignedMessage,
-} from '@trezor/connect-common/src/types/api/cardano';
+    type PermissionRequest,
+} from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+import cardano from '@trezor/network-cardano/runtime';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
@@ -15,7 +17,7 @@ import { hasHexPrefix, isHexString } from '../../../utils/formatUtils';
 import { validatePath } from '../../../utils/pathUtils';
 import { addressParametersToProto } from '../cardanoAddressParameters';
 import type { Path } from '../cardanoInputs';
-import { createCose, hexStringByteLength } from '../cardanoUtils';
+import { hexStringByteLength } from '../cardanoUtils';
 
 export type CardanoSignMessageParams = {
     path: Path;
@@ -62,11 +64,11 @@ export default class CardanoSignMessage extends AbstractMethod<
 
         super(message, params);
 
-        this.requiredFirmwareCoins = [getMiscNetwork('Cardano')];
+        this.requiredFirmwareCoins = [getMiscNetwork('ada')];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
+    get requiredPermissions(): PermissionRequest[] {
+        return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
     async run(): Promise<CardanoSignedMessage> {
@@ -98,6 +100,8 @@ export default class CardanoSignMessage extends AbstractMethod<
             );
         }
         const { signature, address, pub_key } = response.message;
+
+        const { createCose } = await cardano();
 
         return {
             signature,

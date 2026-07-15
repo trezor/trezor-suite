@@ -1,7 +1,11 @@
 import { type ReactElement, type ReactNode } from 'react';
 import { Dimensions } from 'react-native';
 
-import { BottomSheetFlashList, type BottomSheetFlashListProps } from '@suite-native/atoms';
+import {
+    BottomSheetFlashList,
+    type BottomSheetFlashListControls,
+    type BottomSheetFlashListProps,
+} from '@suite-native/atoms';
 import { type NativeStyle } from '@trezor/styles-native';
 
 import {
@@ -25,7 +29,11 @@ export type TradingBottomSheetSectionListProps<T, U> = Omit<
     | 'viewabilityConfigCallbackPairs'
 > & {
     data: SectionListData<T, U>;
-    renderItem: (item: T, config: ItemRenderConfig<U>) => ReactElement;
+    renderItem: (
+        item: T,
+        config: ItemRenderConfig<U>,
+        sheetControls: BottomSheetFlashListControls,
+    ) => ReactElement;
     renderSectionHeader?: (label: ReactNode, config: SectionHeaderRenderConfig<U>) => ReactElement;
     keyExtractor: (item: T, sectionData: U) => string;
     noSingletonSectionHeader?: boolean;

@@ -1,14 +1,14 @@
-import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/coins-solana/constants';
-import solana from '@trezor/coins-solana/runtime';
-import type { CoinInfo, MethodPermission } from '@trezor/connect-common';
+import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 import { SolanaComposeTransaction as SolanaComposeTransactionSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/network-solana/constants';
+import solana from '@trezor/network-solana/runtime';
 import { Assert } from '@trezor/schema-utils';
 
-import { initBlockchain, isBackendSupported } from '../../../backend/BlockchainLink';
+import { assertBackendSupported, initBlockchain } from '../../../backend/BlockchainLink';
 import type { MethodContext, MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
-import { getCoinInfo } from '../../../data/coinInfo';
+import { getCoinInfoOrThrow } from '../../../data/coinInfo';
 
 type SolanaComposeTransactionParams = SolanaComposeTransactionSchema & {
     coinInfo: CoinInfo;
@@ -24,12 +24,9 @@ export default class SolanaComposeTransaction extends AbstractMethod<
         // validate bundle type
         Assert(SolanaComposeTransactionSchema, payload);
 
-        const coinInfo = getCoinInfo(payload.coin || 'sol');
-        if (!coinInfo) {
-            throw ERRORS.TypedError('Method_UnknownCoin');
-        }
+        const coinInfo = getCoinInfoOrThrow(payload.coin || 'sol');
         // validate backend
-        isBackendSupported(coinInfo);
+        assertBackendSupported(coinInfo);
 
         const params = { coinInfo, ...payload };
 
@@ -38,7 +35,7 @@ export default class SolanaComposeTransaction extends AbstractMethod<
         this.useUi = false;
     }
 
-    get requiredPermissions(): MethodPermission[] {
+    get requiredPermissions(): PermissionRequest[] {
         return [];
     }
 

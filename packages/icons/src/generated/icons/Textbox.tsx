@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgTextbox = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M14 5a1 1 0 0 0-1 1v2H3a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10v2a1 1 0 0 0 2 0V6a1 1 0 0 0-1-1M3 22V10h10v12zm28-12v12a2 2 0 0 1-2 2H18a1 1 0 0 1 0-2h11V10H18a1 1 0 1 1 0-2h11a2 2 0 0 1 2 2m-20 4a1 1 0 0 1-1 1H9v3a1 1 0 1 1-2 0v-3H6a1 1 0 0 1 0-2h4a1 1 0 0 1 1 1"
+        />
+    </svg>
+);
+export { SvgTextbox as ReactComponent };

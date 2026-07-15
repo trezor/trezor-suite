@@ -90,7 +90,7 @@ export const EmptyWalletInfoSheet = forwardRef<BottomSheetModalMethods, EmptyWal
                 </VStack>
                 <VStack style={applyStyle(bottomSheetBottomStyle)}>
                     <InlineAlertBox
-                        variant="warning"
+                        intent="warning"
                         title={
                             <Translation id="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.alertTitle" />
                         }

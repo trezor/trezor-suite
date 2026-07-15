@@ -1,4 +1,5 @@
 import { type TokenAddress } from '@suite-common/wallet-types';
+import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { ETH_ACCOUNT_KEY, getWalletState } from '../../../__fixtures__/walletState';
@@ -29,7 +30,9 @@ describe('ReviewOutputItemValues', () => {
     it('should render translated title', () => {
         const { getByText } = renderReviewOutputItemValues({}, { wallet: getWalletState() });
 
-        expect(getByText('Total amount')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('transactionManagement.review.outputs.summary.totalAmount')),
+        ).toBeOnTheScreen();
     });
 
     it('should render token balance', () => {

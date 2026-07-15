@@ -1,40 +1,28 @@
-import { type JSX, useContext } from 'react';
+import { type JSX } from 'react';
 
 import styled, { css } from 'styled-components';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { H3, IconButton, Paragraph, useElevation } from '@trezor/components';
-import { type Elevation, mapElevationToBorder, zIndices } from '@trezor/theme';
+import { H3, IconButton, Paragraph } from '@trezor/components';
+import { ArrowLeftIcon, XIcon } from '@trezor/icons';
+import { zIndices } from '@trezor/theme';
 
 import { close } from 'src/actions/suite/guideActions';
-import { ContentScrolledContext, HeaderBreadcrumb } from 'src/components/guide';
 import { useDispatch } from 'src/hooks/suite';
 
 const HeaderWrapper = styled.div<{
     $noLabel?: boolean;
-    $isScrolled: boolean;
-    $elevation: Elevation;
 }>`
     display: flex;
     align-items: center;
-    padding: 12px 21px;
+    padding: 12px 16px;
     position: sticky;
     top: 0;
     background-color: inherit;
-    box-shadow: none;
-    border-bottom: 1px solid transparent;
-    transition: all 0.5s ease;
     white-space: nowrap;
     z-index: ${zIndices.base}; /* Prevents search bar from overlapping when scrolling */
-
-    ${({ $isScrolled, $elevation, theme }) =>
-        $isScrolled &&
-        css`
-            box-shadow: ${({ theme }) => theme.boxShadowBase};
-            border-bottom: 1px solid ${mapElevationToBorder({ theme, $elevation })};
-        `}
 
     ${({ $noLabel }) =>
         $noLabel &&
@@ -46,14 +34,11 @@ const HeaderWrapper = styled.div<{
 interface GuideHeaderProps {
     back?: () => void;
     label?: string | JSX.Element;
-    useBreadcrumb?: boolean;
 }
 
-export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) => {
+export const GuideHeader = ({ back, label }: GuideHeaderProps) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const { elevation } = useElevation();
     const dispatch = useDispatch();
-    const isScrolled = useContext(ContentScrolledContext);
 
     const goBack = () => {
         back?.();
@@ -75,11 +60,11 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
     };
 
     return (
-        <HeaderWrapper $noLabel={!label} $isScrolled={isScrolled} $elevation={elevation}>
-            {!useBreadcrumb && back && (
+        <HeaderWrapper $noLabel={!label}>
+            {back && (
                 <>
                     <IconButton
-                        icon="arrowLeft"
+                        icon={ArrowLeftIcon}
                         onClick={goBack}
                         intent="neutral"
                         priority="secondary"
@@ -89,7 +74,7 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
 
                     {label && (
                         <Paragraph
-                            typographyStyle="body-sm-strong"
+                            typographyStyle="body-sm"
                             align="center"
                             ellipsisLineCount={2}
                             margin={{ horizontal: 8 }}
@@ -101,16 +86,14 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
                     )}
                 </>
             )}
-            {!useBreadcrumb && !back && label && (
+            {!back && label && (
                 <H3 flex="1" ellipsisLineCount={1} margin={{ right: 8 }}>
                     {label}
                 </H3>
             )}
 
-            {useBreadcrumb && <HeaderBreadcrumb />}
-
             <IconButton
-                icon="x"
+                icon={XIcon}
                 intent="neutral"
                 priority="secondary"
                 onClick={handleClose}

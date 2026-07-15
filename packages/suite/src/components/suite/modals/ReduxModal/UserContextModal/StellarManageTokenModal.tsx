@@ -20,8 +20,9 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account, type FormState } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
-import { BASE_INFO } from '@trezor/blockchain-link-utils/src/stellar';
 import { Banner, Button, Column, Modal, Row, Text } from '@trezor/components';
+import { SpinnerIcon, WarningIcon } from '@trezor/icons';
+import { STELLAR_BASE_RESERVE } from '@trezor/network-stellar/constants';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
@@ -95,13 +96,15 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
     const composedTx = composedLevels[selectedFee || 'normal'];
     const currentFee = composedTx?.type === 'final' ? composedTx.fee : '0';
 
-    // Check if balance is sufficient for activation (need fee + BASE_RESERVE for new trustline)
+    // Check if balance is sufficient for activation (need fee + base reserve for new trustline)
     const insufficientBalanceInfo = useMemo(() => {
-        if (mode !== 'activate' || !account) {
+        if (mode !== 'activate' || account?.networkType !== 'stellar') {
             return null;
         }
         const availableBalance = BigNumber(account.availableBalance);
-        const requiredAmount = BigNumber(currentFee).plus(BASE_INFO.BASE_RESERVE);
+        const requiredAmount = BigNumber(currentFee).plus(
+            account.misc.baseReserve ?? STELLAR_BASE_RESERVE,
+        );
 
         if (availableBalance.lt(requiredAmount)) {
             return {
@@ -113,7 +116,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
         return null;
     }, [mode, account, currentFee, symbol]);
 
-    if (!account) {
+    if (account?.networkType !== 'stellar') {
         return null;
     }
 
@@ -268,7 +271,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                                     token: tokenCode,
                                     network: getNetwork(symbol).name,
                                     reserve: formatNetworkAmount(
-                                        BASE_INFO.BASE_RESERVE.toString(),
+                                        account.misc.baseReserve ?? STELLAR_BASE_RESERVE,
                                         symbol,
                                         true,
                                     ),
@@ -289,7 +292,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                     {insufficientBalanceInfo && (
                         <Banner
                             intent="warning"
-                            icon="warning"
+                            icon={WarningIcon}
                             description={
                                 <Translation
                                     id="TR_TOKEN_ACTIVATION_INSUFFICIENT_FUNDS"
@@ -305,7 +308,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                     {isProcessing && (
                         <Banner
                             intent="info"
-                            icon="spinner"
+                            icon={SpinnerIcon}
                             description={
                                 <Translation
                                     id={

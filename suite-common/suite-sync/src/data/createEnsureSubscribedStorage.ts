@@ -4,7 +4,7 @@ import {
     type SubscriptionStorageDep,
     type SuiteSyncListenerDep,
 } from '@suite-common/suite-sync-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
+import { parseStaticSessionId } from '@trezor/device-utils';
 import { ok } from '@trezor/type-utils';
 import { typedObjectValues } from '@trezor/utils';
 
@@ -31,7 +31,7 @@ export const createEnsureSubscribedStorage =
             return storageResult;
         }
 
-        const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+        const { walletDescriptor } = parseStaticSessionId(deviceStaticSessionId);
 
         const storageId = createStorageIdFromDeviceStaticSessionId(deviceStaticSessionId);
 

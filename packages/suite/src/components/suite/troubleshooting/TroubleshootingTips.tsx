@@ -2,6 +2,7 @@ import { type ReactNode, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Banner, type BannerIntent, Box, Button, Column, Modal } from '@trezor/components';
+import { QuestionIcon } from '@trezor/icons';
 
 import { TroubleshootingTipsFooter } from './TroubleshootingTipsFooter';
 import { type TroubleshootingTipsItem } from './TroubleshootingTipsItem';
@@ -50,7 +51,7 @@ export const TroubleshootingTips = ({
                     intent="neutral"
                     size={hasOtherCta ? 'small' : 'large'}
                     priority={hasOtherCta ? 'secondary' : undefined}
-                    iconLeft="question"
+                    iconLeft={QuestionIcon}
                     data-testid="@onboarding/troubleshooting-tips/button"
                 >
                     {toggleText ?? <Translation id="TR_TROUBLE_SHOOTING_TIPS" />}

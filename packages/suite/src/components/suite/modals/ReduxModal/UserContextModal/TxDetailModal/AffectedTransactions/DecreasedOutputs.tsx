@@ -1,4 +1,5 @@
 import { Address } from '@suite/address';
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type FormState } from '@suite-common/wallet-types';
@@ -14,11 +15,11 @@ import {
     Text,
     TextButton,
 } from '@trezor/components';
+import { ArrowRightIcon, WarningIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_REPLACE_BY_FEE_BITCOIN } from '@trezor/urls';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { type RbfContextValues, useRbfContext } from 'src/hooks/wallet/useRbfForm';
 
 type AmountRowProps = {
@@ -61,7 +62,7 @@ const ReducedAmount = ({ composedLevels, setMaxOutputId, account, selectedFee }:
 
     return (
         <>
-            <Icon name="arrowRight" />
+            <Icon as={ArrowRightIcon} />
             <AmountItem
                 labelTranslationKey="TR_RBF_NEW_AMOUNT"
                 amount={precomposedTx.outputs[setMaxOutputId]?.amount.toString() ?? '0'}
@@ -105,7 +106,7 @@ export const DecreasedOutputs = () => {
     };
 
     return (
-        <Card fillType="flat" paddingType="none">
+        <Card type="contrast" paddingType="none">
             <Row justifyContent="space-between" alignItems="center" padding={spacings.md}>
                 <Text typographyStyle="body-md">
                     <Translation id="TR_AMOUNT_REDUCED_TXS" />
@@ -120,7 +121,7 @@ export const DecreasedOutputs = () => {
                 <Banner
                     intent="warning"
                     data-testid="@send/decreased-outputs"
-                    icon="warning"
+                    icon={WarningIcon}
                     description={<Translation id={getDecreaseWarring()} />}
                 />
                 {useRadio && (
@@ -145,7 +146,7 @@ export const DecreasedOutputs = () => {
                                           }
                                         : undefined
                                 }
-                                isActive={useRadio && isChecked}
+                                isSelected={useRadio && isChecked}
                             >
                                 <Row gap={spacings.sm}>
                                     <AmountItem

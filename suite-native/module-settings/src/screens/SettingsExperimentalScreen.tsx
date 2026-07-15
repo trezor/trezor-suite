@@ -1,10 +1,8 @@
-import { IconButton, VStack } from '@suite-native/atoms';
+import { IconButton, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
-
-import { ToggleTestnetsCard } from '../components/ToggleTestnetsCard';
 
 export const SettingsExperimentalScreen = () => {
     const openLink = useOpenLink();
@@ -24,6 +22,7 @@ export const SettingsExperimentalScreen = () => {
                             iconName="info"
                             intent="neutral"
                             priority="secondary"
+                            size="medium"
                             onPress={onInfoPress}
                             accessibilityRole="button"
                             accessibilityLabel="More info"
@@ -32,8 +31,15 @@ export const SettingsExperimentalScreen = () => {
                 />
             }
         >
-            <VStack spacing="sp16">
-                <ToggleTestnetsCard />
+            <VStack marginTop="sp32" spacing="sp16">
+                <PictogramTitleHeader
+                    variant="info"
+                    title={<Translation id="moduleSettings.experimental.noneAvailable.title" />}
+                    titleVariant="headline-md"
+                    subtitle={
+                        <Translation id="moduleSettings.experimental.noneAvailable.subtitle" />
+                    }
+                />
             </VStack>
         </Screen>
     );

@@ -25,7 +25,7 @@ export const ConfirmationFailed = () => {
                 )}
                 onPressPrimaryButton={goBack}
                 iconName="info"
-                variant="neutral"
+                intent="neutral"
                 testID={CONFIRMATION_FAILED_TEST_ID}
             />
         </AnimatedBox>

@@ -46,7 +46,7 @@ export interface GetAccountUtxo {
 
 export interface GetTransaction {
     type: typeof MESSAGES.GET_TRANSACTION;
-    payload: string;
+    payload: { txid: string; descriptor?: string };
 }
 
 export interface GetTransactionHex {

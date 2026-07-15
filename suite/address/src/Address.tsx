@@ -8,6 +8,7 @@ import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { selectAddressDisplayType } from '@suite-common/wallet-core';
 import { IconButton, Row, Text, type TextProps, Tooltip } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { CopyIcon } from '@trezor/icons';
 import { type TypographyStyle } from '@trezor/theme';
 
 import { copyAddressToClipboard } from './copyAddressActions';
@@ -88,11 +89,12 @@ export const Address = ({
     const isChunkedSettings = useSelector(selectAddressDisplayType);
     const isAddressChunked = isChunked ?? isChunkedSettings === 'chunked';
 
-    const formattedValue = AddressFormatter.format(value, {
+    const addressWithoutPrefix = clearAddressPrefix(value);
+    const formattedValue = AddressFormatter.format(addressWithoutPrefix, {
         format: isTruncated ? 'long' : 'full',
         isChunked: isAddressChunked,
     });
-    const formattedValueFull = AddressFormatter.format(clearAddressPrefix(value), {
+    const formattedValueFull = AddressFormatter.format(addressWithoutPrefix, {
         format: 'full',
         isChunked: isAddressChunked,
     });
@@ -115,7 +117,7 @@ export const Address = ({
                 <Row gap={8}>
                     <Text onCopy={onManualCopy}>{formattedValueFull}</Text>
                     <IconButton
-                        icon="copy"
+                        icon={CopyIcon}
                         size="small"
                         intent="neutral"
                         priority="secondary"

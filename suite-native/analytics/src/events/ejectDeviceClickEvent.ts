@@ -10,9 +10,13 @@ type Attributes = {
 
 export const ejectDeviceClickEvent: EventDef<Attributes, EventType.EjectDeviceClick> = {
     name: EventType.EjectDeviceClick,
-    descriptionTrigger: 'Eject device from anywhere.',
-    changelog: [{ version: '23.11.1', notes: 'Added' }],
+    descriptionTrigger: 'User ejects or disconnects a device from the application',
+    changelog: [{ version: '23.11.1', notes: 'added' }],
     attributes: {
-        origin: { changelog: [{ version: '23.11.1', notes: 'added' }] },
+        origin: {
+            description:
+                'Where the eject action was triggered: `deviceManager` from the device manager interface, `deviceNotReadyModal` from the device not ready modal',
+            changelog: [{ version: '23.11.1', notes: 'added' }],
+        },
     },
 };

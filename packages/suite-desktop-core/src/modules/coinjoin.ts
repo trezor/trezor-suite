@@ -10,6 +10,7 @@ import {
     type CoinjoinBackend,
     type CoinjoinBackendSettings,
     CoinjoinClient,
+    type LogEvent,
 } from '@trezor/coinjoin';
 import { type IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { getFreePort } from '@trezor/node-utils';
@@ -79,11 +80,11 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
                 mainThreadEmitter.emit('module/request-interceptor', event),
             );
 
-            backend.subscribe('log', ({ level, payload }) => {
+            backend.subscribe('log', ({ level, payload }: LogEvent) => {
                 if (level === 'error') {
                     sentryError(settings.network, payload);
                 }
-                (logger as any)[level](SERVICE_NAME, `${BACKEND_CHANNEL} ${payload}`);
+                logger[level](SERVICE_NAME, `${BACKEND_CHANNEL} ${payload}`);
             });
 
             const unsubscribeTorSettingsChange = store.onTorSettingsChange(torSettings =>

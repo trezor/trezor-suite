@@ -1,15 +1,14 @@
 import { A } from '@mobily/ts-belt';
 
+import { type DeviceRootState, selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import {
     createReducerWithExtraDeps,
     createWeakMapSelector,
     returnStableArrayIfEmpty,
 } from '@suite-common/redux-utils';
-import { NETWORKS_WITH_DUST_PHISHING_DETECTION } from '@suite-common/token-definitions';
 import {
     type NetworkSymbol,
     getNetwork,
-    getNetworkType,
     networkSymbolCollection,
 } from '@suite-common/wallet-config';
 import { AddressDisplayOptions, type WalletSettings } from '@suite-common/wallet-types';
@@ -31,7 +30,6 @@ export const createMemoizedSelector = createWeakMapSelector.withTypes<WalletSett
 
 const initialState: WalletSettingsState = {
     localCurrency: 'usd',
-    discreetMode: false,
     enabledNetworks: [],
     hideSuspiciousTransactions: false,
     bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
@@ -44,7 +42,6 @@ export const initialWalletSettingsState: WalletSettingsState = initialState;
 
 export const walletSettingsPersistedWhitelist: Array<keyof WalletSettingsState> = [
     'localCurrency',
-    'discreetMode',
     'enabledNetworks',
     'hideSuspiciousTransactions',
     'bitcoinAmountUnit',
@@ -63,12 +60,6 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
             (state, action: ReturnType<typeof walletSettingsActions.setBaseCurrency>) => {
                 const { localCurrency } = action.payload;
                 state.localCurrency = localCurrency;
-            },
-        );
-        builder.addCase(
-            WALLET_SETTINGS.SET_HIDE_BALANCE,
-            (state, action: walletSettingsActions.SetHideBalanceAction) => {
-                state.discreetMode = action.toggled;
             },
         );
         builder.addCase(
@@ -120,8 +111,6 @@ export const selectEnabledNetworks = (state: WalletSettingsRootState) =>
     returnStableArrayIfEmpty(state.wallet.settings.enabledNetworks);
 export const selectBaseCurrency = (state: WalletSettingsRootState) =>
     state.wallet.settings.localCurrency;
-export const selectIsDiscreteModeActive = (state: WalletSettingsRootState) =>
-    state.wallet.settings.discreetMode;
 export const selectIsHideSuspiciousTransactions = (state: WalletSettingsRootState) =>
     state.wallet.settings.hideSuspiciousTransactions;
 export const selectBitcoinAmountUnit = (state: WalletSettingsRootState) =>
@@ -135,11 +124,6 @@ export const selectIsAnyNetworkEnabled = (state: WalletSettingsRootState) =>
 export const selectIsBitcoinEnabled = createMemoizedSelector(
     [selectEnabledNetworks],
     enabledNetworks => enabledNetworks.includes('btc'),
-);
-
-export const selectIsAnyNonBitcoinLikeNetworkEnabled = createMemoizedSelector(
-    [selectEnabledNetworks],
-    enabledNetworks => enabledNetworks.some(network => getNetworkType(network) !== 'bitcoin'),
 );
 
 export const selectAreSatsAmountUnit = (state: WalletSettingsRootState) => {
@@ -176,19 +160,8 @@ export const selectIsNetworkReserveEnabled = (state: WalletSettingsRootState) =>
 export const selectIsMevProtectionEnabled = (state: WalletSettingsRootState) =>
     state.wallet.settings.mevProtection;
 
-export const selectIsNetworkReserveSettingsVisible = createMemoizedSelector(
-    [selectEnabledNetworks],
-    enabledNetworks =>
-        enabledNetworks.some(enabledNetwork => !!getNetwork(enabledNetwork)?.nativeTokenReserve),
-);
-
-export const selectIsDustPhishingThresholdSettingsVisible = createMemoizedSelector(
-    [selectEnabledNetworks],
-    enabledNetworks =>
-        enabledNetworks.some(enabledNetwork =>
-            NETWORKS_WITH_DUST_PHISHING_DETECTION.includes(getNetworkType(enabledNetwork)),
-        ),
-);
+export const selectIsNetworkReserveSettingsVisible = (state: DeviceRootState) =>
+    !selectHasBitcoinOnlyFirmware(state);
 
 export const selectAddressDisplayType = (state: WalletSettingsRootState) =>
     state.wallet.settings.addressDisplayType;

@@ -1,7 +1,5 @@
 import { EventEmitter } from 'events';
 
-import { throwError } from '@trezor/utils';
-
 import type { ISocket } from '../sockets/interface';
 
 type Callback = (error: any, result?: any) => void;
@@ -15,7 +13,7 @@ export class JsonRpcClient {
     private id = 0;
     private buffer = '';
     private emitter = new EventEmitter();
-    protected callbacks: CallbackMessageQueue = {};
+    private callbacks: CallbackMessageQueue = {};
     protected socket?: ISocket;
     protected debug = false;
 
@@ -56,7 +54,7 @@ export class JsonRpcClient {
                 if (err) reject(err);
                 else resolve(result);
             };
-            this.send(request);
+            this.send(id, request);
         });
     }
 
@@ -68,26 +66,31 @@ export class JsonRpcClient {
         this.emitter.off(event, listener);
     }
 
-    protected send(message: string) {
-        const socket = this.socket || throwError('Connection not established');
-        this.log('SENDING:', message);
-        socket.send(`${message}\n`);
+    protected send(id: number, message: string) {
+        if (this.socket) {
+            this.log('SENDING:', message);
+            this.socket.send(`${message}\n`);
+        } else {
+            this.processCallback(id, new Error('Connection not established'));
+        }
     }
 
     protected response(response: any) {
         const { id, method, params, result, error } = response;
-        if (!id) {
-            // Notification
-            this.emitter.emit(method, params);
+        if (id) {
+            this.processCallback(id, error, result);
         } else {
-            // Response
-            const callback = this.callbacks[id];
-            if (callback) {
-                delete this.callbacks[id];
-                callback(error, result);
-            } else {
-                this.log(`Can't get callback for ${id}`);
-            }
+            this.emitter.emit(method, params);
+        }
+    }
+
+    private processCallback(id: number, error: any, result?: any) {
+        const callback = this.callbacks[id];
+        if (callback) {
+            delete this.callbacks[id];
+            callback(error, result);
+        } else {
+            this.log(`Can't get callback for ${id}`);
         }
     }
 

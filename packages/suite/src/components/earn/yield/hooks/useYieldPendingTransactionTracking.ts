@@ -2,10 +2,11 @@ import { useEffect, useRef } from 'react';
 
 import { type AnalyticsDesktopEvents, events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
     type YieldFlowType,
     type YieldPendingTransactionState,
+    type YieldWithdrawFlowType,
     fetchAndUpdateAccountThunk,
     selectConvertedNetworkFeeInfo,
     selectStablecoinYieldSession,
@@ -36,7 +37,7 @@ const getPollIntervalMs = (blockTime: number | undefined): number => {
 
 type ResolutionEventType =
     | { type: 'deposit'; successType: 'approve-success' | 'revoke-success' | 'success' }
-    | { type: 'withdraw'; successType: 'success' }
+    | { type: 'withdraw'; operation: YieldWithdrawFlowType; successType: 'success' }
     | { type: 'claim'; successType: 'success' };
 
 const getResolutionEventType = (
@@ -47,12 +48,13 @@ const getResolutionEventType = (
         case 'approve':
             return { type: 'deposit', successType: 'approve-success' };
         case 'revoke':
-        case 'revoke-only':
             return { type: 'deposit', successType: 'revoke-success' };
         case 'deposit':
             return { type: 'deposit', successType: 'success' };
         case 'withdraw':
-            return { type: 'withdraw', successType: 'success' };
+            return { type: 'withdraw', operation: 'withdraw', successType: 'success' };
+        case 'redeem':
+            return { type: 'withdraw', operation: 'redeem', successType: 'success' };
         case 'claim':
             return flowType === 'claim' ? { type: 'claim', successType: 'success' } : null;
         default:
@@ -62,7 +64,7 @@ const getResolutionEventType = (
 
 type ReportContext = {
     networkSymbol: string;
-    vault?: YieldDto | null;
+    vault?: YieldDtoV2 | null;
     durationMs?: number;
 };
 
@@ -116,6 +118,7 @@ const reportResolution = (
             payload: {
                 action: 'continue',
                 type: resolveReportedType(outcome, resolution.successType),
+                operation: resolution.operation,
                 networkSymbol: context.networkSymbol,
                 vaultId: context.vault?.id,
                 durationMs: context.durationMs,
@@ -144,7 +147,7 @@ type UseYieldPendingTransactionTrackingProps = {
     flowType: YieldFlowType;
     flowKey: string;
     waitForMerklToResolveClaim?: () => Promise<unknown>;
-    vault?: YieldDto | null;
+    vault?: YieldDtoV2 | null;
 };
 
 const stablePlaceholderPromise = () => Promise.resolve();
@@ -239,7 +242,7 @@ export const useYieldPendingTransactionTracking = ({
             pendingStartRef.current = null;
         }
 
-        if (pendingTransaction.type === 'revoke' || pendingTransaction.type === 'revoke-only') {
+        if (pendingTransaction.type === 'revoke') {
             dispatch(stablecoinYieldActions.revokeSuccess({ flowType, flowKey }));
             dispatch(stablecoinYieldActions.invalidateAllowance({ flowType, flowKey }));
 

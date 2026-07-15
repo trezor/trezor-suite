@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
-import { type Account, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { throwError } from '@trezor/utils';
 
@@ -124,9 +124,7 @@ export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValue
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
-            const result = await dispatch(
-                signTransaction(values, composedTx as PrecomposedTransactionFinal),
-            );
+            const result = await dispatch(signTransaction(values, composedTx));
 
             if (result?.success) {
                 clearForm();

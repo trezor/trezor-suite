@@ -1,7 +1,4 @@
-import type { ComponentProps } from 'react';
 import { useSelector } from 'react-redux';
-
-import { useNavigation } from '@react-navigation/native';
 
 import {
     type TradingRootState,
@@ -9,44 +6,53 @@ import {
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { Translation } from '@suite-native/intl';
-import {
-    type ConfirmingScreenFlowType,
-    type RootStackParamList,
-    type RootStackRoutes,
-    ScreenHeader,
-    type StackNavigationProps,
-} from '@suite-native/navigation';
+import { type ConfirmingScreenFlowType, ScreenHeader } from '@suite-native/navigation';
 
 export type ExchangeConfirmationHeaderProps = {
     flowType: ConfirmingScreenFlowType;
 };
 
-type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.TradingConfirming>;
+const HeaderTitle = ({
+    flowType,
+    symbol,
+}: {
+    flowType: ConfirmingScreenFlowType;
+    symbol?: string;
+}) => {
+    if (!symbol) return '';
+
+    switch (flowType) {
+        case 'approve':
+            return (
+                <Translation
+                    id="moduleTrading.tradingConfirmationScreen.approveHeaderTitle"
+                    values={{ symbol: symbol ?? '' }}
+                />
+            );
+        case 'revoke-and-approve':
+        case 'revoke':
+            return (
+                <Translation
+                    id="moduleTrading.tradingConfirmationScreen.revokeHeaderTitle"
+                    values={{ symbol: symbol ?? '' }}
+                />
+            );
+        default:
+            return '';
+    }
+};
 
 export const ExchangeConfirmationHeader = ({ flowType }: ExchangeConfirmationHeaderProps) => {
-    const navigation = useNavigation<NavigationProp>();
-
     const quote = useSelector(selectTradingExchangeSelectedQuote);
 
     const symbol = useSelector((state: TradingRootState) =>
         selectTradingCoinSymbolByCryptoId(state, quote?.send),
     );
 
-    let title: ComponentProps<typeof ScreenHeader>['title'];
-    if (symbol) {
-        title =
-            flowType === 'approve' ? (
-                <Translation
-                    id="moduleTrading.tradingConfirmationScreen.approveHeaderTitle"
-                    values={{ symbol }}
-                />
-            ) : (
-                <Translation
-                    id="moduleTrading.tradingConfirmationScreen.revokeHeaderTitle"
-                    values={{ symbol }}
-                />
-            );
-    }
-
-    return <ScreenHeader title={title} closeActionType="close" closeAction={navigation.popToTop} />;
+    return (
+        <ScreenHeader
+            title={<HeaderTitle flowType={flowType} symbol={symbol} />}
+            closeActionType="close"
+        />
+    );
 };

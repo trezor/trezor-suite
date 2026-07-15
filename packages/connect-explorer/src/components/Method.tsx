@@ -14,6 +14,7 @@ import {
     Text,
     variables,
 } from '@trezor/components';
+import { XIcon } from '@trezor/icons';
 import { spacingsPx } from '@trezor/theme';
 
 import * as methodActions from '../actions/methodActions';
@@ -167,7 +168,7 @@ export const MethodContent = styled.div<{ $manualMode?: boolean }>(
 
 const Container = styled.div`
     position: relative;
-    background: ${({ theme }) => theme.legacyBackgroundSurfaceElevation2};
+    background: ${({ theme }) => theme.elementFillField};
     border-radius: 12px;
     width: 100%;
     overflow-x: auto;
@@ -295,7 +296,7 @@ export const Method = () => {
                             <SubmitButton {...buttonProps} />
                             {buttonProps.isLoading && (
                                 <IconButton
-                                    icon="x"
+                                    icon={XIcon}
                                     intent="neutral"
                                     priority="secondary"
                                     onClick={() => actions.onCancelCall()}
@@ -321,7 +322,7 @@ export const Method = () => {
                                 <SubmitButton {...buttonProps} />
                                 {buttonProps.isLoading && (
                                     <IconButton
-                                        icon="x"
+                                        icon={XIcon}
                                         intent="neutral"
                                         priority="secondary"
                                         data-testid="@cancel-button"

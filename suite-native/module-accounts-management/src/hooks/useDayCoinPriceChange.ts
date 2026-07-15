@@ -28,6 +28,7 @@ export const useDayCoinPriceChange = (
     const [currentValue, setCurrentValue] = useState<BaseCurrencyAmount | null>(null);
     const [weekAgoValue, setWeekAgoValue] = useState<number | null>(null);
     const [valuePercentageChange, setValuePercentageChange] = useState<number | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const fiatCurrencyCode = useSelector(selectBaseCurrency);
     const isElectrumBackend = useSelector((state: BlockchainRootState) =>
@@ -40,30 +41,36 @@ export const useDayCoinPriceChange = (
     useEffect(() => {
         const getPrices = async () => {
             if (!symbol) return;
+
+            setIsLoading(true);
+
             const currentTimestamp = getUnixTime(Date.now());
             const weekAgoTimestamp = currentTimestamp - 7 * UNIX_DAY;
 
-            const timestampedFiatRates = await getFiatRatesForTimestamps(
-                { symbol, tokenAddress: tokenContract },
-                [weekAgoTimestamp, currentTimestamp],
-                fiatCurrencyCode,
-                isElectrumBackend,
-                isCoingeckoForce,
-            );
+            try {
+                const timestampedFiatRates = await getFiatRatesForTimestamps(
+                    { symbol, tokenAddress: tokenContract },
+                    [weekAgoTimestamp, currentTimestamp],
+                    fiatCurrencyCode,
+                    isElectrumBackend,
+                    isCoingeckoForce,
+                );
 
-            if (!timestampedFiatRates) return;
+                const [weekAgo, today] = timestampedFiatRates?.tickers ?? [];
 
-            const { tickers } = timestampedFiatRates;
-            // @ts-expect-error: noUncheckedIndexedAccess
-            const weekAgo: TimestampedFiatRate = tickers[0];
-            // @ts-expect-error: noUncheckedIndexedAccess
-            const today: TimestampedFiatRate = tickers[1];
-
-            setWeekAgoValue(weekAgo?.rates[fiatCurrencyCode] ?? null);
-            const currentRate = today?.rates[fiatCurrencyCode];
-            setCurrentValue(
-                currentRate !== undefined ? asBaseCurrencyAmount(new BigNumber(currentRate)) : null,
-            );
+                setWeekAgoValue(weekAgo?.rates[fiatCurrencyCode] ?? null);
+                const currentRate = today?.rates[fiatCurrencyCode];
+                setCurrentValue(
+                    currentRate !== undefined
+                        ? asBaseCurrencyAmount(new BigNumber(currentRate))
+                        : null,
+                );
+            } catch {
+                setWeekAgoValue(null);
+                setCurrentValue(null);
+            } finally {
+                setIsLoading(false);
+            }
         };
 
         getPrices();
@@ -75,8 +82,10 @@ export const useDayCoinPriceChange = (
     useEffect(() => {
         if (isNotNullOrUndefined(currentValue) && isNotNullOrUndefined(weekAgoValue)) {
             setValuePercentageChange(percentageDiff(weekAgoValue, currentValue.toNumber()));
+        } else {
+            setValuePercentageChange(null);
         }
     }, [currentValue, weekAgoValue]);
 
-    return { currentValue, valuePercentageChange };
+    return { currentValue, valuePercentageChange, isLoading };
 };

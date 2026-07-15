@@ -86,6 +86,7 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
         Promise.resolve({
             coins: {},
             platforms: {},
+            config: {},
         });
 
     const getCurrentAccountDescriptorMock = jest.spyOn(invityAPI, 'getCurrentAccountDescriptor');
@@ -95,9 +96,7 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
     jest.spyOn(Date, 'now').mockImplementation(() => mockedLastLoadedTimestamp);
 
     const store = initStore({
-        info: {
-            paymentMethods: [],
-        },
+        info: {},
         lastLoadedTimestamp: type === 'outdated' ? 0 : mockedLastLoadedTimestamp,
     });
 
@@ -152,6 +151,7 @@ const testUpdatedInfoData = async (type: 'outdated' | 'account-changed') => {
             payload: {
                 coins: {},
                 platforms: {},
+                config: {},
             },
         },
         { type: buyThunks.loadInfoThunk.pending.type, payload: undefined },

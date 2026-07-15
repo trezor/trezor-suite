@@ -1,6 +1,9 @@
 import { type CryptoId, type ExchangeProviderInfo, type SellProviderInfo } from 'invity-api';
 
+import { type Network } from '@suite-common/wallet-config';
+
 import {
+    formatSlip24AddressByNetwork,
     tradingExchangeCreatePaymentRequest,
     tradingSellCreatePaymentRequest,
 } from '../signatureUtils';
@@ -25,6 +28,61 @@ jest.mock('../../../utils', () => ({
 }));
 
 describe('signatureUtils', () => {
+    describe('formatSlip24AddressByNetwork', () => {
+        const createNetwork = (networkType: Network['networkType']) =>
+            ({
+                networkType,
+            }) as Network;
+
+        it('checksums ethereum addresses', () => {
+            expect(
+                formatSlip24AddressByNetwork({
+                    address: '0x52908400098527886e0f7030069857d2e4169ee7',
+                    network: createNetwork('ethereum'),
+                }),
+            ).toBe('0x52908400098527886E0F7030069857D2E4169EE7');
+        });
+
+        it('appends canonical ripple destination tags', () => {
+            expect(
+                formatSlip24AddressByNetwork({
+                    address: 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh',
+                    network: createNetwork('ripple'),
+                    destinationTag: '0007',
+                }),
+            ).toBe('rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh?dt=7');
+        });
+
+        it('treats ripple destination tag zero as absent', () => {
+            expect(
+                formatSlip24AddressByNetwork({
+                    address: 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh',
+                    network: createNetwork('ripple'),
+                    destinationTag: '0',
+                }),
+            ).toBe('rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh');
+        });
+
+        it('rejects invalid ripple destination tags', () => {
+            expect(() =>
+                formatSlip24AddressByNetwork({
+                    address: 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh',
+                    network: createNetwork('ripple'),
+                    destinationTag: '1e3',
+                }),
+            ).toThrow('Invalid Ripple destination tag: 1e3');
+        });
+
+        it('returns other network addresses unchanged', () => {
+            expect(
+                formatSlip24AddressByNetwork({
+                    address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
+                    network: createNetwork('bitcoin'),
+                }),
+            ).toBe('bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh');
+        });
+    });
+
     describe('tradingExchangeCreatePaymentRequest', () => {
         const mockTrade = {
             send: 'bitcoin' as CryptoId,
@@ -109,7 +167,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade send is missing', () => {
             const propsWithoutSend = {
                 ...defaultProps,
-                trade: { ...mockTrade, send: undefined as any },
+                trade: { ...mockTrade, send: undefined },
             };
 
             const result = tradingExchangeCreatePaymentRequest(propsWithoutSend);
@@ -132,7 +190,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade receive is missing', () => {
             const propsWithoutReceive = {
                 ...defaultProps,
-                trade: { ...mockTrade, receive: undefined as any },
+                trade: { ...mockTrade, receive: undefined },
             };
 
             const result = tradingExchangeCreatePaymentRequest(propsWithoutReceive);
@@ -143,7 +201,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade receiveStringAmount is missing', () => {
             const propsWithoutReceiveAmount = {
                 ...defaultProps,
-                trade: { ...mockTrade, receiveStringAmount: undefined as any },
+                trade: { ...mockTrade, receiveStringAmount: undefined },
             };
 
             const result = tradingExchangeCreatePaymentRequest(propsWithoutReceiveAmount);
@@ -154,7 +212,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade receiveAddress is missing', () => {
             const propsWithoutReceiveAddress = {
                 ...defaultProps,
-                trade: { ...mockTrade, receiveAddress: undefined as any },
+                trade: { ...mockTrade, receiveAddress: undefined },
             };
 
             const result = tradingExchangeCreatePaymentRequest(propsWithoutReceiveAddress);
@@ -165,7 +223,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade refundAddress is missing', () => {
             const propsWithoutRefundAddress = {
                 ...defaultProps,
-                trade: { ...mockTrade, refundAddress: undefined as any },
+                trade: { ...mockTrade, refundAddress: undefined },
             };
 
             const result = tradingExchangeCreatePaymentRequest(propsWithoutRefundAddress);
@@ -306,7 +364,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade refundAddress is missing', () => {
             const propsWithoutRefundAddress = {
                 ...defaultSellProps,
-                trade: { ...mockSellTrade, refundAddress: undefined as any },
+                trade: { ...mockSellTrade, refundAddress: undefined },
             };
 
             const result = tradingSellCreatePaymentRequest(propsWithoutRefundAddress);
@@ -328,7 +386,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade cryptoStringAmount is missing', () => {
             const propsWithoutAmount = {
                 ...defaultSellProps,
-                trade: { ...mockSellTrade, cryptoStringAmount: undefined as any },
+                trade: { ...mockSellTrade, cryptoStringAmount: undefined },
             };
 
             const result = tradingSellCreatePaymentRequest(propsWithoutAmount);
@@ -339,7 +397,7 @@ describe('signatureUtils', () => {
         it('should return undefined when trade cryptoCurrency is missing', () => {
             const propsWithoutCurrency = {
                 ...defaultSellProps,
-                trade: { ...mockSellTrade, cryptoCurrency: undefined as any },
+                trade: { ...mockSellTrade, cryptoCurrency: undefined },
             };
 
             const result = tradingSellCreatePaymentRequest(propsWithoutCurrency);

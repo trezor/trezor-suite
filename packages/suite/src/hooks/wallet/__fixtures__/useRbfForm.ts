@@ -1,3 +1,4 @@
+import { type CoinjoinState } from '@suite/coinjoin';
 import {
     type ChainedTransactions,
     type FeesState,
@@ -8,8 +9,6 @@ import {
 } from '@suite-common/wallet-types';
 import { type AccountUtxo } from '@trezor/connect';
 import { type DeepPartial } from '@trezor/type-utils';
-
-import { type CoinjoinState } from 'src/reducers/wallet/coinjoinReducer';
 
 export { getRootReducer } from './useSendForm';
 

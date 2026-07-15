@@ -1,13 +1,15 @@
 import { IconButton } from '@trezor/components';
+import { type IconComponent } from '@trezor/components';
+import { CircleHalfIcon, MoonIcon, SunIcon } from '@trezor/icons';
 
 import { type ThemePreference, useTheme } from '../contexts/ThemeContext';
 
 const CYCLE: ThemePreference[] = ['system', 'light', 'dark'];
 
-const PREFERENCE_ICON: Record<ThemePreference, 'circleHalf' | 'sun' | 'moon'> = {
-    system: 'circleHalf',
-    light: 'sun',
-    dark: 'moon',
+const PREFERENCE_ICON: Record<ThemePreference, IconComponent> = {
+    system: CircleHalfIcon,
+    light: SunIcon,
+    dark: MoonIcon,
 };
 
 const PREFERENCE_TOOLTIP: Record<ThemePreference, string> = {

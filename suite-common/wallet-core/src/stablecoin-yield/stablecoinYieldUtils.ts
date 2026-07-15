@@ -1,20 +1,24 @@
-import { Calldata } from '@suite-common/calldata';
-import {
-    type TransactionDto,
-    TransactionDtoStatus,
-    TransactionDtoType,
-    type YieldDto,
-    parseUnsignedEvmTransaction,
-} from '@suite-common/earn-stablecoin-api';
+import { Calldata, type EvmAddress } from '@suite-common/calldata';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountKey } from '@suite-common/wallet-types';
-import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { type AccountKey, type EvmSelectedFee } from '@suite-common/wallet-types';
+import {
+    asAmountUnit,
+    fromGwei,
+    fromIntegerString,
+    getContractAddressForNetworkSymbol,
+    unitsToSubunits,
+} from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
+import { YIELD_FLOW_STEP_SEQUENCES } from './stablecoinYieldConstants';
 import type {
+    YieldFlowDisplayToken,
     YieldFlowResolvedData,
+    YieldFlowStepId,
     YieldFlowType,
     YieldPendingTransactionState,
+    YieldWithdrawFlowType,
 } from './stablecoinYieldTypes';
 
 type TokenLike = {
@@ -60,6 +64,43 @@ type GetStablecoinYieldFlowKeyParams = {
     yieldId: string;
 };
 
+type EvmFeeLevel = {
+    baseFeePerGas?: string;
+    feePerUnit: string;
+    maxFeePerGas?: string;
+    maxPriorityFeePerGas?: string;
+};
+
+type BuildYieldWithdrawCalldataParams = {
+    amount: string;
+    flowData: YieldFlowResolvedData;
+    ownerAddress: EvmAddress;
+    receiverAddress: EvmAddress;
+    flowType: YieldWithdrawFlowType;
+};
+
+type BuildYieldDepositCalldataParams = {
+    amount: string;
+    flowData: YieldFlowResolvedData;
+    ownerAddress: EvmAddress;
+    receiverAddress: EvmAddress;
+};
+
+type BuildYieldUnsignedTransactionParams = {
+    chainId: number;
+    data: string;
+    feeLevel: EvmFeeLevel;
+    from: string;
+    gasLimit: string;
+    nonce: number;
+    to: string;
+};
+
+type BuildEvmFeeFieldsParams = {
+    feeLevel: EvmFeeLevel;
+    gasLimit: string;
+};
+
 export const getStablecoinYieldFlowKey = ({
     accountKey,
     tokenContract,
@@ -67,14 +108,208 @@ export const getStablecoinYieldFlowKey = ({
 }: GetStablecoinYieldFlowKeyParams) =>
     `${accountKey}:${yieldId}:${tokenContract?.toLowerCase() ?? ''}`;
 
+export const isYieldWithdrawFlow = (flowType: YieldFlowType): flowType is YieldWithdrawFlowType =>
+    flowType === 'withdraw' || flowType === 'redeem';
+
+/**
+ * Returns the step that follows `step` in the flow's step sequence. Stays on `step`
+ * when it is the last one or not part of the flow at all.
+ */
+export const getNextYieldFlowStep = (
+    flowType: YieldFlowType,
+    step: YieldFlowStepId,
+): YieldFlowStepId => {
+    // Widened so indexOf accepts any step id across the per-flow tuples.
+    const sequence: readonly YieldFlowStepId[] = YIELD_FLOW_STEP_SEQUENCES[flowType];
+    const stepIndex = sequence.indexOf(step);
+
+    if (stepIndex === -1) {
+        return step;
+    }
+
+    return sequence[stepIndex + 1] ?? step;
+};
+
+export const getYieldWithdrawInputToken = ({
+    flowData,
+    flowType,
+}: {
+    flowData: YieldFlowResolvedData;
+    flowType: YieldWithdrawFlowType;
+}): YieldFlowDisplayToken => (flowType === 'redeem' ? flowData.receiptToken : flowData.token);
+
+export const buildYieldWithdrawCalldata = ({
+    amount,
+    flowData,
+    ownerAddress,
+    receiverAddress,
+    flowType,
+}: BuildYieldWithdrawCalldataParams) => {
+    const isRedeem = flowType === 'redeem';
+    const inputToken = getYieldWithdrawInputToken({ flowData, flowType });
+    const amountSubunits = unitsToSubunits({
+        value: asAmountUnit(new BigNumber(amount)),
+        decimals: inputToken.decimals,
+    });
+
+    const builderResult = isRedeem
+        ? Calldata.evm.erc4626.redeem.encode(
+              {
+                  shares: amountSubunits,
+                  receiver: receiverAddress,
+                  owner: ownerAddress,
+              },
+              { sender: ownerAddress },
+          )
+        : Calldata.evm.erc4626.withdraw.encode(
+              {
+                  assets: amountSubunits,
+                  receiver: receiverAddress,
+                  owner: ownerAddress,
+              },
+              { sender: ownerAddress },
+          );
+
+    if (!builderResult.isValid || !builderResult.data) {
+        const issues = builderResult.errors.map(issue => issue.code).join(', ');
+
+        throw new Error(`Failed to encode withdraw calldata${issues ? `: ${issues}` : '.'}`);
+    }
+
+    return builderResult.data;
+};
+
+export const buildYieldDepositCalldata = ({
+    amount,
+    flowData,
+    ownerAddress,
+    receiverAddress,
+}: BuildYieldDepositCalldataParams) => {
+    const amountSubunits = unitsToSubunits({
+        value: asAmountUnit(new BigNumber(amount)),
+        decimals: flowData.token.decimals,
+    });
+
+    const builderResult = Calldata.evm.erc4626.deposit.encode(
+        {
+            assets: amountSubunits,
+            receiver: receiverAddress,
+        },
+        { sender: ownerAddress },
+    );
+
+    if (!builderResult.isValid || !builderResult.data) {
+        const issues = builderResult.errors.map(issue => issue.code).join(', ');
+
+        throw new Error(`Failed to encode deposit calldata${issues ? `: ${issues}` : '.'}`);
+    }
+
+    return builderResult.data;
+};
+
+export const buildEvmFeeFields = ({ feeLevel, gasLimit }: BuildEvmFeeFieldsParams) => {
+    const commonFields = {
+        gasLimit: fromIntegerString(gasLimit).toHex(),
+    };
+
+    if (feeLevel.maxFeePerGas && feeLevel.maxPriorityFeePerGas) {
+        return {
+            ...commonFields,
+            maxFeePerGas: fromGwei(feeLevel.maxFeePerGas).toWei('hex'),
+            maxPriorityFeePerGas: fromGwei(feeLevel.maxPriorityFeePerGas).toWei('hex'),
+        };
+    }
+
+    return {
+        ...commonFields,
+        gasPrice: fromGwei(feeLevel.feePerUnit).toWei('hex'),
+    };
+};
+
+export const buildEvmSelectedFee = ({
+    feeLevel,
+    gasLimit,
+}: BuildEvmFeeFieldsParams): EvmSelectedFee => {
+    const feeFields = buildEvmFeeFields({ feeLevel, gasLimit });
+
+    if ('maxFeePerGas' in feeFields && 'maxPriorityFeePerGas' in feeFields) {
+        return {
+            type: 'eip1559',
+            ...feeFields,
+            baseFeePerGas: fromGwei(feeLevel.baseFeePerGas ?? '0').toWei('hex'),
+        };
+    }
+
+    return {
+        type: 'legacy',
+        ...feeFields,
+    };
+};
+
+export const buildYieldUnsignedTransaction = ({
+    chainId,
+    data,
+    feeLevel,
+    from,
+    gasLimit,
+    nonce,
+    to,
+}: BuildYieldUnsignedTransactionParams) => {
+    const feeFields = buildEvmFeeFields({ feeLevel, gasLimit });
+    const commonFields = {
+        from,
+        to,
+        data,
+        value: '0x0',
+        nonce,
+        chainId,
+        gasLimit: feeFields.gasLimit,
+    };
+
+    if ('maxFeePerGas' in feeFields && 'maxPriorityFeePerGas' in feeFields) {
+        return {
+            ...commonFields,
+            type: 2,
+            maxFeePerGas: feeFields.maxFeePerGas,
+            maxPriorityFeePerGas: feeFields.maxPriorityFeePerGas,
+        };
+    }
+
+    return {
+        ...commonFields,
+        gasPrice: feeFields.gasPrice,
+    };
+};
+
+type YieldTxReviewFlowIdentity = {
+    accountKey?: AccountKey;
+    flowKey?: string;
+    flowType?: YieldFlowType;
+    createdTimestamp?: number;
+};
+
+type YieldTxReviewFlowMatchParams = {
+    accountKey: AccountKey;
+    flowKey: string;
+    flowType: YieldFlowType;
+    notBefore?: number;
+};
+
+export const isYieldTxReviewForFlow = (
+    txReview: YieldTxReviewFlowIdentity,
+    { accountKey, flowKey, flowType, notBefore }: YieldTxReviewFlowMatchParams,
+) =>
+    txReview.accountKey === accountKey &&
+    txReview.flowKey === flowKey &&
+    txReview.flowType === flowType &&
+    (notBefore === undefined || (txReview.createdTimestamp ?? 0) >= notBefore);
+
 export const splitYieldPendingTransaction = (
     pendingTransaction: YieldPendingTransactionState | null,
     actionKind: YieldFlowType,
 ) => {
     const isApprovalPending =
-        pendingTransaction?.type === 'approve' ||
-        pendingTransaction?.type === 'revoke' ||
-        pendingTransaction?.type === 'revoke-only';
+        pendingTransaction?.type === 'approve' || pendingTransaction?.type === 'revoke';
 
     return {
         approvalPendingTransaction: isApprovalPending ? pendingTransaction : undefined,
@@ -180,145 +415,10 @@ export const getConvertedOutputTokenBalanceToInputTokenAmount = ({
         .toString();
 };
 
-export const sortYieldTransactions = (transactions: TransactionDto[]) =>
-    [...transactions].sort(
-        (firstTransaction, secondTransaction) =>
-            (firstTransaction.stepIndex ?? Number.MAX_SAFE_INTEGER) -
-            (secondTransaction.stepIndex ?? Number.MAX_SAFE_INTEGER),
-    );
-
-const SIGNABLE_TRANSACTION_STATUSES = [
-    TransactionDtoStatus.CREATED,
-    TransactionDtoStatus.WAITING_FOR_SIGNATURE,
-] as const;
-
-const isTransactionReadyForSigning = (transaction: TransactionDto) =>
-    SIGNABLE_TRANSACTION_STATUSES.includes(
-        transaction.status as (typeof SIGNABLE_TRANSACTION_STATUSES)[number],
-    ) && !!transaction.unsignedTransaction;
-
-const getApprovalTxDataType = (transaction: TransactionDto) => {
-    const parsed = parseUnsignedEvmTransaction(transaction.unsignedTransaction);
-    const approvalData = Calldata.evm.erc20.approve.decode(parsed?.data);
-    if (!approvalData) return null;
-
-    return approvalData.amount === 0n ? 'revoke' : 'approve';
-};
-
-export const getYieldRevokeTransaction = (transactions: TransactionDto[]) =>
-    sortYieldTransactions(transactions).find(
-        transaction =>
-            transaction.type === TransactionDtoType.APPROVAL &&
-            isTransactionReadyForSigning(transaction) &&
-            getApprovalTxDataType(transaction) === 'revoke',
-    );
-
-export const getYieldApprovalTransaction = (transactions: TransactionDto[]) =>
-    sortYieldTransactions(transactions).find(
-        transaction =>
-            transaction.type === TransactionDtoType.APPROVAL &&
-            isTransactionReadyForSigning(transaction) &&
-            getApprovalTxDataType(transaction) === 'approve',
-    );
-
-const SUPPLY_TRANSACTION_TYPES = [TransactionDtoType.SUPPLY, TransactionDtoType.DEPOSIT] as const;
-
-const WITHDRAW_TRANSACTION_TYPES = [
-    TransactionDtoType.WITHDRAW,
-    TransactionDtoType.WITHDRAW_ALL,
-] as const;
-
-export const getYieldSupplyTransaction = (transactions: TransactionDto[]) =>
-    sortYieldTransactions(transactions).find(
-        transaction =>
-            (SUPPLY_TRANSACTION_TYPES as readonly string[]).includes(transaction.type) &&
-            isTransactionReadyForSigning(transaction),
-    );
-
-export const getYieldWithdrawTransaction = (transactions: TransactionDto[]) =>
-    sortYieldTransactions(transactions).find(
-        transaction =>
-            (WITHDRAW_TRANSACTION_TYPES as readonly string[]).includes(transaction.type) &&
-            isTransactionReadyForSigning(transaction),
-    );
-
-export const getYieldApprovalSpender = (transaction?: TransactionDto | null): string | null => {
-    const parsedTransaction = parseUnsignedEvmTransaction(transaction?.unsignedTransaction);
-    const approvalData = Calldata.evm.erc20.approve.decode(parsedTransaction?.data);
-
-    return approvalData?.spender ?? null;
-};
-
-/**
- * Extracts the vault contract address from supply/withdraw transactions.
- * This address serves as the ERC20 spender — useful when no explicit approval
- * transaction is present (token was already approved from a previous session).
- */
-export const getYieldVaultAddressFromTransactions = (
-    transactions: TransactionDto[],
-): string | null => {
-    const ACTION_TRANSACTION_TYPES = [
-        ...SUPPLY_TRANSACTION_TYPES,
-        ...WITHDRAW_TRANSACTION_TYPES,
-    ] as readonly string[];
-
-    const actionTx = sortYieldTransactions(transactions).find(tx =>
-        ACTION_TRANSACTION_TYPES.includes(tx.type),
-    );
-
-    const parsed = parseUnsignedEvmTransaction(actionTx?.unsignedTransaction);
-
-    return parsed?.to ?? null;
-};
-
-export const getYieldSpenderFromTransactions = (transactions: TransactionDto[]) => {
-    const approvalTransaction = sortYieldTransactions(transactions).find(
-        transaction =>
-            transaction.type === TransactionDtoType.APPROVAL &&
-            !!getYieldApprovalSpender(transaction),
-    );
-
-    return getYieldApprovalSpender(approvalTransaction);
-};
-
-const getYieldModalParams = (transaction?: TransactionDto | null) => {
-    if (!transaction?.id) {
-        return null;
-    }
-
-    const spender = getYieldApprovalSpender(transaction);
-
-    if (!spender) {
-        return null;
-    }
-
-    return {
-        spender,
-        transactionId: transaction.id,
-    };
-};
-
-export const getYieldRevokeModalParams = (transactions: TransactionDto[]) => {
-    const revokeTransaction = getYieldRevokeTransaction(transactions);
-
-    return getYieldModalParams(revokeTransaction);
-};
-
-export const getYieldApprovalModalParams = (transactions: TransactionDto[]) => {
-    const approvalTransaction = sortYieldTransactions(transactions).find(
-        transaction =>
-            transaction.type === TransactionDtoType.APPROVAL &&
-            transaction.status !== TransactionDtoStatus.SKIPPED &&
-            getApprovalTxDataType(transaction) === 'approve',
-    );
-
-    return getYieldModalParams(approvalTransaction);
-};
-
 const getVaultAddressFromYieldId = (yieldId: string) =>
     yieldId.match(/0x[a-fA-F0-9]{40}/)?.[0] ?? null;
 
-export const getYieldVaultContractAddress = (vault: Pick<YieldDto, 'id' | 'outputToken'>) =>
+export const getYieldVaultContractAddress = (vault: Pick<YieldDtoV2, 'id' | 'outputToken'>) =>
     vault.outputToken?.address ?? getVaultAddressFromYieldId(vault.id);
 
 export const getAllowanceSpender = (flowData: YieldFlowResolvedData) =>

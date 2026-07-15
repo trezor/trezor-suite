@@ -3,7 +3,7 @@ import { sha256 } from '@noble/hashes/sha2.js';
 import { randomBytes } from '@noble/hashes/utils.js';
 import { entropyToMnemonic, mnemonicToSeed } from '@scure/bip39';
 
-import { bip39 } from '@trezor/crypto-utils';
+import { bip39EnglishWordlist } from '@trezor/crypto-utils';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { bip32 } from '@trezor/utxo-lib';
 
@@ -34,7 +34,7 @@ const roundFunction = async (i: number, passphrase: Buffer, e: number, salt: Buf
     // return crypto.pbkdf2Sync(data, Buffer.concat([salt, r]), iterations, r.length, 'sha256');
 
     // Nodejs + WebCrypto equivalent
-    const { subtle } = crypto as Crypto;
+    const { subtle } = crypto;
     const key = await subtle.importKey('raw', data, 'PBKDF2', false, ['deriveBits']);
     const bits = await subtle.deriveBits(
         {
@@ -116,7 +116,9 @@ const computeSeed = (type: VerifyEntropyOptions['type'], secret: Buffer) => {
     }
 
     // use bip39
-    return mnemonicToSeed(entropyToMnemonic(secret, [...bip39])).then(seed => Buffer.from(seed));
+    return mnemonicToSeed(entropyToMnemonic(secret, [...bip39EnglishWordlist])).then(seed =>
+        Buffer.from(seed),
+    );
 };
 
 const verifyCommitment = (entropy: string, commitment: string) => {

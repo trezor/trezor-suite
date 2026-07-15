@@ -1,5 +1,4 @@
 import { decodeFunctionResult } from 'viem';
-import { fromWei, numberToHex, toWei } from 'web3-utils';
 
 import { Calldata, EVM_ABI, Verifier, type VerifyIssue } from '@suite-common/calldata';
 import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
@@ -18,6 +17,10 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
+    fromEther,
+    fromGwei,
+    fromIntegerString,
+    fromWei,
     getEthereumEstimateFeeParams,
     isPending,
     isSupportedEthStakingNetworkSymbol,
@@ -29,7 +32,7 @@ import TrezorConnect, {
     type EthereumTransactionEIP1559,
     type InternalTransfer,
 } from '@trezor/connect';
-import { type BlockchainEstimatedFee } from '@trezor/connect-common/src/types/api/blockchainEstimateFee';
+import { type BlockchainEstimatedFee } from '@trezor/connect-common/src/types/api/blockchain/blockchainEstimateFee';
 import { type Ok, type PartialRecord } from '@trezor/type-utils';
 import { BigNumber, throwError } from '@trezor/utils';
 
@@ -46,9 +49,6 @@ import {
     type PrepareUnstakeEthTxParams,
     type StakeTxBaseArgs,
 } from '../types';
-
-const STAKE_SOURCE = new BigNumber(WALLET_SDK_SOURCE);
-const STAKE_SOURCE_BIGINT = BigInt(WALLET_SDK_SOURCE);
 
 const encodeCalldata = <D extends string>(
     label: string,
@@ -67,23 +67,27 @@ const verifyCalldata = (label: string, result: { isValid: boolean; issues: Verif
     }
 };
 
-export const buildStakeData = () => {
+export const buildStakeData = (source: string = WALLET_SDK_SOURCE) => {
     const data = encodeCalldata(
         'stake',
-        Calldata.evm.everstake.stake.encode({ source: STAKE_SOURCE }),
+        Calldata.evm.everstake.stake.encode({ source: new BigNumber(source) }),
     );
-    verifyCalldata('stake', Verifier.evm.everstake.stake(data, { source: STAKE_SOURCE_BIGINT }));
+    verifyCalldata('stake', Verifier.evm.everstake.stake(data, { source: BigInt(source) }));
 
     return data;
 };
 
-export const buildUnstakeData = (amountWei: string, interchanges: number) => {
+export const buildUnstakeData = (
+    amountWei: string,
+    interchanges: number,
+    source: string = WALLET_SDK_SOURCE,
+) => {
     const data = encodeCalldata(
         'unstake',
         Calldata.evm.everstake.unstake.encode({
             value: new BigNumber(amountWei),
             allowedInterchangeNum: new BigNumber(interchanges),
-            source: STAKE_SOURCE,
+            source: new BigNumber(source),
         }),
     );
     verifyCalldata(
@@ -91,7 +95,7 @@ export const buildUnstakeData = (amountWei: string, interchanges: number) => {
         Verifier.evm.everstake.unstake(data, {
             value: BigInt(amountWei),
             allowedInterchangeNum: interchanges,
-            source: STAKE_SOURCE_BIGINT,
+            source: BigInt(source),
         }),
     );
 
@@ -112,19 +116,22 @@ export const buildClaimWithdrawRequestData = () => {
 export const verifyEthereumStakingCalldata = ({
     stakeType,
     calldata,
+    source = WALLET_SDK_SOURCE,
 }: {
     stakeType: StakeType;
     calldata: string;
+    source?: string;
 }): { isValid: boolean; issues: VerifyIssue[] } => {
     const data = calldata as `0x${string}`;
+    const sourceBigInt = BigInt(source);
 
     if (stakeType === 'stake') {
-        return Verifier.evm.everstake.stake(data, { source: STAKE_SOURCE_BIGINT });
+        return Verifier.evm.everstake.stake(data, { source: sourceBigInt });
     }
     if (stakeType === 'unstake') {
         return Verifier.evm.everstake.unstake(
             data,
-            { value: 0n, allowedInterchangeNum: 0, source: STAKE_SOURCE_BIGINT },
+            { value: 0n, allowedInterchangeNum: 0, source: sourceBigInt },
             ['source'],
         );
     }
@@ -146,7 +153,7 @@ export const getEthNetworkForWalletSdk = (
     return (symbol && symbol !== 'unknown' ? ethNetworks[symbol] : null) ?? null;
 };
 
-export const getEthNetworkAddresses = (symbol: NetworkSymbol): EthNetworkAddresses | null => {
+const getEthNetworkAddresses = (symbol: NetworkSymbol): EthNetworkAddresses | null => {
     const ethNetwork = getEthNetworkForWalletSdk(symbol);
 
     return ethNetwork ? ETH_NETWORK_ADDRESSES[ethNetwork] : null;
@@ -167,7 +174,7 @@ export const stake = async ({
 }: StakeTxBaseArgs & {
     amount: string;
 }) => {
-    const amountWei = toWei(amount, 'ether');
+    const amountWei = fromEther(amount).toWei();
 
     if (new BigNumber(amount).lt(MIN_ETH_AMOUNT_FOR_STAKING)) {
         throw new Error(
@@ -239,7 +246,7 @@ export const unstake = async ({
             throw new Error('Failed to get the autocompound balance');
         }
 
-        const balance = new BigNumber(fromWei(autocompoundBalance, 'ether'));
+        const balance = fromWei(autocompoundBalance).toEther('bignumber');
         if (balance.lt(amount)) {
             throw new Error(`Max Amount For Unstake ${balance}`);
         }
@@ -249,7 +256,7 @@ export const unstake = async ({
             interchanges = UINT16_MAX;
         }
 
-        const amountWei = toWei(amount, 'ether');
+        const amountWei = fromEther(amount).toWei();
         const { addressContractPool } =
             getEthNetworkAddresses(symbol) ??
             throwError(`Unsupported staking network symbol: ${symbol}`);
@@ -308,8 +315,8 @@ export const claimWithdrawRequest = async ({
             throw new Error('Failed to get the claimable or withdraw total amount');
         }
 
-        const requested = new BigNumber(fromWei(withdrawTotalAmount, 'ether'));
-        const readyForClaim = new BigNumber(fromWei(claimableAmount, 'ether'));
+        const requested = fromWei(withdrawTotalAmount).toEther('bignumber');
+        const readyForClaim = fromWei(claimableAmount).toEther('bignumber');
         if (requested.isZero()) {
             throw new Error('No amount requested for unstake');
         }
@@ -397,10 +404,10 @@ export const transformTx = (
     const commonTxData = {
         to: tx.to,
         // in send form, the amount is in ether, here in wei because it is converted earlier in stake, unstake, claimToWithdraw methods
-        value: numberToHex(tx.value),
+        value: fromWei(tx.value).toWei('hex'),
         chainId,
-        nonce: numberToHex(nonce),
-        gasLimit: numberToHex(tx.gasLimit),
+        nonce: fromIntegerString(nonce).toHex(),
+        gasLimit: fromIntegerString(tx.gasLimit).toHex(),
         data: sanitizeHex(tx.data),
     };
 
@@ -408,16 +415,16 @@ export const transformTx = (
         result = {
             ...commonTxData,
             gasPrice: undefined,
-            maxFeePerGas: numberToHex(toWei(maxFeePerGas, 'gwei')),
-            maxPriorityFeePerGas: numberToHex(toWei(maxPriorityFeePerGas || '0', 'gwei')),
-        } as EthereumTransactionEIP1559;
+            maxFeePerGas: fromGwei(maxFeePerGas).toWei('hex'),
+            maxPriorityFeePerGas: fromGwei(maxPriorityFeePerGas || '0').toWei('hex'),
+        };
     } else if (gasPrice) {
         result = {
             ...commonTxData,
-            gasPrice: numberToHex(toWei(gasPrice, 'gwei')),
+            gasPrice: fromGwei(gasPrice).toWei('hex'),
             maxFeePerGas: undefined,
             maxPriorityFeePerGas: undefined,
-        } as EthereumTransaction;
+        };
     } else {
         throw new Error('No gas price or maxFeePerGas and maxPriorityFeePerGas provided');
     }
@@ -425,7 +432,7 @@ export const transformTx = (
     return result;
 };
 
-export type PrepareStakeEthTxResponse =
+type PrepareStakeEthTxResponse =
     | {
           success: true;
           tx: EthereumTransaction | EthereumTransactionEIP1559;
@@ -561,7 +568,7 @@ export const prepareClaimEthTx = async ({
     }
 };
 
-export type GetStakeTxGasLimitResponse =
+type GetStakeTxGasLimitResponse =
     | {
           success: true;
           gasLimit: string;
@@ -734,7 +741,8 @@ export const simulateUnstake = async ({
     amount,
     from,
     symbol,
-}: StakeTxBaseArgs & { amount: string }) => {
+    source = WALLET_SDK_SOURCE,
+}: StakeTxBaseArgs & { amount: string; source?: string }) => {
     if (!isSupportedEthStakingNetworkSymbol(symbol)) return null;
     if (!amount || !from || !symbol) return null;
 
@@ -742,8 +750,8 @@ export const simulateUnstake = async ({
     if (!ethAddresses) return null;
     const { addressContractPool } = ethAddresses;
 
-    const amountWei = toWei(amount, 'ether');
-    const data = buildUnstakeData(amountWei, UNSTAKE_INTERCHANGES);
+    const amountWei = fromEther(amount).toWei();
+    const data = buildUnstakeData(amountWei, UNSTAKE_INTERCHANGES, source);
 
     const transactionData = await TrezorConnect.blockchainEvmRpcCall({
         coin: symbol,
@@ -762,7 +770,7 @@ export const simulateUnstake = async ({
         data: transactionData.payload.data as `0x${string}`,
     });
 
-    return fromWei(unstakeFromPendingValue.toString(), 'ether');
+    return fromWei(unstakeFromPendingValue.toString()).toEther();
 };
 
 export const getEthereumStakingAddressByType = (

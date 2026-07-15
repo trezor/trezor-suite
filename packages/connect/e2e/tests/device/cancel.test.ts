@@ -1,11 +1,12 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import TrezorConnect from '@trezor/connect';
+import type { CoinSymbol } from '@trezor/connect-common';
 import type { TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
 
-const getAddress = (showOnTrezor: boolean, coin: string = 'regtest') =>
+const getAddress = (showOnTrezor: boolean, coin: CoinSymbol = 'regtest') =>
     TrezorConnect.getAddress({
         path: "m/84'/1'/0'/0/0",
         coin,
@@ -35,7 +36,7 @@ const assertGetAddressWorks = async () => {
     // validate that further communication is possible without any glitch
     TrezorConnect.on('ui-request_passphrase', passphraseHandler(''));
     TrezorConnect.on('ui-request_confirmation', addressHandler());
-    const getAddressResponse = await getAddress(false, 'testnet');
+    const getAddressResponse = await getAddress(false, 'test');
     expect(getAddressResponse).toMatchObject({
         success: true,
         payload: { address: 'tb1qkvwu9g3k2pdxewfqr7syz89r3gj557l3uuf9r9' },

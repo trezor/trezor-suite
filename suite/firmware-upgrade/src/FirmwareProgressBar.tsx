@@ -35,7 +35,7 @@ export const FirmwareProgressBar = () => {
                 <Row gap={spacings.lg} justifyContent="space-between">
                     <ProgressBar
                         value={progress}
-                        backgroundColor={theme.legacyBackgroundNeutralSubtleOnElevationNegative}
+                        backgroundColor={theme.elementFillNeutralSofter}
                     />
                     <Percentage>
                         <Text typographyStyle="body-md-strong">

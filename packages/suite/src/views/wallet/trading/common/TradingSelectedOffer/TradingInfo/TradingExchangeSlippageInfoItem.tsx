@@ -1,18 +1,23 @@
 import { useState } from 'react';
 
+import { type ExchangeTrade } from 'invity-api';
+
 import { Translation } from '@suite/intl';
 import { InfoItem, Text, TextButton, Tooltip } from '@trezor/components';
+import { PencilSimpleIcon } from '@trezor/icons';
 
-import { TradingOfferExchangeSlippageModal } from '../TradingOfferExchange/TradingOfferExchangeSlippageModal';
+import { TradingOfferExchangeSlippageModal } from 'src/views/wallet/trading/exchange/TradingOfferExchangeSlippageModal/TradingOfferExchangeSlippageModal';
 
 type TradingExchangeSlippageInfoItemProps = {
     isEditable?: boolean;
     slippage: string;
+    selectedQuote?: ExchangeTrade;
 };
 
 export const TradingExchangeSlippageInfoItem = ({
     isEditable = false,
     slippage,
+    selectedQuote,
 }: TradingExchangeSlippageInfoItemProps) => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -30,19 +35,25 @@ export const TradingExchangeSlippageInfoItem = ({
                     <TextButton
                         onClick={() => setIsEditModalOpen(true)}
                         size="small"
-                        iconRight="pencilSimple"
+                        iconRight={PencilSimpleIcon}
                         intent="brand"
                         isUnderlined
+                        data-testid="@trading/offer/info/slippage"
                     >
                         {slippage}%
                     </TextButton>
                 ) : (
-                    <Text typographyStyle="body-sm">{slippage}%</Text>
+                    <Text typographyStyle="body-sm" data-testid="@trading/offer/info/slippage">
+                        {slippage}%
+                    </Text>
                 )}
             </InfoItem>
 
-            {isEditModalOpen && (
-                <TradingOfferExchangeSlippageModal onClose={() => setIsEditModalOpen(false)} />
+            {isEditModalOpen && selectedQuote && (
+                <TradingOfferExchangeSlippageModal
+                    selectedQuote={selectedQuote}
+                    onClose={() => setIsEditModalOpen(false)}
+                />
             )}
         </>
     );

@@ -16,7 +16,7 @@ import {
     type WalletTable,
     createSuiteSyncUpdateError,
 } from '@suite-common/suite-sync-storage';
-import { asWalletDescriptor } from '@suite-common/wallet';
+import { asWalletDescriptor } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';
 
 import { normalizeLabel } from './normalizeLabel';

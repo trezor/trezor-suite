@@ -45,7 +45,7 @@ jobs:
 
     steps:
       - name: Checkout project
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
         with:
           submodules: "true"
 
@@ -60,29 +60,31 @@ jobs:
           large-packages: false
 
       - name: Install node and yarn
-        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version-file: ".nvmrc"
           cache: yarn
 
       - name: Load node modules cache
-        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        id: node-modules-cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
-          path: node_modules
-          key: node_modules-${{ hashFiles('yarn.lock') }}
-          restore-keys: node_modules-
+          path: |
+            node_modules
+            suite-native/app/node_modules
+          key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
 
-      - name: Install Socket Firewall
-        uses: SocketDev/action@2d3f25590c6ed6ba11a9a14c064d962a3a04698f # v1.3.1
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@26d5c0ad71fd0e5f48c3183c9c74d4b3eb7f57c8 # v0.19.1
         continue-on-error: true
         with:
-          mode: firewall-free
-          job-summary: errors
-          firewall-version: 1.11.0
-      - name: Install Yarn dependencies
+          version: v0.19.1
+      - name: Disable Yarn hardened mode
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          $(command -v sfw > /dev/null && echo sfw --verbose) yarn install
+
+      - name: Install Yarn dependencies
+        run: yarn install --immutable
 
       # Detox runtime may indirectly import the built config, and that would crash if message-system is not built
       - name: Sign message system config
@@ -91,7 +93,7 @@ jobs:
 
       - name: Generate GitHub App token
         id: trezor-bot-token
-        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
         with:
           client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
           private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
@@ -174,6 +176,17 @@ jobs:
           docker cp trezor-user-env.unix:/trezor-user-env/logs/tropic_model.log "$LOG_DIR/trezor-user-env-tropic_model.log" || true
           docker cp trezor-user-env.unix:/trezor-user-env/docker/version.txt "$LOG_DIR/trezor-user-env-version.txt" || true
           docker logs trezor-user-env-regtest > "$LOG_DIR/electrum-regtest.txt" || true
+          # Emulator crash DB written by QEMU to the host filesystem on abnormal termination
+          find /tmp "$HOME/.android/avd" -name "emu-crash*.db" -print0 2>/dev/null \
+            | while IFS= read -r -d '' db; do
+              cp "$db" "$LOG_DIR/$(basename "$db")" || true
+              sqlite3 "$db" "SELECT * FROM Crash;" > "$LOG_DIR/$(basename "$db" .db)-report.txt" 2>&1 || true
+            done || true
+          # Android tombstones (only available if the emulator is still reachable via ADB)
+          mkdir -p "$LOG_DIR/tombstones"
+          adb shell ls /data/tombstones/ 2>/dev/null \
+            && adb pull /data/tombstones/. "$LOG_DIR/tombstones" \
+            || true
           docker logs docker-quota-db-1 > quota-db.log 2>&1 || true
           docker logs docker-suite-sync-1 > suite-sync.log 2>&1 || true
 

@@ -12,8 +12,8 @@ type Attributes = {
 
 export const assetDetailEvent: EventDef<Attributes, EventType.AssetDetail> = {
     name: EventType.AssetDetail,
-    descriptionTrigger: 'On asset detail opening.',
-    description: 'For ERC20 tokens additionally contains `tokenSymbol`',
+    descriptionTrigger: 'User opens the detail view for an asset (cryptocurrency or token)',
+    description: 'For ERC20 tokens additionally contains `tokenSymbol` and `tokenAddress`',
     changelog: [
         { version: '23.4.1', notes: 'added' },
         { version: '24.3.1', notes: 'optional property tokenAddress added' },
@@ -22,15 +22,16 @@ export const assetDetailEvent: EventDef<Attributes, EventType.AssetDetail> = {
     attributes: {
         assetSymbol: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'Describes the network of the account',
+            description: 'The network symbol of the asset (e.g., `btc`, `eth`, `sol` etc.)',
         },
         tokenSymbol: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'Symbol of the token',
+            description:
+                'The symbol of the token (only for ERC20/token assets, not for native network assets)',
         },
         tokenAddress: {
             changelog: [{ version: '24.3.1', notes: 'added' }],
-            description: 'Token contract address',
+            description: 'The contract address of the token (only for non-native tokens)',
         },
     },
 };

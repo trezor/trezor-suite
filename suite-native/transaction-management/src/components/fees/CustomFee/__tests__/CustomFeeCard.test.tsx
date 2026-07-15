@@ -1,6 +1,7 @@
 import { type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import {
     renderHookWithStoreProvider,
     renderWithStoreProvider,
@@ -69,8 +70,8 @@ describe('CustomFeeCard', () => {
             });
 
             expect(getByText(/Custom/)).toBeTruthy();
-            expect(getByText('Cancel')).toBeTruthy();
-            expect(getByText('Edit')).toBeTruthy();
+            expect(getByText(getTranslation('generic.buttons.cancel'))).toBeTruthy();
+            expect(getByText(getTranslation('generic.buttons.edit'))).toBeTruthy();
         });
 
         it('should display fee amount correctly', () => {
@@ -112,7 +113,7 @@ describe('CustomFeeCard', () => {
                 form,
             });
 
-            await userEvent.press(getByText('Edit'));
+            await userEvent.press(getByText(getTranslation('generic.buttons.edit')));
 
             expect(defaultProps.onEdit).toHaveBeenCalledTimes(1);
         });
@@ -123,7 +124,7 @@ describe('CustomFeeCard', () => {
                 form,
             });
 
-            await userEvent.press(getByText('Cancel'));
+            await userEvent.press(getByText(getTranslation('generic.buttons.cancel')));
 
             expect(defaultProps.onCancel).toHaveBeenCalledTimes(1);
         });

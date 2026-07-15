@@ -1,30 +1,25 @@
-import { type YieldDto } from '@suite-common/earn-stablecoin-defs';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-defs';
 import { commonQueryKeys, useQuery } from '@suite-common/react-query';
 
 import { getYield } from '../services';
 
-interface UseYieldOpportunityProps<T extends YieldDto[keyof YieldDto] | YieldDto = YieldDto> {
-    select?: (yieldOpportunity: YieldDto) => T;
+interface UseYieldOpportunityProps<
+    T extends YieldDtoV2[keyof YieldDtoV2] | YieldDtoV2 = YieldDtoV2,
+> {
+    select?: (yieldOpportunity: YieldDtoV2) => T;
 }
 
-const defaultSelect = <T extends YieldDto[keyof YieldDto] | YieldDto = YieldDto>(
-    yieldOpportunity: YieldDto,
-): T => yieldOpportunity as T;
-
-export function useYieldOpportunity<T extends YieldDto[keyof YieldDto] | YieldDto = YieldDto>(
-    vaultId: string | undefined,
-    { select = defaultSelect }: UseYieldOpportunityProps<T> = {},
-) {
+export function useYieldOpportunity<
+    T extends YieldDtoV2[keyof YieldDtoV2] | YieldDtoV2 = YieldDtoV2,
+>(vaultId: string | undefined, { select }: UseYieldOpportunityProps<T> = {}) {
     return useQuery({
         enabled: Boolean(vaultId),
-        queryKey: commonQueryKeys.yieldOpportunities(vaultId),
-        async queryFn({ signal }) {
-            const yieldOpportunity = await getYield({
+        queryKey: commonQueryKeys.yieldOpportunity(vaultId),
+        queryFn: ({ signal }) =>
+            getYield({
                 routeParams: { vaultId: vaultId! },
                 signal,
-            });
-
-            return select(yieldOpportunity);
-        },
+            }),
+        select,
     });
 }

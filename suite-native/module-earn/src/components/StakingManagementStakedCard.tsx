@@ -4,6 +4,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectEthNextRewardPayout } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Badge, Button, Card, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
@@ -13,18 +14,15 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import {
-    selectApy,
-    selectRewardsBalanceByAccountKey,
-    selectStakedBalanceByAccountKey,
-    useSelector,
-} from '@suite-native/staking';
+import { selectApy, selectStakedBalanceByAccountKey, useSelector } from '@suite-native/staking';
+import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
 
 import { ApyValue } from './ApyValue';
 import { useEarnPortfolioTrackerGuard } from './EarnPortfolioTrackerGuard';
 import { useMessageSystemStaking } from '../hooks/useMessageSystemStaking';
+import { useStakingTotalRewards } from '../hooks/useStakingTotalRewards';
 
 type StakingManagementStakedCardProps = {
     accountKey: AccountKey;
@@ -52,6 +50,8 @@ export const StakingManagementStakedCard = ({
     const { isPortfolioTrackerDevice, openPortfolioTrackerSheet } = useEarnPortfolioTrackerGuard();
     const navigation = useNavigation<NavigationProp>();
     const { analytics } = useServices(selectNativeAnalyticsDep);
+
+    const isSolanaStaking = isSupportedSolStakingNetworkSymbol(networkSymbol);
 
     const handleStake = () => {
         if (isPortfolioTrackerDevice) {
@@ -94,11 +94,10 @@ export const StakingManagementStakedCard = ({
 
     const stakedBalance = useSelector(state => selectStakedBalanceByAccountKey(state, accountKey));
     const hasStakedBalance = new BigNumber(stakedBalance ?? '0').gt(0);
-    const rewardsBalance = useSelector(state =>
-        selectRewardsBalanceByAccountKey(state, accountKey),
-    );
+    const { totalRewards, isTotalRewardsLoading } = useStakingTotalRewards(accountKey);
     const apy = useSelector(state => selectApy(state, { accountKey, networkSymbol }));
-    const nextRewardPayout = useSelector(state => selectEthNextRewardPayout(state));
+    const ethNextRewardPayout = useSelector(selectEthNextRewardPayout);
+    const nextRewardPayout = isSolanaStaking ? SOLANA_EPOCH_DAYS : ethNextRewardPayout;
 
     const {
         isStakingDisabled,
@@ -138,16 +137,18 @@ export const StakingManagementStakedCard = ({
                     />
                 </HStack>
                 <CryptoAmountFormatter
-                    value={rewardsBalance}
+                    value={totalRewards}
                     symbol={networkSymbol}
                     variant="headline-sm"
                     color="contentPrimary"
+                    isLoading={isTotalRewardsLoading}
                 />
                 <CryptoToFiatAmountFormatter
-                    value={rewardsBalance}
+                    value={totalRewards}
                     symbol={networkSymbol}
                     color="contentSecondary"
                     isBalance
+                    isLoading={isTotalRewardsLoading}
                 />
             </VStack>
             <HStack justifyContent="space-between" style={applyStyle(stakedSectionStyle)}>
@@ -158,7 +159,11 @@ export const StakingManagementStakedCard = ({
                 {nextRewardPayout != null && (
                     <Text variant="body-sm">
                         <Translation
-                            id="earn.stakingManagementScreen.nextRewardLabel"
+                            id={
+                                isSolanaStaking
+                                    ? 'earn.stakingManagementScreen.solRewardsFrequencyLabel'
+                                    : 'earn.stakingManagementScreen.nextRewardLabel'
+                            }
                             values={{ value: nextRewardPayout }}
                         />
                     </Text>
@@ -166,10 +171,10 @@ export const StakingManagementStakedCard = ({
             </HStack>
             <VStack style={applyStyle(buttonsRowStyle)}>
                 {isUnstakingDisabled && unstakingMessageContent && (
-                    <InlineAlertBox variant="warning" title={unstakingMessageContent} />
+                    <InlineAlertBox intent="warning" title={unstakingMessageContent} />
                 )}
                 {isStakingDisabled && stakingMessageContent && (
-                    <InlineAlertBox variant="warning" title={stakingMessageContent} />
+                    <InlineAlertBox intent="warning" title={stakingMessageContent} />
                 )}
                 <HStack spacing="sp12">
                     {hasStakedBalance && (

@@ -75,7 +75,7 @@ export class WorkerState {
 
     addAccounts(acc: SubscriptionAccountInfo[]): SubscriptionAccountInfo[] {
         const valid = this.validateAccounts(acc);
-        const others = this.accounts.filter(a => !valid.find(b => b.descriptor === a.descriptor));
+        const others = this.accounts.filter(a => !valid.some(b => b.descriptor === a.descriptor));
         this.accounts = others.concat(valid);
         const addresses = this.accounts.reduce(
             (addr, a) => addr.concat(this.getAccountAddresses(a)),

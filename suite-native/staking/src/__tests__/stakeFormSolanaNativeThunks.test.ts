@@ -21,6 +21,7 @@ jest.mock('@trezor/connect', () => ({
     ...jest.requireActual('@trezor/connect'),
     default: {
         solanaSignTransaction: jest.fn(),
+        blockchainGetInfo: jest.fn(),
         blockchainEstimateFee: jest.fn().mockResolvedValue({
             success: true,
             payload: { levels: [{ feePerUnit: '100000', feeLimit: '200000', feePerTx: '5000' }] },
@@ -49,7 +50,7 @@ const prepareStakeSolTxMock = jest.fn();
 const prepareUnstakeSolTxMock = jest.fn();
 const prepareClaimSolTxMock = jest.fn();
 
-jest.mock('@trezor/coins-solana/runtime', () => ({
+jest.mock('@trezor/network-solana/runtime', () => ({
     __esModule: true,
     default: () =>
         Promise.resolve({
@@ -106,6 +107,9 @@ const buildStore = ({
         sol: { url: 'http://localhost:8899' },
         dsol: { url: 'http://localhost:8899' },
     },
+}: {
+    accounts?: Account[];
+    blockchain?: Partial<Record<'sol' | 'dsol', { url: string }>>;
 } = {}) =>
     configureMockStore({
         reducer: combineReducers({
@@ -144,6 +148,8 @@ const buildSolanaPrecomposedTransaction = (): PrecomposedTransactionFinal =>
     }) as unknown as PrecomposedTransactionFinal;
 
 const solanaSignTransactionMock = TrezorConnect.solanaSignTransaction as jest.Mock;
+const blockchainGetInfoMock = TrezorConnect.blockchainGetInfo as jest.Mock;
+const blockchainEstimateFeeMock = TrezorConnect.blockchainEstimateFee as jest.Mock;
 
 const dispatchCompose = async (
     store: ReturnType<typeof buildStore>,
@@ -162,7 +168,7 @@ const dispatchSign = async (
     args: Parameters<typeof signSolanaStakingTransactionNativeThunk>[0],
 ) => {
     const action = await store.dispatch(signSolanaStakingTransactionNativeThunk(args) as any);
-    if (isFulfilled(action)) return { ok: true as const, txid: action.payload.txid };
+    if (isFulfilled(action)) return { ok: true as const };
     if (isRejected(action)) return { ok: false as const, error: action.payload };
     throw new Error('Unexpected dispatch outcome');
 };
@@ -174,6 +180,14 @@ beforeEach(() => {
         payload: { signature: 'ed25519signature' },
     });
     solanaTxShim.addSignature.mockClear();
+
+    blockchainGetInfoMock.mockReset();
+    blockchainGetInfoMock.mockResolvedValue({
+        success: false,
+        payload: { error: 'backend not connected' },
+    });
+
+    blockchainEstimateFeeMock.mockClear();
 
     prepareStakeSolTxMock.mockReset();
     prepareStakeSolTxMock.mockResolvedValue({
@@ -270,6 +284,45 @@ describe('composeSolanaStakingTransactionFeeLevelsNativeThunk', () => {
         expect(levels.normal.fee).toBe('2287880');
         expect(levels.normal.solanaTxMeta.feeIncludingRentLamports).toBe('2287880');
     });
+
+    it('omits newAccountProgramName when an unstake only deactivates (creates no stake account)', async () => {
+        // A plain deactivate reserves no rent, so the fee estimate must not add a phantom rent reserve.
+        prepareUnstakeSolTxMock.mockResolvedValue({
+            success: true,
+            txShim: solanaTxShim,
+            solanaTxMeta: { ...solanaTxMetaMock, rentLamports: '0' },
+        });
+        const store = buildStore();
+
+        await dispatchCompose(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'unstake',
+            amount: '1',
+        });
+
+        expect(blockchainEstimateFeeMock).toHaveBeenCalled();
+        const request = blockchainEstimateFeeMock.mock.calls.at(-1)?.[0];
+        expect(request.request.specific).not.toHaveProperty('newAccountProgramName');
+    });
+
+    it('passes newAccountProgramName when an unstake splits a stake account (reserves rent)', async () => {
+        // A split creates a new rent-exempt stake account, so that reserve must be counted.
+        prepareUnstakeSolTxMock.mockResolvedValue({
+            success: true,
+            txShim: solanaTxShim,
+            solanaTxMeta: { ...solanaTxMetaMock, rentLamports: '2282880' },
+        });
+        const store = buildStore();
+
+        await dispatchCompose(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'unstake',
+            amount: '1',
+        });
+
+        const request = blockchainEstimateFeeMock.mock.calls.at(-1)?.[0];
+        expect(request.request.specific.newAccountProgramName).toBe('staking');
+    });
 });
 
 describe('signSolanaStakingTransactionNativeThunk', () => {
@@ -290,7 +343,7 @@ describe('signSolanaStakingTransactionNativeThunk', () => {
         errorSpy.mockRestore();
     });
 
-    it('signs, pushes and returns the txid', async () => {
+    it('signs and stores the transaction without broadcasting', async () => {
         const store = buildStore();
 
         const result = await dispatchSign(store, {
@@ -299,12 +352,68 @@ describe('signSolanaStakingTransactionNativeThunk', () => {
             precomposedTransaction: buildSolanaPrecomposedTransaction(),
         });
 
-        expect(result).toEqual({ ok: true, txid: 'solanaTxId' });
+        expect(result).toEqual({ ok: true });
         expect(solanaSignTransactionMock).toHaveBeenCalledTimes(1);
         expect(solanaTxShim.addSignature).toHaveBeenCalledWith(
             solAccount.descriptor,
             'ed25519signature',
         );
+    });
+
+    it('stamps createdTimestamp on the stored precomposed transaction (powers the validity timer)', async () => {
+        const store = buildStore();
+
+        const result = await dispatchSign(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'stake',
+            precomposedTransaction: buildSolanaPrecomposedTransaction(),
+        });
+
+        expect(result).toEqual({ ok: true });
+        expect(store.getState().wallet.send.precomposedTx?.createdTimestamp).toEqual(
+            expect.any(Number),
+        );
+    });
+
+    it('rejects when the blockchain backend URL cannot be resolved', async () => {
+        const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        const store = buildStore({ blockchain: { dsol: { url: 'http://localhost:8899' } } });
+
+        const result = await dispatchSign(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'stake',
+            precomposedTransaction: buildSolanaPrecomposedTransaction(),
+        });
+
+        expect(result).toEqual({
+            ok: false,
+            error: {
+                error: 'sign-transaction-failed',
+                message: 'Blockchain backend URL not found for sol.',
+            },
+        });
+        expect(blockchainGetInfoMock).toHaveBeenCalledWith({ coin: 'sol' });
+        expect(solanaSignTransactionMock).not.toHaveBeenCalled();
+        errorSpy.mockRestore();
+    });
+
+    it('falls back to an on-demand backend connection when the redux url is missing', async () => {
+        blockchainGetInfoMock.mockResolvedValue({
+            success: true,
+            payload: { url: 'http://localhost:8899' },
+        });
+        const store = buildStore({ blockchain: { dsol: { url: 'http://localhost:8899' } } });
+
+        const result = await dispatchSign(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'unstake',
+            precomposedTransaction: buildSolanaPrecomposedTransaction(),
+        });
+
+        expect(result).toEqual({ ok: true });
+        expect(blockchainGetInfoMock).toHaveBeenCalledWith({ coin: 'sol' });
+        expect(prepareUnstakeSolTxMock).toHaveBeenCalledTimes(1);
+        expect(solanaSignTransactionMock).toHaveBeenCalledTimes(1);
     });
 
     it('rejects (without logging) when the user cancels on the device', async () => {
@@ -324,7 +433,30 @@ describe('signSolanaStakingTransactionNativeThunk', () => {
         expect((result as { error: { message: string } }).error.message).toBe('tx-cancelled');
     });
 
-    it('signs and pushes a solana unstake, forwarding the composed amount', async () => {
+    it('rejects with sign-transaction-timeout when the validity timer cancels the sign', async () => {
+        solanaSignTransactionMock.mockResolvedValue({
+            success: false,
+            error: { code: 'Method_Cancel', message: 'tx-timeout' },
+        });
+        const store = buildStore();
+
+        const result = await dispatchSign(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'stake',
+            precomposedTransaction: buildSolanaPrecomposedTransaction(),
+        });
+
+        expect(result).toEqual({
+            ok: false,
+            error: {
+                error: 'sign-transaction-timeout',
+                errorCode: 'Method_Cancel',
+                message: 'tx-timeout',
+            },
+        });
+    });
+
+    it('signs a solana unstake, forwarding the composed amount', async () => {
         const store = buildStore();
 
         const result = await dispatchSign(store, {
@@ -333,7 +465,7 @@ describe('signSolanaStakingTransactionNativeThunk', () => {
             precomposedTransaction: buildSolanaPrecomposedTransaction(),
         });
 
-        expect(result).toEqual({ ok: true, txid: 'solanaTxId' });
+        expect(result).toEqual({ ok: true });
         // Unstake must route through prepareUnstakeSolTx with a non-zero amount.
         expect(prepareUnstakeSolTxMock).toHaveBeenCalledTimes(1);
         expect(prepareUnstakeSolTxMock.mock.calls[0][0].amount).not.toBe('0');
@@ -341,7 +473,7 @@ describe('signSolanaStakingTransactionNativeThunk', () => {
         expect(prepareClaimSolTxMock).not.toHaveBeenCalled();
     });
 
-    it('signs, serializes and pushes a solana claim transaction', async () => {
+    it('signs and serializes a solana claim transaction', async () => {
         const store = buildStore();
 
         const result = await dispatchSign(store, {
@@ -350,7 +482,7 @@ describe('signSolanaStakingTransactionNativeThunk', () => {
             precomposedTransaction: buildSolanaPrecomposedTransaction(),
         });
 
-        expect(result).toEqual({ ok: true, txid: 'solanaTxId' });
+        expect(result).toEqual({ ok: true });
         // Claim must route through prepareClaimSolTx, never the stake builder.
         expect(prepareClaimSolTxMock).toHaveBeenCalledTimes(1);
         expect(prepareStakeSolTxMock).not.toHaveBeenCalled();
@@ -400,7 +532,7 @@ describe('signSolanaStakingTransactionNativeThunk', () => {
             precomposedTransaction,
         });
 
-        expect(result).toEqual({ ok: true, txid: 'solanaTxId' });
+        expect(result).toEqual({ ok: true });
         expect(prepareClaimSolTxMock).toHaveBeenCalledTimes(1);
         expect(prepareClaimSolTxMock.mock.calls[0][0]).not.toHaveProperty('amount');
     });

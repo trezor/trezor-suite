@@ -3,7 +3,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { isUtxoBased } from '@suite-common/wallet-utils';
 import { Button } from '@trezor/components';
 
-import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 type DevSelfAddressProps = {
@@ -24,8 +23,8 @@ export const DevSelfAddress = ({ account, outputId }: DevSelfAddressProps) => {
     };
 
     return (
-        <Button size="small" priority="secondary" intent="neutral" onClick={fillSelfAddress}>
-            <DebugOnlyBadge>To myself</DebugOnlyBadge>
+        <Button size="small" priority="secondary" intent="accentViolet" onClick={fillSelfAddress}>
+            To myself
         </Button>
     );
 };

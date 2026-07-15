@@ -11,7 +11,7 @@ type AccountsSearchFormProps = {
 };
 
 export const SEARCH_INPUT_ANIMATION_DURATION = 100;
-export const SEARCH_INPUT_ANIMATION_DELAY = 100;
+const SEARCH_INPUT_ANIMATION_DELAY = 100;
 const MAX_SEARCH_VALUE_LENGTH = 30;
 const KEYBOARD_INACTIVITY_TIMEOUT = 200;
 
@@ -40,6 +40,13 @@ export const AccountsSearchForm = ({ onPressCancel, onInputChange }: AccountsSea
             clearTimeout(timeoutId);
         };
     }, [inputText, onInputChange]);
+
+    useEffect(
+        () => () => {
+            onInputChange('');
+        },
+        [onInputChange],
+    );
 
     return (
         <Animated.View

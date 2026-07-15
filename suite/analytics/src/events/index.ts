@@ -76,6 +76,7 @@ export { settingsGeneralEarlyAccessEvent } from './settingsGeneralEarlyAccessEve
 export { settingsGeneralLabelingProviderEvent } from './settingsGeneralLabelingProviderEvent';
 export { settingsGeneralMevProtectionEvent } from './settingsGeneralMevProtectionEvent';
 export { settingsGeneralNetworkReserveEvent } from './settingsGeneralNetworkReserveEvent';
+export { settingsLoadNetworksClickedEvent } from './settingsLoadNetworksClickedEvent';
 export { settingsTorEvent } from './settingsTorEvent';
 export { settingsTorOnionLinksEvent } from './settingsTorOnionLinksEvent';
 export { stakingChangeDelegateEvent } from './stakingChangeDelegateEvent';
@@ -98,7 +99,6 @@ export { switchDeviceForgetEvent } from './switchDeviceForgetEvent';
 export { switchDeviceRememberEvent } from './switchDeviceRememberEvent';
 export { tradeApprovalEvent } from './tradeApprovalEvent';
 export { tradeBuyEvent } from './tradeBuyEvent';
-export { tradeCompareOffersEvent } from './tradeCompareOffersEvent';
 export { tradeConfirmTradeEvent } from './tradeConfirmTradeEvent';
 export { tradeExchangeEvent } from './tradeExchangeEvent';
 export { tradeNavigateEvent } from './tradeNavigateEvent';

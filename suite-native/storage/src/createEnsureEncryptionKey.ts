@@ -13,8 +13,8 @@ export type EnsureEncryptionKeyDep = {
     ensureEncryptionKey: EnsureEncryptionKey;
 };
 
-export const createEnsureEncryptionKey = (): EnsureEncryptionKey => {
-    const secureKeyPromise = SecureStore.getItemAsync(ENCRYPTION_KEY)
+const resolveEncryptionKey = (): Promise<StorageEncryptionKey | null> =>
+    SecureStore.getItemAsync(ENCRYPTION_KEY)
         .catch(error => {
             // If there is an error, report it and try to read one more time.
             captureException(error, { tags: { attempt: 1 } });
@@ -50,5 +50,12 @@ export const createEnsureEncryptionKey = (): EnsureEncryptionKey => {
                 });
         });
 
-    return () => secureKeyPromise;
+export const createEnsureEncryptionKey = (): EnsureEncryptionKey => {
+    let secureKeyPromise: Promise<StorageEncryptionKey | null> | null = null;
+
+    return () => {
+        secureKeyPromise ??= resolveEncryptionKey();
+
+        return secureKeyPromise;
+    };
 };

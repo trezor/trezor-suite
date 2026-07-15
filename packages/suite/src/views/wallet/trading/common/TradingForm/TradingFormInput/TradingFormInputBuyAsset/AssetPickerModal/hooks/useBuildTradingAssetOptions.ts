@@ -18,6 +18,8 @@ import {
     ASSET_ROW_HEIGHT,
     ASSET_ROW_HEIGHTS_BY_SIZE,
 } from 'src/components/suite/asset-picker/constants';
+import { useTokenDisplaySymbolNames } from 'src/components/suite/asset-picker/hooks';
+import { getTokenDisplaySymbolName } from 'src/components/suite/asset-picker/utils/tokenDisplayNames';
 import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
 import { useAssetsContext } from '../../AssetOptionsContext';
@@ -42,7 +44,8 @@ function assetSearchFilter(asset: TradingAssetOption, search: string) {
         searchFor(asset.networkName) ||
         searchFor(asset.displaySymbol) ||
         searchFor(asset.contractAddress) ||
-        searchFor(asset.symbol)
+        searchFor(asset.symbol) ||
+        searchFor(asset.displaySymbolName)
     );
 }
 
@@ -148,6 +151,18 @@ export function useBuildTradingAssetOptions({
     const { assets, includedCryptoIds, excludedCryptoIds } = useAssetsContext();
     const accountsWithTokens = useAgregatedAccountsWithTokens();
 
+    const tokens = useMemo(
+        () =>
+            accountsWithTokens
+                .filter(item => item.type === 'token')
+                .map(item => ({
+                    account: item.account,
+                    token: item.token,
+                })),
+        [accountsWithTokens],
+    );
+    const tokenDisplaySymbolNames = useTokenDisplaySymbolNames(tokens, assets);
+
     return useMemo(() => {
         const listItems: TradingAssetListItem[] = [];
 
@@ -187,6 +202,8 @@ export function useBuildTradingAssetOptions({
                 }
             });
 
+        const searchDisplayNameFilter = createSearchFilter(search.toLocaleLowerCase());
+
         const filteredAccounts = allAccountsWithTokens
             .filter(accountOrToken => {
                 switch (accountOrToken.type) {
@@ -206,8 +223,18 @@ export function useBuildTradingAssetOptions({
                             tokensMatch: false,
                             accountLabel: '', // Todo: select label from SuiteSync
                         });
-                    case 'token':
-                        return isTokenMatchesSearch(accountOrToken.token, search);
+                    case 'token': {
+                        const displaySymbolName = getTokenDisplaySymbolName({
+                            tokenDisplaySymbolNames,
+                            account: accountOrToken.account,
+                            token: accountOrToken.token,
+                        });
+
+                        return (
+                            searchDisplayNameFilter(displaySymbolName) ||
+                            isTokenMatchesSearch(accountOrToken.token, search)
+                        );
+                    }
                     default:
                         return false;
                 }
@@ -231,14 +258,24 @@ export function useBuildTradingAssetOptions({
                     });
                     break;
 
-                case 'token':
+                case 'token': {
+                    const tokenDisplaySymbolName = getTokenDisplaySymbolName({
+                        tokenDisplaySymbolNames,
+                        account: accountOrToken.account,
+                        token: accountOrToken.token,
+                    });
+
                     listItems.push({
                         type: 'token',
-                        token: accountOrToken.token,
+                        token: {
+                            ...accountOrToken.token,
+                            name: tokenDisplaySymbolName,
+                        },
                         account: accountOrToken.account,
                         height: ASSET_ROW_HEIGHT,
                     });
                     break;
+                }
             }
         }
 
@@ -278,5 +315,13 @@ export function useBuildTradingAssetOptions({
         });
 
         return { listItems, networks: orderedNetworks };
-    }, [accountsWithTokens, assets, includedCryptoIds, excludedCryptoIds, networkSymbol, search]);
+    }, [
+        accountsWithTokens,
+        assets,
+        includedCryptoIds,
+        excludedCryptoIds,
+        networkSymbol,
+        search,
+        tokenDisplaySymbolNames,
+    ]);
 }

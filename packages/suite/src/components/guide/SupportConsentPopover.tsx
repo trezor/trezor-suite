@@ -1,15 +1,19 @@
 import { type ReactNode, useState } from 'react';
 
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { events } from '@suite-common/analytics';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSupportChatUrl } from '@suite-common/support';
 import { Button, Card, Checkbox, Column, Paragraph, Popover, variables } from '@trezor/components';
-import { spacingsPx, zIndices } from '@trezor/theme';
+import { ArrowLineUpRightIcon } from '@trezor/icons';
+import { zIndices } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 
 // To match the width of the trigger button in the SupportFeedbackSelection component at minimum guide width.
-const POPOVER_WIDTH = `calc(${variables.LAYOUT_SIZE.GUIDE_PANEL_MIN_WIDTH - 1}px - 2 * ${spacingsPx.lg})`;
+const POPOVER_WIDTH = `calc(${variables.LAYOUT_SIZE.GUIDE_PANEL_DEFAULT_WIDTH}px - 33px)`;
 
 type SupportConsentPopoverProps = {
     children: ReactNode;
@@ -19,6 +23,15 @@ export const SupportConsentPopover = ({ children }: SupportConsentPopoverProps) 
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
     const [isSystemInfoShared, setIsSystemInfoShared] = useState(isAnalyticsEnabled);
     const supportChatUrl = useSelector(state => selectSupportChatUrl(state, isSystemInfoShared));
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
+
+    const handleOpenSupportChat = () => {
+        analytics.report({
+            type: events.guideSupportChatOpenedEvent.name,
+            payload: { systemInfoShared: isSystemInfoShared, platform: 'desktop' },
+        });
+        window.open(supportChatUrl, '_blank');
+    };
 
     return (
         <Popover
@@ -50,8 +63,8 @@ export const SupportConsentPopover = ({ children }: SupportConsentPopoverProps) 
                             </Paragraph>
                         </Column>
                         <Button
-                            iconRight="arrowLineUpRight"
-                            onClick={() => window.open(supportChatUrl, '_blank')}
+                            iconRight={ArrowLineUpRightIcon}
+                            onClick={handleOpenSupportChat}
                             width="100%"
                         >
                             <Translation id="TR_GUIDE_SUPPORT_CONSENT_BUTTON" />

@@ -33,7 +33,7 @@ import { WalletCreationScreen } from '../screens/WalletCreationScreen';
 import { WalletRecoveryRecapScreen } from '../screens/WalletRecoveryRecapScreen';
 import { WalletRecoveryScreen } from '../screens/WalletRecoveryScreen';
 
-export const DeviceOnboardingStack = createNativeStackNavigator<DeviceOnboardingStackParamList>();
+const DeviceOnboardingStack = createNativeStackNavigator<DeviceOnboardingStackParamList>();
 
 export const DeviceOnboardingStackNavigator = () => {
     const reportStepViewed = useReportOnboardingStepViewedAnalytics();
@@ -43,7 +43,7 @@ export const DeviceOnboardingStackNavigator = () => {
             initialRouteName={DeviceOnboardingStackRoutes.UninitializedDeviceLanding}
             screenOptions={stackNavigationOptionsConfig}
             screenListeners={({ route }) => ({
-                focus: () => reportStepViewed(route.name as DeviceOnboardingStackRoutes),
+                focus: () => reportStepViewed(route.name),
             })}
         >
             <DeviceOnboardingStack.Screen

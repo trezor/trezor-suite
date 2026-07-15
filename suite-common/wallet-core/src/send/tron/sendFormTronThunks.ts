@@ -5,6 +5,7 @@ import { type PrecomposedLevels } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
     asAmountUnit,
+    computeBandwidthFeeLevel,
     getAccountIdentity,
     getExternalComposeOutput,
     subunitsToUnits,
@@ -23,7 +24,7 @@ import {
 } from '../sendFormTypes';
 import { buildTransferContract, buildTriggerContract } from './buildContract';
 import { calculate } from './calculate';
-import { computeBandwidthFeeLevel, estimateContractCallFeeLevel } from './feeLevel';
+import { estimateContractCallFeeLevel } from './feeLevel';
 import { isNewTronAccount } from './isNewTronAccount';
 import { resolveCalldata } from './resolveCalldata';
 
@@ -53,7 +54,10 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
         }
 
         const { output, tokenInfo: token, decimals } = composeOutputs;
-        const to = 'address' in output && output.address ? output.address : account.descriptor;
+        const to =
+            'address' in output && output.address
+                ? output.address
+                : (composeContext.feeEstimationRecipient ?? account.descriptor);
 
         const isSendMax = output.type === 'send-max' || output.type === 'send-max-noaddress';
         const fallbackAmount = token
@@ -125,6 +129,18 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
 
         const bytes = bandwidthEstimate.payload.bandwidth;
 
+        const [firstComposeOutput] = formState.outputs;
+
+        if (!firstComposeOutput) {
+            return rejectWithValue({
+                error: 'fee-levels-compose-failed',
+                message: 'Missing transaction output.',
+            });
+        }
+
+        const isNewAccount =
+            calldata.data === null && (await isNewTronAccount(firstComposeOutput.address, account));
+
         const feeLevel =
             calldata.data !== null
                 ? await estimateContractCallFeeLevel({
@@ -140,6 +156,7 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
                       availableFreeBandwidth:
                           account.misc?.tronResources?.availableFreeBandwidth ?? 0,
                       bytes,
+                      isNewAccount,
                   });
 
         if ('error' in feeLevel) {
@@ -150,18 +167,6 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
                 message: feeLevel.error,
             });
         }
-
-        const [firstComposeOutput] = formState.outputs;
-
-        if (!firstComposeOutput) {
-            return rejectWithValue({
-                error: 'fee-levels-compose-failed',
-                message: 'Missing transaction output.',
-            });
-        }
-
-        const isNewAccount =
-            calldata.data === null && (await isNewTronAccount(firstComposeOutput.address, account));
 
         const tx = calculate(
             account.availableBalance,

@@ -2,14 +2,16 @@ import { type FC, type PropsWithChildren, useEffect } from 'react';
 
 import { selectDesktopUpdateAllowPrerelease } from '@suite/desktop-update';
 import { useDevice } from '@suite/device';
+import { KillswitchMessageScreen } from '@suite/message-system';
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
 import { useReportDeviceCompromised } from '@suite-common/firmware-authenticity';
+import { selectActiveKillswitchMessage } from '@suite-common/message-system';
 import { Card } from '@trezor/components';
 
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import { init } from 'src/actions/suite/initAction';
-import { useGuideKeyboard } from 'src/hooks/guide';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useGuideDesktopMenu, useGuideKeyboard } from 'src/hooks/guide';
+import { useAppShortcuts, useDispatch, useSelector } from 'src/hooks/suite';
 import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
 import {
     selectIsTransportInitialized,
@@ -52,6 +54,7 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     const shouldDisplayDeviceCompromisedOnRoute = useSelector(
         selectShouldDisplayDeviceCompromisedOnRoute,
     );
+    const killswitch = useSelector(selectActiveKillswitchMessage);
 
     const isAnalyticsConsentConfirmed = useSelector(selectIsAnalyticsConfirmed);
 
@@ -79,6 +82,12 @@ export const Preloader = ({ children }: PropsWithChildren) => {
 
     // Register keyboard handlers for opening/closing Guide using keyboard
     useGuideKeyboard();
+    // Open the Guide from the desktop application menu (Help)
+    useGuideDesktopMenu();
+    // App-wide keyboard shortcuts; mounted here so they work regardless of the active
+    // layout (e.g. also on the device-prerequisite screen). Each shortcut self-guards
+    // on whether a device/account is required.
+    useAppShortcuts();
     useWindowVisibility();
 
     if (!isAnalyticsConsentConfirmed) {
@@ -93,6 +102,10 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     }
     if (lifecycle.status === 'db-corrupted') {
         return <DatabaseCorruptedModal />;
+    }
+
+    if (killswitch) {
+        return <KillswitchMessageScreen />;
     }
 
     // @trezor/connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)

@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgCaretCircleRightFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M16 3a13 13 0 1 0 13 13A13.013 13.013 0 0 0 16 3m3.707 13.707-5 5a1 1 0 0 1-1.415-1.415L17.587 16l-4.293-4.293a1 1 0 1 1 1.415-1.415l5 5a1 1 0 0 1 0 1.415z"
+        />
+    </svg>
+);
+export { SvgCaretCircleRightFilled as ReactComponent };

@@ -93,6 +93,7 @@ export const useComposeEarnFees = ({
     const [isComposingFeeLevels, setIsComposingFeeLevels] = useState(false);
     const formDraftRef = useRef(formDraft);
     formDraftRef.current = formDraft;
+    const requestIdRef = useRef(0);
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -116,72 +117,93 @@ export const useComposeEarnFees = ({
     const effectiveFeeLevel = selectedFeeLevel ?? feeLevels.normal;
     const isPrecomposeError = !isComposingFeeLevels && effectiveFeeLevel?.type === 'error';
 
-    const composeFeeLevels = useCallback(async () => {
-        if (!formState || !account || !feeInfo) {
-            setIsComposingFeeLevels(false);
+    const composeFeeLevels = useCallback(
+        async (requestId: number) => {
+            if (!formState || !account || !feeInfo) {
+                if (requestId === requestIdRef.current) {
+                    setIsComposingFeeLevels(false);
+                }
 
-            return;
-        }
-
-        setIsComposingFeeLevels(true);
-
-        try {
-            const {
-                selectedFee: draftSelectedFee,
-                feePerUnit,
-                feeLimit,
-                maxFeePerGas,
-                maxPriorityFeePerGas,
-            } = formDraftRef.current ?? {};
-
-            const mergedFormState = {
-                ...formState,
-                selectedFee: draftSelectedFee ?? formState.selectedFee,
-                feePerUnit: feePerUnit ?? formState.feePerUnit,
-                feeLimit: feeLimit ?? formState.feeLimit,
-                maxFeePerGas: maxFeePerGas ?? formState.maxFeePerGas,
-                maxPriorityFeePerGas: maxPriorityFeePerGas ?? formState.maxPriorityFeePerGas,
-            };
-
-            const response =
-                account.networkType === 'solana'
-                    ? await dispatch(
-                          composeSolanaStakingTransactionFeeLevelsNativeThunk({
-                              accountKey,
-                              stakeType: formDraftPrefix,
-                              amount: mergedFormState.outputs?.[0]?.amount ?? '',
-                          }),
-                      )
-                    : await dispatch(
-                          composeSendFormTransactionFeeLevelsThunk({
-                              formState: mergedFormState,
-                              composeContext: {
-                                  account,
-                                  feeInfo,
-                                  network: getNetwork(account.symbol),
-                              },
-                          }),
-                      );
-            if (!isFulfilled(response) || !response.payload) return;
-
-            dispatch(transactionManagementActions.storeFeeLevels({ feeLevels: response.payload }));
-
-            const normalLevel = response.payload.normal;
-            if (!mergedFormState.feePerUnit && isFinalPrecomposedTransaction(normalLevel)) {
-                mergedFormState.feePerUnit = normalLevel.feePerByte;
+                return;
             }
 
-            saveDraft(mergedFormState);
-        } finally {
-            setIsComposingFeeLevels(false);
-        }
-    }, [dispatch, formState, account, feeInfo, saveDraft, accountKey, formDraftPrefix]);
+            setIsComposingFeeLevels(true);
+
+            try {
+                const {
+                    selectedFee: draftSelectedFee,
+                    feePerUnit,
+                    feeLimit,
+                    maxFeePerGas,
+                    maxPriorityFeePerGas,
+                } = formDraftRef.current ?? {};
+
+                const mergedFormState = {
+                    ...formState,
+                    selectedFee: draftSelectedFee ?? formState.selectedFee,
+                    feePerUnit: feePerUnit ?? formState.feePerUnit,
+                    feeLimit: feeLimit ?? formState.feeLimit,
+                    maxFeePerGas: maxFeePerGas ?? formState.maxFeePerGas,
+                    maxPriorityFeePerGas: maxPriorityFeePerGas ?? formState.maxPriorityFeePerGas,
+                };
+
+                const response =
+                    account.networkType === 'solana'
+                        ? await dispatch(
+                              composeSolanaStakingTransactionFeeLevelsNativeThunk({
+                                  accountKey,
+                                  stakeType: formDraftPrefix,
+                                  amount: mergedFormState.outputs?.[0]?.amount ?? '',
+                              }),
+                          )
+                        : await dispatch(
+                              composeSendFormTransactionFeeLevelsThunk({
+                                  formState: mergedFormState,
+                                  composeContext: {
+                                      account,
+                                      feeInfo,
+                                      network: getNetwork(account.symbol),
+                                  },
+                              }),
+                          );
+
+                if (requestId !== requestIdRef.current) return;
+
+                if (!isFulfilled(response) || !response.payload) return;
+
+                dispatch(
+                    transactionManagementActions.storeFeeLevels({ feeLevels: response.payload }),
+                );
+
+                const normalLevel = response.payload.normal;
+                if (!mergedFormState.feePerUnit && isFinalPrecomposedTransaction(normalLevel)) {
+                    mergedFormState.feePerUnit = normalLevel.feePerByte;
+                }
+
+                saveDraft(mergedFormState);
+            } finally {
+                if (requestId === requestIdRef.current) {
+                    setIsComposingFeeLevels(false);
+                }
+            }
+        },
+        [dispatch, formState, account, feeInfo, saveDraft, accountKey, formDraftPrefix],
+    );
 
     useEffect(() => {
         if (!isFocused) return;
+        const requestId = requestIdRef.current + 1;
+        requestIdRef.current = requestId;
         setIsComposingFeeLevels(!!formState && !!account && !!feeInfo);
-        debounce(composeFeeLevels);
+        debounce(() => composeFeeLevels(requestId));
     }, [isFocused, account, debounce, composeFeeLevels, feeInfo, formState]);
+
+    useEffect(
+        () => () => {
+            requestIdRef.current += 1;
+        },
+        [],
+    );
 
     return {
         formDraft,

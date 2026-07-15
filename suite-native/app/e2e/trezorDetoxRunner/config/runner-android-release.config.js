@@ -22,7 +22,7 @@ module.exports = {
             target,
             model: 'T3T1',
             firmwareVersion: '2-latest',
-            grep: `^(?=.*@T3T1)((?=.*@smoke)|${noOtherDevice()})(?!.*@iosOnly)`,
+            grep: `^(?=.*@T3T1)${noOtherDevice()}(?!.*@iosOnly)`,
         },
         {
             projectName: 'T1B1',

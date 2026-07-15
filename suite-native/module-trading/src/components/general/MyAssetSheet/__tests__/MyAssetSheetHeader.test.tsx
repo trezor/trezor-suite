@@ -1,4 +1,5 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { MyAssetSheetHeader } from '../MyAssetSheetHeader';
@@ -27,8 +28,8 @@ describe('MyAssetSheetHeader', () => {
     it('should display title and hide filter tabs by default', () => {
         const { getByText, queryByText } = renderComponent();
 
-        expect(getByText('Your assets')).toBeTruthy();
-        expect(queryByText('All')).toBeNull();
+        expect(getByText(getTranslation('moduleTrading.myAssetSheet.title'))).toBeTruthy();
+        expect(queryByText(getTranslation('moduleTrading.providerSheet.filters.all'))).toBeNull();
     });
 
     it('should show filter tabs after focusing the search input', () => {
@@ -36,8 +37,8 @@ describe('MyAssetSheetHeader', () => {
 
         fireEvent(getByPlaceholderText(/Search/), 'focus');
 
-        expect(getByText('All')).toBeTruthy();
-        expect(queryByText('Your assets')).toBeNull();
+        expect(getByText(getTranslation('moduleTrading.providerSheet.filters.all'))).toBeTruthy();
+        expect(queryByText(getTranslation('moduleTrading.myAssetSheet.title'))).toBeNull();
     });
 
     it('should display cancel button after focusing the search input', () => {
@@ -45,20 +46,20 @@ describe('MyAssetSheetHeader', () => {
 
         fireEvent(getByPlaceholderText(/Search/), 'focus');
 
-        expect(getByText('Cancel')).toBeTruthy();
+        expect(getByText(getTranslation('generic.buttons.cancel'))).toBeTruthy();
     });
 
     it('should not display cancel button by default', () => {
         const { queryByText } = renderComponent();
 
-        expect(queryByText('Cancel')).toBeNull();
+        expect(queryByText(getTranslation('generic.buttons.cancel'))).toBeNull();
     });
 
     it('should call onClose when close button is pressed', () => {
         const onClose = jest.fn();
         const { getByLabelText } = renderComponent({ onClose });
 
-        fireEvent.press(getByLabelText('Close'));
+        fireEvent.press(getByLabelText(getTranslation('generic.buttons.close')));
 
         expect(onClose).toHaveBeenCalled();
     });

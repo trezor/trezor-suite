@@ -62,6 +62,13 @@ export const FeaturesSettings = () => {
                 />
             )}
             <AppSettingsCardWithIconLayout
+                icon="shield"
+                title={<Translation id="moduleSettings.items.features.security.title" />}
+                subtitle={<Translation id="moduleSettings.items.features.security.subtitle" />}
+                onPress={() => navigateTo(SettingsStackRoutes.SettingsSecurity)}
+                testID="@settings/security"
+            />
+            <AppSettingsCardWithIconLayout
                 icon="shieldWarning"
                 title={<Translation id="moduleSettings.items.features.advanced.title" />}
                 subtitle={<Translation id="moduleSettings.items.features.advanced.subtitle" />}

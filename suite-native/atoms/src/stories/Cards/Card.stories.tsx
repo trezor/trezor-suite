@@ -3,11 +3,8 @@ import type { Meta, StoryObj } from '@storybook/react-native';
 import { COLOR_TOKENS } from '@trezor/theme';
 
 import { Card as CardComponent, type CardProps } from '../../Card/Card';
+import { ALERT_BOX_INTENTS, type AlertBoxIntent } from '../../FullAlertBox/types';
 import { type InlineAlertBoxProps } from '../../InlineAlertBox/InlineAlertBox';
-import {
-    INLINE_ALERT_BOX_VARIANTS,
-    type InlineAlertBoxVariant,
-} from '../../InlineAlertBox/presets';
 import { Text } from '../../Text';
 
 type CardStory = StoryObj<CardProps>;
@@ -49,19 +46,19 @@ export const Card: CardStory = {
             options: ['top', 'bottom'],
         },
         alertProps: {
-            name: 'Alert variant',
+            name: 'Alert intent',
             control: { type: 'select' },
-            options: INLINE_ALERT_BOX_VARIANTS,
-            mapping: INLINE_ALERT_BOX_VARIANTS.reduce(
-                (acc, variant) => {
-                    acc[variant] = {
-                        title: `This is some very important ${variant} alert than needs to be highlighted`,
-                        variant,
+            options: ALERT_BOX_INTENTS,
+            mapping: ALERT_BOX_INTENTS.reduce(
+                (acc, intent) => {
+                    acc[intent] = {
+                        title: `This is some very important ${intent} alert than needs to be highlighted`,
+                        intent,
                     };
 
                     return acc;
                 },
-                {} as Record<InlineAlertBoxVariant, InlineAlertBoxProps>,
+                {} as Record<AlertBoxIntent, InlineAlertBoxProps>,
             ),
         },
     },

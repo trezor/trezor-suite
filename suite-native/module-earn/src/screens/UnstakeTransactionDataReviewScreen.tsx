@@ -1,16 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { CommonActions } from '@react-navigation/native';
-
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type AccountsRootState,
-    type TransactionsRootState,
-    selectAccountByKey,
-    selectTransactionByAccountKeyAndTxid,
-} from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { Button, Card, LottieAnimation, Text, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
@@ -18,68 +9,31 @@ import {
 } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
 import {
-    AppTabsRoutes,
     type RootStackParamList,
-    RootStackRoutes,
+    type RootStackRoutes,
     ScreenHeader,
     type StackProps,
-    TransactionDetailStackRoutes,
-    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import {
-    type TransactionReviewOutputsState,
+    TxValidityTimer,
     selectIsTransactionAlreadySigned,
-    selectIsTransactionReviewInProgress,
     sendArrowsLottie,
 } from '@suite-native/transaction-management';
 
 import { UnstakeTransactionDataReviewStepList } from '../components/UnstakeTransactionDataReviewStepList';
-import { getEarnPostSignParentRoute } from '../utils';
-
-const navigateToUnstakedTransactionAction = ({
-    accountKey,
-    symbol,
-    txid,
-}: {
-    accountKey: AccountKey;
-    symbol: NetworkSymbol;
-    txid: string;
-}) =>
-    CommonActions.reset({
-        index: 2,
-        routes: [
-            {
-                name: RootStackRoutes.AppTabs,
-                params: { screen: AppTabsRoutes.EarnStack },
-            },
-            getEarnPostSignParentRoute(symbol, accountKey),
-            {
-                name: RootStackRoutes.TransactionDetailStack,
-                params: {
-                    screen: TransactionDetailStackRoutes.TransactionDetail,
-                    params: {
-                        accountKey,
-                        txid,
-                        closeActionType: 'close',
-                    },
-                },
-            },
-        ],
-    });
+import { useEarnReviewAutoStart } from '../hooks/useEarnReviewAutoStart';
+import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedPrecomposedTransaction';
+import { useEarnTxValidityFlow } from '../hooks/useEarnTxValidityFlow';
+import { useHandleOnEarnTransactionReview } from '../hooks/useHandleOnEarnTransactionReview';
+import { useNavigateAfterPushedTransaction } from '../hooks/useNavigateAfterPushedTransaction';
 
 export const UnstakeTransactionDataReviewScreen = ({
     route,
-    navigation,
 }: StackProps<RootStackParamList, RootStackRoutes.UnstakeTransactionDataReview>) => {
     const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, closeSheet } =
         useConfirmOnTrezorController();
     const { accountKey } = route.params;
-    const navigateToInitialScreen = useNavigateToInitialScreen();
-    const [txid, setTxid] = useState<string>('');
-
-    const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
-        selectIsTransactionReviewInProgress(state, 'unstake', accountKey),
-    );
+    const [isPushing, setIsPushing] = useState(false);
 
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
 
@@ -87,36 +41,61 @@ export const UnstakeTransactionDataReviewScreen = ({
         selectAccountByKey(state, accountKey),
     );
 
-    const isTransactionProcessedByBackend = !!useSelector((state: TransactionsRootState) =>
-        selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
-    );
+    const precomposedTransaction = useEarnSelectedPrecomposedTransaction('unstake', accountKey);
 
-    const showSignSuccessMessage = isTransactionAlreadySigned && !!account;
+    const { handleSign, handlePush, closeReview } = useHandleOnEarnTransactionReview({
+        accountKey,
+        stakeType: 'unstake',
+    });
+
+    const { trackPushedTransaction } = useNavigateAfterPushedTransaction({ accountKey });
+
+    const { showTimer, secondsLeft, isPastDeadline, isBroadcasting, onRetry, isRetryDisabled } =
+        useEarnTxValidityFlow({
+            accountKey,
+            stakeType: 'unstake',
+            revealConfirmOnTrezorSheet,
+            isPushing,
+        });
+
+    const isSolanaAccount = account?.networkType === 'solana';
+
+    const isReadyToUnstake = isTransactionAlreadySigned && !!account;
+
+    useEarnReviewAutoStart({
+        handleSign,
+        isSigned: isTransactionAlreadySigned,
+        canStart: !!precomposedTransaction,
+        onDeviceReviewReady: revealConfirmOnTrezorSheet,
+        onSignFailed: closeSheet,
+    });
 
     useEffect(() => {
-        if (isTransactionReviewInProgress) {
-            revealConfirmOnTrezorSheet();
-        }
-    }, [isTransactionReviewInProgress, revealConfirmOnTrezorSheet]);
-
-    useEffect(() => {
-        if (showSignSuccessMessage) {
+        if (isTransactionAlreadySigned) {
             closeSheet();
         }
-    }, [closeSheet, showSignSuccessMessage]);
+    }, [closeSheet, isTransactionAlreadySigned]);
 
-    const handleViewTransaction = useCallback(() => {
-        if (!account) return;
-        navigation.dispatch(
-            navigateToUnstakedTransactionAction({ accountKey, symbol: account.symbol, txid }),
-        );
-    }, [account, accountKey, navigation, txid]);
+    const handleUnstakeNow = useCallback(async () => {
+        setIsPushing(true);
+
+        const pushedTxid = await handlePush();
+
+        if (pushedTxid) {
+            trackPushedTransaction(pushedTxid);
+
+            return;
+        }
+
+        setIsPushing(false);
+    }, [handlePush, trackPushedTransaction]);
 
     return (
         <ConfirmOnTrezorWrapper
             isManualControlEnabled
             controlRef={confirmOnTrezorRef}
             closeActionType="close"
+            closeAction={closeReview}
             defaultHeader={
                 <ScreenHeader
                     customContent={
@@ -125,15 +104,24 @@ export const UnstakeTransactionDataReviewScreen = ({
                         </Text>
                     }
                     closeActionType="close"
-                    closeAction={navigateToInitialScreen}
+                    closeAction={closeReview}
                 />
             }
         >
             <VStack flex={1} justifyContent="space-between">
                 <VStack justifyContent="center" spacing="sp24">
-                    <UnstakeTransactionDataReviewStepList onTransactionSubmitted={setTxid} />
+                    {showTimer && (
+                        <TxValidityTimer
+                            secondsLeft={secondsLeft}
+                            isPastDeadline={isPastDeadline}
+                            isBroadcasting={isBroadcasting}
+                            onRetry={onRetry}
+                            isRetryDisabled={isRetryDisabled}
+                        />
+                    )}
+                    <UnstakeTransactionDataReviewStepList />
                 </VStack>
-                {txid && (
+                {isReadyToUnstake && (
                     <Card>
                         <VStack
                             paddingTop="sp8"
@@ -148,8 +136,10 @@ export const UnstakeTransactionDataReviewScreen = ({
                             </Text>
                         </VStack>
                         <Button
-                            isLoading={!isTransactionProcessedByBackend}
-                            onPress={handleViewTransaction}
+                            isLoading={isPushing}
+                            isDisabled={isSolanaAccount && isPastDeadline}
+                            onPress={handleUnstakeNow}
+                            testID="@earn/unstake-now"
                         >
                             <Translation id="earn.unstakeTransactionDataReviewScreen.viewTransactionButton" />
                         </Button>

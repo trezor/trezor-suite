@@ -12,6 +12,7 @@ import {
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { useAlert } from '@suite-native/alerts';
+import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -21,6 +22,7 @@ import {
 } from '@suite-native/navigation';
 import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
 import { Footer } from '@suite-native/trading-provider-utils';
+import { useSlippageLifecycle } from '@suite-native/trading-slippage';
 import {
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
@@ -67,7 +69,7 @@ const TradingExchangePreviewScreenContent = ({
 
     useSubscribeForSolanaBlockUpdates(fromAccount ?? null);
 
-    const { txnErrorString, confirmTrade, abortConfirmTrade, fetchFeesAndCompose } =
+    const { txnErrorString, confirmTrade, abortConfirmTrade, composeTradingTransaction } =
         useExchangeFlow();
     const store = useStore<TradingRootState>();
 
@@ -95,7 +97,7 @@ const TradingExchangePreviewScreenContent = ({
             if (success) {
                 const currentFormStep = selectTradingExchangeFormStep(store.getState());
                 if (currentFormStep !== 'SIGN_DATA') {
-                    await fetchFeesAndCompose();
+                    await composeTradingTransaction();
                 }
             }
         } catch (e) {
@@ -105,7 +107,9 @@ const TradingExchangePreviewScreenContent = ({
 
             console.error('Failed to confirm trade', e);
         }
-    }, [confirmTrade, debounce, fetchFeesAndCompose, store, quote, toAccount]);
+    }, [confirmTrade, debounce, composeTradingTransaction, store, quote, toAccount]);
+
+    useSlippageLifecycle(handleConfirmTrade);
 
     const onSignTransactionNavigation = useCallback(() => {
         hasRequestedTradeConfirmation.current = false;
@@ -114,12 +118,15 @@ const TradingExchangePreviewScreenContent = ({
 
     useFocusEffect(
         useCallback(() => {
+            if (quote?.isDex && !quote.swapSlippage) {
+                return;
+            }
             if (!hasRequestedTradeConfirmation.current && !isFinalized) {
                 hasRequestedTradeConfirmation.current = true;
 
                 handleConfirmTrade();
             }
-        }, [handleConfirmTrade, isFinalized]),
+        }, [handleConfirmTrade, isFinalized, quote]),
     );
 
     useEffect(() => {
@@ -187,12 +194,14 @@ const TradingExchangePreviewScreenContent = ({
                 />
             }
         >
-            <ExchangePreviewView
-                quote={quote}
-                txnErrorString={errorString}
-                isApproved={isApproved}
-            />
-            <Footer />
+            <VStack spacing="sp16" flex={1}>
+                <ExchangePreviewView
+                    quote={quote}
+                    txnErrorString={errorString}
+                    isApproved={isApproved}
+                />
+                <Footer />
+            </VStack>
         </Screen>
     );
 };

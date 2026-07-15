@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { getChangedInternalTx, getInstantStakeType } from '@suite-common/staking';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type TransactionsRootState,
@@ -69,7 +69,7 @@ export const useInstantUnstakeBanner = (
 
     return {
         amount,
-        displaySymbol: getNetworkDisplaySymbol(symbol as NetworkSymbol),
+        displaySymbol: getNetworkDisplaySymbol(symbol),
         unstakingPeriodInDays,
         dismiss,
     };

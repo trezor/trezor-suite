@@ -25,8 +25,6 @@ export const ANALYTICS_ALLOWED_DOMAINS = [
     'wallet-connect',
 ] as const;
 
-export type AnalyticsDomain = (typeof ANALYTICS_ALLOWED_DOMAINS)[number];
-
 const ANALYTICS_EVENT_NAME_KEBAB_SEGMENT = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
 const ALLOWED_DOMAINS_SET = new Set<string>(ANALYTICS_ALLOWED_DOMAINS);
@@ -59,15 +57,4 @@ export function validateAnalyticsEventName(value: string): ValidateEventNameErro
     }
 
     return null;
-}
-
-/**
- * Returns true if the event part (part after domain/) is valid kebab-case.
- * For multi-segment event parts (e.g. "app-log/exported"), each segment is validated.
- */
-export function isValidEventPart(eventPart: string): boolean {
-    if (eventPart.trim() === '') return false;
-    const segments = eventPart.split('/');
-
-    return segments.every(seg => ANALYTICS_EVENT_NAME_KEBAB_SEGMENT.test(seg.trim()));
 }

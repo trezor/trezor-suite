@@ -16,7 +16,7 @@ const badgeWrapperStyle = prepareNativeStyle(() => ({
 const badgeBackgroundStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.colors.surfaceFillPage,
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
 }));
 
 export const FilterCountBadge = ({ count }: FilterCountBadgeProps) => {

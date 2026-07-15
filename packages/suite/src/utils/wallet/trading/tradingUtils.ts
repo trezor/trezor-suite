@@ -1,5 +1,5 @@
 import { type ExtendedMessageDescriptor } from '@suite/intl';
-import type { TradingTradeType, TradingType } from '@suite-common/trading';
+import type { TradingType } from '@suite-common/trading';
 import { type Network, type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type Output,
@@ -16,7 +16,6 @@ import { type TrezorDevice } from 'src/types/suite';
 import {
     type TradingGetAmountLabelsProps,
     type TradingGetAmountLabelsReturnProps,
-    type TradingGetProvidersInfoProps,
 } from 'src/types/trading/trading';
 import { type Account } from 'src/types/wallet';
 
@@ -27,25 +26,6 @@ export const translationKeys: Record<
     buy: 'TR_BUY',
     sell: 'TR_TRADING_SELL',
     exchange: 'TR_TRADING_SWAP',
-};
-
-export const getCountryLabelParts = (label: string) => {
-    try {
-        const parts = label.split(' ');
-        if (parts.length === 1) {
-            return {
-                flag: '',
-                text: label,
-            };
-        }
-        const flag = parts[0];
-        parts.shift();
-        const text = parts.join(' ');
-
-        return { flag, text };
-    } catch {
-        return null;
-    }
 };
 
 export const getComposeAddressPlaceholder = async (
@@ -106,8 +86,10 @@ export const getComposeAddressPlaceholder = async (
         case 'solana':
         case 'ripple':
         case 'stellar':
-        case 'tron':
             return account.descriptor;
+        case 'tron':
+            // keep the form address empty; the fee uses composeContext.feeEstimationRecipient
+            return '';
         default:
             return exhaustive(networkType);
     }
@@ -204,17 +186,6 @@ export const resolveAddressAndToken = <A extends Pick<Account, 'symbol' | 'descr
     }
 
     return { address: '', token: tokenContractAddress ?? null };
-};
-
-interface GetTradeProviderProps {
-    trade: TradingTradeType | undefined;
-    providerInfo: TradingGetProvidersInfoProps;
-}
-
-export const getTradeProvider = ({ trade, providerInfo }: GetTradeProviderProps) => {
-    if (!trade?.exchange) return undefined;
-
-    return providerInfo?.[trade.exchange];
 };
 
 interface GetFeeInUnitsProps {

@@ -10,9 +10,9 @@ import {
     requiresTokenApproval,
     selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId,
     selectTradingExchangeIsLoading,
-    selectTradingMaxSlippagePercentage,
     tradingExchangeActions,
 } from '@suite-common/trading';
+import { useWatch } from '@suite-native/forms';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -40,7 +40,8 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const useExchangeSelectQuote = (form: ExchangeFormType) => {
     const dispatch = useDispatch();
-    const [candidateQuote, receiveAsset] = form.watch(['quote', 'receiveAsset']);
+    const candidateQuote = useWatch({ name: 'quote', control: form.control });
+    const receiveAsset = useWatch({ name: 'receiveAsset', control: form.control });
 
     const isLoading = useSelector(selectTradingExchangeIsLoading);
     const isDexQuoteApprovalPrefetchLoadingForCandidateQuote = useSelector(
@@ -52,7 +53,6 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
     );
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
     const receiveAccount = useSelector(selectExchangeSelectedReceiveAccount);
-    const swapSlippage = useSelector(selectTradingMaxSlippagePercentage);
 
     const navigation = useNavigation<NavigationProps>();
 
@@ -92,7 +92,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
 
         await dispatch(
             exchangeThunks.selectQuoteThunk({
-                quote: { ...candidateQuote, swapSlippage },
+                quote: candidateQuote,
                 nextStep: () => {
                     clearExchangeFormQuoteData(form);
                     nextStep(getApprovalStatus(candidateQuote));
@@ -163,6 +163,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
         sendAccount,
         receiveAccount,
         isLoading,
+        isDexQuoteApprovalPrefetchLoadingForCandidateQuote,
         selectReceiveAccount,
         selectQuote,
         selectQuoteForRevoke,

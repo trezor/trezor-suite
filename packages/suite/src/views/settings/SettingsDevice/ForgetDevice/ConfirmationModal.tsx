@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import { Card, Icon, List, Modal, Paragraph } from '@trezor/components';
+import { BluetoothSlashIcon, LinkBreakIcon, ScrollIcon } from '@trezor/icons';
 
 const ConfirmationContent = ({
     isBluetoothDevice,
@@ -12,7 +13,7 @@ const ConfirmationContent = ({
         <List gap={24}>
             <List.Item
                 bulletComponent={
-                    <Icon name="linkBreak" intent="neutral" priority="secondary" size={20} />
+                    <Icon as={LinkBreakIcon} intent="neutral" priority="secondary" size={20} />
                 }
             >
                 <Paragraph intent="neutral" priority="secondary">
@@ -23,7 +24,7 @@ const ConfirmationContent = ({
                 <List.Item
                     bulletComponent={
                         <Icon
-                            name="bluetoothSlash"
+                            as={BluetoothSlashIcon}
                             intent="neutral"
                             priority="secondary"
                             size={20}
@@ -41,7 +42,7 @@ const ConfirmationContent = ({
             )}
             <List.Item
                 bulletComponent={
-                    <Icon name="scroll" intent="neutral" priority="secondary" size={20} />
+                    <Icon as={ScrollIcon} intent="neutral" priority="secondary" size={20} />
                 }
             >
                 <Paragraph intent="neutral" priority="secondary">

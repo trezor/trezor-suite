@@ -7,7 +7,7 @@ import {
     Column,
     IconCircle,
     type IconCircleIntent,
-    type IconName,
+    type IconComponent,
     Paragraph,
 } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
@@ -29,7 +29,7 @@ const Header = styled.header`
 interface UtxoSelectionListProps {
     description: ReactNode;
     heading: ReactNode;
-    icon: IconName;
+    icon: IconComponent;
     iconIntent?: IconCircleIntent;
     utxos: AccountUtxo[];
     withHeader: boolean;
@@ -52,7 +52,7 @@ export const UtxoSelectionList = ({
             {withHeader && (
                 <Header>
                     <IconCircle
-                        name={icon}
+                        icon={icon}
                         size={64}
                         intent={iconIntent}
                         margin={{ left: negativeSpacings.xs }}

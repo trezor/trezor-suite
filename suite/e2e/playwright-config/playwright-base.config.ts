@@ -1,10 +1,11 @@
 import { CurrentsFixtures, CurrentsWorkerFixtures } from '@currents/playwright';
-import type { PlaywrightTestConfig } from '@playwright/test';
+import type { PlaywrightTestConfig, ReporterDescription } from '@playwright/test';
 import { defineConfig } from '@playwright/test';
 import dotenv from 'dotenv';
 import path from 'path';
 
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+// quiet: true suppresses dotenv's stdout banner, which otherwise breaks currents' `pwc-p discover`
+dotenv.config({ path: path.resolve(__dirname, '../.env'), quiet: true });
 
 const CI_TIMEOUT = 1000 * 180;
 const LOCAL_TIMEOUT = 1000 * 90;
@@ -28,6 +29,7 @@ export const baseConfig: PlaywrightTestConfig = defineConfig<
     testDir: '../tests',
     workers: 1, // to disable parallelism between test files
     retries: isDefaultGithubAction ? 2 : 0,
+    forbidOnly: isDefaultGithubAction,
     use: {
         viewport: { width: 1280, height: 720 },
         trace: 'on',
@@ -38,9 +40,19 @@ export const baseConfig: PlaywrightTestConfig = defineConfig<
         currentsFixturesEnabled: isDefaultGithubAction,
     },
     reportSlowTests: null,
-    // GitHub Reporter for release is called thru CLI (workflows and package.json)
+    // Orchestrated CI runs use `pwc-p run --pwc-skip-reporter-injection`, so reporters must be
+    // declared here rather than injected by the CLI. The GitHub reporter is opt-in via env.
     reporter: isDefaultGithubAction
-        ? [['@currents/playwright']] // CI run
+        ? [
+              ['@currents/playwright'] as ReporterDescription,
+              ...(process.env.RUN_GITHUB_REPORTER === 'true'
+                  ? [
+                        [
+                            path.join(__dirname, '../support/reporters/gitHubReporter.ts'),
+                        ] as ReporterDescription,
+                    ]
+                  : []),
+          ] // CI run
         : [['list'], ['html', { open: 'never' }]], // Local run or Fix Agent CI run
     timeout: getTimeout(),
     outputDir: path.join(__dirname, '../test-results'),

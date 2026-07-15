@@ -1,7 +1,11 @@
+import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
 import { type EarnModalAction } from '@suite-common/suite-types/src/staking';
-import { BulletList, Divider } from '@trezor/components';
+import { supportedTronNetworkSymbols } from '@suite-common/wallet-types';
+import { Divider, StepList } from '@trezor/components';
+import { CheckSquareOffsetIcon, LightningIcon, LockSimpleOpenIcon } from '@trezor/icons';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 
@@ -13,6 +17,7 @@ import {
 } from './components/EarnInANutshellProcesses';
 import { EarnInfoRow } from './components/EarnInfoRow';
 
+// TODO: move to constants
 const TRON_UNSTAKING_PERIOD_DAYS = 14;
 
 interface TronStakeInANutshellModalProps {
@@ -24,8 +29,21 @@ export const TronStakeInANutshellModal = ({
     onCancel,
     actionType = 'close',
 }: TronStakeInANutshellModalProps) => {
-    const { data } = useTronStakingStats();
-    const apy = data?.length ? Math.max(...data.map(({ apr }) => apr)) : null;
+    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { maxApr } = useTronStakingStats();
+
+    const handleCancel = () => {
+        onCancel();
+
+        analytics.report({
+            type: events.stakingStakeEvent.name,
+            payload: {
+                action: actionType,
+                step: 'stake-in-a-nutshell-modal',
+                networkSymbol: supportedTronNetworkSymbols[0],
+            },
+        });
+    };
 
     const networkFeeBadge = { text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true };
 
@@ -34,7 +52,7 @@ export const TronStakeInANutshellModal = ({
             heading: <Translation id="TR_EARN_STAKING_PROCESS" />,
             badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 2 }} />,
             content: (
-                <BulletList bulletGap={12} gap={16} bulletSize="small" titleGap={4}>
+                <StepList bulletGap={12} gap={16} bulletSize="small" titleGap={4}>
                     <EarnInfoRow
                         heading={<Translation id="TR_EARN_TRON_FREEZE_TRANSACTION" />}
                         content={networkFeeBadge}
@@ -48,20 +66,20 @@ export const TronStakeInANutshellModal = ({
                         content={{
                             text: (
                                 <Translation
-                                    id="TR_EARN_APY_APPROX"
-                                    values={{ apyPercent: formatApyValue(apy) }}
+                                    id="TR_EARN_APR_APPROX"
+                                    values={{ aprPercent: formatApyValue(maxApr) }}
                                 />
                             ),
                         }}
                     />
-                </BulletList>
+                </StepList>
             ),
         },
         {
             heading: <Translation id="TR_EARN_UNSTAKING_PROCESS" />,
             badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 2 }} />,
             content: (
-                <BulletList bulletGap={12} gap={16} bulletSize="small" titleGap={4}>
+                <StepList bulletGap={12} gap={16} bulletSize="small" titleGap={4}>
                     <EarnInfoRow
                         heading={<Translation id="TR_EARN_SIGN_UNSTAKING_TRANSACTION" />}
                         content={networkFeeBadge}
@@ -81,7 +99,7 @@ export const TronStakeInANutshellModal = ({
                         heading={<Translation id="TR_EARN_SIGN_WITHDRAWAL_TRANSACTION" />}
                         content={networkFeeBadge}
                     />
-                </BulletList>
+                </StepList>
             ),
         },
     ];
@@ -89,22 +107,22 @@ export const TronStakeInANutshellModal = ({
     return (
         <EarnInANutshellModalLayout
             heading={<Translation id="TR_EARN_TRON_STAKING_IN_A_NUTSHELL" />}
-            onCancel={onCancel}
+            onCancel={handleCancel}
             actionType={actionType}
-            onAction={onCancel}
+            onAction={handleCancel}
         >
             <EarnInANutshellHighlights
                 items={[
                     {
-                        icon: 'lightning',
+                        icon: LightningIcon,
                         content: <Translation id="TR_EARN_TRON_NUTSHELL_RESOURCES" />,
                     },
                     {
-                        icon: 'checkSquareOffset',
+                        icon: CheckSquareOffsetIcon,
                         content: <Translation id="TR_EARN_TRON_NUTSHELL_FREEZE_VOTE" />,
                     },
                     {
-                        icon: 'lockSimpleOpen',
+                        icon: LockSimpleOpenIcon,
                         content: <Translation id="TR_EARN_TRON_NUTSHELL_UNSTAKE" />,
                     },
                 ]}

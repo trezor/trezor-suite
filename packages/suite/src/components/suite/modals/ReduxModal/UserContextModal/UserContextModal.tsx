@@ -10,12 +10,12 @@ import {
     EarnProviderConsentModal,
     StakeModal,
     TronStakeInANutshellModal,
+    TronVoteConsentModal,
     UnstakeModal,
 } from 'src/components/earn';
 import { ConnectPopupTxSimulationModal } from 'src/components/tx-simulation/connect-popup';
 import { EarnYieldTxSimulationModal } from 'src/components/tx-simulation/earn-stablecoin';
 import { useDispatch } from 'src/hooks/suite';
-import type { AcquiredDevice } from 'src/types/suite';
 
 import { ConfirmAddressModal } from '../ConfirmAddressModal';
 import { ConfirmXpubModal } from '../ConfirmXpubModal';
@@ -40,6 +40,7 @@ import { ConnectAddressConfirmation } from './ConnectAddressConfirmation';
 import { ConnectErrorModal } from './ConnectErrorModal';
 import { ConnectLoadingModal } from './ConnectLoadingModal';
 import { ConnectPermissionsModal } from './ConnectPermissionsModal';
+import { ConnectSelectAccount } from './ConnectSelectAccount/ConnectSelectAccount';
 import { CriticalCoinjoinPhaseModal } from './CriticalCoinjoinPhaseModal/CriticalCoinjoinPhaseModal';
 import { DeviceAuthenticityOptOutModal } from './DeviceAuthenticityOptOutModal';
 import { DisableTorModal } from './DisableTorModal';
@@ -69,7 +70,7 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
         case 'add-account':
             return (
                 <AddAccountModal
-                    device={payload.device as AcquiredDevice}
+                    device={payload.device}
                     symbol={payload.symbol}
                     noRedirect={payload.noRedirect}
                     isCoinjoinDisabled={payload.isCoinjoinDisabled}
@@ -154,6 +155,8 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
             return <EarnInANutshellModal {...payload} onCancel={onCancel} />;
         case 'tron-stake-in-a-nutshell':
             return <TronStakeInANutshellModal {...payload} onCancel={onCancel} />;
+        case 'tron-vote-consent':
+            return <TronVoteConsentModal {...payload} onCancel={onCancel} />;
         case 'earn-provider-consent':
             return <EarnProviderConsentModal {...payload} onCancel={onCancel} />;
         case 'stake':
@@ -182,6 +185,8 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
             return <WalletConnectSwitchAccountModal sessionTopic={payload.sessionTopic} />;
         case 'connect-address-confirmation':
             return <ConnectAddressConfirmation />;
+        case 'connect-select-account':
+            return <ConnectSelectAccount />;
         case 'connect-error':
             return <ConnectErrorModal />;
         case 'connect-loading':

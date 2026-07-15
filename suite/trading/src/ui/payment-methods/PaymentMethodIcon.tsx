@@ -1,6 +1,5 @@
-import { useTheme } from 'styled-components';
-
 import { Icon, type IconSize } from '@trezor/components';
+import { BankIcon, CreditCardIcon, WalletIcon } from '@trezor/icons';
 
 import { PaymentMethodLogo } from './PaymentMethodLogo';
 
@@ -10,37 +9,24 @@ interface PaymentMethodIconProps {
 }
 
 export const PaymentMethodIcon = ({ paymentMethod, size = 20 }: PaymentMethodIconProps) => {
-    const { variant } = useTheme();
-    const isDarkMode = variant === 'dark';
-
     if (!paymentMethod) {
         return null;
     }
     switch (paymentMethod) {
         case 'applePay':
-            return (
-                <PaymentMethodLogo
-                    paymentMethodLogoName={isDarkMode ? 'applePay_inverse' : 'applePay'}
-                    size={size}
-                />
-            );
+            return <PaymentMethodLogo paymentMethodLogoName="applePay" size={size} />;
         case 'paypal':
             return <PaymentMethodLogo paymentMethodLogoName="paypal" size={size} />;
         case 'googlePay':
             return <PaymentMethodLogo paymentMethodLogoName="googlePay" size={size} />;
         case 'revolutPay':
-            return (
-                <PaymentMethodLogo
-                    paymentMethodLogoName={isDarkMode ? 'revolut_inverse' : 'revolut'}
-                    size={size}
-                />
-            );
+            return <PaymentMethodLogo paymentMethodLogoName="revolut" size={size} />;
         case 'bankTransfer':
         case 'SEPA':
-            return <Icon name="bank" size={size} />;
+            return <Icon as={BankIcon} size={size} />;
         case 'creditCard':
-            return <Icon name="creditCard" size={size} />;
+            return <Icon as={CreditCardIcon} size={size} />;
         default:
-            return <Icon name="wallet" size={size} />;
+            return <Icon as={WalletIcon} size={size} />;
     }
 };

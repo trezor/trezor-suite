@@ -23,7 +23,7 @@ export const RotateDeviceImage = ({
     }
 
     if (deviceModel === DeviceModelInternal.UNKNOWN) {
-        return <Icon name={mapTrezorModelToIcon[DeviceModelInternal.T3T1]} size={32} />;
+        return <Icon as={mapTrezorModelToIcon[DeviceModelInternal.T3T1]} size={32} />;
     }
 
     return (

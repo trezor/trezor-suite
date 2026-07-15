@@ -23,7 +23,8 @@ import { BigNumber } from '@trezor/utils';
 
 import { MAX_AGE } from './fiatRatesConstants';
 import { type FiatRatesRootState } from './fiatRatesTypes';
-import { selectDeviceAccounts } from '../accounts/accountsSelectors';
+import { type AccountsRootState } from '../accounts/accountsReducer';
+import { selectAccounts } from '../accounts/accountsSelectors';
 
 export const selectCurrentFiatRates = (state: FiatRatesRootState): RatesByKey | undefined =>
     state.wallet.fiat?.['current'];
@@ -40,8 +41,10 @@ export const selectFiatRatesByFiatRateKey = (
 export const selectHistoricFiatRatesByTimestamp = (
     state: FiatRatesRootState,
     fiatRateKey: CryptoBaseCurrencyPair,
-    timestamp: Timestamp,
+    timestamp: Timestamp | undefined,
 ): number | undefined => {
+    if (timestamp === undefined) return undefined;
+
     const roundedTimestamp = roundTimestampToNearestPastHour(timestamp);
 
     return state.wallet.fiat?.['historic']?.[fiatRateKey]?.[roundedTimestamp];
@@ -86,16 +89,19 @@ export const selectShouldUpdateFiatRate = (
 };
 
 export const selectTickerFromAccounts = (
-    state: FiatRatesRootState & TokenDefinitionsRootState,
+    state: FiatRatesRootState & TokenDefinitionsRootState & AccountsRootState,
 ): TickerId[] => {
-    const accounts = selectDeviceAccounts(state as any);
+    // Use accounts of all remembered devices/wallets, not just the selected one, so that
+    // token fiat rates are fetched for every wallet. Otherwise tokens that exist only on a
+    // non-selected wallet (e.g. a passphrase wallet) never get a rate fetched on launch.
+    const accounts = selectAccounts(state);
 
     return pipe(
         accounts,
-        A.map(account => [
+        A.map((account): TickerId[] => [
             {
                 symbol: account.symbol,
-            } as TickerId,
+            },
             ...(account.tokens || [])
                 .filter(token => new BigNumber(token.balance ?? '0').gt(0))
                 .map(
@@ -116,12 +122,13 @@ export const selectTickerFromAccounts = (
         A.uniqBy(ticker =>
             ticker.tokenAddress ? `${ticker.symbol}-${ticker.tokenAddress}` : ticker.symbol,
         ),
+        A.sortBy(ticker => (ticker.tokenAddress ? 1 : 0)),
         F.toMutable,
     );
 };
 
 export const selectTickersToBeUpdated = (
-    state: FiatRatesRootState & TokenDefinitionsRootState,
+    state: FiatRatesRootState & TokenDefinitionsRootState & AccountsRootState,
     currentTimestamp: Timestamp,
     fiatCurrency: BaseCurrencyCode,
     rateType: RateTypeWithoutHistoric,

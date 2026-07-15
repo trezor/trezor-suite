@@ -1,5 +1,6 @@
 import { Translation, type TranslationKey } from '@suite/intl';
 import { Icon, Row, Spinner, Text } from '@trezor/components';
+import { CheckIcon } from '@trezor/icons';
 
 type PairingStateProps = {
     isLoading?: boolean;
@@ -11,7 +12,7 @@ export const PairingState = ({ isLoading, text }: PairingStateProps) => (
         {isLoading ? (
             <Spinner size={20} isDisabled={true} />
         ) : (
-            <Icon size={18} name="check" intent="brand" />
+            <Icon size={18} as={CheckIcon} intent="brand" />
         )}
         <Text
             intent={isLoading ? 'neutral' : 'brand'}

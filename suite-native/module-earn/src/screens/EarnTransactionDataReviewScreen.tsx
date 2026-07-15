@@ -1,15 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { CommonActions, useFocusEffect } from '@react-navigation/native';
-
-import {
-    type AccountsRootState,
-    type TransactionsRootState,
-    selectAccountByKey,
-    selectTransactionByAccountKeyAndTxid,
-} from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { Button, Card, LottieAnimation, Text, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
@@ -17,75 +9,31 @@ import {
 } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
 import {
-    AppTabsRoutes,
     type RootStackParamList,
-    RootStackRoutes,
+    type RootStackRoutes,
     ScreenHeader,
     type StackProps,
-    TransactionDetailStackRoutes,
-    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import {
-    type TransactionReviewOutputsState,
-    selectIsReceiveAddressOutputConfirmed,
+    TxValidityTimer,
     selectIsTransactionAlreadySigned,
-    selectIsTransactionReviewInProgress,
     sendArrowsLottie,
 } from '@suite-native/transaction-management';
 
 import { EarnTransactionDataReviewStepList } from '../components/EarnTransactionDataReviewStepList';
-import { useStakingDetailNavigation } from '../hooks/useStakingDetailNavigation';
-
-const navigateToStakedTransactionAction = ({
-    accountKey,
-    txid,
-}: {
-    accountKey: AccountKey;
-    txid: string;
-}) =>
-    CommonActions.reset({
-        index: 2,
-        routes: [
-            {
-                name: RootStackRoutes.AppTabs,
-                params: { screen: AppTabsRoutes.EarnStack },
-            },
-            {
-                name: RootStackRoutes.StakingManagement,
-                params: { accountKey },
-            },
-            {
-                name: RootStackRoutes.TransactionDetailStack,
-                params: {
-                    screen: TransactionDetailStackRoutes.TransactionDetail,
-                    params: {
-                        accountKey,
-                        txid,
-                        closeActionType: 'close',
-                    },
-                },
-            },
-        ],
-    });
+import { useEarnReviewAutoStart } from '../hooks/useEarnReviewAutoStart';
+import { useEarnSelectedPrecomposedTransaction } from '../hooks/useEarnSelectedPrecomposedTransaction';
+import { useEarnTxValidityFlow } from '../hooks/useEarnTxValidityFlow';
+import { useHandleOnEarnTransactionReview } from '../hooks/useHandleOnEarnTransactionReview';
+import { useNavigateAfterPushedTransaction } from '../hooks/useNavigateAfterPushedTransaction';
 
 export const EarnTransactionDataReviewScreen = ({
     route,
-    navigation,
 }: StackProps<RootStackParamList, RootStackRoutes.EarnTransactionDataReview>) => {
     const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, closeSheet } =
         useConfirmOnTrezorController();
     const { accountKey, amount } = route.params;
-    const { navigateToStakingDetail } = useStakingDetailNavigation();
-    const navigateToInitialScreen = useNavigateToInitialScreen();
-    const [txid, setTxid] = useState<string>('');
-
-    const isAddressConfirmed = useSelector((state: TransactionReviewOutputsState) =>
-        selectIsReceiveAddressOutputConfirmed(state, 'stake', accountKey),
-    );
-
-    const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
-        selectIsTransactionReviewInProgress(state, 'stake', accountKey),
-    );
+    const [isPushing, setIsPushing] = useState(false);
 
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
 
@@ -93,42 +41,61 @@ export const EarnTransactionDataReviewScreen = ({
         selectAccountByKey(state, accountKey),
     );
 
-    const isTransactionProcessedByBackend = !!useSelector((state: TransactionsRootState) =>
-        selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
-    );
+    const precomposedTransaction = useEarnSelectedPrecomposedTransaction('stake', accountKey);
 
-    const showSignSuccessMessage = isTransactionAlreadySigned && !!account;
+    const { handleSign, handlePush, closeReview } = useHandleOnEarnTransactionReview({
+        accountKey,
+        stakeType: 'stake',
+    });
 
-    useFocusEffect(
-        useCallback(() => {
-            // Solana address outputs would redirect mid-sign; skip until the success card.
-            if (isAddressConfirmed && account && account.networkType !== 'solana') {
-                navigateToStakingDetail({ accountKey, symbol: account.symbol });
-            }
-        }, [account, accountKey, isAddressConfirmed, navigateToStakingDetail]),
-    );
+    const { trackPushedTransaction } = useNavigateAfterPushedTransaction({ accountKey });
+
+    const { showTimer, secondsLeft, isPastDeadline, isBroadcasting, onRetry, isRetryDisabled } =
+        useEarnTxValidityFlow({
+            accountKey,
+            stakeType: 'stake',
+            revealConfirmOnTrezorSheet,
+            isPushing,
+        });
+
+    const isSolanaAccount = account?.networkType === 'solana';
+
+    const isReadyToStake = isTransactionAlreadySigned && !!account;
+
+    useEarnReviewAutoStart({
+        handleSign,
+        isSigned: isTransactionAlreadySigned,
+        canStart: !!precomposedTransaction,
+        onDeviceReviewReady: revealConfirmOnTrezorSheet,
+        onSignFailed: closeSheet,
+    });
 
     useEffect(() => {
-        if (isTransactionReviewInProgress) {
-            revealConfirmOnTrezorSheet();
-        }
-    }, [isTransactionReviewInProgress, revealConfirmOnTrezorSheet]);
-
-    useEffect(() => {
-        if (showSignSuccessMessage) {
+        if (isTransactionAlreadySigned) {
             closeSheet();
         }
-    }, [closeSheet, showSignSuccessMessage]);
+    }, [closeSheet, isTransactionAlreadySigned]);
 
-    const handleViewTransaction = useCallback(() => {
-        navigation.dispatch(navigateToStakedTransactionAction({ accountKey, txid }));
-    }, [accountKey, navigation, txid]);
+    const handleStakeNow = useCallback(async () => {
+        setIsPushing(true);
+
+        const pushedTxid = await handlePush();
+
+        if (pushedTxid) {
+            trackPushedTransaction(pushedTxid);
+
+            return;
+        }
+
+        setIsPushing(false);
+    }, [handlePush, trackPushedTransaction]);
 
     return (
         <ConfirmOnTrezorWrapper
             isManualControlEnabled
             controlRef={confirmOnTrezorRef}
             closeActionType="close"
+            closeAction={closeReview}
             defaultHeader={
                 <ScreenHeader
                     customContent={
@@ -137,22 +104,30 @@ export const EarnTransactionDataReviewScreen = ({
                         </Text>
                     }
                     closeActionType="close"
-                    closeAction={navigateToInitialScreen}
+                    closeAction={closeReview}
                 />
             }
         >
             <VStack flex={1} justifyContent="space-between">
                 <VStack justifyContent="center" spacing="sp24">
+                    {showTimer && (
+                        <TxValidityTimer
+                            secondsLeft={secondsLeft}
+                            isPastDeadline={isPastDeadline}
+                            isBroadcasting={isBroadcasting}
+                            onRetry={onRetry}
+                            isRetryDisabled={isRetryDisabled}
+                        />
+                    )}
                     {account && (
                         <EarnTransactionDataReviewStepList
                             accountKey={accountKey}
                             amount={amount}
                             accountSymbol={account.symbol}
-                            onTransactionSubmitted={setTxid}
                         />
                     )}
                 </VStack>
-                {txid && (
+                {isReadyToStake && (
                     <Card>
                         <VStack
                             paddingTop="sp8"
@@ -167,8 +142,10 @@ export const EarnTransactionDataReviewScreen = ({
                             </Text>
                         </VStack>
                         <Button
-                            isLoading={!isTransactionProcessedByBackend}
-                            onPress={handleViewTransaction}
+                            isLoading={isPushing}
+                            isDisabled={isSolanaAccount && isPastDeadline}
+                            onPress={handleStakeNow}
+                            testID="@earn/stake-now"
                         >
                             <Translation id="earn.earnTransactionDataReviewScreen.viewTransactionButton" />
                         </Button>

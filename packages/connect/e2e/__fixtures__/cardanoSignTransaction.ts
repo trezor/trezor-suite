@@ -451,6 +451,7 @@ const legacyResults = {
 
 export default {
     method: 'cardanoSignTransaction',
+    enabledCoins: ['ada'] as const,
     setup: {
         mnemonic: 'mnemonic_all',
     },

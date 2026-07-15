@@ -1,4 +1,4 @@
-import { type WalletDescriptor } from '@suite-common/wallet';
+import { type WalletDescriptor } from '@trezor/device-utils';
 
 import { type SuiteSyncTable } from '../SuiteSyncTable';
 

@@ -24,6 +24,9 @@ export type ReviewOutput =
               | 'approve_data'
               | 'recipient_name'
               | 'swap_intent'
+              | 'tron-vote'
+              | 'tron-withdraw'
+              | 'tron-claim'
               | 'fee-limit';
           label?: string;
           value: string;
@@ -60,7 +63,7 @@ export type ReviewOutput =
           label?: undefined;
           token?: undefined;
           send: FormStateTradingCryptoCurrency;
-          receive: FormStateTradingCryptoCurrency | FormStateTradingFiatCurrency;
+          receive?: FormStateTradingCryptoCurrency | FormStateTradingFiatCurrency;
           receiveAddress?: string;
       }
     | {

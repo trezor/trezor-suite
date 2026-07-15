@@ -1,4 +1,5 @@
 import { type AccountKey } from '@suite-common/wallet-types';
+import { getTranslation } from '@suite-native/intl';
 import {
     getEthAccount,
     oneInchFusionPlusWithEip712SignDataQuote,
@@ -98,20 +99,26 @@ describe('SignDataMessageReview', () => {
     it('should render heading', () => {
         const { getByText } = renderSignDataMessageReview();
 
-        expect(getByText('Sign EIP-712 typed data')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingReviewOutputs.signData.heading')),
+        ).toBeOnTheScreen();
     });
 
     it('should render domain card with simplified JSON', () => {
         const { getByText } = renderSignDataMessageReview();
 
-        expect(getByText('Domain')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingReviewOutputs.signData.domain')),
+        ).toBeOnTheScreen();
         expect(getByText(/1inch Aggregation Router/)).toBeOnTheScreen();
     });
 
     it('should render message card with labeled field rows', () => {
         const { getByText } = renderSignDataMessageReview();
 
-        expect(getByText('Message')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingReviewOutputs.signData.message')),
+        ).toBeOnTheScreen();
         expect(getByText('maker')).toBeOnTheScreen();
         expect(getByText('0x9cd02a26cd336d0fe784fb7995f6e5c9e3776258')).toBeOnTheScreen();
         expect(getByText('makingAmount')).toBeOnTheScreen();
@@ -124,7 +131,9 @@ describe('SignDataMessageReview', () => {
     it('should render address card when send account is available', () => {
         const { getByText } = renderSignDataMessageReview();
 
-        expect(getByText('Address')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingReviewOutputs.signData.address')),
+        ).toBeOnTheScreen();
     });
 
     it('should not render address card when send account is not found', () => {
@@ -139,6 +148,8 @@ describe('SignDataMessageReview', () => {
             },
         });
 
-        expect(queryByText('Address')).toBeNull();
+        expect(
+            queryByText(getTranslation('moduleTrading.tradingReviewOutputs.signData.address')),
+        ).toBeNull();
     });
 });

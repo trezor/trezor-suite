@@ -5,8 +5,6 @@ import {
     type TokenSymbol,
 } from '@suite-common/wallet-types';
 
-export type GroupedByTypeAccounts = Record<string, [Account, ...Account[]]>;
-
 export type OnSelectAccount = (params: {
     account: Account;
     // if clicked item is staking item

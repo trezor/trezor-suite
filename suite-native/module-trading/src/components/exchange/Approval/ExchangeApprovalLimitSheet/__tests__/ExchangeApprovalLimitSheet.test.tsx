@@ -38,14 +38,18 @@ describe('ExchangeApprovalLimitSheet', () => {
     it('should render the sheet when visible', () => {
         const { getByText } = renderSheet();
 
-        expect(getByText('Unlimited')).toBeTruthy();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel')),
+        ).toBeTruthy();
         expect(getByText('100 USDC')).toBeTruthy();
     });
 
     it('should render unlimited approval option with correct details', () => {
         const { getByText } = renderSheet();
 
-        expect(getByText('Unlimited')).toBeTruthy();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel')),
+        ).toBeTruthy();
         expect(
             getByText(
                 getTranslation('moduleTrading.exchangeApprovalLimitSheet.unlimitedCard.info'),
@@ -72,7 +76,7 @@ describe('ExchangeApprovalLimitSheet', () => {
     it('should render crypto icons for both cards', () => {
         const { getAllByLabelText } = renderSheet();
 
-        const cryptoIcons = getAllByLabelText('eth0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
+        const cryptoIcons = getAllByLabelText('eth:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
         expect(cryptoIcons).toHaveLength(2);
     });
 

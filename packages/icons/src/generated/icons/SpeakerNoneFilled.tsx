@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgSpeakerNoneFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M19.439 3.101a1 1 0 0 0-1.053.11L9.656 10H4a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h5.656l8.73 6.789A1.001 1.001 0 0 0 20 28V4a1 1 0 0 0-.561-.899M4 12h5v8H4z"
+        />
+    </svg>
+);
+export { SvgSpeakerNoneFilled as ReactComponent };

@@ -1,11 +1,11 @@
 import { type StorageId } from '@suite-common/suite-sync-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import type { StaticSessionId } from '@trezor/connect';
+import { parseStaticSessionId } from '@trezor/device-utils';
 
 export const createStorageIdFromDeviceStaticSessionId = (
     deviceStaticSessionId: StaticSessionId,
 ) => {
-    const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+    const { walletDescriptor } = parseStaticSessionId(deviceStaticSessionId);
 
     return walletDescriptor as unknown as StorageId;
 };

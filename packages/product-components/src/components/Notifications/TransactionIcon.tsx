@@ -26,7 +26,7 @@ const shouldDisplayAssetLogo = ({ notificationType, token }: ShouldDisplayAssetL
     const isTransferTokenType =
         notificationType === 'tx-sent' || notificationType === 'tx-received';
     const isYieldType =
-        notificationType === 'tx-yield-supply' ||
+        notificationType === 'tx-yield-deposit' ||
         notificationType === 'tx-yield-withdraw' ||
         notificationType === 'tx-yield-claim';
 

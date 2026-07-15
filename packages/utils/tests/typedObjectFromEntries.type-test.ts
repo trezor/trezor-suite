@@ -1,4 +1,4 @@
-import { typedObjectFromEntries, typedObjectKeys } from '../src/typedObject';
+import { typedObjectEntries, typedObjectFromEntries, typedObjectKeys } from '../src/typedObject';
 
 const map = {
     a: 1,
@@ -14,7 +14,12 @@ export const _test2: { [K in keyof typeof map]: number } = typedObjectFromEntrie
     typedObjectKeys(map).map(k => [k, map[k] * 2]),
 );
 
+const multiplyValues = <T extends Record<string, number>>(input: T) =>
+    typedObjectFromEntries(typedObjectEntries(input).map(([key, value]) => [key, value * 2]));
+
+export const _test3: { [K in keyof typeof map]: number } = multiplyValues(map);
+
 // @ts-expect-error String cannot be assigned to number as map-value
-export const _test3: { [K in keyof typeof map]: number } = typedObjectFromEntries(
+export const _test4: { [K in keyof typeof map]: number } = typedObjectFromEntries(
     typedObjectKeys(map).map(k => [k, '']),
 );

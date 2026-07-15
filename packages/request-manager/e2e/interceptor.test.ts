@@ -14,6 +14,7 @@ const processId = process.pid;
 
 // 1 minute before timeout, because Tor might be slow to start.
 jest.setTimeout(60000);
+jest.retryTimes(3, { logErrorsBeforeRetry: true });
 
 // Because tmp/control_auth_cookie is shared by other tests, this test should not run in parallel
 // using `--runInBand` option with jest.
@@ -22,7 +23,9 @@ const ipRegex = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/;
 
 const testGetUrlHttp = 'http://check.torproject.org/';
 const testGetUrlHttps = 'https://check.torproject.org/';
-const testPostUrlHttps = 'https://httpbin.org/post';
+const testPostUrlHttps = 'https://httpbingo.org/post';
+
+const conditionalTest = process.env.SKIP_FLAKY_TESTS ? describe.skip : describe;
 
 describe('Interceptor', () => {
     let torProcess: ReturnType<typeof torRunner> | null;
@@ -34,7 +37,7 @@ describe('Interceptor', () => {
     const interceptorOptions: InterceptorOptions = {
         getWhitelistedDomains: () => [
             'check.torproject.org',
-            'httpbin.org',
+            'httpbingo.org',
             'tbtc1.trezor.io',
             'localhost',
             '127.0.0.1',
@@ -70,15 +73,17 @@ describe('Interceptor', () => {
         }
     });
 
+    afterEach(async () => {
+        await torController.controlPort.closeActiveCircuits();
+    });
+
     // The tests below are somehow useful but their nature is flaky since we can not
     // guarantee that the IPs of 2 different Tor circuits are different. And this is
     // part of the Tor nature.
-    // Ideally we could find a way to check that actually we are generating different
-    // circuits in each request, until then I would skip them.
-    describe.skip('Check if IPs are different', () => {
+    conditionalTest('Check if IPs are different', () => {
         it('HTTP GET - Each identity has different ip address', async () => {
             const identityDefault = await fetch(testGetUrlHttp, {
-                headers: { 'Proxy-Authorization': 'Basic default' },
+                headers: { 'proxy-authorization': 'Basic default' },
             });
             const identityDefault2 = await fetch(testGetUrlHttp, {
                 headers: { 'Proxy-Authorization': 'Basic user' },
@@ -91,7 +96,7 @@ describe('Interceptor', () => {
 
         it('HTTPS GET - Each identity has different ip address', async () => {
             const identityA = await fetch(testGetUrlHttps, {
-                headers: { 'Proxy-Authorization': 'Basic default' },
+                headers: { 'proxy-authorization': 'Basic default' },
             });
             const identityB = await fetch(testGetUrlHttps, {
                 headers: { 'Proxy-Authorization': 'Basic user' },
@@ -115,7 +120,7 @@ describe('Interceptor', () => {
             const identityA = await fetch(testPostUrlHttps, {
                 method: 'POST',
                 body: JSON.stringify({ test: 'test' }),
-                headers: { 'Proxy-Authorization': 'Basic default' },
+                headers: { 'proxy-authorization': 'Basic default' },
             });
             const identityB = await fetch(testPostUrlHttps, {
                 method: 'POST',
@@ -174,8 +179,7 @@ describe('Interceptor', () => {
         });
     });
 
-    // TODO: Skipping this for now, since I want to get the most critical tests to run in CI.
-    describe.skip('TorControl', () => {
+    conditionalTest('TorControl', () => {
         it('closing circuits', async () => {
             await fetch(testGetUrlHttps, {
                 headers: { 'Proxy-Authorization': 'Basic user-circuit-1' },
@@ -210,7 +214,9 @@ describe('Interceptor', () => {
 
             // and validate state afterward
             const circuits3 = await torController.controlPort.getCircuits();
-            expect(circuits3.length).toEqual(0);
+            expect(circuits3.map(c => c.username)).not.toEqual(
+                expect.arrayContaining(['user-circuit-1', 'user-circuit-2']),
+            );
         });
     });
 

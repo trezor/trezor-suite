@@ -9,7 +9,7 @@ export const TopBar = styled.div`
     align-items: center;
     padding: 12px 24px;
     background: ${({ theme }) => hexToRgba(theme.surfaceFillPage, 0.8)};
-    box-shadow: ${({ theme }) => theme.boxShadowBase};
+    box-shadow: ${({ theme }) => theme.elementShadowElevated};
 
     @media (min-width: ${variables.SCREEN_SIZE.MD}) {
         backdrop-filter: blur(20px);
@@ -59,6 +59,6 @@ export const EventCardWrapper = styled.div`
     transition: border-color 0.4s ease-out;
 
     &.highlighted {
-        border-color: ${({ theme }) => theme.legacyBackgroundAlertYellowBold};
+        border-color: ${({ theme }) => theme.elementFillWarningBold};
     }
 `;

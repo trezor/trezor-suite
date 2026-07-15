@@ -9,7 +9,7 @@ describe('KycPolicyWarning', () => {
     it.each([
         {
             kycPolicyType: 'KYC-required' as const,
-            expected: 'This provider requires KYC.',
+            expected: 'KYC is required.',
         },
         {
             kycPolicyType: 'KYC-norefund' as const,

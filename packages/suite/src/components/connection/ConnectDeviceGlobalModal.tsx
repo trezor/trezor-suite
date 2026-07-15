@@ -23,6 +23,7 @@ import {
 } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
+import { BluetoothIcon, CableUsbCIcon, QuestionIcon } from '@trezor/icons';
 import { getLargeModelImagePath } from '@trezor/product-components';
 
 import {
@@ -47,7 +48,7 @@ type DontSeeTrezorPillProps = {
 };
 
 const DontSeeTrezorPill = ({ onClick }: DontSeeTrezorPillProps) => (
-    <Button onClick={onClick} iconLeft="question" intent="info" priority="secondary" isFloating>
+    <Button onClick={onClick} iconLeft={QuestionIcon} intent="info" priority="secondary" isFloating>
         <Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />
     </Button>
 );
@@ -118,7 +119,7 @@ const ViaBluetoothCard = ({ onClick }: ConnectionModeCardProps) => (
                         <Text>
                             <Translation id="TR_VIA_BLUETOOTH" />
                         </Text>
-                        <IconCircle intent="neutral" name="bluetooth" size={32} />
+                        <IconCircle intent="neutral" icon={BluetoothIcon} size={32} />
                     </Row>
                 </Column>
             </H3>
@@ -193,7 +194,7 @@ const ViaCableCard = ({ onClick }: ConnectionModeCardProps) => (
                         <Text>
                             <Translation id="TR_VIA_CABLE" />
                         </Text>
-                        <IconCircle intent="neutral" name="cableUsbC" size={32} />
+                        <IconCircle intent="neutral" icon={CableUsbCIcon} size={32} />
                     </Row>
                 </Column>
             </H3>

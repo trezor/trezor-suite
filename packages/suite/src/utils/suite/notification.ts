@@ -1,36 +1,19 @@
 import { type TranslationKey } from '@suite/intl';
 import { type NotificationEntry } from '@suite-common/toast-notifications';
-import { intermediaryTheme } from '@trezor/components';
+import { CheckIcon, InfoIcon, WarningIcon } from '@trezor/icons';
 
-import type { NotificationViewProps } from 'src/components/suite';
 import { type AppState, type ToastNotificationVariant } from 'src/types/suite';
 
 export const getNotificationIcon = (variant: ToastNotificationVariant) => {
     switch (variant) {
         case 'info':
-            return 'info';
+            return InfoIcon;
         case 'warning':
         case 'error':
-            return 'warning';
+            return WarningIcon;
         case 'success':
-            return 'check';
+            return CheckIcon;
         // no default
-    }
-};
-
-export const getVariantColor = (variant: NotificationViewProps['variant']) => {
-    switch (variant) {
-        case 'info':
-            return intermediaryTheme.light.contentInfo;
-        case 'warning':
-            return intermediaryTheme.light.contentWarning;
-        case 'error':
-            return intermediaryTheme.light.contentCritical;
-        case 'success':
-            return intermediaryTheme.light.contentBrand;
-        case 'transparent':
-        default:
-            return 'transparent';
     }
 };
 

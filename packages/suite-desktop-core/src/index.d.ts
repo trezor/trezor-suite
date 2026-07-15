@@ -135,7 +135,7 @@ declare type TraySettings = {
     showOnTray: boolean;
 };
 
-declare type ConnectSettings = {
+declare type ElectronConnectSettings = {
     disableWs: boolean;
     autoStartDontAskAgain: boolean;
     hasUsedConnectWs: boolean;

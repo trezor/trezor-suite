@@ -10,20 +10,21 @@ type Attributes = {
 export const connectPopupPermissionsEvent: EventDef<Attributes, EventType.ConnectPopupPermissions> =
     {
         name: EventType.ConnectPopupPermissions,
-        descriptionTrigger: 'Connect Popup permissions prompt',
+        descriptionTrigger: 'User approves or denies permissions in the Connect popup dialog',
         changelog: [{ version: '25.5.0', notes: 'added' }],
         attributes: {
             origin: {
                 changelog: [{ version: '25.5.0', notes: 'added' }],
-                description: 'Source of the call (URL)',
+                description: 'The URL or origin of the application requesting permissions',
             },
             method: {
                 changelog: [{ version: '25.5.0', notes: 'added' }],
-                description: 'Connect method name',
+                description: 'The specific method or permission being requested',
             },
             approved: {
                 changelog: [{ version: '25.5.0', notes: 'added' }],
-                description: 'Permission approval status',
+                description:
+                    'Whether the user approved (`true`) or denied (`false`) the requested permissions',
             },
         },
     };

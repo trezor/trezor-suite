@@ -7,6 +7,7 @@ import { selectExchangeQuoteThunk } from './selectExchangeQuoteThunk';
 import { sendDexTransactionThunk } from './sendDexTransactionThunk';
 import { sendTransactionThunk } from './sendTransactionThunk';
 import { signDataAndConfirmThunk } from './signDataAndConfirmThunk';
+import { watchExchangeApprovalThunk } from './watchExchangeApprovalThunk';
 
 export const exchangeThunks = {
     loadInfoThunk: loadExchangeInfoThunk,
@@ -18,4 +19,5 @@ export const exchangeThunks = {
     signDataAndConfirmThunk,
     sendDexTransactionThunk,
     sendTransactionThunk,
+    watchExchangeApprovalThunk,
 };

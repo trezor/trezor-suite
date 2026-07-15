@@ -69,6 +69,14 @@ export const supportedFiatCurrenciesMap: Record<FiatCurrencyCode, string> = {
     uyu: 'Uruguayan Peso',
     xaf: 'Central African CFA Franc',
     xof: 'West African CFA Franc',
+    // @ts-expect-error - missing types from invity-api TODO: remove when added
+    bwp: 'Botswana Pula',
+    uzs: 'Uzbekistani Som',
+    tmt: 'Turkmenistani Manat',
+    tjs: 'Tajikistani Somoni',
+    nad: 'Namibian Dollar',
+    mzn: 'Mozambican Metical',
+    lsl: 'Lesotho Loti',
 } as const;
 
 export const isSupportedFiatCurrency = (currency: string): currency is FiatCurrencyCode =>

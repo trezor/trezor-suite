@@ -62,6 +62,7 @@ export const EarnCryptoAmountInput = ({
     return (
         <Input
             ref={inputRef}
+            labelType="noLabel"
             value={value}
             placeholder="0"
             keyboardType="numeric"

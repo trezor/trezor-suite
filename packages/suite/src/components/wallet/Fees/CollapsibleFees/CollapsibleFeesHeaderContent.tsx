@@ -1,5 +1,6 @@
 import { type TranslationKey } from '@suite/intl';
 import { Collapsible, Row } from '@trezor/components';
+import { CaretDownIcon } from '@trezor/icons';
 import { type TypographyStyle } from '@trezor/theme';
 
 import { CollapsibleFeesHeader } from './CollapsibleFeesHeader';
@@ -43,7 +44,7 @@ export const CollapsibleFeesHeaderContent = ({
                     <MaximumFee typographyStyle={headerTypographyStyle} txMaxFee={txMaxFee} />
                 )}
                 {supportsAdjustableFees && (
-                    <Collapsible.ToggleIcon iconName="caretDown" size={20} />
+                    <Collapsible.ToggleIcon icon={CaretDownIcon} size={20} />
                 )}
             </Row>
         </Row>

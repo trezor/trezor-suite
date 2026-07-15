@@ -41,6 +41,38 @@ export function extractKeyFromAction(action: Action): string | undefined {
     return titlePathCond ? JSON.stringify(titlePathCond.value) : undefined;
 }
 
+const EVIDENCE_STATUS_LABEL: Record<TestResultItem['status'], string> = {
+    passed: 'PASS',
+    failed: 'FAIL',
+    skipped: 'SKIP',
+    pending: 'PEND',
+};
+
+const EVIDENCE_BRANCH_MAX_WIDTH = 40;
+
+export function formatEvidence(results: TestResultItem[]): string {
+    const branchWidth = Math.min(
+        EVIDENCE_BRANCH_MAX_WIDTH,
+        Math.max(0, ...results.map(r => r.commit.branch.length)),
+    );
+
+    const fitBranch = (branch: string) =>
+        (branch.length > branchWidth ? `${branch.slice(0, branchWidth - 1)}…` : branch).padEnd(
+            branchWidth,
+        );
+
+    return results
+        .map(r => {
+            const status = EVIDENCE_STATUS_LABEL[r.status];
+            const branch = fitBranch(r.commit.branch);
+            const sha = r.commit.sha.slice(0, 7);
+            const flaky = r.flaky ? '  flaky' : '';
+
+            return `     ${status}  ${branch}  ${sha}  run ${r.runId}${flaky}`;
+        })
+        .join('\n');
+}
+
 /**
  * Compute failure stats from a list of individual execution results.
  */

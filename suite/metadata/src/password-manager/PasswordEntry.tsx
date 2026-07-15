@@ -6,6 +6,7 @@ import { Translation } from '@suite/intl';
 import type { PasswordEntry as PasswordEntryType } from '@suite-common/metadata-types';
 import { Button, Column, H3, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect, { type DeviceUniquePath } from '@trezor/connect';
+import { PencilIcon, TrashIcon } from '@trezor/icons';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { EntryForm } from './EntryForm';
@@ -105,7 +106,7 @@ export const PasswordEntry = ({
             {confirmRemove != null && (
                 <Modal
                     intent="critical"
-                    iconName="trash"
+                    icon={TrashIcon}
                     bottomContent={
                         <>
                             <Modal.Button
@@ -179,7 +180,7 @@ export const PasswordEntry = ({
                                         type="button"
                                         intent="neutral"
                                         priority="secondary"
-                                        iconLeft="pencil"
+                                        iconLeft={PencilIcon}
                                     >
                                         Edit
                                     </Button>

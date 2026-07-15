@@ -9,16 +9,19 @@ type Attributes = {
 
 export const tradeReceivedQuotesEvent: EventDef<Attributes, EventType.TradeReceivedQuotes> = {
     name: EventType.TradeReceivedQuotes,
-    descriptionTrigger: 'Quotes for buy/sell/swap are fetched',
+    descriptionTrigger:
+        'Trading quotes (prices and offers) are fetched and received from provider services',
     changelog: [{ version: '25.10.0', notes: 'added' }],
 
     attributes: {
         type: {
+            description:
+                'The type of trading transaction: `buy` for purchasing cryptocurrency, `sell` for selling, `exchange` for swapping',
             changelog: [{ version: '25.10.0', notes: 'added' }],
         },
         count: {
             changelog: [{ version: '25.10.0', notes: 'added' }],
-            description: 'Number of quotes received',
+            description: 'Number of quotes received from trading providers',
         },
     },
 };

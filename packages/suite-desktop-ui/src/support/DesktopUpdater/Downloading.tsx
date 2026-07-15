@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Column, H3, Modal, Paragraph, ProgressBar, Text } from '@trezor/components';
+import { DownloadIcon } from '@trezor/icons';
 import { type UpdateProgress } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 import { bytesToHumanReadable } from '@trezor/utils';
@@ -29,7 +30,7 @@ export const Downloading = ({ hideWindow, progress }: DownloadingProps) => {
                     <Translation id="TR_BACKGROUND_DOWNLOAD" />
                 </Modal.Button>
             }
-            iconName="download"
+            icon={DownloadIcon}
         >
             <H3>
                 {progress?.verifying ? (

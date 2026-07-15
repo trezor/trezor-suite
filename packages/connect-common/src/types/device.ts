@@ -83,6 +83,7 @@ export type UnavailableCapabilities = Partial<
 
 export type FirmwareRevisionCheckError =
     | 'revision-mismatch'
+    | 'bootloader-hash-mismatch'
     | 'firmware-version-unknown'
     | 'cannot-perform-check-offline' // suite offline & release version not found locally => we cannot check with `data.trezor.io`
     | 'other-error'; // incorrect URL, cannot parse JSON, etc.

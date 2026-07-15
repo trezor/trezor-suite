@@ -1,7 +1,8 @@
 /* eslint-disable jest/no-jasmine-globals */
-import { TimeoutError } from 'xrpl';
 
 import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { TimeoutError } from '@trezor/network-ripple';
 
 import workers from './worker';
 import { BlockchainLink } from '../../src';

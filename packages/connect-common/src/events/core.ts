@@ -3,6 +3,7 @@ import type { Err } from '@trezor/type-utils';
 import type { BlockchainEventMessage } from './blockchain';
 import type { CoreCallCancelMessage, CoreCallMessage, MethodResponseMessage } from './call';
 import type { DeviceEventMessage } from './device';
+import type { SetEnabledNetworksMessage } from './networks';
 import type { PopupClosedMessage, PopupEventMessage } from './popup';
 import type {
     TransportEventMessage,
@@ -23,7 +24,8 @@ export type CoreRequestMessage =
     | TransportRequestWebUSBDevice
     | TransportGetInfo
     | UiResponseEvent
-    | CoreCallMessage;
+    | CoreCallMessage
+    | SetEnabledNetworksMessage;
 
 export type CoreEventMessage = {
     success?: boolean; // response status in ResponseMessage

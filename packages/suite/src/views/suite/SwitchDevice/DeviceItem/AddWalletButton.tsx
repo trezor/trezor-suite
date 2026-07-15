@@ -7,10 +7,11 @@ import { closeModalApp, goto } from '@suite/router';
 import {
     selectDeviceThunk,
     selectIsAnyNetworkEnabled,
-    startDiscoveryThunk,
+    startAddWalletDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { WalletType } from '@suite-common/wallet-types';
 import { Button, Card, Column, IconButton, Row, Text, Tooltip } from '@trezor/components';
+import { FolderOpenIcon, PlusCircleFilledIcon, PlusIcon, XIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';
 import { type AcquiredDevice, type ForegroundAppProps, type TrezorDevice } from 'src/types/suite';
@@ -22,8 +23,11 @@ interface AddWalletButtonProps {
 }
 
 export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButtonProps) => {
-    // Find a "standard wallet" among user's wallet instances. If no such wallet is found, the variable is undefined.
-    const emptyPassphraseWalletExists = instances.find(d => d.useEmptyPassphrase && d.state);
+    // Standard wallet = useEmptyPassphrase not explicitly false (true, or undefined when not yet authorized).
+    // Mirrors useWalletLabel so the list and this button agree on what counts as a standard wallet.
+    const emptyPassphraseWalletExists = instances.find(
+        d => d.useEmptyPassphrase !== false && d.state,
+    );
 
     const isDeviceOrUiLocked = useSelector(selectIsDeviceOrUiLocked);
     const isAnyNetworkEnabled = useSelector(selectIsAnyNetworkEnabled);
@@ -71,7 +75,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
         dispatch(closeModalApp());
         // TODO: when creating a new hidden wallet, we should not start discovery yet, but only after going through the best practices flow
         dispatch(
-            startDiscoveryThunk({
+            startAddWalletDiscoveryThunk({
                 device,
                 isAddingHiddenWallet: walletType === WalletType.PASSPHRASE,
                 isAddingExistingWallet: isExisting,
@@ -81,7 +85,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
     };
 
     const ExpandedPassphraseContainer = () => (
-        <Card paddingType="none" fillType="flat">
+        <Card paddingType="none" type="contrast">
             <Column gap={12} padding={12}>
                 <Row alignItems="center" justifyContent="space-between">
                     <Text>
@@ -90,7 +94,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                     <IconButton
                         intent="neutral"
                         priority="secondary"
-                        icon="x"
+                        icon={XIcon}
                         onClick={() => {
                             setIsPassphraseExpanded(false);
                         }}
@@ -103,7 +107,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                         intent="brand"
                         priority="secondary"
                         size="large"
-                        iconLeft="plusCircleFilled"
+                        iconLeft={PlusCircleFilledIcon}
                         width="100%"
                         isDisabled={isLocked}
                         onClick={() =>
@@ -119,7 +123,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                         intent="neutral"
                         priority="secondary"
                         size="large"
-                        iconLeft="folderOpen"
+                        iconLeft={FolderOpenIcon}
                         width="100%"
                         isDisabled={isLocked}
                         onClick={() =>
@@ -151,7 +155,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                         priority="secondary"
                         width="100%"
                         size="large"
-                        iconLeft="plus"
+                        iconLeft={PlusIcon}
                         isDisabled={isLocked}
                         onClick={() => onAddWallet({ walletType: WalletType.STANDARD })}
                     >
@@ -176,7 +180,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                                 priority="secondary"
                                 width="100%"
                                 size="large"
-                                iconLeft="plus"
+                                iconLeft={PlusIcon}
                                 isDisabled={isPassphraseAddDisabled}
                                 onClick={() => setIsPassphraseExpanded(true)}
                             >

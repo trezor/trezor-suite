@@ -7,7 +7,7 @@ import {
     type TradingTransactionSell,
     selectTradingTradeByOrderId,
 } from '@suite-common/trading';
-import { FullAlertBox } from '@suite-native/atoms';
+import { type AlertBoxIntent, FullAlertBox } from '@suite-native/atoms';
 import type { IconName } from '@suite-native/icons';
 import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
@@ -16,7 +16,7 @@ import { exhaustive } from '@trezor/type-utils';
 
 type AlertConfig = {
     iconName: IconName;
-    variant: 'critical' | 'neutral' | 'success';
+    intent: AlertBoxIntent;
     titleKey: TxKeyPath;
     descriptionKey: TxKeyPath;
     buttonKey?: TxKeyPath;
@@ -28,24 +28,49 @@ type TradeDetailAlertProps = {
     onOpenedBrowser?: () => void;
 };
 
+type GetAlertConfigParams = {
+    alertType: TradeStatusStep;
+    tradeType?: TradingTransaction['tradeType'];
+};
+
 const isBuyOrSell = (
     trade?: TradingTransaction,
 ): trade is TradingTransactionBuy | TradingTransactionSell =>
     !!trade && ['buy', 'sell'].includes(trade.tradeType);
 
-const getAlertConfig = (alertType: TradeStatusStep): AlertConfig | undefined => {
+const getErrorAlertDescriptionKey = (tradeType: TradingTransaction['tradeType']): TxKeyPath => {
+    switch (tradeType) {
+        case 'buy':
+            return 'moduleTrading.tradeHistory.detail.errorAlert.buyDescription';
+        case 'sell':
+            return 'moduleTrading.tradeHistory.detail.errorAlert.sellDescription';
+        case 'exchange':
+            return 'moduleTrading.tradeHistory.detail.errorAlert.swapDescription';
+        default:
+            return exhaustive(tradeType);
+    }
+};
+
+const getAlertConfig = ({
+    alertType,
+    tradeType,
+}: GetAlertConfigParams): AlertConfig | undefined => {
     switch (alertType) {
         case 'error':
+            if (!tradeType) {
+                return undefined;
+            }
+
             return {
                 iconName: 'warningCircle',
-                variant: 'critical',
+                intent: 'critical',
                 titleKey: 'moduleTrading.tradeHistory.detail.errorAlert.title',
-                descriptionKey: 'moduleTrading.tradeHistory.detail.errorAlert.description',
+                descriptionKey: getErrorAlertDescriptionKey(tradeType),
             };
         case 'waiting':
             return {
                 iconName: 'hourglass',
-                variant: 'neutral',
+                intent: 'neutral',
                 titleKey: 'moduleTrading.tradeHistory.detail.waitingAlert.title',
                 descriptionKey: 'moduleTrading.tradeHistory.detail.waitingAlert.description',
                 buttonKey: 'moduleTrading.tradeHistory.detail.waitingAlert.button',
@@ -53,14 +78,14 @@ const getAlertConfig = (alertType: TradeStatusStep): AlertConfig | undefined => 
         case 'converting':
             return {
                 iconName: 'hourglass',
-                variant: 'neutral',
+                intent: 'neutral',
                 titleKey: 'moduleTrading.tradeHistory.detail.convertingAlert.title',
                 descriptionKey: 'moduleTrading.tradeHistory.detail.convertingAlert.description',
             };
         case 'kyc':
             return {
                 iconName: 'magnifyingGlass',
-                variant: 'neutral',
+                intent: 'neutral',
                 titleKey: 'moduleTrading.tradeHistory.detail.kycAlert.title',
                 descriptionKey: 'moduleTrading.tradeHistory.detail.kycAlert.description',
                 buttonKey: 'moduleTrading.tradeHistory.detail.kycAlert.button',
@@ -68,7 +93,7 @@ const getAlertConfig = (alertType: TradeStatusStep): AlertConfig | undefined => 
         case 'sending':
             return {
                 iconName: 'hourglass',
-                variant: 'neutral',
+                intent: 'neutral',
                 titleKey: 'moduleTrading.tradeHistory.detail.sendingAlert.title',
                 descriptionKey: 'moduleTrading.tradeHistory.detail.sendingAlert.description',
             };
@@ -92,18 +117,18 @@ export const TradeDetailAlert = ({
     const { translate } = useTranslate();
 
     const trade = useSelector((state: TradingRootState) =>
-        orderId ? selectTradingTradeByOrderId(state, orderId) : undefined,
+        selectTradingTradeByOrderId(state, orderId),
     );
 
-    const alertConfig = getAlertConfig(alertType);
-
     const { openBrowser } = useBrowserAuth(trade?.tradeType);
+
+    const alertConfig = getAlertConfig({ alertType, tradeType: trade?.tradeType });
 
     if (!alertConfig || !trade) {
         return null;
     }
 
-    const { iconName, variant, titleKey, descriptionKey, buttonKey } = alertConfig;
+    const { iconName, intent, titleKey, descriptionKey, buttonKey } = alertConfig;
     const { tradeType } = trade;
 
     const hasPartnerData = isBuyOrSell(trade) && trade.data.partnerData;
@@ -130,7 +155,7 @@ export const TradeDetailAlert = ({
             primaryButtonLabel={buttonLabel}
             primaryButtonProps={{ iconLeft: 'arrowSquareOut' }}
             onPressPrimaryButton={handleButtonPress}
-            variant={variant}
+            intent={intent}
         />
     );
 };

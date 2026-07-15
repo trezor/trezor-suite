@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@reduxjs/toolkit": "2.11.2",
+        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/bip329-types": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",
@@ -30,8 +30,8 @@
         "@trezor/utils": "workspace:*",
         "core-js": "^3.49.0",
         "fake-indexeddb": "^6.2.5",
-        "react": "19.2.4",
-        "react-redux": "9.2.0",
+        "react": "19.2.3",
+        "react-redux": "9.3.0",
         "redux": "^5.0.1",
         "redux-thunk": "^3.1.0"
     }

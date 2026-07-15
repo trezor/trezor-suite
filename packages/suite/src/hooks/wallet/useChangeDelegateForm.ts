@@ -9,7 +9,6 @@ import {
 } from '@suite-common/wallet-core';
 import {
     type ChangeDelegateFormState,
-    type PrecomposedTransactionFinal,
     type SelectedAccountLoaded,
 } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
@@ -111,9 +110,7 @@ export const useChangeDelegateForm = ({
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
-            const result = await dispatch(
-                signTransaction(values, composedTx as PrecomposedTransactionFinal),
-            );
+            const result = await dispatch(signTransaction(values, composedTx));
 
             if (result?.success) {
                 clearForm();

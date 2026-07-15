@@ -1,14 +1,9 @@
-import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { type FlagsState, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { IconButton } from '@trezor/components';
-import { borders, spacingsPx } from '@trezor/theme';
-
-import { useDispatch } from 'src/hooks/suite';
-
-import { bannerAnimationConfig } from '../banner-animations';
+import { XIcon } from '@trezor/icons';
+import { spacingsPx } from '@trezor/theme';
 
 const CloseButtonContainer = styled.div`
     position: absolute;
@@ -24,7 +19,7 @@ type CloseButtonProps = {
 export const CloseButton = ({ onClose, isInverse = false }: CloseButtonProps) => (
     <CloseButtonContainer>
         <IconButton
-            icon="x"
+            icon={XIcon}
             intent="neutral"
             priority="secondary"
             onClick={onClose}
@@ -33,35 +28,3 @@ export const CloseButton = ({ onClose, isInverse = false }: CloseButtonProps) =>
         />
     </CloseButtonContainer>
 );
-
-const BannerWrapper = styled(motion.div)`
-    width: 100%;
-    border-radius: ${borders.radii.sm};
-    overflow: hidden;
-`;
-
-type AnimatedWrapperProps = {
-    children: React.ReactNode;
-    isVisible: boolean;
-    flagToHide: keyof FlagsState;
-};
-
-export const AnimatedWrapper = ({ children, isVisible, flagToHide }: AnimatedWrapperProps) => {
-    const dispatch = useDispatch();
-
-    return (
-        <AnimatePresence>
-            {isVisible && (
-                <BannerWrapper
-                    key="container"
-                    {...bannerAnimationConfig}
-                    onAnimationComplete={() => {
-                        dispatch(setFlag({ key: flagToHide, value: false }));
-                    }}
-                >
-                    {children}
-                </BannerWrapper>
-            )}
-        </AnimatePresence>
-    );
-};

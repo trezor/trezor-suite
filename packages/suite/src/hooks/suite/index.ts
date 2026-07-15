@@ -4,15 +4,14 @@ export { useLayoutSize } from './useLayoutSize';
 export { useGraph } from './useGraph';
 export { useAccountSearch } from './useAccountSearch';
 export { useSelector } from './useSelector';
-export { useLoadingSkeleton } from './useLoadingSkeleton';
 export { useOnboarding } from './useOnboarding';
 export { useFilteredModal } from './useFilteredModal';
 export { usePreferredModal } from './usePreferredModal';
 export { useFormattersConfig } from './useFormattersConfig';
 export { useAnonymityStatus } from './useAnonymityStatus';
 export { useDispatch } from './useDispatch';
-export { useDebugLanguageShortcut } from './useDebugLanguageShortcut';
 export { useDisplayMode } from './useDisplayMode';
+export { useAppShortcuts } from './useAppShortcuts';
 
 // replaced in suite-native
 export { useLocales } from 'src/hooks/suite/useLocales';

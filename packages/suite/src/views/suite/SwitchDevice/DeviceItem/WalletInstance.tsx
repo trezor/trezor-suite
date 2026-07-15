@@ -26,6 +26,7 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
+import { AsteriskIcon, EjectIcon, XIcon } from '@trezor/icons';
 import { spacings } from '@trezor/theme';
 
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
@@ -112,7 +113,7 @@ export const WalletInstance = ({
 
     const passphraseIcon = instance.useEmptyPassphrase === false && (
         <Tooltip content={<Translation id="TR_WALLET_PASSPHRASE_WALLET" />}>
-            <Icon name="asterisk" size={12} />
+            <Icon as={AsteriskIcon} size={12} />
         </Tooltip>
     );
 
@@ -123,7 +124,7 @@ export const WalletInstance = ({
             onClick={handleClick}
             tabIndex={0}
             data-testid={dataTestBase}
-            variant={isSelected ? 'primary' : undefined}
+            isSelected={isSelected}
             {...rest}
         >
             <Box padding={{ vertical: 12, right: 12, left: 16 }}>
@@ -173,7 +174,7 @@ export const WalletInstance = ({
                                             ? `@switch-device/cancelEject`
                                             : `${dataTestBase}/eject-button`
                                     }
-                                    icon={isEjecting ? 'x' : 'eject'}
+                                    icon={isEjecting ? XIcon : EjectIcon}
                                     size="small"
                                     intent="neutral"
                                     priority="secondary"

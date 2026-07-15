@@ -6,6 +6,7 @@ import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Button, Column, Modal, SelectBar } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
+import { ArrowsClockwiseIcon, CopyIcon } from '@trezor/icons';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
@@ -14,7 +15,7 @@ import { GITHUB_MCP_DOCS_URL } from '@trezor/urls';
 const ConfigBox = styled.div`
     display: flex;
     flex-direction: column;
-    background: ${({ theme }) => theme.legacyBackgroundNeutralSubtleOnElevation0};
+    background: ${({ theme }) => theme.elementFillNeutralSofter};
     border-radius: 8px;
     padding: ${spacings.sm}px ${spacings.md}px;
     height: 180px;
@@ -161,7 +162,7 @@ export const McpServer = () => {
                             <CopyButtonWrapper>
                                 <Button
                                     size="small"
-                                    iconLeft="arrowsClockwise"
+                                    iconLeft={ArrowsClockwiseIcon}
                                     intent="neutral"
                                     onClick={() => setIsRegenerateModalOpen(true)}
                                 >
@@ -169,7 +170,7 @@ export const McpServer = () => {
                                 </Button>
                                 <Button
                                     size="small"
-                                    iconLeft="copy"
+                                    iconLeft={CopyIcon}
                                     intent="neutral"
                                     onClick={handleCopy}
                                 >

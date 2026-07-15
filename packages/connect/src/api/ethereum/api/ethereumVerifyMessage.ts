@@ -2,7 +2,7 @@
 
 import {
     EthereumVerifyMessage as EthereumVerifyMessageSchema,
-    type MethodPermission,
+    type PermissionRequest,
 } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
@@ -35,8 +35,8 @@ export default class EthereumVerifyMessage extends AbstractMethod<
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
     }
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [{ permission: 'verify_message' }];
     }
 
     get info() {

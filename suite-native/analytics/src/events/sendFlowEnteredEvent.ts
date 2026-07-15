@@ -15,25 +15,28 @@ type Attributes = {
 
 export const sendFlowEnteredEvent: EventDef<Attributes, EventType.SendFlowEntered> = {
     name: EventType.SendFlowEntered,
-    descriptionTrigger: 'Dispatched when user enters the send flow.',
-    changelog: [{ version: '25.5.1', notes: 'Added' }],
+    descriptionTrigger: 'User enters the cryptocurrency send transaction flow',
+    changelog: [{ version: '25.5.1', notes: 'added' }],
     attributes: {
         location: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'Describes from where was send flow entered.',
+            description:
+                'Where the send flow was initiated: `dashboard` from the main dashboard, `accountDetail` from an account detail page',
         },
         assetSymbol: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'Describes the network of the account ("btc", "eth" … ).',
+            description:
+                'The blockchain network symbol for which the transaction is being sent (e.g., `btc`, `eth`, `ada`)',
         },
         tokenSymbol: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
-            description: 'Symbol of the token ("usdt", "link"...).',
+            description:
+                'The symbol of the token being sent (only for token transfers, not native assets)',
         },
         tokenContract: {
             changelog: [{ version: '25.5.1', notes: 'added' }],
             description:
-                "Token contract address, e.g: '0xdac17f958d2ee523a2206206994597c13d831ec7'.",
+                'Contract address of the token being sent (only for token transfers, e.g., "0xdac17f958d2ee523a2206206994597c13d831ec7")',
         },
     },
 };

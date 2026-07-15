@@ -1,9 +1,8 @@
 {
     "required": false,
     "version": [2, 1, 5],
-    "min_bridge_version": [2, 0, 7],
     "min_bootloader_version": [2, 0, 0],
-    "min_firmware_version": [2, 1, 0],
+    "min_firmware_version": [2, 0, 8],
     "firmware_revision": "df0963ec48f01f3d07ffca556e21ff0070cab099",
     "translations": {},
     "url": "firmware/t2t1/trezor-t2t1-2.1.5.bin",

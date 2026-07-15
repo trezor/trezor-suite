@@ -4,7 +4,7 @@ import { Form } from '@suite-native/forms';
 
 import { useLocationForm } from '../hooks/useLocationForm';
 
-export type LocationFormProps = {
+type LocationFormProps = {
     children: ReactNode;
 };
 

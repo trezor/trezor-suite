@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgCaretUpDownReverseFilled = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M8.944 27.383a1 1 0 0 1 .217-1.09l6-6a1 1 0 0 1 1.415 0l6 6a1 1 0 0 1-.708 1.708h-12a1 1 0 0 1-.924-.618M21.998 4.001h-12a1 1 0 0 0-.708 1.707l6 6a1 1 0 0 0 1.416 0l6-6a1 1 0 0 0-.708-1.707"
+        />
+    </svg>
+);
+export { SvgCaretUpDownReverseFilled as ReactComponent };

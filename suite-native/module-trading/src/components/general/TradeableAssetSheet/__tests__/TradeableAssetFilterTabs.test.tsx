@@ -1,4 +1,5 @@
 import { type Network } from '@suite-common/wallet-config';
+import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { TradeableAssetFilterTabs } from '../TradeableAssetFilterTabs';
@@ -34,7 +35,7 @@ describe('TradeableAssetFilterTabs', () => {
     it('should render all filter tabs including "All" option', () => {
         const { getByText } = renderComponent();
 
-        expect(getByText('All')).toBeTruthy();
+        expect(getByText(getTranslation('moduleTrading.providerSheet.filters.all'))).toBeTruthy();
         expect(getByText('Bitcoin')).toBeTruthy();
         expect(getByText('Ethereum')).toBeTruthy();
     });
@@ -48,7 +49,7 @@ describe('TradeableAssetFilterTabs', () => {
             />,
         );
 
-        expect(queryByText('All')).toBeNull();
+        expect(queryByText(getTranslation('moduleTrading.providerSheet.filters.all'))).toBeNull();
         expect(queryByText('Bitcoin')).toBeNull();
         expect(queryByText('Ethereum')).toBeNull();
     });
@@ -57,7 +58,7 @@ describe('TradeableAssetFilterTabs', () => {
         const onSelectedNetworkFilter = jest.fn();
         const { getByText } = renderComponent(onSelectedNetworkFilter);
 
-        fireEvent.press(getByText('All'));
+        fireEvent.press(getByText(getTranslation('moduleTrading.providerSheet.filters.all')));
 
         expect(onSelectedNetworkFilter).toHaveBeenCalledWith(undefined);
     });

@@ -41,7 +41,7 @@ export const ApprovalButton = ({ isReady, isDisabled, flowType }: ApprovalButton
         flowType === 'approve' ? 'approval-preview' : 'revoke-preview',
     );
 
-    if (!quote || !isReady) {
+    if (!quote) {
         return null;
     }
 
@@ -67,7 +67,7 @@ export const ApprovalButton = ({ isReady, isDisabled, flowType }: ApprovalButton
         <Animated.View entering={FadeInDown}>
             <ScreenFooterGradient />
             <Box style={applyStyle(footerStyle)}>
-                <Button onPress={handleContinue} isDisabled={isDisabled}>
+                <Button onPress={handleContinue} isDisabled={isDisabled} isLoading={!isReady}>
                     <Translation id="generic.buttons.continue" />
                 </Button>
             </Box>

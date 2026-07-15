@@ -7,21 +7,20 @@ import { ArrowRightIcon, MenuIcon } from 'nextra/icons';
 import type { Item, MenuItem, PageItem } from 'nextra/normalize-pages';
 import styled from 'styled-components';
 
-import { useElevation } from '@trezor/components';
 import { TrezorLogo } from '@trezor/product-components';
-import { type Elevation, borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
+import { borders, spacingsPx } from '@trezor/theme';
 
 import { Anchor } from './anchor';
 import { useMenu } from '../contexts/menu';
 import { useConfig } from '../contexts/useConfig';
 import { renderComponent } from '../utils/render';
 
-const Container = styled.div<{ $elevation: Elevation }>`
+const Container = styled.div`
     border-radius: ${borders.radii.full};
     margin: 0 -${spacingsPx.sm};
     padding: ${spacingsPx.md} ${spacingsPx.xl};
-    background-color: ${mapElevationToBackground};
-    box-shadow: ${({ theme }) => theme.boxShadowBase};
+    background-color: ${({ theme }) => theme.surfaceFillRaised};
+    box-shadow: ${({ theme }) => theme.elementShadowElevated};
     flex-direction: row;
     display: flex;
     flex: 1;
@@ -95,7 +94,6 @@ export function Navbar({
     items: (PageItem | MenuItem)[];
 }): ReactElement {
     const config = useConfig();
-    const { elevation } = useElevation();
 
     const activeRoute = useFSRoute();
     const { menu, setMenu } = useMenu();
@@ -103,7 +101,7 @@ export function Navbar({
     return (
         <div className="nextra-nav-container nx-sticky nx-top-[8px] nx-mt-[32px] nx-z-20 nx-w-full nx-bg-transparent print:nx-hidden">
             <nav className="nx-mx-auto nx-flex nx-h-[var(--nextra-navbar-height)] nx-max-w-[90rem] nx-items-start nx-justify-end nx-gap-2 nx-pl-[max(env(safe-area-inset-left),1.5rem)] nx-pr-[max(env(safe-area-inset-right),1.5rem)]">
-                <Container $elevation={elevation}>
+                <Container>
                     {config.logoLink ? (
                         <Anchor
                             href={typeof config.logoLink === 'string' ? config.logoLink : '/'}

@@ -49,7 +49,7 @@ export const useYieldDepositRevokeScreen = () => {
         providerName,
         token,
         tokenSymbol,
-        vault,
+        vaultTokenName,
         resolutionStatus,
     } = resolvedFlowData;
     const session = useYieldSession({
@@ -355,6 +355,6 @@ export const useYieldDepositRevokeScreen = () => {
         shouldShowLowLimitWarning,
         tokenContract: route.params.tokenContract,
         tokenSymbol,
-        vault,
+        vaultTokenName,
     };
 };

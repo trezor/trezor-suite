@@ -6,6 +6,7 @@ import { OnboardingCard } from '@suite/onboarding-components';
 import { ThpPairingCodeEntry } from '@suite/thp';
 import { Column } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
+import { PlugsConnectedIcon } from '@trezor/icons';
 
 // reflection of suite/thp/src/firmware/ThpCodeEntryStep.tsx
 export const ThpCodeEntryStep = () => {
@@ -18,7 +19,7 @@ export const ThpCodeEntryStep = () => {
 
     return (
         <OnboardingCard
-            iconName="plugsConnected"
+            icon={PlugsConnectedIcon}
             heading={<Translation id="TR_THP_ENTER_ONE_TIME_CODE" />}
             description={<Translation id="TR_THP_CHECK_TREZOR_FOR_CODE" />}
             innerActions={

@@ -24,7 +24,7 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 const mockDoBankAccountVerificationCheck = jest.fn();
-const mockFetchFeesAndCompose = jest.fn();
+const mockComposeTradingTransaction = jest.fn();
 const mockTxnErrorString = null;
 const mockRetryDoSellTrade = jest.fn();
 
@@ -32,7 +32,7 @@ jest.mock('../../hooks/sell/useSellFlow', () => ({
     useSellFlow: () => ({
         txnErrorString: mockTxnErrorString,
         doBankAccountVerificationCheck: mockDoBankAccountVerificationCheck,
-        fetchFeesAndCompose: mockFetchFeesAndCompose,
+        composeTradingTransaction: mockComposeTradingTransaction,
         retryDoSellTrade: mockRetryDoSellTrade,
     }),
 }));
@@ -100,9 +100,15 @@ describe('TradingSellPreviewScreen', () => {
             wallet: { trading: { sell: { selectedQuote: banxaCreditCardSellQuote } } },
         });
 
-        expect(getByText('Sell')).toBeOnTheScreen();
-        expect(getByText('To')).toBeOnTheScreen();
-        expect(getByText('Credit/Debit Card')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingSellPreviewScreen.title')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.toAccount')),
+        ).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.paymentMethods.creditCard')),
+        ).toBeOnTheScreen();
     });
 
     it('should call doBankAccountVerificationCheck on mount', async () => {
@@ -120,7 +126,9 @@ describe('TradingSellPreviewScreen', () => {
         });
 
         // Should render with selectedQuote
-        expect(getByText('To')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.toAccount')),
+        ).toBeOnTheScreen();
     });
 
     it('should use trade data when available', async () => {
@@ -149,7 +157,9 @@ describe('TradingSellPreviewScreen', () => {
         });
 
         // Should render with trade data
-        expect(getByText('To')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.toAccount')),
+        ).toBeOnTheScreen();
     });
 
     it('should render SellPreviewContinueButton with correct props', async () => {
@@ -159,10 +169,12 @@ describe('TradingSellPreviewScreen', () => {
 
         // SellPreviewContinueButton should be rendered (it's part of the screen)
         // We can verify by checking that the screen renders without errors
-        expect(getByText('To')).toBeOnTheScreen();
+        expect(
+            getByText(getTranslation('moduleTrading.tradingExchangePreviewScreen.toAccount')),
+        ).toBeOnTheScreen();
     });
 
-    it('should call fetchFeesAndCompose when quote has SEND_CRYPTO status on mount', async () => {
+    it('should call composeTradingTransaction when quote has SEND_CRYPTO status on mount', async () => {
         const quoteWithSendCryptoStatus = {
             ...banxaCreditCardSellQuote,
             status: 'SEND_CRYPTO' as const,
@@ -172,11 +184,11 @@ describe('TradingSellPreviewScreen', () => {
             wallet: { trading: { sell: { selectedQuote: quoteWithSendCryptoStatus } } },
         });
 
-        await waitFor(() => expect(mockFetchFeesAndCompose).toHaveBeenCalled());
-        expect(mockFetchFeesAndCompose).toHaveBeenCalledTimes(1);
+        await waitFor(() => expect(mockComposeTradingTransaction).toHaveBeenCalled());
+        expect(mockComposeTradingTransaction).toHaveBeenCalledTimes(1);
     });
 
-    it('should call fetchFeesAndCompose when trade data has SEND_CRYPTO status on mount', async () => {
+    it('should call composeTradingTransaction when trade data has SEND_CRYPTO status on mount', async () => {
         const trade = getSellTrade({ status: 'SEND_CRYPTO' });
         mockUseTradingDetailData.trade = trade;
 
@@ -189,11 +201,11 @@ describe('TradingSellPreviewScreen', () => {
             },
         });
 
-        await waitFor(() => expect(mockFetchFeesAndCompose).toHaveBeenCalled());
-        expect(mockFetchFeesAndCompose).toHaveBeenCalledTimes(1);
+        await waitFor(() => expect(mockComposeTradingTransaction).toHaveBeenCalled());
+        expect(mockComposeTradingTransaction).toHaveBeenCalledTimes(1);
     });
 
-    it('should not call fetchFeesAndCompose when status is not SEND_CRYPTO', async () => {
+    it('should not call composeTradingTransaction when status is not SEND_CRYPTO', async () => {
         const quoteWithOtherStatus = {
             ...banxaCreditCardSellQuote,
             status: 'SUBMITTED' as const,
@@ -203,10 +215,10 @@ describe('TradingSellPreviewScreen', () => {
             wallet: { trading: { sell: { selectedQuote: quoteWithOtherStatus } } },
         });
 
-        expect(mockFetchFeesAndCompose).not.toHaveBeenCalled();
+        expect(mockComposeTradingTransaction).not.toHaveBeenCalled();
     });
 
-    it('should call fetchFeesAndCompose only once per orderId', async () => {
+    it('should call composeTradingTransaction only once per orderId', async () => {
         const quoteWithSendCryptoStatus = {
             ...moonpayCreditCardSellQuote,
             status: 'SEND_CRYPTO' as const,
@@ -217,9 +229,9 @@ describe('TradingSellPreviewScreen', () => {
             wallet: { trading: { sell: { selectedQuote: quoteWithSendCryptoStatus } } },
         });
 
-        await waitFor(() => expect(mockFetchFeesAndCompose).toHaveBeenCalled());
+        await waitFor(() => expect(mockComposeTradingTransaction).toHaveBeenCalled());
         // Should be called exactly once for this orderId
-        expect(mockFetchFeesAndCompose).toHaveBeenCalledTimes(1);
+        expect(mockComposeTradingTransaction).toHaveBeenCalledTimes(1);
     });
 
     it('should render last error message', async () => {
@@ -228,5 +240,33 @@ describe('TradingSellPreviewScreen', () => {
         });
 
         expect(getByText('last error message')).toBeOnTheScreen();
+    });
+
+    it('should show the error banner and hide the continue button when the quote has final ERROR status', async () => {
+        const trade = getSellTrade({ status: 'ERROR' });
+        mockUseTradingDetailData.trade = trade;
+
+        const { getByText, queryByTestId } = await renderTradingSellPreviewScreen({
+            wallet: {
+                trading: {
+                    sell: {
+                        selectedQuote: {
+                            ...banxaCreditCardSellQuote,
+                            status: 'ERROR',
+                        },
+                    },
+                },
+            },
+        });
+
+        expect(
+            getByText(
+                getTranslation(
+                    'moduleTrading.tradingSellPreviewScreen.providerStatus.cannotBeCompletedAlert.button',
+                ),
+            ),
+        ).toBeOnTheScreen();
+        expect(queryByTestId('@transactionManagement/fee-selector-row')).toBeNull();
+        expect(queryByTestId('@trading/sell-preview/continue-button')).toBeNull();
     });
 });

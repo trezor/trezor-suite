@@ -4,7 +4,7 @@ let userAgentParser: UAParser;
 
 export const getUserAgent = () => window.navigator.userAgent;
 
-export const getUserAgentParser = () => {
+const getUserAgentParser = () => {
     if (!userAgentParser) {
         const ua = getUserAgent();
         userAgentParser = new UAParser(ua);

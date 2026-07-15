@@ -8,7 +8,9 @@ import { MOBILE_ICON_FONT_NAME } from '@suite-common/icons';
 import codepoints from '@suite-common/icons/iconFontsMobile/TrezorSuiteIcons.json';
 import { useNativeStyles } from '@trezor/styles-native';
 import { type CSSColor, type Color, type Colors } from '@trezor/theme';
+import { typedObjectKeys } from '@trezor/utils';
 
+export type { CSSColor };
 export type IconColor = Color | CSSColor;
 export type AnimatedIconColor = Color | CSSColor | SharedValue<CSSColor>;
 
@@ -24,7 +26,10 @@ export const MAX_FONT_SIZE_MULTIPLIER = 1.5;
  * 3. Remove app from sim/device and create new build to see the new icons in the app.
  */
 export type IconName = keyof typeof codepoints;
-export const ICON_NAMES = Object.keys(codepoints) as IconName[];
+export const ICON_NAMES = typedObjectKeys(codepoints);
+
+export const isIconName = (value: unknown): value is IconName =>
+    typeof value === 'string' && value in icons;
 
 export const iconSizes = {
     extraSmall: 8,
@@ -35,7 +40,7 @@ export const iconSizes = {
     extraLarge: 32,
 } as const;
 
-export const ICON_SIZES = Object.keys(iconSizes) as IconSize[];
+export const ICON_SIZES = typedObjectKeys(iconSizes);
 export type IconSize = keyof typeof iconSizes;
 
 export const getIconSize = (size: IconSize | number) =>

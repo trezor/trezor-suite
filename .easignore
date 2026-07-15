@@ -3,6 +3,7 @@ docker
 docs
 
 packages/connect-cli/
+packages/connect-electron/
 packages/ipc-proxy/
 packages/suite/
 packages/suite-analytics/

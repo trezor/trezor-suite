@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -13,8 +14,8 @@ import {
     selectEnsureWalletSuiteSyncOnDep,
     selectTurnOnSuiteSyncDep,
 } from '@suite-common/suite-sync-types';
-import { useAlert } from '@suite-native/alerts';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { useAlert, useShowAlertResult } from '@suite-native/alerts';
+import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackRoutes,
     DeviceSettingsStackRoutes,
@@ -22,21 +23,26 @@ import {
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { useToast } from '@suite-native/toasts';
-import { exhaustive } from '@trezor/type-utils';
+import { type Result, err, exhaustive, ok } from '@trezor/type-utils';
 
-import { suiteSyncErrorMessageMap } from './suiteSyncErrorMessages';
+import { useShowSuiteSyncEnabledToast } from './useShowSuiteSyncEnabledToast';
+import { useSuiteSyncErrorHandler } from './useSuiteSyncErrorHandler';
+
+type AddLabelSuiteSyncGuardResult = Result<void, { type: 'cancelled' }>;
 
 export const useTurnOnSuiteSyncGuard = () => {
     const { showAlert } = useAlert();
+    const { showAlertResult } = useShowAlertResult();
+
+    const [isInProgress, setIsInProgress] = useState(false);
 
     const { ensureWalletSuiteSyncOn, turnOnSuiteSync } = useServices(
         selectEnsureWalletSuiteSyncOnDep,
         selectTurnOnSuiteSyncDep,
     );
 
-    const { showToast } = useToast();
-    const { translate } = useTranslate();
+    const { showSuiteSyncEnabledToast } = useShowSuiteSyncEnabledToast();
+    const { handleSuiteSyncError } = useSuiteSyncErrorHandler();
     const navigation =
         useNavigation<
             StackToStackCompositeNavigationProps<
@@ -48,9 +54,8 @@ export const useTurnOnSuiteSyncGuard = () => {
     const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
-    const suiteSyncInteraction = useSelector(
-        (state: WithSuiteSyncAndDeviceState & MessageSystemRootState) =>
-            selectSuiteSyncInteraction(state, deviceStaticSessionId),
+    const interaction = useSelector((state: WithSuiteSyncAndDeviceState & MessageSystemRootState) =>
+        selectSuiteSyncInteraction(state, deviceStaticSessionId),
     );
 
     const showSuiteSyncFirmwareUpgradeAlert = () => {
@@ -74,89 +79,96 @@ export const useTurnOnSuiteSyncGuard = () => {
         });
     };
 
-    const handleTurnOnSuiteSync = async (onSuccess: () => void) => {
-        if (!deviceStaticSessionId) return;
-
-        const result = await turnOnSuiteSync({
-            deviceStaticSessionId,
-        });
-
-        if (!result.success) {
-            const { type } = result.error;
-            switch (type) {
-                case 'SuiteSyncUnavailableOnDeviceError':
-                case 'DeviceCancelled':
-                case 'DeviceError':
-                case 'QuotaManagerCommunicationFailed':
-                    showToast({
-                        intent: 'critical',
-                        icon: 'warning',
-                        message: translate(suiteSyncErrorMessageMap[type]),
-                    });
-
-                    return;
-                case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
-                    showSuiteSyncFirmwareUpgradeAlert();
-
-                    return;
-                case 'DeviceNotConnectedError':
-                    // A disconnected device is an expected condition — Suite Sync stays enabled
-                    // and will retry once the device reconnects, so we stay silent.
-                    return;
-                case 'WriteModeRequiredForAllocation':
-                    // Do nothing, this is expected control flow error when we want allocate on-demand.
-                    return;
-
-                default:
-                    return exhaustive(type);
-            }
+    const handleTurnOnSuiteSync = async (): Promise<AddLabelSuiteSyncGuardResult> => {
+        if (!deviceStaticSessionId) {
+            return err({ type: 'cancelled' });
         }
 
-        onSuccess();
+        const result = await turnOnSuiteSync({ deviceStaticSessionId });
+
+        if (!result.success) {
+            handleSuiteSyncError(result.error);
+
+            return err({ type: 'cancelled' });
+        }
+
+        showSuiteSyncEnabledToast();
+
+        return ok();
     };
 
-    const showSuiteSyncEnableConfirmationAlert = (onSuccess: () => void) => {
+    const confirmSuiteSyncEnable = async (): Promise<AddLabelSuiteSyncGuardResult> => {
         if (!isDeviceConnected) {
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
                 screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard,
             });
-        } else {
-            showAlert({
-                title: <Translation id="suiteSync.enableAlert.title" />,
-                description: <Translation id="suiteSync.enableAlert.description" />,
-                primaryButtonTitle: <Translation id="suiteSync.enableAlert.cta" />,
-                onPressPrimaryButton: () => handleTurnOnSuiteSync(onSuccess),
-                secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-            });
+
+            return Promise.resolve(err({ type: 'cancelled' }));
+        }
+
+        await showAlertResult({
+            title: <Translation id="suiteSync.enableAlert.title" />,
+            description: <Translation id="suiteSync.enableAlert.description" />,
+            primaryButtonTitle: <Translation id="suiteSync.enableAlert.cta" />,
+            onPressPrimaryButton: handleTurnOnSuiteSync,
+            secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
+        });
+
+        return ok();
+    };
+
+    const ensureSuiteSyncReadyForAddLabel = async (): Promise<AddLabelSuiteSyncGuardResult> => {
+        switch (interaction) {
+            case 'suite-sync-off': {
+                return confirmSuiteSyncEnable();
+            }
+
+            case 'firmware-upgrade-needed':
+                showSuiteSyncFirmwareUpgradeAlert();
+
+                return err({ type: 'cancelled' });
+
+            case 'keys-needed': {
+                if (!deviceStaticSessionId) {
+                    return err({ type: 'cancelled' });
+                }
+
+                const result = await ensureWalletSuiteSyncOn({
+                    deviceStaticSessionId,
+                    isWriteMode: false,
+                });
+
+                if (!result.success) {
+                    handleSuiteSyncError(result.error);
+
+                    return err({ type: 'cancelled' });
+                }
+
+                return ok();
+            }
+
+            case 'unsupported':
+            case null:
+                return ok();
+
+            default:
+                return exhaustive(interaction);
         }
     };
 
     const handleAddLabel = async (onSuccess: () => void) => {
-        switch (suiteSyncInteraction) {
-            case 'suite-sync-off':
-                showSuiteSyncEnableConfirmationAlert(onSuccess);
-                break;
-            case 'firmware-upgrade-needed':
-                showSuiteSyncFirmwareUpgradeAlert();
-                break;
-            case 'keys-needed':
-                if (deviceStaticSessionId) {
-                    const result = await ensureWalletSuiteSyncOn({
-                        deviceStaticSessionId,
-                        isWriteMode: false,
-                    });
+        if (isInProgress) return;
 
-                    if (result.success) {
-                        onSuccess();
-                    }
-                }
-                break;
-            default:
-                onSuccess();
+        setIsInProgress(true);
 
-                return;
+        const result = await ensureSuiteSyncReadyForAddLabel();
+
+        setIsInProgress(false);
+
+        if (result.success) {
+            onSuccess();
         }
     };
 
-    return { handleAddLabel };
+    return { handleAddLabel, isInProgress };
 };

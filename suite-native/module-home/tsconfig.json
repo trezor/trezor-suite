@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/analytics"
+        },
+        {
             "path": "../../suite-common/dependency-injection"
         },
         { "path": "../../suite-common/device" },
@@ -37,6 +40,7 @@
         { "path": "../analytics" },
         { "path": "../assets" },
         { "path": "../atoms" },
+        { "path": "../banner-flags" },
         { "path": "../blockchain" },
         { "path": "../bluetooth" },
         { "path": "../confirm-on-trezor" },
@@ -47,6 +51,7 @@
         { "path": "../feature-feedback" },
         { "path": "../firmware" },
         { "path": "../graph" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },

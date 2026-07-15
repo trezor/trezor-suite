@@ -1,4 +1,5 @@
 import { type BottomSheetSearchInputProps } from '@suite-native/atoms';
+import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { BottomSheetSearchInputWithCancel } from '../BottomSheetSearchInputWithCancel';
@@ -24,7 +25,7 @@ describe('SearchInputWithCancel', () => {
     it('should render without "Cancel" button by default', async () => {
         const { queryByText } = await renderSearchInputWithCancel({});
 
-        expect(queryByText('Cancel')).toBeNull();
+        expect(queryByText(getTranslation('generic.buttons.cancel'))).toBeNull();
     });
 
     it('should call onChange callback when text is typed', () => {
@@ -46,7 +47,7 @@ describe('SearchInputWithCancel', () => {
 
         fireEvent(getByPlaceholderText('Search'), 'focus');
 
-        expect(getByText('Cancel')).toBeTruthy();
+        expect(getByText(getTranslation('generic.buttons.cancel'))).toBeTruthy();
         expect(focusMock).toHaveBeenCalledTimes(1);
     });
 
@@ -68,7 +69,7 @@ describe('SearchInputWithCancel', () => {
         });
 
         fireEvent(getByPlaceholderText('Search'), 'focus');
-        fireEvent.press(getByText('Cancel'));
+        fireEvent.press(getByText(getTranslation('generic.buttons.cancel')));
 
         expect(onChangeMock).toHaveBeenCalledWith('');
     });

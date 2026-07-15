@@ -1,15 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import type { DexApprovalType, ExchangeTrade } from 'invity-api';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { type TranslationKey, useTranslation } from '@suite/intl';
-import { goto } from '@suite/router';
-import { selectHasExperimentalFeature } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
-import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     TRADING_EXCHANGE_FORM,
     TRADING_EXCHANGE_FORM_CEX,
@@ -20,15 +13,13 @@ import {
     TRADING_FORM_PROVIDER_SELECT,
     type TradingExchangeAmountLimitProps,
     type TradingExchangeFormProps,
-    type TradingExchangeType,
-    type TradingSignAndPushSendFormTransactionProps,
-    type TradingTransactionExchange,
     cryptoIdToNetwork,
     exchangeThunks,
-    invityAPI,
-    isSendRejectedError,
+    getDexEstimationData,
+    hasEip712SignDataType,
     isSendingEvmNativeToken,
     selectTradingComposedTransactionInfo,
+    selectTradingExchangeActiveTrade,
     selectTradingExchangeAmountLimits,
     selectTradingExchangeInfo,
     selectTradingExchangeIsFromRedirect,
@@ -37,23 +28,16 @@ import {
     selectTradingExchangeQuotesRequest,
     selectTradingExchangeSelectedQuote,
     selectTradingExchangeTransactionId,
-    selectTradingIsSlip24Allowed,
-    selectTradingTrades,
+    selectTradingSendAccount,
     selectTradingVerifiedAddress,
     tradingExchangeActions,
     tradingThunks,
 } from '@suite-common/trading';
 import { getNetwork, isAccountBasedNetwork } from '@suite-common/wallet-config';
-import {
-    ETHEREUM_ADJUST_GAS_LIMIT,
-    fetchAndUpdateAccountThunk,
-    updateFeeInfoThunk,
-} from '@suite-common/wallet-core';
+import { ETHEREUM_ADJUST_GAS_LIMIT, updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useCurrentRef } from '@trezor/react-utils';
 
-import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
-import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
 import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
@@ -63,28 +47,22 @@ import { useTradingExchangeQuotesFilter } from 'src/hooks/wallet/trading/form/co
 import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
 import { useTradingFormActions } from 'src/hooks/wallet/trading/form/common/useTradingFormActions';
 import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingExchangeFormDefaultValues';
+import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { type Dispatch } from 'src/types/suite';
-import { type UseTradingFormCommonProps } from 'src/types/trading/trading';
 import {
     type TradingExchangeConfirmTradeProps,
     type TradingExchangeFormContextProps,
 } from 'src/types/trading/tradingForm';
-import { createQuoteLink } from 'src/utils/wallet/trading/exchangeUtils';
 
-import { useTradingAssetDecimals } from './common/useTradingAssetDecimals';
-import { useTradingInitializer } from './common/useTradingInitializer';
+import { useTradingClearStaleQuotes } from './common/useTradingClearStaleQuotes';
+import { useTradingExchangeTradeRequest } from './common/useTradingExchangeTradeRequest';
 import { useTradingFormAccount } from './useTradingFormAccount';
 import { useTradingReceiveAddress } from './useTradingReceiveAddress';
 
-export const useTradingExchangeForm = ({
-    pageType = 'form',
-}: UseTradingFormCommonProps): TradingExchangeFormContextProps => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const type = 'exchange';
-    const isFormPage = pageType === 'form';
     const dispatch = useDispatch();
-    const { translationString } = useTranslation();
     const quotesRequest = useSelector(selectTradingExchangeQuotesRequest);
     const isFromRedirect = useSelector(selectTradingExchangeIsFromRedirect);
     const quotes = useSelector(selectTradingExchangeQuotes);
@@ -95,55 +73,30 @@ export const useTradingExchangeForm = ({
     const verifiedAddress = useSelector(selectTradingVerifiedAddress);
     const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
-    const { selectedFee, composed } = composedTransactionInfo;
-    const { account, tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount(type);
+    const { tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount(type);
+
+    const trade = useSelector(selectTradingExchangeActiveTrade);
+    const account = useSelector(state => selectTradingSendAccount(state, type));
+
+    const { getTradeRequestParams } = useTradingExchangeTradeRequest(account);
 
     // used for disabling approve/revoke controls when
     // quotes are scheduled to refresh after changing swap form inputs
     const [isScheduledQuotesRefresh, setIsScheduledQuotesRefresh] = useState(false);
     const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
 
-    const { device } = useTradingInitializer({
-        pageType,
-        isLoading,
-    });
+    useServerEnvironment();
 
     const [isApproval, setIsApproval] = useState<boolean>(false);
     const [isLoadingQuote, setIsLoadingQuote] = useState<boolean>(false);
 
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
-    // we consider this feature enabled unless disabled by message system
-    const isSlip24FeatureEnabled = useSelector(state =>
-        selectIsFeatureEnabled(state, Feature.trading.slip24, true),
-    );
-    const isSlip24ExperimentalFeatureEnabled = useSelector(selectHasExperimentalFeature('slip24'));
-    const isSlip24Active = useSelector(state =>
-        selectTradingIsSlip24Allowed(
-            state,
-            account,
-            isSlip24FeatureEnabled && isSlip24ExperimentalFeatureEnabled,
-        ),
-    );
 
     const { symbol } = account;
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const network = getNetwork(account.symbol);
-    const trades = useSelector(selectTradingTrades);
-    const trade = useMemo(
-        () =>
-            trades.find(
-                (trade): trade is TradingTransactionExchange =>
-                    trade.tradeType === 'exchange' &&
-                    !!transactionId &&
-                    trade.data.orderId === transactionId,
-            ),
-        [trades, transactionId],
-    );
 
-    const { defaultCurrency, defaultValues } = useTradingExchangeFormDefaultValues(
-        accountKey,
-        cryptoId,
-    );
+    const { defaultValues } = useTradingExchangeFormDefaultValues(accountKey, cryptoId);
 
     const methods = useForm<TradingExchangeFormProps>({
         mode: 'onChange',
@@ -154,7 +107,6 @@ export const useTradingExchangeForm = ({
     const values = useWatch({ control }) as TradingExchangeFormProps;
     const { provider } = values;
     const {
-        rateType,
         exchangeType,
         sendCryptoSelect,
         receiveCryptoSelect,
@@ -168,7 +120,6 @@ export const useTradingExchangeForm = ({
         type: 'exchange',
         cryptoId: receiveCryptoSelect?.id,
         nonSuiteAccount: !selectedQuote?.tags?.includes('noExternalAddress'),
-        pageType,
     });
     const { receiveAddress, extraField } = tradingReceiveAddress;
     const isReceiveAddressFormValid =
@@ -185,18 +136,7 @@ export const useTradingExchangeForm = ({
     const isAmountEmpty = output?.amount === '';
     const noProviders = Object.keys(exchangeInfo?.providerInfos ?? {}).length === 0;
     const isInitialDataLoading = !exchangeInfo?.providerInfos;
-    const shouldSkipInitialReset = !isFormPage;
     const shouldResetOnInitialExchangeInfoLoad = useRef(isInitialDataLoading);
-
-    const { getAssetDecimals } = useTradingAssetDecimals();
-    const decimals = useMemo(
-        () =>
-            getAssetDecimals({
-                accountKey: sendCryptoSelect?.accountKey,
-                cryptoId: sendCryptoSelect?.id,
-            }),
-        [getAssetDecimals, sendCryptoSelect?.accountKey, sendCryptoSelect?.id],
-    );
 
     const setAmountLimits = useCallback(
         (limits: TradingExchangeAmountLimitProps | undefined) => {
@@ -210,15 +150,22 @@ export const useTradingExchangeForm = ({
         setValue,
     });
 
-    const { composedLevels, feeInfo, changeFeeLevel, setComposedLevels, composeRequest } =
-        useTradingComposeTransaction<TradingExchangeFormProps>({
-            type: 'exchange',
-            account,
-            network,
-            values,
-            methods,
-            setShowReserveBanner,
-        });
+    const {
+        isComposing,
+        composedLevels,
+        feeInfo,
+        changeFeeLevel,
+        setComposedLevels,
+        composeRequest,
+    } = useTradingComposeTransaction<TradingExchangeFormProps>({
+        type: 'exchange',
+        account,
+        network,
+        values,
+        methods,
+        setShowReserveBanner,
+        shouldSuppressComposeErrors: hasEip712SignDataType(selectedQuote),
+    });
 
     const isFormLoading = isInitialDataLoading || formState.isSubmitting || isLoading;
     const isFormInvalid = !(formIsValid && hasValues) || !isReceiveAddressFormValid;
@@ -245,10 +192,11 @@ export const useTradingExchangeForm = ({
         setIsScheduledQuotesRefresh,
     });
 
+    useTradingClearStaleQuotes({ type, isAmountEmpty });
+
     const helpers = useTradingFormActions({
         account,
         methods,
-        pageType,
         type,
         handleChange,
         setAmountLimits,
@@ -264,94 +212,13 @@ export const useTradingExchangeForm = ({
         receiveAddress: tradingReceiveAddress.receiveAddress,
     });
 
-    const selectQuote = async (quote: ExchangeTrade) => {
-        const provider =
-            exchangeInfo?.providerInfos && quote.exchange
-                ? exchangeInfo?.providerInfos[quote.exchange]
-                : null;
-
-        analytics.report({
-            type: events.tradeExchangeEvent.name,
-            payload: {
-                action: 'continue',
-                step: 'exchange-form',
-                sendCryptoLabel: sendCryptoSelect?.displaySymbol,
-                sendCryptoNetworkSymbol: sendCryptoSelect?.networkSymbol,
-                sendCryptoContractAddress: sendCryptoSelect?.contractAddress ?? undefined,
-                receiveCryptoLabel: receiveCryptoSelect?.displaySymbol,
-                receiveCryptoNetworkSymbol: receiveCryptoSelect?.networkSymbol,
-                receiveCryptoContractAddress: receiveCryptoSelect?.contractAddress ?? undefined,
-                exchangeType,
-                exchangeName: provider?.companyName,
-                rateType,
-                fractionButton: helpers.fractionButton
-                    ? `${(100 / helpers.fractionButton).toString()}%`
-                    : undefined,
-            },
-        });
-
-        await dispatch(
-            exchangeThunks.selectQuoteThunk({
-                quote,
-                nextStep: () => {
-                    dispatch(goto({ routeName: 'wallet-trading-exchange-confirm' }));
-                },
-            }),
-        );
-    };
-
-    const getCommonFunctions = useCallback(
-        async (trade?: ExchangeTrade) => {
-            const quoteId = trade?.quoteId ?? selectedQuote?.quoteId;
-
-            if (!quotesRequest || !quoteId) return;
-
-            const returnUrl = await createQuoteLink(
-                quotesRequest,
-                account,
-                { selectedFee, composed },
-                quoteId,
-            );
-
-            const triggerAnalyticsTradeConfirmation = () => {
-                analytics.report({
-                    type: events.tradeConfirmTradeEvent.name,
-                    payload: { action: type },
-                });
-            };
-
-            const processResponseData = (response: ExchangeTrade) => {
-                dispatch(submitRequestForm(response.tradeForm?.form));
-            };
-
-            const nextStep = () => {
-                dispatch(goto({ routeName: 'wallet-trading-exchange-detail' }));
-            };
-
-            return {
-                returnUrl,
-                triggerAnalyticsTradeConfirmation,
-                processResponseData,
-                nextStep,
-            };
-        },
-        [
-            selectedQuote?.quoteId,
-            quotesRequest,
-            account,
-            selectedFee,
-            composed,
-            analytics,
-            dispatch,
-        ],
-    );
-
     const confirmTrade = async ({
-        receiveAddress,
-        trade,
+        receiveAddress: confirmReceiveAddress,
+        trade: confirmedTrade,
+        approvalFlow,
         ...props
     }: TradingExchangeConfirmTradeProps): Promise<ExchangeTrade | undefined> => {
-        const commonFunctions = await getCommonFunctions(trade);
+        const commonFunctions = await getTradeRequestParams(confirmedTrade);
 
         if (!commonFunctions) return undefined;
 
@@ -361,10 +228,11 @@ export const useTradingExchangeForm = ({
         return await dispatch(
             exchangeThunks.confirmTradeThunk({
                 returnUrl,
-                receiveAddress,
+                receiveAddress: confirmReceiveAddress,
                 account,
                 extraField: props.extraField ?? extraField,
-                trade,
+                trade: confirmedTrade,
+                approvalFlow,
                 triggerAnalyticsTradeConfirmation,
                 processResponseData,
                 nextStep,
@@ -372,94 +240,12 @@ export const useTradingExchangeForm = ({
         ).unwrap();
     };
 
-    const sendTransaction = async () => {
-        const commonFunctions = await getCommonFunctions(trade?.data);
-
-        if (!commonFunctions) {
-            return false;
-        }
-
-        const { returnUrl, triggerAnalyticsTradeConfirmation, processResponseData, nextStep } =
-            commonFunctions;
-
-        const signAndPushSendFormTransaction = async ({
-            formState,
-            precomposedTransaction,
-            selectedAccount,
-            paymentRequests,
-        }: TradingSignAndPushSendFormTransactionProps) =>
-            await dispatch(
-                signAndPushSendFormTransactionThunk({
-                    formState,
-                    precomposedTransaction,
-                    selectedAccount,
-                    paymentRequests,
-                }),
-            ).unwrap();
-
-        try {
-            await dispatch(
-                exchangeThunks.sendTransactionThunk({
-                    account,
-                    trade: trade?.data,
-                    returnUrl,
-                    setMaxOutputId: values.setMaxOutputId,
-                    decimals,
-                    shouldSendInSats,
-                    // TODO: slip24 - exclude from debug mode
-                    isSlip24Active,
-                    nextStep,
-                    processResponseData,
-                    triggerAnalyticsTradeConfirmation,
-                    signAndPushSendFormTransaction,
-                }),
-            ).unwrap();
-
-            return true;
-        } catch (e) {
-            if (!isSendRejectedError<TranslationKey>(e)) {
-                return false;
-            }
-
-            if (e.type !== 'sign-transaction-timeout') {
-                dispatch(
-                    notificationsActions.addToast({
-                        type: e.type,
-                        error: translationString(e.error.id, e.error.values),
-                    }),
-                );
-            }
-
-            return false;
-        }
-    };
-
-    const signDataAndConfirm = async () => {
-        const commonFunctions = await getCommonFunctions(trade?.data);
-
-        if (!commonFunctions) return;
-
-        const { returnUrl, triggerAnalyticsTradeConfirmation, processResponseData, nextStep } =
-            commonFunctions;
-
-        await dispatch(
-            exchangeThunks.signDataAndConfirmThunk({
-                account,
-                device,
-                returnUrl,
-                triggerAnalyticsTradeConfirmation,
-                processResponseData,
-                nextStep,
-            }),
-        );
-    };
-
     const verifyAddress =
-        (account: Account, address: string | undefined, path: string | undefined) =>
-        async (dispatch: Dispatch) => {
-            await dispatch(
+        (verifiedAccount: Account, address: string | undefined, path: string | undefined) =>
+        async (innerDispatch: Dispatch) => {
+            await innerDispatch(
                 tradingThunks.verifyAddressThunk({
-                    account,
+                    account: verifiedAccount,
                     address,
                     path,
                 }),
@@ -467,79 +253,46 @@ export const useTradingExchangeForm = ({
         };
 
     const confirmApproval = async ({
-        trade,
-        receiveAddress,
+        trade: approvalTrade,
+        receiveAddress: approvalReceiveAddress,
     }: {
         trade?: ExchangeTrade;
         receiveAddress: string;
     }) => {
-        const commonFunctions = await getCommonFunctions(trade);
+        const commonFunctions = await getTradeRequestParams(approvalTrade);
         if (!commonFunctions) return undefined;
         const { processResponseData } = commonFunctions;
 
         return await dispatch(
             exchangeThunks.confirmApprovalThunk({
-                receiveAddress,
+                receiveAddress: approvalReceiveAddress,
                 account,
                 extraField,
-                trade,
+                trade: approvalTrade,
                 processResponseData,
             }),
         ).unwrap();
     };
 
-    const watchApproval = async ({ refreshCount }: { refreshCount: number }) => {
-        if (!selectedQuote) return;
-
-        const response = await invityAPI.watchTrade<TradingExchangeType>(
-            selectedQuote,
-            'exchange',
-            refreshCount,
-        );
-
-        if (!response.status || response.status === selectedQuote.status) {
-            return;
-        }
-
-        const updatedSelectedQuote = {
-            ...selectedQuote,
-            status: response.status,
-            error: response.error,
-            approvalType: undefined,
-        };
-
-        if (!updatedSelectedQuote.dexTx || !updatedSelectedQuote.receiveAddress) {
-            return;
-        }
-
-        const newTrade = await confirmApproval({
-            trade: updatedSelectedQuote,
-            receiveAddress: updatedSelectedQuote.receiveAddress,
-        });
-
-        dispatch(tradingExchangeActions.saveSelectedQuote(newTrade));
-        await dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key }));
-    };
-
-    const approveTransaction = async (trade: ExchangeTrade) => {
+    const approveTransaction = async (exchangeTrade: ExchangeTrade) => {
         if (!receiveAddress) return false;
 
         const newTrade = await confirmApproval({
-            trade: { ...trade, status: 'CONFIRM' },
+            trade: { ...exchangeTrade, status: 'CONFIRM' },
             receiveAddress,
         });
 
         return !!newTrade;
     };
 
-    const revokeApproval = async (trade: ExchangeTrade) => {
+    const revokeApproval = async (exchangeTrade: ExchangeTrade) => {
         if (!receiveAddress) return false;
 
         const approvalType: DexApprovalType = 'ZERO';
         const updatedTrade: ExchangeTrade = {
-            ...trade,
+            ...exchangeTrade,
             approvalType,
-            status: trade.status === 'APPROVAL_REQ' ? 'APPROVAL_REQ' : 'CONFIRM',
+            status: exchangeTrade.status === 'APPROVAL_REQ' ? 'APPROVAL_REQ' : 'CONFIRM',
         };
 
         dispatch(tradingExchangeActions.saveSelectedQuote(updatedTrade));
@@ -575,7 +328,6 @@ export const useTradingExchangeForm = ({
 
     // set transactionData from DEX quote for correct fees fetching
     useEffect(() => {
-        if (pageType !== 'form') return;
         if (!sendCryptoSelect?.id) return;
         if (isFormLoading || isLoadingQuote) return;
 
@@ -586,9 +338,9 @@ export const useTradingExchangeForm = ({
             return;
         }
 
-        const network = cryptoIdToNetwork(sendCryptoSelect.id);
+        const sendNetwork = cryptoIdToNetwork(sendCryptoSelect.id);
         const isEvmNativeToken = isSendingEvmNativeToken(sendCryptoSelect.id);
-        const requiresApproval = network?.networkType === 'ethereum' && !isEvmNativeToken;
+        const requiresApproval = sendNetwork?.networkType === 'ethereum' && !isEvmNativeToken;
 
         const quote = requiresApproval ? selectedQuote : dexQuotes[0];
 
@@ -601,7 +353,7 @@ export const useTradingExchangeForm = ({
 
         const { dexTx } = quote;
 
-        setValue('transactionData', dexTx.data);
+        setValue('transactionData', getDexEstimationData(quote) ?? '');
         setValue(TRADING_FORM_OUTPUT_ADDRESS, dexTx.to);
         setValue('ethereumAdjustGasLimit', ETHEREUM_ADJUST_GAS_LIMIT);
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -618,10 +370,8 @@ export const useTradingExchangeForm = ({
     const fetchFeesAndComposeRef = useCurrentRef(fetchFeesAndCompose);
     // fetch fees when transactionData changes
     useEffect(() => {
-        if (pageType !== 'form') return;
-
         fetchFeesAndComposeRef.current();
-    }, [transactionData, outputAddress, ethereumAdjustGasLimit, pageType, fetchFeesAndComposeRef]);
+    }, [transactionData, outputAddress, ethereumAdjustGasLimit, fetchFeesAndComposeRef]);
 
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));
@@ -655,30 +405,20 @@ export const useTradingExchangeForm = ({
 
     // bind actual default values when we've got exchangeInfo from Invity API server
     useEffect(() => {
-        if (
-            !shouldSkipInitialReset &&
-            exchangeInfo &&
-            !isInitialDataLoading &&
-            shouldResetOnInitialExchangeInfoLoad.current
-        ) {
+        if (exchangeInfo && !isInitialDataLoading && shouldResetOnInitialExchangeInfoLoad.current) {
             shouldResetOnInitialExchangeInfoLoad.current = false;
             reset(defaultValues);
         }
-    }, [reset, exchangeInfo, defaultValues, isInitialDataLoading, shouldSkipInitialReset]);
-
-    useEffect(() => {
-        if (!quotesRequest && !isFormPage) {
-            dispatch(goto({ routeName: 'wallet-trading-exchange' }));
-
-            return;
-        }
-    }, [isFormPage, quotesRequest, dispatch]);
+    }, [reset, exchangeInfo, defaultValues, isInitialDataLoading]);
 
     useEffect(() => {
         if (isFromRedirect) {
             if (transactionId && trade) {
                 dispatch(tradingExchangeActions.saveSelectedQuote(trade.data));
                 dispatch(tradingExchangeActions.setFormStep('SEND_TRANSACTION'));
+                if (trade.sendAccountKey) {
+                    dispatch(tradingExchangeActions.setTradingAccountKey(trade.sendAccountKey));
+                }
             }
 
             dispatch(tradingExchangeActions.setIsFromRedirect(false));
@@ -701,14 +441,13 @@ export const useTradingExchangeForm = ({
             helpers,
         },
         methods,
-        device,
         exchangeInfo,
         quotes,
         dexQuotes,
         cexQuotes,
         quotesRequest,
+        isComposing,
         composedLevels,
-        defaultCurrency,
         feeInfo,
         amountLimits,
         network,
@@ -724,15 +463,11 @@ export const useTradingExchangeForm = ({
         changeFeeLevel,
         setAmountLimits,
         onQuoteSelected,
-        sendTransaction,
-        signDataAndConfirm,
         verifyAddress,
-        selectQuote,
         confirmTrade,
         approveTransaction,
         revokeApproval,
         confirmApproval,
-        watchApproval,
         refreshQuotes,
         isScheduledQuotesRefresh,
         resetSelectedOffer,

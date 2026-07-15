@@ -1,15 +1,28 @@
+import { InfoIcon, LightbulbIcon, WarningIcon } from '@trezor/icons';
 import { type Color } from '@trezor/theme';
 
 import { type BannerIntent } from './types';
-import { type IconName } from '../Icon/Icon';
+import { type IconComponent } from '../Icon/Icon';
 
 export const mapIntentToBackgroundColor = (intent: BannerIntent): Color => {
     const colorMap: Record<BannerIntent, Color> = {
-        brand: 'legacyBackgroundPrimarySubtleOnElevation0',
-        info: 'legacyBackgroundAlertBlueSubtleOnElevation0',
-        warning: 'legacyBackgroundAlertYellowSubtleOnElevation0',
-        critical: 'legacyBackgroundAlertRedSubtleOnElevation0',
-        neutral: 'legacyBackgroundNeutralSubtleOnElevation0',
+        brand: 'elementFillBrandSofter',
+        info: 'elementFillInfoSofter',
+        warning: 'elementFillWarningSofter',
+        critical: 'elementFillCriticalSofter',
+        neutral: 'elementFillNeutralSofter',
+    };
+
+    return colorMap[intent];
+};
+
+export const mapIntentToBorderColor = (intent: BannerIntent): Color => {
+    const colorMap: Record<BannerIntent, Color> = {
+        brand: 'elementBorderBrandSofter',
+        info: 'elementBorderInfoSofter',
+        warning: 'elementBorderWarningSofter',
+        critical: 'elementBorderCriticalSofter',
+        neutral: 'elementBorderNeutralSofter',
     };
 
     return colorMap[intent];
@@ -27,13 +40,13 @@ export const mapIntentToIconColor = (intent: BannerIntent): Color => {
     return colorMap[intent];
 };
 
-export const mapIntentToIcon = (intent: BannerIntent): IconName => {
-    const iconMap: Record<BannerIntent, IconName> = {
-        brand: 'lightbulb',
-        info: 'info',
-        warning: 'warning',
-        critical: 'warning',
-        neutral: 'info',
+export const mapIntentToIcon = (intent: BannerIntent): IconComponent => {
+    const iconMap: Record<BannerIntent, IconComponent> = {
+        brand: LightbulbIcon,
+        info: InfoIcon,
+        warning: WarningIcon,
+        critical: WarningIcon,
+        neutral: InfoIcon,
     };
 
     return iconMap[intent];

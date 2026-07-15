@@ -37,6 +37,7 @@ export const YieldDepositAmountInput = ({
 
     return (
         <Input
+            labelType="noLabel"
             value={value}
             placeholder="0"
             keyboardType="numeric"

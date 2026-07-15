@@ -19,7 +19,8 @@ export const firmwareFirmwareUpdateCancelEvent: EventDef<
     EventType.FirmwareFirmwareUpdateCancel
 > = {
     name: EventType.FirmwareFirmwareUpdateCancel,
-    descriptionTrigger: 'User cancel FW update confirmation on device or in app.',
+    descriptionTrigger:
+        'User cancels a firmware update either on the device or in the app confirmation dialog',
     changelog: [{ version: '25.1.2', notes: 'added' }],
 
     attributes: {
@@ -49,7 +50,8 @@ export const firmwareFirmwareUpdateCancelEvent: EventDef<
         },
         location: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'Location where the update was started',
+            description:
+                'Where the firmware update was initiated: `settings` from device settings, `onboarding` during initial setup, or null if unknown',
         },
     },
 };

@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import { useDevice } from '@suite/device';
 import {
     TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
@@ -7,8 +8,8 @@ import {
     TRADING_FORM_FIAT_INPUT,
     type TradingBuyType,
     isCountrySubdivisionRequired,
+    selectTradingBuyQuotes,
     selectTradingBuySupportedCryptoIds,
-    selectTradingLoadingAndTimestamp,
     tradingActions,
 } from '@suite-common/trading';
 import { type TokenAddress } from '@suite-common/wallet-types';
@@ -25,21 +26,21 @@ import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/T
 
 import { TradingFormCard } from './TradingFormCard';
 import { TradingFormSection } from './TradingFormSection';
-import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import {
     TradingFormInputBuyAsset,
     type TradingFormInputBuyAssetProps,
 } from './TradingFormInput/TradingFormInputBuyAsset/TradingFormInputBuyAsset';
 import { TradingFormInputCountrySubdivision } from './TradingFormInput/TradingFormInputCountry/TradingFormInputCountrySubdivision';
+import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 
 export const TradingBuyFormInputs = () => {
     const context = useTradingFormContext<TradingBuyType>();
-    const { defaultCountry } = context;
+    const buySupportedCryptoIds = useSelector(selectTradingBuySupportedCryptoIds);
+    const quotes = useSelector(selectTradingBuyQuotes);
 
-    const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
-
-    const { device, setAmountLimits, getValues, setValue, quotes } = context;
+    const { device } = useDevice();
+    const { setAmountLimits, getValues, setValue } = context;
     const {
         [TRADING_FORM_CRYPTO_CURRENCY_SELECT]: cryptoSelect,
         [TRADING_FORM_CRYPTO_INPUT]: cryptoInput,
@@ -65,15 +66,19 @@ export const TradingBuyFormInputs = () => {
         [dispatch, setAmountLimitsRef, setValueRef],
     );
 
-    const buySupportedCryptoIds = useSelector(selectTradingBuySupportedCryptoIds);
-
-    const selectedCountry = countrySelect ?? defaultCountry;
-    const countryRequiresSubdivision = isCountrySubdivisionRequired(selectedCountry?.value);
+    const countryRequiresSubdivision = isCountrySubdivisionRequired(countrySelect?.value);
 
     return (
-        <Column gap={20}>
+        <Column gap={16}>
             <TradingFormCard>
                 <TradingFormSection>
+                    <TradingFormInputBuyAsset
+                        inputLabel="TR_TRADING_YOU_BUY"
+                        inputName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
+                        inputDisabled={hasBitcoinOnlyFirmware(device)}
+                        onAssetSelect={handleCryptoSelect}
+                        includedCryptoIds={buySupportedCryptoIds}
+                    />
                     <Column gap={8}>
                         <TradingFormInputFiatCrypto
                             cryptoInputName={TRADING_FORM_CRYPTO_INPUT}
@@ -98,29 +103,20 @@ export const TradingBuyFormInputs = () => {
                             </Row>
                         )}
                     </Column>
-
-                    <TradingFormInputBuyAsset
-                        inputLabel="TR_TRADING_YOU_BUY"
-                        inputName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
-                        inputDisabled={hasBitcoinOnlyFirmware(device)}
-                        onAssetSelect={handleCryptoSelect}
-                        includedCryptoIds={buySupportedCryptoIds}
-                    />
                 </TradingFormSection>
-                {cryptoSelect && !isLoading && <TradingReceiveAddress />}
             </TradingFormCard>
 
             <TradingFormCard>
-                {quotes?.length > 0 && (
-                    <TradingFormInputPaymentMethod label="TR_TRADING_PAYMENT_METHOD" />
-                )}
+                {cryptoSelect && <TradingReceiveAddress />}
                 <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
-
-                {selectedCountry && countryRequiresSubdivision && (
+                {countrySelect && countryRequiresSubdivision && (
                     <TradingFormInputCountrySubdivision
                         label="TR_TRADING_COUNTRY_SUBDIVISION"
-                        country={selectedCountry}
+                        country={countrySelect}
                     />
+                )}
+                {!!quotes.length && (
+                    <TradingFormInputPaymentMethod label="TR_TRADING_PAYMENT_METHOD" />
                 )}
                 <TradingSelectedOfferProvider />
             </TradingFormCard>

@@ -2,6 +2,7 @@ import type { CryptoId } from 'invity-api';
 
 import { selectFormattedAccountType } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { getTranslation } from '@suite-native/intl';
 import { fireEvent, screen } from '@suite-native/test-utils-store';
 import {
     btc1NormalAccount,
@@ -103,8 +104,10 @@ describe('MyAssetSheet', () => {
         mockedSelectAccountsWithTokensToSellSectionListByTradingType.mockReturnValue([]);
         const { getByText } = renderMyAssetsSheet();
 
-        expect(getByText('No assets found')).toBeTruthy();
-        expect(getByText('You do not have any assets available for this operation.')).toBeTruthy();
+        expect(getByText(getTranslation('moduleTrading.myAssetSheet.emptyTitle'))).toBeTruthy();
+        expect(
+            getByText(getTranslation('moduleTrading.myAssetSheet.emptyDescription')),
+        ).toBeTruthy();
     });
 
     it('should select asset and close on asset item press', () => {

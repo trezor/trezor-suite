@@ -247,6 +247,38 @@ describe('biometricsThunks', () => {
             expect(LocalAuthentication.authenticateAsync).not.toHaveBeenCalled();
         });
 
+        it('should require authentication again when returning active after failed authentication', async () => {
+            mockFailedAuthentication();
+            const store = createBiometricsStore({
+                ...biometricsSliceInitialState,
+                isBiometricsEnabled: true,
+            });
+
+            await store.dispatch(authenticateUserThunk());
+
+            const backgroundResult = await store.dispatch(
+                handleBiometricsAppStateChangeThunk({ nextAppState: 'background' }),
+            );
+
+            expect(LocalAuthentication.authenticateAsync).toHaveBeenCalled();
+            // Clear the failed authentication call so the final expectation only checks the retry.
+            jest.mocked(LocalAuthentication.authenticateAsync).mockClear();
+
+            const activeResult = await store.dispatch(
+                handleBiometricsAppStateChangeThunk({ nextAppState: 'active' }),
+            );
+            // The app-state thunk dispatches authentication without awaiting it.
+            await Promise.resolve();
+
+            expect(backgroundResult.payload).toEqual({
+                isUserAuthenticated: false,
+                goneToBackgroundAtTimestamp: null,
+            });
+            expect(activeResult.payload).toBe(undefined);
+            expect(store.getState().biometrics.isUserAuthenticated).toBe(false);
+            expect(LocalAuthentication.authenticateAsync).toHaveBeenCalled();
+        });
+
         it('should dispatch authentication when returning active after timeout', async () => {
             const store = createBiometricsStore({
                 ...biometricsSliceInitialState,

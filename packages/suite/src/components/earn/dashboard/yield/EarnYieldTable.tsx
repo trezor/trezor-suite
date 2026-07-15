@@ -2,10 +2,12 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { ContextMessage } from '@suite/message-system';
 import { EarnAnchor, goto, useAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import {
     type YieldAccountRewards,
+    type YieldDtoV2,
     useAllYieldOpportunities,
 } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
@@ -14,7 +16,7 @@ import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { Button, Card, Column, Table } from '@trezor/components';
 import { OutlineHighlight } from '@trezor/product-components';
 
-import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
+import { DashboardSection } from 'src/components/dashboard';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
@@ -24,10 +26,11 @@ import { EarnYieldClaimSelectAccountModal } from './EarnYieldClaimSelectAccountM
 import { EarnYieldTableBody } from './EarnYieldTableBody';
 import { useYieldAccountsVisibility } from './hooks/useYieldAccountsVisibility';
 import { useYieldTableData } from './hooks/useYieldTableData';
+import { PoweredByBadge } from '../../providers/PoweredByBadge';
 import { useMerklRewards } from '../../yield/claim/hooks';
-import { EarnDashboardSection } from '../common/EarnDashboardSection';
 import { EarnDashboardTableHeader } from '../common/EarnDashboardTableHeader';
-import { getEarnDashboardBadgeState } from '../utils/earnDashboardBadgeUtils';
+
+const emptyVaults: YieldDtoV2[] = [];
 
 export const EarnYieldTable = () => {
     const { anchorRef, shouldHighlight } = useAnchor(EarnAnchor.Yield);
@@ -61,7 +64,7 @@ export const EarnYieldTable = () => {
         isYieldActive,
         hasAnyRewardsData,
     } = useYieldTableData({
-        availableVaults,
+        availableVaults: availableVaults ?? emptyVaults,
         visibleAccounts,
         visibleAccountSymbols,
     });
@@ -79,12 +82,6 @@ export const EarnYieldTable = () => {
         claimMessageSystem.isDisabled ||
         !merklRewardsQuery.isSuccess ||
         accountsRewards.length === 0;
-
-    const badge = getEarnDashboardBadgeState({
-        isSectionActive: isYieldActive,
-        activeLabelId: 'TR_EARN_DASHBOARD_ACTIVE',
-        notActiveLabelId: 'TR_EARN_DASHBOARD_NOT_ACTIVE',
-    });
 
     const hasFiredReadyEventRef = useRef(false);
     const hasClaimBanner = accountsRewards.length > 0;
@@ -147,12 +144,11 @@ export const EarnYieldTable = () => {
             <ContextMessage context={Context.getEarnDashboard('yield')} />
 
             <OutlineHighlight shouldHighlight={shouldHighlight}>
-                <EarnDashboardSection
-                    titleId="TR_EARN_STABLECOIN_YIELD_TITLE"
-                    subheadingId="TR_EARN_YIELD_DASHBOARD_TEXT"
-                    provider="morpho"
-                    statusBadge={badge}
-                    sectionRef={anchorRef}
+                <DashboardSection
+                    heading={<Translation id="TR_EARN_STABLECOIN_YIELD_TITLE" />}
+                    subheading={<Translation id="TR_EARN_YIELD_DASHBOARD_TEXT" />}
+                    actions={<PoweredByBadge provider="morpho" />}
+                    ref={anchorRef}
                 >
                     <Column gap={16} alignItems="center">
                         {(isYieldActive || accountsRewards.length > 0) && (
@@ -225,7 +221,7 @@ export const EarnYieldTable = () => {
                             </Button>
                         )}
                     </Column>
-                </EarnDashboardSection>
+                </DashboardSection>
             </OutlineHighlight>
         </Column>
     );

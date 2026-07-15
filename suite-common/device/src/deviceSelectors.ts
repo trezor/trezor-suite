@@ -1,9 +1,9 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import {
     type BackupType,
-    type FirmwareRevision,
     LANGUAGES,
     type Locale,
     type TrezorDevice,
@@ -23,15 +23,9 @@ import {
     getSortedDevicesWithoutInstances,
     getStatus,
 } from '@suite-common/suite-utils';
-import {
-    type Device,
-    type DeviceState,
-    type StaticSessionId,
-    asBluetoothDeviceId,
-} from '@trezor/connect';
+import { type Device, type DeviceState, type StaticSessionId } from '@trezor/connect';
 import {
     DeviceModelInternal,
-    type FirmwareVersionString,
     getFirmwareRevision,
     getFirmwareVersion,
     getFirmwareVersionArray,
@@ -93,22 +87,19 @@ export const selectIsDeviceUnlocked = createMemoizedSelector(
     device => !!device?.features?.unlocked,
 );
 
-export const selectDeviceType = createMemoizedSelector(
-    [selectSelectedDevice],
-    device => device?.type,
-);
+const selectDeviceType = createMemoizedSelector([selectSelectedDevice], device => device?.type);
 
 export const selectDevicePath = createMemoizedSelector(
     [selectSelectedDevice],
     device => device?.path,
 );
 
-export const selectDeviceFeatures = createMemoizedSelector(
+const selectDeviceFeatures = createMemoizedSelector(
     [selectSelectedDevice],
     device => device?.features,
 );
 
-export const selectDeviceCapabilities = createMemoizedSelector(
+const selectDeviceCapabilities = createMemoizedSelector(
     [selectDeviceFeatures],
     features => features?.capabilities,
 );
@@ -163,7 +154,7 @@ export const selectDeviceLanguage = createMemoizedSelector(
     features => (features?.language as Locale) ?? null,
 );
 
-export const selectAvailableDeviceTranslations = createMemoizedSelector(
+const selectAvailableDeviceTranslations = createMemoizedSelector(
     [selectSelectedDevice],
     device => device?.availableTranslations ?? {},
 );
@@ -207,7 +198,7 @@ export const selectDeviceButtonRequestsCodes = createMemoizedSelector(
         ),
 );
 
-export const selectDeviceMode = createMemoizedSelector(
+const selectDeviceMode = createMemoizedSelector(
     [selectSelectedDevice],
     device => device?.mode ?? null,
 );
@@ -268,21 +259,12 @@ export const selectIsDeviceConnectedViaBluetoothLowOnBattery = createMemoizedSel
     },
 );
 
-export const selectDeviceBluetoothId = createMemoizedSelector([selectSelectedDevice], device =>
-    device?.descriptor?.apiType === 'bluetooth' && device.descriptor.id
-        ? asBluetoothDeviceId(device.descriptor.id)
-        : undefined,
-);
-
 export const selectIsConnectedDeviceUninitialized = createMemoizedSelector(
     [selectSelectedDevice, selectIsDeviceInitialized],
     (device, isDeviceInitialized) => device && !isDeviceInitialized,
 );
 
-export const selectDeviceState = createMemoizedSelector(
-    [selectSelectedDevice],
-    device => device?.state,
-);
+const selectDeviceState = createMemoizedSelector([selectSelectedDevice], device => device?.state);
 
 export const selectIsDeviceAuthorized = createMemoizedSelector(
     [selectDeviceState],
@@ -343,8 +325,7 @@ export const selectDeviceById = createMemoizedSelector(
     (devices, deviceId) => devices.find(device => device.id === deviceId),
 );
 
-export const selectDeviceAuthenticity = (state: DeviceRootState) =>
-    state.device.persistentDeviceData;
+const selectDeviceAuthenticity = (state: DeviceRootState) => state.device.persistentDeviceData;
 
 export const selectDeviceAuthenticityByDeviceId = createMemoizedSelector(
     [(_state: DeviceRootState, deviceId: TrezorDevice['id']) => deviceId, selectDeviceAuthenticity],
@@ -436,6 +417,13 @@ export const selectDeviceModel = createMemoizedSelector([selectSelectedDevice], 
     selectedDevice ? getDeviceInternalModel(selectedDevice) : null,
 );
 
+export const selectIsDeviceAuthenticityCheckSupported = createMemoizedSelector(
+    [selectIsPortfolioTrackerDevice, selectDeviceModel],
+    (isPortfolioTrackerDevice, deviceModel) =>
+        isPortfolioTrackerDevice ||
+        (!!deviceModel && SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModel]),
+);
+
 export const selectFirmwareReleaseConfig = createMemoizedSelector(
     [selectSelectedDevice],
     device => device?.firmwareReleaseConfigInfo ?? null,
@@ -489,7 +477,7 @@ export const selectIsDeviceRemembered = createMemoizedSelector(
     getIsDeviceRemembered,
 );
 
-export const selectRememberedStandardWallets = createMemoizedSelector(
+const selectRememberedStandardWallets = createMemoizedSelector(
     [selectPhysicalDeviceWallets],
     devices =>
         returnStableArrayIfEmpty(
@@ -502,7 +490,7 @@ export const selectRememberedStandardWalletsCount = createMemoizedSelector(
     wallets => wallets.length,
 );
 
-export const selectRememberedHiddenWallets = createMemoizedSelector(
+const selectRememberedHiddenWallets = createMemoizedSelector(
     [selectPhysicalDeviceWallets],
     devices =>
         returnStableArrayIfEmpty(
@@ -599,7 +587,7 @@ export const selectFirmwareChangelog = (state: DeviceRootState) => {
     return device?.firmwareReleaseConfigInfo?.release.changelog;
 };
 
-export const selectDeviceUnitPackaging = createMemoizedSelector(
+const selectDeviceUnitPackaging = createMemoizedSelector(
     [selectDeviceFeatures],
     features => features?.unit_packaging ?? 0,
 );
@@ -654,52 +642,6 @@ export const selectDeviceDelegatedIdentityKey = createMemoizedSelector(
     [selectPersistentDeviceData, (_state, deviceId: string) => deviceId],
     (persistentDeviceData, deviceId) =>
         persistentDeviceData.find(d => d.device_id === deviceId)?.delegatedIdentityKey ?? null,
-);
-
-type DeviceUtmParams = {
-    utm_model?: DeviceModelInternal;
-    utm_fw?: FirmwareVersionString;
-    utm_rev?: FirmwareRevision;
-    utm_passphrase?: 'true' | 'false';
-};
-
-export const selectSupportChatDeviceUtmParams = createMemoizedSelector(
-    [
-        selectDeviceInternalModel,
-        selectDeviceFirmwareVersion,
-        selectDeviceFirmwareRevision,
-        selectIsDeviceUsingPassphrase,
-        selectIsPortfolioTrackerDevice,
-    ],
-    (
-        deviceModel,
-        firmwareVersion,
-        firmwareRevision,
-        isDeviceUsingPassphrase,
-        isPortfolioTrackerDevice,
-    ) => {
-        const result: DeviceUtmParams = {};
-
-        if (isPortfolioTrackerDevice) {
-            return result;
-        }
-
-        if (deviceModel) {
-            result.utm_model = deviceModel;
-        }
-
-        if (firmwareVersion) {
-            result.utm_fw = firmwareVersion;
-        }
-
-        if (firmwareRevision) {
-            result.utm_rev = firmwareRevision;
-        }
-
-        result.utm_passphrase = isDeviceUsingPassphrase ? 'true' : 'false';
-
-        return result;
-    },
 );
 
 export const selectIsReconnectRequested = createMemoizedSelector(

@@ -3,6 +3,8 @@ import { type JSX, type ReactElement } from 'react';
 import type { FormatNumberOptions } from '@formatjs/intl';
 import styled from 'styled-components';
 
+import { HiddenPlaceholder, type HiddenPlaceholderProps } from '@suite/discreet-mode';
+import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { useFormatters } from '@suite-common/formatters';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '@suite-common/trading';
@@ -11,15 +13,12 @@ import {
     type TokenAddress,
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
-import { SkeletonRectangle } from '@trezor/components';
+import { Skeleton } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
-import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import type { UseFiatFromCryptoValueParams } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
-
-import { type HiddenPlaceholderProps } from './HiddenPlaceholder';
 
 // Do NOT use any prop from <HiddenPlaceholderProps>, its here just to fix types
 const SameWidthNums = styled.span<HiddenPlaceholderProps>`
@@ -76,7 +75,7 @@ export const BaseCurrencyValue = ({
     isLoading,
     rateType,
 }: BaseCurrencyValueProps) => {
-    const { shouldAnimate } = useLoadingSkeleton();
+    const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
     const isNativeToken = !tokenAddress || tokenAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
     const { baseCurrencyCode, fiatAmount, rate, currentRate } = useFiatFromCryptoValue({
         amount,
@@ -109,7 +108,7 @@ export const BaseCurrencyValue = ({
         (currentRate?.isLoading || isLoading);
 
     if (isLoadingSkeletonVisible) {
-        return <SkeletonRectangle animate={shouldAnimate} />;
+        return <Skeleton animate={shouldAnimate} />;
     }
 
     if (value) {

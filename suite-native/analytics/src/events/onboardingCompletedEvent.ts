@@ -8,13 +8,14 @@ type Attributes = {
 
 export const onboardingCompletedEvent: EventDef<Attributes, EventType.OnboardingCompleted> = {
     name: EventType.OnboardingCompleted,
-    descriptionTrigger: 'The user leaves the last screen of onboarding.',
+    descriptionTrigger: 'User completes the onboarding flow and exits the last screen',
     changelog: [{ version: '23.4.1', notes: 'added' }],
 
     attributes: {
         analyticsPermission: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'Is analytics permission granted',
+            description:
+                'Whether the user granted permission for analytics tracking (`true`) or denied it (`false`)',
         },
     },
 };

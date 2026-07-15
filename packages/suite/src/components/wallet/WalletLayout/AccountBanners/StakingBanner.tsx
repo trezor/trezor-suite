@@ -8,7 +8,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { type NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
-import { selectAccountIsStakingActive, selectPoolStatsApy } from '@suite-common/wallet-core';
+import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
     calculateRewards,
@@ -17,10 +17,12 @@ import {
     isSupportedStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
+import { PiggyBankIcon, XIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
+import { useStakingRate } from 'src/hooks/earn/useStakingRate';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 type StakingBannerProps = {
@@ -31,10 +33,14 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
-    const { stakeEthBannerClosed, stakeSolBannerClosed, stakeCardanoBannerClosed } =
-        useSelector(selectFlags);
+    const {
+        stakeEthBannerClosed,
+        stakeSolBannerClosed,
+        stakeCardanoBannerClosed,
+        stakeTronBannerClosed,
+    } = useSelector(selectFlags);
     const { route } = useSelector(state => state.router);
-    const apy = useSelector(state => selectPoolStatsApy(state, { account }));
+    const { rate } = useStakingRate({ symbol: account.symbol, accountKey: account.key });
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
 
     const displaySymbol = getDisplaySymbol(account.symbol);
@@ -47,7 +53,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
         const totalBalance = new BigNumber(stakingBalance || '0').plus(accountBalance).toString();
         const amount = calculateRewards(
             getNetworkAdjustedStakingBalance(totalBalance, account),
-            apy,
+            rate,
         );
 
         return CryptoAmountFormatter.format(amount, {
@@ -57,7 +63,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
             isEllipsisAppended: false,
             maxDisplayedDecimals: 8,
         });
-    }, [accountBalance, stakingBalance, apy, account, CryptoAmountFormatter]);
+    }, [accountBalance, stakingBalance, rate, account, CryptoAmountFormatter]);
 
     const closeBanner = () => {
         switch (account.networkType) {
@@ -69,6 +75,9 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
                 break;
             case 'cardano':
                 dispatch(setFlag({ key: 'stakeCardanoBannerClosed', value: true }));
+                break;
+            case 'tron':
+                dispatch(setFlag({ key: 'stakeTronBannerClosed', value: true }));
                 break;
             default:
                 if (isSupportedStakingNetworkSymbol(account.symbol)) {
@@ -110,6 +119,8 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
                 return stakeSolBannerClosed;
             case 'cardano':
                 return stakeCardanoBannerClosed;
+            case 'tron':
+                return stakeTronBannerClosed;
             default:
                 if (isSupportedStakingNetworkSymbol(account.symbol)) {
                     exhaustive(
@@ -141,12 +152,12 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
 
     return (
         <Banner
-            icon="piggyBank"
+            icon={PiggyBankIcon}
             intent="brand"
             title={
                 <Translation
                     id="TR_STAKING_BANNER_DETAIL_TITLE"
-                    values={{ apy: formatApyValue(apy), displaySymbol }}
+                    values={{ apy: formatApyValue(rate), displaySymbol }}
                 />
             }
             description={
@@ -170,7 +181,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
                     <Banner.IconButton
                         intent="neutral"
                         priority="secondary"
-                        icon="x"
+                        icon={XIcon}
                         onClick={closeBanner}
                         tooltip={{ content: <Translation id="TR_DISMISS" /> }}
                     />

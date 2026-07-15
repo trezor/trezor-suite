@@ -9,7 +9,7 @@ export const getTransaction = async (
     request: Request<MessageTypes.GetTransaction>,
 ): Promise<Responses.GetTransaction> => {
     const client = await request.connect();
-    const hash = toHex(request.payload);
+    const hash = toHex(request.payload.txid);
 
     const [tx, receipt] = await Promise.all([
         client.getTransaction({ hash }),

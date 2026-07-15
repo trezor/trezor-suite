@@ -66,12 +66,12 @@ export class MockBackendClient extends CoinjoinBackendClient {
             }
             case 'getTransaction': {
                 const tx = this.transactions.find(t => t.txid === params[0]);
-                if (tx) return Promise.resolve(tx as any);
+                if (tx) return Promise.resolve(tx);
                 break;
             }
             case 'getBlock': {
                 const block = this.blocks.find(b => b.height === params[0]);
-                if (block) return Promise.resolve(block as any);
+                if (block) return Promise.resolve(block);
                 break;
             }
             case 'getMempoolFilters': {

@@ -6,12 +6,13 @@ import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { ExtractByEventType } from '../../support/types';
 
-test.describe('Account types suite', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
+test.describe('Account types suite', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
         deviceSetup: {
             mnemonic: 'town grace cat forest dress dust trick practice hair survey pupil regular',
         },
     });
+
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
     });
@@ -48,13 +49,11 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
             });
             await dashboardPage.navigateTo();
 
-            await walletPage.expandAllAccountsInMenu();
-
             for (const { coin, accounts } of accountTypes) {
                 for (const { type } of accounts) {
                     await test.step(`Add and verify ${type} account for ${coin}`, async () => {
                         const numberOfAccountsBefore =
-                            await walletPage.getAccountsInTypeGroupCount(type);
+                            await walletPage.getAccountsInTypeCount(type);
 
                         await walletPage.addAccountButton.click();
                         await expect(settingsPage.modal).toBeVisible();
@@ -64,8 +63,7 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
                         await walletPage.addAccountTypeSelectOption(type).click();
                         await walletPage.addAccountConfirmButton.click();
 
-                        const numberOfAccountsAfter =
-                            await walletPage.getAccountsInTypeGroupCount(type);
+                        const numberOfAccountsAfter = await walletPage.getAccountsInTypeCount(type);
 
                         expect(numberOfAccountsAfter).toEqual(numberOfAccountsBefore + 1);
                     });
@@ -98,7 +96,7 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
             await test.step(`Add and verify ${coin.symbol} account`, async () => {
                 analytics.requests = [];
                 await walletPage.walletFilter(coin.symbol).click();
-                const numberOfAccountsBefore = await walletPage.getAccountsForCoinInTypeGroupCount(
+                const numberOfAccountsBefore = await walletPage.getAccountsForCoinInTypeCount(
                     'normal',
                     coin.symbol,
                 );
@@ -107,7 +105,7 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
                 await expect(settingsPage.modal).toBeVisible();
                 await settingsPage.coinsTab.networkAddButton(coin.symbol).click();
 
-                const numberOfAccountsAfter = await walletPage.getAccountsForCoinInTypeGroupCount(
+                const numberOfAccountsAfter = await walletPage.getAccountsForCoinInTypeCount(
                     'normal',
                     coin.symbol,
                 );

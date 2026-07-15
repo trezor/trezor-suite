@@ -50,7 +50,17 @@ type RuleDeclaration = RequireAtLeastOne<{
     max: Partial<Record<DeviceModelInternal, FirmwareBoundary>>;
 }>;
 
-export type FirmwareRule = RuleSelector & RuleDeclaration & { comment?: string[] };
+// Distinguishes officially signed firmware (`production`) from debug / emulator /
+// unsigned local builds (`debug`). Detected from `Features.fw_vendor`.
+export type FirmwareBuildType = 'debug' | 'production';
+
+export type FirmwareRule = RuleSelector &
+    RuleDeclaration & {
+        comment?: string[];
+        // When set, the rule applies only to devices running a firmware
+        // build of the matching type. Omitted = the rule applies to both.
+        firmwareType?: FirmwareBuildType;
+    };
 
 export type BinaryInfo = {
     binary: ArrayBuffer;

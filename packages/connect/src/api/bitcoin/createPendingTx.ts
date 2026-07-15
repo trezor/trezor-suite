@@ -2,7 +2,7 @@ import type { AccountAddresses, PROTO } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import type { Transaction as BitcoinJsTransaction } from '@trezor/utxo-lib';
 
-import { getSerializedPath } from '../../utils/pathUtils';
+import { __btcUnknownTxDebug__, getSerializedPath } from '../../utils/pathUtils';
 
 export const createPendingTransaction = (
     tx: BitcoinJsTransaction,
@@ -33,36 +33,7 @@ export const createPendingTransaction = (
             .map(address => address.address);
     };
 
-    const vin = inputs.map((ins, n) => {
-        const matched = findAddress(ins);
-        const hasAddressN = Array.isArray(ins.address_n) && ins.address_n.length > 0;
-
-        // [btc-unknown-tx-debug] address_n on this input did not match any address in
-        // account.addresses (unused/used/change). Downstream, blockbookUtils.transformTransaction
-        // will not recognize the input as ours, which can cascade to type='unknown' for the
-        // optimistic pending tx created right after signing. See addFakePendingTxThunk in
-        // suite-common/wallet-core/src/transactions/transactionsThunks.ts.
-        // Intentionally no txid / address_n / addresses: these reach Sentry and could deanonymize the user.
-        if (hasAddressN && matched.length === 0) {
-            console.error(
-                '[btc-unknown-tx-debug] createPendingTransaction → input has no matching address',
-                {
-                    inputIndex: n,
-                    knownAddressesCount: allAddresses.length,
-                },
-            );
-        }
-
-        return {
-            n,
-            txid: ins.prev_hash,
-            vout: ins.prev_index,
-            isAddress: true,
-            addresses: matched,
-            value: ins.amount.toString(),
-            sequence: ins.sequence,
-        };
-    });
+    __btcUnknownTxDebug__('createPendingTransaction', inputs, addresses);
 
     return {
         txid: tx.getId(),
@@ -75,7 +46,15 @@ export const createPendingTransaction = (
         value: valueOut.toString(),
         valueIn: valueIn.toString(),
         fees: valueIn.minus(valueOut).toString(),
-        vin,
+        vin: inputs.map((ins, n) => ({
+            n,
+            txid: ins.prev_hash,
+            vout: ins.prev_index,
+            isAddress: true,
+            addresses: findAddress(ins),
+            value: ins.amount.toString(),
+            sequence: ins.sequence,
+        })),
         vout: outputs.map((out, n) => {
             let transformedAddresses: string[] = [];
 

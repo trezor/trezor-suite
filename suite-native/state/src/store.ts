@@ -4,6 +4,7 @@ import {
     type StoreEnhancer,
     configureStore,
 } from '@reduxjs/toolkit';
+import { persistStore } from 'redux-persist';
 
 import { logsMiddleware } from '@suite-common/logger';
 import {
@@ -131,6 +132,7 @@ export const initStore = (preloadedState?: PreloadedState) => {
 
     return {
         ...castedStore,
+        persistor: persistStore(castedStore.store),
         services: castedStore.extra.services,
     };
 };

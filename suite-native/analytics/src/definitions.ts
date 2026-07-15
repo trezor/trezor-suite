@@ -83,6 +83,9 @@ export type TradingExchangeStep =
     | 'approval-confirming'
     | 'revoke-confirming';
 
+export type TradingBuyAction = 'continue' | 'cancel' | 'visit';
+export type TradingBuyStep = 'buy-form' | 'account-selection' | 'buy-preview';
+
 export type TradingSellAction = 'continue' | 'cancel' | 'retry' | 'visit';
 export type TradingSellStep =
     | 'sell-form'

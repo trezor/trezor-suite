@@ -4,6 +4,21 @@ import { getWeakRandomId, isWhitelistedHost } from '@trezor/utils';
 
 import { type InterceptorContext } from './interceptorTypes';
 
+const PROXY_AUTH_KEY = 'proxy-authorization';
+
+const getHeaderValue = (headers: http.OutgoingHttpHeaders | undefined, name: string) => {
+    if (!headers) return;
+
+    const normalizedName = name.toLowerCase();
+    const key = Object.keys(headers).find(k => k.toLowerCase() === normalizedName);
+    if (!key) return;
+
+    const value = headers[key];
+    if (value === undefined) return;
+
+    return { key, value };
+};
+
 const getIdentityName = (proxyAuthorization?: http.OutgoingHttpHeader) => {
     const identity = Array.isArray(proxyAuthorization) ? proxyAuthorization[0] : proxyAuthorization;
 
@@ -13,13 +28,14 @@ const getIdentityName = (proxyAuthorization?: http.OutgoingHttpHeader) => {
 
 /** Should the request be blocked if Tor isn't enabled? */
 export const getIsTorRequired = (options?: Readonly<http.RequestOptions>) =>
-    !!options?.headers?.['Proxy-Authorization'];
+    !!getHeaderValue(options?.headers, PROXY_AUTH_KEY)?.value;
 
 const getIdentityForAgent = (options?: Readonly<http.RequestOptions>) => {
-    if (options?.headers?.['Proxy-Authorization']) {
+    const proxyAuthorization = getHeaderValue(options?.headers, PROXY_AUTH_KEY)?.value;
+    if (proxyAuthorization) {
         // Use Proxy-Authorization header to define proxy identity
         // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Proxy-Authorization
-        return getIdentityName(options.headers['Proxy-Authorization']);
+        return getIdentityName(proxyAuthorization);
     }
     if (options?.headers?.Upgrade === 'websocket') {
         // Create random identity for each websocket connection
@@ -179,7 +195,12 @@ export const overloadHttpRequest = ({
     const target = requestUrl ?? `${requestOptions.host ?? ''}${requestOptions.path ?? ''}`;
     reportInterceptedRequest(context, `${target} with agent ${!!requestOptions.agent}`);
 
-    delete requestOptions.headers?.['Proxy-Authorization'];
+    if (requestOptions.headers) {
+        const proxyAuthKey = getHeaderValue(requestOptions.headers, PROXY_AUTH_KEY)?.key;
+        if (proxyAuthKey) {
+            delete requestOptions.headers[proxyAuthKey];
+        }
+    }
 
     // Params for the original request, preserving the original call signature.
     const requestArgs: Array<string | URL | http.RequestOptions | RequestCallback | undefined> =

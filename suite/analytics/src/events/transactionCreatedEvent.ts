@@ -48,7 +48,7 @@ export const transactionCreatedEvent: EventDef<Attributes, EventType.Transaction
             changelog: [{ version: '1.9.0', notes: 'added' }],
         },
         symbol: {
-            description: 'Account[`symbol`] e.g. `btc`, `eth`, `doge`',
+            description: 'Network symbol e.g. `btc`, `eth`',
             changelog: [{ version: '1.9.0', notes: 'added' }],
         },
         tokens: {
@@ -57,35 +57,46 @@ export const transactionCreatedEvent: EventDef<Attributes, EventType.Transaction
         },
         outputsCount: {
             changelog: [{ version: '1.9.0', notes: 'added' }],
+            description: 'Number of transaction outputs (recipients)',
         },
         broadcast: {
             changelog: [{ version: '1.9.0', notes: 'added' }],
+            description:
+                'Whether the transaction is broadcast directly to the network (`true`) or saved for later broadcast (`false`)',
         },
         bitcoinLocktime: {
             changelog: [{ version: '1.9.0', notes: 'added' }],
+            description: 'Whether the Bitcoin transaction includes a locktime/timelock parameter',
         },
         transactionData: {
             changelog: [{ version: '1.9.0', notes: 'added' }],
+            description: 'Whether the transaction includes additional data payload',
         },
         ethereumNonce: {
             changelog: [{ version: '1.9.0', notes: 'added' }],
+            description: 'Whether the transaction includes an Ethereum nonce field',
         },
         destinationTag: {
             changelog: [{ version: '1.9.0', notes: 'added' }],
+            description: 'Whether the transaction includes a destination tag',
         },
         selectedFee: {
-            description: '`low`, `economy`, `normal`, `high`, `custom`',
             changelog: [{ version: '1.9.0', notes: 'added' }],
+            description:
+                'The selected fee level for the transaction (e.g., `custom`, `normal`, `economy`, `high`, `low`)',
         },
         isCoinControlEnabled: {
-            changelog: [{ version: '23.2.1', notes: 'added' }],
+            changelog: [{ version: '1.9.0', notes: 'added' }],
+            description: 'Whether coin control feature is enabled in wallet settings',
         },
         hasCoinControlBeenOpened: {
-            changelog: [{ version: '23.2.1', notes: 'added' }],
+            changelog: [{ version: '1.9.0', notes: 'added' }],
+            description: 'Whether the user opened coin control interface during this transaction',
         },
         txType: {
-            description: '`stake` or `trade` whether the user is staking or trading',
             changelog: [{ version: '25.4.0', notes: 'added' }],
+            description:
+                'The type of transaction: `trade` for trading flows, `stake` for staking-related transactions',
         },
     },
 };

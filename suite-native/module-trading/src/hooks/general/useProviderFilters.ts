@@ -2,11 +2,7 @@ import { useMemo, useState } from 'react';
 
 import { type TradingTradeType } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
-import type {
-    FilterItem,
-    SectionListData,
-    SectionListDataArray,
-} from '@suite-native/trading-atoms';
+import type { FilterItem, SectionListData } from '@suite-native/trading-atoms';
 import { type QuotesByCategories, type QuotesCategory } from '@suite-native/trading-types';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -34,7 +30,7 @@ export const useProviderFilters = <T extends TradingTradeType>(
 
             return {
                 key: category,
-                data: items as SectionListDataArray<T>,
+                data: items,
                 label: '',
                 sectionData: typedCategory,
             };

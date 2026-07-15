@@ -1,0 +1,10 @@
+import type { SVGProps } from 'react';
+const SvgArrowDownRight = (props: SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 32 32" {...props}>
+        <path
+            fill="currentColor"
+            d="M25 11v13a1 1 0 0 1-1 1H11a1 1 0 0 1 0-2h10.586L7.293 8.708a1 1 0 1 1 1.415-1.415L23 21.586V11a1 1 0 0 1 2 0"
+        />
+    </svg>
+);
+export { SvgArrowDownRight as ReactComponent };

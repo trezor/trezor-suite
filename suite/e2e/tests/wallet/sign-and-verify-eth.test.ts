@@ -2,6 +2,7 @@ import { expect, test } from '../../support/fixtures';
 
 test.describe('Sign and verify ETH', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
+
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({ enableNetworks: ['eth'] });

@@ -10,9 +10,13 @@ type Attributes = {
 export const coinEnablingInitStateEvent: EventDef<Attributes, EventType.CoinEnablingInitState> = {
     name: EventType.CoinEnablingInitState,
     descriptionTrigger:
-        'On initial coin enabling setup when device is connected for the first time.',
-    changelog: [{ version: '24.9.1', notes: 'Added' }],
+        'Blockchain networks are being enabled during initial setup when a device is connected for the first time',
+    changelog: [{ version: '24.9.1', notes: 'added' }],
     attributes: {
-        enabledNetworks: { changelog: [{ version: '24.9.1', notes: 'added' }] },
+        enabledNetworks: {
+            description:
+                'List of blockchain network symbols that are enabled during initial setup (e.g., `btc`, `eth`, `ada`)',
+            changelog: [{ version: '24.9.1', notes: 'added' }],
+        },
     },
 };

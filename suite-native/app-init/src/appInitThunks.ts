@@ -3,7 +3,11 @@ import {
     defaultEarnYieldWorkerBaseUrl,
     earnYieldWorkerBaseUrl,
 } from '@suite-common/earn-stablecoin-api';
-import { initMessageSystemThunk, prepareCachedEnvData } from '@suite-common/message-system';
+import {
+    initMessageSystemThunk,
+    prepareCachedEnvData,
+    selectActiveKillswitchMessage,
+} from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 import {
@@ -24,6 +28,10 @@ const ACTION_PREFIX = '@suite-native/app';
 export const postOnboardingInit = createThunk(
     `${ACTION_PREFIX}/postOnboardingInit`,
     async (_, { dispatch, getState }) => {
+        // Do not initialize Connect or anything else related to it, if there is an app-wide killswitch via message-system.
+        const activeKillswitchMessage = selectActiveKillswitchMessage(getState());
+        if (activeKillswitchMessage) return;
+
         try {
             await dispatch(connectInitThunk()).unwrap();
         } catch (error) {

@@ -7,3 +7,6 @@ export const getApyPercent = (apyRate: number): number | null => {
 
     return new BigNumber(apyRate).times(100).decimalPlaces(2).toNumber();
 };
+
+export const isApyAvailable = (apy?: number | null): boolean =>
+    apy != null && Number.isFinite(apy) && apy > 0;

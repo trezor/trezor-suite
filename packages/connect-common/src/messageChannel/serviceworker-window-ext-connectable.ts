@@ -1,3 +1,5 @@
+import { resolveAfter } from '@trezor/utils';
+
 import { AbstractMessageChannel, type AbstractMessageChannelConstructorParams } from './abstract';
 
 /**
@@ -70,14 +72,8 @@ export class ServiceWorkerWindowExtConnectableChannel<
                 this.sendChain = this.sendChain
                     .catch(() => {})
                     .then(() => this.doSend(message))
-                    .then(
-                        () =>
-                            new Promise(resolve =>
-                                setTimeout(
-                                    resolve,
-                                    ServiceWorkerWindowExtConnectableChannel.SEND_SETTLE_MS,
-                                ),
-                            ),
+                    .then(() =>
+                        resolveAfter(ServiceWorkerWindowExtConnectableChannel.SEND_SETTLE_MS),
                     );
             },
             logger,

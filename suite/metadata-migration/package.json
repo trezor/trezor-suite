@@ -12,7 +12,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.11.2",
+        "@reduxjs/toolkit": "2.12.0",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/message-system": "workspace:*",
@@ -23,21 +23,21 @@
         "@suite-common/suite-sync-types": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
-        "@suite-common/wallet": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
-        "@suite-common/wallet-utils": "workspace:*",
         "@suite/intl": "workspace:*",
         "@suite/metadata": "workspace:*",
         "@suite/router": "workspace:*",
         "@suite/suite-sync": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
+        "@trezor/icons": "workspace:*",
         "@trezor/product-components": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react": "19.2.4",
-        "react-redux": "9.2.0",
+        "react": "19.2.3",
+        "react-redux": "9.3.0",
         "redux-thunk": "^3.1.0"
     }
 }

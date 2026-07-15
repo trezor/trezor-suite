@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 import {
     type AccountKey,
     type FormStateTradingCryptoCurrency,
@@ -6,7 +8,7 @@ import {
     type TokenAddress,
     type TokenSymbol,
 } from '@suite-common/wallet-types';
-import { convertAmountSubunitsToUnits, isMaxAllowance } from '@suite-common/wallet-utils';
+import { convertAmountSubunitsToUnits, isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { AddressFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
@@ -17,7 +19,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { ReviewOutputHexData } from './ReviewOutputHexData';
 import { ReviewOutputItemValues } from './ReviewOutputItemValues';
 
-export type ReviewOutputItemContentProps = {
+export type ReviewOutputItemContentDataProps = {
     accountKey: AccountKey;
     outputType: ReviewOutputType;
     value: string;
@@ -29,17 +31,25 @@ export type ReviewOutputItemContentProps = {
     receive?: FormStateTradingCryptoCurrency | FormStateTradingFiatCurrency;
 };
 
+export type ReviewOutputItemContentProps = {
+    contentBuilder?: (props: ReviewOutputItemContentDataProps) => ReactNode | undefined;
+} & ReviewOutputItemContentDataProps;
+
+const noop = () => undefined;
+
 export const ReviewOutputItemContent = ({
-    accountKey,
-    outputType,
-    value,
-    value2,
-    token,
-    tokenContract,
-    flowType,
-    send,
-    receive,
+    contentBuilder = noop,
+    ...props
 }: ReviewOutputItemContentProps) => {
+    const content = contentBuilder(props);
+
+    if (content) {
+        return content;
+    }
+
+    const { accountKey, outputType, value, value2, token, tokenContract, flowType, send, receive } =
+        props;
+
     switch (outputType) {
         case 'amount':
             return (
@@ -125,7 +135,10 @@ export const ReviewOutputItemContent = ({
                 flowType === 'revoke-and-approve';
 
             const isApprovalTx = flowType === 'approve';
-            const isMaxApproval = isMaxAllowance(value);
+
+            const isMaxApproval =
+                typeof token?.decimals === 'number' &&
+                isAllowanceUnlimited({ amount: value, decimals: token.decimals, isSubunit: true });
 
             const getPrimaryValue = () => {
                 if (!isApprovalTx && token?.symbol) {
@@ -216,14 +229,22 @@ export const ReviewOutputItemContent = ({
             );
 
         case 'traded_assets': {
-            if (!send || !receive) {
+            if (!send) {
                 return null;
             }
 
-            const receiveDisplay =
-                'fiatCurrency' in receive
+            // On a partial clear-signed swap the receive leg is absent (the device
+            // attests only the send leg), so render send-only.
+            const getReceiveDisplay = () => {
+                if (!receive) {
+                    return undefined;
+                }
+
+                return 'fiatCurrency' in receive
                     ? `${receive.amount} ${receive.fiatCurrency}`
                     : `${receive.amount} ${receive.symbol}`;
+            };
+            const receiveDisplay = getReceiveDisplay();
 
             return (
                 <VStack spacing="sp12">
@@ -231,10 +252,12 @@ export const ReviewOutputItemContent = ({
                         <Translation id="transactionManagement.review.outputs.tradedAssetsSendLabel" />
                         {` ${send.amount} ${send.symbol}`}
                     </Text>
-                    <Text variant="body-sm">
-                        <Translation id="transactionManagement.review.outputs.tradedAssetsReceiveLabel" />
-                        {` ${receiveDisplay}`}
-                    </Text>
+                    {!!receiveDisplay && (
+                        <Text variant="body-sm">
+                            <Translation id="transactionManagement.review.outputs.tradedAssetsReceiveLabel" />
+                            {` ${receiveDisplay}`}
+                        </Text>
+                    )}
                 </VStack>
             );
         }
@@ -254,6 +277,16 @@ export const ReviewOutputItemContent = ({
                         <Text variant="body-sm">{Number(value).toLocaleString()} SUN</Text>
                     </Box>
                 </HStack>
+            );
+        case 'swap_intent':
+            return (
+                <Text variant="body-sm">
+                    {value === 'swap' ? (
+                        <Translation id="transactionManagement.review.outputs.swapIntentValue" />
+                    ) : (
+                        value
+                    )}
+                </Text>
             );
 
         default:

@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 import { Pressable } from 'react-native';
 
-import { useDiscreetMode } from './useDiscreetMode';
+import { useDiscreetMode } from '@suite-common/discreet-mode';
 
 type DiscreetTextTriggerProps = { children: ReactNode; testID?: string };
 

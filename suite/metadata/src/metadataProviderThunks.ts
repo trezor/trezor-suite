@@ -27,7 +27,7 @@ import { FileSystemProvider } from './providers/FileSystemProvider';
 import { GoogleProvider } from './providers/GoogleProvider';
 import { InMemoryTestProvider } from './providers/InMemoryTestProvider';
 
-export type ProviderInstance =
+type ProviderInstance =
     | DropboxProvider
     | GoogleProvider
     | FileSystemProvider
@@ -222,7 +222,7 @@ export const initProvider = () => (dispatch: Dispatch) => {
     return decision.promise;
 };
 
-export const selectProvider =
+const selectProvider =
     ({ dataType, clientId }: { dataType: DataType; clientId: string }) =>
     (dispatch: Dispatch) => {
         dispatch({

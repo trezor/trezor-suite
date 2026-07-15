@@ -1,84 +1,37 @@
-import styled from 'styled-components';
-
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { UpdateState } from '@suite/desktop-update';
-import { Translation } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDevEnv } from '@suite-common/suite-utils';
-import { Icon, Paragraph } from '@trezor/components';
+import { Box, CardList, Column, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
-import { borders, transitions, typography } from '@trezor/theme';
+import {
+    ArrowLineUpRightIcon,
+    BugBeetleIcon,
+    CaretRightIcon,
+    ChatsIcon,
+    LifebuoyIcon,
+    MegaphoneIcon,
+} from '@trezor/icons';
 import { TREZOR_FORUM_URL } from '@trezor/urls';
 
 import { setView } from 'src/actions/suite/guideActions';
-import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
+import {
+    GuideContent,
+    GuideHeader,
+    GuideSectionHeadline,
+    GuideViewWrapper,
+} from 'src/components/guide';
 import { SupportConsentPopover } from 'src/components/guide/SupportConsentPopover';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-const Section = styled.div`
-    & + & {
-        margin-top: 50px;
-    }
-`;
-
-const SectionHeader = styled.h3`
-    ${typography['body-sm-strong']}
-    color: ${({ theme }) => theme.contentSecondary};
-    padding: 0 0 18px;
-`;
-
-const SectionButton = styled.button<{ $hasBackground?: boolean }>`
-    cursor: pointer;
-    border-radius: ${borders.radii.sm};
-    width: 100%;
-    margin: 0 0 10px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    padding: 13px;
-    background: ${({ $hasBackground, theme }) =>
-        $hasBackground ? theme.elementFillElevated : 'none'};
-    border: 0;
-
-    transition: background ${transitions.speed.normal} ${transitions.type};
-
-    &:hover {
-        background: ${({ theme }) => theme.elementFillElevatedHovered};
-    }
-`;
-
-const Details = styled.div`
-    padding: 10px 0 0;
-    ${typography['body-xs']}
-    color: ${({ theme }) => theme.contentSecondary};
-    display: flex;
-    justify-content: space-around;
-`;
-
-const DetailItem = styled.div`
-    display: inline-flex;
-    align-items: center;
-`;
-
-const Label = styled.div`
-    padding: 0 0 0 5px;
-    text-align: left;
-    flex-grow: 1;
-`;
-
-const LabelHeadline = styled.strong`
-    ${typography['body-md']}
-    color: ${({ theme }) => theme.contentPrimary};
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    &:not(:only-child) {
-        margin-bottom: 5px;
-    }
-`;
+const StatusText = ({ id }: { id: TranslationKey }) => (
+    <Text typographyStyle="body-sm" intent="neutral" priority="secondary" as="div">
+        <Translation id={id} />
+    </Text>
+);
 
 export const SupportFeedbackSelection = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
@@ -89,13 +42,55 @@ export const SupportFeedbackSelection = () => {
     const appUpToDate =
         isDesktop() &&
         [UpdateState.Checking, UpdateState.NotAvailable].includes(desktopUpdate.state);
+    const appUpdateAvailable =
+        isDesktop() &&
+        [UpdateState.Available, UpdateState.Downloading, UpdateState.Ready].includes(
+            desktopUpdate.state,
+        );
+    const appVersion = `${process.env.VERSION}${isDevEnv ? '-dev' : ''}`;
 
+    const isDeviceConnected = !!device?.features;
     const firmwareUpToDate = device?.firmware === 'valid';
-    const firmwareVersion = device?.features ? (
-        getFirmwareVersion(device) || <Translation id="TR_DEVICE_FW_UNKNOWN" />
-    ) : (
-        <Translation id="TR_DEVICE_NOT_CONNECTED" />
-    );
+    const getFirmwareVersionLabel = () => {
+        if (!device?.features) {
+            return '-/-';
+        }
+
+        const version = getFirmwareVersion(device);
+
+        if (!version) {
+            return <Translation id="TR_DEVICE_FW_UNKNOWN" />;
+        }
+
+        return <Translation id="TR_YOUR_CURRENT_VERSION" values={{ version }} />;
+    };
+
+    const getAppStatusId = (): TranslationKey | null => {
+        if (appUpToDate) {
+            return 'TR_UP_TO_DATE';
+        }
+
+        if (appUpdateAvailable) {
+            return 'TR_UPDATE_AVAILABLE';
+        }
+
+        return null;
+    };
+
+    const getFirmwareStatusId = (): TranslationKey | null => {
+        if (firmwareUpToDate) {
+            return 'TR_UP_TO_DATE';
+        }
+
+        if (!isDeviceConnected) {
+            return 'TR_GUIDE_SUPPORT_DEVICE_DISCONNECTED';
+        }
+
+        return null;
+    };
+
+    const appStatusId = getAppStatusId();
+    const firmwareStatusId = getFirmwareStatusId();
 
     const goBack = () => dispatch(setView('GUIDE_DEFAULT'));
     const handleBugButtonClick = () => {
@@ -120,128 +115,186 @@ export const SupportFeedbackSelection = () => {
                 label={<Translation id="TR_GUIDE_VIEW_HEADLINES_SUPPORT_FEEDBACK_SELECTION" />}
             />
             <GuideContent>
-                <Section>
-                    <SectionHeader>
-                        <Translation id="TR_GUIDE_VIEW_HEADLINE_HELP_US_IMPROVE" />
-                    </SectionHeader>
-                    <SectionButton
-                        onClick={handleBugButtonClick}
-                        $hasBackground
-                        data-testid="@guide/feedback/bug"
-                    >
-                        <Icon name="lifebuoy" size={40} />
-                        <Label>
-                            <LabelHeadline>
-                                <Translation id="TR_BUG" />
-                            </LabelHeadline>
-                            <Paragraph
-                                typographyStyle="body-sm"
-                                intent="neutral"
-                                priority="secondary"
-                            >
-                                <Translation id="TR_GUIDE_BUG_LABEL" />
-                            </Paragraph>
-                        </Label>
-                    </SectionButton>
-                    <SectionButton
-                        onClick={handleFeedbackButtonClick}
-                        $hasBackground
-                        data-testid="@guide/feedback/suggestion"
-                    >
-                        <Icon name="megaphone" size={40} />
-                        <Label>
-                            <LabelHeadline>
-                                <Translation id="TR_SUGGESTION" />
-                            </LabelHeadline>
-                            <Paragraph
-                                typographyStyle="body-sm"
-                                intent="neutral"
-                                priority="secondary"
-                            >
-                                <Translation id="TR_GUIDE_SUGGESTION_LABEL" />
-                            </Paragraph>
-                        </Label>
-                    </SectionButton>
-                </Section>
+                <Column justifyContent="space-between" height="100%">
+                    <Box flex="1">
+                        <Box margin={{ bottom: 16 }}>
+                            <GuideSectionHeadline id="TR_GUIDE_VIEW_HEADLINE_HELP_US_IMPROVE" />
+                            <CardList>
+                                <CardList.Item
+                                    paddingType="medium"
+                                    onClick={handleBugButtonClick}
+                                    data-testid="@guide/feedback/bug"
+                                >
+                                    <Row gap={16} flex="1" overflow="hidden">
+                                        <IconCircle
+                                            icon={BugBeetleIcon}
+                                            size={32}
+                                            intent="neutral"
+                                        />
+                                        <Column alignItems="flex-start" overflow="hidden">
+                                            <Text
+                                                typographyStyle="body-md"
+                                                as="div"
+                                                maxWidth="100%"
+                                            >
+                                                <Translation id="TR_BUG" />
+                                            </Text>
+                                            <Text
+                                                typographyStyle="body-sm"
+                                                intent="neutral"
+                                                priority="secondary"
+                                                as="div"
+                                                maxWidth="100%"
+                                            >
+                                                <Translation id="TR_GUIDE_BUG_LABEL" />
+                                            </Text>
+                                        </Column>
+                                    </Row>
+                                    <Icon
+                                        as={CaretRightIcon}
+                                        size={20}
+                                        intent="neutral"
+                                        priority="secondary"
+                                    />
+                                </CardList.Item>
+                                <CardList.Item
+                                    paddingType="medium"
+                                    onClick={handleFeedbackButtonClick}
+                                    data-testid="@guide/feedback/suggestion"
+                                >
+                                    <Row gap={16} flex="1" overflow="hidden">
+                                        <IconCircle
+                                            icon={MegaphoneIcon}
+                                            size={32}
+                                            intent="neutral"
+                                        />
+                                        <Column alignItems="flex-start" overflow="hidden">
+                                            <Text
+                                                typographyStyle="body-md"
+                                                as="div"
+                                                maxWidth="100%"
+                                            >
+                                                <Translation id="TR_SUGGESTION" />
+                                            </Text>
+                                            <Text
+                                                typographyStyle="body-sm"
+                                                intent="neutral"
+                                                priority="secondary"
+                                                as="div"
+                                                maxWidth="100%"
+                                            >
+                                                <Translation id="TR_GUIDE_SUGGESTION_LABEL" />
+                                            </Text>
+                                        </Column>
+                                    </Row>
+                                    <Icon
+                                        as={CaretRightIcon}
+                                        size={20}
+                                        intent="neutral"
+                                        priority="secondary"
+                                    />
+                                </CardList.Item>
+                            </CardList>
+                        </Box>
 
-                <Section>
-                    <SectionHeader>
-                        <Translation id="TR_GUIDE_VIEW_HEADLINE_NEED_HELP" />
-                    </SectionHeader>
+                        <Box>
+                            <GuideSectionHeadline id="TR_GUIDE_VIEW_HEADLINE_NEED_HELP" />
+                            <CardList>
+                                <SupportConsentPopover>
+                                    <CardList.Item
+                                        paddingType="medium"
+                                        onClick={() => {}}
+                                        data-testid="@guide/support"
+                                        width="100%"
+                                    >
+                                        <Row gap={16} flex="1" overflow="hidden">
+                                            <IconCircle
+                                                icon={LifebuoyIcon}
+                                                size={32}
+                                                intent="neutral"
+                                            />
+                                            <Text
+                                                typographyStyle="body-md"
+                                                as="div"
+                                                maxWidth="100%"
+                                            >
+                                                <Translation id="TR_GUIDE_SUPPORT" />
+                                            </Text>
+                                        </Row>
+                                        <Icon
+                                            as={ArrowLineUpRightIcon}
+                                            size={20}
+                                            intent="neutral"
+                                            priority="secondary"
+                                        />
+                                    </CardList.Item>
+                                </SupportConsentPopover>
 
-                    <SupportConsentPopover>
-                        <SectionButton $hasBackground data-testid="@guide/support">
-                            <Label>
-                                <LabelHeadline>
-                                    <Translation id="TR_GUIDE_SUPPORT" />
-                                    <Icon size={20} name="arrowLineUpRight" />
-                                </LabelHeadline>
-                            </Label>
-                        </SectionButton>
-                    </SupportConsentPopover>
-
-                    <SectionButton
-                        $hasBackground
-                        data-testid="@guide/forum"
-                        onClick={() => window.open(TREZOR_FORUM_URL, '_blank')}
-                    >
-                        <Label>
-                            <LabelHeadline>
-                                <Translation id="TR_GUIDE_FORUM" />
-                                <Icon size={20} name="arrowLineUpRight" />
-                            </LabelHeadline>
-                            <Paragraph
-                                typographyStyle="body-sm"
-                                intent="neutral"
-                                priority="secondary"
-                            >
-                                <Translation id="TR_GUIDE_FORUM_LABEL" />
-                            </Paragraph>
-                        </Label>
-                    </SectionButton>
-                </Section>
-
-                <Details>
-                    <DetailItem data-testid="@guide/support/version">
-                        <Translation id="TR_APP" />
-                        :&nbsp;
-                        {!isDevEnv && appUpToDate ? (
-                            <>
-                                <Icon
-                                    size={12}
-                                    margin={{ horizontal: 4 }}
-                                    name="check"
-                                    intent="neutral"
-                                    priority="secondary"
-                                />
-                                <Translation id="TR_UP_TO_DATE" />
-                            </>
-                        ) : (
-                            <>
-                                {process.env.VERSION}
-                                {isDevEnv && '-dev'}
-                            </>
-                        )}
-                    </DetailItem>
-                    <DetailItem>
-                        <Translation id="TR_FIRMWARE" />
-                        :&nbsp;
-                        {firmwareUpToDate ? (
-                            <>
-                                <Icon
-                                    size={12}
-                                    margin={{ horizontal: 4 }}
-                                    name="check"
-                                    intent="neutral"
-                                    priority="secondary"
-                                />
-                                <Translation id="TR_UP_TO_DATE" />
-                            </>
-                        ) : (
-                            firmwareVersion
-                        )}
-                    </DetailItem>
-                </Details>
+                                <CardList.Item
+                                    paddingType="medium"
+                                    onClick={() => window.open(TREZOR_FORUM_URL, '_blank')}
+                                    data-testid="@guide/forum"
+                                >
+                                    <Row gap={16} flex="1" overflow="hidden">
+                                        <IconCircle icon={ChatsIcon} size={32} intent="neutral" />
+                                        <Text typographyStyle="body-md" as="div" maxWidth="100%">
+                                            <Translation id="TR_GUIDE_FORUM" />
+                                        </Text>
+                                    </Row>
+                                    <Icon
+                                        as={ArrowLineUpRightIcon}
+                                        size={20}
+                                        intent="neutral"
+                                        priority="secondary"
+                                    />
+                                </CardList.Item>
+                            </CardList>
+                        </Box>
+                    </Box>
+                    <CardList margin={{ bottom: 16 }}>
+                        <CardList.Item data-testid="@guide/support/version" paddingType="medium">
+                            <Row justifyContent="space-between" width="100%" alignItems="flex-end">
+                                <Column alignItems="flex-start" overflow="hidden">
+                                    <Text typographyStyle="body-md" as="div" maxWidth="100%">
+                                        <Translation id="TR_APPLICATION" />
+                                    </Text>
+                                    <Text
+                                        typographyStyle="body-sm"
+                                        intent="neutral"
+                                        priority="secondary"
+                                        as="div"
+                                        maxWidth="100%"
+                                    >
+                                        <Translation
+                                            id="TR_YOUR_CURRENT_VERSION"
+                                            values={{ version: appVersion }}
+                                        />
+                                    </Text>
+                                </Column>
+                                {!!appStatusId && <StatusText id={appStatusId} />}
+                            </Row>
+                        </CardList.Item>
+                        <CardList.Item data-testid="@guide/support/firmware" paddingType="medium">
+                            <Row justifyContent="space-between" width="100%" alignItems="flex-end">
+                                <Column alignItems="flex-start" overflow="hidden">
+                                    <Text typographyStyle="body-md" as="div" maxWidth="100%">
+                                        <Translation id="TR_FIRMWARE" />
+                                    </Text>
+                                    <Text
+                                        typographyStyle="body-sm"
+                                        intent="neutral"
+                                        priority="secondary"
+                                        as="div"
+                                        maxWidth="100%"
+                                    >
+                                        {getFirmwareVersionLabel()}
+                                    </Text>
+                                </Column>
+                                {!!firmwareStatusId && <StatusText id={firmwareStatusId} />}
+                            </Row>
+                        </CardList.Item>
+                    </CardList>
+                </Column>
             </GuideContent>
         </GuideViewWrapper>
     );

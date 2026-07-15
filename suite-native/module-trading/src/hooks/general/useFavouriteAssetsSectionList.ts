@@ -1,8 +1,6 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import type { CryptoId } from 'invity-api';
-
 import { selectTradingFavouriteAssets } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
 import { type SectionListData } from '@suite-native/trading-atoms';
@@ -23,7 +21,8 @@ const getInitialSectionData = (): SectionData => ({
 });
 
 const getFavouriteSectionDataReducer =
-    (favourites: Record<CryptoId, true>) => (sectionData: SectionData, coin: TradeableAsset) => {
+    (favourites: Partial<Record<string, true>>) =>
+    (sectionData: SectionData, coin: TradeableAsset) => {
         if (favourites[coin.cryptoId]) {
             sectionData.favouriteData.push(coin);
         } else {

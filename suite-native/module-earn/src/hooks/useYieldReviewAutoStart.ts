@@ -1,8 +1,7 @@
-import { useEffect, useRef } from 'react';
-
-import { useWaitForButtonRequest } from '@suite-native/transaction-management';
+import { useCallback } from 'react';
 
 import { type YieldReviewSigningResult } from '../types';
+import { type ReviewAutoStartControls, useAutoStartReview } from './useAutoStartReview';
 
 type UseYieldReviewAutoStartParams = {
     onDeviceReviewReady: () => void;
@@ -19,22 +18,10 @@ export const useYieldReviewAutoStart = ({
     shouldAutoStartReview,
     startReview,
 }: UseYieldReviewAutoStartParams) => {
-    const hasStartedRef = useRef(false);
-    const waitForDeviceReview = useWaitForButtonRequest(onDeviceReviewReady);
-
-    useEffect(() => {
-        if (!shouldAutoStartReview || hasStartedRef.current) {
-            return;
-        }
-
-        hasStartedRef.current = true;
-        waitForDeviceReview();
-
-        const start = async () => {
-            const result = await startReview();
-
+    const onReviewSettled = useCallback(
+        async (result: YieldReviewSigningResult, { allowRestart }: ReviewAutoStartControls) => {
             if (result === 'not-ready') {
-                hasStartedRef.current = false;
+                allowRestart();
 
                 return;
             }
@@ -48,14 +35,14 @@ export const useYieldReviewAutoStart = ({
             if (result === 'failed') {
                 onReviewFailed();
             }
-        };
+        },
+        [onReviewCancelled, onReviewFailed],
+    );
 
-        void start();
-    }, [
-        onReviewCancelled,
-        onReviewFailed,
+    useAutoStartReview({
         shouldAutoStartReview,
         startReview,
-        waitForDeviceReview,
-    ]);
+        onDeviceReviewReady,
+        onReviewSettled,
+    });
 };

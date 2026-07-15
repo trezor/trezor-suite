@@ -26,41 +26,37 @@ const HiddenInput = styled.input`
 const FakeInput = styled.div`
     ${commonCheckInputStyles}
 
-    position: relative;
     border-radius: ${borders.radii.full};
 
     &::after {
         content: '';
-        width: 14px;
-        height: 14px;
+        width: 12px;
+        height: 12px;
         border-radius: 50%;
         opacity: 0;
-        transition: 0.1s ease-in-out;
+        transition: 0.2s ease-in-out;
+        transform: scale(0);
     }
 
     ${({ theme }) => css`
-        &::after {
-            background-color: ${theme.legacyBackgroundPrimaryDefault};
-        }
-
         input:checked + & {
-            background-color: ${theme.surfaceFillPage};
+            border-color: transparent;
 
             &::after {
                 opacity: 1;
+                transform: scale(1);
             }
         }
 
-        input:disabled:not(:checked) + &::after {
-            background-color: transparent;
+        input:checked:not(:disabled) + &::after {
+            background-color: ${theme.contentPrimaryInverse};
         }
 
         input:checked:disabled + & {
-            border-color: ${theme.legacyBackgroundPrimarySubtleOnElevation1};
-            background-color: transparent;
+            background-color: ${theme.elementFillBoldDisabled};
 
             &::after {
-                background-color: ${theme.legacyBackgroundPrimarySubtleOnElevation0};
+                background-color: ${theme.contentDisabled};
             }
         }
     `}

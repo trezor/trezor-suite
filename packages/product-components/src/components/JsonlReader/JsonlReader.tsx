@@ -3,6 +3,7 @@ import { type ChangeEvent, type ReactNode, useId, useRef, useState } from 'react
 import styled from 'styled-components';
 import type { ObjectSchema } from 'yup';
 
+import { type ParseJsonlError, parseJsonl } from '@suite-common/jsonl';
 import {
     Button,
     type ButtonProps,
@@ -13,9 +14,8 @@ import {
     type FramePropsKeys,
     pickFormCellProps,
 } from '@trezor/components';
+import { FileTextIcon } from '@trezor/icons';
 import { type Result, err, exhaustive, ok } from '@trezor/type-utils';
-
-import { type ParseJsonlError, parseJsonl } from './parseJsonl';
 
 export const allowedJsonlReaderFrameProps = [
     'margin',
@@ -123,7 +123,7 @@ export const JsonlReader = <T extends Record<string, unknown> = Record<string, u
 
     const formCellProps = pickFormCellProps(rest);
     const { isDisabled, hasError, bottomText } = formCellProps;
-    const resolvedIconLeft = iconLeft === null ? undefined : (iconLeft ?? 'fileText');
+    const resolvedIconLeft = iconLeft === null ? undefined : (iconLeft ?? FileTextIcon);
 
     const handleError = (error: JsonlReaderError) => {
         onError?.(error);

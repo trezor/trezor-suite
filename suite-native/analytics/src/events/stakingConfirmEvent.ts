@@ -10,14 +10,18 @@ type Attributes = {
 
 export const stakingConfirmEvent: EventDef<Attributes, EventType.StakingConfirm> = {
     name: EventType.StakingConfirm,
-    descriptionTrigger: 'fired when a stake/unstake/claim transaction has been created and sent',
+    descriptionTrigger: 'A stake/unstake/claim transaction is created and sent to the blockchain',
     changelog: [{ version: '26.4.1', notes: 'added' }],
     attributes: {
         action: {
             changelog: [{ version: '26.4.1', notes: 'added' }],
+            description:
+                'The staking action being confirmed: `stake` for depositing funds, `unstake` for withdrawing funds, `claim` for collecting rewards',
         },
         networkSymbol: {
             changelog: [{ version: '26.4.1', notes: 'added' }],
+            description:
+                'The blockchain network symbol for the staking operation (e.g., `eth`, `sol`, `ada`)',
         },
     },
 };

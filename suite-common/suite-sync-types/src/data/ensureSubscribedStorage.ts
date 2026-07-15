@@ -4,8 +4,8 @@ import {
     type DeviceErrorType,
     type DeviceNotConnectedErrorType,
 } from '@suite-common/suite-types';
-import { type WalletDescriptor } from '@suite-common/wallet';
 import { type StaticSessionId } from '@trezor/connect-common';
+import { type WalletDescriptor } from '@trezor/device-utils';
 import { type Result } from '@trezor/type-utils';
 
 import { type SuiteSyncUnavailableOnDeviceErrorType } from '../ensureSuiteSyncKeys';

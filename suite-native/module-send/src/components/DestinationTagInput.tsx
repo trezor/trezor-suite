@@ -122,7 +122,7 @@ export const DestinationTagInput = ({ networkSymbol }: DestinationTagInputProps)
             ) : (
                 <Animated.View entering={FadeIn} exiting={FadeOut}>
                     <InlineAlertBox
-                        variant="warning"
+                        intent="warning"
                         title={
                             <Translation
                                 id="moduleSend.outputs.recipients.destinationTag.warning"

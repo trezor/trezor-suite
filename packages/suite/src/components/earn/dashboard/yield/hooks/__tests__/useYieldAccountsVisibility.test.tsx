@@ -31,10 +31,10 @@ const createMockOpportunity = (
         matchedInputToken: undefined,
         hasVaultPosition: false,
         hasRewardsData,
-        suppliedAmount: '0',
-        additionalSupplyAmount: '0',
-        suppliedSymbol: 'usdc' as YieldAccountOpportunity['suppliedSymbol'],
-        suppliedContractAddress: null,
+        depositedAmount: '0',
+        additionalDepositAmount: '0',
+        depositedSymbol: 'usdc' as YieldAccountOpportunity['depositedSymbol'],
+        depositedContractAddress: null,
         apyPercentage: 5,
     }) as YieldAccountOpportunity;
 
@@ -117,15 +117,15 @@ describe('useYieldAccountsVisibility', () => {
             const yieldAccountOpportunities = [
                 {
                     ...createMockOpportunity(eth2, 'vault-a'),
-                    additionalSupplyAmount: equalAvailableBalance,
+                    additionalDepositAmount: equalAvailableBalance,
                 },
                 {
                     ...createMockOpportunity(eth1, 'vault-a'),
-                    additionalSupplyAmount: equalAvailableBalance,
+                    additionalDepositAmount: equalAvailableBalance,
                 },
                 {
                     ...createMockOpportunity(eth0, 'vault-a'),
-                    additionalSupplyAmount: equalAvailableBalance,
+                    additionalDepositAmount: equalAvailableBalance,
                 },
             ];
 
@@ -159,11 +159,11 @@ describe('useYieldAccountsVisibility', () => {
             const yieldAccountOpportunities = [
                 {
                     ...createMockOpportunity(baseLedger0, 'vault-a'),
-                    additionalSupplyAmount: equalAvailableBalance,
+                    additionalDepositAmount: equalAvailableBalance,
                 },
                 {
                     ...createMockOpportunity(baseNormal3, 'vault-a'),
-                    additionalSupplyAmount: equalAvailableBalance,
+                    additionalDepositAmount: equalAvailableBalance,
                 },
             ];
 

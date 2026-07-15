@@ -5,9 +5,10 @@ import { useCountrySelectionAnalyticsReport } from '../hooks/useCountrySelection
 
 export type SkipButtonProps = {
     onPress: () => void;
+    testId?: string;
 };
 
-export const SkipButton = ({ onPress }: SkipButtonProps) => {
+export const SkipButton = ({ onPress, testId }: SkipButtonProps) => {
     const analyticsReport = useCountrySelectionAnalyticsReport();
 
     const skipLocation = () => {
@@ -16,7 +17,7 @@ export const SkipButton = ({ onPress }: SkipButtonProps) => {
     };
 
     return (
-        <Button intent="neutral" priority="secondary" onPress={skipLocation}>
+        <Button intent="neutral" priority="secondary" onPress={skipLocation} testID={testId}>
             <Translation id="tradingResidence.locationSettings.skipButton" />
         </Button>
     );

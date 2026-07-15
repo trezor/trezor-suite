@@ -1,3 +1,4 @@
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { getTxAnchor, goto, selectRouteName, selectRouterApp } from '@suite/router';
@@ -23,7 +24,6 @@ import {
     type TransactionNotificationType,
 } from '@trezor/product-components';
 
-import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
 import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';

@@ -1,27 +1,28 @@
 ### 🚀 New features
 
-- Legacy labeling can now be migrated to Suite Sync.
-- WalletConnect now warns when account balances are insufficient before confirming transactions.
-- Trading offers can now be compared side by side.
-- A new DeFi Tokens section has been added for EVM accounts.
-- Passphrase entry now includes a Caps Lock warning.
-- Coin settings can now be opened directly from the dashboard.
-- Device authenticity verification now includes MCU MLDSA support.
-- ERC-681 links and QR codes are now supported in the send form.
-- Custom backends can now be configured without activating coins first.
-- Solana transactions now support Memo fields.
+- Tron (TRX) staking is now available directly in Trezor Suite
+- Users can now cancel pending EVM transactions
+- Option added to view and edit nonce in the EVM send form
+- A new preview step has been added to the Buy flow
+- SLIP24 enabled for Ripple transactions
+- WalletConnect button added to the account menu for quick access to connected apps
 
 ### 🎨 Improvements
 
-- A new Earn section has been added.
-- Address formatting has been improved across the app.
-- Privacy settings have been reorganized for easier access.
-- Desktop and mobile onboarding flows are now unified.
-- Asset history charts have an updated layout.
-- Bitcoin-only firmware wallets now show a cleaner interface.
+- Account sorting updated across sidebar menu and transaction screens
+- Zero-balance and hidden tokens are now sorted alphabetically
+- Page navigation simplified in the trading section
+- Expanded clear signing coverage for 1inch and other trading flows
+- Clearer error messages now shown during Swap transaction failures
+- Visual fixes for the in-app user guide
+- Lower minimum fee rate of 0.2 sat/vB for Normal priority transactions
+- Improved permission handling in Trezor Connect and the Connect popup
 
 ### 🔧 Bug fixes
 
-- Fixed repeated passphrase prompts when activating additional coins with Cardano enabled.
-- Fixed unsupported assets appearing in the swap form.
-- Minor bugs and usability issues have been resolved for a smoother experience.
+- Prevention of canceling or speeding up EVM transactions with a nonce gap
+- Hidden assets are excluded from token search results
+- Unification of Bitcoin Cash address prefix throughout Suite
+- Fixed incorrect network fees shown for 1inch Fusion swaps
+- Visual / UX improvements throughout the application
+- Minor bugs have been resolved, along with general usability enhancements for a more reliable and seamless experience

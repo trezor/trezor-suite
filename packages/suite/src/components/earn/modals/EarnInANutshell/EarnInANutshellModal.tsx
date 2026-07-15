@@ -33,7 +33,10 @@ type StakingEarnInANutshellModalProps = EarnInANutshellBaseProps & {
 
 type YieldEarnInANutshellModalProps = EarnInANutshellBaseProps & {
     flow: EarnFlow.Yield;
-    analyticsStep: Extract<EarnAnalyticsStep, 'earn-dashboard' | 'yield-supply' | 'yield-withdraw'>;
+    analyticsStep: Extract<
+        EarnAnalyticsStep,
+        'earn-dashboard' | 'yield-deposit' | 'yield-withdraw'
+    >;
 };
 
 type EarnInANutshellModalProps = StakingEarnInANutshellModalProps | YieldEarnInANutshellModalProps;

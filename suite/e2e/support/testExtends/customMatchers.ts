@@ -47,6 +47,7 @@ const compareDisplayContent = async (
     errorMessage: string,
 ) => {
     await test.step(`expected object: ${JSON.stringify(expectedContent)}`, () => {});
+
     const contentRaw = await device.getDisplayContent();
     const content = normalizeWhitespace(contentRaw);
     const debugInfo = JSON.stringify(await device.getAnalyzedDisplayContent(), null, 2);

@@ -21,7 +21,7 @@ import {
     WalletConnectSwitchAccountScreen,
 } from '@suite-native/module-connect-popup';
 import { DemoAccountQuestionnaireStackNavigator } from '@suite-native/module-demo-account-questionnaire';
-import { DevUtilsScreen } from '@suite-native/module-dev-utils';
+import { DevUtilsScreen, MessageSystemManagerScreen } from '@suite-native/module-dev-utils';
 import {
     BackupFailedModalScreen,
     DeviceOnboardingStackNavigator,
@@ -45,10 +45,12 @@ import {
 import { FeatureFeedbackModalScreen } from '@suite-native/module-home';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
 import { PassphraseStackNavigator } from '@suite-native/module-passphrase';
+import { ReceiveStackNavigator } from '@suite-native/module-receive';
 import { SendStackNavigator } from '@suite-native/module-send';
 import { SettingsStackNavigator } from '@suite-native/module-settings';
 import { StellarManageTokenStackNavigator } from '@suite-native/module-stellar-token-management';
 import {
+    TradingBuyPreviewScreen,
     TradingConfirmingScreen,
     TradingExchangeApprovalScreen,
     TradingExchangeOutputsReviewScreen,
@@ -65,7 +67,6 @@ import {
     RootStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
-import { ReceiveStackNavigator } from '@suite-native/receive';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { StorybookUI } from '@suite-native/storybook';
 import { TradingLocationModalScreen } from '@suite-native/trading-residence';
@@ -236,8 +237,17 @@ export const RootStackNavigator = () => {
                     name={RootStackRoutes.TradingHistory}
                     component={TradingHistoryScreen}
                 />
+                <RootStack.Screen
+                    options={{ title: RootStackRoutes.TradingBuyPreview }}
+                    name={RootStackRoutes.TradingBuyPreview}
+                    component={TradingBuyPreviewScreen}
+                />
             </RootStack.Group>
             <RootStack.Screen name={RootStackRoutes.DevUtils} component={DevUtilsScreen} />
+            <RootStack.Screen
+                name={RootStackRoutes.MessageSystemManager}
+                component={MessageSystemManagerScreen}
+            />
             <RootStack.Screen name={RootStackRoutes.ConnectPopup} component={ConnectPopupScreen} />
             <RootStack.Screen
                 name={RootStackRoutes.WalletConnectSessionPopup}

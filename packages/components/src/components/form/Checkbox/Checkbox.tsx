@@ -7,6 +7,7 @@ import {
 
 import styled, { css } from 'styled-components';
 
+import { CheckIcon } from '@trezor/icons';
 import { borders } from '@trezor/theme';
 
 import { type LabelAlignment, type VerticalAlignment } from './types';
@@ -39,17 +40,13 @@ const FakeInput = styled.div`
     border-radius: ${borders.radii.xxs};
 
     ${({ theme }) => css`
-        input:checked + & {
-            background-color: ${theme.legacyBackgroundPrimaryDefault};
-        }
-
         input:not(:checked) + & > * {
             opacity: 0;
         }
 
         input:checked:disabled + & {
-            border-color: ${theme.legacyBackgroundPrimarySubtleOnElevation0};
-            background-color: ${theme.legacyBackgroundPrimarySubtleOnElevation0};
+            border-color: transparent;
+            background-color: ${theme.elementFillBoldDisabled};
         }
     `}
 `;
@@ -98,7 +95,11 @@ export const Checkbox = ({
             />
 
             <FakeInput>
-                <Icon size={16} color="contentPrimaryInverse" name="check" />
+                <Icon
+                    size={16}
+                    color={isDisabled ? 'contentDisabled' : 'contentPrimaryInverse'}
+                    as={CheckIcon}
+                />
             </FakeInput>
 
             {children && (

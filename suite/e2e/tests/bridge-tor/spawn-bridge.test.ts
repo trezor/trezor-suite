@@ -15,7 +15,8 @@ import { SettingsPage } from '../../support/pageObjects/settings/settingsPage';
 import { enhancePage } from '../../support/testExtends/enhancePage';
 
 test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
-    test.use({ exceptionLogger: skipFixture, startEmulator: false, setupEmulator: false });
+    test.use({ jsExceptionWatcher: skipFixture, startEmulator: false, setupEmulator: false });
+
     test.beforeEach(async ({ page, trezorUserEnv }) => {
         await page.close();
         //Ensure bridge is stopped so we properly test the electron app starting node-bridge module.

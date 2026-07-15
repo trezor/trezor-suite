@@ -16,6 +16,8 @@ export const dashboardReceiveModalEvent: EventDef<Attributes, EventType.Dashboar
     attributes: {
         source: {
             changelog: [{ version: '26.3.0', notes: 'added' }],
+            description:
+                'Where the receive modal was opened from: `page-header` from the main page header button, `empty-wallet` from empty wallet state',
         },
     },
 };

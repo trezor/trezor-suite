@@ -1,4 +1,4 @@
-import type { TrezorConnect } from '../../..';
+import type { TrezorConnectPrivilegedAPI as TrezorConnect } from '../../..';
 import { asDeviceUniquePath } from '../../..';
 
 export const ethereumGetAddress = async (api: TrezorConnect) => {

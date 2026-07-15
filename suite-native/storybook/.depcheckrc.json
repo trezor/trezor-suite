@@ -1,6 +1,7 @@
 {
     "ignore-patterns": ["libDev", "lib"],
     "ignores": [
+        "@lottiefiles/dotlottie-react",
         "@react-native-community/datetimepicker",
         "@react-native-community/slider",
         "@storybook/addon-ondevice-controls",

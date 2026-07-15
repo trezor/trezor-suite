@@ -72,6 +72,10 @@ const config = {
                 '@evolu/common/local-first': `${rootNodeModulesPath}/@evolu/common/dist/src/local-first/index.js`,
                 '@evolu/common/polyfills': `${rootNodeModulesPath}/@evolu/common/dist/src/Polyfills.js`,
                 '@evolu/react-native/polyfills': `${rootNodeModulesPath}/@evolu/react-native/dist/src/Polyfills.js`,
+                '@solana/kit/program-client-core': `${rootNodeModulesPath}/@solana/kit/dist/program-client-core.native.mjs`,
+                'crc/calculators/crc32': `${rootNodeModulesPath}/crc/cjs-default-unwrap/calculators/crc32.js`,
+                'crc/calculators/crc16xmodem': `${rootNodeModulesPath}/crc/cjs-default-unwrap/calculators/crc16xmodem.js`,
+                'bignumber.js': `${rootNodeModulesPath}/bignumber.js/dist/bignumber.cjs`,
                 uuid: `${rootNodeModulesPath}/uuid/dist/index.js`,
 
                 // web3-validator package is by default trying to use non-existing minified index file. This fixes that.
@@ -83,10 +87,10 @@ const config = {
                 return getSourceFile(overrides[moduleName]);
             }
 
-            // @trezor/coins-* packages have exports paths defined in package.json
-            const coinsModuleMatch = moduleName.match(/^@trezor\/coins-([^/]+)\/([^/]+)$/);
-            if (coinsModuleMatch) {
-                const source = `${rootNodeModulesPath}/@trezor/coins-${coinsModuleMatch[1]}/src/${coinsModuleMatch[2]}/index.ts`;
+            // @trezor/network-* packages have exports paths defined in package.json
+            const networkModuleMatch = moduleName.match(/^@trezor\/network-([a-z]+)\/([^/]+)$/);
+            if (networkModuleMatch) {
+                const source = `${rootNodeModulesPath}/@trezor/network-${networkModuleMatch[1]}/src/${networkModuleMatch[2]}/index.ts`;
 
                 return getSourceFile(source);
             }
@@ -117,15 +121,17 @@ const configWithStorybook = mergeConfig(
     }),
 );
 
+let exportedConfig = configWithStorybook;
+
 if (
     process.env.EXPO_PUBLIC_IS_DETOX_BUILD !== 'true' &&
     process.env.EXPO_PUBLIC_ENVIRONMENT === 'debug'
 ) {
     // enable Rozenite plugins only in debug build
-    module.exports = withRozenite(configWithStorybook, {
+    exportedConfig = withRozenite(configWithStorybook, {
         enhanceMetroConfig: originalConfig => withRozeniteReduxDevTools(originalConfig),
         enabled: true,
     });
-} else {
-    module.exports = configWithStorybook;
 }
+
+module.exports = exportedConfig;

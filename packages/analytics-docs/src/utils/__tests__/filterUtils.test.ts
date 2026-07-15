@@ -1,7 +1,11 @@
 import type { EventDoc } from '../../types';
 import {
+    eventHasVersion,
+    eventMatchesFullText,
+    eventNameMatchesQuery,
     fuzzyMatch,
     fuzzyMatchExportName,
+    getAllVersions,
     getEventId,
     getVersionsWithEvents,
     toEventExportName,
@@ -79,6 +83,92 @@ describe('fuzzyMatchExportName', () => {
     });
 });
 
+const searchEvent = {
+    name: 'accounts/active-staking',
+    description: 'Tracks staking activity.',
+    descriptionTrigger: 'Fires when the user opens the staking dashboard.',
+    changelog: { entries: [] },
+    attributes: {
+        symbol: { description: 'Network symbol', changelog: { entries: [] } },
+        stakeAmount: { description: 'Amount staked in base units', changelog: { entries: [] } },
+        provider: {
+            description: 'Backup provider',
+            runtimeType: "'legacy'\n| 'dropbox'\n| 'suite-sync'",
+            changelog: { entries: [] },
+        },
+    },
+    platform: 'desktop',
+} as unknown as EventDoc;
+
+describe('eventNameMatchesQuery (simplified / titles only)', () => {
+    it('empty query matches everything', () => {
+        expect(eventNameMatchesQuery('', searchEvent)).toBe(true);
+        expect(eventNameMatchesQuery('   ', searchEvent)).toBe(true);
+    });
+
+    it('matches by event name', () => {
+        expect(eventNameMatchesQuery('accounts', searchEvent)).toBe(true);
+        expect(eventNameMatchesQuery('active staking', searchEvent)).toBe(true);
+    });
+
+    it('does NOT match terms that only appear in trigger / attributes', () => {
+        expect(eventNameMatchesQuery('user', searchEvent)).toBe(false);
+        expect(eventNameMatchesQuery('symbol', searchEvent)).toBe(false);
+        expect(eventNameMatchesQuery('suite-sync', searchEvent)).toBe(false);
+    });
+});
+
+describe('eventMatchesFullText (advanced / everything)', () => {
+    it('empty query matches everything', () => {
+        expect(eventMatchesFullText('', searchEvent)).toBe(true);
+        expect(eventMatchesFullText('   ', searchEvent)).toBe(true);
+    });
+
+    it('matches by event name', () => {
+        expect(eventMatchesFullText('accounts', searchEvent)).toBe(true);
+    });
+
+    it('matches a term in the Trigger description', () => {
+        expect(eventMatchesFullText('user', searchEvent)).toBe(true);
+        expect(eventMatchesFullText('dashboard', searchEvent)).toBe(true);
+    });
+
+    it('matches an attribute name', () => {
+        expect(eventMatchesFullText('symbol', searchEvent)).toBe(true);
+    });
+
+    it('matches an attribute description', () => {
+        expect(eventMatchesFullText('base units', searchEvent)).toBe(true);
+    });
+
+    it('matches a union member in an attribute runtime type', () => {
+        expect(eventMatchesFullText('suite-sync', searchEvent)).toBe(true);
+        expect(eventMatchesFullText('dropbox', searchEvent)).toBe(true);
+    });
+
+    it('matches the event description', () => {
+        expect(eventMatchesFullText('staking activity', searchEvent)).toBe(true);
+    });
+
+    it('is case-insensitive', () => {
+        expect(eventMatchesFullText('User', searchEvent)).toBe(
+            eventMatchesFullText('user', searchEvent),
+        );
+        expect(eventMatchesFullText('SYMBOL', searchEvent)).toBe(true);
+    });
+
+    it('returns false for a non-matching term', () => {
+        expect(eventMatchesFullText('nonexistentterm', searchEvent)).toBe(false);
+    });
+
+    it('multi-term query is token-AND across all searchable fields', () => {
+        // "user" (trigger) + "symbol" (attribute name) both present
+        expect(eventMatchesFullText('user symbol', searchEvent)).toBe(true);
+        // "user" present, "missing" absent
+        expect(eventMatchesFullText('user missing', searchEvent)).toBe(false);
+    });
+});
+
 describe('toEventExportName', () => {
     it('converts event name to export name', () => {
         expect(toEventExportName('accounts/active-staking')).toBe('accountsActiveStakingEvent');
@@ -92,6 +182,36 @@ describe('toEventExportName', () => {
 describe('getEventId', () => {
     it('produces safe DOM id from event name', () => {
         expect(getEventId('accounts/active-staking')).toBe('event-accounts-active-staking');
+    });
+});
+
+describe('version filtering', () => {
+    const eventA = {
+        name: 'accounts/active-staking',
+        descriptionTrigger: 'trigger',
+        changelog: { entries: [{ version: '1.2.0', notes: 'n' }] },
+        attributes: {
+            attr: { changelog: { entries: [{ version: '1.4.0', notes: 'n' }] } },
+        },
+        platform: 'desktop',
+    } as unknown as EventDoc;
+
+    const eventB = {
+        name: 'accounts/actions',
+        descriptionTrigger: 'trigger',
+        changelog: { entries: [{ version: '1.3.0', notes: 'n' }] },
+        attributes: {},
+        platform: 'desktop',
+    } as unknown as EventDoc;
+
+    it('getAllVersions returns distinct versions newest first', () => {
+        expect(getAllVersions([eventA, eventB])).toEqual(['1.4.0', '1.3.0', '1.2.0']);
+    });
+
+    it('eventHasVersion matches event and attribute changelog versions', () => {
+        expect(eventHasVersion(eventA, '1.2.0')).toBe(true); // event changelog
+        expect(eventHasVersion(eventA, '1.4.0')).toBe(true); // attribute changelog
+        expect(eventHasVersion(eventA, '1.3.0')).toBe(false);
     });
 });
 

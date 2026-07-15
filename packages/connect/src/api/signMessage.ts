@@ -1,7 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/SignMessage.js
 
-import type { BitcoinNetworkInfo, MethodPermission } from '@trezor/connect-common';
+import type { BitcoinNetworkInfo, PermissionRequest } from '@trezor/connect-common';
 import { SignMessage as SignMessageSchema } from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
@@ -26,6 +27,9 @@ export default class SignMessage extends AbstractMethod<'signMessage', Params> {
         let coinInfo;
         if (payload.coin) {
             coinInfo = getBitcoinNetwork(payload.coin);
+            if (!coinInfo) {
+                throw ERRORS.TypedError('Method_UnknownCoin');
+            }
             validateCoinPath(path, coinInfo);
         } else {
             coinInfo = getBitcoinNetwork(path);
@@ -61,8 +65,8 @@ export default class SignMessage extends AbstractMethod<'signMessage', Params> {
 
     coinInfo: BitcoinNetworkInfo | undefined;
 
-    get requiredPermissions(): MethodPermission[] {
-        return ['read', 'write'];
+    get requiredPermissions(): PermissionRequest[] {
+        return [this.coinPerm('sign_message', this.coinInfo)];
     }
 
     get info() {

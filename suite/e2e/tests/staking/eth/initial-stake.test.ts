@@ -12,6 +12,7 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
             mnemonic: 'access juice claim special truth ugly swarm rabbit hair man error bar',
         },
     });
+
     test.beforeEach(
         async ({ page, dashboardPage, onboardingPage, settingsPage, blockbookMock }) => {
             await onboardingPage.completeOnboarding();
@@ -158,10 +159,12 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await stakingSection.expectProgressIndicatorsToMatchPhase('pendingTransaction');
                 await expect(stakingSection.speedUpButton).toBeEnabled();
                 await stakingSection.expectStakingAmounts({
-                    pending: '0.100204158497493752',
-                    staked: '0',
-                    rewards: '0',
-                    unstaking: 'hidden',
+                    expected: {
+                        pending: '0.100204158497493752',
+                        staked: '0',
+                        rewards: '0',
+                        unstaking: 'hidden',
+                    },
                 });
             });
 
@@ -187,10 +190,12 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(stakingSection.transactionStatus).toHaveTranslation('TR_TX_CONFIRMED');
                 await stakingSection.expectProgressIndicatorsToMatchPhase('addingToPool');
                 await stakingSection.expectStakingAmounts({
-                    pending: '0.100204158497493752',
-                    staked: '0',
-                    rewards: '0',
-                    unstaking: 'hidden',
+                    expected: {
+                        pending: '0.100204158497493752',
+                        staked: '0',
+                        rewards: '0',
+                        unstaking: 'hidden',
+                    },
                 });
                 await expect(stakingSection.pendingTransactionText).toBeHidden();
                 await expect(stakingSection.speedUpButton).toBeHidden();
@@ -214,10 +219,12 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 });
                 await page.clock.fastForward(stakingSection.watchPeriod);
                 await stakingSection.expectStakingAmounts({
-                    pending: 'hidden',
-                    staked: '0.100204158497493752',
-                    rewards: '0',
-                    unstaking: 'hidden',
+                    expected: {
+                        pending: 'hidden',
+                        staked: '0.100204158497493752',
+                        rewards: '0',
+                        unstaking: 'hidden',
+                    },
                 });
                 await stakingSection.expectProgressIndicatorsToMatchPhase('receivingRewards');
                 await expect(stakingSection.stakeMoreButton).toBeEnabled();

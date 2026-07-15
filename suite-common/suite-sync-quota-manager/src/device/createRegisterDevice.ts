@@ -12,17 +12,20 @@ import {
     type DeviceErrorType,
     type TrezorDeviceWithState,
 } from '@suite-common/suite-types';
-import { type TrezorConnect } from '@trezor/connect';
+import { type TrezorConnectCallable } from '@trezor/connect';
+import { getFirmwareVersionArray } from '@trezor/device-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
+import { versionUtils } from '@trezor/utils';
 
-import { DEFAULT_DEVICE_SIZE_QUOTA } from '../constants';
-import { QuotaManagerCommunicationFailed } from '../errors';
-import { type RegisterDeviceFetchDep } from './createRegisterDeviceFetch';
-import { quotaManagerDeviceFetched } from '../quotaManagerActions';
-import { prepareMessageBufferEvoluSignRegistrationRequest } from './prepareMessageBufferEvoluSignRegistrationRequest';
 import { type PrepareChallengeSessionFetchDep } from '../challenge/createPrepareChallengeSessionFetch';
+import { QuotaManagerCommunicationFailed } from '../errors';
+import { quotaManagerDeviceFetched } from '../quotaManagerActions';
+import { DEFAULT_DEVICE_SIZE_QUOTA } from '../quotaManagerQuotaSize';
+import { type RegisterDeviceFetchDep } from './createRegisterDeviceFetch';
+import { prepareMessageBufferEvoluSignRegistrationRequest } from './prepareMessageBufferEvoluSignRegistrationRequest';
 
 const EVOLU_SIGN_REGISTRATION_REQUEST_HEADER = 'EvoluSignRegistrationRequest';
+const EVOLU_SIGN_REGISTRATION_REQUEST_V2_MIN_FIRMWARE_VERSION = '2.12.2';
 
 export type RegisterDeviceParams = {
     device: TrezorDeviceWithState;
@@ -40,12 +43,24 @@ export type RegisterDevice = (
 
 export type RegisterDeviceDeps = {
     dispatch: Dispatch;
-    trezorConnect: Pick<TrezorConnect, 'evoluSignRegistrationRequest'>;
+    trezorConnect: Pick<TrezorConnectCallable, 'evoluSignRegistrationRequest'>;
 } & RegisterDeviceFetchDep &
     PrepareChallengeSessionFetchDep;
 
 export type RegisterDeviceDep = {
     registerDevice: RegisterDevice;
+};
+
+const getIsEvoluSignRegistrationRequestV2Supported = (device: TrezorDeviceWithState): boolean => {
+    const firmwareVersion = getFirmwareVersionArray(device);
+
+    return (
+        firmwareVersion !== null &&
+        versionUtils.isNewerOrEqual(
+            firmwareVersion,
+            EVOLU_SIGN_REGISTRATION_REQUEST_V2_MIN_FIRMWARE_VERSION,
+        )
+    );
 };
 
 export const createRegisterDevice =
@@ -83,6 +98,8 @@ export const createRegisterDevice =
         }
 
         const { certificate_chain } = registrationRequestResult.payload;
+        const { rotation_index } = registrationRequestResult.payload;
+
         // @ts-expect-error: noUncheckedIndexedAccess
         const deviceCert: (typeof certificate_chain)[number] = certificate_chain[0];
         // @ts-expect-error: noUncheckedIndexedAccess
@@ -99,6 +116,9 @@ export const createRegisterDevice =
             sessionId: sessionChallenge.payload.sessionId,
             deviceModel: device.features.internal_model,
             publicKey: delegatedKeyPublic,
+            ...(getIsEvoluSignRegistrationRequestV2Supported(device)
+                ? { rotationIndex: rotation_index ?? 0 }
+                : {}),
         });
 
         if (!registerDeviceResult.success) {

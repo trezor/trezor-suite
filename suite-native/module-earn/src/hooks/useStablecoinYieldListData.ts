@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
@@ -8,13 +8,24 @@ import {
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
+import {
+    compareEarnByAmountDesc,
+    compareEarnByApyDesc,
+    compareEarnByNetwork,
+} from '@suite-common/wallet-utils';
 
 import {
     type EarnPromoListDataItem,
     type EarnProviderListItem,
     type SkeletonLoaderItem,
     type StablecoinYieldEarnItem,
+    type StablecoinYieldLoadErrorListItem,
 } from '../types';
+import {
+    type StablecoinYieldClaimSummariesState,
+    useStablecoinYieldClaimSummaries,
+} from './useStablecoinYieldClaimSummaries';
+import { hasPositiveContractTokenBalance } from '../utils/contractTokenBalanceUtils';
 
 export const MORPHO_PROVIDER_LIST_ITEM = {
     id: 'morpho-provider',
@@ -28,25 +39,47 @@ const STABLECOIN_SKELETON_ITEMS: SkeletonLoaderItem[] = [
     { type: 'skeleton-loader', id: 'skeleton-2' },
 ];
 
+const DEFAULT_STABLECOIN_YIELD_PROMO_LIST_DATA: EarnPromoListDataItem[] = ['stablecoin-yield'];
+
+export const STABLECOIN_YIELD_LOAD_ERROR_ITEM = {
+    id: 'stablecoin-yield-load-error',
+    type: 'stablecoin-yield-load-error',
+} as const satisfies StablecoinYieldLoadErrorListItem;
+
 type UseStablecoinYieldListDataReturn = {
     activeItems: StablecoinYieldEarnItem[];
     promoListData: EarnPromoListDataItem[];
     isLoading: boolean;
-};
+    isError: boolean;
+    retryLoadStablecoinYield: () => void;
+} & StablecoinYieldClaimSummariesState;
 
 export const useStablecoinYieldListData = () => {
     const accounts = useSelector(selectVisibleDeviceAccounts);
 
-    const { data: yieldOpportunities, isLoading } = useAllYieldOpportunities();
+    const { data: yieldOpportunities, isLoading, isError, refetch } = useAllYieldOpportunities();
 
-    return useMemo<UseStablecoinYieldListDataReturn>(() => {
+    const retryLoadStablecoinYield = useCallback(() => {
+        void refetch();
+    }, [refetch]);
+
+    const listData = useMemo(() => {
         if (isLoading) {
             const promoListData: EarnPromoListDataItem[] = [
-                'stablecoin-yield',
+                ...DEFAULT_STABLECOIN_YIELD_PROMO_LIST_DATA,
                 ...STABLECOIN_SKELETON_ITEMS,
             ];
 
-            return { activeItems: [], promoListData, isLoading };
+            return { activeItems: [], promoListData, isLoading, isError };
+        }
+
+        if (isError || !yieldOpportunities) {
+            const promoListData: EarnPromoListDataItem[] = [
+                ...DEFAULT_STABLECOIN_YIELD_PROMO_LIST_DATA,
+                STABLECOIN_YIELD_LOAD_ERROR_ITEM,
+            ];
+
+            return { activeItems: [], promoListData, isLoading, isError: true };
         }
 
         const activeItems: StablecoinYieldEarnItem[] = [];
@@ -75,16 +108,12 @@ export const useStablecoinYieldListData = () => {
                 : null;
             const outputTokenAddress = receiptTokenContract?.toLowerCase();
 
-            const accountsWithPosition = outputTokenAddress
-                ? accounts.filter(account => {
-                      if (account.symbol !== network.symbol) {
-                          return false;
-                      }
-
-                      return account.tokens?.some(
-                          token => token.contract.toLowerCase() === outputTokenAddress,
-                      );
-                  })
+            const accountsWithPosition = receiptTokenContract
+                ? accounts.filter(
+                      account =>
+                          account.symbol === network.symbol &&
+                          hasPositiveContractTokenBalance(account, receiptTokenContract),
+                  )
                 : [];
 
             const defaultYieldItem: StablecoinYieldEarnItem = {
@@ -102,6 +131,9 @@ export const useStablecoinYieldListData = () => {
                 accountLabel: undefined,
                 tokenBalance: null,
                 apy,
+                token: vault.token,
+                outputToken: vault.outputToken,
+                pricePerShareState: vault.state?.pricePerShareState,
             };
 
             promoItems.push(defaultYieldItem);
@@ -134,12 +166,36 @@ export const useStablecoinYieldListData = () => {
             }
         }
 
+        // Opportunities the user has no position in are ordered by APY (highest first); items
+        // without an APY are pushed to the end.
+        const sortedPromoItems = [...promoItems].sort(compareEarnByApyDesc(item => item.apy));
+
+        // Active positions are grouped by network (canonical coin order), highest balance first.
+        const sortedActiveItems = [...activeItems]
+            .sort(compareEarnByAmountDesc(item => item.tokenBalance ?? '0'))
+            .sort(compareEarnByNetwork(item => item.networkSymbol));
+
         const promoListData: EarnPromoListDataItem[] = [
-            'stablecoin-yield',
-            ...promoItems,
-            ...(promoItems.length > 0 ? [MORPHO_PROVIDER_LIST_ITEM] : []),
+            ...DEFAULT_STABLECOIN_YIELD_PROMO_LIST_DATA,
+            ...sortedPromoItems,
+            ...(sortedPromoItems.length > 0 ? [MORPHO_PROVIDER_LIST_ITEM] : []),
         ];
 
-        return { activeItems, promoListData, isLoading };
-    }, [accounts, yieldOpportunities, isLoading]);
+        return { activeItems: sortedActiveItems, promoListData, isLoading, isError };
+    }, [accounts, yieldOpportunities, isLoading, isError]);
+
+    const stablecoinYieldClaimSummariesState = useStablecoinYieldClaimSummaries({
+        accounts,
+    });
+
+    return useMemo<UseStablecoinYieldListDataReturn>(
+        () => ({
+            ...listData,
+            ...stablecoinYieldClaimSummariesState,
+            retryLoadStablecoinYield,
+            isClaimSummariesLoading:
+                listData.isLoading || stablecoinYieldClaimSummariesState.isClaimSummariesLoading,
+        }),
+        [listData, retryLoadStablecoinYield, stablecoinYieldClaimSummariesState],
+    );
 };

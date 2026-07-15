@@ -21,13 +21,13 @@ export function httpRequest<T extends HttpRequestType>(
                     throw new HttpRequestError(response);
                 }
                 if (type === 'binary') {
-                    return response.arrayBuffer() as unknown as HttpRequestReturnType<T>;
+                    return response.arrayBuffer();
                 }
                 if (type === 'json') {
-                    return response.json() as unknown as HttpRequestReturnType<T>;
+                    return response.json();
                 }
 
-                return response.text() as unknown as HttpRequestReturnType<T>;
+                return response.text();
             })
             .catch(error => {
                 throw error;

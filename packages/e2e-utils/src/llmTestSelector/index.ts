@@ -462,9 +462,11 @@ const selectTestsViaApi = async (
 ): Promise<Omit<SelectionResult, 'changed_files'>> => {
     const client = new Anthropic({ apiKey });
 
+    const maxTokens = 16384;
+
     const response = await client.messages.create({
         model: 'claude-opus-4-6',
-        max_tokens: 4096,
+        max_tokens: maxTokens,
         tools: [
             {
                 name: 'recommend_tests',
@@ -539,6 +541,12 @@ const selectTestsViaApi = async (
     });
 
     accumulateApiUsage(response);
+
+    if (response.stop_reason === 'max_tokens') {
+        throw new Error(
+            `Anthropic response was truncated at max_tokens (${maxTokens}) — the recommendation set was too large to fit. Increase maxTokens or narrow the candidate tests.`,
+        );
+    }
 
     type ContentBlock = { type: string; input?: unknown };
     const toolUse = (response.content as ContentBlock[]).find(b => b.type === 'tool_use');

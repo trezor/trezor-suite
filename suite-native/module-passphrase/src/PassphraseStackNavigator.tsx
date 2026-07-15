@@ -23,7 +23,7 @@ import { PassphraseFormScreen } from './screens/PassphraseFormScreen';
 import { PassphraseLoadingScreen } from './screens/PassphraseLoadingScreen';
 import { PassphraseVerifyEmptyWalletScreen } from './screens/PassphraseVerifyEmptyWalletScreen';
 
-export const PassphraseStack = createNativeStackNavigator<PassphraseStackParamList>();
+const PassphraseStack = createNativeStackNavigator<PassphraseStackParamList>();
 
 export const PassphraseStackNavigator = () => {
     const selectedDevice = useSelector(selectSelectedDevice);

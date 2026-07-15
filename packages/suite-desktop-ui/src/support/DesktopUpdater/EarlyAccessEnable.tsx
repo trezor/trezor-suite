@@ -4,6 +4,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { Card, Column, H3, Modal, Paragraph, Tooltip } from '@trezor/components';
+import { StarFourIcon } from '@trezor/icons';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
@@ -32,7 +33,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
 
     return enabled ? (
         <Modal
-            iconName="starFour"
+            icon={StarFourIcon}
             intent="info"
             onCancel={hideWindow}
             bottomContent={
@@ -62,7 +63,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
         </Modal>
     ) : (
         <Modal
-            iconName="starFour"
+            icon={StarFourIcon}
             intent="info"
             onCancel={hideWindow}
             bottomContent={

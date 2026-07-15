@@ -12,7 +12,7 @@ import { InputWithOptions } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { useSupplyFormContext } from 'src/hooks/earn/useSupplyForm';
+import { useStakeFormContext } from 'src/hooks/earn/useStakeForm';
 import { useSelector } from 'src/hooks/suite';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/earn/earnFormFields';
 import { validateStakingMax } from 'src/utils/suite/staking';
@@ -27,7 +27,7 @@ import { type FormPercentButtonValue } from 'src/views/wallet/trading/common/Tra
 
 export const StakeInputs = () => {
     const { translationString } = useTranslation();
-    const { CryptoAmountFormatter } = useFormatters();
+    const { CryptoAmountFormatter, BaseCurrencyAmountFormatter } = useFormatters();
     const locale = useSelector(selectLanguage);
     const { analytics } = useServices(selectDesktopAnalyticsDep);
 
@@ -48,7 +48,7 @@ export const StakeInputs = () => {
         setRatioAmount,
         setMax,
         setCurrency,
-    } = useSupplyFormContext();
+    } = useStakeFormContext();
 
     const stakingLimits = getStakingLimitsByNetworkSymbol(account.symbol);
 
@@ -70,6 +70,7 @@ export const StakeInputs = () => {
                 amountLimits,
                 localCurrency: baseCurrencyCode,
                 formatter: CryptoAmountFormatter,
+                fiatFormatter: BaseCurrencyAmountFormatter,
                 decimals: network.decimals,
                 rate: currentRate?.rate,
             }),
@@ -217,6 +218,7 @@ export const StakeInputs = () => {
                                     typographyStyle="body-xs"
                                     intent="neutral"
                                     priority="secondary"
+                                    overflowWrap="anywhere"
                                 >
                                     {value}
                                 </Text>

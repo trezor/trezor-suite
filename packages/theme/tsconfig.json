@@ -4,6 +4,7 @@
     "references": [
         {
             "path": "../../suite-common/wallet-config"
-        }
+        },
+        { "path": "../utils" }
     ]
 }

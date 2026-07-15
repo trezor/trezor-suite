@@ -76,13 +76,12 @@ describe('buySelectors', () => {
             );
         });
 
-        it('should throw when no account with given key exists', () => {
-            const unknownAccountKey = mockAccountKey({ descriptor: 'unknownAccountKey' });
-            state.wallet.trading.buy.tradingAccountKey = unknownAccountKey;
+        it('should return undefined when no account with given key exists', () => {
+            state.wallet.trading.buy.tradingAccountKey = mockAccountKey({
+                descriptor: 'unknownAccountKey',
+            });
 
-            expect(() => selectBuySelectedReceiveAccount(state)).toThrow(
-                `Unknown tradingAccountKey: [${unknownAccountKey}]`,
-            );
+            expect(selectBuySelectedReceiveAccount(state)).toBeUndefined();
         });
     });
 

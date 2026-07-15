@@ -7,7 +7,7 @@ import {
 } from '@suite-native/navigation';
 import { SettingsTradingLocationScreen } from '@suite-native/trading-residence';
 
-import { BitcoinBackendsScreen } from '../screens/BitcoinBackendsScreen';
+import { NetworkBackendsScreen } from '../screens/NetworkBackendsScreen';
 import { SettingsAdvancedScreen } from '../screens/SettingsAdvancedScreen';
 import { SettingsAppLogScreen } from '../screens/SettingsAppLogScreen';
 import { SettingsAutoEjectScreen } from '../screens/SettingsAutoEjectScreen';
@@ -16,6 +16,7 @@ import { SettingsExperimentalScreen } from '../screens/SettingsExperimentalScree
 import { SettingsNetworksScreen } from '../screens/SettingsNetworksScreen';
 import { SettingsPreferencesScreen } from '../screens/SettingsPreferencesScreen';
 import { SettingsPrivacyScreen } from '../screens/SettingsPrivacyScreen';
+import { SettingsSecurityScreen } from '../screens/SettingsSecurityScreen';
 import { SettingsSuiteSyncScreen } from '../screens/SettingsSuiteSyncScreen';
 import { SettingsSupportScreen } from '../screens/SettingsSupportScreen';
 import { TurnOffDeviceAuthenticityCheckScreen } from '../screens/TurnOffDeviceAuthenticityCheckScreen';
@@ -30,7 +31,6 @@ export const SettingsStackNavigator = () => (
             name={SettingsStackRoutes.SettingsPreferences}
             component={SettingsPreferencesScreen}
         />
-
         <SettingsStack.Screen
             options={{ title: SettingsStackRoutes.SettingsPrivacy }}
             name={SettingsStackRoutes.SettingsPrivacy}
@@ -57,9 +57,17 @@ export const SettingsStackNavigator = () => (
             component={SettingsNetworksScreen}
         />
         <SettingsStack.Screen
+            name={SettingsStackRoutes.SettingsNetworkBackends}
+            component={NetworkBackendsScreen}
+        />
+        <SettingsStack.Screen
             options={{ title: SettingsStackRoutes.SettingsSuiteSync }}
             name={SettingsStackRoutes.SettingsSuiteSync}
             component={SettingsSuiteSyncScreen}
+        />
+        <SettingsStack.Screen
+            name={SettingsStackRoutes.SettingsSecurity}
+            component={SettingsSecurityScreen}
         />
         <SettingsStack.Screen
             name={SettingsStackRoutes.SettingsAdvanced}
@@ -80,10 +88,6 @@ export const SettingsStackNavigator = () => (
         <SettingsStack.Screen
             name={SettingsStackRoutes.TurnOffDeviceAuthenticityCheck}
             component={TurnOffDeviceAuthenticityCheckScreen}
-        />
-        <SettingsStack.Screen
-            name={SettingsStackRoutes.BitcoinBackends}
-            component={BitcoinBackendsScreen}
         />
         <SettingsStack.Screen
             options={{ title: SettingsStackRoutes.SettingsTradingLocation }}

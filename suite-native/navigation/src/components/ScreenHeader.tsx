@@ -20,7 +20,7 @@ export type ScreenHeaderProps = ScreenHeaderContentProps &
         'leftIcon' | 'closeActionType'
     >;
 
-const ICON_SIZE = 48;
+const ICON_SIZE = 40;
 
 const headerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',

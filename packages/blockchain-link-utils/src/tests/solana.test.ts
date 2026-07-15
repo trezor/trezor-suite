@@ -2,7 +2,7 @@ import { type TokenTransfer, type Transaction } from '@trezor/blockchain-link-ty
 import type {
     ParsedTransactionWithMeta,
     SolanaValidParsedTxWithMeta,
-} from '@trezor/coins-solana/types';
+} from '@trezor/network-solana/types';
 
 import {
     type ApiTokenAccount,
@@ -147,7 +147,10 @@ describe('solana/utils', () => {
         fixtures.transformTokenInfo.forEach(({ description, input, expectedOutput }) => {
             it(description, () => {
                 expect(
-                    transformTokenInfo(input.accountInfo as ApiTokenAccount[], input.map),
+                    transformTokenInfo(
+                        input.accountInfo as unknown as ApiTokenAccount[],
+                        input.map,
+                    ),
                 ).toEqual(expectedOutput);
             });
         });

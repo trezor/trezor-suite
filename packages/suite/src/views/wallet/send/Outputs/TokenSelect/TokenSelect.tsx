@@ -19,6 +19,7 @@ import {
     isNftToken,
 } from '@suite-common/wallet-utils';
 import { Banner, Card, Column, IconButton, Link, Row, Text } from '@trezor/components';
+import { CaretDownIcon } from '@trezor/icons';
 import { AssetLogo, CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -40,11 +41,13 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
 
     const dispatch = useDispatch();
 
+    const sendFormPrefill = useSelector(state => state.suite.prefillFields.sendForm);
+
     const [isTokensModalActive, setIsTokensModalActive] = useState(false);
+    const [prefillContractAddress, setPrefillContractAddress] = useState(sendFormPrefill);
 
     const explorer = useSelector(state => selectExplorer(state, account.symbol)) as Explorer;
     const shouldShowCopyAddressModal = useSelector(selectIsCopyAddressModalShown);
-    const sendFormPrefillContractAddress = useSelector(state => state.suite.prefillFields.sendForm);
 
     const tokenInputName = `outputs.${outputId}.token` as const;
     const tokenContractAddress = watch(tokenInputName);
@@ -67,24 +70,22 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
 
     useEffect(() => {
         if (hasNetworkFeatures(account, 'tokens') && !isSetMaxActive) {
-            const amountValue = getValues(`outputs.${outputId}.amount`) as string;
+            const amountValue = getValues(`outputs.${outputId}.amount`);
             if (amountValue) setAmount(outputId, amountValue);
         }
     }, [account, outputId, tokenWatch, setAmount, getValues, isSetMaxActive]);
 
     useEffect(() => {
-        if (sendFormPrefillContractAddress) {
-            setValue(tokenInputName, sendFormPrefillContractAddress, {
+        if (prefillContractAddress) {
+            setValue(tokenInputName, prefillContractAddress, {
                 shouldValidate: true,
                 shouldDirty: true,
             });
             setDraftSaveRequest(true);
-
-            return () => {
-                dispatch(setSendFormPrefill({ contractAddress: undefined }));
-            };
+            setPrefillContractAddress(undefined);
+            dispatch(setSendFormPrefill({ contractAddress: undefined }));
         }
-    }, [sendFormPrefillContractAddress, setValue, tokenInputName, setDraftSaveRequest, dispatch]);
+    }, [prefillContractAddress, setValue, tokenInputName, setDraftSaveRequest, dispatch]);
 
     const selectedToken = useMemo(
         () => account.tokens?.find(token => token.contract === tokenContractAddress),
@@ -92,9 +93,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     );
 
     const hasNoStandardTokens = !account.tokens?.filter(token => !isNftToken(token))?.length;
-    const onOpenSelectAssetModal = !hasNoStandardTokens
-        ? () => setIsTokensModalActive(true)
-        : undefined;
+    const onOpenTokensModal = !hasNoStandardTokens ? () => setIsTokensModalActive(true) : undefined;
 
     const networkTokenContractAddress =
         selectedToken && getContractAddressForNetworkSymbol(account.symbol, selectedToken.contract);
@@ -111,7 +110,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                 />
             )}
 
-            <Card fillType="default" paddingType="normal" onClick={onOpenSelectAssetModal}>
+            <Card type="raised" paddingType="normal" onClick={onOpenTokensModal}>
                 <Row justifyContent="space-between" height={64}>
                     <Row justifyContent="flex-start" gap={spacings.sm}>
                         {selectedToken ? (
@@ -207,7 +206,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                     </Row>
                     {!hasNoStandardTokens && (
                         <IconButton
-                            icon="caretDown"
+                            icon={CaretDownIcon}
                             intent="neutral"
                             priority="secondary"
                             tooltip={{ isActive: false }}

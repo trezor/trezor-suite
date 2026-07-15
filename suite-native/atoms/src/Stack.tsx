@@ -58,6 +58,4 @@ Stack.displayName = 'Stack';
 VStack.displayName = 'VStack';
 HStack.displayName = 'HStack';
 
-export const AnimatedStack = Animated.createAnimatedComponent(Stack);
 export const AnimatedVStack = Animated.createAnimatedComponent(VStack);
-export const AnimatedHStack = Animated.createAnimatedComponent(HStack);

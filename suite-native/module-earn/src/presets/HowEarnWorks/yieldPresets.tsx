@@ -1,17 +1,28 @@
 import { Translation } from '@suite-native/intl';
+import { prepareNativeStyle } from '@trezor/styles-native';
 
 import { type HowEarnWorksScreenPreset } from './types';
 
+const abbrStyle = prepareNativeStyle(({ colors }) => ({
+    borderStyle: 'dotted',
+    borderBottomWidth: 1,
+    borderColor: colors.contentSecondary,
+}));
+
 type CreateHowYieldWorksPresetProps = {
     tokenSymbol: string;
-    vaultTokenName: string;
+    vaultTokenSymbol: string;
     apy: number | null;
+    onApyPress: () => void;
+    bonusRewardTokenName?: string | null;
 };
 
 export const createHowYieldWorksPreset = ({
     tokenSymbol,
-    vaultTokenName,
+    vaultTokenSymbol,
     apy,
+    onApyPress,
+    bonusRewardTokenName,
 }: CreateHowYieldWorksPresetProps): HowEarnWorksScreenPreset => ({
     benefitItems: [
         {
@@ -37,16 +48,28 @@ export const createHowYieldWorksPreset = ({
             title: (
                 <Translation
                     id="earn.howYieldWorksScreen.benefits.third.title"
-                    values={{ tokenSymbol, vaultTokenName }}
+                    values={{ tokenSymbol, vaultTokenSymbol }}
                 />
             ),
-            description: (
-                <Translation
-                    id="earn.howYieldWorksScreen.benefits.third.description"
-                    values={{ vaultTokenName }}
-                />
-            ),
+            description: <Translation id="earn.howYieldWorksScreen.benefits.third.description" />,
         },
+        ...(bonusRewardTokenName
+            ? [
+                  {
+                      id: 'yield-benefit-bonus-reward',
+                      icon: 'coin' as const,
+                      title: (
+                          <Translation
+                              id="earn.howYieldWorksScreen.benefits.fourth.title"
+                              values={{ bonusRewardTokenName }}
+                          />
+                      ),
+                      description: (
+                          <Translation id="earn.howYieldWorksScreen.benefits.fourth.description" />
+                      ),
+                  },
+              ]
+            : []),
     ],
     timelineSections: [
         {
@@ -75,7 +98,10 @@ export const createHowYieldWorksPreset = ({
                 {
                     id: 'deposit.third',
                     title: (
-                        <Translation id="earn.howYieldWorksScreen.depositTimeline.third.title" />
+                        <Translation
+                            id="earn.howYieldWorksScreen.depositTimeline.third.title"
+                            values={{ vaultTokenSymbol }}
+                        />
                     ),
                     description:
                         apy !== null ? (
@@ -86,6 +112,8 @@ export const createHowYieldWorksPreset = ({
                         ) : (
                             <Translation id="earn.notAvailableShort" />
                         ),
+                    style: abbrStyle,
+                    onPress: onApyPress,
                 },
             ],
         },

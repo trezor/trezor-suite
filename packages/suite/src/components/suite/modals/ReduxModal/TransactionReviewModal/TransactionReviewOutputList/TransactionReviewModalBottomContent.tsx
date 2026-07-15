@@ -14,6 +14,7 @@ import {
     type FormState,
     type RbfTransactionType,
     type ReviewOutput,
+    type TronStakingFormState,
 } from '@suite-common/wallet-types';
 import {
     getTxValidityTimeoutInMs,
@@ -30,6 +31,17 @@ import { type TxInfoState, getTxType, hasTxValidityExpired } from '../utils';
 const mapRbfTypeToReporting: Record<RbfTransactionType, TransactionCreatedEventAction> = {
     'bump-fee': 'replaced',
     cancel: 'canceled',
+};
+
+const mapTronStakingKindToConfirmAction: Record<
+    TronStakingFormState['kind'],
+    'stake' | 'unstake' | 'claim' | 'change-delegate' | 'withdraw'
+> = {
+    freeze: 'stake',
+    vote: 'change-delegate',
+    unstake: 'unstake',
+    withdraw: 'withdraw',
+    claim: 'claim',
 };
 
 type TransactionReviewModalBottomContentProps = {
@@ -100,12 +112,12 @@ export const TransactionReviewModalBottomContent = ({
                 selectedFee: selectedFee || 'normal',
                 isCoinControlEnabled: precomposedForm.isCoinControlEnabled,
                 hasCoinControlBeenOpened: precomposedForm.hasCoinControlBeenOpened,
-                txType: txType as 'stake' | 'trade' | undefined,
+                txType,
             },
         });
 
     const handleSend = () => {
-        if (networkType === 'solana' || networkType === 'stellar') {
+        if (networkType === 'solana' || networkType === 'stellar' || networkType === 'tron') {
             onSend(true);
         }
 
@@ -113,14 +125,19 @@ export const TransactionReviewModalBottomContent = ({
             decision.resolve(true);
             reportTransactionCreatedEvent(
                 isRbfTransaction(precomposedTx!)
-                    ? mapRbfTypeToReporting[precomposedTx!.rbfType]
+                    ? mapRbfTypeToReporting[precomposedTx.rbfType]
                     : 'sent',
             );
 
-            if (stakeType) {
+            const stakingConfirmAction =
+                stakeType ??
+                (precomposedForm.tronStaking &&
+                    mapTronStakingKindToConfirmAction[precomposedForm.tronStaking.kind]);
+
+            if (stakingConfirmAction) {
                 return analytics.report({
                     type: events.stakingConfirmEvent.name,
-                    payload: { action: stakeType, networkSymbol: symbol },
+                    payload: { action: stakingConfirmAction, networkSymbol: symbol },
                 });
             }
         }

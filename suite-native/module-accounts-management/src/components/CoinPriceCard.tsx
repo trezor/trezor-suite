@@ -66,9 +66,13 @@ export const CoinPriceCard = ({ accountKey, tokenContract }: CoinPriceCardProps)
     const token = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, accountKey, tokenContract),
     );
-    const { currentValue, valuePercentageChange } = useDayCoinPriceChange(symbol, tokenContract);
+    const { currentValue, valuePercentageChange, isLoading } = useDayCoinPriceChange(
+        symbol,
+        tokenContract,
+    );
 
     if (!symbol) return null;
+    if (!isLoading && currentValue === null) return null;
 
     const tokenName = token?.name ?? token?.symbol;
     const mainnetName = getNetworkDisplaySymbolName(symbol);

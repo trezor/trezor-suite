@@ -7,7 +7,6 @@ import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { useReceiveDisabled } from '@suite/receive';
-import { selectDeviceAccountForNetworkSymbolAndAccountTypeWithIndex } from '@suite-common/wallet-core';
 import { getAccountTypeTech } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph } from '@trezor/components';
 import { typography } from '@trezor/theme';
@@ -19,6 +18,7 @@ import { WalletLayout } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
+import { AccountNonce } from './AccountNonce';
 import { CoinjoinLogs } from './CoinjoinLogs';
 import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
 import { RescanAccount } from './RescanAccount';
@@ -68,15 +68,6 @@ const DetailsRow = ({ title, description, learnMoreUrl, children }: DetailsRowPr
 const Details = () => {
     const { device, isLocked } = useDevice();
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const { params } = selectedAccount;
-    const fallbackAccount = useSelector(state =>
-        selectDeviceAccountForNetworkSymbolAndAccountTypeWithIndex(
-            state,
-            params?.symbol,
-            params?.accountType,
-            params?.accountIndex,
-        ),
-    );
     const { isReceiveDisabled, ReceiveDisabledWrapper } = useReceiveDisabled();
 
     const dispatch = useDispatch();
@@ -84,15 +75,15 @@ const Details = () => {
     if (
         !device ||
         (selectedAccount.status !== 'loaded' && selectedAccount.status !== 'exception') ||
-        fallbackAccount == null
+        selectedAccount.account == null
     ) {
         return <WalletLayout title="TR_ACCOUNT_DETAILS_HEADER" account={selectedAccount} />;
     }
 
-    const account = selectedAccount.account ?? fallbackAccount;
+    const { account } = selectedAccount;
 
     const locked = isLocked(true);
-    const disabled = locked || isReceiveDisabled || !selectedAccount.account;
+    const disabled = locked || isReceiveDisabled || selectedAccount.status !== 'loaded';
 
     const accountTypeTech = getAccountTypeTech(account.path);
 
@@ -169,6 +160,14 @@ const Details = () => {
                         )
                     ) : (
                         <RescanAccount account={account} />
+                    )}
+                    {account.networkType === 'ethereum' && (
+                        <DetailsRow
+                            title="TR_ACCOUNT_DETAILS_NONCE_HEADER"
+                            description={<Translation id="TR_ACCOUNT_DETAILS_NONCE_DESC" />}
+                        >
+                            <AccountNonce account={account} />
+                        </DetailsRow>
                     )}
                     <Bip329Labels account={account} isLoading={locked} />
                 </Column>

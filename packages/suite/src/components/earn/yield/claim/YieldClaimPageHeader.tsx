@@ -5,6 +5,7 @@ import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { type Account } from '@suite-common/wallet-types';
 import { IconButton, Row } from '@trezor/components';
+import { CaretLeftIcon } from '@trezor/icons';
 import { CoinLogo } from '@trezor/product-components';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
@@ -37,7 +38,7 @@ export const YieldClaimPageHeader = ({ account }: YieldClaimPageHeaderProps) => 
         <PageHeader>
             <Row width="100%" gap={16} alignItems="center">
                 <IconButton
-                    icon="caretLeft"
+                    icon={CaretLeftIcon}
                     intent="neutral"
                     priority="secondary"
                     size="large"

@@ -3,10 +3,12 @@ import { useCallback } from 'react';
 import { FlashList } from '@shopify/flash-list';
 
 import { type Account } from '@suite-common/wallet-types';
-import { BottomSheetModal, type BottomSheetModalRef, Box } from '@suite-native/atoms';
+import { BottomSheetModal, type BottomSheetModalRef } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { ChooseAccountItem } from './ChooseAccountItem';
+import { type ChooseAccountTokenBalance } from '../types';
+import { getChooseAccountBalanceData } from '../utils/chooseAccountBalanceUtils';
 
 type ChooseStakingAccountBottomSheetProps = {
     ref: BottomSheetModalRef;
@@ -14,6 +16,7 @@ type ChooseStakingAccountBottomSheetProps = {
     onAccountSelected: (account: Account) => void;
     onClose: () => void;
     onDismiss?: () => void;
+    tokenBalance?: ChooseAccountTokenBalance;
 };
 
 export const ChooseStakingAccountBottomSheet = ({
@@ -22,18 +25,21 @@ export const ChooseStakingAccountBottomSheet = ({
     onAccountSelected,
     onClose,
     onDismiss,
+    tokenBalance,
 }: ChooseStakingAccountBottomSheetProps) => {
     const renderItem = useCallback(
-        ({ item, index }: { item: Account; index: number }) => (
-            <ChooseAccountItem
-                account={item}
-                onPress={onAccountSelected}
-                showDivider
-                isFirst={index === 0}
-                isLast={index === accounts.length - 1}
-            />
-        ),
-        [onAccountSelected, accounts.length],
+        ({ item }: { item: Account }) => {
+            const balanceData = getChooseAccountBalanceData(item, tokenBalance);
+
+            return (
+                <ChooseAccountItem
+                    account={item}
+                    balanceData={balanceData}
+                    onPress={onAccountSelected}
+                />
+            );
+        },
+        [onAccountSelected, tokenBalance],
     );
 
     return (
@@ -44,13 +50,7 @@ export const ChooseStakingAccountBottomSheet = ({
             onClose={onClose}
             onDismiss={onDismiss}
         >
-            <Box paddingTop="sp16">
-                <FlashList
-                    data={accounts}
-                    keyExtractor={item => item.key}
-                    renderItem={renderItem}
-                />
-            </Box>
+            <FlashList data={accounts} keyExtractor={item => item.key} renderItem={renderItem} />
         </BottomSheetModal>
     );
 };

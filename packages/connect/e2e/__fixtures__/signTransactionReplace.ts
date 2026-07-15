@@ -9,7 +9,7 @@ export default {
         {
             description: 'Bitcoin (RBF): P2PKH bump fee',
             params: {
-                coin: 'Bitcoin',
+                coin: 'btc',
                 inputs: [
                     {
                         address_n: "m/44'/0'/0'/0/4",
@@ -50,7 +50,7 @@ export default {
         {
             description: 'Testnet (RBF): P2PKH in P2SH, remove change',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/49'/1'/0'/0/4",
@@ -95,7 +95,7 @@ export default {
         {
             description: 'Testnet (RBF): Bech32/P2WPKH finalize',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/84'/1'/0'/0/2",
@@ -140,7 +140,7 @@ export default {
             skip: ['1'], // disable this for T1B1. Failure_DataError: messages.c:224:missing required field
             description: 'Testnet (RBF): Meld transactions',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/49'/1'/0'/0/4",
@@ -221,7 +221,7 @@ export default {
         {
             description: 'Testnet (RBF): with OP_RETURN output',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/84'/1'/1'/0/14",
@@ -265,7 +265,7 @@ export default {
         {
             description: 'Testnet (RBF): add new utxo and change output',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/84'/1'/0'/0/65",
@@ -316,7 +316,7 @@ export default {
         {
             description: 'Testnet (RBF): decrease output',
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/49'/1'/0'/0/4",
@@ -362,7 +362,7 @@ export default {
             description: 'Testnet (RBF): Taproot',
             skip: ['<1.10.4', '<2.4.3'],
             params: {
-                coin: 'Testnet',
+                coin: 'test',
                 inputs: [
                     {
                         address_n: "m/86'/1'/0'/1/0",

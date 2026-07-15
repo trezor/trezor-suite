@@ -34,7 +34,7 @@ export const LimitInfoRow = ({ onPress, testID, withCaret, children }: LimitInfo
         <TradeInfoRow onPress={onPress} testID={testID}>
             <VStack flex={1}>
                 <HStack justifyContent="space-between" alignItems="center">
-                    <Text variant="body-sm">
+                    <Text variant="body-sm" color="contentSecondary">
                         {hasPreapprovedLimit(quote) ? (
                             <Translation id="moduleTrading.tradingExchangeApprovalScreen.newLimitLabel" />
                         ) : (
@@ -50,7 +50,7 @@ export const LimitInfoRow = ({ onPress, testID, withCaret, children }: LimitInfo
                             />
                         )}
                         {approvalType === 'INFINITE' ? (
-                            <UnlimitedAllowanceLabel cryptoId={send} />
+                            <UnlimitedAllowanceLabel />
                         ) : (
                             <TradingCoinAmountFormatter
                                 amount={sendStringAmount}

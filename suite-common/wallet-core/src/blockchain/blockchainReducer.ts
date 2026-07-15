@@ -2,7 +2,6 @@ import { type PayloadAction } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps, createWeakMapSelector } from '@suite-common/redux-utils';
 import {
-    type BackendType,
     type NetworkSymbol,
     getNetworkOptional,
     networksCollection,
@@ -22,15 +21,6 @@ import {
     type WalletSettingsRootState,
     selectEnabledNetworks,
 } from '../settings/walletSettingsReducer';
-
-/*
-  get url suffix from default network and generate url for selected network
-  regex source: https://www.oreilly.com/library/view/regular-expressions-cookbook/9780596802837/ch07s12.html
-*/
-export const getBlockExplorerUrlSuffix = (url: string) =>
-    url.match(/^([a-z][a-z0-9+\-.]*:(\/\/[^/?#]+)?)?([a-z0-9\-._~%!$&'()*+,;=:@/]*)/)!.pop();
-
-export const isHttpProtocol = (url: string) => /^https?:\/\//.test(url);
 
 export type BlockchainState = BlockchainNetworks;
 
@@ -162,12 +152,12 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
                     delete state[symbol].backends.selected;
                 } else if (!action.payload.urls.length) {
                     delete state[symbol].backends.selected;
-                    delete state[symbol].backends.urls?.[type as BackendType];
+                    delete state[symbol].backends.urls?.[type];
                 } else {
-                    state[symbol].backends.selected = type as BackendType;
+                    state[symbol].backends.selected = type;
                     state[symbol].backends.urls = {
                         ...state[symbol].backends.urls,
-                        [type as BackendType]: action.payload.urls,
+                        [type]: action.payload.urls,
                     };
                 }
             })
@@ -242,10 +232,15 @@ export const selectIsCustomBackendConfigured = createMemoizedSelector(
 export const selectGapLimit = (state: BlockchainRootState, symbol: NetworkSymbol) =>
     state.wallet.blockchain[symbol]?.backends.gapLimit;
 
+export const selectCustomBackends = createMemoizedSelector(
+    [selectBlockchainState],
+    blockchainState => getCustomBackends(blockchainState),
+);
+
 export const selectEnabledCustomBackends = createMemoizedSelector(
-    [selectBlockchainState, selectEnabledNetworks],
-    (blockchainState, enabledNetworks) =>
-        getCustomBackends(blockchainState)
+    [selectCustomBackends, selectEnabledNetworks],
+    (customBackends, enabledNetworks) =>
+        customBackends
             .map(({ symbol }) => symbol)
             .filter(symbol => enabledNetworks.includes(symbol)),
 );

@@ -28,6 +28,8 @@ export function CollapsibleFeesHeader({
                 return 'TR_STELLAR_FEE_DESC';
             case 'solana':
                 return 'TR_SOL_FEE_DESC';
+            case 'ripple':
+                return 'TR_XRP_FEE_DESC';
             default:
                 return 'TR_TRANSACTION_FEE_DESC';
         }
@@ -56,6 +58,7 @@ export function CollapsibleFeesHeader({
                             intent="neutral"
                             priority="secondary"
                             href={HELP_CENTER_TRANSACTION_FEES_URL}
+                            isInverse
                         >
                             <Translation id="TR_LEARN" />
                         </TextButton>
@@ -65,7 +68,7 @@ export function CollapsibleFeesHeader({
                 maxWidth={328}
                 content={<Translation id={feeTooltipTextId} values={{ br: <br /> }} />}
             >
-                <Text typographyStyle={typographyStyle}>
+                <Text typographyStyle={typographyStyle} intent="neutral" priority="secondary">
                     <Translation id={label ?? feeLabelId} />
                 </Text>
             </Tooltip>

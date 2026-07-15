@@ -4,7 +4,7 @@ import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type EarnParams, goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { type YieldDto } from '@suite-common/earn-stablecoin-api';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
     type EarnAnalyticsStep,
     EarnFlow,
@@ -12,6 +12,7 @@ import {
 } from '@suite-common/suite-types/src/staking';
 import { type Account } from '@suite-common/wallet-types';
 import { Box, Button, Column, IconButton, Row, Text } from '@trezor/components';
+import { CaretLeftIcon, InfoIcon } from '@trezor/icons';
 import { AssetLogo } from '@trezor/product-components';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
@@ -19,11 +20,11 @@ import { useDispatch } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
 interface YieldPageHeaderProps {
-    analyticsStep: Extract<EarnAnalyticsStep, 'yield-supply' | 'yield-withdraw'>;
+    analyticsStep: Extract<EarnAnalyticsStep, 'yield-deposit' | 'yield-withdraw'>;
     fallbackTitleId: TranslationKey;
     account?: Account;
     routeParams?: EarnParams;
-    vault?: YieldDto;
+    vault?: YieldDtoV2;
     isInvalid?: boolean;
 }
 
@@ -39,7 +40,7 @@ export const YieldPageHeader = ({
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
-    const vaultName = vault?.outputToken?.name;
+    const vaultName = vault?.metadata.name;
     const networkSymbol = account?.symbol;
     const isHowItWorksVisible = !isInvalid;
 
@@ -50,7 +51,7 @@ export const YieldPageHeader = ({
                 action: 'continue',
                 from: (() => {
                     switch (analyticsStep) {
-                        case 'yield-supply':
+                        case 'yield-deposit':
                             return 'deposit-form';
                         case 'yield-withdraw':
                             return 'withdraw-form';
@@ -100,7 +101,7 @@ export const YieldPageHeader = ({
         <PageHeader expandable>
             <Row width="100%" gap={16} alignItems="center">
                 <IconButton
-                    icon="caretLeft"
+                    icon={CaretLeftIcon}
                     intent="neutral"
                     priority="secondary"
                     size="large"
@@ -153,7 +154,7 @@ export const YieldPageHeader = ({
                     <Box margin={{ left: 'auto' }}>
                         {isBelowMobile ? (
                             <IconButton
-                                icon="info"
+                                icon={InfoIcon}
                                 intent="neutral"
                                 priority="secondary"
                                 size="large"

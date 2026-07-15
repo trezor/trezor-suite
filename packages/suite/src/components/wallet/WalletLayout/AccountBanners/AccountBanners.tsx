@@ -1,3 +1,4 @@
+import { ContextMessage } from '@suite/message-system';
 import { Context } from '@suite-common/message-system';
 import {
     isSupportedEthStakingNetworkSymbol,
@@ -12,7 +13,6 @@ import { AccountImported } from './AccountImported';
 import { AccountOutOfSync } from './AccountOutOfSync';
 import { BackendDisconnected } from './BackendDisconnected';
 import { CardanoLegacyBanner } from './CardanoLegacyBanner';
-import { ContextMessage } from './ContextMessage';
 import { DeviceUnavailable } from './DeviceUnavailable';
 import { EvmExplanationBanner } from './EvmExplanationBanner';
 import { ReserveBanner } from './ReserveBanner';

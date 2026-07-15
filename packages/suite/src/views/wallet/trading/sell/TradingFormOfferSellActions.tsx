@@ -1,13 +1,14 @@
-import { selectTradingComposedTransactionInfo, tradingSellActions } from '@suite-common/trading';
+import { selectIsTradingNetworkFeeMissing, tradingSellActions } from '@suite-common/trading';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 
+import { selectSellQuoteThunk } from 'src/actions/wallet/trading/sell/selectSellQuoteThunk';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { getTradingFirstOutput } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingFormOfferConfirmButton } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
-import { TradingFormOfferKYCWarning } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferKYCWarning';
 import { TradingFormOfferOTC } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferOTC';
 import { useTradingFormOfferCommon } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/hooks/useTradingFormOfferCommon';
+import { TradingKYCWarning } from 'src/views/wallet/trading/common/TradingKYCWarning';
 
 export const TradingFormOfferSellActions = () => {
     const dispatch = useDispatch();
@@ -17,18 +18,14 @@ export const TradingFormOfferSellActions = () => {
         watch,
         shouldSendInSats,
         sellInfo,
-        selectQuote,
-        form: { state },
+        form: { state, helpers },
     } = context;
 
-    const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
+    const isNetworkFeeMissing = useSelector(selectIsTradingNetworkFeeMissing);
 
     const { outputs } = watch();
     const { amount, tokenAddress } = getTradingFirstOutput(outputs);
     const areSatsUsed = !!shouldSendInSats;
-
-    const fee = composedTransactionInfo?.composed?.fee;
-    const isFeeRequiredButMissingValue = fee === undefined || fee === '';
 
     const amountTooHigh = isAmountTooHigh({
         amount,
@@ -40,10 +37,7 @@ export const TradingFormOfferSellActions = () => {
     const { quote, confirmButtonData, isBaseButtonDisabled } = useTradingFormOfferCommon<'sell'>();
 
     const isButtonDisabled =
-        isBaseButtonDisabled ||
-        amountTooHigh ||
-        isFeeRequiredButMissingValue ||
-        state.isFormLoading;
+        isBaseButtonDisabled || amountTooHigh || isNetworkFeeMissing || state.isFormLoading;
 
     const onSelectQuote = () => {
         if (!quote) return;
@@ -56,7 +50,7 @@ export const TradingFormOfferSellActions = () => {
             dispatch(tradingSellActions.setFormStep('SEND_TRANSACTION'));
         }
 
-        selectQuote(quote);
+        dispatch(selectSellQuoteThunk({ quote, fractionButton: helpers.fractionButton }));
     };
 
     return (
@@ -68,7 +62,7 @@ export const TradingFormOfferSellActions = () => {
                 testId="@trading/form/sell-button"
             />
 
-            {quote && <TradingFormOfferKYCWarning />}
+            {quote && <TradingKYCWarning />}
 
             <TradingFormOfferOTC />
         </>

@@ -1,16 +1,16 @@
 import { AccountLabel } from '@suite/account';
 import { Address } from '@suite/address';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
-import { selectIsDebugModeActive } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldAccountsRewards } from '@suite-common/earn-stablecoin-api';
 import { useFormatters } from '@suite-common/formatters';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
+import { compareAccountsByCoin } from '@suite-common/wallet-utils';
 import { CardList, Column, Modal, Row, Text, Tooltip } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 
-import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { useSelector } from 'src/hooks/suite';
 
 type EarnYieldClaimSelectAccountModalProps = {
@@ -28,6 +28,10 @@ export const EarnYieldClaimSelectAccountModal = ({
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const baseCurrency = useSelector(selectBaseCurrency);
+
+    const sortedAccountsRewards = [...accountsRewards].sort((a, b) =>
+        compareAccountsByCoin(a.account, b.account),
+    );
 
     const handleOnSelect = (account: YieldAccountsRewards[number]) => {
         analytics.report({
@@ -63,7 +67,7 @@ export const EarnYieldClaimSelectAccountModal = ({
             onCancel={handleOnCancel}
         >
             <CardList>
-                {accountsRewards.map(accountRewards => (
+                {sortedAccountsRewards.map(accountRewards => (
                     <CardList.Item
                         key={accountRewards.account.key}
                         onClick={() => handleOnSelect(accountRewards)}

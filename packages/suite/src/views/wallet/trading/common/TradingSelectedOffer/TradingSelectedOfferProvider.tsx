@@ -2,7 +2,8 @@ import { type ReactNode, useCallback, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { type TradingTradeType, useProviderMetadataChangeEffect } from '@suite-common/trading';
-import { Column, GhostContainer, Icon, Row, SkeletonRectangle, Text } from '@trezor/components';
+import { Column, GhostContainer, Icon, Row, Skeleton, Text } from '@trezor/components';
+import { CaretRightIcon } from '@trezor/icons';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
@@ -68,30 +69,33 @@ export const TradingSelectedOfferProvider = () => {
                 cursor="pointer"
                 data-testid="@trading/selected-offer-provider"
                 borderRadius={0}
+                isDisabled={form.state.isFormLoading}
             >
                 <Row alignItems="center" justifyContent="space-between" padding={20}>
-                    <Text typographyStyle="body-md">
+                    <Text typographyStyle="body-md" intent="neutral" priority="secondary">
                         <Translation id="TR_TRADING_PROVIDER" />
                     </Text>
                     <Row gap={16}>
-                        {form.state.isFormLoading ? (
-                            <SkeletonRectangle animate />
-                        ) : (
-                            <>
-                                <Text typographyStyle="body-md" as="div">
-                                    <TradingUtilsProvider
-                                        providers={providers}
-                                        exchange={quote.exchange}
+                        <Row gap={8}>
+                            {form.state.isFormLoading ? (
+                                <Skeleton animate />
+                            ) : (
+                                <>
+                                    <Text typographyStyle="body-md" as="div">
+                                        <TradingUtilsProvider
+                                            providers={providers}
+                                            exchange={quote.exchange}
+                                        />
+                                    </Text>
+                                    <Icon
+                                        as={CaretRightIcon}
+                                        size={20}
+                                        intent="neutral"
+                                        priority="secondary"
                                     />
-                                </Text>
-                                <Icon
-                                    name="caretRight"
-                                    size={20}
-                                    intent="neutral"
-                                    priority="secondary"
-                                />
-                            </>
-                        )}
+                                </>
+                            )}
+                        </Row>
                     </Row>
                 </Row>
             </GhostContainer>

@@ -1,4 +1,5 @@
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { getTranslation } from '@suite-native/intl';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -58,7 +59,13 @@ describe('AccountSettingsScreen', () => {
         );
 
         // The text appears in both the trigger button and the XpubQRCodeBottomSheet's show button.
-        expect(queryAllByText('Show public key (XPUB)').length).toBeGreaterThan(0);
+        expect(
+            queryAllByText(
+                getTranslation(
+                    'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.showButton',
+                ),
+            ).length,
+        ).toBeGreaterThan(0);
     });
 
     it('does not render Show XPUB button for address-based account', () => {
@@ -70,6 +77,12 @@ describe('AccountSettingsScreen', () => {
             { preloadedState: buildPreloadedState(ethAccount) },
         );
 
-        expect(queryByText('Show public key (XPUB)')).toBeNull();
+        expect(
+            queryByText(
+                getTranslation(
+                    'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.showButton',
+                ),
+            ),
+        ).toBeNull();
     });
 });

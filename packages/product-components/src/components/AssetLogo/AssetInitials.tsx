@@ -1,28 +1,22 @@
 import styled from 'styled-components';
 
-import { ElevationUp, Text, Tooltip, useElevation } from '@trezor/components';
-import {
-    type Elevation,
-    borders,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    spacingsPx,
-} from '@trezor/theme';
+import { Text, Tooltip } from '@trezor/components';
+import { borders, spacingsPx } from '@trezor/theme';
 
 const Content = styled.div`
     margin: ${spacingsPx.xxs};
     overflow: hidden;
 `;
 
-const Circle = styled.div<{ $size: number; $elevation: Elevation }>`
+const Circle = styled.div<{ $size: number }>`
     border-radius: ${borders.radii.full};
     align-items: center;
     justify-content: center;
     display: flex;
     width: ${({ $size }) => $size}px;
     height: ${({ $size }) => $size}px;
-    border: solid 1px ${mapElevationToBorder};
-    background-color: ${mapElevationToBackground};
+    border: solid 1px ${({ theme }) => theme.elementBorderNeutralSofter};
+    background-color: ${({ theme }) => theme.elementFillElevated};
 `;
 type AssetInitialsProps = {
     children: string;
@@ -31,11 +25,10 @@ type AssetInitialsProps = {
 };
 
 const AssetInitialsInner = ({ children, size, withTooltip = true }: AssetInitialsProps) => {
-    const { elevation } = useElevation();
     const firstChar = children[0];
 
     return (
-        <Circle $elevation={elevation} $size={size}>
+        <Circle $size={size}>
             <Content>
                 {withTooltip ? (
                     <Tooltip content={children}>
@@ -50,7 +43,5 @@ const AssetInitialsInner = ({ children, size, withTooltip = true }: AssetInitial
 };
 
 export const AssetInitials = ({ children, ...rest }: AssetInitialsProps) => (
-    <ElevationUp>
-        <AssetInitialsInner {...rest}>{children}</AssetInitialsInner>
-    </ElevationUp>
+    <AssetInitialsInner {...rest}>{children}</AssetInitialsInner>
 );

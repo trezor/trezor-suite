@@ -7,7 +7,7 @@ import {
     DEFAULT_SORTING_STRATEGY,
     type DiscoveryAccount,
     ERRORS,
-    type MethodPermission,
+    type PermissionRequest,
     type PrecomposeParams,
     type PrecomposedResult,
     type RefTransaction,
@@ -22,7 +22,7 @@ import { resolveAfter } from '@trezor/utils/src/resolveAfter';
 import { unique } from '@trezor/utils/src/unique';
 import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trezor/utxo-lib';
 
-import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
+import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { requestExistingAccounts } from './common/requestExistingAccounts';
@@ -79,7 +79,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             throw ERRORS.TypedError('Method_UnknownCoin');
         }
         // validate backend
-        isBackendSupported(coinInfo);
+        assertBackendSupported(coinInfo);
 
         // validate each output and transform into @trezor/utxo-lib/compose format
         const outputs: ComposeOutput[] = [];
@@ -127,17 +127,17 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
     discovery?: Discovery;
 
-    get requiredPermissions(): MethodPermission[] {
-        const permissions: MethodPermission[] = ['read', 'write'];
+    get requiredPermissions(): PermissionRequest[] {
+        const permissions: PermissionRequest[] = [this.coinPerm('sign', this.params.coinInfo)];
         if (this.params.push) {
-            permissions.push('push_tx');
+            permissions.push(this.coinPerm('push_tx', this.params.coinInfo));
         }
 
         return permissions;
     }
 
     get info() {
-        const sendMax = this.params?.outputs.find(o => o.type === 'send-max') !== undefined;
+        const sendMax = this.params.outputs.some(o => o.type === 'send-max');
 
         if (sendMax) {
             return 'Send maximum amount';

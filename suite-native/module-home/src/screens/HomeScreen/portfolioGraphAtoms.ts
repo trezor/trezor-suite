@@ -1,11 +1,14 @@
 import { atom } from 'jotai';
 
 import { type FiatGraphPoint } from '@suite-common/graph';
-import { percentageDiff } from '@suite-native/graph';
+import { createGraphPointDerivedAtoms, percentageDiff } from '@suite-native/graph';
 
 // use atomic jotai structure for absolute minimum re-renders and maximum performance
 // otherwise graph will be freezing on slower device while point swipe gesture
 export const selectedPointAtom = atom<FiatGraphPoint | null>(null);
+
+export const { selectedPointFiatValueAtom, selectedPointTimestampAtom } =
+    createGraphPointDerivedAtoms(selectedPointAtom);
 
 // reference is usually first point, same as Revolut does in their app
 export const referencePointAtom = atom<FiatGraphPoint | null>(null);

@@ -55,7 +55,6 @@ import { useTradingAssetDecimals } from './useTradingAssetDecimals';
 export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     account,
     methods,
-    pageType,
     type,
     handleChange,
     setAmountLimits,
@@ -73,7 +72,6 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
     const accounts = useSelector(selectVisibleDeviceAccounts);
-    const isNotFormPage = pageType !== 'form';
     const [fractionButtonState, setFractionButtonState] = useState<number | undefined>(undefined);
 
     const { getValues, setValue, clearErrors, handleSubmit, control } =
@@ -291,8 +289,6 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     // call change handler on every change of text inputs with debounce
     useDebounce(
         () => {
-            if (pageType === 'confirm' || pageType === 'retry') return;
-
             const fiatValue = values?.outputs?.[0]?.fiat;
             const cryptoValue = values?.outputs?.[0]?.amount;
 
@@ -317,13 +313,15 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
             }
         },
         500,
-        [values, previousValues, pageType],
+        [values, previousValues],
     );
 
     // call change handler on every change of select inputs
     // effect only for sell form
     useEffect(() => {
-        if (type !== 'sell' || pageType === 'confirm' || pageType === 'retry') return;
+        if (type !== 'sell') {
+            return;
+        }
 
         const sellValues = values as TradingSellFormProps;
 
@@ -357,7 +355,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
 
             previousValues.current = values;
         }
-    }, [previousValues, values, handleChange, handleSubmit, isNotFormPage, pageType, type]);
+    }, [previousValues, values, handleChange, handleSubmit, type]);
 
     // Trigger a quotes refetch when the receive identity changes. `receiveAddress`
     // is no longer mirrored onto the outer form (single source of truth lives in
@@ -367,7 +365,9 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         const receiveAddressChanged = isChanged(receiveAddress, previousReceiveAddress.current);
         previousReceiveAddress.current = receiveAddress;
 
-        if (type !== 'exchange' || pageType === 'confirm' || pageType === 'retry') return;
+        if (type !== 'exchange') {
+            return;
+        }
 
         const formValues = values as TradingExchangeFormProps | null;
         const prevFormValues = previousValues.current as TradingExchangeFormProps | null;
@@ -386,16 +386,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
 
             previousValues.current = values;
         }
-    }, [
-        values,
-        receiveAddress,
-        previousValues,
-        handleChange,
-        handleSubmit,
-        dispatch,
-        pageType,
-        type,
-    ]);
+    }, [values, receiveAddress, previousValues, handleChange, handleSubmit, dispatch, type]);
 
     return {
         isBalanceZero,

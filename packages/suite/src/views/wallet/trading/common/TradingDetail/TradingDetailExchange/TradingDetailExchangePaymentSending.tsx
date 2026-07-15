@@ -5,7 +5,7 @@ import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
-import { type BulletListItemState, Card, Column, InfoItem } from '@trezor/components';
+import { Card, Column, InfoItem, type StepListItemState } from '@trezor/components';
 
 import { useLocales } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -15,7 +15,7 @@ import { TradingDetailStep } from '../TradingDetailStep';
 import { TradingDetailTxId } from '../TradingDetailTxId';
 import { getTxEstimatedTimeSeconds } from '../utils';
 
-const getState = (trade: ExchangeTrade): BulletListItemState => {
+const getState = (trade: ExchangeTrade): StepListItemState => {
     switch (trade.status) {
         case 'CONVERTING':
         case 'SUCCESS':
@@ -25,7 +25,7 @@ const getState = (trade: ExchangeTrade): BulletListItemState => {
     }
 };
 
-const getTitleId = (state: BulletListItemState): TranslationKey => {
+const getTitleId = (state: StepListItemState): TranslationKey => {
     switch (state) {
         case 'active':
             return 'TR_EXCHANGE_DETAIL_SENDING_TRANSACTION';

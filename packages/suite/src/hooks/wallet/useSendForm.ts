@@ -310,7 +310,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             }
 
             if (protocol.sendForm.amount) {
-                const protocolAmount = protocol.sendForm.amount.toString();
+                const protocolAmount = protocol.sendForm.amount;
 
                 const formattedAmount = shouldSendInSats
                     ? convertAmountUnitsToSubunits(protocolAmount, state.network.decimals)

@@ -1,11 +1,10 @@
-import type { CoinInfo, MethodPermission } from '@trezor/connect-common';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
 
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
-import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import { getCoinInfo } from '../data/coinInfo';
+import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
+import { getCoinInfoOrThrow } from '../data/coinInfo';
 
 type Params = {
     coinInfo: CoinInfo;
@@ -22,12 +21,9 @@ export default class BlockchainGetInfo extends AbstractMethod<'blockchainGetInfo
             { name: 'identity', type: 'string' },
         ]);
 
-        const coinInfo = getCoinInfo(payload.coin);
-        if (!coinInfo) {
-            throw ERRORS.TypedError('Method_UnknownCoin');
-        }
+        const coinInfo = getCoinInfoOrThrow(payload.coin);
         // validate backend
-        isBackendSupported(coinInfo);
+        assertBackendSupported(coinInfo);
 
         const params = {
             coinInfo,
@@ -39,7 +35,7 @@ export default class BlockchainGetInfo extends AbstractMethod<'blockchainGetInfo
         this.useUi = false;
     }
 
-    get requiredPermissions(): MethodPermission[] {
+    get requiredPermissions(): PermissionRequest[] {
         return [];
     }
 
