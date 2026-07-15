@@ -1,6 +1,8 @@
 import { Page } from '@playwright/test';
 import { cloneDeep } from 'lodash';
 
+import { typedObjectEntries } from '@trezor/utils';
+
 import { invityEndpoint, invityGeneralResponses } from '../../fixtures/invity';
 import {
     SellTradeResponse,
@@ -26,7 +28,7 @@ export class TradingMock {
     // Common responses for all trading tests.
     @step()
     async routeInvityGeneralEndpoints() {
-        for (const [url, response] of Object.entries(invityGeneralResponses)) {
+        for (const [url, response] of typedObjectEntries(invityGeneralResponses)) {
             await this.page.route(url, async route => {
                 await route.fulfill({ json: response });
             });

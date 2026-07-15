@@ -21,7 +21,6 @@ const FILES_EXPECTED_TO_GROW = new Set<string>([
 ]);
 
 const KNOWN_OVERSIZED_DECLARATIONS: string[] = [
-    'suite/e2e/libDev/fixtures/invity/index.d.ts',
     'packages/suite/libDev/src/utils/suite/notification.d.ts',
     'packages/suite/libDev/src/hooks/wallet/useRbfForm.d.ts',
 ];
