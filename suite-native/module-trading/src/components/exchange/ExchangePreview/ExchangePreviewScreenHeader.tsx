@@ -1,6 +1,7 @@
 import { memo } from 'react';
+import { FadeIn } from 'react-native-reanimated';
 
-import { HStack, Loader, Text, VStack } from '@suite-native/atoms';
+import { AnimatedText, HStack, Loader, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { ScreenHeader } from '@suite-native/navigation';
 
@@ -22,16 +23,19 @@ const HeaderTitle = () => {
             <Text variant="body-md-strong">
                 <Translation id="moduleTrading.tradingExchangePreviewScreen.title" />
             </Text>
-            <HStack spacing="sp4">
-                {isLoading && <Loader size="small" />}
-                <Text variant="body-sm">
-                    {isLoading ? (
+
+            {isLoading ? (
+                <HStack spacing="sp4">
+                    <Loader size="small" />
+                    <Text variant="body-sm">
                         <Translation id="moduleTrading.transactionSimulation.simulating" />
-                    ) : (
-                        <Translation id="moduleTrading.transactionSimulation.title" />
-                    )}
-                </Text>
-            </HStack>
+                    </Text>
+                </HStack>
+            ) : (
+                <AnimatedText variant="body-sm" entering={FadeIn}>
+                    <Translation id="moduleTrading.transactionSimulation.title" />
+                </AnimatedText>
+            )}
         </VStack>
     );
 };

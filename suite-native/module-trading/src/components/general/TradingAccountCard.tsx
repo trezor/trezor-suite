@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react';
+import { FadeIn } from 'react-native-reanimated';
 
 import type { CryptoId } from 'invity-api';
 
 import type { Account } from '@suite-common/wallet-types';
-import { Box, BoxSkeleton } from '@suite-native/atoms';
+import { AnimatedBox, Box, BoxSkeleton } from '@suite-native/atoms';
 import { NetworkAndAccountCard } from '@suite-native/trading-atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -49,12 +50,14 @@ export const TradingAccountCard = ({
                     <BoxSkeleton height={AMOUNT_SKELETON_HEIGHT} width={AMOUNT_SKELETON_WIDTH} />
                 </Box>
             ) : (
-                <CryptoAmountRow
-                    cryptoId={cryptoId}
-                    amount={amount}
-                    direction={direction}
-                    style={applyStyle(rowStyle)}
-                />
+                <AnimatedBox entering={FadeIn}>
+                    <CryptoAmountRow
+                        cryptoId={cryptoId}
+                        amount={amount}
+                        direction={direction}
+                        style={applyStyle(rowStyle)}
+                    />
+                </AnimatedBox>
             )}
         </NetworkAndAccountCard>
     );
