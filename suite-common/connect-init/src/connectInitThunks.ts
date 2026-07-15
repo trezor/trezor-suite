@@ -155,18 +155,20 @@ export const connectInitThunk = createThunk<
 
         dispatch(lockDevice(true));
 
-        const result = await synchronize(() => original(params));
+        // Snapshot the device the call runs against before awaiting it. Button requests are
+        // attached to the selected device as UI events arrive during the call; re-selecting
+        // after the await would target a different device if the selection changed meanwhile,
+        // leaving stale button requests behind on the original one.
+        const deviceAtCallStart = selectSelectedDevice(getState());
 
-        dispatch(lockDevice(false));
-        dispatch(
-            deviceActions.removeButtonRequests({
-                // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
-                // be the same re-selected device from this line. We should reuse device from params.
-                device: selectSelectedDevice(getState()),
-            }),
-        );
-
-        return result;
+        try {
+            return await synchronize(() => original(params));
+        } finally {
+            // Runs on resolve and reject alike: a rejected call must not leak the device lock
+            // counter (it never decrements, locking the device until reload) or skip cleanup.
+            dispatch(lockDevice(false));
+            dispatch(deviceActions.removeButtonRequests({ device: deviceAtCallStart }));
+        }
     };
 
     const binFilesBaseUrl = getBinFilesBaseUrl();
