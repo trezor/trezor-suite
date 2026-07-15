@@ -77,13 +77,13 @@ export const messages = defineMessages({
         defaultMessage: "Token doesn't exist",
         id: 'TR_EARN_YIELD_TOKEN_NOT_EXIST',
     },
-    TR_EARN_YIELD_NETWORK_NOT_SUPPORTED: {
-        defaultMessage: "This account's network doesn't support stablecoin yield.",
-        id: 'TR_EARN_YIELD_NETWORK_NOT_SUPPORTED',
+    TR_EARN_DEFI_YIELD_NETWORK_NOT_SUPPORTED: {
+        defaultMessage: "This account's network doesn't support DeFi Yield.",
+        id: 'TR_EARN_DEFI_YIELD_NETWORK_NOT_SUPPORTED',
     },
-    TR_EARN_YIELD_OPPORTUNITIES_ERROR: {
-        defaultMessage: 'Unable to load stablecoin yield opportunities.',
-        id: 'TR_EARN_YIELD_OPPORTUNITIES_ERROR',
+    TR_EARN_DEFI_YIELD_OPPORTUNITIES_ERROR: {
+        defaultMessage: 'Unable to load DeFi Yield opportunities.',
+        id: 'TR_EARN_DEFI_YIELD_OPPORTUNITIES_ERROR',
     },
     TR_EARN_YIELD_VAULT: {
         defaultMessage: 'Vault',
@@ -10035,9 +10035,9 @@ export const messages = defineMessages({
         defaultMessage:
             'Grow your crypto by locking it to help secure the network—and earn rewards in return.',
     },
-    TR_EARN_YIELD_DASHBOARD_TEXT: {
-        id: 'TR_EARN_YIELD_DASHBOARD_TEXT',
-        defaultMessage: 'Put your stablecoins to work and earn rewards.',
+    TR_EARN_DEFI_YIELD_DASHBOARD_TEXT: {
+        id: 'TR_EARN_DEFI_YIELD_DASHBOARD_TEXT',
+        defaultMessage: 'Put your assets to work and earn rewards.',
     },
     TR_EARN_YIELD_DASHBOARD_DEPOSIT_MORE: {
         id: 'TR_EARN_YIELD_DASHBOARD_DEPOSIT_MORE',
@@ -10176,9 +10176,9 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_CLAIM_DISABLED',
         defaultMessage: 'Claim is currently disabled.',
     },
-    TR_EARN_STABLECOIN_YIELD_TITLE: {
-        id: 'TR_EARN_STABLECOIN_YIELD_TITLE',
-        defaultMessage: 'Stablecoin yield',
+    TR_EARN_DEFI_YIELD_TITLE: {
+        id: 'TR_EARN_DEFI_YIELD_TITLE',
+        defaultMessage: 'DeFi Yield',
     },
     TR_EARN_YIELD_PENDING_DEPOSIT: {
         id: 'TR_EARN_YIELD_PENDING_DEPOSIT',
@@ -10977,9 +10977,9 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_APR',
         defaultMessage: 'APR {apr}%',
     },
-    TR_EARN_DEPOSITING_IN_A_NUTSHELL: {
-        id: 'TR_EARN_DEPOSITING_IN_A_NUTSHELL',
-        defaultMessage: 'How stablecoin yield works',
+    TR_EARN_DEFI_YIELD_IN_A_NUTSHELL: {
+        id: 'TR_EARN_DEFI_YIELD_IN_A_NUTSHELL',
+        defaultMessage: 'How DeFi Yield works',
     },
     TR_EARN_YIELD_NUTSHELL_DEPOSITED_AMOUNT: {
         id: 'TR_EARN_YIELD_NUTSHELL_DEPOSITED_AMOUNT',

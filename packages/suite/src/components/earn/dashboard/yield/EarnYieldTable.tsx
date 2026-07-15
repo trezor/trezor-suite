@@ -145,8 +145,8 @@ export const EarnYieldTable = () => {
 
             <OutlineHighlight shouldHighlight={shouldHighlight}>
                 <DashboardSection
-                    heading={<Translation id="TR_EARN_STABLECOIN_YIELD_TITLE" />}
-                    subheading={<Translation id="TR_EARN_YIELD_DASHBOARD_TEXT" />}
+                    heading={<Translation id="TR_EARN_DEFI_YIELD_TITLE" />}
+                    subheading={<Translation id="TR_EARN_DEFI_YIELD_DASHBOARD_TEXT" />}
                     actions={<PoweredByBadge provider="morpho" />}
                     ref={anchorRef}
                 >

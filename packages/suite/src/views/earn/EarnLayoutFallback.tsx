@@ -32,13 +32,19 @@ export const EarnLayoutFallback = ({ layoutState }: EarnLayoutFallbackProps) => 
             return <EarnException title={<Translation id="TR_EARN_YIELD_VAULT_NOT_EXIST" />} />;
         case 'network-mismatch':
             return (
-                <EarnException title={<Translation id="TR_EARN_YIELD_NETWORK_NOT_SUPPORTED" />} />
+                <EarnException
+                    title={<Translation id="TR_EARN_DEFI_YIELD_NETWORK_NOT_SUPPORTED" />}
+                />
             );
         case 'token-mismatch':
             return <EarnException title={<Translation id="TR_EARN_YIELD_TOKEN_NOT_EXIST" />} />;
         case 'firmware-not-supported':
             return null;
         case 'yield-opportunities-error':
-            return <EarnException title={<Translation id="TR_EARN_YIELD_OPPORTUNITIES_ERROR" />} />;
+            return (
+                <EarnException
+                    title={<Translation id="TR_EARN_DEFI_YIELD_OPPORTUNITIES_ERROR" />}
+                />
+            );
     }
 };

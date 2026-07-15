@@ -55,8 +55,8 @@ export const HowYieldWorksScreen = () => {
             <VStack flex={1} justifyContent="space-between">
                 <VStack alignItems="flex-start" spacing="sp32">
                     <HowEarnWorksHeaderSection
-                        title={<Translation id="earn.howYieldWorksScreen.title" />}
-                        subtitle={<Translation id="earn.howYieldWorksScreen.subtitle" />}
+                        title={<Translation id="earn.howYieldWorksScreen.defiYieldTitle" />}
+                        subtitle={<Translation id="earn.howYieldWorksScreen.defiYieldSubtitle" />}
                     />
                     <HowEarnWorksBenefitsSection items={benefitItems} />
                     <HowEarnWorksTimelineCard

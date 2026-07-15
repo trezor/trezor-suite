@@ -136,7 +136,7 @@ export const StablecoinYieldTokenOverview = ({
                         <Icon name="info" size="mediumLarge" />
                         <Box flex={1}>
                             <Text variant="body-sm-strong">
-                                <Translation id="moduleAccounts.accountDetail.stablecoinYield.infoText" />
+                                <Translation id="moduleAccounts.accountDetail.stablecoinYield.defiYieldInfoText" />
                             </Text>
                         </Box>
                     </HStack>

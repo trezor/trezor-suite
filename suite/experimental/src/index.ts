@@ -45,5 +45,5 @@ type FeedbackFeatureTranslation = {
 export const translatedFeedbackFeatures: FeedbackFeatureTranslation = {
     ...translatedExperimentalFeatures,
     'suite-sync': 'TR_EXPERIMENTAL_SUITE_SYNC_TITLE',
-    'stablecoin-yield': 'TR_EARN_STABLECOIN_YIELD_TITLE',
+    'stablecoin-yield': 'TR_EARN_DEFI_YIELD_TITLE',
 };

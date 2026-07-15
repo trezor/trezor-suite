@@ -33,9 +33,9 @@ const translationIdByEarnType = {
         cta: 'earn.earnScreen.enableNetworkModal.cta',
     },
     'stablecoin-yield': {
-        title: 'earn.earnScreen.enableNetworkModal.stablecoinYield.title',
-        subtitle: 'earn.earnScreen.enableNetworkModal.stablecoinYield.subtitle',
-        cta: 'earn.earnScreen.enableNetworkModal.stablecoinYield.cta',
+        title: 'earn.earnScreen.enableNetworkModal.defiYield.title',
+        subtitle: 'earn.earnScreen.enableNetworkModal.defiYield.subtitle',
+        cta: 'earn.earnScreen.enableNetworkModal.defiYield.cta',
     },
 } as const;
 

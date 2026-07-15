@@ -140,7 +140,7 @@ export const YieldEarnInANutshellModal = ({
 
     return (
         <EarnInANutshellModalLayout
-            heading={<Translation id="TR_EARN_DEPOSITING_IN_A_NUTSHELL" />}
+            heading={<Translation id="TR_EARN_DEFI_YIELD_IN_A_NUTSHELL" />}
             onCancel={handleOnCancel}
             actionType={actionType}
             onAction={handleOnAction}

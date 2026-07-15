@@ -50,7 +50,7 @@ export const YieldDepositInfoBottomSheet = ({
     return (
         <BottomSheetModal
             ref={ref}
-            title={<Translation id="earn.howYieldWorksScreen.title" />}
+            title={<Translation id="earn.howYieldWorksScreen.defiYieldTitle" />}
             isCloseDisplayed
             onClose={onClose}
             footer={
@@ -63,7 +63,7 @@ export const YieldDepositInfoBottomSheet = ({
         >
             <VStack spacing="sp32">
                 <Text variant="body-sm" color="contentSecondary">
-                    <Translation id="earn.howYieldWorksScreen.subtitle" />
+                    <Translation id="earn.howYieldWorksScreen.defiYieldSubtitle" />
                 </Text>
                 <HowEarnWorksBenefitsSection items={benefitItems} />
                 <HowEarnWorksTimelineCard

@@ -165,7 +165,7 @@ export const useEarnDepositsCardData = ({
 
         return firstStablecoinVaultName && !hasMultipleStablecoinVaults
             ? firstStablecoinVaultName
-            : translate('earn.stablecoinYield');
+            : translate('earn.defiYield');
     }, [stablecoinRows, translate]);
 
     const stakingRow = useMemo(
