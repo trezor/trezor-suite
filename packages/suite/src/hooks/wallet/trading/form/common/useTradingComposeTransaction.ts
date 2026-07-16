@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { type UseFormReturn } from 'react-hook-form';
+import { type UseFormReturn, useWatch } from 'react-hook-form';
 
 import { isTranslationKey, useTranslation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -37,7 +37,6 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     type,
     account,
     network,
-    values,
     methods,
     setShowReserveBanner,
     shouldSuppressComposeErrors,
@@ -48,9 +47,8 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     const addressDisplayType = useSelector(selectAddressDisplayType);
     const { translationString } = useTranslation();
 
-    const { getValues, setValue, setError, clearErrors } = methods as unknown as UseFormReturn<
-        TradingSellFormProps | TradingExchangeFormProps
-    >;
+    const { getValues, setValue, setError, clearErrors, control } =
+        methods as unknown as UseFormReturn<TradingSellFormProps | TradingExchangeFormProps>;
     const chunkify = addressDisplayType === AddressDisplayOptions.CHUNKED;
     const { symbol, networkType } = account;
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, symbol));
@@ -63,7 +61,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         [networkType, rawFeeInfo],
     );
     const initState = useMemo(() => ({ account, network, feeInfo }), [account, network, feeInfo]);
-    const outputAddress = values?.outputs?.[0]?.address;
+    const outputAddress = useWatch({ control, name: TRADING_FORM_OUTPUT_ADDRESS });
     const [state, setState] = useState<TradingUseComposeTransactionStateProps>(initState);
 
     // Tron: derive a cold recipient for the offers fee estimate, passed via compose context.
@@ -144,8 +142,10 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
                 chunkify,
             );
 
-            if (values?.outputs?.[0] && typeof address === 'string') {
-                if (!values.outputs[0].address) {
+            const currentOutput = getValues('outputs')?.[0];
+
+            if (currentOutput && typeof address === 'string') {
+                if (!currentOutput.address) {
                     setValue(TRADING_FORM_OUTPUT_ADDRESS, address);
                 }
                 setState(initState);

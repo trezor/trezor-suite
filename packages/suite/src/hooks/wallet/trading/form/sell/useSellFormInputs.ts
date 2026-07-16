@@ -70,10 +70,15 @@ export const useSellFormInputs = ({
     // TODO: source the form via useFormContext() once the trading-form family migrates to FormProvider
     const { getValues, setValue, clearErrors, control } = methods;
 
-    const sendCryptoSelect = useWatch({ control, name: TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT });
-    const tokenAddress = useWatch({ control, name: TRADING_FORM_CRYPTO_TOKEN });
-    const outputCurrency = useWatch({ control, name: TRADING_FORM_OUTPUT_CURRENCY });
-    const watchedFiat = useWatch({ control, name: TRADING_FORM_OUTPUT_FIAT });
+    const [sendCryptoSelect, tokenAddress, outputCurrency, watchedFiat] = useWatch({
+        control,
+        name: [
+            TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+            TRADING_FORM_CRYPTO_TOKEN,
+            TRADING_FORM_OUTPUT_CURRENCY,
+            TRADING_FORM_OUTPUT_FIAT,
+        ],
+    });
 
     // TODO(#26292): tokenData/isBalanceZero/feeInUnits derivation is identical for exchange —
     // extract as a reusable hook during the exchange decomposition (3.4).
