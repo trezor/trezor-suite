@@ -72,7 +72,9 @@ const breadcrumbActions = new Set<Action['type']>([
 ]);
 
 const sentryMiddleware =
-    (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (action: Action) => {
+    (api: MiddlewareAPI<Dispatch, AppState>) =>
+    (next: Dispatch) =>
+    (action: Action): Action | undefined => {
         // pass action
         next(action);
 
