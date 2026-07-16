@@ -29,6 +29,9 @@ export const MAX_CLAIM_ACCOUNTS = 16;
 
 export const MIN_STAKE_DELEGATION = 1_000_000_000n;
 
+// https://www.solana-program.com/docs/memo
+export const SOLANA_MEMO_MAX_BYTES = 566;
+
 export const tokenProgramNames = ['spl-token', 'spl-token-2022'] as const;
 
 export const tokenProgramsInfo = {

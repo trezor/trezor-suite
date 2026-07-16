@@ -5,6 +5,9 @@
         { "path": "../address" },
         { "path": "../wallet-config" },
         { "path": "../wallet-utils" },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
         { "path": "../../packages/utils" }
     ]
 }

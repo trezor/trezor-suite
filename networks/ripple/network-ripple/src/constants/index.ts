@@ -16,3 +16,6 @@ export const getUnixTimestamp = (xrplTimestamp?: number): number => {
 
     return xrplTimestamp + RIPPLE_EPOCH_OFFSET;
 };
+
+// tfFullyCanonicalSig — XRPL universal transaction flag
+export const XRP_FLAG = 0x80000000;

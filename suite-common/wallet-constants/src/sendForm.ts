@@ -7,7 +7,6 @@ export const BTC_RBF_SEQUENCE = 0xffffffff - 2;
 export const BTC_LOCKTIME_SEQUENCE = 0xffffffff - 1;
 
 export const BTC_LOCKTIME_VALUE = 500000000; // if locktime is equal/greater than this then it's a timestamp
-export const XRP_FLAG = 0x80000000;
 export const U_INT_32 = 0xffffffff;
 
 export const ETH_SPEED_UP_TX_MULTIPLIER = '1.2'; // multiply max fee and max priority fee per gas when speeding up tx
