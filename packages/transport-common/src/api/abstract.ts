@@ -23,6 +23,16 @@ type AccessLock = {
     read: boolean;
     write: boolean;
 };
+
+export type AbstractApiReadError =
+    | typeof ERRORS.DEVICE_NOT_FOUND
+    | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
+    | typeof ERRORS.INTERFACE_DATA_TRANSFER
+    | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
+    | typeof ERRORS.UNEXPECTED_ERROR
+    | typeof ERRORS.ABORTED_BY_TIMEOUT
+    | typeof ERRORS.ABORTED_BY_SIGNAL;
+
 /**
  * This class defines unifying shape for native communication interfaces such as
  * - navigator.bluetooth
@@ -71,16 +81,7 @@ export abstract class AbstractApi extends TypedEmitter<{
         options?: {
             signal?: AbortSignal;
         },
-    ): AsyncResultWithTypedError<
-        Buffer,
-        | typeof ERRORS.DEVICE_NOT_FOUND
-        | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
-        | typeof ERRORS.INTERFACE_DATA_TRANSFER
-        | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
-        | typeof ERRORS.UNEXPECTED_ERROR
-        | typeof ERRORS.ABORTED_BY_TIMEOUT
-        | typeof ERRORS.ABORTED_BY_SIGNAL
-    >;
+    ): AsyncResultWithTypedError<Buffer, AbstractApiReadError>;
 
     /**
      * write to device on path
