@@ -2820,7 +2820,7 @@ export const messages = {
                         'Most rewards compound automatically—some must be claimed manually.',
                 },
                 third: {
-                    title: 'Deposit {tokenSymbol} to receive {vaultTokenName}',
+                    title: 'Deposit {tokenSymbol} to receive {vaultTokenSymbol}',
                     description: 'This is your vault position.',
                 },
                 fourth: {
