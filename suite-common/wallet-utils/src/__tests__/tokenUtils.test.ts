@@ -1,7 +1,10 @@
+import type { TokenInfo } from '@trezor/blockchain-link-types';
+
 import { getContractAddressForNetworkSymbolFixtures } from '../__fixtures__/tokenUtils';
 import {
     getAssetLogoContractAddresses,
     getContractAddressForNetworkSymbol,
+    getErc4626Contracts,
     sortTokensByName,
 } from '../tokenUtils';
 
@@ -40,6 +43,29 @@ describe('getAssetLogoContractAddresses', () => {
         await expect(getAssetLogoContractAddresses('eth', contract)).resolves.toEqual([
             contract.toLowerCase(),
         ]);
+    });
+});
+
+describe('getErc4626Contracts', () => {
+    const vaultToken: TokenInfo = {
+        standard: 'ERC20',
+        contract: '0xVault',
+        decimals: 6,
+        protocols: ['erc4626'],
+    };
+
+    const plainToken: TokenInfo = {
+        standard: 'ERC20',
+        contract: '0xPlain',
+        decimals: 6,
+    };
+
+    it('returns normalized contracts of ERC4626 tokens', () => {
+        expect(getErc4626Contracts([plainToken, vaultToken])).toEqual(new Set(['0xvault']));
+    });
+
+    it('returns an empty set when tokens are undefined', () => {
+        expect(getErc4626Contracts(undefined)).toEqual(new Set());
     });
 });
 

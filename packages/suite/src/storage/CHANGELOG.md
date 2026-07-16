@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.8.0
+
+- remove inaccurate historic ERC4626 fiat rates from storage
+
 ## 26.6.0
 
 - purge desktop trading form draft keys (`trading-buy/*`, `trading-sell/`, `trading-exchange/`) from `formDrafts`

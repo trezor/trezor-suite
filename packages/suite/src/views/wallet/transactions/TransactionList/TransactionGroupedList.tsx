@@ -37,6 +37,7 @@ export const TransactionGroupedList = ({
             key={dateKey}
             dateKey={dateKey}
             symbol={symbol}
+            account={account}
             transactions={value}
             baseCurrencyCode={baseCurrencyCode}
             isPending={isPending}

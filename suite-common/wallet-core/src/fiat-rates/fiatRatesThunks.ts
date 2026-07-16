@@ -20,8 +20,8 @@ import {
 } from '@suite-common/wallet-types';
 import {
     fetchTransactionsRates,
+    getErc4626Contracts,
     groupTokensTransactionsByContractAddress,
-    isErc4626,
     isTestnet,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -117,56 +117,6 @@ const fetchErc4626FiatRate = async ({
     return { rate: vaultRate, lastTickerTimestamp: underlyingAssetRate.lastTickerTimestamp };
 };
 
-interface FetchErc4626TransactionsRatesProps {
-    symbol: NetworkSymbol;
-    contract: TokenAddress;
-    timestamps: Timestamp[];
-    baseCurrencyCode: BaseCurrencyCode;
-    isElectrumBackend: boolean;
-    rates: TickerResult[];
-}
-
-const fetchErc4626TransactionsRates = async ({
-    symbol,
-    contract,
-    timestamps,
-    baseCurrencyCode,
-    isElectrumBackend,
-    rates,
-}: FetchErc4626TransactionsRatesProps) => {
-    try {
-        const erc4626 = await fetchErc4626Data({ coin: symbol, contract });
-
-        if (!erc4626.asset || !erc4626.convertToAssets1Share) return;
-
-        const underlyingRates: TickerResult[] = [];
-        await fetchTransactionsRates(
-            { symbol, tokenAddress: toTokenAddress(erc4626.asset.contract) },
-            timestamps,
-            baseCurrencyCode,
-            isElectrumBackend,
-            underlyingRates,
-        );
-
-        const exchangeRate = new BigNumber(erc4626.convertToAssets1Share).shiftedBy(
-            -erc4626.asset.decimals,
-        );
-
-        underlyingRates.forEach(({ localCurrency, rates: underlyingTokenRates }) => {
-            rates.push({
-                tickerId: { symbol, tokenAddress: contract },
-                localCurrency,
-                rates: underlyingTokenRates.map(({ rate, lastTickerTimestamp }) => ({
-                    rate: rate === undefined ? rate : exchangeRate.multipliedBy(rate).toNumber(),
-                    lastTickerTimestamp,
-                })),
-            });
-        });
-    } catch (error) {
-        console.error(error);
-    }
-};
-
 type UpdateTxsFiatRatesThunkPayload = {
     accountKey: AccountKey;
     txs: WalletAccountTransaction[];
@@ -198,6 +148,7 @@ export const updateTxsFiatRatesThunk = createThunk(
         );
 
         const groupedTokensTxs = groupTokensTransactionsByContractAddress(txs);
+        const erc4626Contracts = getErc4626Contracts(account.tokens);
 
         for (const token of typedObjectKeys(groupedTokensTxs)) {
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
@@ -206,20 +157,8 @@ export const updateTxsFiatRatesThunk = createThunk(
                 .map(tx => (tx.blockTime !== undefined ? asTimestamp(tx.blockTime) : undefined))
                 .filter(isNotUndefined);
 
-            const accountToken = account.tokens?.find(
-                accountTokenInfo => accountTokenInfo.contract === token,
-            );
-
-            if (accountToken && isErc4626(accountToken)) {
-                await fetchErc4626TransactionsRates({
-                    symbol: account.symbol,
-                    contract: toTokenAddress(token),
-                    timestamps: tokenTimestamps,
-                    baseCurrencyCode,
-                    isElectrumBackend,
-                    rates,
-                });
-
+            // Historical ERC4626 rates cannot be calculated without historical share-to-asset ratios.
+            if (erc4626Contracts.has(token.toLowerCase())) {
                 continue;
             }
 
