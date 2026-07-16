@@ -1364,8 +1364,9 @@ export const messages = {
                     title: 'Auto-eject wallets',
                     description: 'Automatically eject all wallets when you disconnect your Trezor.',
                     alert: {
-                        titleNoConnectedTrezor: 'Enable auto-eject to hide your balances',
-                        titleConnectedTrezor: 'when you disconnect your Trezor',
+                        disconnectedTrezorTitle: 'Enable auto-eject to hide your balances',
+                        connectedTrezorTitle:
+                            'Enable auto-eject to hide your balances when you disconnect your Trezor',
                         primaryButtonTitle: 'Enable auto-eject',
                     },
                 },
