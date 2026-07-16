@@ -40,8 +40,9 @@ export const deviceInvariabilityCheck = ({
         return ok();
     }
 
-    const isModelMismatch = currentModel !== previousModel;
-    const isColorMismatch = currentColor !== previousColor;
+    // Loose equality, so that null and undefined are considered equal.
+    const isModelMismatch = currentModel != previousModel;
+    const isColorMismatch = currentColor != previousColor;
 
     if (isModelMismatch || isColorMismatch) {
         const error: DeviceInvariabilityCheckError = {
