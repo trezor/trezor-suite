@@ -14,7 +14,7 @@ import {
     selectRecovery,
 } from '@suite/recovery';
 import { useServices } from '@suite-common/dependency-injection';
-import { usePin } from '@suite-common/device';
+import { selectDeviceButtonRequests, usePin } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { Box, H2, Image, Modal, Paragraph } from '@trezor/components';
@@ -44,7 +44,8 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     const [recoveryInputType, setRecoveryInputType] = useState<RecoveryInputType | undefined>();
     const intl = useIntl();
     const pinRequestId = useSelector(selectModalRequestId);
-    const { pin, setPin, handlePinSubmit } = usePin(device?.buttonRequests ?? [], pinRequestId);
+    const buttonRequests = useSelector(selectDeviceButtonRequests);
+    const { pin, setPin, handlePinSubmit } = usePin(buttonRequests, pinRequestId);
 
     const deviceModelInternal = device?.features?.internal_model;
     const isT1B1 = deviceModelInternal === DeviceModelInternal.T1B1;

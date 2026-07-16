@@ -192,6 +192,7 @@ const getTestState = ({
                 staticSessionId: staticStateString,
             },
         } as TrezorDevice,
+        buttonRequestsByPath: {},
     },
 });
 

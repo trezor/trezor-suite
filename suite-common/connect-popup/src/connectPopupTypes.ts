@@ -1,6 +1,10 @@
 import { type AccountType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type AccountKey, type TxSimulationAction } from '@suite-common/wallet-types';
-import { type CallMethodKeys, type PermissionRequest } from '@trezor/connect';
+import {
+    type CallMethodKeys,
+    type DeviceUniquePath,
+    type PermissionRequest,
+} from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type AddressSelection } from '@trezor/connect-common/src/types/api/selectAccount';
 
@@ -241,7 +245,17 @@ type ConnectPopupCallError = {
     state: 'error';
     error: ConnectSerializedError;
 };
-export type ConnectPopupCall = ConnectPopupCallLoaded | ConnectPopupCallError;
+
+// Internal per-call metadata, held on `activeCall` so the cancel handler can read it.
+type ConnectPopupCallMeta = {
+    // Caller-supplied correlation token; used to match/route a cancel to the right call.
+    callId?: string;
+    // Physical-device path this call runs on, for clearing button requests on cancel; unset pre-device.
+    devicePath?: DeviceUniquePath;
+};
+
+export type ConnectPopupCall = (ConnectPopupCallLoaded | ConnectPopupCallError) &
+    ConnectPopupCallMeta;
 
 export type ConnectPopupCallWithState<
     CallState extends ConnectPopupCall['state'],

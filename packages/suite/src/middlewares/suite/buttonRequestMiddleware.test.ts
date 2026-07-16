@@ -79,7 +79,7 @@ describe('buttonRequest middleware', () => {
         // fake few ui events, just like when user is changing PIN
         emitTestEvent(UI_EVENT, {
             type: UI_EVENTS.BUTTON_REQUEST,
-            payload: { code: 'ButtonRequest_ProtectCall' },
+            payload: { code: 'ButtonRequest_ProtectCall', device },
         });
         emitTestEvent(UI_REQUEST, {
             type: UI_REQUESTS.REQUEST_PIN,
@@ -109,7 +109,10 @@ describe('buttonRequest middleware', () => {
             { type: UI_EVENTS.BUTTON_REQUEST, payload: { code: 'ButtonRequest_ProtectCall' } },
             {
                 type: deviceActions.addButtonRequest.type,
-                payload: { buttonRequest: { code: 'ButtonRequest_ProtectCall' }, device },
+                payload: {
+                    buttonRequest: { code: 'ButtonRequest_ProtectCall' },
+                    path: device.path,
+                },
             },
             { type: defaultTrezorUIEventHandlerThunk.pending.type },
             {
@@ -118,11 +121,14 @@ describe('buttonRequest middleware', () => {
             },
             {
                 type: deviceActions.addButtonRequest.type,
-                payload: { buttonRequest: { code: 'PinMatrixRequestType_NewFirst' }, device },
+                payload: {
+                    buttonRequest: { code: 'PinMatrixRequestType_NewFirst' },
+                    path: device.path,
+                },
             },
             { type: defaultTrezorUIEventHandlerThunk.fulfilled.type },
             { type: defaultTrezorUIEventHandlerThunk.fulfilled.type },
-            { type: deviceActions.removeButtonRequests.type, payload: { device } },
+            { type: deviceActions.removeButtonRequests.type, payload: { path: device.path } },
         ]);
     });
 });

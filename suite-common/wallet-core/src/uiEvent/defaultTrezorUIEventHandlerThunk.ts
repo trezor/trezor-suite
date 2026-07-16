@@ -1,4 +1,4 @@
-import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, deviceActions } from '@suite-common/device';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type ConnectInitUiEventHooksDep } from '@suite-common/suite-types';
 import { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
@@ -20,7 +20,7 @@ export const defaultTrezorUIEventHandlerThunk = createThunk<
         state: DefaultTrezorUIEventHandlerThunkState;
         extra: DefaultTrezorUIEventHandlerThunkDeps;
     }
->(`${MODULE}/defaultTrezorUIEventHandler`, (action, { dispatch, getState, extra }) => {
+>(`${MODULE}/defaultTrezorUIEventHandler`, (action, { dispatch, extra }) => {
     const { connectInitUiEventHooks } = extra.services;
 
     if (action.type === UI_EVENTS.FIRMWARE_DOWNLOADED) {
@@ -35,9 +35,8 @@ export const defaultTrezorUIEventHandlerThunk = createThunk<
         case UI_EVENTS.PIN_INVALID:
             dispatch(
                 deviceActions.addButtonRequest({
-                    // todo: note that this is not 'threadsafe', currently selected device is not necessarily the device
-                    // connect call was made for
-                    device: selectSelectedDevice(getState()),
+                    // Key by the event's own device path, not the selected device (may differ).
+                    path: action.payload.device.path,
                     buttonRequest: {
                         code: action.payload.type ? action.payload.type : action.type,
                     },
@@ -45,10 +44,10 @@ export const defaultTrezorUIEventHandlerThunk = createThunk<
             );
             break;
         case UI_EVENTS.BUTTON_REQUEST: {
-            const { device: _, ...request } = action.payload;
+            const { device, ...request } = action.payload;
             dispatch(
                 deviceActions.addButtonRequest({
-                    device: selectSelectedDevice(getState()),
+                    path: device.path,
                     buttonRequest: request,
                 }),
             );

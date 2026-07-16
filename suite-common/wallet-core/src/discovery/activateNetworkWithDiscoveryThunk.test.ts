@@ -89,6 +89,7 @@ const createState = ({
     device: {
         devices: [device],
         selectedDevice: device,
+        buttonRequestsByPath: {},
     },
     persistentDeviceData: persistentDeviceDataInitialState,
     tokenDefinitions: tokenDefinitionsInitialState,
