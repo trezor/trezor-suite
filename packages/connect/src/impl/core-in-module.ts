@@ -35,9 +35,12 @@ import { initCoreState } from '../core';
 export abstract class CoreInModule implements TrezorConnectCore<ConnectSettings> {
     private readonly eventEmitter = new ConnectEmitter();
 
-    public on = this.eventEmitter.on.bind(this.eventEmitter);
-    public off = this.eventEmitter.removeListener.bind(this.eventEmitter);
-    public removeAllListeners = this.eventEmitter.removeAllListeners.bind(this.eventEmitter);
+    public on: ConnectEmitter['on'] = this.eventEmitter.on.bind(this.eventEmitter);
+    public off: ConnectEmitter['removeListener'] = this.eventEmitter.removeListener.bind(
+        this.eventEmitter,
+    );
+    public removeAllListeners: ConnectEmitter['removeAllListeners'] =
+        this.eventEmitter.removeAllListeners.bind(this.eventEmitter);
 
     protected settings;
     private coreManager;
