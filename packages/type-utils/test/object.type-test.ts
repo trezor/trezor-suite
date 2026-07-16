@@ -12,11 +12,16 @@ type X = {
 
 type Y = NullablePropsRecursive<X>;
 
-export const y1ok: Y = { a: 'A', b: null };
-export const y2ok: Y = { a: 'A', b: { c: 'C', d: { e: null } } };
+const y1ok: Y = { a: 'A', b: null };
+const y2ok: Y = { a: 'A', b: { c: 'C', d: { e: null } } };
 
 // @ts-expect-error This expects and error as a, b is missing
-export const y4fail: Y = {};
+const y4fail: Y = {};
 
 // @ts-expect-error This expects and error as b is missing
-export const y3fail: Y = { a: null };
+const y3fail: Y = { a: null };
+
+void y1ok;
+void y2ok;
+void y4fail;
+void y3fail;
