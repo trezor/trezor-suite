@@ -162,6 +162,7 @@ export const sendDexTransactionThunk = createThunk<
                 returnUrl,
                 receiveAddress: trade.receiveAddress,
                 account,
+                isTradeSubmitted: true,
                 triggerAnalyticsTradeConfirmation,
                 processResponseData,
                 nextStep: isSwapTx ? undefined : nextStep,

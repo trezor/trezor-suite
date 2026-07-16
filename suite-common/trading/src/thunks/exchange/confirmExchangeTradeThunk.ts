@@ -24,6 +24,7 @@ export type ConfirmExchangeTradeThunkProps = {
     extraField?: string;
     trade?: ExchangeTrade;
     approvalFlow?: boolean;
+    isTradeSubmitted?: boolean;
 
     triggerAnalyticsTradeConfirmation: () => void;
     processResponseData: (response: ExchangeTrade) => void;
@@ -40,6 +41,7 @@ export const confirmExchangeTradeThunk = createThunk(
             account,
             extraField,
             approvalFlow = false,
+            isTradeSubmitted = false,
             triggerAnalyticsTradeConfirmation,
             processResponseData,
             nextStep,
@@ -114,7 +116,7 @@ export const confirmExchangeTradeThunk = createThunk(
             dispatch(tradingExchangeActions.saveSelectedQuote(response));
 
             const shouldRouteFailedTradeToDetail =
-                !approvalFlow && response.status === 'ERROR' && !!response.orderId;
+                isTradeSubmitted && response.status === 'ERROR' && !!response.orderId;
 
             if (shouldRouteFailedTradeToDetail) {
                 dispatch(
