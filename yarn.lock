@@ -13756,7 +13756,7 @@ __metadata:
     "@suite-native/trading-state": "workspace:*"
     "@suite-native/transaction-management": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/transport": "workspace:^"
+    "@trezor/transport-common": "workspace:*"
     "@trezor/transport-native-bluetooth": "workspace:*"
     "@trezor/transport-native-usb": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -16091,6 +16091,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/transport": "workspace:*"
     "@trezor/transport-bluetooth": "workspace:*"
+    "@trezor/transport-common": "workspace:*"
     tsx: "npm:^4.21.0"
   languageName: unknown
   linkType: soft
@@ -16331,7 +16332,6 @@ __metadata:
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:*"
     "@trezor/schema-utils": "workspace:*"
-    "@trezor/transport": "workspace:*"
     "@trezor/transport-common": "workspace:*"
     "@trezor/transport-web": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
@@ -16761,6 +16761,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-data@workspace:packages/suite-data"
   dependencies:
+    "@babel/preset-env": "npm:7.29.7"
+    "@babel/preset-typescript": "npm:^7.29.7"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -16823,6 +16825,7 @@ __metadata:
     "@trezor/transport": "workspace:*"
     "@trezor/transport-bluetooth": "workspace:*"
     "@trezor/transport-bridge": "workspace:*"
+    "@trezor/transport-common": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -16944,7 +16947,7 @@ __metadata:
     "@trezor/suite-data": "workspace:*"
     "@trezor/suite-desktop": "workspace:*"
     "@trezor/theme": "workspace:*"
-    "@trezor/transport": "workspace:*"
+    "@trezor/transport-common": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
@@ -16989,7 +16992,7 @@ __metadata:
     "@trezor/connect-common": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/suite": "workspace:*"
-    "@trezor/transport": "workspace:*"
+    "@trezor/transport-common": "workspace:*"
     "@trezor/transport-web": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:19.2.14"
@@ -17258,6 +17261,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/node": "npm:22.13.10"
+    cross-fetch: "npm:^4.1.0"
     fast-check: "npm:3.23.2"
     jest: "npm:29.7.0"
   peerDependencies:
@@ -17291,7 +17295,6 @@ __metadata:
     "@jest/types": "npm:^29.6.3"
     "@trezor/eslint": "workspace:*"
     "@trezor/protobuf": "workspace:*"
-    "@trezor/transport": "workspace:*"
     "@trezor/transport-bridge": "workspace:*"
     "@trezor/transport-common": "workspace:*"
     "@trezor/trezor-user-env-link": "workspace:^"
@@ -17319,21 +17322,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/transport@workspace:*, @trezor/transport@workspace:^, @trezor/transport@workspace:packages/transport":
+"@trezor/transport@workspace:*, @trezor/transport@workspace:packages/transport":
   version: 0.0.0-use.local
   resolution: "@trezor/transport@workspace:packages/transport"
   dependencies:
-    "@babel/preset-env": "npm:7.29.7"
-    "@babel/preset-typescript": "npm:^7.29.7"
     "@trezor/eslint": "workspace:*"
-    "@trezor/protocol": "workspace:*"
     "@trezor/transport-common": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/bytebuffer": "npm:^5.0.49"
     "@types/node": "npm:22.13.10"
-    "@types/sharedworker": "npm:^0.0.223"
-    cross-fetch: "npm:^4.1.0"
     jest: "npm:29.7.0"
     usb: "npm:^2.17.0"
   peerDependencies:

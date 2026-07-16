@@ -4,9 +4,7 @@ Part of the Connect 10 ecosystem release.
 
 Breaking changes:
 
-- `BridgeTransport` `DEFAULT_PORT` changed from `21325` to `21328`. The legacy standalone `trezord-go` Bridge (port 21325) is no longer supported. Consumers running on a setup with the old standalone Bridge must migrate to the node-bridge bundled with Suite Desktop.
-- Removed `isOutdated` flag on `AbstractTransport` / `BridgeTransport`. Detection of the legacy Bridge is now done outside of the transport layer.
-- Removed internal `useProtocolMessages` fallback; `BridgeTransport` always uses the modern message protocols (`bridge` / `v1` / `v2`).
+- `BridgeTransport` has moved to `@trezor/transport-common` (the environment-agnostic transport package). `@trezor/transport` now provides only the Node-only `NodeUsbTransport` and `UdpTransport`. See the `@trezor/transport-common` changelog for the `BridgeTransport` breaking changes (`DEFAULT_PORT`, `isOutdated`, `useProtocolMessages`).
 
 # 1.6.1
 

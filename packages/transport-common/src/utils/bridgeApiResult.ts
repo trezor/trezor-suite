@@ -1,14 +1,9 @@
 // input checks for high-level transports
 
-import {
-    type Descriptor,
-    TRANSPORT_ERROR as ERRORS,
-    type Session,
-    error,
-    success,
-} from '@trezor/transport-common';
-
+import * as ERRORS from '../errors';
+import type { Descriptor, Session } from '../types';
 import { validateProtocolMessage } from './bridgeProtocolMessage';
+import { error, success } from './result';
 
 type UnknownPayload = string | Record<string, unknown>;
 

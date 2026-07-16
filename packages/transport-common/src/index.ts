@@ -39,6 +39,7 @@ export type {
     TransportDeviceEvent,
 } from './transports/abstract';
 export { AbstractApiTransport } from './transports/abstractApi';
+export { BridgeTransport } from './transports/bridge';
 export { AbstractApi } from './api/abstract';
 export type {
     AbstractApiArgs,
@@ -56,6 +57,15 @@ export { receive, receiveAndParse } from './utils/receive';
 export { error, success, unknownError } from './utils/result';
 export { empty, emptySync } from './utils/resultEmpty';
 export { buildMessage, createChunks, sendChunks } from './utils/send';
+
+export { applyBridgeApiCallHeaders } from './utils/applyBridgeApiCallHeaders';
+export { bridgeApiCall, type HttpRequestOptions } from './utils/bridgeApiCall';
+export * as bridgeApiResult from './utils/bridgeApiResult';
+export {
+    type BridgeProtocolMessage,
+    createProtocolMessage,
+    validateProtocolMessage,
+} from './utils/bridgeProtocolMessage';
 
 export { SessionsBackground } from './sessions/background';
 export { SessionsClient } from './sessions/client';

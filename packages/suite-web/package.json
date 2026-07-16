@@ -25,7 +25,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/suite": "workspace:*",
-        "@trezor/transport": "workspace:*",
+        "@trezor/transport-common": "workspace:*",
         "@trezor/transport-web": "workspace:*",
         "@trezor/utils": "workspace:*",
         "core-js": "^3.49.0",

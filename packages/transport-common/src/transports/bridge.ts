@@ -4,30 +4,31 @@ import {
     type TransportProtocol,
     v1 as protocolV1,
 } from '@trezor/protocol';
+import { versionUtils } from '@trezor/utils';
+
+import * as ERRORS from '../errors';
 import {
     AbstractTransport,
     type AbstractTransportMethodParams,
     type AbstractTransportParams,
-    type AnyError,
-    type AsyncResultWithTypedError,
-    type BridgeCommonErrors,
-    type Descriptor,
-    TRANSPORT_ERROR as ERRORS,
-    type MessageResponse,
-    type Session,
-    TRANSPORT,
-    buildMessage,
-    error,
-    parseThpMessage,
-    receiveAndParse,
-    success,
-} from '@trezor/transport-common';
-import { versionUtils } from '@trezor/utils';
-
+} from './abstract';
+import { TRANSPORT } from '../constants';
 import { ping } from '../pinger/ping';
+import { parseThpMessage } from '../thp';
+import type {
+    AnyError,
+    AsyncResultWithTypedError,
+    BridgeCommonErrors,
+    Descriptor,
+    MessageResponse,
+    Session,
+} from '../types';
 import { bridgeApiCall } from '../utils/bridgeApiCall';
 import * as bridgeApiResult from '../utils/bridgeApiResult';
 import { type BridgeProtocolMessage, createProtocolMessage } from '../utils/bridgeProtocolMessage';
+import { receiveAndParse } from '../utils/receive';
+import { error, success } from '../utils/result';
+import { buildMessage } from '../utils/send';
 
 const DEFAULT_URL = 'http://127.0.0.1';
 const DEFAULT_PORT = 21328;

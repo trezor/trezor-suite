@@ -1,9 +1,5 @@
 import { ERRORS, type UpdateConnectSettings, factoryPrivileged } from '@trezor/connect-common';
-// Deep import bypasses the `@trezor/transport` barrel so browser bundlers
-// do not resolve sibling node-only modules (`UdpTransport`/`dgram`,
-// `NodeUsbTransport`/`usb`).
-import { BridgeTransport } from '@trezor/transport/src/transports/bridge';
-import { type AbstractTransportParams, TRANSPORT } from '@trezor/transport-common';
+import { type AbstractTransportParams, BridgeTransport, TRANSPORT } from '@trezor/transport-common';
 import { WebUsbTransport } from '@trezor/transport-web';
 
 import { config } from './data/config';
