@@ -21,25 +21,30 @@ declare const wireOut: Messages.WireOutMessage;
 const { typedCall } = DeviceCommands(provider);
 
 // Valid: GetFeatures (wire_in) request -> Features (wire_out) response.
-export const valid = typedCall('GetFeatures', 'Features');
+const valid = typedCall('GetFeatures', 'Features');
 
 // Valid: the Monero stateful signing requests are sent host -> device and are tagged wire_in.
-export const validMoneroRequest = typedCall(
-    'MoneroTransactionInitRequest',
-    'MoneroTransactionInitAck',
-);
+const validMoneroRequest = typedCall('MoneroTransactionInitRequest', 'MoneroTransactionInitAck');
 
 // @ts-expect-error request must be a host -> device message; 'PublicKey' is wire_out.
-export const badRequestDirection = typedCall('PublicKey', wireOut);
+const badRequestDirection = typedCall('PublicKey', wireOut);
 
 // @ts-expect-error expected response must be a device -> host message; 'GetPublicKey' is wire_in.
-export const badResponseDirection = typedCall('GetPublicKey', 'GetPublicKey');
+const badResponseDirection = typedCall('GetPublicKey', 'GetPublicKey');
 
 // Valid: the array-response overload (R extends WireOutMessage[]) accepts a list of wire_out messages.
-export const validArrayResponse = typedCall('SignTx', ['TxRequest', 'ButtonRequest']);
+const validArrayResponse = typedCall('SignTx', ['TxRequest', 'ButtonRequest']);
 
 // @ts-expect-error every array response must be a device -> host message; 'GetPublicKey' is wire_in.
-export const badArrayResponseDirection = typedCall('SignTx', ['TxRequest', 'GetPublicKey']);
+const badArrayResponseDirection = typedCall('SignTx', ['TxRequest', 'GetPublicKey']);
 
 // @ts-expect-error 'NotAMessage' is not a known protobuf message.
-export const badMessageName = typedCall('NotAMessage', wireOut);
+const badMessageName = typedCall('NotAMessage', wireOut);
+
+void valid;
+void validMoneroRequest;
+void badRequestDirection;
+void badResponseDirection;
+void validArrayResponse;
+void badArrayResponseDirection;
+void badMessageName;
