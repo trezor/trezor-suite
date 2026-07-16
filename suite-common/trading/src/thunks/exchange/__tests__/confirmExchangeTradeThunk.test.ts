@@ -389,7 +389,7 @@ describe('confirmExchangeTradeThunk', () => {
         });
     });
 
-    it('should route a failed trade with orderId to the detail page instead of a toast', async () => {
+    it('should route a failed submitted trade with orderId to the detail page instead of a toast', async () => {
         const {
             store,
             returnUrl,
@@ -420,6 +420,7 @@ describe('confirmExchangeTradeThunk', () => {
                     receiveAddress,
                     account,
                     trade,
+                    isTradeSubmitted: true,
                     nextStep: mockNextStep,
                     triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
                     processResponseData: mockProcessResponseData,
@@ -446,7 +447,7 @@ describe('confirmExchangeTradeThunk', () => {
         expect(!!response).toBeFalsy();
     });
 
-    it('should keep a failed approvalFlow trade with orderId on the form instead of routing to detail', async () => {
+    it('should keep a failed trade with orderId on the form instead of routing to detail when it is not submitted', async () => {
         const {
             store,
             returnUrl,
@@ -474,7 +475,6 @@ describe('confirmExchangeTradeThunk', () => {
                     receiveAddress,
                     account,
                     trade,
-                    approvalFlow: true,
                     nextStep: mockNextStep,
                     triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
                     processResponseData: mockProcessResponseData,
