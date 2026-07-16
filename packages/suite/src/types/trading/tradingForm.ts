@@ -133,7 +133,6 @@ export interface TradingSellFormContextProps
     type: TradingSellType;
     isComposing: boolean;
     sellInfo?: TradingSellInfoSelector;
-    localCurrencyOption: { label: string; value: string };
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     composedTransactionInfo: TradingComposedTransactionInfo;
     quotesRequest: SellFiatTradeQuoteRequest | undefined;
@@ -319,7 +318,6 @@ export interface TradingUseComposeTransactionProps<T extends TradingSellExchange
     account: Account;
     network: Network;
     methods: UseFormReturn<T>;
-    values: T;
     setShowReserveBanner: (showReserveBanner: boolean) => void;
     shouldSuppressComposeErrors?: boolean;
 }

@@ -161,7 +161,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         type: 'exchange',
         account,
         network,
-        values,
         methods,
         setShowReserveBanner,
         shouldSuppressComposeErrors: hasEip712SignDataType(selectedQuote),
