@@ -6,9 +6,9 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "scripts": {
-        "test:all": "SKIP_FLAKY_TESTS=1 yarn g:jest",
-        "test:unit": "yarn g:jest --testPathIgnorePatterns e2e",
-        "test:e2e": "yarn g:jest --runInBand --testPathIgnorePatterns tests",
+        "test:all": "yarn test:unit && SKIP_FLAKY_TESTS=1 yarn test:e2e",
+        "test:unit": "yarn g:jest -c jest.config.unit.cjs",
+        "test:e2e": "yarn g:jest -c jest.config.e2e.cjs",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "test:stress": "tsx ./e2e/identities-stress.ts",
         "depcheck": "yarn g:depcheck",
