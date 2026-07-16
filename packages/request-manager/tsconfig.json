@@ -8,6 +8,7 @@
     "references": [
         { "path": "../node-utils" },
         { "path": "../utils" },
+        { "path": "../e2e-utils" },
         { "path": "../eslint" }
     ]
 }
