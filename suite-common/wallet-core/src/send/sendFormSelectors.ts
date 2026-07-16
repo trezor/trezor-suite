@@ -12,14 +12,15 @@ import {
 import { getSendFormDraftKey } from '@suite-common/wallet-utils';
 
 import { PAYMENT_REQUEST_BUTTON_NAMES } from './sendFormConstants';
-import { type SendRootState } from './sendFormReducer';
+import { type SendFormDrafts, type SendRootState } from './sendFormReducer';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 
 export const selectSendPrecomposedTx = (state: SendRootState) => state.wallet.send.precomposedTx;
 export const selectSendSerializedTx = (state: SendRootState) => state.wallet.send.serializedTx;
 export const selectSendSignedTx = (state: SendRootState) => state.wallet.send.signedTx;
-export const selectSendFormDrafts = (state: SendRootState) => state.wallet.send.drafts;
+export const selectSendFormDrafts = (state: SendRootState): SendFormDrafts =>
+    state.wallet.send.drafts;
 export const selectSendFormAccountKey = (state: SendRootState) => state.wallet.send.accountKey;
 export const selectSendRaw = (state: SendRootState) => state.wallet.send.sendRaw;
 export const selectPrecomposedSendForm = (state: SendRootState) =>

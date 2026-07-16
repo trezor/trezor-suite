@@ -87,11 +87,14 @@ type SetSuiteSyncOwnerAction = PayloadAction<{
 
 type SetSuiteSyncRelayConnectionAction = PayloadAction<SuiteSyncRelayConnectionLogEntry>;
 
-export const suiteSyncSlice = createSlice({
+const suiteSyncSlice = createSlice({
     name: 'suiteSync',
     initialState: initialSuiteSyncState,
     reducers: {
-        updateSuiteSyncEnabled: (state, { payload }: PayloadAction<{ isEnabled: boolean }>) => {
+        updateSuiteSyncEnabled: (
+            state: SuiteSyncState,
+            { payload }: PayloadAction<{ isEnabled: boolean }>,
+        ) => {
             state.settings.isSuiteSyncEnabled = payload.isEnabled;
 
             if (!payload.isEnabled) {
@@ -100,15 +103,21 @@ export const suiteSyncSlice = createSlice({
             }
         },
         updateSuiteSyncDebugEnabled: (
-            state,
+            state: SuiteSyncState,
             { payload }: PayloadAction<{ isEnabled: boolean }>,
         ) => {
             state.settings.isSuiteSyncDebugEnabled = payload.isEnabled;
         },
-        setSuiteSyncRelayUrl: (state, { payload }: PayloadAction<{ url: string | null }>) => {
+        setSuiteSyncRelayUrl: (
+            state: SuiteSyncState,
+            { payload }: PayloadAction<{ url: string | null }>,
+        ) => {
             state.settings.suiteSyncRelayUrl = payload.url;
         },
-        setSuiteSyncRelayConnection: (state, { payload }: SetSuiteSyncRelayConnectionAction) => {
+        setSuiteSyncRelayConnection: (
+            state: SuiteSyncState,
+            { payload }: SetSuiteSyncRelayConnectionAction,
+        ) => {
             const relayConnectionState =
                 payload.state === 'connected' ? 'connected' : 'disconnected';
 
@@ -134,7 +143,10 @@ export const suiteSyncSlice = createSlice({
                 });
             }
         },
-        addSuiteSyncRelayConnection: (state, { payload }: PayloadAction<{ url: string }>) => {
+        addSuiteSyncRelayConnection: (
+            state: SuiteSyncState,
+            { payload }: PayloadAction<{ url: string }>,
+        ) => {
             const existingConnection = state.relayConnectionStatuses.find(
                 connection => connection.url === payload.url,
             );
@@ -148,18 +160,21 @@ export const suiteSyncSlice = createSlice({
                 });
             }
         },
-        removeSuiteSyncRelayConnection: (state, { payload }: PayloadAction<{ url: string }>) => {
+        removeSuiteSyncRelayConnection: (
+            state: SuiteSyncState,
+            { payload }: PayloadAction<{ url: string }>,
+        ) => {
             state.relayConnectionStatuses = state.relayConnectionStatuses.filter(
                 connection => connection.url !== payload.url,
             );
         },
-        setSuiteSyncError: (state, { payload }: SetSuiteSyncErrorAction) => {
+        setSuiteSyncError: (state: SuiteSyncState, { payload }: SetSuiteSyncErrorAction) => {
             state.suiteSyncErrors[payload.deviceStaticSessionId] = payload.error;
         },
-        resetSuiteSyncError: (state, { payload }: ResetSuiteSyncErrorAction) => {
+        resetSuiteSyncError: (state: SuiteSyncState, { payload }: ResetSuiteSyncErrorAction) => {
             delete state.suiteSyncErrors[payload.deviceStaticSessionId];
         },
-        setSuiteSyncOwner: (state, { payload }: SetSuiteSyncOwnerAction) => {
+        setSuiteSyncOwner: (state: SuiteSyncState, { payload }: SetSuiteSyncOwnerAction) => {
             if (payload.owner === null) {
                 delete state.suiteSyncOwners[payload.deviceStaticId];
             } else {
@@ -179,6 +194,7 @@ export const suiteSyncSlice = createSlice({
     },
 });
 
+export const suiteSyncActions = suiteSyncSlice.actions;
 export const {
     updateSuiteSyncEnabled,
     updateSuiteSyncDebugEnabled,
@@ -189,6 +205,6 @@ export const {
     setSuiteSyncError,
     resetSuiteSyncError,
     setSuiteSyncOwner,
-} = suiteSyncSlice.actions;
+} = suiteSyncActions;
 
 export const suiteSyncReducer = suiteSyncSlice.reducer;

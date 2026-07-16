@@ -14,7 +14,7 @@ export type StakeDataState = {
     };
 };
 
-const initialState: StakeDataState = {
+export const stakeDataInitialState: StakeDataState = {
     error: null,
     isLoading: false,
     lastSuccessAt: null,
@@ -25,9 +25,9 @@ const initialState: StakeDataState = {
     },
 } as const satisfies StakeDataState;
 
-export const stakeDataSlice = createSlice({
+const stakeDataSlice = createSlice({
     name: 'stakeData',
-    initialState,
+    initialState: stakeDataInitialState,
     reducers: {
         fetchStakeDataRequest: state => {
             state.error = null;
@@ -60,9 +60,10 @@ export const stakeDataSlice = createSlice({
             state.error = null;
             state.isLoading = false;
             state.lastSuccessAt = null;
-            state.data = initialState.data;
+            state.data = stakeDataInitialState.data;
         },
     },
 });
 
 export const stakeDataActions = stakeDataSlice.actions;
+export const stakeDataReducer = stakeDataSlice.reducer;

@@ -1,18 +1,7 @@
-import { colorVariants, mapBoxShadowsToCSS } from '@trezor/theme';
+import { type BoxShadows, type Colors, colorVariants, mapBoxShadowsToCSS } from '@trezor/theme';
 
 // TODO: button hover color could be derived from its based color
 //       by applying something like opacity/darkening, same goes for gradients
-
-type LightThemeProps = typeof intermediaryTheme.light;
-type DarkThemeProps = typeof intermediaryTheme.dark;
-
-// Extracts values for common props (eg. NEUE_BG_GREEN: "#00854D" | "#e3ede0")
-type CommonThemeProps = {
-    [K in keyof LightThemeProps & keyof DarkThemeProps]: LightThemeProps[K] | DarkThemeProps[K];
-};
-
-type PropsOnlyInLightTheme = Omit<LightThemeProps, keyof DarkThemeProps>;
-type PropsOnlyInDarkTheme = Omit<DarkThemeProps, keyof LightThemeProps>;
 
 /**
  * IMPORTANT:
@@ -24,13 +13,15 @@ type PropsOnlyInDarkTheme = Omit<DarkThemeProps, keyof LightThemeProps>;
  *  See `suite` package for reference.
  */
 
-// All common theme props and their values are nicely listed,
-// props that are specific to given theme are marked optional.
-export type SuiteThemeColors = CommonThemeProps &
-    Partial<PropsOnlyInDarkTheme> &
-    Partial<PropsOnlyInLightTheme>;
+type ThemeMode = 'light' | 'dark';
 
-export const intermediaryTheme = {
+export type SuiteThemeColors = Colors & BoxShadows & { mode: ThemeMode };
+
+type IntermediaryTheme = {
+    [Mode in ThemeMode]: SuiteThemeColors & { mode: Mode };
+};
+
+export const intermediaryTheme: IntermediaryTheme = {
     light: {
         mode: 'light' as const,
         ...colorVariants.standard,

@@ -4,7 +4,7 @@ import { coinjoinReducer } from '@suite/coinjoin';
 import { initialRunCompleted, prepareFlagsReducer } from '@suite/flags';
 import { initialMetadataState, metadataReducer } from '@suite/metadata';
 import { suiteSettingsInitialState } from '@suite/settings';
-import { suiteSyncSlice } from '@suite/suite-sync';
+import { prepareSuiteSyncReducer } from '@suite/suite-sync';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
 import { asEncryptedHex } from '@suite-common/platform-encryption';
 import { prepareReceiveReducer } from '@suite-common/receive';
@@ -47,7 +47,7 @@ const flagsReducer = prepareFlagsReducer(extraDependencies);
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
 const walletSettingsReducer = discoveryActions.prepareWalletSettingsReducer(extraDependencies);
 const quotaManagerSliceReducer = suiteSyncQuotaManagerSlice.prepareReducer(extraDependencies);
-const suiteSyncReducer = suiteSyncSlice.prepareReducer(extraDependencies);
+const suiteSyncReducer = prepareSuiteSyncReducer(extraDependencies);
 const receiveReducer = prepareReceiveReducer(extraDependencies);
 
 // TODO: add method in suite-storage for deleting all stored data (done as a static method on SuiteDB), call it after each test

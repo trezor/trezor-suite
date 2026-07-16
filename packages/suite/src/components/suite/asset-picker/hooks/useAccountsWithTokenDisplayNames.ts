@@ -36,7 +36,7 @@ export const getTokenDisplayNameSources = (accountsWithTokens: AccountWithTokens
 export const getAccountsWithTokenDisplayNames = (
     accountsWithTokens: AccountWithTokensOption[],
     tokenDisplaySymbolNames: Map<CryptoId, string>,
-) =>
+): AccountWithTokensOption[] =>
     accountsWithTokens.map(item => {
         switch (item.type) {
             case 'account':
@@ -74,7 +74,7 @@ export const getAccountsWithTokenDisplayNames = (
 export const useAccountsWithTokenDisplayNames = (
     accountsWithTokens: AccountWithTokensOption[],
     assets?: TradingAssetOption[],
-) => {
+): AccountWithTokensOption[] => {
     const tokens = useMemo(
         () => getTokenDisplayNameSources(accountsWithTokens),
         [accountsWithTokens],

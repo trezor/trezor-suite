@@ -17,7 +17,8 @@ export {
     selectIsSuiteSyncBannerVisible,
     selectIsUnsupportedDeviceBannerDismissed,
     selectShowEnableSuiteSyncModal,
-    suiteSyncSlice,
+    prepareSuiteSyncReducer,
+    desktopSuiteSyncActions,
     updateShowEnableSuiteSyncModal,
 } from './suiteSyncSlice';
 export type { DesktopSuiteSyncRootState, DesktopSuiteSyncState } from './suiteSyncSlice';

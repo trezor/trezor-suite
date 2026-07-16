@@ -177,7 +177,7 @@ export const getMinMaxValueFromData = <TType extends TypeName, TValue extends Bi
     return [minValue as TValue, maxValue as TValue];
 };
 
-export const sumFiatValueMap = (valueMap: FiatValueMap, obj: FiatValueMap) => {
+export const sumFiatValueMap = (valueMap: FiatValueMap, obj: FiatValueMap): FiatValueMap => {
     const newMap = { ...valueMap };
     sumFiatValueMapInPlace(newMap, obj);
 

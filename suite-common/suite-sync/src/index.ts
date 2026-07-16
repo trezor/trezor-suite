@@ -24,8 +24,8 @@ export type { SuiteSyncInteraction } from './suiteSyncTypes';
 export { createSuiteSyncCompositionRoot } from './createSuiteSyncCompositionRoot';
 export type { SuiteSyncAnalytics, SuiteSyncAnalyticsDep } from './createSuiteSyncCompositionRoot';
 export {
-    suiteSyncSlice,
     suiteSyncReducer,
+    suiteSyncActions,
     initialSuiteSyncState,
     updateSuiteSyncDebugEnabled,
     updateSuiteSyncEnabled,
@@ -57,8 +57,8 @@ export {
 export { prepareSuiteSyncMiddleware } from './suiteSyncMiddleware';
 export {
     suiteSyncDataReducer,
+    suiteSyncDataActions,
     initialSuiteSyncDataState,
-    suiteSyncDataSlice,
     clearAll,
     type SuiteSyncDataRootState,
     type SuiteSyncDataState,

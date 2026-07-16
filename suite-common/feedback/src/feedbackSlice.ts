@@ -1,4 +1,9 @@
-import { type ActionReducerMapBuilder, type PayloadAction, createSlice } from '@reduxjs/toolkit';
+import {
+    type ActionReducerMapBuilder,
+    type Draft,
+    type PayloadAction,
+    createSlice,
+} from '@reduxjs/toolkit';
 
 type UsageCount<T extends string> = Partial<Record<T, number>>;
 
@@ -27,7 +32,10 @@ export function createFeatureFeedbackSlice<FeatureName extends string>(options?:
         reducers: {
             /** Increments usage count and queues the feedback modal once the threshold is reached.
              * Counting stops at the threshold to avoid re-triggering the modal. */
-            featureUsed: (state, { payload }: PayloadAction<FeatureName>) => {
+            featureUsed: (
+                state: Draft<FeatureFeedbackState<FeatureName>>,
+                { payload }: PayloadAction<FeatureName>,
+            ) => {
                 const counts = state.usageCounts as UsageCount<FeatureName>;
                 const pending = state.pendingFeedbackFeatures as FeatureName[];
 
@@ -49,7 +57,7 @@ export function createFeatureFeedbackSlice<FeatureName extends string>(options?:
              * feedback on toggle-off: a single dispatch both resets the count and opens the
              * modal. */
             feedbackRequested: (
-                state,
+                state: Draft<FeatureFeedbackState<FeatureName>>,
                 {
                     payload,
                 }: PayloadAction<{ feature: FeatureName; isFeatureBeingDisabled?: boolean }>,
@@ -63,7 +71,10 @@ export function createFeatureFeedbackSlice<FeatureName extends string>(options?:
                     pending.push(payload.feature);
                 }
             },
-            feedbackDismissed: (state, { payload }: PayloadAction<FeatureName>) => {
+            feedbackDismissed: (
+                state: Draft<FeatureFeedbackState<FeatureName>>,
+                { payload }: PayloadAction<FeatureName>,
+            ) => {
                 const pending = state.pendingFeedbackFeatures as FeatureName[];
                 const index = pending.indexOf(payload);
                 if (index !== -1) {
