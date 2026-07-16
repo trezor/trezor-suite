@@ -87,6 +87,7 @@ export * from './components/Image/Image';
 export * from './components/Image/SvgImage';
 export * from './components/Image/images';
 export { DotIndicator, type DotIndicatorProps } from './components/DotIndicator/DotIndicator';
+export { Dot, dotIntents, type DotProps, type DotIntent } from './components/Dot/Dot';
 export {
     IconCircle,
     type IconCircleProps,

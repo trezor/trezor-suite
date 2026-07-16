@@ -20,6 +20,8 @@ import { commonFocusStyles } from '@trezor/components/src/utils/utils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
+import { StatusIndicator } from '../../../NetworkList/StatusIndicator';
+
 const Container = styled.button<{ $isActive?: boolean }>`
     flex: 1;
     display: flex;
@@ -57,6 +59,7 @@ export type NavigationItemProps = {
     goToRoute?: Route['name'];
     preserveParams?: boolean;
     isActive?: boolean;
+    hasIndicator?: boolean;
     'data-testid'?: string;
     className?: string;
     values?: ExtendedMessageDescriptor['values'];
@@ -78,6 +81,7 @@ const NavItem = ({
     routes,
     goToRoute,
     isActive,
+    hasIndicator,
     'data-testid': dataTest,
     values,
     preserveParams,
@@ -131,13 +135,15 @@ const NavItem = ({
                 data-testid={dataTest || `@suite/menu/${goToRoute}`}
                 type="button"
             >
-                <Icon
-                    as={icon}
-                    size={24}
-                    intent="neutral"
-                    priority={isItemActive ? 'primary' : 'secondary'}
-                    pointerEvents="none"
-                />
+                <StatusIndicator show={hasIndicator} intent="critical">
+                    <Icon
+                        as={icon}
+                        size={24}
+                        intent="neutral"
+                        priority={isItemActive ? 'primary' : 'secondary'}
+                        pointerEvents="none"
+                    />
+                </StatusIndicator>
                 {expanded && (
                     <Paragraph
                         typographyStyle="body-md"

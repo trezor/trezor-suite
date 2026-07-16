@@ -10,9 +10,9 @@ import { BellIcon, GearSixIcon, HouseIcon, PiggyBankIcon, RepeatIcon } from '@tr
 
 import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
+import { isTransactionNotification } from 'src/utils/suite/notification';
 
 import { NavigationItem, type NavigationItemProps } from './NavigationItem';
-import { NotificationDropdown } from './NotificationDropdown';
 
 export const SETTINGS_ROUTES: Route['name'][] = [
     'settings-index',
@@ -34,6 +34,12 @@ export const Navigation = ({ children }: NavigationProps) => {
     const startRoute: Route['name'] = isInitialRun ? 'suite-start' : 'suite-index';
 
     const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);
+
+    const hasUnseenNotifications = useSelector(state =>
+        state.notifications.some(
+            notification => !notification.seen && isTransactionNotification(notification),
+        ),
+    );
 
     const reportSwapNavigation = useCallback(() => {
         analytics.report({
@@ -89,7 +95,9 @@ export const Navigation = ({ children }: NavigationProps) => {
                 {
                     nameId: 'TR_NOTIFICATIONS',
                     icon: BellIcon,
-                    CustomComponent: NotificationDropdown,
+                    goToRoute: 'notifications-index',
+                    routes: ['notifications-index'],
+                    hasIndicator: hasUnseenNotifications,
                     'data-testid': '@suite/menu/notifications',
                     shortcut: ['ALT', 'KEY_I'],
                 },
@@ -102,7 +110,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                     shortcut: ['MOD', 'COMMA'],
                 },
             ],
-            [startRoute, isBtcOnly, reportSwapNavigation],
+            [startRoute, isBtcOnly, reportSwapNavigation, hasUnseenNotifications],
         );
 
     return (
