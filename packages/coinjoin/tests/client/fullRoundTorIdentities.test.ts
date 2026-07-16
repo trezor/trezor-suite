@@ -258,8 +258,14 @@ describe('fullRoundTorIdentities', () => {
         coordinatorRequests.forEach(request => {
             expect(connectionByPort.has(request.remotePort)).toBe(true);
         });
-        // ...one request per proxied connection (no keep-alive reuse hiding requests)
-        expect(connectionByPort.size).toBe(coordinatorRequests.length);
+        // ...and no two coordinator requests share a proxied connection. Two requests on one
+        // connection would ride the same Tor circuit and make the identity pairing ambiguous.
+        // We check the request->port mapping is injective rather than a strict 1:1 with the
+        // connection count, because a fetch backend may pool or pre-open extra proxied
+        // connections that carry no request (undici does) — harmless, since they still go
+        // through Tor.
+        const coordinatorPorts = coordinatorRequests.map(request => request.remotePort);
+        expect(new Set(coordinatorPorts).size).toBe(coordinatorPorts.length);
         // ...while middleware requests bypassed it completely
         expect(middlewareRequests.length).toBeGreaterThan(0);
         middlewareRequests.forEach(request => {
@@ -310,16 +316,24 @@ describe('fullRoundTorIdentities', () => {
             expect(inputOutpoints).not.toContain(identity);
         });
 
-        // invariant 5: connection reset rotated the identity password (fresh circuit)
+        // invariant 5: connection reset rotated the identity password (fresh circuit).
+        // We assert the rotation happened — every retry after the reset uses a fresh 16-char
+        // password distinct from the faulted connection — rather than the exact pre-reset
+        // password. The pre-reset value is a representation detail: an input identity has no
+        // ':password' part, so node-fetch sends an empty SOCKS password, while undici's SOCKS
+        // layer falls back to the username. Both isolate the input into its own circuit and
+        // both rotate to a fresh password on reset; only the pre-reset wire form differs.
         const inputBConnections = simulator.connections.filter(
             connection => connection.username === OUTPOINT_B,
         );
         const faulted = inputBConnections.filter(connection => connection.fault);
+        const retried = inputBConnections.filter(connection => !connection.fault);
         expect(faulted).toHaveLength(1);
-        expect(faulted[0]?.password).toBe('');
-        expect(
-            inputBConnections.some(connection => ROTATED_PASSWORD_REGEXP.test(connection.password)),
-        ).toBe(true);
+        expect(retried.length).toBeGreaterThan(0);
+        retried.forEach(connection => {
+            expect(connection.password).toMatch(ROTATED_PASSWORD_REGEXP);
+            expect(connection.password).not.toBe(faulted[0]?.password);
+        });
         expect(interceptedEvents).toContainEqual({
             type: 'CIRCUIT_MISBEHAVING',
             identity: OUTPOINT_B,
