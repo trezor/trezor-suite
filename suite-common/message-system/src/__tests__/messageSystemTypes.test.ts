@@ -37,6 +37,7 @@ describe('Message system types', () => {
             it.each([
                 ['eth', 'accounts.eth.staking'],
                 ['sol', 'accounts.sol.staking'],
+                ['trx', 'accounts.trx.staking'],
             ] as const satisfies [StakingNetworkSymbol, string][])(
                 'getStaking(%s) → %s',
                 (symbol, expected) => {

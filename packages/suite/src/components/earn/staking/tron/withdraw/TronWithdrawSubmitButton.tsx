@@ -4,10 +4,11 @@ import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { getTronWithdrawableBalance } from '@suite-common/wallet-utils';
-import { Button } from '@trezor/components';
+import { Button, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { useTronStakeContext } from '../TronStakeContext';
 
@@ -18,10 +19,18 @@ export const TronWithdrawSubmitButton = () => {
     const { account, actions } = useTronStakeContext();
     const { isSubmitting, pendingTxid, submitAction } = actions;
 
+    const { isWithdrawingDisabled, withdrawingMessageContent } = useMessageSystemStaking(
+        account.symbol,
+    );
+
     const hasWithdrawableAmount = new BigNumber(getTronWithdrawableBalance(account)).gt(0);
     const isDeviceUnavailable = !!device?.connected && !!device?.available && isLocked();
 
     const handleClick = () => {
+        if (isWithdrawingDisabled) {
+            return;
+        }
+
         submitAction();
 
         if (!device?.connected || !device?.available) {
@@ -39,16 +48,22 @@ export const TronWithdrawSubmitButton = () => {
     };
 
     return (
-        <Button
-            size="large"
-            width="100%"
-            onClick={handleClick}
-            isDisabled={
-                !hasWithdrawableAmount || isSubmitting || isDeviceUnavailable || !!pendingTxid
-            }
-            isLoading={isSubmitting || isDiscoveryRunning}
-        >
-            <Translation id="TR_CONTINUE" />
-        </Button>
+        <Tooltip content={withdrawingMessageContent}>
+            <Button
+                size="large"
+                width="100%"
+                onClick={handleClick}
+                isDisabled={
+                    isWithdrawingDisabled ||
+                    !hasWithdrawableAmount ||
+                    isSubmitting ||
+                    isDeviceUnavailable ||
+                    !!pendingTxid
+                }
+                isLoading={isSubmitting || isDiscoveryRunning}
+            >
+                <Translation id="TR_CONTINUE" />
+            </Button>
+        </Tooltip>
     );
 };

@@ -6,9 +6,10 @@ import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
 import { getTronResources } from '@suite-common/wallet-utils';
-import { Button, Card, Column, Icon, Row, Text } from '@trezor/components';
+import { Button, Card, Column, Icon, Row, Text, Tooltip } from '@trezor/components';
 
 import { useDispatch } from 'src/hooks/suite';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { TronResourceModal } from '../TronResourceModal';
 import { TronResourceRow } from './TronResourceRow';
@@ -23,6 +24,8 @@ export const TronResourcesCard = ({ account }: TronResourcesCardProps) => {
     const [openResource, setOpenResource] = useState<TronResourceType | null>(null);
     const resources = getTronResources(account);
 
+    const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account.symbol);
+
     const bandwidthAvailable =
         (resources?.availableStakedBandwidth ?? 0) + (resources?.availableFreeBandwidth ?? 0);
     const bandwidthTotal =
@@ -31,6 +34,10 @@ export const TronResourcesCard = ({ account }: TronResourcesCardProps) => {
     const energyTotal = resources?.totalEnergy ?? 0;
 
     const goToFreeze = () => {
+        if (isStakingDisabled) {
+            return;
+        }
+
         dispatch(
             goto({
                 routeName: 'earn-tron-stake',
@@ -64,9 +71,16 @@ export const TronResourcesCard = ({ account }: TronResourcesCardProps) => {
                 </Row>
             }
             footer={
-                <Button intent="neutral" priority="secondary" onClick={goToFreeze}>
-                    <Translation id="TR_EARN_TRON_GET_MORE" />
-                </Button>
+                <Tooltip content={stakingMessageContent}>
+                    <Button
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={goToFreeze}
+                        isDisabled={isStakingDisabled}
+                    >
+                        <Translation id="TR_EARN_TRON_GET_MORE" />
+                    </Button>
+                </Tooltip>
             }
         >
             <Column gap={16} alignItems="stretch">

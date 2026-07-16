@@ -9,6 +9,8 @@ type EarnStakingActionButtonsProps = {
     stakingStatus: StakingAccountStatus;
     isStakingDisabled: boolean | undefined;
     stakingMessageContent: ReactNode;
+    isVotingDisabled: boolean | undefined;
+    votingMessageContent: ReactNode;
     canClaim: boolean;
     isClaimButtonDisabled: boolean | undefined;
     claimingMessageContent: ReactNode;
@@ -24,6 +26,8 @@ export const EarnStakingActionButtons = ({
     stakingStatus,
     isStakingDisabled,
     stakingMessageContent,
+    isVotingDisabled,
+    votingMessageContent,
     canClaim,
     isClaimButtonDisabled,
     claimingMessageContent,
@@ -100,12 +104,12 @@ export const EarnStakingActionButtons = ({
         )}
 
         {stakingStatus === 'staking-remaining-votes' && (
-            <Tooltip content={stakingMessageContent}>
+            <Tooltip content={votingMessageContent}>
                 <Button
                     intent="brand"
                     size="small"
-                    isDisabled={isStakingDisabled}
-                    iconLeft={isStakingDisabled ? 'info' : undefined}
+                    isDisabled={isVotingDisabled}
+                    iconLeft={isVotingDisabled ? 'info' : undefined}
                     onClick={onVote}
                 >
                     <Translation id="TR_EARN_TRON_VOTE" />

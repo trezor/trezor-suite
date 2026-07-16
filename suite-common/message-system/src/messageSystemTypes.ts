@@ -40,16 +40,25 @@ export const Feature = {
         eth: 'eth.staking.stake',
         sol: 'sol.staking.stake',
         ada: 'ada.staking.stake',
+        trx: 'trx.staking.stake',
     },
     unstake: {
         eth: 'eth.staking.unstake',
         sol: 'sol.staking.unstake',
         ada: 'ada.staking.unstake',
+        trx: 'trx.staking.unstake',
     },
     claim: {
         eth: 'eth.staking.claim',
         sol: 'sol.staking.claim',
         ada: 'ada.staking.claim',
+        trx: 'trx.staking.claim',
+    },
+    vote: {
+        trx: 'trx.staking.vote',
+    },
+    withdraw: {
+        trx: 'trx.staking.withdraw',
     },
 
     banners: {

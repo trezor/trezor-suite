@@ -5,9 +5,10 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { Button } from '@trezor/components';
+import { Button, Tooltip } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { useTronStakeContext } from '../TronStakeContext';
 import { CUSTOM_REPRESENTATIVE } from './constants';
@@ -19,6 +20,8 @@ export const TronVoteSubmitButton = () => {
     const { account, form, actions } = useTronStakeContext();
     const { isSubmitting, pendingTxid, submitAction } = actions;
     const { control } = form.methods;
+
+    const { isVotingDisabled, votingMessageContent } = useMessageSystemStaking(account.symbol);
 
     const representative = useWatch({ control, name: 'representative' });
     const customRepresentativeAddress = useWatch({ control, name: 'customRepresentativeAddress' });
@@ -32,6 +35,10 @@ export const TronVoteSubmitButton = () => {
     const isDeviceLocked = !!device?.connected && !!device?.available && isLocked();
 
     const handleClick = () => {
+        if (isVotingDisabled) {
+            return;
+        }
+
         submitAction();
 
         if (!device?.connected || !device?.available) {
@@ -50,16 +57,22 @@ export const TronVoteSubmitButton = () => {
     };
 
     return (
-        <Button
-            size="large"
-            width="100%"
-            onClick={handleClick}
-            isDisabled={
-                !isRepresentativeSelected || isSubmitting || isDeviceLocked || !!pendingTxid
-            }
-            isLoading={isSubmitting || isDiscoveryRunning}
-        >
-            <Translation id="TR_CONTINUE" />
-        </Button>
+        <Tooltip content={votingMessageContent}>
+            <Button
+                size="large"
+                width="100%"
+                onClick={handleClick}
+                isDisabled={
+                    isVotingDisabled ||
+                    !isRepresentativeSelected ||
+                    isSubmitting ||
+                    isDeviceLocked ||
+                    !!pendingTxid
+                }
+                isLoading={isSubmitting || isDiscoveryRunning}
+            >
+                <Translation id="TR_CONTINUE" />
+            </Button>
+        </Tooltip>
     );
 };

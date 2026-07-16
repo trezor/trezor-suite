@@ -2,6 +2,7 @@ import { Context } from '@suite-common/message-system';
 import {
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
+    isSupportedTronStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 
@@ -39,6 +40,11 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
                 isSupportedSolStakingNetworkSymbol(account.symbol) &&
                 route?.name === 'wallet-staking' && (
                     <ContextMessage context={Context.getStaking('sol')} />
+                )}
+            {account?.symbol &&
+                isSupportedTronStakingNetworkSymbol(account.symbol) &&
+                route?.name === 'wallet-staking' && (
+                    <ContextMessage context={Context.getStaking('trx')} />
                 )}
             <BackendDisconnected />
             <DeviceUnavailable />
