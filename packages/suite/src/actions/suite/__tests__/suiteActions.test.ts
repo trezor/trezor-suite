@@ -3,6 +3,7 @@
 import { flagsInitialState, prepareFlagsReducer } from '@suite/flags';
 import { modalReducer } from '@suite/modal';
 import { routerReducer } from '@suite/router';
+import { type RouterStateOverrides, createRouterStateMock } from '@suite/router/mocks';
 import { torReducer } from '@suite/tor';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
@@ -33,13 +34,12 @@ const flagsReducer = prepareFlagsReducer(extraDependencies);
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type DevicesState = ReturnType<typeof deviceReducer>;
-type RouterState = ReturnType<typeof routerReducer>;
 type FirmwareState = ReturnType<typeof firmwareReducer>;
 
 const getInitialState = (
     suite?: Partial<SuiteState>,
     device?: Partial<DevicesState>,
-    router?: RouterState,
+    router?: RouterStateOverrides,
     firmware?: Partial<FirmwareState>,
     suiteSyncData?: Partial<ReturnType<typeof suiteSyncReducer>>,
 ) => ({
@@ -54,10 +54,7 @@ const getInitialState = (
         ...deviceReducer(undefined, { type: 'foo' } as any),
         ...device,
     },
-    router: {
-        ...routerReducer(undefined, { type: 'foo' } as any),
-        ...router,
-    },
+    router: createRouterStateMock(router),
     modal: modalReducer(undefined, { type: 'foo' } as any),
     firmware: {
         ...firmwareReducer(undefined, { type: 'foo' } as any),

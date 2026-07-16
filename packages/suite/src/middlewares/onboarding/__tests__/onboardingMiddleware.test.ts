@@ -1,5 +1,6 @@
 import { modalReducer } from '@suite/modal';
 import { routerAppChanged, routerReducer } from '@suite/router';
+import { type RouterStateOverrides, createRouterStateMock } from '@suite/router/mocks';
 
 import onboardingMiddlewares from 'src/middlewares/onboarding';
 import onboardingReducer from 'src/reducers/onboarding/index';
@@ -16,11 +17,10 @@ jest.mock('@trezor/suite-storage', () => ({
 jest.mock('src/actions/suite/storageActions', () => ({ __esModule: true }));
 
 type SuiteState = ReturnType<typeof suiteReducer>;
-type RouterState = ReturnType<typeof routerReducer>;
 type OnboardingState = ReturnType<typeof onboardingReducer>;
 
 const getInitialState = (
-    router?: RouterState,
+    router?: RouterStateOverrides,
     suite?: Partial<SuiteState>,
     onboarding?: Partial<OnboardingState>,
 ) => ({
@@ -28,10 +28,7 @@ const getInitialState = (
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
     },
-    router: {
-        ...routerReducer(undefined, { type: 'foo' } as any),
-        ...router,
-    },
+    router: createRouterStateMock(router),
     onboarding: {
         ...onboardingReducer(undefined, { type: 'foo' } as any),
         ...onboarding,

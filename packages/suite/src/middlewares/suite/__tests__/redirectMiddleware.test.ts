@@ -1,6 +1,7 @@
 import { locksInitialState, locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
 import { goto, routerReducer } from '@suite/router';
+import { type RouterStateOverrides, createRouterStateMock } from '@suite/router/mocks';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
@@ -23,13 +24,12 @@ const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type DevicesState = ReturnType<typeof deviceReducer>;
-type RouterState = ReturnType<typeof routerReducer>;
 type ModalState = ReturnType<typeof modalReducer>;
 
 const getInitialState = (
     suite?: Partial<SuiteState>,
     device?: Partial<DevicesState>,
-    router?: Partial<RouterState>,
+    router?: RouterStateOverrides,
     modal?: Partial<ModalState>,
 ) => ({
     suite: {
@@ -41,10 +41,7 @@ const getInitialState = (
         ...deviceReducer(undefined, { type: 'foo' } as any),
         ...device,
     },
-    router: {
-        ...routerReducer(undefined, { type: 'foo' } as any),
-        ...router,
-    },
+    router: createRouterStateMock(router),
     modal: {
         ...modalReducer(undefined, { type: 'foo' } as any),
         ...modal,
@@ -63,7 +60,7 @@ const initStore = (state: State) => {
 
         const { suite, router, device, locks } = store.getState();
         store.getState().suite = suiteReducer(suite, action);
-        store.getState().router = routerReducer(router as RouterState, action);
+        store.getState().router = routerReducer(router, action);
         store.getState().device = deviceReducer(device, action);
         store.getState().locks = locksReducer(locks, action);
 
