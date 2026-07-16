@@ -4,6 +4,7 @@ import {
     AbstractTransport,
     type AbstractTransportMethodParams,
     type AbstractTransportParams,
+    type ReadWriteError,
 } from './abstract';
 import {
     type AbstractApi,
@@ -16,7 +17,7 @@ import { SessionsBackground } from '../sessions/background';
 import { SessionsClient } from '../sessions/client';
 import { type SessionsBackgroundInterface } from '../sessions/types';
 import { callThpMessage, parseThpMessage, receiveThpMessage, sendThpMessage } from '../thp';
-import { type Session } from '../types';
+import { type AsyncResultWithTypedError, type MessageResponse, type Session } from '../types';
 import { receiveAndParse } from '../utils/receive';
 import { error, success } from '../utils/result';
 import { buildMessage, createChunks, sendChunks } from '../utils/send';
@@ -225,7 +226,10 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         thpState,
         signal,
         timeout,
-    }: AbstractTransportMethodParams<'call'>) {
+    }: AbstractTransportMethodParams<'call'>): AsyncResultWithTypedError<
+        MessageResponse,
+        ReadWriteError
+    > {
         return this.scheduleAction(
             async signal => {
                 const handleError = (error: string) => {
@@ -334,7 +338,10 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         thpState,
         signal,
         timeout,
-    }: AbstractTransportMethodParams<'send'>) {
+    }: AbstractTransportMethodParams<'send'>): AsyncResultWithTypedError<
+        undefined,
+        ReadWriteError
+    > {
         return this.scheduleAction(
             async signal => {
                 const getPathBySessionResponse = await this.sessionsClient.getPathBySession({
@@ -413,7 +420,10 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         thpState,
         signal,
         timeout,
-    }: AbstractTransportMethodParams<'receive'>) {
+    }: AbstractTransportMethodParams<'receive'>): AsyncResultWithTypedError<
+        MessageResponse,
+        ReadWriteError
+    > {
         return this.scheduleAction(
             async signal => {
                 const getPathBySessionResponse = await this.sessionsClient.getPathBySession({
