@@ -49,7 +49,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { captureSentryMessage } from 'src/utils/suite/sentry';
 
-import { DevSelfAddress } from './DevSelfAddress';
+import { DevAddressBook } from './DevAddressBook';
 
 const autocorrectTranslationKeys: Record<NonNullable<AddressCorrection>['type'], TranslationKey> = {
     lowercase: 'TR_CONVERTED_TO_LOWERCASE',
@@ -502,7 +502,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             }
             labelRight={
                 <Row gap={spacings.md}>
-                    {isDebug && <DevSelfAddress outputId={outputId} account={account} />}
+                    {isDebug && <DevAddressBook outputId={outputId} account={account} />}
                     {shouldShowLabelAction && broadcastEnabled && (
                         <Text typographyStyle="body-sm" as="div">
                             <Labeling
