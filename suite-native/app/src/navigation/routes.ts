@@ -1,4 +1,4 @@
-import { AccountsStackRoutes, AppTabsRoutes } from '@suite-native/navigation';
+import { AccountsStackRoutes, AppTabsRoutes, type TabsOptions } from '@suite-native/navigation';
 
 import { enhanceTabOption } from './enhanceTabOption';
 
@@ -35,14 +35,14 @@ const settings = enhanceTabOption({
     focusedIconName: 'gearFilled',
 });
 
-export const rootTabsOptionsWithoutEarn = {
+export const rootTabsOptionsWithoutEarn: TabsOptions = {
     ...homeStack,
     ...accountsStack,
     ...tradeStack,
     ...settings,
 };
 
-export const rootTabsOptions = {
+export const rootTabsOptions: TabsOptions = {
     ...rootTabsOptionsWithoutEarn,
     ...earnStack,
 };
