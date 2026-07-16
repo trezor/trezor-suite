@@ -4,7 +4,7 @@ import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 import type { backupActions } from '@suite/backup';
 import { type debugActions } from '@suite/debug';
 import type { desktopUpdateActions } from '@suite/desktop-update';
-import { type featureFeedbackSlice } from '@suite/feature-feedback';
+import { type featureFeedbackActions } from '@suite/feature-feedback';
 import type { flagsActions } from '@suite/flags';
 import type { LockAction } from '@suite/locks';
 import type { MetadataAction } from '@suite/metadata';
@@ -12,7 +12,7 @@ import type { ModalAction } from '@suite/modal';
 import type { recoveryActions } from '@suite/recovery';
 import { type Route, type RouterAction } from '@suite/router';
 import { type suiteSettingsActions } from '@suite/settings';
-import { type suiteSyncSlice } from '@suite/suite-sync';
+import { type desktopSuiteSyncActions } from '@suite/suite-sync';
 import { type TorAction } from '@suite/tor';
 import { type analyticsActions } from '@suite-common/analytics-redux';
 import { type bluetoothActions } from '@suite-common/bluetooth';
@@ -22,10 +22,7 @@ import { type firmwareActions } from '@suite-common/firmware';
 import { type geolocationActions } from '@suite-common/geolocation';
 import { type addLog } from '@suite-common/logger';
 import { type messageSystemActions } from '@suite-common/message-system';
-import {
-    type suiteSyncSlice as suiteSyncCommonSlice,
-    type suiteSyncDataSlice,
-} from '@suite-common/suite-sync';
+import { type suiteSyncActions, type suiteSyncDataActions } from '@suite-common/suite-sync';
 import { type suiteSyncQuotaManagerActions } from '@suite-common/suite-sync-quota-manager';
 import { type thpActions } from '@suite-common/thp';
 import { type notificationsActions } from '@suite-common/toast-notifications';
@@ -56,7 +53,7 @@ import type { AppState } from 'src/reducers/store';
 import { type GlobalSendReceiveAction } from 'src/slices/wallet/globalSendReceiveFilters';
 import type { WalletAction } from 'src/types/wallet';
 
-import { type bluetoothSlice } from '../../actions/bluetooth/desktopBluetoothReducer';
+import { type desktopBluetoothActions } from '../../actions/bluetooth/desktopBluetoothReducer';
 
 // reexport
 export type {
@@ -98,26 +95,21 @@ type FirmwareAction = ReturnType<(typeof firmwareActions)[keyof typeof firmwareA
 type DeviceAction = ReturnType<(typeof deviceActions)[keyof typeof deviceActions]>;
 type DiscoveryAction = ReturnType<(typeof discoveryActions)[keyof typeof discoveryActions]>;
 type BluetoothAction = ReturnType<(typeof bluetoothActions)[keyof typeof bluetoothActions]>;
-type BluetoothActionDesktop = ReturnType<
-    (typeof bluetoothSlice.actions)[keyof typeof bluetoothSlice.actions]
+type DesktopBluetoothAction = ReturnType<
+    (typeof desktopBluetoothActions)[keyof typeof desktopBluetoothActions]
 >;
-type SuiteSyncAction = ReturnType<
-    (typeof suiteSyncSlice.actions)[keyof typeof suiteSyncSlice.actions]
+type FeatureFeedbackAction = ReturnType<
+    (typeof featureFeedbackActions)[keyof typeof featureFeedbackActions]
 >;
-type SuiteSyncActionCommon = ReturnType<
-    (typeof suiteSyncCommonSlice.actions)[keyof typeof suiteSyncCommonSlice.actions]
+type SuiteSyncAction = ReturnType<(typeof suiteSyncActions)[keyof typeof suiteSyncActions]>;
+type DesktopSuiteSyncAction = ReturnType<
+    (typeof desktopSuiteSyncActions)[keyof typeof desktopSuiteSyncActions]
 >;
 type SuiteSyncDataAction = ReturnType<
-    (typeof suiteSyncDataSlice.actions)[keyof typeof suiteSyncDataSlice.actions]
->;
-type SuiteSyncActionDesktop = ReturnType<
-    (typeof suiteSyncSlice.actions)[keyof typeof suiteSyncSlice.actions]
+    (typeof suiteSyncDataActions)[keyof typeof suiteSyncDataActions]
 >;
 type SuiteSyncQuotaManagerAction = ReturnType<
     (typeof suiteSyncQuotaManagerActions)[keyof typeof suiteSyncQuotaManagerActions]
->;
-type FeatureFeedbackAction = ReturnType<
-    (typeof featureFeedbackSlice.actions)[keyof typeof featureFeedbackSlice.actions]
 >;
 type DeviceActionDesktop = ReturnType<
     (typeof desktopDeviceActions)[keyof typeof desktopDeviceActions]
@@ -147,7 +139,7 @@ export type Action =
     | DiscreetModeAction
     | BioAuthAction
     | BluetoothAction
-    | BluetoothActionDesktop
+    | DesktopBluetoothAction
     | DesktopUpdateAction
     | DeviceAction
     | FeatureFeedbackAction
@@ -172,9 +164,8 @@ export type Action =
     | SuiteAction
     | SuiteSettingsAction
     | SuiteSyncAction
-    | SuiteSyncActionCommon
+    | DesktopSuiteSyncAction
     | SuiteSyncDataAction
-    | SuiteSyncActionDesktop
     | SuiteSyncQuotaManagerAction
     | ThpAction
     | TorAction

@@ -13,11 +13,13 @@ import { sendFormActions } from './sendFormActions';
 import { type SerializedTx } from './sendFormTypes';
 import { accountsActions } from '../accounts/accountsActions';
 
+export type SendFormDrafts = {
+    // Note: suite-native store drafts per tokens, desktop and web store drafts per accountKey only
+    [key: SendFormDraftKey]: FormState;
+};
+
 export type SendState = {
-    drafts: {
-        // Note: suite-native store drafts per tokens, desktop and web store drafts per accountKey only
-        [key: SendFormDraftKey]: FormState;
-    };
+    drafts: SendFormDrafts;
     sendRaw?: boolean;
     precomposedTx?: GeneralPrecomposedTransactionFinal;
     precomposedForm?: FormState; // Used to pass the form state to the review modal. Holds similar data as drafts, but drafts are not used in RBF form.

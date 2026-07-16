@@ -80,7 +80,7 @@ export const isEqualLocation = (loc1: RouterPathOptional, loc2: RouterPathOption
     (loc1.search ?? '') === (loc2.search ?? '') &&
     (loc1.hash ?? '') === (loc2.hash ?? '');
 
-export const findRoute = (pathname: PathString) => {
+export const findRoute = (pathname: PathString): Route | undefined => {
     const clean = pathname.length > 1 ? pathname.replace(/\/$/, '') : pathname;
 
     return suiteRoutes.find(r => r.pattern === clean);
@@ -225,7 +225,8 @@ export const resolveEffectiveBackgroundRouteName = (
 
 export type WalletParams = CommonWalletParams;
 
-export const getRoute = (name: Route['name']) => suiteRoutes.find(r => r.name === name);
+export const getRoute = (name: Route['name']): Route | undefined =>
+    suiteRoutes.find(r => r.name === name);
 
 export const getRouteHash = (route?: Route, params?: RouteParams) =>
     ensureHashString(

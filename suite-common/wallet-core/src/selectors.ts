@@ -6,7 +6,11 @@ import {
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkSymbol, networks, networksCollection } from '@suite-common/wallet-config';
-import { type Account, type ReviewOutput } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type ReviewOutput,
+    type SuccessfulAccount,
+} from '@suite-common/wallet-types';
 import {
     findAccountsByAddress,
     isAccountDiscoverable,
@@ -73,7 +77,7 @@ export const selectAllAccountsToList = createMemoizedSelector(
 
 export const selectAllSuccessfulAccountsToList = createMemoizedSelector(
     [selectAllAccountsToList],
-    accounts => {
+    (accounts): SuccessfulAccount[] => {
         const filteredAccounts = accounts.filter(account => !account.failed);
 
         return returnStableArrayIfEmpty(filteredAccounts);

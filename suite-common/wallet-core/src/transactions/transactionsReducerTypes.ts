@@ -16,8 +16,12 @@ export type AccountTransactionsFetchAllStatus = {
     areAllTransactionsLoaded: boolean;
 };
 
+export type TransactionsByAccount = {
+    [key: AccountKey]: WalletAccountTransaction[];
+};
+
 export interface TransactionsState {
-    transactions: { [key: AccountKey]: WalletAccountTransaction[] };
+    transactions: TransactionsByAccount;
     phishing: { [key: AccountKey]: string[] };
     fetchStatusDetail: {
         [key: AccountKey]: AccountTransactionsFetchStatusDetail &

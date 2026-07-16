@@ -12,6 +12,12 @@ import type {
 
 type FilledButtonIntent = Exclude<ButtonIntent, 'neutral'>;
 
+type ButtonColors = {
+    backgroundColor: Color;
+    onPressColor: Color;
+    contentColor: Color;
+};
+
 const colorMapDisabled = {
     normal: 'contentDisabled',
     inverse: 'contentOnDarkDisabled',
@@ -309,7 +315,7 @@ export const getButtonColors = ({
     priority = 'primary',
     isDisabled,
     isInverse = false,
-}: ButtonColorProps & { isDisabled: boolean }) => {
+}: ButtonColorProps & { isDisabled: boolean }): ButtonColors => {
     const resolvedProps = { intent, priority, isInverse, isDisabled };
 
     return {

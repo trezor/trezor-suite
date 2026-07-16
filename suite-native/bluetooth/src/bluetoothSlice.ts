@@ -24,7 +24,7 @@ export const bluetoothInitialState: NativeBluetoothState = {
     permissionStatus: 'unavailable',
 };
 
-export const bluetoothSlice = createSliceWithExtraDeps({
+const bluetoothSlice = createSliceWithExtraDeps({
     name: 'bluetooth',
     initialState: bluetoothInitialState,
     reducers: {
@@ -53,3 +53,4 @@ export const bluetoothSlice = createSliceWithExtraDeps({
 });
 
 export const { updatePermissionStatus } = bluetoothSlice.actions;
+export const prepareBluetoothReducer = bluetoothSlice.prepareReducer;

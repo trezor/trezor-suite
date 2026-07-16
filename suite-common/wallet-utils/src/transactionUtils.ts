@@ -547,10 +547,15 @@ export const sumTransactionsFiat = (
 export const findTransaction = (txid: string, transactions: WalletAccountTransaction[]) =>
     transactions.find(t => t?.txid === txid);
 
+type FoundTransaction = {
+    key: AccountKey;
+    tx: WalletAccountTransaction;
+};
+
 export const findTransactions = (
     txid: string,
     transactions: { [key: AccountKey]: WalletAccountTransaction[] },
-) =>
+): FoundTransaction[] =>
     typedObjectKeys(transactions).flatMap(key => {
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const txList: WalletAccountTransaction[] = transactions[key];

@@ -31,7 +31,7 @@ import {
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
-import type { TransactionsRootState } from './transactionsReducerTypes';
+import type { TransactionsByAccount, TransactionsRootState } from './transactionsReducerTypes';
 import type { AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 import {
@@ -59,7 +59,7 @@ export const selectIsLoadingAccountTransactions = (
     accountKey !== null &&
     state.wallet.transactions.fetchStatusDetail?.[accountKey]?.status === 'loading';
 
-export const selectTransactions = (state: TransactionsRootState) =>
+export const selectTransactions = (state: TransactionsRootState): TransactionsByAccount =>
     state.wallet.transactions.transactions;
 
 export const selectAreAllTransactionsLoaded = (
@@ -106,7 +106,7 @@ export const selectPendingAccountAddresses = createMemoizedSelector(
 
 export const selectAllPendingTransactions = createMemoizedSelector(
     [selectTransactions],
-    transactions =>
+    (transactions): TransactionsByAccount =>
         typedObjectKeys(transactions).reduce(
             (response, accountKey) => {
                 response[accountKey] = (transactions[accountKey] ?? []).filter(isPending);

@@ -53,6 +53,8 @@ export type CreateAccountActionProps = Pick<
 } & AccountBackendSpecific &
     AccountFailureSpecific;
 
+type CoinjoinAccount = Extract<Account, { backendType: 'coinjoin' }>;
+
 const createAccount = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/createAccount`,
     ({ accountInfo, ...account }: CreateAccountActionProps): { payload: Account } => {
@@ -171,7 +173,7 @@ const renameAccount = createAction(
 
 const startCoinjoinAccountSync = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/startCoinjoinAccountSync`,
-    (account: Extract<Account, { backendType: 'coinjoin' }>) => ({
+    (account: CoinjoinAccount) => ({
         payload: {
             accountKey: account.key,
         },
@@ -180,10 +182,7 @@ const startCoinjoinAccountSync = createAction(
 
 const endCoinjoinAccountSync = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/endCoinjoinAccountSync`,
-    (
-        account: Extract<Account, { backendType: 'coinjoin' }>,
-        status: Extract<Account, { backendType: 'coinjoin' }>['status'],
-    ) => ({
+    (account: CoinjoinAccount, status: CoinjoinAccount['status']) => ({
         payload: {
             accountKey: account.key,
             status,
