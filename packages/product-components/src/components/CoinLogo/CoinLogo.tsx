@@ -79,12 +79,17 @@ export const CoinLogo = ({
 
     if (type === 'tokenWithNetwork') {
         const network = getNetworkOptional(symbol);
-        const networkSymbol = network?.settlementLayer ?? symbol;
-        const displaySymbol = networkSymbol !== symbol ? networkSymbol : symbol;
-        const src = cryptoIcons[displaySymbol];
+        const coinSymbol = network?.settlementLayer ?? symbol;
+        const src = cryptoIcons[coinSymbol];
         const coin = <CoinSvg src={src} size={size} data-testid={dataTestId} />;
 
-        if (networkSymbol !== symbol && isNetworkIconSymbol(symbol)) {
+        const isNetworkDistinctFromCoin =
+            coinSymbol !== symbol ||
+            (network !== undefined &&
+                !network.testnet &&
+                network.displaySymbol.toLowerCase() !== symbol);
+
+        if (isNetworkDistinctFromCoin && isNetworkIconSymbol(symbol)) {
             return (
                 <NetworkIconBadge networkSymbol={symbol} parentSize={size} data-testid={dataTestId}>
                     {coin}
