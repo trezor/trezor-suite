@@ -98,7 +98,6 @@
         "@trezor/protobuf": "workspace:*",
         "@trezor/protocol": "workspace:*",
         "@trezor/schema-utils": "workspace:*",
-        "@trezor/transport": "workspace:*",
         "@trezor/transport-common": "workspace:*",
         "@trezor/transport-web": "workspace:*",
         "@trezor/type-utils": "workspace:*",

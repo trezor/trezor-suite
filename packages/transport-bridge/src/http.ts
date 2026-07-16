@@ -12,13 +12,13 @@ import {
     parseBodyText,
 } from '@trezor/node-utils';
 import { checkOrigin } from '@trezor/node-utils/src/http';
-import { validateProtocolMessage } from '@trezor/transport';
 import {
     type AbstractApi,
     type Descriptor,
     TRANSPORT_ERROR as ERRORS,
     type PathPublic,
     type Session,
+    validateProtocolMessage,
 } from '@trezor/transport-common';
 import { type Log, Throttler, arrayPartition } from '@trezor/utils';
 

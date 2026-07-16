@@ -5,7 +5,6 @@
         { "path": "../transport-common" },
         { "path": "../eslint" },
         { "path": "../protobuf" },
-        { "path": "../transport" },
         { "path": "../transport-bridge" },
         { "path": "../trezor-user-env-link" },
         { "path": "../utils" }

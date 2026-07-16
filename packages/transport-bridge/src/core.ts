@@ -7,11 +7,11 @@ import {
     v1 as protocolV1,
     v2 as protocolV2,
 } from '@trezor/protocol';
-import { type BridgeProtocolMessage, createProtocolMessage } from '@trezor/transport';
 import { UdpApi } from '@trezor/transport/src/api/udp';
 import {
     type AbstractApi,
     type AcquireInput,
+    type BridgeProtocolMessage,
     type DescriptorApiLevel,
     TRANSPORT_ERROR as ERRORS,
     type PathInternal,
@@ -22,6 +22,7 @@ import {
     UsbApi,
     callThpMessage,
     createChunks,
+    createProtocolMessage,
     error,
     receiveThpMessage,
     receive as receiveUtil,

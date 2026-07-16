@@ -79,7 +79,9 @@
         { "path": "../trading-state" },
         { "path": "../transaction-management" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/transport" },
+        {
+            "path": "../../packages/transport-common"
+        },
         {
             "path": "../../packages/transport-native-bluetooth"
         },

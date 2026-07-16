@@ -26,7 +26,6 @@
         },
         { "path": "../protobuf" },
         { "path": "../protocol" },
-        { "path": "../transport" },
         { "path": "../transport-common" },
         { "path": "../transport-web" },
         { "path": "../type-utils" },

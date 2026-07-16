@@ -7,7 +7,6 @@
         "types": ["node"]
     },
     "references": [
-        { "path": "../protocol" },
         { "path": "../transport-common" },
         { "path": "../type-utils" },
         { "path": "../utils" },

@@ -1,6 +1,5 @@
 import { type UpdateConnectSettings, factoryPrivileged } from '@trezor/connect-common';
-import { BridgeTransport } from '@trezor/transport/src/transports/bridge';
-import type { AbstractTransportParams } from '@trezor/transport-common';
+import { type AbstractTransportParams, BridgeTransport } from '@trezor/transport-common';
 
 import { updateProxy } from './backend/BlockchainLink';
 import { CoreInModule } from './impl/core-in-module';

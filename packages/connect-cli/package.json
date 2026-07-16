@@ -18,7 +18,8 @@
     "dependencies": {
         "@trezor/connect": "workspace:*",
         "@trezor/transport": "workspace:*",
-        "@trezor/transport-bluetooth": "workspace:*"
+        "@trezor/transport-bluetooth": "workspace:*",
+        "@trezor/transport-common": "workspace:*"
     },
     "devDependencies": {
         "tsx": "^4.21.0"
