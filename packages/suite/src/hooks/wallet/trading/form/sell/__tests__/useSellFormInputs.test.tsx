@@ -32,7 +32,6 @@ jest.mock('@suite-common/wallet-core', () => {
         ...actual,
         selectIsNetworkReserveEnabled: () => false,
         selectVisibleDeviceAccounts: () => [],
-        selectAccountByKey: () => undefined,
     };
 });
 
@@ -92,7 +91,13 @@ const DEFAULTS: TradingSellFormProps = {
 const mockComposeRequest = jest.fn();
 
 const renderSellFormInputs = () => {
-    const store = configureMockStore();
+    const store = configureMockStore({
+        preloadedState: {
+            wallet: {
+                accounts: [ACCOUNT],
+            },
+        },
+    });
 
     return renderHookWithStoreProvider(
         () => {

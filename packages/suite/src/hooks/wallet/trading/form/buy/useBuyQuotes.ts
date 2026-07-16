@@ -61,6 +61,7 @@ export const useBuyQuotes = ({ control, getValues, setValue, account }: UseBuyQu
 
     const previousRequest = useRef<AbortableRequest>(null);
 
+    // TODO: source control/getValues/setValue via useFormContext() once the trading-form family migrates to FormProvider
     useWatch({ control, name: BUY_QUOTES_KEY_FIELDS });
     const { isValid } = useFormState({ control });
 
