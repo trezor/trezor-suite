@@ -28,6 +28,7 @@ import { BigNumber } from '@trezor/utils';
 import { formatApr } from 'src/components/earn/staking/tron/voteUtils';
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { TronVoteAllocationModal } from './TronVoteAllocationModal/TronVoteAllocationModal';
 
@@ -41,6 +42,15 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
     const [isVoteAllocationOpen, setIsVoteAllocationOpen] = useState(false);
     const { stats, maxApr } = useTronStakingStats();
 
+    const {
+        isStakingDisabled,
+        stakingMessageContent,
+        isUnstakingDisabled,
+        unstakingMessageContent,
+        isVotingDisabled,
+        votingMessageContent,
+    } = useMessageSystemStaking(account.symbol);
+
     const stakedBalance = getTronAccountTotalStakingBalance(account) ?? '0';
     const hasStake = new BigNumber(stakedBalance).gt(0);
     const votedAddresses = getTronVotes(account).map(vote => vote.address);
@@ -51,6 +61,18 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
     const shouldShowRemainingVotes = new BigNumber(remainingVotes).plus(totalVotes).gt(0);
 
     const goToFlow = (routeName: 'earn-tron-stake' | 'earn-tron-unstake' | 'earn-tron-vote') => {
+        if (isStakingDisabled && routeName === 'earn-tron-stake') {
+            return;
+        }
+
+        if (isUnstakingDisabled && routeName === 'earn-tron-unstake') {
+            return;
+        }
+
+        if (isVotingDisabled && routeName === 'earn-tron-vote') {
+            return;
+        }
+
         dispatch(
             goto({
                 routeName,
@@ -100,36 +122,47 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
             }
             footer={
                 <Row gap={8}>
-                    <Button
-                        intent="brand"
-                        priority="primary"
-                        onClick={() => goToFlow('earn-tron-stake')}
-                    >
-                        <Translation
-                            id={
-                                hasStake
-                                    ? 'TR_EARN_STAKING_DASHBOARD_STAKE_MORE'
-                                    : 'TR_EARN_STAKING_DASHBOARD_STAKE_NOW'
-                            }
-                        />
-                    </Button>
-                    {hasStake && (
+                    <Tooltip content={stakingMessageContent}>
                         <Button
-                            intent="neutral"
-                            priority="secondary"
-                            onClick={() => goToFlow('earn-tron-unstake')}
+                            intent="brand"
+                            priority="primary"
+                            onClick={() => goToFlow('earn-tron-stake')}
+                            isDisabled={isStakingDisabled}
                         >
-                            <Translation id="TR_EARN_TRON_UNSTAKE_TITLE" />
+                            <Translation
+                                id={
+                                    hasStake
+                                        ? 'TR_EARN_STAKING_DASHBOARD_STAKE_MORE'
+                                        : 'TR_EARN_STAKING_DASHBOARD_STAKE_NOW'
+                                }
+                            />
                         </Button>
+                    </Tooltip>
+
+                    {hasStake && (
+                        <Tooltip content={unstakingMessageContent}>
+                            <Button
+                                intent="neutral"
+                                priority="secondary"
+                                onClick={() => goToFlow('earn-tron-unstake')}
+                                isDisabled={isUnstakingDisabled}
+                            >
+                                <Translation id="TR_EARN_TRON_UNSTAKE_TITLE" />
+                            </Button>
+                        </Tooltip>
                     )}
+
                     {hasStake && (
-                        <Button
-                            intent="neutral"
-                            priority="secondary"
-                            onClick={() => goToFlow('earn-tron-vote')}
-                        >
-                            <Translation id="TR_EARN_TRON_VOTE" />
-                        </Button>
+                        <Tooltip content={votingMessageContent}>
+                            <Button
+                                intent="neutral"
+                                priority="secondary"
+                                onClick={() => goToFlow('earn-tron-vote')}
+                                isDisabled={isVotingDisabled}
+                            >
+                                <Translation id="TR_EARN_TRON_VOTE" />
+                            </Button>
+                        </Tooltip>
                     )}
                 </Row>
             }

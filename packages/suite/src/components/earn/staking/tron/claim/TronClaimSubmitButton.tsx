@@ -5,11 +5,12 @@ import { Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { getTronStakingRewards, isTronClaimSupported } from '@suite-common/wallet-utils';
-import { Button } from '@trezor/components';
+import { Button, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { useTronStakeContext } from '../TronStakeContext';
 
@@ -23,14 +24,21 @@ export const TronClaimSubmitButton = () => {
     const { isFirmwareModalOpen, openFirmwareModal, closeFirmwareModal, updateFirmware } =
         useFirmwareUpgradeModal();
 
+    const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(account.symbol);
+
     const hasReward = new BigNumber(getTronStakingRewards(account)).gt(0);
     const isDeviceLocked = !!device?.connected && !!device?.available && isLocked();
     const isClaimFirmwareOutdated = !isTronClaimSupported(device);
 
-    const isDisabled = !hasReward || isSubmitting || isDeviceLocked || !!pendingTxid;
+    const isDisabled =
+        isClaimingDisabled || !hasReward || isSubmitting || isDeviceLocked || !!pendingTxid;
     const isLoading = isSubmitting || isDiscoveryRunning;
 
     const handleClick = () => {
+        if (isClaimingDisabled) {
+            return;
+        }
+
         if (isClaimFirmwareOutdated) {
             openFirmwareModal();
 
@@ -62,15 +70,18 @@ export const TronClaimSubmitButton = () => {
                     featureName={translationString('TR_EARN_TRON_CLAIM_TITLE')}
                 />
             )}
-            <Button
-                size="large"
-                width="100%"
-                onClick={handleClick}
-                isDisabled={isDisabled}
-                isLoading={isLoading}
-            >
-                <Translation id="TR_CONTINUE" />
-            </Button>
+
+            <Tooltip content={claimingMessageContent}>
+                <Button
+                    size="large"
+                    width="100%"
+                    onClick={handleClick}
+                    isDisabled={isDisabled}
+                    isLoading={isLoading}
+                >
+                    <Translation id="TR_CONTINUE" />
+                </Button>
+            </Tooltip>
         </>
     );
 };

@@ -4,6 +4,8 @@ import { Translation } from '@suite/intl';
 import { Banner, Card, Column, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+
 import { useTronStakeContext } from '../TronStakeContext';
 import { TronStakeFees } from '../TronStakeFees';
 import { TronStakeInfoRow } from '../TronStakeInfoRow';
@@ -15,6 +17,8 @@ import { TronVoteSubmitButton } from './TronVoteSubmitButton';
 export const TronVoteForm = () => {
     const { account, form, actions } = useTronStakeContext();
     const { error } = actions;
+
+    const { isVotingDisabled, votingMessageContent } = useMessageSystemStaking(account.symbol);
 
     const totalVotingPower =
         account.networkType === 'tron'
@@ -28,6 +32,8 @@ export const TronVoteForm = () => {
                 <Text typographyStyle="headline-md">
                     <Translation id="TR_EARN_TRON_CHANGE_REPRESENTATIVE" />
                 </Text>
+
+                {isVotingDisabled && <Banner intent="warning" description={votingMessageContent} />}
 
                 <Card type="contrast" paddingType="none">
                     <TronStakeInfoRow label={<Translation id="TR_TRON_VOTES" />}>
