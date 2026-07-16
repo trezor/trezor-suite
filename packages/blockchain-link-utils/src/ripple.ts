@@ -1,4 +1,5 @@
 import type { ServerInfo, Transaction } from '@trezor/blockchain-link-types';
+import { RIPPLE_DECIMALS } from '@trezor/network-ripple/constants';
 import type { AccountTxTransaction, ServerInfoResponse } from '@trezor/network-ripple/types';
 
 export const transformServerInfo = (payload: ServerInfoResponse): Omit<ServerInfo, 'url'> => ({
@@ -7,7 +8,7 @@ export const transformServerInfo = (payload: ServerInfoResponse): Omit<ServerInf
     network: 'xrp',
     testnet: false,
     version: payload.result.info.build_version,
-    decimals: 6,
+    decimals: RIPPLE_DECIMALS,
     blockHeight: payload.result.info.validated_ledger?.seq ?? 0,
     blockHash: payload.result.info.validated_ledger?.hash ?? '',
 });

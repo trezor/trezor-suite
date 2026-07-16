@@ -9,10 +9,7 @@ import {
 
 import { BigNumber } from '@trezor/utils';
 
-import { STELLAR_DECIMALS } from '../../constants';
-
-export const toStroops = (value: string) =>
-    new BigNumber(10).pow(STELLAR_DECIMALS).times(new BigNumber(value));
+import { toStroops } from '../../constants';
 
 const isoToTimestamp = (isoDate: string): number => {
     const timestamp = Date.parse(isoDate);
