@@ -269,6 +269,8 @@ export const claimMerklRewardsThunk = createThunk(
                         precomposedTransaction,
                         precomposedForm: formState,
                         txid: pushResponse.payload.txid,
+                        // The decimal nonce the claim tx was built and signed with.
+                        ethereumNonce: nonce,
                     }),
                 );
 
