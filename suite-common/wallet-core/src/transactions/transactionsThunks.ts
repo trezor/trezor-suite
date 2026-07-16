@@ -357,11 +357,18 @@ export const addFakePendingEvmTxThunk = createThunk(
             precomposedForm,
             txid,
             account,
+            ethereumNonce,
         }: {
             precomposedTransaction: PrecomposedTransactionFinal;
             precomposedForm?: FormState;
             txid: string;
             account: Account;
+            // The nonce the tx was actually signed with. Preferred source: re-deriving it here from
+            // account.misc.nonce reads one too high while the just-broadcast tx sits in the mempool
+            // but isn't yet in the local tx list — blockbook's misc.nonce is pending-inclusive
+            // (trezor/blockbook#1562), so the lowestPendingNonce clamp in getEvmNonceInfo can't
+            // correct it yet.
+            ethereumNonce?: string;
         },
         { dispatch, getState },
     ) => {
@@ -373,12 +380,21 @@ export const addFakePendingEvmTxThunk = createThunk(
             return;
         }
 
-        // Display-only fake pending tx (rendered after the real tx was already pushed): a confirmed-
-        // nonce backend round-trip here is unwarranted, and any transient mismatch self-corrects once
-        // the backend picks up the real tx.
-        const { nonce } = await dispatch(
-            ethereumGetCurrentNonceThunk({ selectedAccount: account, fetchConfirmedNonce: false }),
-        ).unwrap();
+        // Prefer the nonce the tx was actually signed with. Fall back to deriving it from the
+        // account's (untrusted, pending-inclusive) nonce only when the caller can't supply it. This
+        // is a display-only fake pending tx rendered after the real tx was already pushed, so a
+        // confirmed-nonce backend round-trip is unwarranted, and any transient mismatch self-corrects
+        // once the backend picks up the real tx.
+        const nonce =
+            ethereumNonce ??
+            (
+                await dispatch(
+                    ethereumGetCurrentNonceThunk({
+                        selectedAccount: account,
+                        fetchConfirmedNonce: false,
+                    }),
+                ).unwrap()
+            ).nonce;
 
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
         const rawFeeInfo = selectRawNetworkFeeInfo(getState(), account.symbol);
