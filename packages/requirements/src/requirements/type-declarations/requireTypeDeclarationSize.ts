@@ -20,9 +20,7 @@ const FILES_EXPECTED_TO_GROW = new Set<string>([
     'packages/protobuf/libDev/src/definitions/messages-bitcoin.d.ts',
 ]);
 
-const KNOWN_OVERSIZED_DECLARATIONS: string[] = [
-    'packages/suite/libDev/src/hooks/wallet/useRbfForm.d.ts',
-];
+const KNOWN_OVERSIZED_DECLARATIONS: string[] = [];
 
 const normalizePath = (filePath: string) => filePath.split(sep).join('/');
 
