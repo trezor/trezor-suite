@@ -185,7 +185,6 @@ export const mockSuiteDevice = (
             available: false,
             instance: undefined,
             ts: 0,
-            buttonRequests: [],
             metadata: {},
             ...dev,
             ...device,

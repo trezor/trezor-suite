@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectSelectedDevice } from '@suite-common/device';
+import { selectDeviceButtonRequests } from '@suite-common/device';
 import { Box } from '@suite-native/atoms';
 import { ConfirmOnTrezorImage } from '@suite-native/confirm-on-trezor';
 import { Translation } from '@suite-native/intl';
@@ -15,9 +15,9 @@ const overlayStyle = prepareNativeStyle(() => ({
 
 export const ButtonRequestsOverlay = () => {
     const { applyStyle } = useNativeStyles();
-    const selectedDevice = useSelector(selectSelectedDevice);
+    const buttonRequests = useSelector(selectDeviceButtonRequests);
 
-    if (!selectedDevice?.buttonRequests || selectedDevice.buttonRequests.length === 0) {
+    if (buttonRequests.length === 0) {
         return null;
     }
 

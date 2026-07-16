@@ -27,6 +27,7 @@ const selectedDevice = mockSuiteDevice(
 const defaultState: BackupDeviceThunkState = {
     device: {
         devices: [],
+        buttonRequestsByPath: {},
         selectedDevice,
     },
 };

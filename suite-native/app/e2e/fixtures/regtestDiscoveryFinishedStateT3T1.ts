@@ -279,13 +279,6 @@ export const regtestDiscoveryFinishedStateT3T1: PreloadedState = {
                     },
                 },
                 connected: true,
-                buttonRequests: [
-                    {
-                        code: 'ButtonRequest_PublicKey',
-                        pages: 2,
-                        name: 'show_xpub',
-                    },
-                ],
                 metadata: {},
                 passwords: {},
                 firstConnectedTimestamp: 1758030850699,

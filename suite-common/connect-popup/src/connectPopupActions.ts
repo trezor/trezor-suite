@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { type PermissionRequest } from '@trezor/connect';
+import { type DeviceUniquePath, type PermissionRequest } from '@trezor/connect';
 
 import {
     type AppRememberedPermission,
@@ -13,7 +13,7 @@ const ACTION_PREFIX = '@suite-common/connect-popup';
 
 type InitiateCallPayload = Pick<
     ConnectPopupCall & { state: 'ongoing' },
-    'method' | 'methodInfo' | 'source' | 'payload'
+    'method' | 'methodInfo' | 'source' | 'payload' | 'callId'
 >;
 
 const initiateCall = createAction(
@@ -160,6 +160,13 @@ const setSelectedFee = createAction(
 
 const switchDevice = createAction(`${ACTION_PREFIX}/switchDevice`);
 
+// Sets internal per-call metadata (callId, device path) on the active call. Dispatched right before
+// the real device call; a restart re-runs the thunk and overwrites it for the new call.
+const setCallMeta = createAction(
+    `${ACTION_PREFIX}/setCallMeta`,
+    (payload: { callId?: string; devicePath?: DeviceUniquePath }) => ({ payload }),
+);
+
 export const connectPopupActions = {
     initiateCall,
     requestPermissions,
@@ -179,5 +186,6 @@ export const connectPopupActions = {
     txSimulation,
     setSelectedFee,
     switchDevice,
+    setCallMeta,
     clearCall,
 } as const;
