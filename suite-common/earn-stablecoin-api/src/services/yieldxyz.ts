@@ -1,10 +1,18 @@
-import { YieldResponseV2, YieldsResponseV2 } from '@suite-common/earn-stablecoin-defs';
+import type z from 'zod';
+
+import {
+    type GetYieldsV2QueryParams,
+    YieldResponseV2,
+    type YieldResponseV2Output,
+    YieldsResponseV2,
+    type YieldsResponseV2Output,
+} from '@suite-common/earn-stablecoin-defs';
 import { createHttpClient } from '@suite-common/http-client';
 import { getSuiteVersion } from '@trezor/env-utils';
 
 import { earnYieldWorkerBaseUrl } from '../context';
 
-export const yieldXyzApi = createHttpClient({
+const yieldXyzApi = createHttpClient({
     async baseUrl() {
         const baseUrl = await earnYieldWorkerBaseUrl.get();
 
@@ -13,12 +21,30 @@ export const yieldXyzApi = createHttpClient({
     headers: { 'X-Suite-Version': getSuiteVersion() },
 });
 
-export const getYields = yieldXyzApi('/yields', {
-    method: 'GET',
-    schema: YieldsResponseV2,
-});
+type YieldXyzRequestOptions = {
+    signal?: AbortSignal;
+};
 
-export const getYield = yieldXyzApi('/yields/:vaultId', {
-    method: 'GET',
-    schema: YieldResponseV2,
-});
+type GetYieldsOptions = YieldXyzRequestOptions & {
+    params?: z.input<typeof GetYieldsV2QueryParams>;
+};
+
+type GetYieldOptions = YieldXyzRequestOptions & {
+    routeParams: { vaultId: string };
+};
+
+/** Prevents declaration emit from expanding the inferred Yield.xyz list schema. */
+export const getYields: (options?: GetYieldsOptions) => Promise<YieldsResponseV2Output> =
+    yieldXyzApi('/yields', {
+        method: 'GET',
+        schema: YieldsResponseV2,
+    });
+
+/** Prevents declaration emit from expanding the inferred Yield.xyz detail schema. */
+export const getYield: (options: GetYieldOptions) => Promise<YieldResponseV2Output> = yieldXyzApi(
+    '/yields/:vaultId',
+    {
+        method: 'GET',
+        schema: YieldResponseV2,
+    },
+);
