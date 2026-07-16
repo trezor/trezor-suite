@@ -42,7 +42,7 @@ describe('calcCryptoFromFiat', () => {
 });
 
 describe('calcRatioAmount', () => {
-    const nativeParams = {
+    const defaultParams = {
         balance: '2',
         decimals: 8,
         networkDecimals: 8,
@@ -55,7 +55,7 @@ describe('calcRatioAmount', () => {
 
     it('divides the balance by the divisor with no reserve applied', () => {
         const { cryptoInputValue, cryptoAmountWithReserve } = calcRatioAmount({
-            ...nativeParams,
+            ...defaultParams,
             divisor: 2,
             isNetworkReserveEnabled: false,
         });
@@ -66,7 +66,7 @@ describe('calcRatioAmount', () => {
 
     it('converts to subunits when shouldSendInSats is set', () => {
         const { cryptoInputValue } = calcRatioAmount({
-            ...nativeParams,
+            ...defaultParams,
             divisor: 4,
             shouldSendInSats: true,
             isNetworkReserveEnabled: false,
