@@ -1,5 +1,6 @@
 import { Context } from '@suite-common/message-system';
 import {
+    isSupportedAdaStakingNetworkSymbol,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
     isSupportedTronStakingNetworkSymbol,
@@ -45,6 +46,11 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
                 isSupportedTronStakingNetworkSymbol(account.symbol) &&
                 route?.name === 'wallet-staking' && (
                     <ContextMessage context={Context.getStaking('trx')} />
+                )}
+            {account?.symbol &&
+                isSupportedAdaStakingNetworkSymbol(account.symbol) &&
+                route?.name === 'wallet-staking' && (
+                    <ContextMessage context={Context.getStaking('ada')} />
                 )}
             <BackendDisconnected />
             <DeviceUnavailable />
