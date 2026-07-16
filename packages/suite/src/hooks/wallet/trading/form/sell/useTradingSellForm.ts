@@ -33,14 +33,14 @@ import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/comm
 import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';
 import { useTradingFormActions } from 'src/hooks/wallet/trading/form/common/useTradingFormActions';
 import { useTradingSellHandleChange } from 'src/hooks/wallet/trading/form/common/useTradingSellHandleChange';
-import { useTradingSellFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingSellFormDefaultValues';
-import { useTradingSellFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingSellFormRedirectValues';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { type TradingSellFormContextProps } from 'src/types/trading/tradingForm';
 
-import { useTradingClearStaleQuotes } from './common/useTradingClearStaleQuotes';
-import { useTradingFormAccount } from './useTradingFormAccount';
+import { useTradingSellFormDefaultValues } from './useTradingSellFormDefaultValues';
+import { useTradingSellFormRedirectValues } from './useTradingSellFormRedirectValues';
+import { useTradingClearStaleQuotes } from '../common/useTradingClearStaleQuotes';
+import { useTradingFormAccount } from '../useTradingFormAccount';
 
 export const useTradingSellForm = (): TradingSellFormContextProps => {
     const type = 'sell';

@@ -21,7 +21,7 @@ import { useSelector } from 'src/hooks/suite';
 import { type TradingSellFormDefaultValuesProps } from 'src/types/trading/tradingForm';
 import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
 
-import { useTradingDefaultSellAsset } from './common/useTradingDefaultSellAsset';
+import { useTradingDefaultSellAsset } from '../common/useTradingDefaultSellAsset';
 
 export const useTradingSellFormDefaultValues = (
     accountKey: AccountKey,
