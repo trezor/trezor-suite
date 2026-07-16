@@ -1,4 +1,7 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { CARDANO_DECIMALS } from '@trezor/network-cardano/constants';
+import { RIPPLE_DECIMALS } from '@trezor/network-ripple/constants';
+import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
 import { TRON_DECIMALS } from '@trezor/network-tron/constants';
 import { typedObjectEntries } from '@trezor/utils';
 
@@ -401,7 +404,7 @@ export const networks = {
         name: 'Cardano',
         networkType: 'cardano',
         bip43Path: "m/1852'/1815'/i'",
-        decimals: 6,
+        decimals: CARDANO_DECIMALS,
         testnet: false,
         features: ['tokens', 'staking', 'coin-definitions', 'sign-verify'],
         explorer: getExplorerUrls('https://cexplorer.io', 'cardano'),
@@ -454,7 +457,7 @@ export const networks = {
         name: 'XRP Ledger',
         networkType: 'ripple',
         bip43Path: "m/44'/144'/i'/0/0",
-        decimals: 6,
+        decimals: RIPPLE_DECIMALS,
         testnet: false,
         explorer: getExplorerUrls('https://xrpscan.com', 'ripple'),
         features: [],
@@ -470,7 +473,7 @@ export const networks = {
         name: 'Stellar',
         networkType: 'stellar',
         bip43Path: "m/44'/148'/i'",
-        decimals: 7,
+        decimals: STELLAR_DECIMALS,
         testnet: false,
         explorer: getExplorerUrls('https://stellar.expert/explorer/public', 'stellar'),
         features: ['tokens', 'coin-definitions'],
@@ -707,7 +710,7 @@ export const networks = {
         name: 'XRP Testnet',
         networkType: 'ripple',
         bip43Path: "m/44'/144'/i'/0/0",
-        decimals: 6,
+        decimals: RIPPLE_DECIMALS,
         testnet: true,
         explorer: getExplorerUrls('https://test.bithomp.com', 'ripple'),
         features: ['tokens'],
@@ -723,7 +726,7 @@ export const networks = {
         name: 'Stellar Testnet',
         networkType: 'stellar',
         bip43Path: "m/44'/148'/i'",
-        decimals: 7,
+        decimals: STELLAR_DECIMALS,
         testnet: true,
         explorer: getExplorerUrls('https://stellar.expert/explorer/testnet', 'stellar'),
         features: ['tokens'],
