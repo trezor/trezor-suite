@@ -21,7 +21,7 @@ const PUBKEYS_2_OF_3 = [
     },
 ];
 
-export default {
+const signTransactionMultisigPubkeysOrder: TestCase = {
     method: 'signTransaction',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -105,4 +105,6 @@ export default {
             ],
         },
     ],
-} satisfies TestCase;
+};
+
+export default signTransactionMultisigPubkeysOrder;

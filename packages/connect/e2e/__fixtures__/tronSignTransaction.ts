@@ -5,7 +5,7 @@ const legacyResults = [
     },
 ];
 
-export default {
+const tronSignTransaction: TestCase = {
     method: 'tronSignTransaction',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -196,4 +196,6 @@ export default {
             legacyResults,
         },
     ],
-} satisfies TestCase;
+};
+
+export default tronSignTransaction;

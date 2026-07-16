@@ -139,10 +139,12 @@ const tests = [
     },
 ];
 
-export default {
+const getFeatures: TestCase = {
     method: 'getFeatures',
     setup: {
         mnemonic: 'mnemonic_12',
     },
     tests,
-} satisfies TestCase;
+};
+
+export default getFeatures;

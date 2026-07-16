@@ -1,6 +1,6 @@
 // https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/test_msg_stellar_get_address.py
 
-export default {
+const stellarGetAddress: TestCase = {
     method: 'stellarGetAddress',
     setup: {
         mnemonic: 'illness spike retreat truth genius clock brain pass fit cave bargain toe',
@@ -39,4 +39,6 @@ export default {
             result: false,
         },
     ],
-} satisfies TestCase;
+};
+
+export default stellarGetAddress;

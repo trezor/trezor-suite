@@ -1,10 +1,58 @@
 import { goto } from '@suite/router';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { accountsActions } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import * as COINJOIN from '../coinjoinConstants';
+
+type FixtureResult = {
+    actions: string[];
+};
+
+/** Partial state passed directly to the test store initializer. */
+type FixtureState = unknown;
+
+/** Opaque mock responses passed directly to setTrezorConnectFixtures. */
+type ConnectFixtures = unknown;
+
+type CreateCoinjoinAccountFixture = {
+    description: string;
+    connect?: ConnectFixtures;
+    params: {
+        network: {
+            symbol: string;
+            networkType: string;
+        };
+        account: {
+            accountType: string;
+            bip43Path?: string;
+        };
+    };
+    result: FixtureResult;
+};
+
+type StartCoinjoinSessionFixture = {
+    description: string;
+    connect?: ConnectFixtures;
+    state?: FixtureState;
+    params: Partial<Account>;
+    result: FixtureResult;
+};
+
+type CoinjoinSessionFixture = {
+    description: string;
+    client?: string;
+    state: FixtureState;
+    param: AccountKey;
+    result: FixtureResult;
+};
+
+type RestoreCoinjoinAccountsFixture = {
+    description: string;
+    state: FixtureState;
+    result: FixtureResult;
+};
 
 const ACCOUNT_KEY_12345 = mockAccountKey({ descriptor: '12345' });
 
@@ -23,7 +71,7 @@ const CJ_ACCOUNT = {
 
 const SESSION = { signedRounds: [] as string[], maxRounds: 10 };
 
-export const createCoinjoinAccount = [
+export const createCoinjoinAccount: CreateCoinjoinAccountFixture[] = [
     {
         description: 'unsupported coinjoin client',
         params: {
@@ -150,7 +198,7 @@ export const createCoinjoinAccount = [
     },
 ];
 
-export const startCoinjoinSession = [
+export const startCoinjoinSession: StartCoinjoinSessionFixture[] = [
     {
         description: 'client not found',
         params: {
@@ -215,7 +263,7 @@ export const startCoinjoinSession = [
     },
 ];
 
-export const stopCoinjoinSession = [
+export const stopCoinjoinSession: CoinjoinSessionFixture[] = [
     {
         description: 'client not found',
         state: {
@@ -245,7 +293,7 @@ export const stopCoinjoinSession = [
     },
 ];
 
-export const restoreCoinjoinAccounts = [
+export const restoreCoinjoinAccounts: RestoreCoinjoinAccountsFixture[] = [
     {
         description: 'four accounts, two networks, one success, one errored',
         state: {
@@ -277,7 +325,7 @@ export const restoreCoinjoinAccounts = [
     },
 ];
 
-export const restoreCoinjoinSession = [
+export const restoreCoinjoinSession: CoinjoinSessionFixture[] = [
     {
         description: 'restore one paused coinjoin session',
         client: 'btc',

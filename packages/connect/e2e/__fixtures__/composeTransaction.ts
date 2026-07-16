@@ -64,7 +64,7 @@ const DOGE_FEE_LEVELS = [
     },
 ];
 
-export default {
+const composeTransaction: TestCase = {
     method: 'composeTransaction',
     setup: {
         mnemonic: undefined, // device is not used in this test case
@@ -440,4 +440,6 @@ export default {
             ],
         },
     ],
-} satisfies TestCase;
+};
+
+export default composeTransaction;

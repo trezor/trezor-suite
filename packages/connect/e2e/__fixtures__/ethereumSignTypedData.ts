@@ -113,10 +113,12 @@ const fixtures = [...ethereumDefinitionFixture, ...commonFixtures.tests]
         return [fixture, autoComputeFixture];
     });
 
-export default {
+const ethereumSignTypedData: TestCase = {
     method: 'ethereumSignTypedData',
     setup: {
         mnemonic: commonFixtures.setup.mnemonic,
     },
     tests: fixtures,
-} satisfies TestCase;
+};
+
+export default ethereumSignTypedData;

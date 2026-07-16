@@ -15,7 +15,7 @@ const p2pkhDisplayablePublicKey =
     'xpub6D1weXBcFAo8CqBbpP4TbH5sxQH8ZkqC5pDEvJ95rNNBZC9zrKmZP2fXMuve7ZRBe18pWQQsGg68jkq24mZchHwYENd8cCiSb71u3KD4AFH';
 const p2pkhDeviceScreen = p2pkhDisplayablePublicKey.slice(0, 37);
 
-export default {
+const getPublicKey: TestCase = {
     method: 'getPublicKey',
     setup: {
         mnemonic: 'mnemonic_12',
@@ -206,4 +206,6 @@ export default {
             result: false,
         },
     ],
-} satisfies TestCase;
+};
+
+export default getPublicKey;

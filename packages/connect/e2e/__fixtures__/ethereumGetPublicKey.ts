@@ -30,10 +30,12 @@ const firstShowOnTrezor = {
     deviceScreenSkip: ['1', '<2.7.0'],
 };
 
-export default {
+const ethereumGetPublicKey: TestCase = {
     method: 'ethereumGetPublicKey',
     setup: {
         mnemonic: commonFixtures.setup.mnemonic,
     },
     tests: [...generatedTests, firstShowOnTrezor],
-} satisfies TestCase;
+};
+
+export default ethereumGetPublicKey;

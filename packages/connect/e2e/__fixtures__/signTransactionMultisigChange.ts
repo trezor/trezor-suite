@@ -61,7 +61,7 @@ const input2 = {
     multisig: multisig2,
 };
 
-export default {
+const signTransactionMultisigChange: TestCase = {
     method: 'signTransaction',
     setup: {
         mnemonic: 'mnemonic_12',
@@ -167,4 +167,6 @@ export default {
             },
         },
     ],
-} satisfies TestCase;
+};
+
+export default signTransactionMultisigChange;

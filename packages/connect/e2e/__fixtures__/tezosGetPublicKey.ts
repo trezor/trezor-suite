@@ -12,7 +12,7 @@ const legacyResults = [
 const showOnTrezorDisplayablePublicKey = 'edpkuxZ5W8c2jmcaGuCFZxRDSWxS7hp98zcwj2YpUZkJWs5F7UMuF6';
 const showOnTrezorDeviceScreen = showOnTrezorDisplayablePublicKey.slice(0, 39);
 
-export default {
+const tezosGetPublicKey: TestCase = {
     method: 'tezosGetPublicKey',
     setup: {
         mnemonic: 'mnemonic_12',
@@ -70,4 +70,6 @@ export default {
             deviceScreenSkip: ['1', '<2.7.0'],
         },
     ].map(fixture => ({ ...fixture, legacyResults })),
-} satisfies TestCase;
+};
+
+export default tezosGetPublicKey;

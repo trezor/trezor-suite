@@ -7,7 +7,7 @@ const legacyResults = [
     },
 ];
 
-export default {
+const solanaSignTransaction: TestCase = {
     method: 'solanaSignTransaction',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -40,4 +40,6 @@ export default {
             legacyResults,
         },
     ],
-} satisfies TestCase;
+};
+
+export default solanaSignTransaction;

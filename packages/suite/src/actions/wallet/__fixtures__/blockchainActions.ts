@@ -1,5 +1,3 @@
-import { type DeepPartial } from 'react-hook-form';
-
 import { type AnyAction } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -11,6 +9,8 @@ import {
     transactionsActions,
 } from '@suite-common/wallet-core';
 import { analyzeTransactions } from '@suite-common/wallet-utils/src/__fixtures__/transactionUtils';
+import { type BlockchainBlock, type BlockchainNotification } from '@trezor/connect-common';
+import { type DeepPartial } from '@trezor/type-utils';
 
 const DEFAULT_ACCOUNT = {
     deviceState: '1stTestnetAddress@device_id:0',
@@ -228,8 +228,61 @@ const analyzeTransactionsExtended = [
     },
 ];
 
+/** Partial state passed directly to the test store initializer. */
+type FixtureState = unknown;
+
+/** Opaque mock responses passed directly to setTrezorConnectFixtures. */
+type ConnectFixtures = unknown;
+
+type OnBlockFixture = {
+    description: string;
+    connect?: ConnectFixtures;
+    block: DeepPartial<BlockchainBlock>;
+    state: FixtureState;
+    result?: string[];
+    resultTxs?: {
+        'xpub-btc-deviceState': Array<{
+            blockHeight: number | undefined;
+            blockHash: string | undefined;
+            txid: string;
+        }>;
+    };
+};
+
+type OnConnectFixture = {
+    description: string;
+    connect?: ConnectFixtures;
+    initialState?: FixtureState;
+    symbol: string;
+    actions: AnyAction[];
+    blockchainEstimateFee: number;
+    blockchainSubscribe: number;
+};
+
+type OnDisconnectFixture = {
+    description: string;
+    initialState?: FixtureState;
+    symbol: string;
+    actions: AnyAction[];
+};
+
+type OnNotificationFixture = {
+    description: string;
+    initialState?: FixtureState;
+    params: DeepPartial<BlockchainNotification>;
+    actions: AnyAction[];
+    getAccountInfo: number;
+};
+
+type CustomBackendFixture = {
+    description: string;
+    initialState: FixtureState;
+    symbol: 'btc';
+    blockchainSetCustomBackend: number;
+};
+
 // A little bit crazy test to avoid fixtures duplication
-export const onBlock = analyzeTransactions
+export const onBlock: OnBlockFixture[] = analyzeTransactions
     // extend @wallet-utils/__fixtures__/transactionUtils
     .map((f, i) => ({
         description: f.description,
@@ -426,7 +479,7 @@ export const init: InitFixture[] = [
     },
 ];
 
-export const onConnect = [
+export const onConnect: OnConnectFixture[] = [
     {
         description: 'unknown coin',
         symbol: 'btc-invalid',
@@ -524,7 +577,7 @@ export const onConnect = [
     },
 ];
 
-export const onDisconnect = [
+export const onDisconnect: OnDisconnectFixture[] = [
     {
         description: 'unknown coin',
         symbol: 'btc-invalid',
@@ -561,7 +614,7 @@ export const onDisconnect = [
     },
 ];
 
-export const onNotification = [
+export const onNotification: OnNotificationFixture[] = [
     {
         description: 'no accounts',
         initialState: {
@@ -660,7 +713,7 @@ export const onNotification = [
     },
 ];
 
-export const customBackend = [
+export const customBackend: CustomBackendFixture[] = [
     {
         description: 'enable coin with custom backend',
         initialState: {

@@ -34,7 +34,7 @@ const SIGNATURES_2_OF_3 = [
     '304502210089153ad97c0d69656cd9bd9eb2056552acaec91365dd7ab31250f3f707123baa02200f884de63041d73bd20fbe8804c6036968d8149b7f46963a82b561cd8211ab08',
 ];
 
-export default {
+const signTransactionMultisig: TestCase = {
     method: 'signTransaction',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -279,4 +279,6 @@ export default {
             },
         },
     ],
-} satisfies TestCase;
+};
+
+export default signTransactionMultisig;

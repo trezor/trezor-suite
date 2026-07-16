@@ -1,4 +1,4 @@
-export default {
+const getPublicKeyBip48: TestCase = {
     method: 'getPublicKey',
     setup: {
         mnemonic: 'mnemonic_12',
@@ -39,4 +39,6 @@ export default {
             },
         },
     ],
-} satisfies TestCase;
+};
+
+export default getPublicKeyBip48;

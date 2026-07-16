@@ -1,4 +1,4 @@
-export default {
+const applySettings: TestCase = {
     method: 'applySettings',
     setup: {
         mnemonic: 'mnemonic_12',
@@ -26,4 +26,6 @@ export default {
             },
         },
     ],
-} satisfies TestCase;
+};
+
+export default applySettings;
