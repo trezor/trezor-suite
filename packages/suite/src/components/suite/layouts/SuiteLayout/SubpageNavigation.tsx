@@ -27,8 +27,8 @@ const ScrollContainer = styled.div`
 
 type TabRoute = Route['name'] | undefined;
 
-export type NavigationItem = {
-    id: Route['name'];
+export type NavigationItem<TId extends string = Route['name']> = {
+    id: TId;
     callback: () => void;
     title: React.ReactNode;
     'data-testid'?: string;
@@ -36,19 +36,28 @@ export type NavigationItem = {
     activeRoutes?: TabRoute[];
 };
 
-type SubpageNavigationProps = {
-    items: NavigationItem[];
+type SubpageNavigationProps<TId extends string> = {
+    items: NavigationItem<TId>[];
     ['data-testid']: string;
+    /**
+     * Controlled active tab. When omitted, the active tab is derived from the current route.
+     */
+    activeItemId?: TId;
 };
 
-export const SubpageNavigation = ({ 'data-testid': dataTest, items }: SubpageNavigationProps) => {
+export const SubpageNavigation = <TId extends string = Route['name']>({
+    'data-testid': dataTest,
+    items,
+    activeItemId,
+}: SubpageNavigationProps<TId>) => {
     const routeName = useSelector(selectRouteName);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     const isAccountLoading = selectedAccount.status === 'loading';
-    const activeItemdId = items.find(
-        ({ id, activeRoutes }) => activeRoutes?.includes(routeName) || id === routeName,
-    )?.id;
+    const resolvedActiveItemId =
+        activeItemId ??
+        items.find(({ id, activeRoutes }) => activeRoutes?.includes(routeName) || id === routeName)
+            ?.id;
 
     return (
         <Container data-testid={dataTest}>
@@ -58,7 +67,7 @@ export const SubpageNavigation = ({ 'data-testid': dataTest, items }: SubpageNav
                         hasBorder={false}
                         size="large"
                         isDisabled={isAccountLoading}
-                        activeItemId={activeItemdId}
+                        activeItemId={resolvedActiveItemId}
                     >
                         {items
                             .filter(item => !item.isHidden)

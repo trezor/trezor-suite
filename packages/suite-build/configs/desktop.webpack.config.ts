@@ -80,7 +80,7 @@ const config: webpack.Configuration = {
                     to: path.join(baseDir, 'build/node-bridge/ui'),
                 },
                 {
-                    from: path.join(__dirname, '../../', 'suite-desktop/releaseNotes'),
+                    from: path.join(__dirname, '../../', 'suite-data/files/release-notes.md'),
                     to: path.join(baseDir, 'build'),
                 },
                 {

@@ -4237,13 +4237,17 @@ export const messages = defineMessages({
         id: 'REFRESH',
         defaultMessage: 'Refresh',
     },
-    NOTIFICATIONS_TITLE: {
-        id: 'NOTIFICATIONS_TITLE',
-        defaultMessage: 'Notifications',
-    },
     NOTIFICATIONS_EMPTY_TITLE: {
         id: 'NOTIFICATIONS_EMPTY_TITLE',
         defaultMessage: 'No notifications',
+    },
+    NOTIFICATIONS_EMPTY_ACTIVITY_TITLE: {
+        id: 'NOTIFICATIONS_EMPTY_ACTIVITY_TITLE',
+        defaultMessage: 'No system activity',
+    },
+    NOTIFICATIONS_EMPTY_ACTIVITY_DESC: {
+        id: 'NOTIFICATIONS_EMPTY_ACTIVITY_DESC',
+        defaultMessage: "You'll see all system activity, like device and app events, here.",
     },
     NOTIFICATIONS_EMPTY_DESC: {
         id: 'NOTIFICATIONS_EMPTY_DESC',
@@ -4253,9 +4257,9 @@ export const messages = defineMessages({
         id: 'NOTIFICATIONS_SEEN_TITLE',
         defaultMessage: 'All read',
     },
-    NOTIFICATIONS_ALL_TITLE: {
-        id: 'NOTIFICATIONS_ALL_TITLE',
-        defaultMessage: 'All activity',
+    NOTIFICATIONS_SYSTEM_TITLE: {
+        id: 'NOTIFICATIONS_SYSTEM_TITLE',
+        defaultMessage: 'System',
     },
     NOTIFICATIONS_IMPORTANT_TITLE: {
         id: 'NOTIFICATIONS_IMPORTANT_TITLE',
@@ -6078,6 +6082,18 @@ export const messages = defineMessages({
     TR_CHANGELOG_ON_GITHUB: {
         id: 'TR_CHANGELOG_ON_GITHUB',
         defaultMessage: 'Open the changelog on GitHub',
+    },
+    TR_RELEASE_NOTES: {
+        id: 'TR_RELEASE_NOTES',
+        defaultMessage: 'Release notes',
+    },
+    TR_RELEASE_NOTES_LOADING: {
+        id: 'TR_RELEASE_NOTES_LOADING',
+        defaultMessage: 'Loading release notes…',
+    },
+    TR_RELEASE_NOTES_VERSION: {
+        id: 'TR_RELEASE_NOTES_VERSION',
+        defaultMessage: 'Version',
     },
     TR_NAV_TRADE: {
         id: 'TR_NAV_TRADE',

@@ -62,7 +62,7 @@ export const NetworkCard = ({
                             // Make the clickable area bigger
                             <Box padding={8} margin={-8} onClick={() => onSettings(symbol)}>
                                 <StatusIndicator
-                                    status={backendStatus}
+                                    show={backendStatus !== undefined}
                                     data-testid={`@settings/wallet/network/${symbol}/backend-status`}
                                 >
                                     <IconButton

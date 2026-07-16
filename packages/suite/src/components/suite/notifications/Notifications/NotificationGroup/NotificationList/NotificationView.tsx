@@ -84,7 +84,7 @@ export const NotificationView = ({
                 ) : (
                     <Button
                         intent={action.intent ?? 'neutral'}
-                        priority={action.priority}
+                        priority={action.priority ?? 'secondary'}
                         size="small"
                         onClick={action.onClick}
                         minWidth={80}

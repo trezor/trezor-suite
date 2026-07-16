@@ -40,6 +40,14 @@ export const PageName = () => {
         );
     }
 
+    if (currentRoute === 'notifications-index') {
+        return (
+            <BasicName>
+                <Translation id="TR_NOTIFICATIONS" />
+            </BasicName>
+        );
+    }
+
     if (selectedAccount && isAccountTabPage) {
         return <AccountName key={selectedAccount.key} selectedAccount={selectedAccount} />;
     }
