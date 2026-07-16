@@ -57,7 +57,7 @@ describe(requireTypeDeclarationSize.name, () => {
 
         expect(errors).toHaveLength(1);
         expect(errors[0]).toMatch(
-            /^packages\/example\/libDev\/src\/large\.d\.ts is \d+(?:\.\d+)? KiB; maximum is 100 KiB\.$/,
+            /^packages\/example\/libDev\/src\/large\.d\.ts is \d+(?:\.\d+)? KiB; maximum is 50 KiB\.$/,
         );
     });
 
