@@ -2,6 +2,11 @@ export * from './client';
 export type * from './types';
 export { getSimulationErrorRiskLevel, areTxSimulationMethods } from './utils';
 export { getAssetDiffTransferAmount } from './utils/getAssetDiffTransferAmount';
+export {
+    getTxSimulationRiskSummary,
+    type TxSimulationRiskSummary,
+    type TxSimulationValidationSummary,
+} from './utils/getTxSimulationRiskSummary';
 export { useDappScan } from './hooks/useDappScan';
 export {
     useNetworkTxSimulation,
@@ -17,3 +22,4 @@ export {
     computeGasFeeInWei,
     useHasSufficientFundsForGas,
 } from './hooks/useHasSufficientFundsForGas';
+export * from './constants';

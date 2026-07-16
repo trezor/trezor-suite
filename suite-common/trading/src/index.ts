@@ -43,6 +43,7 @@ export * from './utils/receiveAccountUtils';
 export * from './utils/tradeOperationUtils';
 export * from './utils/exchange/composeDexTxSimulationAction';
 export * from './utils/exchange/exchangeUtils';
+export * from './utils/exchange/getExchangeSimulationIssue';
 export * from './utils/exchange/getSimulatedReceiveAmount';
 export * from './utils/exchange/receiveAddressCoherence';
 export * from './utils/exchange/resolveExchangeTradeError';
