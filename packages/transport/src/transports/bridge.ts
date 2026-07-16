@@ -13,6 +13,7 @@ import {
     type BridgeCommonErrors,
     type Descriptor,
     TRANSPORT_ERROR as ERRORS,
+    type MessageResponse,
     type Session,
     TRANSPORT,
     buildMessage,
@@ -61,6 +62,17 @@ type IncompleteRequestOptions = {
 };
 
 type BridgeConstructorParameters = AbstractTransportParams & { port?: number };
+
+type BridgeReadWriteError =
+    | BridgeCommonErrors
+    | typeof ERRORS.ABORTED_BY_SIGNAL
+    | typeof ERRORS.ABORTED_BY_TIMEOUT
+    | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
+    | typeof ERRORS.DEVICE_NOT_FOUND
+    | typeof ERRORS.INTERFACE_DATA_TRANSFER
+    | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
+    | typeof ERRORS.OTHER_CALL_IN_PROGRESS
+    | typeof PROTOCOL_MALFORMED;
 
 export class BridgeTransport extends AbstractTransport {
     private useAbortEndpoint: boolean = false;
@@ -213,7 +225,10 @@ export class BridgeTransport extends AbstractTransport {
         thpState,
         signal,
         timeout,
-    }: AbstractTransportMethodParams<'call'>) {
+    }: AbstractTransportMethodParams<'call'>): AsyncResultWithTypedError<
+        MessageResponse,
+        BridgeReadWriteError
+    > {
         return this.scheduleAction(
             async signal => {
                 const protocol = this.getProtocol(customProtocol);
@@ -271,7 +286,10 @@ export class BridgeTransport extends AbstractTransport {
         thpState,
         signal,
         timeout,
-    }: AbstractTransportMethodParams<'send'>) {
+    }: AbstractTransportMethodParams<'send'>): AsyncResultWithTypedError<
+        undefined,
+        BridgeReadWriteError
+    > {
         return this.scheduleAction(
             async signal => {
                 const protocol = this.getProtocol(customProtocol);
@@ -309,7 +327,10 @@ export class BridgeTransport extends AbstractTransport {
         thpState,
         signal,
         timeout,
-    }: AbstractTransportMethodParams<'receive'>) {
+    }: AbstractTransportMethodParams<'receive'>): AsyncResultWithTypedError<
+        MessageResponse,
+        BridgeReadWriteError
+    > {
         return this.scheduleAction(
             async signal => {
                 const protocol = this.getProtocol(customProtocol);

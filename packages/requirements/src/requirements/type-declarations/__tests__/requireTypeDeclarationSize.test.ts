@@ -74,50 +74,6 @@ describe(requireTypeDeclarationSize.name, () => {
         expect(errors[0]).toContain('packages/example/libDev/src/nested/large.d.mts');
     });
 
-    it('allows known oversized declarations up to their legacy limit', async () => {
-        const knownWorkspaceDirectory = join(repoRoot, 'packages', 'connect-cli');
-        const knownDeclarationDirectory = join(knownWorkspaceDirectory, 'libDev', 'src');
-        mkdirSync(knownDeclarationDirectory, { recursive: true });
-        writeFileSync(join(knownDeclarationDirectory, 'transport.d.ts'), 'x'.repeat(103 * 1024));
-        mockListAllWorkspaces.mockReturnValue([
-            { dir: knownWorkspaceDirectory, name: '@trezor/connect-cli' },
-        ]);
-
-        const errors = await requireTypeDeclarationSize.verify(context);
-
-        expect(errors).toEqual([]);
-    });
-
-    it('reports legacy limits that can be removed', async () => {
-        const knownWorkspaceDirectory = join(repoRoot, 'packages', 'connect-cli');
-        const knownDeclarationDirectory = join(knownWorkspaceDirectory, 'libDev', 'src');
-        mkdirSync(knownDeclarationDirectory, { recursive: true });
-        writeFileSync(join(knownDeclarationDirectory, 'transport.d.ts'), 'x'.repeat(90 * 1024));
-        mockListAllWorkspaces.mockReturnValue([
-            { dir: knownWorkspaceDirectory, name: '@trezor/connect-cli' },
-        ]);
-
-        const errors = await requireTypeDeclarationSize.verify(context);
-
-        expect(errors).toEqual([
-            'packages/connect-cli/libDev/src/transport.d.ts is now 90 KiB; remove its legacy declaration-size limit.',
-        ]);
-    });
-
-    it('reports legacy limits for declarations missing from built workspaces', async () => {
-        const knownWorkspaceDirectory = join(repoRoot, 'packages', 'connect-cli');
-        mkdirSync(join(knownWorkspaceDirectory, 'libDev'), { recursive: true });
-        mockListAllWorkspaces.mockReturnValue([
-            { dir: knownWorkspaceDirectory, name: '@trezor/connect-cli' },
-        ]);
-
-        const errors = await requireTypeDeclarationSize.verify(context);
-
-        expect(errors).toEqual([
-            'packages/connect-cli/libDev/src/transport.d.ts no longer exists; remove or update its legacy declaration-size limit.',
-        ]);
-    });
-
     it('ignores emitted declarations that are expected to grow', async () => {
         const knownWorkspaceDirectory = join(repoRoot, 'suite-native', 'intl');
         const knownDeclarationDirectory = join(knownWorkspaceDirectory, 'libDev', 'src');
