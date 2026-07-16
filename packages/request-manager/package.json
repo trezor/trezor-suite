@@ -6,9 +6,9 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "scripts": {
-        "test:all": "SKIP_FLAKY_TESTS=1 yarn g:jest",
-        "test:unit": "yarn g:jest --testPathIgnorePatterns e2e",
-        "test:e2e": "yarn g:jest --runInBand --testPathIgnorePatterns tests",
+        "test:all": "SKIP_FLAKY_TESTS=1 yarn g:jest --verbose",
+        "test:unit": "yarn g:jest --verbose --testPathIgnorePatterns e2e",
+        "test:e2e": "yarn g:jest --verbose --runInBand --testPathIgnorePatterns tests",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "test:stress": "tsx ./e2e/identities-stress.ts",
         "depcheck": "yarn g:depcheck",
@@ -17,13 +17,14 @@
     "dependencies": {
         "@trezor/node-utils": "workspace:^",
         "@trezor/utils": "workspace:*",
-        "node-fetch": "^3.3.2",
         "socks-proxy-agent": "8.0.5",
+        "undici": "8.5.0",
         "ws": "^8.20.0"
     },
     "devDependencies": {
         "@trezor/e2e-utils": "workspace:*",
         "@trezor/eslint": "workspace:*",
+        "node-fetch": "^3.3.2",
         "tsx": "^4.21.0"
     }
 }
