@@ -216,6 +216,9 @@ export const messages = {
     },
     biometrics: {
         biometricsButton: 'Unlock with biometrics',
+        prompt: {
+            title: 'Unlock Trezor Suite',
+        },
         biometricsUnavailableAlert: {
             title: 'Biometric authentication',
             description:

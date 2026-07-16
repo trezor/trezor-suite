@@ -6,6 +6,7 @@ import type { LocalAuthenticationResult } from 'expo-local-authentication';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { asTypedNativeAnalytics, events } from '@suite-native/analytics';
+import { getLocalizedMessage, selectSupportedLanguageLocale } from '@suite-native/intl';
 
 import {
     selectGoneToBackgroundAtTimestamp,
@@ -45,14 +46,21 @@ export const authenticateUserThunk = createThunk<
     LocalAuthenticationResult,
     void,
     { rejectValue: AuthenticateError }
->(`${BIOMETRICS_THUNK_PREFIX}/authenticate`, async (_, { rejectWithValue }) => {
+>(`${BIOMETRICS_THUNK_PREFIX}/authenticate`, async (_, { getState, rejectWithValue }) => {
     const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
 
     if (!isBiometricsAvailable) {
         return rejectWithValue(AuthenticateError.BiometricsNotAvailable);
     }
 
-    const result = await LocalAuthentication.authenticateAsync();
+    // Without explicit labels, the native prompt falls back to the untranslated defaults
+    // of expo-local-authentication, regardless of the app language.
+    const locale = selectSupportedLanguageLocale(getState());
+
+    const result = await LocalAuthentication.authenticateAsync({
+        promptMessage: getLocalizedMessage(locale, 'biometrics.prompt.title'),
+        cancelLabel: getLocalizedMessage(locale, 'generic.buttons.cancel'),
+    });
 
     if (!result.success) {
         return rejectWithValue(AuthenticateError.AuthenticationFailed);

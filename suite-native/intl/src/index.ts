@@ -6,3 +6,4 @@ export * from './types';
 export * from './localeSlice';
 export * from './languages';
 export { getTranslation } from './getTranslation';
+export { getLocalizedMessage } from './getLocalizedMessage';
