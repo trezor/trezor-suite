@@ -80,9 +80,14 @@ export const useBackendServersForm = ({ symbol, backendOptions }: Network) => {
                 .test(
                     'format',
                     translate('moduleSettings.networkBackends.servers.invalidFormat'),
-                    (value, context) =>
-                        !!value &&
-                        validateServerAddress(context.resolve(yup.ref('serverType')), value),
+                    (value, context) => {
+                        const serverType = context.resolve(yup.ref<ServerType>('serverType'));
+                        if (serverType === 'default') {
+                            return true;
+                        }
+
+                        return !!value && validateServerAddress(serverType, value);
+                    },
                 ),
         }),
         defaultValues,
