@@ -17,6 +17,7 @@ import type {
 } from '@suite-common/wallet-types';
 import {
     getConfirmations,
+    getErc4626Contracts,
     getFiatRateKey,
     isCardanoStakingTx,
     isClaimTx,
@@ -360,30 +361,41 @@ export const selectTransactionsWithMissingRates = (
 
     return pipe(
         scopedTransactions,
-        D.mapWithKey((key, txs) => ({
-            account: selectAccountByKey(state, key as AccountKey),
-            txs: txs.filter(tx => {
-                const fiatRateKey = getFiatRateKey(tx.symbol, localCurrency);
-                const roundedTimestamp = roundTimestampToNearestPastHour(tx.blockTime as Timestamp);
-                const historicRate = historicFiatRates?.[fiatRateKey]?.[roundedTimestamp];
+        D.mapWithKey((key, txs) => {
+            const account = selectAccountByKey(state, key as AccountKey);
+            const erc4626Contracts = getErc4626Contracts(account?.tokens);
 
-                const isMissingTokenRate = tx.tokens
-                    .filter(token => !isNftTokenTransfer(token))
-                    .some(token => {
-                        const tokenFiatRateKey = getFiatRateKey(
-                            tx.symbol,
-                            localCurrency,
-                            token.contract as TokenAddress,
-                        );
-                        const historicTokenRate =
-                            historicFiatRates?.[tokenFiatRateKey]?.[roundedTimestamp];
+            return {
+                account,
+                txs: txs.filter(tx => {
+                    const fiatRateKey = getFiatRateKey(tx.symbol, localCurrency);
+                    const roundedTimestamp = roundTimestampToNearestPastHour(
+                        tx.blockTime as Timestamp,
+                    );
+                    const historicRate = historicFiatRates?.[fiatRateKey]?.[roundedTimestamp];
 
-                        return historicTokenRate === undefined || historicTokenRate === 0;
-                    });
+                    const isMissingTokenRate = tx.tokens
+                        .filter(
+                            token =>
+                                !isNftTokenTransfer(token) &&
+                                !erc4626Contracts.has(token.contract.toLowerCase()),
+                        )
+                        .some(token => {
+                            const tokenFiatRateKey = getFiatRateKey(
+                                tx.symbol,
+                                localCurrency,
+                                token.contract as TokenAddress,
+                            );
+                            const historicTokenRate =
+                                historicFiatRates?.[tokenFiatRateKey]?.[roundedTimestamp];
 
-                return historicRate === undefined || historicRate === 0 || isMissingTokenRate;
-            }),
-        })),
+                            return historicTokenRate === undefined || historicTokenRate === 0;
+                        });
+
+                    return historicRate === undefined || historicRate === 0 || isMissingTokenRate;
+                }),
+            };
+        }),
         D.filter(({ account, txs }) => !!account && !!txs.length),
         D.values,
         A.filter(value => !!value),

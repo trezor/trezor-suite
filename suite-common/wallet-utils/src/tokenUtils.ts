@@ -137,5 +137,8 @@ export const shouldUppercaseTokenSymbol = (token: TokenInfo) =>
 
 export const isErc4626 = (token: TokenInfo) => !!token.protocols?.includes('erc4626');
 
+export const getErc4626Contracts = (tokens: TokenInfo[] | undefined) =>
+    new Set(tokens?.filter(isErc4626).map(token => token.contract.toLowerCase()));
+
 export const sortTokensByName = (a: Pick<TokenInfo, 'name'>, b: Pick<TokenInfo, 'name'>) =>
     (a.name ?? '').localeCompare(b.name ?? '');

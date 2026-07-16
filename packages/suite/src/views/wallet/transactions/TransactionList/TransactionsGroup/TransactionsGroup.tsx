@@ -5,6 +5,7 @@ import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectHistoricFiatRates } from '@suite-common/wallet-core';
 import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import {
+    getErc4626Contracts,
     getFiatRateKey,
     isNftTokenTransfer,
     roundTimestampToNearestPastHour,
@@ -15,7 +16,7 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Column } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
-import { type WalletAccountTransaction } from 'src/types/wallet';
+import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { DayHeader } from './DayHeader';
 
@@ -24,6 +25,7 @@ type TransactionsGroupProps = {
     transactions: WalletAccountTransaction[];
     children?: ReactNode;
     symbol: NetworkSymbol;
+    account: Account;
     baseCurrencyCode: BaseCurrencyCode;
     index: number;
     isPending: boolean;
@@ -32,6 +34,7 @@ type TransactionsGroupProps = {
 export const TransactionsGroup = ({
     dateKey,
     symbol,
+    account,
     transactions,
     baseCurrencyCode,
     isPending,
@@ -46,13 +49,18 @@ export const TransactionsGroup = ({
         baseCurrencyCode,
         historicFiatRates,
     );
+    const erc4626Contracts = getErc4626Contracts(account.tokens);
     const isMissingFiatRates = transactions.some(tx => {
         const fiatRateKey = getFiatRateKey(tx.symbol, baseCurrencyCode);
         const roundedTimestamp = roundTimestampToNearestPastHour(tx.blockTime as Timestamp);
         const historicCryptoRate = historicFiatRates?.[fiatRateKey]?.[roundedTimestamp];
 
         const isMissingTokenRate = tx.tokens
-            .filter(token => !isNftTokenTransfer(token))
+            .filter(
+                token =>
+                    !isNftTokenTransfer(token) &&
+                    !erc4626Contracts.has(token.contract.toLowerCase()),
+            )
             .some(token => {
                 const isTokenKnown = isTokenDefinitionKnown(
                     tokenDefinitions?.data,
