@@ -59,3 +59,52 @@ describe('synchronizeSentTransactionThunk – RBF eviction (#28147)', () => {
         expect(removed).toHaveLength(0);
     });
 });
+
+describe('synchronizeSentTransactionThunk – EVM fake pending tx nonce', () => {
+    // account.misc.nonce is deliberately pending-inflated here: if the thunk re-derived the nonce
+    // (the old behaviour) the fake tx would read 9, not the true signed nonce 7.
+    const inflatedEthAccount = {
+        ...ethAccount,
+        misc: { ...(ethAccount as any).misc, nonce: '9' },
+    } as typeof ethAccount;
+
+    const preloadedState = {
+        wallet: {
+            fees: { eth: { data: { blockTime: 600 } } },
+            blockchain: { eth: { blockHeight: 100 } },
+            transactions: { transactions: {} },
+        },
+    };
+
+    const evmPrecomposed = () =>
+        precomposed({
+            outputs: [{ address: '0x1111111111111111111111111111111111111111', amount: '1000' }],
+            feeLimit: '21000',
+            maxFeePerGas: '20',
+            maxPriorityFeePerGas: '1',
+        });
+
+    const getAddedFakeTx = (store: ReturnType<typeof configureMockStore>) => {
+        const added = store
+            .getActions()
+            .filter(action => action.type === transactionsActions.addTransaction.type);
+
+        return added[0]?.payload.transactions[0];
+    };
+
+    it('stamps the fake pending tx with the signed nonce passed in, not the re-derived one', () => {
+        const store = configureMockStore({ preloadedState });
+
+        store.dispatch(
+            synchronizeSentTransactionThunk({
+                selectedAccount: inflatedEthAccount,
+                precomposedTransaction: evmPrecomposed(),
+                precomposedForm: { transactionData: '0x' } as any,
+                txid: 'NEW',
+                ethereumNonce: '7',
+            }),
+        );
+
+        expect(getAddedFakeTx(store)?.ethereumSpecific?.nonce).toBe(7);
+    });
+});
