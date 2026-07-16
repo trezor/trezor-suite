@@ -7,7 +7,11 @@ import type {
 } from '@trezor/blockchain-link-types';
 import * as utils from '@trezor/blockchain-link-utils/src/stellar';
 import { getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
-import { STELLAR_BASE_RESERVE, STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
+import {
+    STELLAR_BASE_RESERVE,
+    STELLAR_DECIMALS,
+    toStroops,
+} from '@trezor/network-stellar/constants';
 import stellar from '@trezor/network-stellar/runtime';
 import type { StellarAPI } from '@trezor/network-stellar/types';
 import { type IntervalId } from '@trezor/type-utils';
@@ -64,9 +68,6 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolea
         payload: { ...serverInfo },
     } as const;
 };
-
-const toStroops = (value: string) =>
-    new BigNumber(10).pow(STELLAR_DECIMALS).times(new BigNumber(value));
 
 const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
     const { payload } = request;

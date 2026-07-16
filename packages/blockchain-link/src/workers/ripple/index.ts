@@ -8,6 +8,10 @@ import type {
 } from '@trezor/blockchain-link-types';
 import * as utils from '@trezor/blockchain-link-utils/src/ripple';
 import { getSuiteVersion } from '@trezor/env-utils';
+import {
+    RIPPLE_BASE_RESERVE_DEFAULT,
+    RIPPLE_OWNER_RESERVE_DEFAULT,
+} from '@trezor/network-ripple/constants';
 import xrpl from '@trezor/network-ripple/runtime';
 import type { LedgerStream, TransactionStream, XrplAPI } from '@trezor/network-ripple/types';
 import { type TimerId } from '@trezor/type-utils';
@@ -21,8 +25,8 @@ type Request<T> = T & Context;
 const DEFAULT_TIMEOUT = 20 * 1000;
 const DEFAULT_PING_TIMEOUT = 3 * 60 * 1000;
 const RESERVE = {
-    BASE: '10000000',
-    OWNER: '2000000',
+    BASE: RIPPLE_BASE_RESERVE_DEFAULT,
+    OWNER: RIPPLE_OWNER_RESERVE_DEFAULT,
 };
 
 const getInfo = async (request: Request<MessageTypes.GetInfo>) => {

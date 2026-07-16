@@ -12,7 +12,7 @@ import {
     type Transaction,
 } from '@stellar/stellar-sdk';
 
-import { BigNumber } from '@trezor/utils';
+import { toStroops } from '../../constants';
 
 /**
  * Transforms Signer to TrezorConnect.StellarTransaction.Signer
@@ -57,12 +57,6 @@ const transformAsset = (asset: Asset) => {
         issuer: asset.getIssuer(),
     };
 };
-
-/**
- * Transforms amount from decimals (lumens) to integer (stroop)
- */
-const transformAmount = (amount: number | string) =>
-    new BigNumber(amount).times(10000000).toString();
 
 /**
  * Transforms Memo to TrezorConnect.StellarTransaction.Memo
@@ -139,7 +133,7 @@ export const transformTransaction = (transaction: Transaction) => {
         // transform amounts
         amounts.forEach(field => {
             if (typeof operation[field] === 'string') {
-                operation[field] = transformAmount(operation[field]);
+                operation[field] = toStroops(operation[field]).toString();
             }
         });
 
