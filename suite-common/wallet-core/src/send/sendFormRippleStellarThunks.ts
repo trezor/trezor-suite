@@ -1,6 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { XRP_FLAG } from '@suite-common/wallet-constants';
 import {
     AddressDisplayOptions,
     type ExternalOutput,
@@ -18,6 +17,7 @@ import {
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel, type RipplePayment, type TokenInfo } from '@trezor/connect';
+import { XRP_FLAG } from '@trezor/network-ripple/constants';
 import stellar from '@trezor/network-stellar/runtime';
 import { StellarAssetType } from '@trezor/protobuf/src/definitions';
 import { BigNumber } from '@trezor/utils';

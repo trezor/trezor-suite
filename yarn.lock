@@ -11175,6 +11175,7 @@ __metadata:
     "@suite-common/address": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/network-solana": "workspace:*"
     "@trezor/utils": "workspace:*"
     yup: "npm:1.7.1"
   languageName: unknown
@@ -11243,6 +11244,7 @@ __metadata:
     "@trezor/connect-common": "workspace:^"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/network-ripple": "workspace:*"
     "@trezor/network-solana": "workspace:*"
     "@trezor/network-stellar": "workspace:*"
     "@trezor/network-tron": "workspace:*"

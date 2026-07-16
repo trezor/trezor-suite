@@ -36,7 +36,7 @@ import * as splToken2022 from '@solana-program/token-2022';
 
 import { BigNumber } from '@trezor/utils';
 
-import { SYSTEM_PROGRAM_PUBLIC_KEY, tokenProgramsInfo } from '../constants';
+import { SOLANA_MEMO_MAX_BYTES, SYSTEM_PROGRAM_PUBLIC_KEY, tokenProgramsInfo } from '../constants';
 import type {
     Blockhash,
     SolanaAPI,
@@ -48,8 +48,6 @@ import { createTransactionShim } from './shim';
 
 const getTokenLib = (tokenProgramName: TokenProgramName) =>
     tokenProgramName === 'spl-token' ? splToken : splToken2022;
-
-const SOLANA_MEMO_MAX_BYTES = 566; // https://www.solana-program.com/docs/memo
 
 const validateMemo = (memo: string) => {
     const byteLength = Buffer.from(memo, 'utf8').length;

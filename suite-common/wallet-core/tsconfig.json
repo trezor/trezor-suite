@@ -44,6 +44,9 @@
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
         {
+            "path": "../../networks/ripple/network-ripple"
+        },
+        {
             "path": "../../networks/solana/network-solana"
         },
         {
