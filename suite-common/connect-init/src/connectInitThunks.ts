@@ -1,12 +1,7 @@
 import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { type AnalyticsDep, events as sharedEvents } from '@suite-common/analytics';
-import {
-    type DeviceRootState,
-    deviceActions,
-    selectDevices,
-    selectSelectedDevice,
-} from '@suite-common/device';
+import { type DeviceRootState, deviceActions, selectDevices } from '@suite-common/device';
 import { type FirmwareRootState, selectEffectiveFirmwareChannel } from '@suite-common/firmware';
 import {
     Feature,
@@ -169,19 +164,18 @@ export const connectInitThunk = createThunk<
 
         lockDevice(true);
 
-        // Snapshot the device the call runs against before awaiting it. Button requests are
-        // attached to the selected device as UI events arrive during the call; re-selecting
-        // after the await would target a different device if the selection changed meanwhile,
-        // leaving stale button requests behind on the original one.
-        const deviceAtCallStart = selectSelectedDevice(getState());
-
+        let response;
         try {
-            return await synchronize(() => original(params));
+            response = await synchronize(() => original(params));
+
+            return response;
         } finally {
-            // Runs on resolve and reject alike: a rejected call must not leak the device lock
-            // counter (it never decrements, locking the device until reload) or skip cleanup.
+            // finally so a rejected call still decrements the lock counter and clears requests.
             lockDevice(false);
-            dispatch(deviceActions.removeButtonRequests({ device: deviceAtCallStart }));
+            // `params.device?.path` is the fallback when the call omits a device or fails before
+            // Core selects one; an undefined path is a reducer no-op.
+            const path = response?.device?.path ?? params.device?.path;
+            dispatch(deviceActions.removeButtonRequests({ path }));
         }
     };
 

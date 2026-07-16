@@ -26,6 +26,7 @@ const getInitialState = (state: Partial<DeviceSettingsFixtureState> = {}): State
         ...deviceInitialState,
         devices: state.device?.devices ?? [DEVICE],
         selectedDevice: state.device?.selectedDevice ?? DEVICE,
+        buttonRequestsByPath: {},
     },
     persistentDeviceData: persistentDeviceDataInitialState,
     messageSystem: {
