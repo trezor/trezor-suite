@@ -17,7 +17,7 @@ const multisig = {
     m: 2,
 };
 
-export default {
+const getAddressMultisig: TestCase = {
     method: 'getAddress',
     setup: {
         mnemonic: 'mnemonic_12',
@@ -63,4 +63,6 @@ export default {
             },
         },
     ],
-} satisfies TestCase;
+};
+
+export default getAddressMultisig;

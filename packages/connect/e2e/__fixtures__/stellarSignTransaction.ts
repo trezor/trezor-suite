@@ -183,7 +183,7 @@ const legacyResultsMap: Record<string, LegacyResult[]> = {
     ],
 };
 
-export default {
+const stellarSignTransaction: TestCase = {
     method: 'stellarSignTransaction',
     setup: {
         mnemonic: commonFixtures.setup.mnemonic,
@@ -294,4 +294,6 @@ export default {
             ],
         },
     ],
-} satisfies TestCase;
+};
+
+export default stellarSignTransaction;

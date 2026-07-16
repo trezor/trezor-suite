@@ -6,7 +6,7 @@ const legacyResults = [
     },
 ];
 
-export default {
+const rippleSignTransaction: TestCase = {
     method: 'rippleSignTransaction',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -93,4 +93,6 @@ export default {
             result: false,
         },
     ].map(fixture => ({ ...fixture, legacyResults })),
-} satisfies TestCase;
+};
+
+export default rippleSignTransaction;

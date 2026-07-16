@@ -3,7 +3,7 @@
 const skip = ['1', '<2.9.3'];
 
 // Expected x-only (BIP-340) public keys derived per NIP-06 (m/44'/1237'/<account>'/0/0).
-export default {
+const nostrGetPublicKey: TestCase = {
     method: 'nostrGetPublicKey',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -52,4 +52,6 @@ export default {
             skip,
         },
     ],
-} satisfies TestCase;
+};
+
+export default nostrGetPublicKey;

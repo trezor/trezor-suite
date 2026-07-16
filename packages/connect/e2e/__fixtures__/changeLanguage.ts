@@ -1,4 +1,4 @@
-export default {
+const changeLanguage: TestCase = {
     method: 'changeLanguage',
     setup: {
         mnemonic: 'mnemonic_12',
@@ -15,4 +15,6 @@ export default {
             },
         },
     ],
-} satisfies TestCase;
+};
+
+export default changeLanguage;

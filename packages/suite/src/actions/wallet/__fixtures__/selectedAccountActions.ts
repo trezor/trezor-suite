@@ -1,6 +1,8 @@
 import { routerLocationChange } from '@suite/router';
+import { type SelectedAccountStatus, type WalletParams } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
+import { type DeepPartial } from '@trezor/type-utils';
 
 const DEVICE_STATE: StaticSessionId = '1stTestnetAddress@device_id:0';
 const DEVICE_PATH = '1';
@@ -10,7 +12,7 @@ const device = {
     state: { staticSessionId: DEVICE_STATE },
 };
 
-const walletParams = {
+const walletParams: WalletParams = {
     symbol: 'btc',
     accountIndex: 0,
     accountType: 'normal',
@@ -28,7 +30,20 @@ const btcFailedAccount = {
     error: 'discovery error',
 };
 
-export default [
+/** Partial state passed directly to the test store initializer. */
+type FixtureState = unknown;
+
+/** Partial action passed directly to syncSelectedAccount by the test. */
+type FixtureAction = unknown;
+
+type SelectedAccountFixture = {
+    description: string;
+    initialState: FixtureState;
+    action: FixtureAction;
+    result: DeepPartial<SelectedAccountStatus>;
+};
+
+const selectedAccountFixtures: SelectedAccountFixture[] = [
     {
         description: 'Action ignored',
         initialState: {},
@@ -110,4 +125,6 @@ export default [
             params: walletParams,
         },
     },
-] as const;
+];
+
+export default selectedAccountFixtures;

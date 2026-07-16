@@ -25,7 +25,7 @@ const legacyResults: Record<string, LegacyResult[]> = {
     ],
 };
 
-export default {
+const ethereumSignTransaction: TestCase = {
     method: 'ethereumSignTransaction',
     setup: {
         mnemonic: commonFixtures.setup.mnemonic,
@@ -149,4 +149,6 @@ export default {
                 result: false,
             },
         ]),
-} satisfies TestCase;
+};
+
+export default ethereumSignTransaction;

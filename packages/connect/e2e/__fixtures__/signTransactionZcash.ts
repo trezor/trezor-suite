@@ -1,6 +1,6 @@
 const { TX_CACHE } = global.TestUtils;
 
-export default {
+const signTransactionZcash: TestCase = {
     method: 'signTransaction',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -424,4 +424,6 @@ export default {
             },
         },
     ],
-} satisfies TestCase;
+};
+
+export default signTransactionZcash;

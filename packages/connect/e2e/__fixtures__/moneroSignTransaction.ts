@@ -5,7 +5,7 @@ const legacyResults = [
     },
 ];
 
-export default {
+const moneroSignTransaction: TestCase = {
     method: 'moneroSignTransaction',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -1015,4 +1015,6 @@ export default {
             legacyResults,
         },
     ],
-} satisfies TestCase;
+};
+
+export default moneroSignTransaction;

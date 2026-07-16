@@ -12,7 +12,7 @@ const legacyResults: Record<string, LegacyResult[]> = {
     ],
 };
 
-export default {
+const ethereumGetAddress: TestCase = {
     method: 'ethereumGetAddress',
     setup: {
         mnemonic: commonFixtures.setup.mnemonic,
@@ -55,4 +55,6 @@ export default {
             ],
         },
     ],
-} satisfies TestCase;
+};
+
+export default ethereumGetAddress;

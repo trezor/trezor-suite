@@ -21,7 +21,7 @@ serializedTx += 'd91b0000000000001976a9145a9452b8db22e7fb606adafc731f5d4b482f9e8
 );
 serializedTx += '00000000';
 
-export default {
+const signTransaction: TestCase = {
     method: 'signTransaction',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -454,4 +454,6 @@ export default {
             },
         },
     ],
-} satisfies TestCase;
+};
+
+export default signTransaction;

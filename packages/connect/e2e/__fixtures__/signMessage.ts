@@ -8,7 +8,7 @@ const legacyResults = [
     },
 ];
 
-export default {
+const signMessage: TestCase = {
     method: 'signMessage',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -261,4 +261,6 @@ export default {
             ],
         },
     ],
-} satisfies TestCase;
+};
+
+export default signMessage;
