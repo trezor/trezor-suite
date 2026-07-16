@@ -9,10 +9,11 @@ import {
     getTronStakingInfo,
     sunToTrx,
 } from '@suite-common/wallet-utils';
-import { Button, Card, Column, Divider, Icon, Modal, Row, Text } from '@trezor/components';
+import { Button, Card, Column, Divider, Icon, Modal, Row, Text, Tooltip } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
 import { useDispatch } from 'src/hooks/suite';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import {
     TronResourceBreakdownRow,
@@ -31,6 +32,8 @@ export const TronResourceModal = ({ account, resourceType, onClose }: TronResour
     const resources = getTronResources(account);
     const stakingInfo = getTronStakingInfo(account);
     const isEnergy = resourceType === 'energy';
+
+    const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account.symbol);
 
     const freeBandwidth = resources?.totalFreeBandwidth ?? 0;
     const stakedBandwidth = resources?.totalStakedBandwidth ?? 0;
@@ -83,6 +86,10 @@ export const TronResourceModal = ({ account, resourceType, onClose }: TronResour
         : formatBandwidthValue(availableFreeBandwidth, availableStakedBandwidth);
 
     const goToFreeze = () => {
+        if (isStakingDisabled) {
+            return;
+        }
+
         dispatch(
             goto({
                 routeName: 'earn-tron-stake',
@@ -116,9 +123,17 @@ export const TronResourceModal = ({ account, resourceType, onClose }: TronResour
             onCancel={onClose}
             bottomContent={
                 <Row gap={8}>
-                    <Button intent="brand" priority="primary" onClick={goToFreeze}>
-                        <Translation id="TR_EARN_TRON_GET_MORE" />
-                    </Button>
+                    <Tooltip content={stakingMessageContent}>
+                        <Button
+                            intent="brand"
+                            priority="primary"
+                            onClick={goToFreeze}
+                            isDisabled={isStakingDisabled}
+                        >
+                            <Translation id="TR_EARN_TRON_GET_MORE" />
+                        </Button>
+                    </Tooltip>
+
                     <Button intent="neutral" priority="secondary" onClick={onClose}>
                         <Translation id="TR_CLOSE" />
                     </Button>

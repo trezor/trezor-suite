@@ -63,8 +63,14 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     const isClaimPending = useSelector(state =>
         selectAccountClaimTransactions(state, account.key).some(tx => isPending(tx)),
     );
-    const { isStakingDisabled, stakingMessageContent, isClaimingDisabled, claimingMessageContent } =
-        useMessageSystemStaking(account.symbol);
+    const {
+        isStakingDisabled,
+        stakingMessageContent,
+        isClaimingDisabled,
+        claimingMessageContent,
+        isVotingDisabled,
+        votingMessageContent,
+    } = useMessageSystemStaking(account.symbol);
 
     const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
     const isClaimButtonDisabled = isClaimingDisabled || isClaimPending;
@@ -233,6 +239,10 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     );
 
     const onTronStake = (event: React.MouseEvent<HTMLButtonElement>) => {
+        if (isStakingDisabled) {
+            return;
+        }
+
         event.stopPropagation();
 
         dispatch(
@@ -257,6 +267,10 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     };
 
     const onTronVote = (event: React.MouseEvent<HTMLButtonElement>) => {
+        if (isVotingDisabled) {
+            return;
+        }
+
         event.stopPropagation();
 
         dispatch(
@@ -288,6 +302,8 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         stakingStatus,
         isStakingDisabled,
         stakingMessageContent,
+        isVotingDisabled,
+        votingMessageContent,
         canClaim,
         isClaimButtonDisabled,
         claimingMessageContent,

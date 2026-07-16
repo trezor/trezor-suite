@@ -22,6 +22,7 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { resolveVotedRepresentativeAddress } from '../voteUtils';
 import { type useTronStakeForm } from './useTronStakeForm';
@@ -54,6 +55,14 @@ export const useTronStakeActions = ({
         selectTronStakeSession(state, account.key, flow),
     );
 
+    const {
+        isStakingDisabled,
+        isUnstakingDisabled,
+        isClaimingDisabled,
+        isVotingDisabled,
+        isWithdrawingDisabled,
+    } = useMessageSystemStaking(account.symbol);
+
     const goToStep = (nextStep: TronStakeStepId) =>
         dispatch(tronStakeActions.goToStep({ accountKey: account.key, flow, step: nextStep }));
 
@@ -75,6 +84,8 @@ export const useTronStakeActions = ({
 
         switch (step) {
             case 'freeze': {
+                if (isStakingDisabled) break;
+
                 const { amount, resourceType } = form.methods.getValues();
                 dispatch(
                     submitTronFreezeThunk({
@@ -93,6 +104,8 @@ export const useTronStakeActions = ({
                 break;
             }
             case 'vote': {
+                if (isVotingDisabled) break;
+
                 const representativeAddress = resolveVotedRepresentativeAddress(
                     form.methods.getValues(),
                 );
@@ -151,6 +164,8 @@ export const useTronStakeActions = ({
                 break;
             }
             case 'unstake': {
+                if (isUnstakingDisabled) break;
+
                 const { amount, resourceType } = form.methods.getValues();
                 dispatch(
                     submitTronUnstakeThunk({
@@ -169,6 +184,8 @@ export const useTronStakeActions = ({
                 break;
             }
             case 'withdraw':
+                if (isWithdrawingDisabled) break;
+
                 form.methods.setValue('amount', getTronWithdrawableBalance(account));
                 dispatch(
                     submitTronWithdrawThunk({
@@ -184,6 +201,8 @@ export const useTronStakeActions = ({
                 );
                 break;
             case 'claim':
+                if (isClaimingDisabled) break;
+
                 form.methods.setValue('amount', getTronStakingRewards(account));
                 dispatch(
                     submitTronClaimThunk({
