@@ -11,7 +11,6 @@ const serializeDevice = (device: AcquiredDevice): Omit<AcquiredDevice, 'path'> &
     remember: true,
     temporaryRemember: false,
     connected: false,
-    buttonRequests: [],
     authenticityChecks: filterInconclusiveAuthenticityChecks(device.authenticityChecks),
 });
 

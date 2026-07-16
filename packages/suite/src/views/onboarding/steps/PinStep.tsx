@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Translation } from '@suite/intl';
 import { selectModalRequestId } from '@suite/modal';
 import { OnboardingCard } from '@suite/onboarding-components';
-import { selectSelectedDevice } from '@suite-common/device';
+import { selectDeviceButtonRequests, selectSelectedDevice } from '@suite-common/device';
 import { Button, Column } from '@trezor/components';
 import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 import { LockKeyIcon } from '@trezor/icons';
@@ -20,6 +20,7 @@ export const PinStep = () => {
     );
     const [pin, setPin] = useState('');
     const device = useSelector(selectSelectedDevice);
+    const buttonRequests = useSelector(selectDeviceButtonRequests);
     const modal = useSelector(state => state.modal);
     const requestId = useSelector(selectModalRequestId);
     const dispatch = useDispatch();
@@ -53,9 +54,9 @@ export const PinStep = () => {
             // enter-pin and repeat-pin" states are set only while working with T1B1 (T2T1 sends different request ButtonRequest_PinEntry and everything is done in touchscreen).
             // They are used to show better context-aware UI/texts (Right now it only changes a header from "Set a new PIN" to "Confirm PIN").
             // As the whole process on T2T1 is done via touchscreen we don't really need to track anything besides 'initial' and 'success' states.
-            const buttonRequests = device.buttonRequests.map(r => r.code);
-            if (buttonRequests.includes('PinMatrixRequestType_NewFirst')) {
-                if (buttonRequests.includes('PinMatrixRequestType_NewSecond')) {
+            const codes = buttonRequests.map(r => r.code);
+            if (codes.includes('PinMatrixRequestType_NewFirst')) {
+                if (codes.includes('PinMatrixRequestType_NewSecond')) {
                     setStatus('repeat-pin');
                 } else {
                     setStatus('enter-pin');
@@ -67,7 +68,7 @@ export const PinStep = () => {
                 goToNextStep();
             }
         }
-    }, [device, goToNextStep]);
+    }, [device, buttonRequests, goToNextStep]);
 
     if (!device?.features) {
         return null;
@@ -78,7 +79,7 @@ export const PinStep = () => {
 
     // First button request that will pop out of the device is "ButtonRequest_ProtectCall" (T1B1) or "ButtonRequest_Other", requesting us to confirm enabling PIN
     // buttonRequests will be cleared on cancelling the confirmation prompt on the device, turning this condition to false.
-    const showConfirmationPrompt = device.buttonRequests.find(
+    const showConfirmationPrompt = buttonRequests.find(
         b => b.code === 'ButtonRequest_Other' || b.code === 'ButtonRequest_ProtectCall',
     );
 

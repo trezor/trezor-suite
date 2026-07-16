@@ -29,6 +29,7 @@ const getInitialState = (state: Partial<DeviceSettingsFixtureState> = {}) => ({
         devices: state.device?.devices ?? [DEVICE],
         selectedDevice: state.device?.selectedDevice ?? DEVICE,
         persistentDeviceData: [],
+        buttonRequestsByPath: {},
         isConnectionModalOpen: false,
     },
     wallet: {

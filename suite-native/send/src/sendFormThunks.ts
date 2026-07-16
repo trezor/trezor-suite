@@ -117,7 +117,7 @@ export const cleanupSendFormThunk = createThunk(
         if (shouldDeleteDraft) dispatch(sendFormActions.removeDraft({ accountKey, tokenContract }));
 
         // todo: maybe not needed anymore
-        dispatch(deviceActions.removeButtonRequests({ device }));
+        dispatch(deviceActions.removeButtonRequests({ path: device?.path }));
     },
 );
 

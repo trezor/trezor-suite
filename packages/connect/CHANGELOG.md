@@ -21,6 +21,10 @@ Connect 10 has no stable release yet — use [connect.trezor.io/10.0.0-beta.1](h
 Connect 10 moves the Connect core out of the self-hosted iframe + popup and into **Trezor Suite**, which now hosts the core and renders every approval, PIN, passphrase and confirmation screen. Your app stays a thin client calling the same `TrezorConnect` methods — nothing to install, and it works whether or not Suite desktop is running. Alongside the move, the SDK gains a privacy-friendly account picker (`selectAccount`), granular per-coin permissions, and much smaller ESM-only client packages.
 
 ## Highlights
+- `solanaSignTransaction` now accepts a `chunkify` flag that renders addresses in the transaction confirmation on the device in chunks of 4 characters, matching the existing behavior of `solanaGetAddress` and the sign flows of other coins. Requires firmware with chunked-address support in the Solana `SignTx` flow.
+- Tron support (`tronGetAddress`, `tronSignTransaction`)
+- `ethereumSignTypedData` now computes `domain_separator_hash` / `message_hash` internally for T1B1 firmware. Callers no longer need to pre-compute hashes via `@trezor/connect-plugin-ethereum`; passing only `data` works for all supported Trezor models. Caller-provided hashes still take precedence for backwards compatibility. Implementation is powered by `viem` and lives in the lazy-loaded ethereum chunk, so non-Ethereum consumers do not pay any bundle cost.
+- Error responses now carry the `device` identity (`{ path, instance, state }`) once a device has been selected, mirroring the success response. This lets the host correlate a failed call (e.g. a user-cancelled action, which resolves as an error after button requests were emitted) to the physical device it ran on. The field is present at runtime only; it is not surfaced on the typed `Err` error branch.
 
 ### 1. New Connect flow, powered by Trezor Suite
 

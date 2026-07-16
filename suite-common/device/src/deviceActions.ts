@@ -12,6 +12,7 @@ import {
     type DecodedTrezorPushNotification,
     type Device,
     type DeviceState,
+    type DeviceUniquePath,
     type EntropyCheckResult,
     type StaticSessionId,
 } from '@trezor/connect';
@@ -94,9 +95,12 @@ const forgetDevicePersistentData = createAction(
 
 const clearDevicePersistentData = createAction(`${DEVICE_MODULE_PREFIX}/clearDevicePersistentData`);
 
+// Button requests are keyed by the transient physical-device `path` (a button request is a prompt
+// on the physical device; wallet instance/state are irrelevant to it). The producer (a UI event)
+// always carries the device path, so it is required here.
 const addButtonRequest = createAction(
     `${DEVICE_MODULE_PREFIX}/addButtonRequest`,
-    (payload: { device?: TrezorDevice; buttonRequest: ButtonRequest }) => ({ payload }),
+    (payload: { path: DeviceUniquePath; buttonRequest: ButtonRequest }) => ({ payload }),
 );
 
 const requestDeviceReconnect = createAction(`${DEVICE_MODULE_PREFIX}/requestDeviceReconnect`);
@@ -113,10 +117,12 @@ const updateSelectedDevice = createAction(
     (payload: TrezorDevice) => ({ payload }),
 );
 
-// Remove button requests for specific device by button request code or all button requests if no code is provided.
+// Clear all button requests stored for a physical device `path`. Optional because cleanup callers
+// may not have a device yet (e.g. a call that failed before device selection, or a popup cancel
+// before the device phase); the reducer no-ops on a missing/empty path.
 const removeButtonRequests = createAction(
     `${DEVICE_MODULE_PREFIX}/removeButtonRequests`,
-    (payload: { device?: TrezorDevice; buttonRequestCode?: ButtonRequest['code'] }) => ({
+    (payload: { path?: DeviceUniquePath }) => ({
         payload,
     }),
 );

@@ -184,9 +184,15 @@ export const selectSupportedDeviceLanguages = createMemoizedSelector(
     },
 );
 
+export const selectDeviceButtonRequestsByPath = (state: DeviceRootState) =>
+    state.device.buttonRequestsByPath;
+
+// Stored per physical-device `path` (see deviceReducer); readers stay keyed to the SELECTED device's
+// path — a request on a non-selected device is stored but not shown (pre-existing behavior).
 export const selectDeviceButtonRequests = createMemoizedSelector(
-    [selectSelectedDevice],
-    device => device?.buttonRequests ?? [],
+    [selectSelectedDevice, selectDeviceButtonRequestsByPath],
+    (device, buttonRequestsByPath) =>
+        returnStableArrayIfEmpty(device?.path ? buttonRequestsByPath[device.path] : undefined),
 );
 
 export const selectDeviceButtonRequestsCodes = createMemoizedSelector(

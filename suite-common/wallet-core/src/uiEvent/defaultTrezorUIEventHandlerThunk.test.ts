@@ -1,6 +1,7 @@
+import { deviceActions } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore } from '@suite-common/test-utils';
-import { UI_REQUEST } from '@trezor/connect';
+import { UI_REQUEST, asDeviceUniquePath } from '@trezor/connect';
 import { createUiMessage } from '@trezor/connect-common';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 
@@ -75,5 +76,52 @@ describe('defaultTrezorUIEventHandlerThunk - connectInitHooks.uiEvent', () => {
         await expect(
             store.dispatch(defaultTrezorUIEventHandlerThunk(requestWordEvent)),
         ).resolves.toBeDefined();
+    });
+});
+
+describe('defaultTrezorUIEventHandlerThunk - button request path keying', () => {
+    // A button request is a prompt on the PHYSICAL device; it must be keyed by the device's own
+    // `path` from the event, never the currently selected device (which may be a different one).
+    const pathA = asDeviceUniquePath('path-A');
+    const deviceA = mockSuiteDevice({ path: pathA });
+
+    it('keys a REQUEST_BUTTON by the event device path, independent of the selected device', async () => {
+        const store = setupStore({});
+
+        await store.dispatch(
+            defaultTrezorUIEventHandlerThunk(
+                createUiMessage(UI_REQUEST.REQUEST_BUTTON, {
+                    device: deviceA,
+                    code: 'ButtonRequest_SignTx',
+                }),
+            ),
+        );
+
+        expect(store.getActions()).toContainEqual(
+            deviceActions.addButtonRequest({
+                path: pathA,
+                buttonRequest: { code: 'ButtonRequest_SignTx' },
+            }),
+        );
+    });
+
+    it('keys a REQUEST_PIN by the event device path', async () => {
+        const store = setupStore({});
+
+        await store.dispatch(
+            defaultTrezorUIEventHandlerThunk(
+                createUiMessage(UI_REQUEST.REQUEST_PIN, {
+                    device: deviceA,
+                    type: 'PinMatrixRequestType_Current',
+                }),
+            ),
+        );
+
+        expect(store.getActions()).toContainEqual(
+            deviceActions.addButtonRequest({
+                path: pathA,
+                buttonRequest: { code: 'PinMatrixRequestType_Current' },
+            }),
+        );
     });
 });

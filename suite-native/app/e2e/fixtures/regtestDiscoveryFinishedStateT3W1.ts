@@ -405,7 +405,6 @@ export const regtestDiscoveryFinishedStateT3W1: PreloadedState = {
                     credentials: THP_CREDENTIALS,
                 },
                 connected: true,
-                buttonRequests: [],
                 metadata: {},
                 passwords: {},
                 firstConnectedTimestamp: 1760363102751,

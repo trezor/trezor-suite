@@ -384,7 +384,19 @@ const onCallDevice = async (
             ) {
                 await deviceList.enumerate();
             }
-            messageResponse = createResponseMessage(method.responseID, false, { error });
+            // Attach device identity to the error response too (success path already does, see `inner`)
+            // so the host can correlate a failure — e.g. user-cancel-on-device after button requests —
+            // to the device it ran on. Runtime-only; not on the typed `Err` branch.
+            messageResponse = createResponseMessage(
+                method.responseID,
+                false,
+                { error },
+                {
+                    path: device.getUniquePath(),
+                    state: device.getState(),
+                    instance: device.getInstance(),
+                },
+            );
         }
     } finally {
         // Work done

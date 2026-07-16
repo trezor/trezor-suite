@@ -19,6 +19,7 @@ import TrezorConnect, {
     TRANSPORT_EVENT,
     UI_EVENT,
     UI_REQUEST,
+    asDeviceUniquePath,
 } from '@trezor/connect';
 
 import {
@@ -255,7 +256,7 @@ describe('TrezorConnect Actions', () => {
 
         emitTestEvent(UI_EVENT, {
             type: UI_REQUEST.REQUEST_BUTTON,
-            payload: { code: 'ButtonRequest_ProtectCall' },
+            payload: { code: 'ButtonRequest_ProtectCall', device: { path: 'device-path' } },
             callId: 'unscoped-call-id',
         });
 
@@ -263,7 +264,7 @@ describe('TrezorConnect Actions', () => {
         try {
             emitTestEvent(UI_EVENT, {
                 type: UI_REQUEST.REQUEST_BUTTON,
-                payload: { code: 'ButtonRequest_ProtectCall' },
+                payload: { code: 'ButtonRequest_ProtectCall', device: { path: 'device-path' } },
                 callId: scopedCallId,
             });
 
@@ -278,6 +279,44 @@ describe('TrezorConnect Actions', () => {
             expect.objectContaining({ type: '@suite/device/addButtonRequest' }),
             expect.objectContaining({ type: defaultTrezorUIEventHandlerThunk.fulfilled.type }),
         ]);
+    });
+
+    it('cleans up button requests by the call device path', async () => {
+        const { actions, dispatch, getState, extra } = createThunkDeps();
+        await connectInitThunk()(dispatch, getState, extra);
+        actions.length = 0;
+        // No device in the response fixture -> the wrapper falls back to the call's device param path.
+        await testMocks
+            .getTrezorConnectMock()
+            .getFeatures({ device: { path: asDeviceUniquePath('device-path-42') } });
+
+        expect(actions.at(-1)).toMatchObject({
+            type: '@suite/device/removeButtonRequests',
+            payload: { path: 'device-path-42' },
+        });
+    });
+
+    it('still unlocks and cleans up when the wrapped call rejects', async () => {
+        const { actions, dispatch, getState, extra } = createThunkDeps();
+        await connectInitThunk()(dispatch, getState, extra);
+        actions.length = 0;
+        // Make the next call reject (init already succeeded). The wrapper's finally must still run so a
+        // rejected call does not leak the device lock or skip button-request cleanup.
+        testMocks.setTrezorConnectFixtures(() => {
+            throw new Error('boom');
+        });
+
+        await expect(
+            testMocks
+                .getTrezorConnectMock()
+                .getFeatures({ device: { path: asDeviceUniquePath('reject-path') } }),
+        ).rejects.toBeDefined();
+
+        expect(actions.at(-1)).toMatchObject({
+            type: '@suite/device/removeButtonRequests',
+            payload: { path: 'reject-path' },
+        });
+        expect(actions.at(-2)).toEqual({ type: extra.actions.lockDevice.type, payload: false });
     });
     it('connectInitHooks.deviceEvent is called for DEVICE.CONNECT / DEVICE.CONNECT_UNACQUIRED', async () => {
         const onConnect = jest.fn();
@@ -338,7 +377,7 @@ describe('TrezorConnect Actions', () => {
 
         emitTestEvent(UI_EVENT, {
             type: UI_REQUEST.REQUEST_BUTTON,
-            payload: { code: 'ButtonRequest_ProtectCall' },
+            payload: { code: 'ButtonRequest_ProtectCall', device: { path: 'device-path' } },
         });
 
         expect(onInvalidPinDepleted).toHaveBeenCalledTimes(1);

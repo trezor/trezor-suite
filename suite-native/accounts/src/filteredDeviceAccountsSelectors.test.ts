@@ -114,6 +114,7 @@ const createState = (accounts: Account[]): NativeAccountsRootState => ({
     device: {
         devices: [selectedDevice],
         persistentDeviceData: [],
+        buttonRequestsByPath: {},
         selectedDevice,
     },
     wallet: {

@@ -268,6 +268,14 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                         timestamp: Date.now(),
                     };
                 }
+            })
+            .addCase(connectPopupActions.setCallMeta, (state, { payload }) => {
+                if (state.activeCall) {
+                    state.activeCall = {
+                        ...state.activeCall,
+                        ...payload,
+                    };
+                }
             });
     },
 );

@@ -3,7 +3,11 @@ import { useState } from 'react';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
-import { selectDeviceAuthenticityByDeviceId, selectSelectedDevice } from '@suite-common/device';
+import {
+    selectDeviceAuthenticityByDeviceId,
+    selectDeviceButtonRequests,
+    selectSelectedDevice,
+} from '@suite-common/device';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { Card, Column, Grid, Icon, type IconComponent, Paragraph } from '@trezor/components';
 import { CpuIcon, ListChecksIcon, ShieldCheckIcon } from '@trezor/icons';
@@ -24,6 +28,7 @@ type DeviceAuthenticityProps = {
 
 export const DeviceAuthenticityStep = ({ goToNext }: DeviceAuthenticityProps) => {
     const device = useSelector(selectSelectedDevice);
+    const buttonRequests = useSelector(selectDeviceButtonRequests);
     const selectedDeviceAuthenticity = useSelector(state =>
         selectDeviceAuthenticityByDeviceId(state, device?.id),
     );
@@ -35,7 +40,7 @@ export const DeviceAuthenticityStep = ({ goToNext }: DeviceAuthenticityProps) =>
 
     if (!device) return null;
 
-    const isWaitingForConfirmation = device.buttonRequests.some(
+    const isWaitingForConfirmation = buttonRequests.some(
         request =>
             request.code === 'ButtonRequest_Other' || // Device Authenticity prompt
             request.code === 'ButtonRequest_PinEntry', // Device can be locked, and we can get Pin Request first
