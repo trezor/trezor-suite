@@ -12,7 +12,53 @@ import { buildTrc20Transfer } from './builder/tron/trc20/transfer';
 import { EVM_ABI } from './constants/evm';
 import { createEvmDecoder } from './decoder/evm';
 
-export const Calldata = {
+type CalldataApi = {
+    evm: {
+        erc20: {
+            allowance: { encode: typeof buildAllowance };
+            approve: {
+                encode: typeof buildApprove;
+                decode: ReturnType<typeof createEvmDecoder<typeof EVM_ABI.erc20.approve>>;
+            };
+            transfer: {
+                encode: typeof buildTransfer;
+                decode: ReturnType<typeof createEvmDecoder<typeof EVM_ABI.erc20.transfer>>;
+            };
+        };
+        erc4626: {
+            deposit: {
+                encode: typeof buildDeposit;
+                decode: ReturnType<typeof createEvmDecoder<typeof EVM_ABI.erc4626.deposit>>;
+            };
+            withdraw: {
+                encode: typeof buildWithdraw;
+                decode: ReturnType<typeof createEvmDecoder<typeof EVM_ABI.erc4626.withdraw>>;
+            };
+            redeem: {
+                encode: typeof buildRedeem;
+                decode: ReturnType<typeof createEvmDecoder<typeof EVM_ABI.erc4626.redeem>>;
+            };
+        };
+        distributor: {
+            claim: {
+                encode: typeof buildClaim;
+                decode: ReturnType<typeof createEvmDecoder<typeof EVM_ABI.distributor.claim>>;
+            };
+        };
+        everstake: {
+            stake: { encode: typeof buildStake };
+            unstake: { encode: typeof buildUnstake };
+            claimWithdrawRequest: { encode: typeof buildClaimWithdrawRequest };
+        };
+    };
+    tron: {
+        trc20: {
+            transfer: { encode: typeof buildTrc20Transfer };
+        };
+    };
+};
+
+export const Calldata: CalldataApi = {
     evm: {
         erc20: {
             allowance: { encode: buildAllowance },
@@ -56,4 +102,4 @@ export const Calldata = {
             transfer: { encode: buildTrc20Transfer },
         },
     },
-} as const;
+};
