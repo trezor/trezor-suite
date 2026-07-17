@@ -25,21 +25,20 @@ jest.mock('../../../hooks/exchange/useExchangeIssue', () => ({
 const mockUseDexExchangeTxSimulation = jest.mocked(useDexExchangeTxSimulation);
 const mockUseExchangeIssue = jest.mocked(useExchangeIssue);
 
-jest.mock('../../../../hooks/exchange/useDexSwapTxSimulation', () => ({
-    useDexSwapTxSimulation: jest.fn(),
+jest.mock('../../../../hooks/exchange/useDexExchangeTxSimulation', () => ({
+    useDexExchangeTxSimulation: jest.fn(),
 }));
 
 jest.mock('../../../../hooks/exchange/useExchangeIssue', () => ({
     useExchangeIssue: jest.fn(),
 }));
 
-const mockUseDexSwapTxSimulation = jest.mocked(useDexSwapTxSimulation);
+const mockUseDexExchangeTxSimulation = jest.mocked(useDexExchangeTxSimulation);
 const mockUseExchangeIssue = jest.mocked(useExchangeIssue);
 
 describe('ExchangePreviewView', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-
         mockUseDexExchangeTxSimulation.mockReturnValue({
             isEnabled: false,
             isLoading: false,

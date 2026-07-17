@@ -4,8 +4,13 @@ import {
     type TxSimulationEVMResult,
 } from '@suite-common/tx-simulation';
 
+<<<<<<<< HEAD:suite-common/trading/src/utils/exchange/getExchangeSimulationIssue.test.ts
 import { getExchangeIssue } from './getExchangeIssue';
 import { type FiatDeviationResult } from '../../hooks/useExchangeFiatDeviation';
+========
+import { type FiatDeviationResult } from '../../../hooks/useExchangeFiatDeviation';
+import { getExchangeIssue } from '../getExchangeIssue';
+>>>>>>>> 9c2438a86c (fix(suite-native): fix issues after reabase):suite-common/trading/src/utils/exchange/getExchangeIssue.test.ts
 
 const createSimulationResult = (
     scan: Pick<TxSimulationEVMResult, 'validation' | 'simulation'>,
