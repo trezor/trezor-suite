@@ -48,7 +48,7 @@ jobs:
           yarn install
           cd suite-common/token-definitions
 
-          yarn nfts simple ethereum polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche robinhood
+          yarn nfts simple ethereum polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche
           yarn coins simple ethereum ethereum-classic polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche robinhood cardano solana stellar tron
           yarn coins advanced solana stellar
 
@@ -61,7 +61,7 @@ jobs:
           yarn install
           cd suite-common/token-definitions
 
-          yarn nfts simple ethereum polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche robinhood
+          yarn nfts simple ethereum polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche
           yarn coins simple ethereum ethereum-classic polygon-pos binance-smart-chain optimistic-ethereum base arbitrum-one avalanche robinhood cardano solana stellar tron
           yarn coins advanced solana stellar
 
