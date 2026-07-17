@@ -1,6 +1,3 @@
-import rawSchema from '../schema/config.schema.v1.json';
-export const schema = rawSchema;
-
 export * from './messageSystemActions';
 export * from './messageSystemConstants';
 export * from './messageSystemReducer';
