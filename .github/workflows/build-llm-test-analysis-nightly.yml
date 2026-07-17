@@ -83,23 +83,3 @@ jobs:
           else
             echo "Local file not found, skipping upload."
           fi
-
-      - name: Store token usage record to S3
-        if: always()
-        run: |
-          if [ -f /tmp/llm-token-usage.json ]; then
-            aws s3api put-object \
-              --bucket dev.suite.sldev.cz \
-              --key "coverage/e2e/llm-usage/runs/${{ github.run_id }}_llmTestAnalyzer.json" \
-              --body /tmp/llm-token-usage.json \
-              --content-type application/json \
-              --cache-control "no-cache, max-age=0"
-            echo "Token usage record stored."
-          else
-            echo "No token usage file found, skipping."
-          fi
-
-  aggregate:
-    needs: [build-llm-test-analysis]
-    if: always() && github.repository == 'trezor/trezor-suite' && needs.build-llm-test-analysis.result != 'cancelled'
-    uses: ./.github/workflows/build-llm-usage-dashboard.yml

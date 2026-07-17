@@ -59,21 +59,6 @@ jobs:
           CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
         run: yarn workspace @trezor/e2e-utils fix-bot:analyze
 
-      - name: Store token usage record to S3
-        if: always()
-        run: |
-          if [ -f /tmp/llm-token-usage.json ]; then
-            aws s3api put-object \
-              --bucket dev.suite.sldev.cz \
-              --key "coverage/e2e/llm-usage/runs/${{ github.run_id }}_AnalyzerAgent.json" \
-              --body /tmp/llm-token-usage.json \
-              --content-type application/json \
-              --cache-control "no-cache, max-age=0"
-            echo "Token usage record stored."
-          else
-            echo "No token usage file found, skipping."
-          fi
-
       - name: Upload report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
@@ -295,24 +280,6 @@ jobs:
           ELECTRON_DISABLE_SANDBOX: 1
         run: yarn workspace @trezor/e2e-utils fix-bot:fix
 
-      - name: Store token usage record to S3
-        if: always()
-        env:
-          TASK_ID: ${{ matrix.task-id }}
-        run: |
-          if [ -f /tmp/llm-token-usage.json ]; then
-            SAFE_TASK_ID=$(echo "$TASK_ID" | tr -cs 'a-zA-Z0-9_-' '_')
-            aws s3api put-object \
-              --bucket dev.suite.sldev.cz \
-              --key "coverage/e2e/llm-usage/runs/${{ github.run_id }}_FixAgent_${SAFE_TASK_ID}.json" \
-              --body /tmp/llm-token-usage.json \
-              --content-type application/json \
-              --cache-control "no-cache, max-age=0"
-            echo "Token usage record stored."
-          else
-            echo "No token usage file found, skipping."
-          fi
-
       - name: Generate GitHub App token
         id: trezor-bot-token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
@@ -457,8 +424,3 @@ jobs:
             --body "${{ github.workspace }}/ledger.json" \
             --content-type application/json \
             --cache-control "no-cache, max-age=0"
-
-  aggregate_llm_cost:
-    needs: [analyze, fix]
-    if: always() && github.repository == 'trezor/trezor-suite' && needs.analyze.result != 'cancelled'
-    uses: ./.github/workflows/build-llm-usage-dashboard.yml

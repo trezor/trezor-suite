@@ -67,8 +67,7 @@ function main(): void {
         timeoutMs: TIMEOUT_MS,
     });
 
-    const { model } = JSON.parse(readFileSync(join(botDir, 'settings.json'), 'utf-8'));
-    const agentResult = processAgentOutput(claudeOutput, 'nightlyAnalyzer', model);
+    const agentResult = processAgentOutput(claudeOutput, 'nightlyAnalyzer');
 
     if (spawnError) {
         const timedOut = (spawnError as NodeJS.ErrnoException).code === 'ETIMEDOUT';
