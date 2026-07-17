@@ -1,8 +1,9 @@
 import { type ReactNode } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@trezor/components';

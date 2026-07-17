@@ -1,7 +1,9 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { splitYieldPendingTransaction } from '@suite-common/wallet-core';
+import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { Banner, Button, Column, Text } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
@@ -14,7 +16,6 @@ import { YieldApproveStep } from '../common/YieldApproveStep';
 import { YieldApprovedAmountCard } from '../common/YieldApprovedAmountCard';
 import { YieldFlowCompleteDeposit } from '../common/YieldFlowCompleteDeposit';
 import { YieldFlowStepList } from '../common/YieldFlowStepList';
-import { getApyBreakdown } from '../yieldFlowUtils';
 
 export const YieldDepositForm = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);

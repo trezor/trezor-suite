@@ -1,5 +1,6 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';

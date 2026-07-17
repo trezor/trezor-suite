@@ -1,7 +1,8 @@
 import { AccountLabel } from '@suite/account';
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type Account } from '@suite-common/wallet-types';
 import { IconButton, Row } from '@trezor/components';

@@ -3,6 +3,7 @@ import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
+import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useFormatters } from '@suite-common/formatters';
@@ -141,7 +142,7 @@ export const EarnYieldAccountOpportunity = ({
 
         if (isFirmwareOutdated) {
             analytics.report({
-                type: events.yieldDepositEvent.name,
+                type: sharedEvents.yieldDepositEvent.name,
                 payload: {
                     action: 'continue',
                     type: 'firmware-upgrade-needed-modal',
@@ -155,7 +156,7 @@ export const EarnYieldAccountOpportunity = ({
         }
 
         analytics.report({
-            type: events.yieldNavigateEvent.name,
+            type: sharedEvents.yieldNavigateEvent.name,
             payload: {
                 action: 'continue',
                 from: 'earn-dashboard',
@@ -187,7 +188,7 @@ export const EarnYieldAccountOpportunity = ({
 
         if (isFirmwareOutdated) {
             analytics.report({
-                type: events.yieldDepositEvent.name,
+                type: sharedEvents.yieldDepositEvent.name,
                 payload: {
                     action: 'continue',
                     type: 'firmware-upgrade-needed-modal',
@@ -201,7 +202,7 @@ export const EarnYieldAccountOpportunity = ({
         }
 
         analytics.report({
-            type: events.yieldNavigateEvent.name,
+            type: sharedEvents.yieldNavigateEvent.name,
             payload: {
                 action: 'continue',
                 from: 'earn-dashboard',
@@ -230,7 +231,7 @@ export const EarnYieldAccountOpportunity = ({
 
         if (isFirmwareOutdated) {
             analytics.report({
-                type: events.yieldWithdrawEvent.name,
+                type: sharedEvents.yieldWithdrawEvent.name,
                 payload: {
                     action: 'continue',
                     type: 'firmware-upgrade-needed-modal',
@@ -244,7 +245,7 @@ export const EarnYieldAccountOpportunity = ({
         }
 
         analytics.report({
-            type: events.yieldNavigateEvent.name,
+            type: sharedEvents.yieldNavigateEvent.name,
             payload: {
                 action: 'continue',
                 from: 'earn-dashboard',

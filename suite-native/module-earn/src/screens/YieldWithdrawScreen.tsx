@@ -3,6 +3,8 @@ import { useDispatch } from 'react-redux';
 
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -14,7 +16,8 @@ import {
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
-import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
+import { asAmountSubunit, getApyBreakdown, subunitsToUnits } from '@suite-common/wallet-utils';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     AnimatedDoubleInput,
     Box,
@@ -46,6 +49,7 @@ import { YieldDepositFlowScreenHeader } from '../components/YieldDepositFlowScre
 import { YieldDepositInfoBottomSheet } from '../components/YieldDepositInfoBottomSheet';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { YieldWithdrawWarning } from '../components/YieldWithdrawWarning';
+import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransactionFailureAlert';
 import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
@@ -83,6 +87,7 @@ export const YieldWithdrawScreen = () => {
     const { applyStyle } = useNativeStyles();
     const { CryptoAmountFormatter } = useFormatters();
     const { translate } = useTranslate();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
 
     const [assetAmount, setAssetAmount] = useState('');
     const [sharesAmount, setSharesAmount] = useState('');
@@ -115,6 +120,17 @@ export const YieldWithdrawScreen = () => {
         vaultTokenSymbol: resolvedVaultTokenSymbol,
         vaultTokenName,
     } = useResolvedYieldFlowData(route.params);
+
+    useNavigateBackAnalytics({
+        type: events.yieldNavigateEvent.name,
+        payload: {
+            action: 'cancel',
+            from: 'withdraw-form',
+            to: 'withdraw-form',
+            networkSymbol: account?.symbol,
+            vaultId: vault?.id,
+        },
+    });
 
     const activeInputToken = flowData
         ? getYieldWithdrawInputToken({ flowData, flowType })
@@ -253,6 +269,7 @@ export const YieldWithdrawScreen = () => {
         flowKey,
         flowType,
         pendingTransaction: actionPendingTransaction,
+        vault,
     });
 
     useEffect(() => {
@@ -317,6 +334,16 @@ export const YieldWithdrawScreen = () => {
             return;
         }
 
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: 'withdraw-max',
+                value: isSharesInput ? 'shares' : 'asset',
+                networkSymbol: account?.symbol,
+                vaultId: vault?.id,
+            },
+        });
+
         setAssetAmount(depositedAmount);
         setSharesAmount(depositedSharesAmount);
     };
@@ -364,14 +391,42 @@ export const YieldWithdrawScreen = () => {
         }
     }, [closeInfoBottomSheet, isWithdrawPending, openPendingBottomSheet]);
 
-    const handleInputSwitch = useCallback((activeView: 'primary' | 'secondary') => {
-        setFlowType(getYieldWithdrawFlowTypeByInputView(activeView));
-    }, []);
+    const handleInputSwitch = useCallback(
+        (activeView: 'primary' | 'secondary') => {
+            analytics.report({
+                type: events.yieldInteractionEvent.name,
+                payload: {
+                    element: 'withdraw-unit-toggle',
+                    value: activeView === 'secondary' ? 'shares' : 'asset',
+                    networkSymbol: account?.symbol,
+                    vaultId: vault?.id,
+                },
+            });
+
+            setIsMaxSelected(false);
+            setFlowType(getYieldWithdrawFlowTypeByInputView(activeView));
+        },
+        [account?.symbol, analytics, vault?.id],
+    );
 
     const handleContinue = useCallback(() => {
         if (!flowKey || !isWithdrawReviewReady || !preparedAction) {
             return;
         }
+
+        const apyBreakdown = getApyBreakdown(vault?.rewardRate?.components);
+
+        analytics.report({
+            type: events.yieldWithdrawEvent.name,
+            payload: {
+                action: 'continue',
+                type: 'withdraw',
+                operation: flowType,
+                networkSymbol: account?.symbol,
+                vaultId: vault?.id,
+                ...(apyBreakdown && { apyBreakdown }),
+            },
+        });
 
         dispatch(stablecoinYieldActions.discardTransaction());
         dispatch(
@@ -388,6 +443,8 @@ export const YieldWithdrawScreen = () => {
             withdrawFlowType: flowType,
         });
     }, [
+        account?.symbol,
+        analytics,
         dispatch,
         flowType,
         flowKey,
@@ -395,7 +452,21 @@ export const YieldWithdrawScreen = () => {
         navigation,
         preparedAction,
         route.params,
+        vault,
     ]);
+
+    const handleOpenInfoBottomSheet = useCallback(() => {
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: 'in-a-nutshell-process-tab',
+                value: 'withdraw',
+                networkSymbol: account?.symbol,
+                vaultId: vault?.id,
+            },
+        });
+        openInfoBottomSheet();
+    }, [account?.symbol, analytics, openInfoBottomSheet, vault?.id]);
 
     if (resolutionStatus !== 'resolved' || !activeInputToken) {
         return null;
@@ -433,7 +504,7 @@ export const YieldWithdrawScreen = () => {
                 <YieldDepositFlowScreenHeader
                     account={account}
                     closeAction={handleClose}
-                    onInfoPress={openInfoBottomSheet}
+                    onInfoPress={handleOpenInfoBottomSheet}
                     tokenContract={headerTokenContract}
                     vaultName={vaultTokenName}
                 />
