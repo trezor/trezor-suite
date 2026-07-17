@@ -18,7 +18,7 @@ import {
 } from '@suite-native/navigation';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
-import { useDexSwapTxSimulation } from './useDexSwapTxSimulation';
+import { useDexExchangeTxSimulation } from './useDexExchangeTxSimulation';
 
 type NavigationProp = StackNavigationProps<
     RootStackParamList,
@@ -47,7 +47,7 @@ export const useExchangeSignTransaction = ({
     const isTXFinalType = precomposedTransaction?.type === 'final';
     const isTradeFinalized = isFinalStatus('exchange', quote?.status);
 
-    const { isLoading: isSimulationLoading } = useDexSwapTxSimulation();
+    const { isLoading: isSimulationLoading } = useDexExchangeTxSimulation();
 
     const isSigningPreparationLoading = (!isSignDataFlow && !isTXFinalType) || isSimulationLoading;
 

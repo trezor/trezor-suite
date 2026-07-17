@@ -8,6 +8,7 @@ export * from './hooks/useListDataFilter';
 export * from './hooks/useSectionDataFilter';
 export * from './hooks/useCountryFilteredData';
 export * from './hooks/useCountrySubdivisionFilteredData';
+export * from './hooks/useExchangeIssue';
 export * from './hooks/useProviderMetadataChangeEffect';
 export * from './hooks/useTradingFiatValues';
 export * from './hooks/useExchangeFiatDeviation';
