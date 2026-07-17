@@ -150,10 +150,12 @@ test.describe('Trading - Swap coins', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, (
         await test.step('Send crypto to provider', async () => {
             await page.clock.install();
             await devicePrompt.sendButton.click();
-            await expect(tradingPage.swapToastSendAccount).toContainText('Solana #1');
-            await expect(tradingPage.swapToastReceiveAccount).toContainText('Bitcoin #1');
-            await expect(tradingPage.swapToastSendAmount).toContainText(sendAmount);
-            await expect(tradingPage.swapToastReceiveAmount).toContainText(receiveAmount);
+            await tradingPage.verifySwapToast({
+                sendAccount: 'Solana #1',
+                receiveAccount: 'Bitcoin #1',
+                sendAmount,
+                receiveAmount,
+            });
         });
 
         for (const { transactionStatus, displayedText, translationValues } of transactionStates) {

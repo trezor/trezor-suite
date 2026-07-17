@@ -14,6 +14,7 @@ export type ExchangeInfoNotificationProps = {
     send: ExchangeInfoAsset;
     receive: ExchangeInfoAsset;
     renderAmount?: (amount: ReactNode, side: ExchangeInfoAmountSide) => ReactNode;
+    'data-testid'?: string;
 };
 
 export const ExchangeInfoNotification = ({
@@ -21,13 +22,16 @@ export const ExchangeInfoNotification = ({
     send,
     receive,
     renderAmount,
+    'data-testid': dataTestId,
 }: ExchangeInfoNotificationProps) => {
     const sendAmount = renderAmount ? renderAmount(send.amount, 'send') : send.amount;
     const receiveAmount = renderAmount ? renderAmount(receive.amount, 'receive') : receive.amount;
 
     return (
         <Column gap={4}>
-            <Text typographyStyle="body-md-strong">{message}</Text>
+            <Text typographyStyle="body-md-strong" data-testid={`${dataTestId}/message`}>
+                {message}
+            </Text>
             <Row gap={8} alignItems="center">
                 <ExchangeAssetWithFallback asset={send} />
                 <ExchangeAmountWithSymbol amount={sendAmount} asset={send} />
