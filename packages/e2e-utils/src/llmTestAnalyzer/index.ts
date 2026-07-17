@@ -5,7 +5,6 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 
 import { error, log, output } from '../logger';
-import { accumulateApiUsage, getAccumulatedUsage, reportTokenUsage } from '../tokenUsage';
 
 interface ClaudeAnalysis {
     behaviors: string[];
@@ -223,8 +222,6 @@ const analyzeTestFileViaApi = async (
         messages: [{ role: 'user', content: buildPrompt(testSource) }],
     });
 
-    accumulateApiUsage(response);
-
     type ContentBlock = { type: string; input?: unknown };
     const toolUse = (response.content as ContentBlock[]).find(block => block.type === 'tool_use');
     if (!toolUse) {
@@ -270,22 +267,6 @@ const writeCache = (cacheFile: string, cache: Record<string, TestAnalysis>): voi
         fs.mkdirSync(dir, { recursive: true });
     }
     fs.writeFileSync(cacheFile, JSON.stringify(cache, null, 2), 'utf8');
-};
-
-const reportUsageTotals = (apiKey: string | undefined) => {
-    const { input_tokens, output_tokens } = getAccumulatedUsage();
-    if (input_tokens === 0 && output_tokens === 0) return;
-    reportTokenUsage({
-        timestamp: new Date().toISOString(),
-        run_id: process.env.GITHUB_RUN_ID ?? 'local',
-        script: 'llmTestAnalyzer',
-        model: 'claude-opus-4-6',
-        input_tokens: apiKey ? input_tokens : null,
-        output_tokens: apiKey ? output_tokens : null,
-        source: apiKey ? 'api' : 'cli',
-        workflow: process.env.GITHUB_WORKFLOW ?? null,
-        pr_number: null,
-    });
 };
 
 const main = async () => {
@@ -413,7 +394,6 @@ const main = async () => {
         }
         writeCache(cacheFile, cache);
         log(`Cache written: ${cacheFile}`);
-        reportUsageTotals(apiKey);
         if (failed > 0) process.exit(1);
     } else {
         const firstTestFile = testFiles[0];
@@ -441,7 +421,6 @@ const main = async () => {
                 }
             }
             output(JSON.stringify(results, null, 2));
-            reportUsageTotals(apiKey);
             if (failed > 0) process.exit(1);
         }
     }

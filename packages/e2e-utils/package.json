@@ -15,7 +15,6 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "analyze-tests": "tsx ./src/llmTestAnalyzer/index.ts",
         "select-tests-llm": "tsx ./src/llmTestSelector/index.ts",
-        "generate-usage-dashboard": "tsx ./src/llmUsageDashboard/index.ts",
         "fix-bot:analyze": "tsx src/fixBot/analyze.ts",
         "fix-bot:fix": "tsx src/fixBot/fix.ts",
         "fix-bot:publish": "tsx src/fixBot/publish.ts",

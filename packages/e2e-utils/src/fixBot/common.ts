@@ -1,10 +1,17 @@
 import { spawnSync } from 'node:child_process';
-import { closeSync, existsSync, openSync, readFileSync, readdirSync, unlinkSync } from 'node:fs';
+import {
+    closeSync,
+    existsSync,
+    openSync,
+    readFileSync,
+    readdirSync,
+    unlinkSync,
+    writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import { log, warn } from '../logger';
-import { reportTokenUsage } from '../tokenUsage';
 import {
     type ClaudeResult,
     ClaudeResultSchema,
@@ -122,11 +129,20 @@ function logResultToTerminal(agentName: AgentName, claudeResult: ClaudeResult): 
     }
 }
 
-export function processAgentOutput(
-    rawOutput: string,
-    agent: AgentName,
-    model: string,
-): ClaudeResult | null {
+function writeCostFile(totalCostUsd: number | undefined): void {
+    if (totalCostUsd === undefined || !process.env.GITHUB_ACTIONS) return;
+
+    try {
+        writeFileSync(
+            '/tmp/llm-token-usage.json',
+            JSON.stringify({ total_cost_usd: totalCostUsd }),
+        );
+    } catch {
+        // non-critical
+    }
+}
+
+export function processAgentOutput(rawOutput: string, agent: AgentName): ClaudeResult | null {
     const entries = parseEnvelopeEntries(rawOutput);
     if (!entries) {
         warn(`[${agent}] agent output unparsable (${rawOutput.length} bytes)`);
@@ -143,18 +159,7 @@ export function processAgentOutput(
 
     logResultToTerminal(agent, result);
 
-    reportTokenUsage({
-        timestamp: new Date().toISOString(),
-        run_id: process.env.GITHUB_RUN_ID ?? 'local',
-        script: agent,
-        model,
-        source: 'cli',
-        workflow: process.env.GITHUB_WORKFLOW ?? null,
-        pr_number: null,
-        input_tokens: result.usage?.input_tokens ?? null,
-        output_tokens: result.usage?.output_tokens ?? null,
-        total_cost_usd: result.total_cost_usd,
-    });
+    writeCostFile(result.total_cost_usd);
 
     const breakdown = formatStageBreakdown(agent, entries, result);
     log(breakdown ?? `[${agent}] no stage breakdown available`);

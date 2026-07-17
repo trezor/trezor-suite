@@ -65,8 +65,7 @@ function main(): void {
         timeoutMs: TIMEOUT_MS,
     });
 
-    const { model } = JSON.parse(readFileSync(join(fixAgentDir, 'settings.json'), 'utf-8'));
-    const agentResult = processAgentOutput(output, 'nightlyFixer', model);
+    const agentResult = processAgentOutput(output, 'nightlyFixer');
 
     if (spawnError) {
         const timedOut = (spawnError as NodeJS.ErrnoException).code === 'ETIMEDOUT';
