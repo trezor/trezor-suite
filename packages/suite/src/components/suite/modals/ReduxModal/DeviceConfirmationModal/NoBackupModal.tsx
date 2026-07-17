@@ -3,7 +3,6 @@ import { onReceiveConfirmation } from '@suite/modal';
 import { SettingsAnchor, goto } from '@suite/router';
 import { H2, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 
@@ -37,7 +36,7 @@ export const NoBackupModal = () => {
             <H2>
                 <Translation id="TR_YOUR_TREZOR_IS_NOT_BACKED_UP" />
             </H2>
-            <Paragraph margin={{ top: spacings.sm }}>
+            <Paragraph margin={{ top: 12 }}>
                 <Translation id="TR_IF_YOUR_DEVICE_IS_EVER_LOST" />
             </Paragraph>
         </Modal>

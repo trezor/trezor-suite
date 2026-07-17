@@ -10,7 +10,7 @@ import { Box, Icon, ResizableBox } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { TrezorLogoIcon } from '@trezor/icons';
 import { TrezorLogo } from '@trezor/product-components';
-import { spacingsPx, zIndices } from '@trezor/theme';
+import { zIndices } from '@trezor/theme';
 
 import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
 import { MIN_CONTENT_WIDTH } from 'src/constants/suite/layout';
@@ -54,7 +54,7 @@ const HorizontalSpacer = styled.div`
     flex: 1;
     z-index: ${zIndices.expandableNavigationHeader};
     overflow: auto;
-    gap: ${spacingsPx.sm};
+    gap: 12px;
 `;
 
 type WalletSwitcherProps = {

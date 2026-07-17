@@ -2,7 +2,7 @@ import React from 'react';
 
 import { type Meta, type StoryObj } from '@storybook/react';
 
-import { spacingsNew } from '@trezor/theme';
+import { spacingValues } from '@trezor/theme';
 
 import { StepList as StepListComponent, allowedStepListFrameProps } from './StepList';
 import { bulletSizes, stepLineWidths, stepListDirections } from './types';
@@ -51,19 +51,19 @@ export const StepList: StoryObj<typeof StepListComponent> = {
             },
         },
         gap: {
-            options: spacingsNew,
+            options: spacingValues,
             control: {
                 type: 'select',
             },
         },
         titleGap: {
-            options: spacingsNew,
+            options: spacingValues,
             control: {
                 type: 'select',
             },
         },
         bulletGap: {
-            options: spacingsNew,
+            options: spacingValues,
             control: {
                 type: 'select',
             },

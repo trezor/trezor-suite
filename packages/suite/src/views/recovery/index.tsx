@@ -20,7 +20,6 @@ import TrezorConnect, { UI_REQUEST } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { CheckIcon, WarningIcon } from '@trezor/icons';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { Loading, PinMatrix, WordInputAdvanced } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -109,7 +108,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                 // so we need to check the modal context to know if we should show the loading indicator
                 if (modal.context !== MODAL_CONTEXT_DEVICE) {
                     return (
-                        <Box padding={spacings.xxl}>
+                        <Box padding={32}>
                             <Loading />
                         </Box>
                     );
@@ -150,7 +149,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                             typographyStyle="body-sm"
                             intent="neutral"
                             priority="secondary"
-                            margin={{ top: spacings.xs }}
+                            margin={{ top: 8 }}
                         >
                             <Translation id="TR_SEED_CHECK_SUCCESS_DESC" />
                         </Paragraph>
@@ -164,7 +163,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                             typographyStyle="body-sm"
                             intent="neutral"
                             priority="secondary"
-                            margin={{ top: spacings.xs }}
+                            margin={{ top: 8 }}
                         >
                             <Translation
                                 id="TR_RECOVERY_ERROR"

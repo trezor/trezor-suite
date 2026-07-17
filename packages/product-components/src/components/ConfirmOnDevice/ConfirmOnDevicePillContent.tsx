@@ -5,14 +5,13 @@ import styled, { css } from 'styled-components';
 import { Column, IconButton, Row, Text } from '@trezor/components';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 import { XIcon } from '@trezor/icons';
-import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { RotateDeviceImage } from '../RotateDeviceImage/RotateDeviceImage';
 
 const Step = styled.div<{ $isActive: boolean }>`
     flex: 1;
-    height: ${spacingsPx.xxs};
-    border-radius: ${borders.radii.xxs};
+    height: 4px;
+    border-radius: 4px;
     background: ${({ theme }) => theme.elementFillNeutralBold};
 
     ${({ $isActive }) =>
@@ -78,7 +77,7 @@ export const ConfirmOnDevicePillContent = ({
                 )}
 
                 {hasSteps && activeStep <= steps && (
-                    <Row gap={spacings.xxs} width={70} margin={{ top: spacings.xs }}>
+                    <Row gap={4} width={70} margin={{ top: 8 }}>
                         {Array.from(Array(steps).keys()).map((step, index) => (
                             <Step
                                 key={step}

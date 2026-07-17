@@ -45,7 +45,7 @@ const FloatingWrapper = styled.div`
 const Wrapper = styled.div`
     display: grid;
     width: 100%;
-    gap: 5px;
+    gap: 4px;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     margin-top: 8px;
 `;
@@ -57,8 +57,8 @@ const IconWrapper = styled.div`
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    border-radius: 2px;
-    padding: 5px;
+    border-radius: 4px;
+    padding: 4px;
     gap: 8px;
 
     &:hover {

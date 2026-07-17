@@ -1,6 +1,5 @@
 import { type PaymentMethodLogoName, paymentMethodLogos } from '@suite-common/icons';
 import { type IconSize, Image } from '@trezor/components';
-import { borders } from '@trezor/theme';
 
 export interface ProviderIconProps {
     paymentMethodLogoName: PaymentMethodLogoName;
@@ -20,7 +19,7 @@ export const PaymentMethodLogo = ({ paymentMethodLogoName, size = 20 }: Provider
             alt={paymentMethodLogoName}
             width={size}
             height={size}
-            borderRadius={borders.radii.xxs}
+            borderRadius={4}
             data-testid={`@trading/payment-method-logo/${paymentMethodLogoName}`}
         />
     );

@@ -4,7 +4,6 @@ import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { getOsFamily, getUserAgent } from '@suite-common/suite-utils';
 import { Column, Modal, Paragraph, Select, Spinner } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { DATA_URL, HELP_CENTER_UDEV_URL } from '@trezor/urls';
 
 import type { ForegroundAppProps } from 'src/types/suite';
@@ -97,7 +96,7 @@ export const UdevRules = ({ onCancel }: ForegroundAppProps) => {
             }
             width={600}
         >
-            <Column gap={spacings.sm}>
+            <Column gap={12}>
                 <Paragraph intent="neutral" priority="secondary">
                     <Translation id="TR_UDEV_DOWNLOAD_DESC" />
                 </Paragraph>

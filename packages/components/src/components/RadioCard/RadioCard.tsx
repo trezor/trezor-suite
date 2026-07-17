@@ -3,7 +3,6 @@ import { type ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { CheckIcon } from '@trezor/icons';
-import { borders } from '@trezor/theme';
 
 import {
     type FrameProps,
@@ -64,7 +63,7 @@ export const RadioCard = ({
             {isSelected && (
                 <Box
                     position={{ type: 'absolute', top: '-4px', right: '-4px' }}
-                    borderRadius={borders.radii.full}
+                    borderRadius="full"
                     backgroundColor="borderBrand"
                     padding={2}
                 >

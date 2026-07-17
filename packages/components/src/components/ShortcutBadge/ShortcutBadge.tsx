@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 import { isMacOs } from '@trezor/env-utils';
-import { borders, spacingsPx } from '@trezor/theme';
 
 import { type KeyboardKey, type Keys, keyboardKeys } from './keyboardKeys';
 import { Row } from '../Flex/Flex';
@@ -17,8 +16,8 @@ const Wrapper = styled.div`
 const ShortcutContainer = styled.div<{ $isInverse: boolean }>`
     background-color: ${({ theme, $isInverse }) =>
         $isInverse ? theme.elementFillOnDarkNeutralSoft : theme.elementFillNeutralSoft};
-    border-radius: ${borders.radii.xxs};
-    padding: 0 ${spacingsPx.xxs};
+    border-radius: 4px;
+    padding: 0 4px;
 
     /* Slashed zero so the "0" key is distinguishable from the letter "O". */
     font-variant-numeric: slashed-zero;

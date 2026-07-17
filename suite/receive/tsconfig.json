@@ -34,7 +34,6 @@
         { "path": "../../packages/components" },
         {
             "path": "../../packages/product-components"
-        },
-        { "path": "../../packages/theme" }
+        }
     ]
 }

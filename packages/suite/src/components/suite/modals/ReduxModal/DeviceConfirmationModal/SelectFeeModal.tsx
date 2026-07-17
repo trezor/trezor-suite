@@ -10,7 +10,6 @@ import { sortLevels } from '@suite-common/wallet-core';
 import { type Account, type FormState } from '@suite-common/wallet-types';
 import { Button, Column, Modal } from '@trezor/components';
 import type { ComposeOutput, UiRequestSelectFee } from '@trezor/connect';
-import { spacings } from '@trezor/theme';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
@@ -175,7 +174,7 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
                 }
             >
                 <FormProvider {...methods}>
-                    <Column gap={spacings.md}>
+                    <Column gap={16}>
                         {popupCall?.state === 'ongoing' && popupCall?.payload?.outputs && (
                             <OutputsSummary account={account} outputs={popupCall.payload.outputs} />
                         )}

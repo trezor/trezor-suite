@@ -9,7 +9,6 @@ import {
 } from '@suite-common/device';
 import { Banner, Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { PrerequisitesGuide } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -136,8 +135,8 @@ export const StepCheckSeed = ({
                 </>
             }
         >
-            <Column gap={spacings.md}>
-                <Column gap={spacings.xs} margin={{ bottom: spacings.xs }}>
+            <Column gap={16}>
+                <Column gap={8} margin={{ bottom: 8 }}>
                     <H4>{heading}</H4>
                     {description}
                 </Column>

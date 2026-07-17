@@ -14,7 +14,6 @@ import {
 import { type Experiments } from '@suite-common/suite-types';
 import { yup } from '@suite-common/validators';
 import { Button, Column, Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { MessageSystemJsonEditor } from './MessageSystemJsonEditor';
 import { MessageSystemExperimentToolbar } from '../MessageSystemExperiment/MessageSystemExperimentToolbar';
@@ -110,7 +109,7 @@ export const MessageSystemFormExperiment = () => {
     }
 
     return (
-        <Column width="100%" gap={spacings.sm}>
+        <Column width="100%" gap={12}>
             <MessageSystemExperimentToolbar
                 availableConditions={availableConditionOptions}
                 canAddCondition={canAddCondition}
@@ -127,7 +126,7 @@ export const MessageSystemFormExperiment = () => {
                 onFormat={formatJSON}
             />
 
-            <Row isReversed gap={spacings.xs}>
+            <Row isReversed gap={8}>
                 <Button isDisabled={!isValid} onClick={handleAddExperiment} size="small">
                     Add experiment
                 </Button>

@@ -7,7 +7,6 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectDiscoveryByDevicePath } from '@suite-common/wallet-core';
 import { Card, Collapsible, Column, H3, H4, Icon, Paragraph, Row, Text } from '@trezor/components';
 import { HashIcon, LightbulbIcon, PasswordIcon, WarningIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 import { getNonAsciiChars } from '@trezor/utils';
 
@@ -50,8 +49,8 @@ export const EnterPassphrase = ({
     return (
         <SwitchDeviceModal onCancel={onCancel}>
             <CardWithDevice onCancel={onCancel} device={device} onBackButtonClick={onBack}>
-                <Column gap={spacings.xl}>
-                    <Column gap={spacings.md} padding={{ horizontal: spacings.xs }}>
+                <Column gap={24}>
+                    <Column gap={16} padding={{ horizontal: 8 }}>
                         <H3>
                             {isExistingWallet ? (
                                 <Translation id="TR_PASSPHRASE_OPEN_USED_HEADING" />
@@ -59,9 +58,9 @@ export const EnterPassphrase = ({
                                 <Translation id="TR_PASSPHRASE_CREATE_NEW_HEADING" />
                             )}
                         </H3>
-                        <Column gap={spacings.sm}>
+                        <Column gap={12}>
                             {isExistingWallet ? (
-                                <Row gap={spacings.sm}>
+                                <Row gap={12}>
                                     <Icon as={WarningIcon} size={16} />
                                     <Paragraph
                                         intent="neutral"
@@ -72,7 +71,7 @@ export const EnterPassphrase = ({
                                     </Paragraph>
                                 </Row>
                             ) : (
-                                <Row gap={spacings.sm}>
+                                <Row gap={12}>
                                     <Icon as={PasswordIcon} size={16} />
                                     <Paragraph
                                         intent="neutral"
@@ -84,11 +83,11 @@ export const EnterPassphrase = ({
                                 </Row>
                             )}
                             <Collapsible
-                                gap={spacings.sm}
+                                gap={12}
                                 isOpen={isUsingNonAsciiCharacters ? true : undefined}
                             >
                                 <Collapsible.Toggle>
-                                    <Row gap={spacings.sm}>
+                                    <Row gap={12}>
                                         <Icon as={HashIcon} size={16} />
                                         <Paragraph
                                             intent="neutral"
@@ -115,7 +114,7 @@ export const EnterPassphrase = ({
                                         type="contrast"
                                         paddingType="tiny"
                                         footer={
-                                            <Row gap={spacings.sm} justifyContent="space-between">
+                                            <Row gap={12} justifyContent="space-between">
                                                 <Paragraph
                                                     typographyStyle="body-xs"
                                                     intent="neutral"
@@ -141,9 +140,9 @@ export const EnterPassphrase = ({
                                 </Collapsible.Content>
                             </Collapsible>
                             {!isExistingWallet && (
-                                <Collapsible gap={spacings.sm}>
+                                <Collapsible gap={12}>
                                     <Collapsible.Toggle>
-                                        <Row gap={spacings.sm}>
+                                        <Row gap={12}>
                                             <Icon as={LightbulbIcon} size={16} />
                                             <Paragraph
                                                 intent="neutral"
@@ -157,7 +156,7 @@ export const EnterPassphrase = ({
                                         </Row>
                                     </Collapsible.Toggle>
                                     <Collapsible.Content>
-                                        <Column gap={spacings.sm}>
+                                        <Column gap={12}>
                                             {[1, 2, 3].map(item => (
                                                 <Card type="contrast" paddingType="tiny" key={item}>
                                                     <H4

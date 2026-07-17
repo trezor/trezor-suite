@@ -40,7 +40,6 @@
         "@trezor/eslint": "workspace:*",
         "@trezor/icons": "workspace:*",
         "@trezor/suite-desktop-api": "workspace:*",
-        "@trezor/theme": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "dropbox": "^10.34.0",

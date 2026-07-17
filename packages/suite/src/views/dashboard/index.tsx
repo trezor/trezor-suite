@@ -1,7 +1,6 @@
 import { ContextMessage } from '@suite/message-system';
 import { Context } from '@suite-common/message-system';
 import { Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { OutOfQuotaBanner } from 'src/components/suite/banners/SuiteBanners/OutOfQuotaBanner';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
@@ -19,8 +18,8 @@ export const Dashboard = () => {
     useNotificationForDisconnectedDevice();
 
     return (
-        <Column gap={spacings.xxxxl} data-testid="@dashboard/index">
-            <Column gap={spacings.xl}>
+        <Column gap={48} data-testid="@dashboard/index">
+            <Column gap={24}>
                 <OutOfQuotaBanner />
                 <ContextMessage context={Context.getGeneral('dashboard')} />
                 <PortfolioCard />

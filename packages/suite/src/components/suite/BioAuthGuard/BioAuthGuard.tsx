@@ -6,7 +6,6 @@ import { Translation } from '@suite/intl';
 import { Button, Icon, Paragraph, Row, Tooltip } from '@trezor/components';
 import { isMacOs } from '@trezor/env-utils';
 import { LockFilledIcon } from '@trezor/icons';
-import { borders, spacingsPx } from '@trezor/theme';
 
 import {
     Body,
@@ -21,16 +20,16 @@ import { useBioAuthDesktopApi } from 'src/hooks/suite/useBioAuthDesktopApi';
 const Container = styled.div`
     display: flex;
     border: 1px solid ${({ theme }) => theme.surfaceBorderRaised};
-    gap: ${spacingsPx.xxs};
+    gap: 4px;
     align-items: center;
     width: 334px;
     height: 212px;
     background: ${({ theme }) => theme.surfaceFillRaised};
-    border-radius: ${borders.radii.lg};
+    border-radius: 20px;
     flex-direction: column;
     justify-content: space-between;
     user-select: none;
-    padding: ${spacingsPx.sm} ${spacingsPx.xxs};
+    padding: 12px 4px;
 `;
 
 const BioAuthOverlay = ({

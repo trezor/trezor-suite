@@ -4,7 +4,6 @@ import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { Column, Icon, Row, SubTabs } from '@trezor/components';
 import { TrezorLogoIcon, WalletConnectIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { useDispatch } from 'src/hooks/suite';
@@ -42,8 +41,8 @@ export const SettingsConnectedApps = () => {
 
     return (
         <SettingsLayout>
-            <Column gap={spacings.md} flex="1">
-                <Row justifyContent="space-between" flexWrap="wrap" gap={spacings.sm}>
+            <Column gap={16} flex="1">
+                <Row justifyContent="space-between" flexWrap="wrap" gap={12}>
                     <SubTabs size="large" activeItemId={activeItemdId}>
                         {tabs.map(tab => (
                             <SubTabs.Item
@@ -52,7 +51,7 @@ export const SettingsConnectedApps = () => {
                                 data-testid={`@settings/connect-apps/tabs/${tab.id}`}
                                 onClick={() => setActiveItemId(tab.id)}
                             >
-                                <Row alignItems="center" gap={spacings.xs}>
+                                <Row alignItems="center" gap={8}>
                                     <Icon as={tab.icon} />
                                     {tab.title}
                                 </Row>

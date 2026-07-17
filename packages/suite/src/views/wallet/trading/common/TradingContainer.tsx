@@ -3,7 +3,6 @@ import { type ReactNode } from 'react';
 import type { TradingProviderInfo } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { DiscoveryWarning } from 'src/views/wallet/staking/components/StakingDashboard/components/DiscoveryWarning';
@@ -22,7 +21,7 @@ export const TradingContainer = ({ children, provider }: TradingContainerProps) 
     return (
         <>
             {isDiscoveryRunning && (
-                <Column margin={{ bottom: spacings.md }}>
+                <Column margin={{ bottom: 16 }}>
                     <DiscoveryWarning />
                 </Column>
             )}

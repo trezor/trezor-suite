@@ -2,8 +2,6 @@ import { type Dispatch, type SetStateAction } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Card, Checkbox, Column, H4, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-
 type MultiShareBackupStep1Props = {
     isChecked1: boolean;
     isChecked2: boolean;
@@ -21,7 +19,7 @@ export const MultiShareBackupStep1 = ({
     const toggleCheckbox2 = () => setIsChecked2(prev => !prev);
 
     return (
-        <Column gap={spacings.lg}>
+        <Column gap={20}>
             <Column>
                 <H4>
                     <Translation id="TR_MULTI_SHARE_BACKUP_CALLOUT_1" />
@@ -38,8 +36,8 @@ export const MultiShareBackupStep1 = ({
                     <Translation id="TR_MULTI_SHARE_BACKUP_EXPLANATION_2" />
                 </Paragraph>
             </Column>
-            <Card margin={{ top: spacings.xs }}>
-                <Column gap={spacings.sm}>
+            <Card margin={{ top: 8 }}>
+                <Column gap={12}>
                     <Checkbox
                         isChecked={isChecked1}
                         onChange={toggleCheckbox1}

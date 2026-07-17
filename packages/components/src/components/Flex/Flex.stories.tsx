@@ -1,7 +1,7 @@
 import { type ArgTypes, type Meta, type StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
-import { spacings } from '@trezor/theme';
+import { spacingValues } from '@trezor/theme';
 
 import {
     Column as ColumnComponent,
@@ -57,19 +57,19 @@ const argTypes: Partial<ArgTypes<FlexProps>> = {
         },
     },
     gap: {
-        options: Object.values(spacings),
+        options: spacingValues,
         control: {
             type: 'select',
         },
     },
     rowGap: {
-        options: Object.values(spacings),
+        options: spacingValues,
         control: {
             type: 'select',
         },
     },
     columnGap: {
-        options: Object.values(spacings),
+        options: spacingValues,
         control: {
             type: 'select',
         },

@@ -2,12 +2,15 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { spacings } from '@trezor/theme';
-
 import { useTable } from './TableContext';
 import { useTableHeader } from './TableHeader';
 import { type UIAlignment } from '../../config/types';
-import { type FrameProps, type FramePropsKeys, withFrameProps } from '../../utils/frameProps';
+import {
+    type FrameProps,
+    type FramePropsKeys,
+    type Padding,
+    withFrameProps,
+} from '../../utils/frameProps';
 import { type TransientProps } from '../../utils/transientProps';
 import { type FlexJustifyContent } from '../Flex/FlexProp';
 import { Text } from '../typography/Text/Text';
@@ -69,9 +72,9 @@ export const TableCell = ({
     const { hasBorders, typographyStyle = 'body-md' } = useTable();
 
     const defaultPadding = {
-        vertical: hasBorders ? spacings.sm : spacings.xs,
-        horizontal: spacings.lg,
-    };
+        vertical: hasBorders ? 12 : 8,
+        horizontal: 20,
+    } satisfies Padding;
 
     return (
         <Cell

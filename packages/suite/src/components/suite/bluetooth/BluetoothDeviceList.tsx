@@ -1,14 +1,13 @@
 import { Card, Column, Row, Skeleton } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 
 import { BluetoothDeviceListItem } from './BluetoothDeviceListItem';
 
 const SkeletonDevice = () => (
-    <Row width="100%" gap={spacings.md} justifyContent="stretch" height="44px" alignItems="center">
+    <Row width="100%" gap={16} justifyContent="stretch" height="44px" alignItems="center">
         <Skeleton width={44} height={36} animate />
-        <Column alignItems="start" gap={spacings.xxxs} flex="1">
+        <Column alignItems="start" gap={2} flex="1">
             <Skeleton width={105} height={18} animate />
             <Skeleton width={55} height={18} animate />
         </Column>

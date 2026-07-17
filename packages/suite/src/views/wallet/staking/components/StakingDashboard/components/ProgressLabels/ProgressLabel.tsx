@@ -4,7 +4,6 @@ import styled, { type DefaultTheme } from 'styled-components';
 
 import { IconCircle, Row, Text } from '@trezor/components';
 import { CheckIcon, DotOutlineFilledIcon, SpinnerIcon } from '@trezor/icons';
-import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { type ProgressLabelState } from './types';
 
@@ -59,13 +58,13 @@ const ProgressLabelItem = styled.div<{
 }>`
     background: ${mapProgressStateToBackground};
     flex: 1 0 220px;
-    padding: ${spacingsPx.xs} ${spacingsPx.sm};
-    border-radius: ${borders.radii.full};
+    padding: 8px 12px;
+    border-radius: calc(infinity * 1px);
     min-height: ${DEFAULT_LABEL_HEIGHT}px;
 
     &:not(:last-of-type) {
         position: relative;
-        margin-right: ${spacingsPx.xs};
+        margin-right: 8px;
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
 
@@ -76,6 +75,7 @@ const ProgressLabelItem = styled.div<{
             top: 0;
             right: -12px;
             z-index: 2;
+            /* stylelint-disable-next-line trezor/dimension-token-values -- This border constructs the label arrow. */
             border-left: 12px solid ${mapProgressStateToBackground};
             border-top: ${({ $currentHeight = DEFAULT_LABEL_HEIGHT }) => $currentHeight / 2}px solid
                 transparent;
@@ -96,6 +96,7 @@ const ProgressLabelItem = styled.div<{
             position: absolute;
             top: 0;
             left: 0;
+            /* stylelint-disable-next-line trezor/dimension-token-values -- This border constructs the label arrow. */
             border-left: 12px solid ${({ theme }) => theme.surfaceFillRaised};
             border-top: ${({ $currentHeight = DEFAULT_LABEL_HEIGHT }) => $currentHeight / 2}px solid
                 transparent;
@@ -145,7 +146,7 @@ export const ProgressLabel = ({
             $progressState={progressState}
             $currentHeight={currentHeight}
         >
-            <Row data-testid={dataTestId} gap={spacings.sm} height="100%">
+            <Row data-testid={dataTestId} gap={12} height="100%">
                 {getProgressStateIcon(progressState)}
                 <Text
                     as="div"

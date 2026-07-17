@@ -1,18 +1,18 @@
 import { createContext, useContext } from 'react';
 
-import { type SpacingValues, spacings } from '@trezor/theme';
+import { type SpacingValue } from '@trezor/theme';
 
 type CollapsibleContextProps = {
     isOpen: boolean;
     toggle: (isOpen: boolean) => void;
-    gap?: SpacingValues;
+    gap?: SpacingValue;
     contentId: string;
 };
 
 export const CollapsibleContext = createContext<CollapsibleContextProps>({
     isOpen: false,
     toggle: () => {},
-    gap: spacings.zero,
+    gap: 0,
     contentId: '',
 });
 

@@ -9,7 +9,6 @@ import { type FormState } from '@suite-common/wallet-types';
 import { getFeeUnits, isEip1559 } from '@suite-common/wallet-utils';
 import { Grid, Row, Text } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite';
 import { useLocales, useSelector } from 'src/hooks/suite';
@@ -102,11 +101,7 @@ export const EthereumFeeCards = ({ feeOptions }: EthereumFeeCardsProps) => {
                             isDebug && isEip1559(fee) ? (
                                 <>
                                     <DebugOnlyBadge />
-                                    <Grid
-                                        columns={2}
-                                        gap={spacings.xs}
-                                        margin={{ top: spacings.xs }}
-                                    >
+                                    <Grid columns={2} gap={8} margin={{ top: 8 }}>
                                         <Translation id="TR_MAX_FEE_PER_GAS" />
                                         <Text isMonospaced>
                                             {fee.maxFeePerGas} {units}
@@ -129,7 +124,7 @@ export const EthereumFeeCards = ({ feeOptions }: EthereumFeeCardsProps) => {
 
             {isDebug && cachedGasLimit && (
                 <Row alignItems="baseline" justifyContent="space-between">
-                    <Row gap={spacings.xxs}>
+                    <Row gap={4}>
                         <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                             <Translation id="TR_GAS_LIMIT" />:
                         </Text>

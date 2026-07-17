@@ -1,10 +1,11 @@
 import { css } from 'styled-components';
 
 import {
-    type BorderRadii,
-    type SpacingValues,
-    type SpacingValuesNew,
-    borders,
+    type BorderRadius,
+    type SignedSpacingValue,
+    type SpacingValue,
+    borderRadiusValues,
+    getBorderRadiusCssValue,
 } from '@trezor/theme';
 
 import { type TransientProps, makePropsTransient } from './transientProps';
@@ -12,28 +13,26 @@ import type { FlexType } from '../components/Flex/FlexProp';
 
 export type Margin =
     | {
-          top?: SpacingValues | SpacingValuesNew | 'auto';
-          bottom?: SpacingValues | SpacingValuesNew | 'auto';
-          left?: SpacingValues | SpacingValuesNew | 'auto';
-          right?: SpacingValues | SpacingValuesNew | 'auto';
-          horizontal?: SpacingValues | SpacingValuesNew | 'auto';
-          vertical?: SpacingValues | SpacingValuesNew | 'auto';
+          top?: SignedSpacingValue | 'auto';
+          bottom?: SignedSpacingValue | 'auto';
+          left?: SignedSpacingValue | 'auto';
+          right?: SignedSpacingValue | 'auto';
+          horizontal?: SignedSpacingValue | 'auto';
+          vertical?: SignedSpacingValue | 'auto';
       }
-    | SpacingValues
-    | SpacingValuesNew
+    | SignedSpacingValue
     | 'auto';
 
 export type Padding =
     | {
-          top?: SpacingValues | SpacingValuesNew;
-          bottom?: SpacingValues | SpacingValuesNew;
-          left?: SpacingValues | SpacingValuesNew;
-          right?: SpacingValues | SpacingValuesNew;
-          horizontal?: SpacingValues | SpacingValuesNew;
-          vertical?: SpacingValues | SpacingValuesNew;
+          top?: SpacingValue;
+          bottom?: SpacingValue;
+          left?: SpacingValue;
+          right?: SpacingValue;
+          horizontal?: SpacingValue;
+          vertical?: SpacingValue;
       }
-    | SpacingValues
-    | SpacingValuesNew;
+    | SpacingValue;
 
 const overflows = [
     'auto',
@@ -90,7 +89,7 @@ export type FrameProps = {
     minHeight?: string | number;
     maxHeight?: string | number;
     overflow?: Overflow;
-    borderRadius?: BorderRadii;
+    borderRadius?: BorderRadius;
     pointerEvents?: PointerEvent;
     flex?: FlexType;
     position?: Position;
@@ -201,9 +200,9 @@ export const withFrameProps = ({
     css`
         overflow: ${$overflow};
     `};
-    ${$borderRadius &&
+    ${typeof $borderRadius !== 'undefined' &&
     css`
-        border-radius: ${getValueWithUnit($borderRadius)};
+        border-radius: ${getBorderRadiusCssValue($borderRadius)};
     `};
     ${$pointerEvents &&
     css`
@@ -287,7 +286,7 @@ const getStorybookType = (key: FramePropsKeys) => {
             };
         case 'borderRadius':
             return {
-                options: borders.radii,
+                options: borderRadiusValues,
                 control: {
                     type: 'select',
                 },

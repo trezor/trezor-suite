@@ -4,7 +4,6 @@ import { Object, type TSchema } from '@sinclair/typebox';
 import styled from 'styled-components';
 
 import { CollapsibleBox, Select, Switch, variables } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
 
 import { Method, MethodContent } from './Method';
 import * as methodActions from '../actions/methodActions';
@@ -21,7 +20,7 @@ const ApiPlaygroundWrapper = styled.div`
     max-width: 71rem;
     overflow: hidden;
     overscroll-behavior: contain;
-    border-radius: 1rem;
+    border-radius: 16px;
     padding: 0;
     border: 1px solid ${({ theme }) => theme.surfaceBorderFixed};
     box-shadow: ${({ theme }) => theme.surfaceShadowFixed};
@@ -45,7 +44,7 @@ const ContentWrapper = styled.div`
 `;
 
 const OptionsRow = styled(MethodContent)`
-    margin-bottom: ${spacingsPx.md};
+    margin-bottom: 16px;
     align-items: center;
 
     > div:last-child {

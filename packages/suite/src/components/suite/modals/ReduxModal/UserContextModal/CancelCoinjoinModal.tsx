@@ -3,7 +3,6 @@ import { stopCoinjoinSession } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { ArrowsInIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -43,7 +42,7 @@ export const CancelCoinjoinModal = ({ onClose }: CancelCoinjoinModalProps) => {
                 </>
             }
         >
-            <Column gap={spacings.xxs}>
+            <Column gap={4}>
                 <H3>
                     <Translation id="TR_CANCEL_COINJOIN" />
                 </H3>

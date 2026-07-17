@@ -10,7 +10,6 @@ import { type Action } from '@suite-common/suite-types';
 import { Banner, Button, Column, Divider, Modal, Row, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { CopyIcon, TrashIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { MessageSystemConditionGroup } from '../MessageSystemConditionGroup';
 import { MessageSystemManagerDetail } from './MessageSystemManagerDetail';
@@ -68,7 +67,7 @@ export const MessageSystemManager = ({ actions, onCloseModal }: MessageSystemMan
             heading={`Messages (${allValidMessages.length} active of ${actions.length})`}
             bottomContent={<MessageSystemFormMessage />}
         >
-            <Column gap={spacings.sm}>
+            <Column gap={12}>
                 <MessageSystemManagerFilters
                     showActive={showActive}
                     onToggleActive={() => setIsActive(prev => !prev)}
@@ -86,18 +85,18 @@ export const MessageSystemManager = ({ actions, onCloseModal }: MessageSystemMan
                         description={
                             <Text as="div" intent="neutral">
                                 <Row gap={24} alignItems="flex-start">
-                                    <Column flex="1" gap={spacings.md}>
+                                    <Column flex="1" gap={16}>
                                         <MessageSystemManagerDetail message={message} />
                                         <Divider color="elementFillContrast" />
                                         <MessageSystemConditionGroup conditions={conditions} />
                                     </Column>
-                                    <Column gap={spacings.xs}>
+                                    <Column gap={8}>
                                         <MessageSystemManagerInfo
                                             message={message}
                                             allValidMessages={allValidMessages}
                                             isInApp={!!allManuallyAddedMessageIds?.[message.id]}
                                         />
-                                        <Column alignItems="flex-end" gap={spacings.xs}>
+                                        <Column alignItems="flex-end" gap={8}>
                                             <Button
                                                 size="small"
                                                 iconLeft={CopyIcon}

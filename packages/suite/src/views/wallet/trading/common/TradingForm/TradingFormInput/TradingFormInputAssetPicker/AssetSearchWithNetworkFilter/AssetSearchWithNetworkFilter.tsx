@@ -4,7 +4,6 @@ import { type TranslationKey, useTranslation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box } from '@trezor/components';
 import { SearchAsset } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 export interface AssetSearchWithNetworkFilterProps {
     placeholder: TranslationKey;
@@ -28,7 +27,7 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
     const { translationString } = useTranslation();
 
     return (
-        <Box padding={{ horizontal: spacings.md }}>
+        <Box padding={{ horizontal: 16 }}>
             <SearchAsset
                 searchPlaceholder={translationString(placeholder)}
                 search={search}

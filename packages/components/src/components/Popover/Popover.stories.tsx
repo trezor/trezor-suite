@@ -2,8 +2,6 @@ import { type Meta, type StoryObj } from '@storybook/react';
 import { useArgs } from 'storybook/preview-api';
 import styled from 'styled-components';
 
-import { spacingsPx } from '@trezor/theme';
-
 import { Popover as PopoverComponent, type PopoverProps } from './Popover';
 import {
     POPOVER_PLACEMENT_ALIGNMENT,
@@ -21,8 +19,8 @@ const Container = styled.div`
     justify-content: center;
     flex-direction: column;
     align-items: center;
-    gap: ${spacingsPx.xxl};
-    padding: 5rem;
+    gap: 32px;
+    padding: 80px;
 `;
 
 const Content = () => <Card>Lorem ipsum dolor sit amet</Card>;

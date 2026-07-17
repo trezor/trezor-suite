@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 
-import { spacingsPx, typography } from '@trezor/theme';
+import { typography } from '@trezor/theme';
 
 export const AccountsMenuNotice = styled.div`
     display: flex;
     justify-content: center;
     text-align: center;
-    margin-top: ${spacingsPx.xxl};
-    margin-bottom: ${spacingsPx.md};
+    margin-top: 32px;
+    margin-bottom: 16px;
     color: ${({ theme }) => theme.contentSecondary};
     ${typography['body-sm']}
 `;

@@ -1,7 +1,9 @@
 {
     "customSyntax": "postcss-styled-syntax",
+    "plugins": ["./stylelint-local-rules/dimension-token-values.cjs"],
     "extends": ["stylelint-config-standard"],
     "rules": {
+        "trezor/dimension-token-values": true,
         "declaration-empty-line-before": null,
         "media-query-no-invalid": null,
         "media-feature-range-notation": null,

@@ -32,7 +32,6 @@ import { Icon, IconButton, Input, Link, Row, Text } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { CheckIcon, InfoIcon, QrCodeIcon, WarningCircleIcon, XIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 import { type TimerId } from '@trezor/type-utils';
 import {
     ALL_URLS,
@@ -501,7 +500,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 />
             }
             labelRight={
-                <Row gap={spacings.md}>
+                <Row gap={16}>
                     {isDebug && <DevAddressBook outputId={outputId} account={account} />}
                     {shouldShowLabelAction && broadcastEnabled && (
                         <Text typographyStyle="body-sm" as="div">

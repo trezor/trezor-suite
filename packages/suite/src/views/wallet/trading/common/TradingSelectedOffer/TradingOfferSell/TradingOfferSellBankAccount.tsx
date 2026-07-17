@@ -11,7 +11,6 @@ import {
 } from '@suite-common/trading';
 import { Button, Column, Divider, Icon, Row, Select, Text } from '@trezor/components';
 import { CheckIcon, PlusIcon } from '@trezor/icons';
-import { spacingsPx } from '@trezor/theme';
 
 import { QuestionTooltip } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
@@ -26,7 +25,7 @@ const SelectWrapper = styled.div`
     }
 
     .react-select__value-container {
-        padding-right: ${spacingsPx.lg};
+        padding-right: 20px;
     }
 `;
 

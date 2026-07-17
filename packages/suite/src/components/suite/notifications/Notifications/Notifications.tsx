@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { Divider, IconButton, Row, Tabs } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { SETTINGS } from 'src/config/suite';
 import { useSelector } from 'src/hooks/suite';
@@ -57,7 +56,7 @@ export const Notifications = (props: NotificationsProps) => {
                     />
                 )}
             </Row>
-            <Divider margin={{ top: 0, bottom: spacings.md }} />
+            <Divider margin={{ top: 0, bottom: 16 }} />
 
             <NotificationsWrapper>
                 <NotificationGroup

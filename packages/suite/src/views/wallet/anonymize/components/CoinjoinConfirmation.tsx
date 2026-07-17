@@ -11,7 +11,6 @@ import { Translation } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, H3, Note, Paragraph, Tooltip, variables } from '@trezor/components';
 import { CircuitryIcon, ClockIcon, LockKeyIcon } from '@trezor/icons';
-import { spacings, spacingsPx } from '@trezor/theme';
 
 import { Error } from 'src/components/suite/Error';
 import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
@@ -22,19 +21,19 @@ import { Tile, type TileProps } from './Tile';
 const TopFeeRow = styled.div`
     display: flex;
     justify-content: space-between;
-    margin-bottom: ${spacingsPx.xs};
+    margin-bottom: 8px;
 `;
 
 const FeeWrapper = styled.div`
     border-bottom: 1px solid ${({ theme }) => theme.borderNeutral};
     border-top: 1px solid ${({ theme }) => theme.borderNeutral};
-    margin: ${spacingsPx.xl} 0;
-    padding: ${spacingsPx.md} 0;
+    margin: 24px 0;
+    padding: 16px 0;
 `;
 
 const Tiles = styled.div`
     display: grid;
-    gap: ${spacingsPx.md};
+    gap: 16px;
     grid-template-columns: repeat(3, 1fr);
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
@@ -148,7 +147,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
                     onClick={anonymize}
                     isDisabled={isDisabled}
                     isLoading={isLoading}
-                    margin={{ top: spacings.xl }}
+                    margin={{ top: 24 }}
                 >
                     <Translation id="TR_START_COINJOIN" />
                 </Button>

@@ -1,7 +1,5 @@
 import styled, { css } from 'styled-components';
 
-import { borders } from '@trezor/theme';
-
 import { useTabsContext } from './TabsContext';
 import { type TabsSize } from './types';
 import { TRANSFORM_OPTIONS, mapSizeToItemPadding, mapSizeToTypography } from './utils';
@@ -24,7 +22,7 @@ const Item = styled.div<{ $isActive: boolean; $isDisabled: boolean; $size: TabsS
         left: 0;
         transform: scale(0.5);
         opacity: 0;
-        border-radius: ${borders.radii.sm};
+        border-radius: 12px;
         transition:
             transform ${TRANSFORM_OPTIONS},
             opacity ${TRANSFORM_OPTIONS};

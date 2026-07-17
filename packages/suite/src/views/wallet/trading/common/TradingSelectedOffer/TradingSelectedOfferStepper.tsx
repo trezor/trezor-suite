@@ -3,7 +3,6 @@ import { Fragment, type JSX } from 'react';
 import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { Icon, Row, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 export interface TradingSelectedOfferStepperItemProps {
     step: string;
@@ -17,7 +16,7 @@ interface TradingSelectedOfferStepperProps {
 }
 
 export const TradingSelectedOfferStepper = ({ steps }: TradingSelectedOfferStepperProps) => (
-    <Row justifyContent="center" gap={spacings.xl}>
+    <Row justifyContent="center" gap={24}>
         {steps.map((step, index) => (
             <Fragment key={index}>
                 <Row flex="1" justifyContent="center">

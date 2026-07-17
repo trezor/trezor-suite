@@ -6,7 +6,6 @@ import { closeModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { Card, Checkbox, Column, Modal, Paragraph } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { spacings } from '@trezor/theme';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -64,7 +63,7 @@ export const AutoStartBeforeQuitModal = () => {
                 </>
             }
         >
-            <Column gap={spacings.md}>
+            <Column gap={16}>
                 <Paragraph>
                     <Translation id="TR_RUN_IN_BACKGROUND_DESCRIPTION" />
                 </Paragraph>

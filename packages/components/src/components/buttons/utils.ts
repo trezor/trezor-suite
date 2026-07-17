@@ -1,6 +1,6 @@
 import { type DefaultTheme, type RuleSet, css } from 'styled-components';
 
-import { type BorderRadii, type Color, type TypographyStyle } from '@trezor/theme';
+import { type BorderRadius, type Color, type TypographyStyle } from '@trezor/theme';
 
 import {
     type ButtonIntent,
@@ -68,15 +68,14 @@ export const commonButtonStyles = css`
     }
 `;
 
-export const mapSizeToBorderRadius = (size: ButtonSize): BorderRadii => {
-    const borderRadiusMap: Record<ButtonSize, BorderRadii> = {
-        large: '12px',
-        medium: '10px',
-        small: '8px',
-    };
+const borderRadiusMap = {
+    large: 12,
+    medium: 10,
+    small: 8,
+} as const satisfies Record<ButtonSize, BorderRadius>;
 
-    return borderRadiusMap[size];
-};
+export const mapSizeToBorderRadius = (size: ButtonSize): (typeof borderRadiusMap)[ButtonSize] =>
+    borderRadiusMap[size];
 
 export const mapSizeToIconSize = (size: ButtonSize) => {
     const iconSizeMap = {

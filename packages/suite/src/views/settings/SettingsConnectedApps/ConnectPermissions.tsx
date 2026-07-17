@@ -48,7 +48,6 @@ import {
     XCircleIcon,
 } from '@trezor/icons';
 import { NetworkIcon, isNetworkSymbolWithIcon } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
@@ -155,7 +154,7 @@ const PermissionPreview = ({ permissions }: { permissions: MethodPermission[] })
     const remaining = permissions.length - shown.length;
 
     return (
-        <Row gap={spacings.xxs}>
+        <Row gap={4}>
             {shown.map(permission => (
                 <PermissionIcon key={permission} permission={permission} />
             ))}
@@ -187,13 +186,9 @@ const PermissionGroup = ({
     return (
         <Collapsible isOpen={isOpen}>
             <Collapsible.Toggle onClick={() => setIsOpen(!isOpen)}>
-                <Row
-                    justifyContent="space-between"
-                    gap={spacings.sm}
-                    padding={{ vertical: spacings.xs }}
-                >
-                    <Row gap={spacings.md}>
-                        <Row gap={spacings.sm}>
+                <Row justifyContent="space-between" gap={12} padding={{ vertical: 8 }}>
+                    <Row gap={16}>
+                        <Row gap={12}>
                             <GroupBadge coin={coin} />
                             <Text typographyStyle="body-md-strong">
                                 {coin ? getCoinLabel(coin) : <Translation id="TR_DEVICE" />}
@@ -205,10 +200,10 @@ const PermissionGroup = ({
                 </Row>
             </Collapsible.Toggle>
             <Collapsible.Content>
-                <Column gap={spacings.xs} margin={{ top: spacings.xxs, bottom: spacings.xs }}>
+                <Column gap={8} margin={{ top: 4, bottom: 8 }}>
                     {permissions.map(permission => (
                         <PermissionRow key={permission}>
-                            <Row gap={spacings.sm}>
+                            <Row gap={12}>
                                 <PermissionIcon permission={permission} />
                                 <Text typographyStyle="body-sm">
                                     {getPermissionText(permission)}
@@ -249,12 +244,7 @@ export const GroupedPermissionsList = ({
     defaultIsOpen = false,
     onRemovePermission,
 }: GroupedPermissionsListProps) => (
-    <Column
-        hasDivider
-        gap={spacings.xs}
-        alignItems="stretch"
-        padding={{ horizontal: spacings.xxs }}
-    >
+    <Column hasDivider gap={8} alignItems="stretch" padding={{ horizontal: 4 }}>
         {groupPermissionsByCoin(permissions).map(group => (
             <PermissionGroup
                 key={group.coin ?? '__device__'}
@@ -274,7 +264,7 @@ export const ConnectPermissions = () => {
 
     if (apps.length === 0) {
         return (
-            <Column flex="1" justifyContent="center" gap={spacings.xs}>
+            <Column flex="1" justifyContent="center" gap={8}>
                 <H3 align="center">
                     <Translation id="TR_NO_CONNECTED_APPS" />
                 </H3>
@@ -296,15 +286,15 @@ export const ConnectPermissions = () => {
                 {apps.map((app, index) => (
                     <Row
                         key={app.origin}
-                        gap={spacings.md}
-                        padding={spacings.md}
+                        gap={16}
+                        padding={16}
                         alignItems="flex-start"
                         data-testid={`@settings/connect-apps/${index}`}
                     >
                         <ConnectAppIcon src={app.manifest?.appIcon} />
 
                         <Column flex="1">
-                            <Row columnGap={spacings.sm} rowGap={spacings.xxxs} flexWrap="wrap">
+                            <Row columnGap={12} rowGap={2} flexWrap="wrap">
                                 {app.manifest?.appName ? (
                                     <>
                                         <Text>{app.manifest.appName}</Text>

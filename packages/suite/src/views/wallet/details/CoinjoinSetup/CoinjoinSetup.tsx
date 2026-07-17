@@ -15,7 +15,7 @@ import { MaxMiningFeeSetup } from './MaxMiningFeeSetup';
 import { SkipRoundsSetup } from './SkipRoundsSetup';
 
 const SetupContainer = styled.div`
-    padding: 18px;
+    padding: 20px;
 `;
 
 const SetupOptions = styled.div`

@@ -44,7 +44,6 @@ import {
     WarningIcon,
 } from '@trezor/icons';
 import { ConfirmOnDevicePill, QrCode, TokenIcon } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -145,7 +144,7 @@ export const ConfirmValueModal = ({
                 heading={heading}
                 description={
                     account && (
-                        <Row gap={spacings.xxs}>
+                        <Row gap={4}>
                             <TokenIcon size={16} symbol={account.symbol} />
                             <AccountLabel
                                 account={account}
@@ -158,7 +157,7 @@ export const ConfirmValueModal = ({
                 onCancel={onCancel}
                 width={600}
             >
-                <Column gap={spacings.md}>
+                <Column gap={16}>
                     {!device?.connected && (
                         <Banner
                             icon={WarningIcon}

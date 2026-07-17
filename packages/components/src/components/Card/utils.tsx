@@ -1,7 +1,5 @@
 import { type DefaultTheme, type RuleSet, css } from 'styled-components';
 
-import { spacings } from '@trezor/theme';
-
 import { type CardType, type PaddingType } from './types';
 import { type Padding } from '../../utils/frameProps';
 
@@ -20,10 +18,10 @@ type CardTypeMapArgs = {
 export const mapPaddingTypeToPadding = ({ paddingType }: PaddingMapArgs): Padding | undefined => {
     const paddingMap: Record<PaddingType, Padding | undefined> = {
         none: undefined,
-        tiny: { vertical: spacings.xs, horizontal: spacings.sm },
-        small: { vertical: spacings.sm, horizontal: spacings.md },
-        normal: { vertical: spacings.md, horizontal: spacings.lg },
-        large: { vertical: spacings.lg, horizontal: spacings.xl },
+        tiny: { vertical: 8, horizontal: 12 },
+        small: { vertical: 12, horizontal: 16 },
+        normal: { vertical: 16, horizontal: 20 },
+        large: { vertical: 20, horizontal: 24 },
     };
 
     return paddingMap[paddingType];
@@ -31,11 +29,11 @@ export const mapPaddingTypeToPadding = ({ paddingType }: PaddingMapArgs): Paddin
 
 export const mapPaddingTypeToLabelPadding = ({ paddingType }: PaddingMapArgs): Padding => {
     const paddingMap: Record<PaddingType, Padding> = {
-        none: { vertical: spacings.xxs },
-        tiny: { vertical: spacings.xxs, horizontal: spacings.xxs },
-        small: { vertical: spacings.xxs, horizontal: spacings.sm },
-        normal: { vertical: spacings.xs, horizontal: spacings.lg },
-        large: { vertical: spacings.sm, horizontal: spacings.xl },
+        none: { vertical: 4 },
+        tiny: { vertical: 4, horizontal: 4 },
+        small: { vertical: 4, horizontal: 12 },
+        normal: { vertical: 8, horizontal: 20 },
+        large: { vertical: 12, horizontal: 24 },
     };
 
     return paddingMap[paddingType];

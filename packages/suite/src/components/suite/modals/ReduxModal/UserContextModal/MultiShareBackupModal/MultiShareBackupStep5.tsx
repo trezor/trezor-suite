@@ -11,8 +11,6 @@ import {
     Paragraph,
 } from '@trezor/components';
 import { CoinsIcon, EyeSlashIcon, RecoverySeedIcon, TrezorDevicesFilledIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
-
 type CalloutProps = {
     title: TranslationKey;
     items: { iconName: IconComponent; label: TranslationKey }[];
@@ -20,11 +18,11 @@ type CalloutProps = {
 
 const Callout = ({ items, title }: CalloutProps) => (
     <Card>
-        <Column gap={spacings.sm}>
+        <Column gap={12}>
             <H4>
                 <Translation id={title} />
             </H4>
-            <List gap={spacings.xs} typographyStyle="body-sm" intent="neutral" priority="secondary">
+            <List gap={8} typographyStyle="body-sm" intent="neutral" priority="secondary">
                 {items.map(({ iconName, label }, index) => (
                     <List.Item key={index} bulletComponent={<Icon as={iconName} />}>
                         <Translation id={label} />
@@ -36,7 +34,7 @@ const Callout = ({ items, title }: CalloutProps) => (
 );
 
 export const MultiShareBackupStep5 = () => (
-    <Column gap={spacings.xl}>
+    <Column gap={24}>
         <Column>
             <H4>
                 <Translation id="TR_MULTI_SHARE_BACKUP_GREAT" />
@@ -46,7 +44,7 @@ export const MultiShareBackupStep5 = () => (
             </Paragraph>
         </Column>
 
-        <Grid columns={2} gap={spacings.md}>
+        <Grid columns={2} gap={16}>
             <Callout
                 title="TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT"
                 items={[
@@ -63,12 +61,12 @@ export const MultiShareBackupStep5 = () => (
             />
         </Grid>
 
-        <Column gap={spacings.sm}>
+        <Column gap={12}>
             <H4>
                 <Translation id="TR_MULTI_SHARE_BACKUP_SUCCESS_WHY_IS_BACKUP_IMPORTANT" />
             </H4>
 
-            <Grid columns={2} gap={spacings.md}>
+            <Grid columns={2} gap={16}>
                 <Banner
                     intent="brand"
                     icon={TrezorDevicesFilledIcon}

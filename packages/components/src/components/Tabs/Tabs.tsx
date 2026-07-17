@@ -2,8 +2,6 @@ import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import styled from 'styled-components';
 
-import { borders, spacings } from '@trezor/theme';
-
 import { TabsContext } from './TabsContext';
 import { TabsItem } from './TabsItem';
 import { type TabsSize } from './types';
@@ -30,7 +28,7 @@ type ContainerProps = TransientProps<AllowedFrameProps> & {
 const Container = styled.div<ContainerProps>`
     width: 100%;
     padding-bottom: ${mapSizeToContainerPaddingBottom};
-    border-bottom: ${borders.widths.small} solid ${({ theme }) => theme.borderNeutral};
+    border-bottom: 1px solid ${({ theme }) => theme.borderNeutral};
     position: relative;
 
     ${({ $hasBorder }) => !$hasBorder && `border-bottom: 0;`}
@@ -41,7 +39,7 @@ const Container = styled.div<ContainerProps>`
         bottom: 0;
         left: 0;
         width: 1px;
-        height: ${borders.widths.large};
+        height: 2px;
         background: ${({ theme }) => theme.contentPrimary};
         transform: ${({ $indicatorWidth, $indicatorPosition }) =>
             `translateX(${$indicatorPosition}px) scaleX(${$indicatorWidth})`};
@@ -116,7 +114,7 @@ const Tabs = ({
                 $size={size}
                 {...frameProps}
             >
-                <Row alignItems="stretch" gap={spacings.sm}>
+                <Row alignItems="stretch" gap={12}>
                     {children}
                 </Row>
             </Container>

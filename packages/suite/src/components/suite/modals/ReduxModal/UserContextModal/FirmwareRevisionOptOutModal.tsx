@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { Translation } from '@suite/intl';
 import { Banner, Card, Column, H3, Modal, Paragraph } from '@trezor/components';
 import { QuestionFilledIcon, ShieldWarningIcon, WarningFilledIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { toggleFirmwareAuthenticityChecks } from 'src/actions/suite/suiteActions';
 import { CheckItem } from 'src/components/suite/CheckItem';
@@ -49,7 +48,7 @@ export const FirmwareRevisionOptOutModal = ({ onCancel }: DeviceAuthenticityOptO
             <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                 <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_3" />
             </Paragraph>
-            <Column gap={spacings.sm} margin={{ top: spacings.xl }} alignItems="center">
+            <Column gap={12} margin={{ top: 24 }} alignItems="center">
                 <Banner
                     icon={QuestionFilledIcon}
                     description={
@@ -63,7 +62,7 @@ export const FirmwareRevisionOptOutModal = ({ onCancel }: DeviceAuthenticityOptO
                     }
                 />
             </Column>
-            <Card margin={{ top: spacings.lg }}>
+            <Card margin={{ top: 20 }}>
                 <CheckItem
                     title={<Translation id="TR_DEVICE_AUTHENTICITY_OPT_OUT_MODAL_CHECKBOX_TITLE" />}
                     isChecked={isConfirmed}

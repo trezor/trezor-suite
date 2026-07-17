@@ -4,7 +4,6 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { cancelDiscoveryThunk, startAddWalletDiscoveryThunk } from '@suite-common/wallet-core';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
 import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useDispatch } from 'src/hooks/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
@@ -37,7 +36,7 @@ export const PassphraseMismatchModal = ({
     return (
         <SwitchDeviceModal data-testid="@passphrase-mismatch">
             <CardWithDevice device={device}>
-                <Column gap={spacings.xs} margin={{ bottom: spacings.lg }}>
+                <Column gap={8} margin={{ bottom: 20 }}>
                     <H3 data-testid="@passphrase-mismatch-header">
                         <Translation id="TR_PASSPHRASE_MISMATCH" />
                     </H3>

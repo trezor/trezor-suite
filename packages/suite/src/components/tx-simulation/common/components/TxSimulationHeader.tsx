@@ -4,7 +4,6 @@ import { AccountLabel } from '@suite/account';
 import { type Account } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 interface TxSimulationHeaderProps {
     account: Account | null;
@@ -13,14 +12,9 @@ interface TxSimulationHeaderProps {
 
 export function TxSimulationHeader({ account, children }: TxSimulationHeaderProps) {
     return (
-        <Row
-            columnGap={spacings.md}
-            rowGap={spacings.xxs}
-            flexWrap="wrap"
-            margin={{ top: spacings.xs }}
-        >
+        <Row columnGap={16} rowGap={4} flexWrap="wrap" margin={{ top: 8 }}>
             {account && (
-                <Row gap={spacings.xxs}>
+                <Row gap={4}>
                     <TokenIcon size={16} symbol={account.symbol} />
                     <AccountLabel
                         account={account}

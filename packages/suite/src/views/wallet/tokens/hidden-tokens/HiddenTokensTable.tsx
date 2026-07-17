@@ -3,7 +3,6 @@ import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/toke
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isTestnet, sortTokensByName } from '@suite-common/wallet-utils';
 import { Banner, Column, H3 } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { getTokens } from 'src/utils/wallet/tokenUtils';
@@ -40,7 +39,7 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
         tokens.unverifiedWithBalance.length + tokens.unverifiedWithoutBalance.length;
 
     return (
-        <Column gap={spacings.xxl}>
+        <Column gap={32}>
             {hiddenTokensCount === 0 && unverifiedTokensCount === 0 && (
                 <>
                     {searchQuery ? (
@@ -62,7 +61,7 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
                 />
             )}
             {unverifiedTokensCount > 0 && (
-                <Column gap={spacings.sm}>
+                <Column gap={12}>
                     <H3>
                         <Translation id="TR_TOKEN_UNRECOGNIZED_BY_TREZOR" />
                     </H3>

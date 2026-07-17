@@ -5,7 +5,6 @@ import { Translation } from '@suite/intl';
 import { type Explorer } from '@suite-common/wallet-config';
 import { Button, Column, InfoItem, Input, Row, Text } from '@trezor/components';
 import { ChangeIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { type useExplorerForm } from 'src/hooks/settings/useExplorerForm';
@@ -20,10 +19,10 @@ type InputRowProps = {
 
 const InputRow = ({ value, title, placeholder, base, defaultBase }: InputRowProps) => (
     <InfoItem label={title}>
-        <Row gap={spacings.sm} alignItems="flex-start">
+        <Row gap={12} alignItems="flex-start">
             <Input value={base} type="text" placeholder={defaultBase} isDisabled={true} />
 
-            <Text intent="neutral" priority="secondary" margin={{ top: spacings.md }}>
+            <Text intent="neutral" priority="secondary" margin={{ top: 16 }}>
                 /
             </Text>
 
@@ -68,7 +67,7 @@ export const ExplorerConfigForm = ({ form }: ExplorerConfigProps) => {
     };
 
     return (
-        <Column gap={spacings.sm}>
+        <Column gap={12}>
             <InfoItem label={<Translation id="TR_EXPLORER_BASE_URL" />}>
                 <Input
                     type="text"

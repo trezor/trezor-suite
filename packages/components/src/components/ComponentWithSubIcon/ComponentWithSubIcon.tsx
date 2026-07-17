@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
 
-import { type SpacingValuesNew, borders } from '@trezor/theme';
+import { type SpacingValue } from '@trezor/theme';
 
 import { type ComponentWithSubIconIntent } from './types';
 import { mapIntentToBackgroundColor, mapIntentToIconColor } from './utils';
@@ -24,8 +24,8 @@ export type ComponentWithSubIconProps = AllowedFrameProps & {
     iconSize?: number;
     children: ReactNode;
     subContent?: ReactNode;
-    iconPadding?: SpacingValuesNew;
-    iconOffset?: SpacingValuesNew;
+    iconPadding?: SpacingValue;
+    iconOffset?: SpacingValue;
     intent?: ComponentWithSubIconIntent;
 };
 
@@ -49,7 +49,7 @@ export const ComponentWithSubIcon = ({
                 <Box
                     position={{ type: 'absolute', top: iconOffset * -1, right: iconOffset * -1 }}
                     backgroundColor={mapIntentToBackgroundColor(intent)}
-                    borderRadius={borders.radii.full}
+                    borderRadius="full"
                     padding={icon !== undefined ? iconPadding : undefined}
                 >
                     {icon !== undefined ? (

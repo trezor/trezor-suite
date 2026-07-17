@@ -7,7 +7,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { Box, Icon, Row, ShortcutBadge, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
 import { commonFocusStyles, focusStyleTransition } from '@trezor/components/src/utils/utils';
 import { CaretCircleDownIcon } from '@trezor/icons';
-import { borders, spacings, spacingsPx, zIndices } from '@trezor/theme';
+import { zIndices } from '@trezor/theme';
 
 import { setRecentlyConnectedDevicePath } from 'src/actions/suite/suiteActions';
 import { openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
@@ -28,9 +28,9 @@ const CaretContainer = styled.div`
 
 const Wrapper = styled.div<{ $isSidebarCollapsed?: boolean }>`
     width: 100%;
-    padding: ${spacingsPx.md} ${spacingsPx.md} ${spacingsPx.md} ${spacingsPx.md};
+    padding: 16px;
     align-items: center;
-    border-radius: ${borders.radii.sm};
+    border-radius: 12px;
     transition: ${focusStyleTransition};
     white-space: nowrap;
     ${({ $isSidebarCollapsed }) =>
@@ -56,7 +56,7 @@ const InnerContainer = styled.div<{ $isDisabled?: boolean }>`
     width: 100%;
     display: flex;
     align-items: center;
-    gap: ${spacingsPx.md};
+    gap: 16px;
     min-height: 42px;
     -webkit-app-region: no-drag;
 
@@ -112,7 +112,7 @@ export const DeviceSelector = () => {
                     delayShow={TOOLTIP_DELAY_LONG}
                     placement="right"
                     content={
-                        <Row gap={spacings.sm} alignItems="center">
+                        <Row gap={12} alignItems="center">
                             <Translation id="TR_GUIDE_KEYBOARD_SHORTCUTS_SWITCH_DEVICE" />
                             <ShortcutBadge shortcut={['ALT', 'KEY_W']} isInverse />
                         </Row>

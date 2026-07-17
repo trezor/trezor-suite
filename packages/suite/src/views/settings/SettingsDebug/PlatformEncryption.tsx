@@ -4,7 +4,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { asEncryptedHex, selectPlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { Button, ButtonGroup, Column, Textarea } from '@trezor/components';
 import { SectionItem, SettingsSection } from '@trezor/product-components';
-import { breakpoints, spacings } from '@trezor/theme';
+import { breakpoints } from '@trezor/theme';
 import { type Branded } from '@trezor/type-utils';
 
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
@@ -42,7 +42,7 @@ export const PlatformEncryption = () => {
     return (
         <SettingsSection hasVerticalLayout={isBelowLaptop} title="Platform Encryption">
             <SectionItem>
-                <Column gap={spacings.md} flex="1">
+                <Column gap={16} flex="1">
                     <Textarea
                         label="Plaintext"
                         value={plaintext}

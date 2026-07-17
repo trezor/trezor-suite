@@ -16,8 +16,6 @@ import {
     UsersIcon,
 } from '@trezor/icons';
 import { useDebounce } from '@trezor/react-utils';
-import { spacings } from '@trezor/theme';
-
 type MessageSystemExperimentInfoProps = {
     experiment: ExperimentsItemType;
     assignedGroup?: ExperimentsItemType['groups'][number];
@@ -64,7 +62,7 @@ export const MessageSystemExperimentInfo = ({
     };
 
     return (
-        <Column gap={spacings.xs}>
+        <Column gap={8}>
             <InfoItem label="Active" icon={InfoIcon} direction="row">
                 <Icon as={CircleFilledIcon} intent={isActive ? 'brand' : 'critical'} />
             </InfoItem>

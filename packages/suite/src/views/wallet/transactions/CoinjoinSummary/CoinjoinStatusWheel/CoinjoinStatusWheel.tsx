@@ -3,7 +3,6 @@ import { Translation } from '@suite/intl';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Card, Column } from '@trezor/components';
 import { StopIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -42,7 +41,7 @@ export const CoinjoinStatusWheel = ({ accountKey }: CoinjoinStatusWheelProps) =>
                         iconRight={StopIcon}
                         onClick={() => dispatch(stopCoinjoinSession(accountKey))}
                         size="small"
-                        margin={{ top: spacings.xs }}
+                        margin={{ top: 8 }}
                     >
                         <Translation id="TR_STOP" />
                     </Button>

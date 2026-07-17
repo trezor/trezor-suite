@@ -8,7 +8,6 @@ import {
 import styled, { css } from 'styled-components';
 
 import { CheckIcon } from '@trezor/icons';
-import { borders } from '@trezor/theme';
 
 import { type LabelAlignment, type VerticalAlignment } from './types';
 import {
@@ -37,7 +36,7 @@ const HiddenInput = styled.input`
 const FakeInput = styled.div`
     ${commonCheckInputStyles}
 
-    border-radius: ${borders.radii.xxs};
+    border-radius: 4px;
 
     ${({ theme }) => css`
         input:not(:checked) + & > * {

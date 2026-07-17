@@ -7,7 +7,7 @@ import { selectExplorer } from '@suite-common/wallet-core';
 import { isNftMultitokenTransfer } from '@suite-common/wallet-utils';
 import { Box, Column, Row, Text } from '@trezor/components';
 import { type TokenTransfer } from '@trezor/connect';
-import { type TypographyStyle, spacings } from '@trezor/theme';
+import { type TypographyStyle } from '@trezor/theme';
 
 import { HiddenPlaceholder, Sign } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
@@ -49,7 +49,7 @@ export const FormattedNftAmount = ({
         return (
             <Column alignItems={alignMultitoken}>
                 {tokens?.map((token, index) => (
-                    <Row key={`${token.id}-${index}`} gap={spacings.xxs}>
+                    <Row key={`${token.id}-${index}`} gap={4}>
                         <Row>
                             {signValue ? (
                                 <Sign value={signValue} grayscale={signGrayscale} />
@@ -62,7 +62,7 @@ export const FormattedNftAmount = ({
                                     })}
                                 />
                             ) : (
-                                <Row gap={spacings.xxs}>
+                                <Row gap={4}>
                                     <Row>{token.value}x</Row>
                                     <Translation id="TR_TOKEN_ID_COLON" />
                                 </Row>
@@ -91,7 +91,7 @@ export const FormattedNftAmount = ({
     return (
         <Row>
             {signValue ? <Sign value={signValue} grayscale={signGrayscale} /> : null}
-            <Box margin={{ right: spacings.xxs }}>
+            <Box margin={{ right: 4 }}>
                 <Translation id="TR_TOKEN_ID_COLON" />
             </Box>
             {isWithLink ? (
@@ -103,7 +103,7 @@ export const FormattedNftAmount = ({
                     }
                     typographyStyle={linkTypographyStyle}
                 >
-                    <Row gap={spacings.zero}>
+                    <Row gap={0}>
                         <Text maxWidth={145} ellipsisLineCount={1} intent="brand">
                             <HiddenPlaceholder>
                                 <RedactNumericalValue value={transfer.amount} />

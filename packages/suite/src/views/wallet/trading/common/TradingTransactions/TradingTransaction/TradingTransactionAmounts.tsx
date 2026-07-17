@@ -1,12 +1,11 @@
 import { type TradingTransaction, useTradingUtils } from '@suite-common/trading';
 import { Icon, Row } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
 
 const Arrow = () => (
-    <Row margin={{ left: spacings.xs, right: spacings.xs }}>
+    <Row margin={{ left: 8, right: 8 }}>
         <Icon intent="neutral" priority="secondary" size={12} as={CaretRightIcon} />
     </Row>
 );

@@ -10,7 +10,6 @@ import { tradingThunks } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Card, Paragraph, Table } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -19,7 +18,7 @@ import type { TokensTableType } from './types';
 import { DropdownRow } from '../../DropdownRow';
 
 const NoSearchResults = () => (
-    <Paragraph margin={{ top: spacings.xxl, bottom: spacings.xxl }} align="center">
+    <Paragraph margin={{ top: 32, bottom: 32 }} align="center">
         <Translation id="TR_NO_SEARCH_RESULTS" />
     </Paragraph>
 );
@@ -68,7 +67,7 @@ export const TokensTable = ({
                 <NoSearchResults />
             ) : (
                 <Table
-                    margin={{ top: spacings.xs }}
+                    margin={{ top: 8 }}
                     colWidths={[
                         { minWidth: '200px', maxWidth: '250px' },
                         { minWidth: '140px', maxWidth: '250px' }, // due to HiddenPlaceholder - it changes content width when hovered

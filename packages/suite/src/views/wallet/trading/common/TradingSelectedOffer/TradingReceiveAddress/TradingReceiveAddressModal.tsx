@@ -6,7 +6,6 @@ import { isNetworkSymbol } from '@suite-common/wallet-config';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import { isAddressValid } from '@trezor/address-validator';
 import { Column, Input, Modal, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { type TradingVerifyFormProps } from 'src/types/trading/tradingVerify';
 import { TradingExtraField } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingExtraField';
@@ -126,7 +125,7 @@ export const TradingReceiveAddressModal = () => {
                 </Modal.Button>
             }
         >
-            <Column gap={spacings.sm}>
+            <Column gap={12}>
                 <Text typographyStyle="body-md">
                     <Translation
                         id="TR_TRADING_RECEIVE_ADDRESS_ENTER_TEXT"

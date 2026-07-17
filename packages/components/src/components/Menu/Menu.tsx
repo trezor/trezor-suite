@@ -2,7 +2,7 @@ import React, { forwardRef, useEffect, useState } from 'react';
 
 import styled, { keyframes } from 'styled-components';
 
-import { borders, spacings, spacingsPx, typography, zIndices } from '@trezor/theme';
+import { typography, zIndices } from '@trezor/theme';
 
 import {
     type FrameProps,
@@ -38,9 +38,9 @@ type AllowedMenuFrameProps = Pick<FrameProps, (typeof allowedMenuFrameProps)[num
 const Container = styled.div<TransientProps<AllowedMenuFrameProps>>`
     display: flex;
     flex-direction: column;
-    padding: ${spacingsPx.sm};
+    padding: 12px;
     min-width: 180px;
-    border-radius: ${borders.radii.md};
+    border-radius: 16px;
     background: ${({ theme }) => theme.surfaceFillModeless};
     box-shadow: ${({ theme }) => theme.surfaceShadowModeless};
     outline: 1px solid ${({ theme }) => theme.surfaceBorderModeless};
@@ -90,17 +90,17 @@ const MenuItem = ({
     <Box
         cursor={isDisabled ? 'default' : 'pointer'}
         backgroundColor={isKeyboardSelected ? 'elementFillGhostHovered' : undefined}
-        borderRadius={borders.radii.xs}
+        borderRadius={4}
         data-testid={dataTest}
         as="li"
         onClick={isDisabled ? undefined : onClick}
         onMouseEnter={onMouseEnter}
     >
-        <Row gap={spacings.sm} padding={{ vertical: spacings.xs, horizontal: spacings.sm }}>
+        <Row gap={12} padding={{ vertical: 8, horizontal: 12 }}>
             {icon && (
                 <Icon
                     as={icon}
-                    size={spacings.md}
+                    size={16}
                     {...(isDisabled ? { isDisabled: true } : { intent: 'neutral' })}
                 />
             )}
@@ -111,7 +111,7 @@ const MenuItem = ({
                 <Icon
                     margin={{ left: 'auto' }}
                     as={iconRight}
-                    size={spacings.md}
+                    size={16}
                     {...(isDisabled ? { isDisabled: true } : { intent: 'neutral' })}
                 />
             )}
@@ -200,7 +200,7 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
                 onClick={e => e.stopPropagation()} // prevent closing the menu when clicking on the menu itself or within the menu
                 {...frameProps}
             >
-                <Column gap={spacings.md}>
+                <Column gap={16}>
                     {content}
                     {!!visibleItems?.length && (
                         <MenuList ref={ref}>

@@ -13,7 +13,6 @@ import {
 } from '@trezor/components';
 import { type ButtonPriority } from '@trezor/components/src/components/buttons/types';
 import { CaretRightIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
 import { useLayoutSize } from 'src/hooks/suite';
@@ -56,14 +55,14 @@ export const NotificationView = ({
     const action = Array.isArray(actionProp) ? actionProp[0] : actionProp;
 
     return (
-        <Row gap={spacings.sm}>
+        <Row gap={12}>
             {defaultIcon &&
                 (typeof defaultIcon === 'function' ? (
                     <Icon size={20} as={defaultIcon} {...colorProps} />
                 ) : (
                     defaultIcon
                 ))}
-            <Column gap={spacings.xxs} margin={{ right: 'auto' }}>
+            <Column gap={4} margin={{ right: 'auto' }}>
                 <Paragraph
                     typographyStyle={seen ? 'body-sm' : 'body-sm-strong'}
                     intent="neutral"

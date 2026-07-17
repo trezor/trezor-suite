@@ -11,7 +11,7 @@ import {
     Paragraph,
 } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
-import { negativeSpacings, typography } from '@trezor/theme';
+import { typography } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
@@ -51,12 +51,7 @@ export const UtxoSelectionList = ({
         <Column>
             {withHeader && (
                 <Header>
-                    <IconCircle
-                        icon={icon}
-                        size={64}
-                        intent={iconIntent}
-                        margin={{ left: negativeSpacings.xs }}
-                    />
+                    <IconCircle icon={icon} size={64} intent={iconIntent} margin={{ left: -8 }} />
                     <div>
                         <Paragraph typographyStyle="body-md" margin={{ bottom: 4 }}>
                             {heading}

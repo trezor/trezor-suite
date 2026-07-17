@@ -1,6 +1,5 @@
 import { Translation } from '@suite/intl';
 import { Column, H4, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { type AppState } from 'src/types/suite';
 import { getSeenAndUnseenNotifications } from 'src/utils/suite/notification';
@@ -20,7 +19,7 @@ export const NotificationGroup = (props: NotificationGroupProps) => {
 
     if (unseenCount === 0 && seenCount === 0) {
         return (
-            <Column gap={spacings.xxs}>
+            <Column gap={4}>
                 <H4>
                     <Translation id="NOTIFICATIONS_EMPTY_TITLE" />
                 </H4>
@@ -32,9 +31,9 @@ export const NotificationGroup = (props: NotificationGroupProps) => {
     }
 
     return (
-        <Column gap={spacings.xl}>
+        <Column gap={24}>
             {unseenCount > 0 && (
-                <Column gap={spacings.sm}>
+                <Column gap={12}>
                     <H4>
                         <Translation
                             id="NOTIFICATIONS_UNSEEN_TITLE"
@@ -46,7 +45,7 @@ export const NotificationGroup = (props: NotificationGroupProps) => {
             )}
 
             {seenCount > 0 && (
-                <Column gap={spacings.sm}>
+                <Column gap={12}>
                     <H4>
                         <Translation id="NOTIFICATIONS_SEEN_TITLE" />
                     </H4>

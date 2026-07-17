@@ -6,7 +6,6 @@ import { Translation } from '@suite/intl';
 import { type BackupType } from '@suite-common/suite-types';
 import { Icon, Radio, Row, Text, Tooltip, variables } from '@trezor/components';
 import { CaretDownIcon, RecoverySeedIcon } from '@trezor/icons';
-import { borders, spacingsPx } from '@trezor/theme';
 
 import { useLayoutSize } from 'src/hooks/suite';
 
@@ -23,14 +22,14 @@ export const OptionStyled = styled.div<{ $hasHoverInteraction?: boolean; $disabl
     display: flex;
     flex-direction: row;
 
-    gap: ${spacingsPx.md};
+    gap: 16px;
 
-    padding-top: ${spacingsPx.sm};
-    padding-bottom: ${spacingsPx.sm};
+    padding-top: 12px;
+    padding-bottom: 12px;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        padding-top: ${spacingsPx.xs};
-        padding-bottom: ${spacingsPx.xs};
+        padding-top: 8px;
+        padding-bottom: 8px;
     }
 
     align-items: center;
@@ -57,14 +56,14 @@ export const OptionStyled = styled.div<{ $hasHoverInteraction?: boolean; $disabl
                           padding-right: 6px;
                       }
 
-                      border-radius: ${borders.radii.xs};
+                      border-radius: 4px;
                   }
               `
             : ''};
 `;
 
 const DownIconCircle = styled.div`
-    border-radius: ${borders.radii.full};
+    border-radius: calc(infinity * 1px);
     border: 1px solid ${({ theme }) => theme.elementBorderNeutralSofter};
     background: ${({ theme }) => theme.elementFillElevated};
     height: 36px;
@@ -116,10 +115,10 @@ type SelectedOptionProps = { children: ReactNode; onClick: () => void; isDisable
 const SelectedOptionStyled = styled.div<{ $isDisabled: boolean }>`
     cursor: ${({ $isDisabled }) => ($isDisabled ? undefined : 'pointer')};
 
-    padding: ${spacingsPx.xxs} ${spacingsPx.xl};
+    padding: 4px 24px;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        padding: 0 ${spacingsPx.sm};
+        padding: 0 12px;
     }
 `;
 

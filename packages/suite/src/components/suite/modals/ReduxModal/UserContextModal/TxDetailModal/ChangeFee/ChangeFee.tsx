@@ -7,7 +7,6 @@ import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount, isEip1559 } from '@suite-common/wallet-utils';
 import { Card, Divider, InfoItem, Row, Text } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
@@ -81,7 +80,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
                     }
                     typographyStyle="body-md"
                 >
-                    <Row gap={spacings.md} alignItems="baseline">
+                    <Row gap={16} alignItems="baseline">
                         <FormattedCryptoAmount
                             disableHiddenPlaceholder
                             value={fee}

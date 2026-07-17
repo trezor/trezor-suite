@@ -10,7 +10,7 @@ import {
 
 import styled from 'styled-components';
 
-import { borders, typography } from '@trezor/theme';
+import { typography } from '@trezor/theme';
 
 const LevelContainer = styled.div`
     width: 64px;
@@ -22,8 +22,8 @@ const InputWrapper = styled.div<{ $isDisabled?: boolean }>`
     justify-content: center;
     height: 42px;
     padding: 0 12px;
-    border: 1.5px solid ${({ theme }) => theme.elementBorderField};
-    border-radius: ${borders.radii.xs};
+    border: 2px solid ${({ theme }) => theme.elementBorderField};
+    border-radius: 4px;
     background: none;
     cursor: ${({ $isDisabled }) => ($isDisabled ? 'not-allowed' : 'text')};
 `;
@@ -32,7 +32,7 @@ const StyledInput = styled.input<{ $isDisabled?: boolean }>`
     flex: 1;
     min-width: 0;
     height: 100%;
-    padding: 1px 0 0;
+    padding: 2px 0 0;
     background: none;
     border: none;
     outline: none;

@@ -2,7 +2,6 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { Icon, Row, ShortcutBadge, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { PlusIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { useDiscovery, useDispatch } from 'src/hooks/suite';
 import { type TrezorDevice } from 'src/types/suite';
@@ -45,7 +44,7 @@ export const AddAccountButton = ({ device }: AddAccountButtonProps) => {
         <Tooltip
             isActive={!tooltipMessage}
             content={
-                <Row gap={spacings.sm}>
+                <Row gap={12}>
                     <Translation id="TR_ADD_ACCOUNT" />
                     <ShortcutBadge shortcut={['ALT', 'KEY_A']} isInverse />
                 </Row>

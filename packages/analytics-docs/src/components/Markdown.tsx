@@ -9,7 +9,6 @@ import {
     Text,
 } from '@trezor/components';
 import { CircleFilledIcon } from '@trezor/icons';
-import { borders } from '@trezor/theme';
 
 const Code = styled.span`
     margin: 2px;
@@ -22,7 +21,7 @@ const Code = styled.span`
         inset: -2px;
         border: solid 1px ${({ theme }) => theme.borderNeutral};
         background: ${({ theme }) => theme.surfaceFillRaised};
-        border-radius: ${borders.radii.xxs};
+        border-radius: 4px;
     }
 `;
 

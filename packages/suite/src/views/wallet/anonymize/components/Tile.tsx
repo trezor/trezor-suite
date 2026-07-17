@@ -3,7 +3,7 @@ import { type ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
 import { Card, IconCircle, type IconComponent, variables } from '@trezor/components';
-import { spacingsPx, typography } from '@trezor/theme';
+import { typography } from '@trezor/theme';
 
 const containerGridStyle = css`
     display: grid;
@@ -12,7 +12,7 @@ const containerGridStyle = css`
 `;
 
 const Container = styled.div`
-    padding: ${spacingsPx.md};
+    padding: 16px;
     background: ${({ theme }) => theme.surfaceFillRaised};
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {

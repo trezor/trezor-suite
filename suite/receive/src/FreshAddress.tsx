@@ -27,7 +27,6 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { showAddressThunk } from './showAddressThunk';
 import { useReceiveDisabled } from './useReceiveDisabled';
@@ -202,7 +201,7 @@ export const FreshAddress = ({
 
     return (
         <Card>
-            <Row gap={spacings.lg} flexWrap="wrap">
+            <Row gap={20} flexWrap="wrap">
                 <InfoItem
                     label={
                         <TooltipLabel
@@ -253,7 +252,7 @@ export const FreshAddress = ({
                 <Banner
                     icon
                     intent="info"
-                    margin={{ top: spacings.xxl }}
+                    margin={{ top: 32 }}
                     title={
                         <Translation
                             id="TR_EVM_EXPLANATION_TITLE"

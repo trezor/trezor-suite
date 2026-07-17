@@ -22,7 +22,6 @@ import { type DeviceModelInternal } from '@trezor/device-utils';
 import { isAndroid } from '@trezor/env-utils';
 import { CaretRightIcon, EyeClosedIcon, EyeIcon } from '@trezor/icons';
 import { PasswordStrengthIndicator } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 import { countBytesInString, getNonAsciiChars } from '@trezor/utils';
 
 type PassphraseInputCardProps = {
@@ -116,8 +115,8 @@ export const PassphraseInputCard = ({
                 footer={
                     offerPassphraseOnDevice ? (
                         <Row
-                            gap={spacings.lg}
-                            padding={spacings.md}
+                            gap={20}
+                            padding={16}
                             onClick={() => submit(value, true)}
                             data-testid="@passphrase/enter-on-device-button"
                             cursor="pointer"
@@ -138,7 +137,7 @@ export const PassphraseInputCard = ({
                     ) : null
                 }
             >
-                <Column gap={spacings.sm} padding={spacings.sm}>
+                <Column gap={12} padding={12}>
                     <Column>
                         <Input
                             data-testid="@passphrase/input"

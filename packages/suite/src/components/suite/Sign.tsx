@@ -6,6 +6,7 @@ import { type SignValue } from '@suite-common/suite-types';
 const StyledSign = styled.span<{ $color: string }>`
     color: ${({ $color }) => $color};
     width: 1ch;
+    /* stylelint-disable-next-line trezor/dimension-token-values -- Optical spacing relative to the sign glyph. */
     margin-right: 0.1ch;
 `;
 

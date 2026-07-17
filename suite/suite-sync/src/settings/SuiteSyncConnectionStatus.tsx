@@ -6,7 +6,6 @@ import {
 } from '@suite-common/suite-sync';
 import { Code, Column, Row, Text } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { SuiteSyncConnectionStatusDot } from '../SuiteSyncConnectionStatusDot';
 
@@ -46,11 +45,11 @@ export const SuiteSyncConnectionStatus = () => {
         <SectionItem>
             <TextColumn title="Evolu relay connections" />
             <ActionColumn>
-                <Column gap={spacings.xxs}>
+                <Column gap={4}>
                     <ul>
                         {relayConnectionStatuses.map(connection => (
                             <li key={connection.url}>
-                                <Row gap={spacings.xxs} justifyContent="space-between">
+                                <Row gap={4} justifyContent="space-between">
                                     <Text typographyStyle="body-sm">
                                         <Code>{connection.url}</Code>
                                     </Text>

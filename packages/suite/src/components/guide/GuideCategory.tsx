@@ -18,7 +18,7 @@ const Section = styled.div`
     margin-bottom: 20px;
 
     &:not(:last-of-type) {
-        margin-bottom: 100px;
+        margin-bottom: 96px;
     }
 `;
 

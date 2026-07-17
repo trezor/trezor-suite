@@ -5,7 +5,6 @@ import styled, { ThemeProvider } from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { Row, Text, intermediaryTheme } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { FormattedDate } from 'src/components/suite/FormattedDate';
 import { type CommonAggregatedHistory, type GraphRange } from 'src/types/wallet/graph';
@@ -70,9 +69,11 @@ const CustomTooltipWrapper = styled.div<WrapperProps>`
             $positionX <= OFFSET_LIMIT_HORIZONTAL ? `50px` : `-10px`};
         width: 0;
         height: 0;
+        /* stylelint-disable trezor/dimension-token-values -- These borders construct the tooltip arrow. */
         border-left: 10px solid transparent;
         border-right: 10px solid transparent;
         border-top: 10px solid ${({ theme }) => theme.surfaceFillModelessNeutralDark};
+        /* stylelint-enable trezor/dimension-token-values */
     }
 `;
 
@@ -101,13 +102,13 @@ const HighlightedArea = styled(Col)`
 `;
 
 const HighlightedAreaLeft = styled(HighlightedArea)`
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
 `;
 
 const HighlightedAreaRight = styled(HighlightedArea)`
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
 `;
 
 const formatDate = (date: Date, dateFormat: 'day' | 'month') => {
@@ -159,7 +160,7 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
                 $boxWidth={props.viewBox!.width!}
                 data-testid="@dashboard/customtooltip"
             >
-                <Row margin={{ bottom: spacings.xxs, left: spacings.xs, right: spacings.xs }}>
+                <Row margin={{ bottom: 4, left: 8, right: 8 }}>
                     <Title>{date && formatDate(date, dateFormat)}</Title>
                 </Row>
 
@@ -168,9 +169,9 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
                         {props.balance && (
                             <Row
                                 margin={{
-                                    bottom: spacings.xxs,
-                                    left: spacings.xs,
-                                    right: spacings.xs,
+                                    bottom: 4,
+                                    left: 8,
+                                    right: 8,
                                 }}
                             >
                                 <Title>
@@ -182,9 +183,9 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
                         <HighlightedAreaLeft>
                             <Row
                                 margin={{
-                                    bottom: spacings.xxs,
-                                    left: spacings.xs,
-                                    right: spacings.xs,
+                                    bottom: 4,
+                                    left: 8,
+                                    right: 8,
                                 }}
                             >
                                 <Title>
@@ -192,7 +193,7 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
                                 </Title>
                             </Row>
 
-                            <Row margin={{ left: spacings.xs, right: spacings.xs }}>
+                            <Row margin={{ left: 8, right: 8 }}>
                                 <Title>
                                     <Translation id="TR_SENT" />
                                 </Title>
@@ -204,15 +205,13 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
                         {props.balance && (
                             <Row
                                 margin={{
-                                    bottom: spacings.xxs,
-                                    left: spacings.xs,
-                                    right: spacings.xs,
+                                    bottom: 4,
+                                    left: 8,
+                                    right: 8,
                                 }}
                             >
                                 <Value>
-                                    <Row margin={{ left: spacings.xs, right: spacings.xs }}>
-                                        {props.balance}
-                                    </Row>
+                                    <Row margin={{ left: 8, right: 8 }}>{props.balance}</Row>
                                 </Value>
                             </Row>
                         )}
@@ -220,15 +219,15 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
                         <HighlightedAreaRight>
                             <Row
                                 margin={{
-                                    bottom: spacings.xxs,
-                                    left: spacings.xs,
-                                    right: spacings.xs,
+                                    bottom: 4,
+                                    left: 8,
+                                    right: 8,
                                 }}
                             >
                                 <Value>{props.receivedAmount}</Value>
                             </Row>
 
-                            <Row margin={{ left: spacings.xs, right: spacings.xs }}>
+                            <Row margin={{ left: 8, right: 8 }}>
                                 <Value>{props.sentAmount}</Value>
                             </Row>
                         </HighlightedAreaRight>

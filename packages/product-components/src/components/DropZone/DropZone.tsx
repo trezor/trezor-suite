@@ -12,17 +12,16 @@ import styled from 'styled-components';
 
 import { Column, Icon, type IconComponent, Paragraph, Row, Text } from '@trezor/components';
 import { FileXIcon } from '@trezor/icons';
-import { borders, spacings } from '@trezor/theme';
 
 const Wrapper = styled.div`
-    border-radius: ${borders.radii.xs};
+    border-radius: 4px;
     background: ${({ theme }) => theme.elementFillField};
     cursor: pointer;
 
     &:hover,
     &.dragging {
-        outline: ${borders.widths.large} solid ${({ theme }) => theme.elementBorderFieldHovered};
-        outline-offset: -${borders.widths.large};
+        outline: 2px solid ${({ theme }) => theme.elementBorderFieldHovered};
+        outline-offset: -2px;
     }
 
     * {
@@ -188,14 +187,14 @@ export const DropZone = ({
     return (
         <Wrapper {...getWrapperProps()} data-testid={dataTestId}>
             <Column
-                padding={spacings.lg}
+                padding={20}
                 minHeight={150}
                 justifyContent="center"
                 alignItems="center"
-                gap={spacings.xs}
+                gap={8}
             >
                 <StyledInput {...getInputProps()} />
-                <Row gap={spacings.xs}>
+                <Row gap={8}>
                     <Icon
                         as={icon}
                         size={20}

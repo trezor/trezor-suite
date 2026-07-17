@@ -3,7 +3,6 @@ import { SettingsAnchor, goto } from '@suite/router';
 import { selectTorState } from '@suite/tor';
 import { type TradingType } from '@suite-common/trading';
 import { Banner, Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -56,7 +55,7 @@ export const TradingUtilsTorWarning = ({
                 )
             }
             description={
-                <Column gap={spacings.sm}>
+                <Column gap={12}>
                     <Translation id={translationId} />
                 </Column>
             }

@@ -4,7 +4,6 @@ import { selectIsCoinjoinReceiveWarningHidden } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectPendingAccountAddresses } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { ConfirmEvmExplanationModal } from 'src/components/suite/modals/ConfirmEvmExplanationModal';
 import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
@@ -44,7 +43,7 @@ export const Receive = () => {
     return (
         <WalletLayout title="TR_NAV_RECEIVE" isSubpage account={selectedAccount}>
             {showCexWarning && <CoinjoinReceiveWarning />}
-            <Column gap={spacings.xl}>
+            <Column gap={24}>
                 <WalletSubpageHeading title="TR_NAV_RECEIVE" />
                 <FreshAddress
                     account={account}

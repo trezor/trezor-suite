@@ -3,7 +3,6 @@ import { Translation } from '@suite/intl';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Banner, Card, Column, Divider, LoadingContent, Modal } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { SESSION_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { useCoinjoinSessionPhase } from 'src/hooks/coinjoin';
@@ -41,7 +40,7 @@ export const CriticalCoinjoinPhaseModal = ({
                 </LoadingContent>
             }
         >
-            <Column gap={spacings.md} margin={{ top: spacings.xs }}>
+            <Column gap={16} margin={{ top: 8 }}>
                 <Banner
                     intent="warning"
                     icon={WarningIcon}
@@ -52,7 +51,7 @@ export const CriticalCoinjoinPhaseModal = ({
                         roundPhase={roundPhase}
                         phaseDeadline={session?.roundPhaseDeadline}
                     />
-                    <Divider margin={{ top: spacings.xl, bottom: spacings.md }} />
+                    <Divider margin={{ top: 24, bottom: 16 }} />
                     <AutoStopButton relatedAccountKey={relatedAccountKey} />
                 </Card>
             </Column>

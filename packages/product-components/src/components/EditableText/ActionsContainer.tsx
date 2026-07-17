@@ -27,6 +27,7 @@ const Container = styled.div<{
 }>`
     display: flex;
     align-items: center;
+    /* stylelint-disable-next-line trezor/dimension-token-values -- Keep spacing relative to the text size. */
     gap: calc(0.1em + 2px);
     transform-origin: left;
     transform: translateX(-5px);

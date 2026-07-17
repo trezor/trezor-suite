@@ -9,7 +9,6 @@ import { copyToClipboard } from '@trezor/dom-utils';
 import { ArrowsClockwiseIcon, CopyIcon } from '@trezor/icons';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { spacings } from '@trezor/theme';
 import { GITHUB_MCP_DOCS_URL } from '@trezor/urls';
 
 const ConfigBox = styled.div`
@@ -17,7 +16,7 @@ const ConfigBox = styled.div`
     flex-direction: column;
     background: ${({ theme }) => theme.elementFillNeutralSofter};
     border-radius: 8px;
-    padding: ${spacings.sm}px ${spacings.md}px;
+    padding: ${12}px ${16}px;
     height: 180px;
 `;
 
@@ -34,8 +33,8 @@ const ConfigSnippet = styled.pre`
 const CopyButtonWrapper = styled.div`
     display: flex;
     justify-content: flex-end;
-    gap: ${spacings.xs}px;
-    margin-top: ${spacings.xs}px;
+    gap: ${8}px;
+    margin-top: ${8}px;
 `;
 
 type McpClient = 'claude-code' | 'claude-desktop' | 'other';
@@ -148,7 +147,7 @@ export const McpServer = () => {
                     bottomContent={<LearnMoreButton url={GITHUB_MCP_DOCS_URL} />}
                 />
                 <ActionColumn>
-                    <Column gap={spacings.sm}>
+                    <Column gap={12}>
                         <SelectBar
                             selectedOption={selectedClient}
                             options={clientOptions}

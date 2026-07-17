@@ -12,7 +12,6 @@ import {
     ShieldWarningFilledIcon,
     XCircleIcon,
 } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -23,7 +22,7 @@ export const WalletConnectList = () => {
 
     if (sessions.length === 0) {
         return (
-            <Column flex="1" justifyContent="center" gap={spacings.xs}>
+            <Column flex="1" justifyContent="center" gap={8}>
                 <H3 align="center">
                     <Translation id="TR_NO_CONNECTED_APPS" />
                 </H3>
@@ -40,8 +39,8 @@ export const WalletConnectList = () => {
                 {sessions.map((session, index) => (
                     <Row
                         key={session.topic}
-                        gap={spacings.md}
-                        padding={spacings.md}
+                        gap={16}
+                        padding={16}
                         data-testid={`@settings/walletconnect-apps/${index}`}
                     >
                         <ConnectAppIcon
@@ -49,7 +48,7 @@ export const WalletConnectList = () => {
                             type="walletConnect"
                         />
                         <Column flex="1">
-                            <Row columnGap={spacings.sm} rowGap={spacings.xxxs} flexWrap="wrap">
+                            <Row columnGap={12} rowGap={2} flexWrap="wrap">
                                 <Text>{session.peer.metadata.name}</Text>
                                 <Text intent="neutral" priority="secondary">
                                     {session.peer.metadata.url}

@@ -10,7 +10,6 @@ import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { Box, Button, Column, Image, Paragraph, Row, intermediaryTheme } from '@trezor/components';
-import { borders } from '@trezor/theme';
 import { DASHBOARD_ONBOARDING_FEEDBACK_URL } from '@trezor/urls';
 
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
@@ -119,7 +118,7 @@ export const OnboardingFeedbackBanner = () => {
                         <Box
                             height={isVerticalLayout ? undefined : 213}
                             backgroundColor="elementFillNeutralSofter"
-                            borderRadius={borders.radii.sm}
+                            borderRadius={12}
                             overflow="hidden"
                             data-testid="@dashboard/onboarding-feedback-banner"
                         >
@@ -149,7 +148,7 @@ export const OnboardingFeedbackBanner = () => {
                                     height="100%"
                                     alignItems="flex-end"
                                     padding={isBelowLaptop ? 0 : 12}
-                                    margin={{ right: isBelowLaptop ? 0 : 60 }}
+                                    margin={{ right: isBelowLaptop ? 0 : 64 }}
                                     position={
                                         isBelowLaptop
                                             ? { type: 'absolute', top: 0, left: 0 }
@@ -162,7 +161,7 @@ export const OnboardingFeedbackBanner = () => {
                                         height="100%"
                                         objectFit="cover"
                                         objectPosition="left"
-                                        borderRadius={borders.radii.sm}
+                                        borderRadius={12}
                                         width={isBelowLaptop ? '100%' : undefined}
                                     />
                                 </Row>

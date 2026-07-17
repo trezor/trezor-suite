@@ -4,7 +4,6 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { getCheckBackupUrl } from '@suite-common/suite-utils';
 import { Card, Paragraph, StepList } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { spacings } from '@trezor/theme';
 
 import { CheckItem } from 'src/components/suite';
 
@@ -46,7 +45,7 @@ export const InitialStep = ({ isUnderstood, setIsUnderstood }: InitialStepProps)
 
     return (
         <>
-            <StepList gap={spacings.xl} titleGap={spacings.xxxs} bulletGap={spacings.lg}>
+            <StepList gap={24} titleGap={2} bulletGap={20}>
                 <StepList.Item
                     title={
                         <Paragraph typographyStyle="body-sm" textWrap="pretty">
@@ -58,7 +57,7 @@ export const InitialStep = ({ isUnderstood, setIsUnderstood }: InitialStepProps)
                         typographyStyle="body-xs"
                         intent="neutral"
                         priority="secondary"
-                        margin={{ top: spacings.xxs }}
+                        margin={{ top: 4 }}
                     >
                         <Translation
                             id={
@@ -80,13 +79,13 @@ export const InitialStep = ({ isUnderstood, setIsUnderstood }: InitialStepProps)
                         typographyStyle="body-xs"
                         intent="neutral"
                         priority="secondary"
-                        margin={{ top: spacings.xxs }}
+                        margin={{ top: 4 }}
                     >
                         <Translation id="TR_ENTER_ALL_WORDS_IN_CORRECT" />
                     </Paragraph>
                 </StepList.Item>
             </StepList>
-            <Card margin={{ top: spacings.xxl }}>
+            <Card margin={{ top: 32 }}>
                 <CheckItem
                     data-testid="@recovery/user-understands-checkbox"
                     title={<Translation id="TR_DRY_RUN_CHECK_ITEM_TITLE" />}

@@ -23,7 +23,6 @@ import { formatNetworkAmount, getConvertedOrDefaultFeeInfo } from '@suite-common
 import { Banner, Button, Column, Modal, Row, Text } from '@trezor/components';
 import { SpinnerIcon, WarningIcon } from '@trezor/icons';
 import { STELLAR_BASE_RESERVE } from '@trezor/network-stellar/constants';
-import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';
@@ -244,7 +243,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
             isBackdropCancelable={!isProcessing}
             heading={<Translation id={headingId} values={{ token: tokenCode }} />}
             bottomContent={
-                <Row gap={spacings.xs}>
+                <Row gap={8}>
                     <Button
                         onClick={handleSubmit(handleSubmitTrustline)}
                         isDisabled={isProcessing || !!insufficientBalanceInfo}
@@ -265,7 +264,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
             }
         >
             <FormProvider {...methods}>
-                <Column gap={spacings.lg}>
+                <Column gap={20}>
                     <Text typographyStyle="body-md" intent="neutral" priority="secondary">
                         {mode === 'activate' ? (
                             <Translation

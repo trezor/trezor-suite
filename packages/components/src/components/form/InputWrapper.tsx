@@ -2,8 +2,6 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { borders } from '@trezor/theme';
-
 import { type InputSize } from './types';
 import { mapSizeToTypographyStyle } from './utils';
 import { Text } from '../typography/Text/Text';
@@ -16,9 +14,9 @@ const Wrapper = styled.div<{
     position: relative;
     background: ${({ theme, $hasError }) =>
         $hasError ? theme.elementFillCriticalSofter : theme.elementFillField};
-    border-radius: ${borders.radii.sm};
-    outline-offset: -${borders.widths.small};
-    outline: ${borders.widths.small} solid ${({ theme }) => theme.elementBorderField};
+    border-radius: 12px;
+    outline-offset: -1px;
+    outline: 1px solid ${({ theme }) => theme.elementBorderField};
     transition:
         outline 0.2s,
         background-color 0.2s;

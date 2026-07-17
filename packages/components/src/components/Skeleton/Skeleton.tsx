@@ -1,7 +1,5 @@
 import styled, { css, keyframes } from 'styled-components';
 
-import { borders } from '@trezor/theme';
-
 import {
     type FrameProps,
     type FramePropsKeys,
@@ -80,13 +78,13 @@ export const Skeleton = ({ type = 'rectangle', animate, ...rest }: SkeletonProps
             ? {
                   width: rest.size ?? 24,
                   height: rest.size ?? 24,
-                  borderRadius: rest.borderRadius ?? borders.radii.full,
+                  borderRadius: rest.borderRadius ?? 'full',
                   margin: rest.margin,
               }
             : {
                   width: rest.width ?? 80,
                   height: rest.height ?? 20,
-                  borderRadius: rest.borderRadius ?? borders.radii.xs,
+                  borderRadius: rest.borderRadius ?? 4,
                   margin: rest.margin,
               },
         allowedSkeletonFrameProps,

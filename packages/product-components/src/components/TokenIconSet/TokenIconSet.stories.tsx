@@ -1,6 +1,6 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
-import { spacingsNew } from '@trezor/theme';
+import { spacingValues } from '@trezor/theme';
 
 import { TokenIconSet as TokenIconSetComponent, type TokenIconSetProps } from './TokenIconSet';
 import { allowedTokenIconSizes } from '../TokenIcon/tokenIconTypes';
@@ -58,7 +58,7 @@ export const TokenIconSet: StoryObj<TokenIconSetProps> = {
             },
         },
         gap: {
-            options: spacingsNew,
+            options: spacingValues,
             control: {
                 type: 'select',
             },

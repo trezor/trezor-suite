@@ -12,7 +12,6 @@ import useSWR from 'swr';
 
 import { CollapsibleBox } from '@trezor/components';
 import { useMDXComponents } from '@trezor/connect-explorer-theme';
-import { spacings } from '@trezor/theme';
 import { isNewer } from '@trezor/utils/src/versionUtils';
 
 export const loadNPMVersions = tag =>
@@ -79,7 +78,7 @@ export const Changelog = () => {
         <>
             <MarkdownCustom>{versionOverview}</MarkdownCustom>
 
-            <CollapsibleBox heading="What is a Canary Release?" margin={{ top: spacings.md }}>
+            <CollapsibleBox heading="What is a Canary Release?" margin={{ top: 16 }}>
                 <MarkdownCustom>
                     Canary releases are beta versions available before the stable release. They provide early access to new features, improvements, and (hot)fixes, allowing developers to test their applications with the latest changes. Unlike stable versions, which are extensively tested and released less frequently, canary versions are released more often to address immediate needs, such as critical fixes or compatibility updates required by specific third-party applications or implementations.
                 </MarkdownCustom>

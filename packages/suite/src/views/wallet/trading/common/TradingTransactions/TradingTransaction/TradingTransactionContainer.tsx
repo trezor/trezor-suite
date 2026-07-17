@@ -1,7 +1,6 @@
 import { type JSX } from 'react';
 
 import { Card, Column, Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useLayoutSize } from 'src/hooks/suite';
 
@@ -21,7 +20,7 @@ export const TradingTransactionContainer = ({
     const { isBelowDesktop, isBelowMobile } = useLayoutSize();
 
     return (
-        <Card type="sunken" margin={{ bottom: spacings.lg }} data-testid={dataTestId}>
+        <Card type="sunken" margin={{ bottom: 20 }} data-testid={dataTestId}>
             <Row flexWrap={isBelowDesktop ? 'wrap' : undefined}>
                 <Column flex="auto" width={isBelowDesktop ? 'calc(100% - 180px)' : '100%'}>
                     {TradeDetail}
@@ -34,8 +33,8 @@ export const TradingTransactionContainer = ({
                     margin={
                         isBelowDesktop
                             ? {
-                                  top: spacings.xs,
-                                  bottom: spacings.xs,
+                                  top: 8,
+                                  bottom: 8,
                               }
                             : undefined
                     }

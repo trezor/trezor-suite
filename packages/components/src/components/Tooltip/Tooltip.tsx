@@ -4,7 +4,7 @@ import { type Placement, type ShiftOptions } from '@floating-ui/react';
 import styled, { useTheme } from 'styled-components';
 
 import { QuestionIcon } from '@trezor/icons';
-import { type ZIndexValues, spacingsPx, zIndices } from '@trezor/theme';
+import { type ZIndexValues, zIndices } from '@trezor/theme';
 
 import { TooltipArrow } from './TooltipArrow';
 import { TooltipBox, type TooltipBoxProps } from './TooltipBox';
@@ -35,7 +35,7 @@ export type AllowedFrameProps = Pick<FrameProps, (typeof allowedTooltipFrameProp
 const Content = styled.div<TransientProps<AllowedFrameProps>>`
     display: flex;
     align-items: center;
-    gap: ${spacingsPx.xxs};
+    gap: 4px;
     text-decoration: inherit;
 
     ${withFrameProps}

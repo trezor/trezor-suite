@@ -3,7 +3,6 @@ import styled, { css } from 'styled-components';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, Row } from '@trezor/components';
 import { commonFocusStyles } from '@trezor/components/src/utils/utils';
-import { borders, spacingsPx } from '@trezor/theme';
 
 import { type Account, type AccountItemType } from 'src/types/wallet';
 
@@ -13,8 +12,8 @@ import { AccountItemLogo } from '../AccountItemLogo/AccountItemLogo';
 const Container = styled.button<{ $isActive?: boolean; $isCollapsed?: boolean }>`
     display: flex;
     align-items: center;
-    padding: ${spacingsPx.xs};
-    border-radius: ${borders.radii.sm};
+    padding: 8px;
+    border-radius: 12px;
     transition: 0.2s ease-in-out;
     cursor: pointer;
     border: 0;

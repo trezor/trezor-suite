@@ -31,7 +31,6 @@ import {
 } from '@trezor/components';
 import { ShieldCheckFilledIcon, ShieldWarningFilledIcon } from '@trezor/icons';
 import { NetworkIcon, TokenIcon } from '@trezor/product-components';
-import { spacings, spacingsPx } from '@trezor/theme';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -39,7 +38,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 const NetworkItemWrapper = styled.div<{ $isDisabled: boolean }>`
     display: flex;
     flex-direction: row;
-    gap: ${spacingsPx.xs};
+    gap: 8px;
     align-items: center;
     opacity: ${props => (props.$isDisabled ? 0.5 : 1)};
 `;
@@ -140,26 +139,26 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
             heading={<Translation id="TR_WALLETCONNECT" />}
             description={<Translation id="TR_WALLETCONNECT_REQUEST" />}
         >
-            <Column gap={spacings.xs}>
+            <Column gap={8}>
                 <Text>
                     <Translation id="TR_APP" />
                 </Text>
                 <Card>
-                    <Row gap={spacings.md}>
+                    <Row gap={16}>
                         <ConnectAppIcon
                             src={pendingProposal.params.proposer.metadata.icons?.[0]}
-                            size={spacings.xxxxl}
+                            size={48}
                             type="walletConnect"
                         />
 
-                        <Column gap={spacings.xxs}>
-                            <Row gap={spacings.sm}>
+                        <Column gap={4}>
+                            <Row gap={12}>
                                 <Text>{pendingProposal.params.proposer.metadata.name}</Text>
                                 <Text intent="neutral" priority="secondary">
                                     {pendingProposal.params.proposer.metadata.url}
                                 </Text>
                             </Row>
-                            <Row gap={spacings.sm}>
+                            <Row gap={12}>
                                 {!pendingProposal.isScam &&
                                     pendingProposal.validation === 'VALID' && (
                                         <Badge intent="info" iconLeft={ShieldCheckFilledIcon}>
@@ -187,7 +186,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                     <Translation id="TR_REQUESTED_NETWORKS" />
                 </Text>
                 <Card>
-                    <Row rowGap={spacings.xs} columnGap={spacings.sm} flexWrap="wrap">
+                    <Row rowGap={8} columnGap={12} flexWrap="wrap">
                         {pendingProposal.networks
                             .filter(network => network.status !== 'unsupported')
                             .map(network => (
@@ -224,7 +223,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                             value={selectedDefaultAccount}
                             options={selectableAccounts}
                             formatOptionLabel={(account: Account) => (
-                                <Row gap={spacings.xs}>
+                                <Row gap={8}>
                                     {account.symbol && (
                                         <TokenIcon symbol={account.symbol} size={24} />
                                     )}

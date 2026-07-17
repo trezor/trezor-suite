@@ -1,6 +1,5 @@
 import { TrezorLink } from '@suite/external-links';
 import { Box, Row, SvgImage } from '@trezor/components';
-import { borders } from '@trezor/theme';
 
 type StoreBadgeImageKey = 'APP_STORE' | 'PLAY_STORE';
 
@@ -16,7 +15,7 @@ export const StoreBadge = ({ url, image, onClick }: StoreBadgeProps) => (
             padding={{ horizontal: 12 }}
             height={44}
             cursor="pointer"
-            borderRadius={borders.radii.sm}
+            borderRadius={12}
             backgroundColor="elementFillNeutralSoft"
             backgroundColorOnInteraction="elementFillNeutralSoftHovered"
         >

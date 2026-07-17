@@ -4,7 +4,6 @@ import { useEvent } from 'react-use';
 import styled from 'styled-components';
 
 import { CaretLeftIcon, XIcon } from '@trezor/icons';
-import { borders, negativeSpacings, spacings } from '@trezor/theme';
 
 import { ModalBackdrop } from './ModalBackdrop';
 import { ModalButton } from './ModalButton';
@@ -26,7 +25,7 @@ export const allowedModalFrameProps = ['height', 'maxHeight'] as const satisfies
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedModalFrameProps)[number]>;
 
 const Container = styled.section`
-    border-radius: ${borders.radii.md};
+    border-radius: 16px;
     transition: background 0.3s;
     background: ${({ theme }) => theme.surfaceFillModal};
     outline: 1px solid ${({ theme }) => theme.surfaceBorderModal};
@@ -99,9 +98,9 @@ const ModalBase = ({
                     <Column height="100%">
                         {hasHeader && (
                             <Row
-                                padding={{ horizontal: spacings.md, top: spacings.md }}
+                                padding={{ horizontal: 16, top: 16 }}
                                 alignItems={description ? 'flex-start' : 'center'}
-                                gap={spacings.md}
+                                gap={16}
                                 as="header"
                             >
                                 {onBackClick && (
@@ -157,12 +156,12 @@ const ModalBase = ({
                         <Box position={{ type: 'relative' }} overflow="hidden" flex="1">
                             <ShadowTop />
                             <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
-                                <Column padding={padding ? padding : spacings.md}>
+                                <Column padding={padding ? padding : 16}>
                                     {icon && (
                                         <Box
                                             margin={{
-                                                bottom: spacings.md,
-                                                top: isIconPushedTop ? negativeSpacings.md : 0,
+                                                bottom: 16,
+                                                top: isIconPushedTop ? -16 : 0,
                                             }}
                                         >
                                             <IconCircle icon={icon} size={112} intent={intent} />
@@ -176,12 +175,7 @@ const ModalBase = ({
                         {bottomContent && (
                             <>
                                 <Divider margin={{}} />
-                                <Row
-                                    padding={spacings.md}
-                                    gap={spacings.xs}
-                                    flexWrap="wrap"
-                                    as="footer"
-                                >
+                                <Row padding={16} gap={8} flexWrap="wrap" as="footer">
                                     {bottomContent}
                                 </Row>
                             </>

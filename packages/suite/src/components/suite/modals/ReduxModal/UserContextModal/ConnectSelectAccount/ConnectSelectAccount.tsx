@@ -18,7 +18,6 @@ import { type AccountType } from '@suite-common/wallet-config';
 import { Column, H3, Icon, Modal, Paragraph, Row, SubTabs, Text } from '@trezor/components';
 import { CheckCircleIcon } from '@trezor/icons';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
@@ -227,10 +226,10 @@ export const ConnectSelectAccount = () => {
                     )
                 }
             >
-                <Column gap={spacings.md}>
-                    <Column gap={spacings.xs}>
+                <Column gap={16}>
+                    <Column gap={8}>
                         {exported ? (
-                            <Row alignItems="center" gap={spacings.sm}>
+                            <Row alignItems="center" gap={12}>
                                 <Icon as={CheckCircleIcon} size={32} intent="brand" />
                                 <H3 intent="brand">
                                     <Translation id="TR_CONNECT_SELECT_ACCOUNT_EXPORTED" />
@@ -255,7 +254,7 @@ export const ConnectSelectAccount = () => {
                         )}
                     </Column>
 
-                    <Column gap={spacings.sm}>
+                    <Column gap={12}>
                         {accountTypeTabs.length > 1 && !exported && !isManualAddressPhase && (
                             <SubTabs activeItemId={activeTab.key}>
                                 {accountTypeTabs.map(tab => (
@@ -290,7 +289,7 @@ export const ConnectSelectAccount = () => {
                             </Text>
                         )}
 
-                        <Column gap={spacings.xs}>
+                        <Column gap={8}>
                             {rows.map(candidate => (
                                 <SelectAccountRow
                                     key={`${candidate.accountTypeKey}-${candidate.accountIndex}`}

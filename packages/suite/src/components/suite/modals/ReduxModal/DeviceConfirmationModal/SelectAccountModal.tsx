@@ -8,7 +8,6 @@ import { Card, Column, Icon, Modal, Row, Skeleton, SubTabs, Table } from '@trezo
 import { type UiRequestSelectAccount } from '@trezor/connect';
 import { CaretRightIcon } from '@trezor/icons';
 import { NetworkIcon, isNetworkSymbolWithIcon } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
@@ -70,7 +69,7 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
                     </>
                 }
             >
-                <Column gap={spacings.sm}>
+                <Column gap={12}>
                     <SubTabs activeItemId={selectedAccountType}>
                         {accountTypes?.map((type, index) => (
                             <SubTabs.Item
@@ -118,7 +117,7 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
                                             data-testid={`@select-account-modal/accounts/${account.type}/${account.index}`}
                                         >
                                             <Table.Cell>
-                                                <Row gap={spacings.sm}>
+                                                <Row gap={12}>
                                                     {isNetworkSymbolWithIcon(symbol) && (
                                                         <NetworkIcon
                                                             networkSymbol={symbol}

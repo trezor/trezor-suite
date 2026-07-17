@@ -14,10 +14,10 @@ const Wrapper = styled.div<{ $isGuideOpen?: boolean }>`
     align-items: center;
     background: ${({ theme }) => theme.surfaceFillRaised};
     padding: 20px 24px;
-    margin-right: 34px;
+    margin-right: 32px;
     width: 100%;
     max-width: 360px;
-    border-radius: 5px;
+    border-radius: 4px;
 
     @media only screen and (max-width: ${props =>
             props.$isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
@@ -43,7 +43,7 @@ const ItemText = styled.div`
     width: 100%;
     color: ${({ theme }) => theme.contentPrimary};
     ${typography['body-sm']}
-    padding: 26px 0;
+    padding: 24px 0;
     text-align: left;
 `;
 

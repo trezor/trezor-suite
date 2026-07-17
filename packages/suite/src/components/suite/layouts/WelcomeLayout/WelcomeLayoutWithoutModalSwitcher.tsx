@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { TrafficLightOffset } from '@suite/macos';
 import { Column, Modal, Row, variables } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue
@@ -32,7 +31,7 @@ const Content = styled.div<{ $verticalCenter?: boolean }>`
     `}
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        padding: ${spacingsPx.sm};
+        padding: 12px;
     }
 `;
 

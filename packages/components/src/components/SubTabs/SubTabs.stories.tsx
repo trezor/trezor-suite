@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { type Meta, type StoryObj } from '@storybook/react';
 
 import { CheckIcon, DotsThreeIcon, InfoIcon, WarningIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import {
     SubTabs as SubTabsComponent,
@@ -87,7 +86,7 @@ const SubTabsApp = (props: Partial<SubTabsProps>) => {
     };
 
     return (
-        <Column gap={spacings.md}>
+        <Column gap={16}>
             <SubTabsComponent activeItemId={items[selectedTab]?.id ?? ''} {...props}>
                 {items.map(item => (
                     <SubTabsComponent.Item key={item.id} {...item}>

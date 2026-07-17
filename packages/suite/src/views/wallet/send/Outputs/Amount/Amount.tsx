@@ -20,7 +20,6 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Banner, Flex, Icon, Row, Text } from '@trezor/components';
 import { ArrowsDownUpIcon, ArrowsLeftRightIcon } from '@trezor/icons';
 import { NumberInput } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from 'src/components/suite';
@@ -202,7 +201,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
             <Flex
                 direction={isBelowLaptop ? 'column' : 'row'}
                 alignItems={isBelowLaptop ? 'center' : 'normal'}
-                gap={spacings.sm}
+                gap={12}
             >
                 {showTokenCurrency && (
                     <NumberInput
@@ -254,7 +253,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                                             size={20}
                                             intent="neutral"
                                             priority="secondary"
-                                            margin={{ top: isBelowLaptop ? 0 : spacings.xxxxl }}
+                                            margin={{ top: isBelowLaptop ? 0 : 48 }}
                                         />
                                     )}
                                     <BaseCurrencyInput
@@ -282,7 +281,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
             {isLowAnonymity && (
                 <Banner
                     icon
-                    margin={{ top: spacings.sm }}
+                    margin={{ top: 12 }}
                     description={<Translation id="TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING" />}
                 />
             )}

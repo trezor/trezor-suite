@@ -12,7 +12,7 @@ import {
 import { useServices } from '@suite-common/dependency-injection';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Row } from '@trezor/components';
-import { spacingsPx, zIndices } from '@trezor/theme';
+import { zIndices } from '@trezor/theme';
 
 import { HEADER_HEIGHT } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
@@ -30,9 +30,9 @@ const Container = styled.div<{ $expandable?: boolean }>`
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    gap: ${spacingsPx.xs};
+    gap: 8px;
     min-height: ${HEADER_HEIGHT};
-    padding: ${spacingsPx.xs} ${spacingsPx.md};
+    padding: 8px 16px;
     background: ${({ theme }) => theme.surfaceFillPage};
     border-bottom: 1px solid ${({ theme }) => theme.borderNeutral};
     z-index: ${zIndices.pageHeader};

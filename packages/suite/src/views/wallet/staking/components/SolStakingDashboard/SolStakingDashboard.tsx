@@ -16,7 +16,6 @@ import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Column, Flex, Grid } from '@trezor/components';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 import { useCurrentRef } from '@trezor/react-utils';
-import { spacings } from '@trezor/theme';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { usePagination } from 'src/hooks/general/usePagination';
@@ -93,24 +92,18 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
         <StakingDashboard
             selectedAccount={selectedAccount}
             dashboard={
-                <Column alignItems="normal" gap={spacings.xxxxl}>
+                <Column alignItems="normal" gap={48}>
                     {isStakingActive ? (
                         <>
                             <DashboardSection>
-                                <Column alignItems="normal" gap={spacings.sm}>
+                                <Column alignItems="normal" gap={12}>
                                     {externalStakingProviderCard}
                                     {isDiscoveryRunning && <DiscoveryWarning />}
                                     {shouldShowWarning && <StakingRewardsWarning />}
 
-                                    <Grid
-                                        columns={isBelowLaptop || !canClaim ? 1 : 2}
-                                        gap={spacings.sm}
-                                    >
+                                    <Grid columns={isBelowLaptop || !canClaim ? 1 : 2} gap={12}>
                                         <ClaimCard />
-                                        <Flex
-                                            direction={canClaim ? 'column' : 'row'}
-                                            gap={spacings.sm}
-                                        >
+                                        <Flex direction={canClaim ? 'column' : 'row'} gap={12}>
                                             <ApyCard apy={apy} />
                                             <PayoutCardFrequencyRewards
                                                 rewardFrequency={SOLANA_EPOCH_DAYS}
@@ -132,7 +125,7 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
                             />
                         </>
                     ) : (
-                        <Column alignItems="normal" gap={spacings.sm}>
+                        <Column alignItems="normal" gap={12}>
                             {externalStakingProviderCard}
                             <EmptyStakingCard />
                         </Column>

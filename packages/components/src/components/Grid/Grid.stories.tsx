@@ -1,7 +1,7 @@
 import { type ArgTypes, type Meta, type StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
-import { spacings } from '@trezor/theme';
+import { spacingValues } from '@trezor/theme';
 
 import { Grid as GridComponent, type GridProps, allowedGridFrameProps } from './Grid';
 import { getFramePropsStory } from '../../utils/frameProps';
@@ -49,19 +49,19 @@ const argTypes: Partial<ArgTypes<GridProps>> = {
         },
     },
     gap: {
-        options: Object.values(spacings),
+        options: spacingValues,
         control: {
             type: 'select',
         },
     },
     rowGap: {
-        options: Object.values(spacings),
+        options: spacingValues,
         control: {
             type: 'select',
         },
     },
     columnGap: {
-        options: Object.values(spacings),
+        options: spacingValues,
         control: {
             type: 'select',
         },

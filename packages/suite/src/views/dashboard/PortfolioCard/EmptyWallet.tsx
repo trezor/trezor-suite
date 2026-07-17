@@ -10,14 +10,13 @@ import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Box, Button, Column, H3, Illustration, Paragraph, Row } from '@trezor/components';
 import { ArrowDownIcon, CurrencyCircleDollarIcon } from '@trezor/icons';
 import { NetworkIconSet } from '@trezor/product-components';
-import { borders } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const RoundedBorder = styled.div`
     padding: 4px 6px 4px 12px;
     border: dashed 1px ${({ theme }) => theme.elementBorderField};
-    border-radius: ${borders.radii.full};
+    border-radius: calc(infinity * 1px);
 `;
 
 export const EmptyWallet = () => {

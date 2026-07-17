@@ -1,7 +1,6 @@
 import { Translation } from '@suite/intl';
 import { type Network } from '@suite-common/wallet-config';
 import { Table } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite';
 
@@ -25,7 +24,7 @@ export const AssetTokenRow = ({
             <Table.Cell align="center">
                 <Section $dashedLinePosition="topToMiddle">{tokenIconSetWrapper}</Section>
             </Table.Cell>
-            <Table.Cell padding={{ left: spacings.zero }}>
+            <Table.Cell padding={{ left: 0 }}>
                 <Translation id="TR_NAV_TOKENS" />
             </Table.Cell>
             <Table.Cell colSpan={4}>

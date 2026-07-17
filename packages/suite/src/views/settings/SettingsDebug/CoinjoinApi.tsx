@@ -13,7 +13,6 @@ import { selectReloadAppDep } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Button } from '@trezor/components';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -44,7 +43,7 @@ const CoordinatorVersion = ({ version }: CoordinatorVersionProps) => {
                 intent="neutral"
                 priority="secondary"
                 href={`https://github.com/zkSNACKs/WalletWasabi/commit/${version.commitHash}`}
-                margin={{ left: spacings.xxs }}
+                margin={{ left: 4 }}
             >
                 {version.commitHash}
             </Button>

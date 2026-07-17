@@ -1,7 +1,7 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { spacingsNew } from '@trezor/theme';
+import { spacingValues } from '@trezor/theme';
 
 import {
     NetworkIconSet as NetworkIconSetComponent,
@@ -56,7 +56,7 @@ export const NetworkIconSet: StoryObj<NetworkIconSetProps> = {
             },
         },
         gap: {
-            options: spacingsNew,
+            options: spacingValues,
             control: {
                 type: 'select',
             },

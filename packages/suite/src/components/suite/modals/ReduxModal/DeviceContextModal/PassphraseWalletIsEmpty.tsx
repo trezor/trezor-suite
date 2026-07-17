@@ -6,7 +6,6 @@ import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Button, Card, Column, H3, Paragraph, Row } from '@trezor/components';
 import { PlusIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -44,7 +43,7 @@ const PassphraseWalletIsEmptyContent = ({
     );
 
     return (
-        <Column gap={spacings.sm}>
+        <Column gap={12}>
             <H3>
                 <Translation
                     id={
@@ -55,7 +54,7 @@ const PassphraseWalletIsEmptyContent = ({
                 />
             </H3>
             <Card paddingType="small">
-                <Column gap={spacings.sm} alignItems="center">
+                <Column gap={12} alignItems="center">
                     <Paragraph typographyStyle="body-md-strong">
                         <Translation
                             id={
@@ -76,12 +75,12 @@ const PassphraseWalletIsEmptyContent = ({
                 </Column>
             </Card>
             <Card paddingType="small">
-                <Column gap={spacings.xxxs} alignItems="flex-start">
+                <Column gap={2} alignItems="flex-start">
                     <Paragraph typographyStyle="body-md-strong">
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_WITH_FUNDS_DESCRIPTION" />
                     </Paragraph>
                     {!areAllNetworksEnabled && (
-                        <Row gap={spacings.xs} flexWrap="wrap">
+                        <Row gap={8} flexWrap="wrap">
                             <Paragraph
                                 intent="neutral"
                                 priority="secondary"
@@ -89,7 +88,7 @@ const PassphraseWalletIsEmptyContent = ({
                             >
                                 <Translation id="TR_READY_ON" />:
                             </Paragraph>
-                            <Row gap={spacings.xxs} flexWrap="wrap">
+                            <Row gap={4} flexWrap="wrap">
                                 {enabledNetworks.map(network => (
                                     <TokenIcon key={network} symbol={network} size={16} />
                                 ))}
@@ -116,7 +115,7 @@ const PassphraseWalletIsEmptyContent = ({
                         intent="neutral"
                         priority="secondary"
                         onClick={onRetry}
-                        margin={{ top: spacings.md }}
+                        margin={{ top: 16 }}
                         data-testid="@passphrase-confirmation/step1-retry-button"
                     >
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_WITH_FUNDS_BUTTON" />

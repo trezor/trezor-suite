@@ -7,7 +7,6 @@ import { Card, Column, H3, H4, Modal, Paragraph } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { AppWindowIcon, CaretLeftIcon } from '@trezor/icons';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { spacings } from '@trezor/theme';
 
 import { Metadata } from 'src/components/suite';
 import { useDispatch, useLayout, useSelector } from 'src/hooks/suite';
@@ -106,7 +105,7 @@ export const BridgeRequested = () => {
             }
         >
             <Metadata title="Bridge | Trezor Suite" />
-            <Column gap={spacings.xxs}>
+            <Column gap={4}>
                 <H3>
                     <Translation id="TR_TREZOR_CONNECT" />
                 </H3>
@@ -120,7 +119,7 @@ export const BridgeRequested = () => {
                         <Translation id="TR_BRIDGE_TIP_AUTOSTART" />
                     </H4>
                 }
-                margin={{ top: spacings.xxl }}
+                margin={{ top: 32 }}
             >
                 <AutoStart />
             </Card>

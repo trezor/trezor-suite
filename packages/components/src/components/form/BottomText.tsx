@@ -2,8 +2,6 @@ import { type ReactNode } from 'react';
 
 import styled, { keyframes } from 'styled-components';
 
-import { spacings } from '@trezor/theme';
-
 import { Row } from '../Flex/Flex';
 import { Icon, type IconComponent, type IconProps } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
@@ -50,7 +48,7 @@ export const BottomText = ({
 
     return (
         <Container>
-            <Row gap={spacings.xxs}>
+            <Row gap={4}>
                 {iconComponent ?? (icon && <Icon as={icon} size={16} {...iconProps} />)}
                 <Text
                     data-testid={dataTestId}

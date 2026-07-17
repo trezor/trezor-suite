@@ -28,7 +28,6 @@ import {
     PictureFrameIcon,
     PlusIcon,
 } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 import { arrayPartition } from '@trezor/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -166,7 +165,7 @@ export const TokensNavigation = ({
                     </SubTabs.Item>
                 ))}
             </SubTabs>
-            <Row gap={spacings.sm}>
+            <Row gap={12}>
                 {showManualActivation && onManualActivation && (
                     <Button
                         intent="neutral"

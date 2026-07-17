@@ -1,7 +1,6 @@
 import { type JSX, type ReactNode } from 'react';
 
 import { Checkbox, Column, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 interface CheckItemProps {
     title: ReactNode;
@@ -20,7 +19,7 @@ export const CheckItem = ({
     ...rest
 }: CheckItemProps) => (
     <Checkbox isChecked={isChecked} onChange={onClick} {...rest}>
-        <Column alignItems="flex-start" gap={spacings.xs}>
+        <Column alignItems="flex-start" gap={8}>
             <Paragraph>{title}</Paragraph>
             {description && (
                 <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">

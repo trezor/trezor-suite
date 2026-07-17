@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { selectThpPairingRequestId } from '@suite-common/thp';
 import { PinInput, Row, Spinner } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-import { type SpacingValues } from '@trezor/theme';
+import { type SignedSpacingValue } from '@trezor/theme';
 
 const SPINNER_SIZE = 32;
 
@@ -39,7 +39,7 @@ export const ThpPairingCodeEntry = ({ disabled, lastCode }: ThpPairingPinEntryPr
                     ? // This is a bit hack, but I think it is better to make it explicitly
                       // bound to SPINNER_SIZE+gap so it is clear why it is shifted (to prevent jumping)
                       // This is relevant only when parent component sets margin (e.g., centering)
-                      (-(SPINNER_SIZE + 24) as SpacingValues)
+                      (-(SPINNER_SIZE + 24) as SignedSpacingValue)
                     : undefined,
             }}
             width="fit-content" // This is important because of the above negative margin hack

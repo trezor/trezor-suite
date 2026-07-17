@@ -1,6 +1,5 @@
 import { selectLanguage } from '@suite/settings';
 import { Row, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
@@ -16,7 +15,7 @@ export const TradingFormOfferFiatAmount = ({ amount }: TradingFormOfferFiatAmoun
         amount && !Number.isNaN(parsed) ? new Intl.NumberFormat(locale).format(parsed) : '';
 
     return (
-        <Row gap={spacings.sm}>
+        <Row gap={12}>
             <Text
                 data-testid="@trading/best-offer/amount"
                 typographyStyle="headline-md"

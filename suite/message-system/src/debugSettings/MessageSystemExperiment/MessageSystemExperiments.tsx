@@ -17,7 +17,6 @@ import { type Experiments } from '@suite-common/suite-types';
 import { Banner, Button, Column, Divider, Modal } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { CopyIcon, TrashIcon } from '@trezor/icons';
-import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { MessageSystemExperimentDetail } from './MessageSystemExperimentDetail';
 import { MessageSystemExperimentFilters } from './MessageSystemExperimentFilters';
@@ -27,11 +26,11 @@ import { MessageSystemFormExperiment } from '../MessageSystemForm/MessageSystemF
 
 const MessageContainer = styled.div<{ $active: boolean }>`
     display: flex;
-    gap: ${spacingsPx.sm};
-    border-radius: ${borders.radii.sm};
+    gap: 12px;
+    border-radius: 12px;
     background-color: ${({ theme, $active }) =>
         $active ? theme.elementFillBrandSofter : theme.elementFillNeutralSofter};
-    padding: ${spacingsPx.sm};
+    padding: 12px;
 `;
 
 type MessageSystemManagerProps = {
@@ -73,7 +72,7 @@ export const MessageSystemExperiments = ({
             heading={`Experiments (${allValidExperiments.length} active of ${experiments.length})`}
             bottomContent={<MessageSystemFormExperiment />}
         >
-            <Column gap={spacings.sm}>
+            <Column gap={12}>
                 <MessageSystemExperimentFilters
                     showActive={showActive}
                     onToggleActive={() => setShowActive(prev => !prev)}
@@ -98,7 +97,7 @@ export const MessageSystemExperiments = ({
 
                     return (
                         <MessageContainer key={`${experiment.id}-${index}`} $active={isActive}>
-                            <Column flex="1" gap={spacings.md}>
+                            <Column flex="1" gap={16}>
                                 <MessageSystemExperimentDetail
                                     experiment={experiment}
                                     activeGroup={assignedGroup}
@@ -107,7 +106,7 @@ export const MessageSystemExperiments = ({
                                 <Divider color="elementFillContrast" />
                                 <MessageSystemConditionGroup conditions={conditions} />
                             </Column>
-                            <Column gap={spacings.xs}>
+                            <Column gap={8}>
                                 <MessageSystemExperimentInfo
                                     assignedGroup={assignedGroup}
                                     isActive={isActive}
@@ -115,7 +114,7 @@ export const MessageSystemExperiments = ({
                                     experiment={experiment}
                                     inclusionOverride={inclusionOverride}
                                 />
-                                <Column alignItems="flex-end" gap={spacings.xs}>
+                                <Column alignItems="flex-end" gap={8}>
                                     <Button
                                         size="small"
                                         iconLeft={CopyIcon}

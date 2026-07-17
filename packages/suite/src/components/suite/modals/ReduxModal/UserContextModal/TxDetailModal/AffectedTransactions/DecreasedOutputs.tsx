@@ -16,7 +16,6 @@ import {
     TextButton,
 } from '@trezor/components';
 import { ArrowRightIcon, WarningIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 import { HELP_CENTER_REPLACE_BY_FEE_BITCOIN } from '@trezor/urls';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
@@ -107,7 +106,7 @@ export const DecreasedOutputs = () => {
 
     return (
         <Card type="contrast" paddingType="none">
-            <Row justifyContent="space-between" alignItems="center" padding={spacings.md}>
+            <Row justifyContent="space-between" alignItems="center" padding={16}>
                 <Text typographyStyle="body-md">
                     <Translation id="TR_AMOUNT_REDUCED_TXS" />
                 </Text>
@@ -116,8 +115,8 @@ export const DecreasedOutputs = () => {
                 </TextButton>
             </Row>
 
-            <Divider margin={spacings.zero} />
-            <Column margin={spacings.md} gap={spacings.md}>
+            <Divider margin={0} />
+            <Column margin={16} gap={16}>
                 <Banner
                     intent="warning"
                     data-testid="@send/decreased-outputs"
@@ -129,7 +128,7 @@ export const DecreasedOutputs = () => {
                         <Translation id="TR_DECREASED_AMOUNT_SELECTION_EXPLANATION" />
                     </Text>
                 )}
-                <Column gap={spacings.md} alignItems="center">
+                <Column gap={16} alignItems="center">
                     {formValues.outputs.flatMap((output, i) => {
                         if (typeof output.address !== 'string') return null;
                         const isChecked = setMaxOutputId === i;
@@ -148,7 +147,7 @@ export const DecreasedOutputs = () => {
                                 }
                                 isSelected={useRadio && isChecked}
                             >
-                                <Row gap={spacings.sm}>
+                                <Row gap={12}>
                                     <AmountItem
                                         labelTranslationKey="TR_RBF_ORIGINAL_AMOUNT"
                                         amount={output.amount}

@@ -12,7 +12,6 @@ import {
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getStakingDataForNetwork, isCardanoStakedWithEverstake } from '@suite-common/wallet-utils';
 import { Column, Flex, Grid } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
@@ -68,20 +67,17 @@ export const AdaStakingDashboard = ({ selectedAccount }: AdaStakingDashboardProp
         <StakingDashboard
             selectedAccount={selectedAccount}
             dashboard={
-                <Column alignItems="normal" gap={spacings.xxxxl}>
+                <Column alignItems="normal" gap={48}>
                     {shouldShowStakingDashboard ? (
                         <DashboardSection>
-                            <Column alignItems="normal" gap={spacings.sm}>
+                            <Column alignItems="normal" gap={12}>
                                 {isDiscoveryRunning && <DiscoveryWarning />}
 
                                 <CardanoNewProviderCard account={account} />
 
-                                <Grid
-                                    columns={isBelowLaptop || !canClaim ? 1 : 2}
-                                    gap={spacings.sm}
-                                >
+                                <Grid columns={isBelowLaptop || !canClaim ? 1 : 2} gap={12}>
                                     <ClaimCard />
-                                    <Flex direction={canClaim ? 'column' : 'row'} gap={spacings.sm}>
+                                    <Flex direction={canClaim ? 'column' : 'row'} gap={12}>
                                         <ApyCard apy={isStakedWithEverstake ? apy : undefined} />
                                         <PayoutCardFrequencyRewards
                                             rewardFrequency={CARDANO_EPOCH_DAYS}

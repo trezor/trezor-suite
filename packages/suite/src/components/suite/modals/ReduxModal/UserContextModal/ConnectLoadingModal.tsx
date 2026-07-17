@@ -1,6 +1,5 @@
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { Card, Column, Modal, Row, Spinner } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
@@ -20,9 +19,9 @@ export const ConnectLoadingModal = () => {
                 heading={popupCall.methodInfo.methodTitle}
                 description={<ConnectCallSource />}
             >
-                <Column gap={spacings.xs}>
+                <Column gap={8}>
                     <Card>
-                        <Row alignItems="center" justifyContent="center" margin={spacings.xxl}>
+                        <Row alignItems="center" justifyContent="center" margin={32}>
                             <Spinner size={40} isDisabled={true} />
                         </Row>
                     </Card>

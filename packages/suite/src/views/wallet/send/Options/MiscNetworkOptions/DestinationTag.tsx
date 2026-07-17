@@ -5,7 +5,6 @@ import { U_INT_32 } from '@suite-common/wallet-constants';
 import { isInteger } from '@suite-common/wallet-utils';
 import { Banner, Button, Card, Column, Input, Note, Row, Switch } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { useGuideOpenNode } from 'src/hooks/guide';
@@ -75,7 +74,7 @@ export const DestinationTag = ({ networkSymbol }: DestinationTagProps) => {
 
     return (
         <Card>
-            <Column gap={spacings.md}>
+            <Column gap={16}>
                 <Row justifyContent="space-between">
                     <Switch
                         isChecked={destinationEnabled}
@@ -108,7 +107,7 @@ export const DestinationTag = ({ networkSymbol }: DestinationTagProps) => {
                             innerRef={inputRef}
                             {...inputField}
                         />
-                        <Note gap={spacings.xs}>
+                        <Note gap={8}>
                             <Translation id="DESTINATION_TAG_NOTE" />
                         </Note>
                     </>

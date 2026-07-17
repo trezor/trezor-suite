@@ -4,7 +4,6 @@ import { AnimatePresence, type BezierDefinition, type Variants, motion } from 'f
 import styled from 'styled-components';
 
 import { Column, Grid, Row } from '@trezor/components';
-import { borders } from '@trezor/theme';
 
 import { CarouselIndicator } from './CarouselIndicator';
 
@@ -76,7 +75,7 @@ export const BannerCarousel = ({ banners, onClose, onCTAClick }: BannerCarouselP
 
     return (
         <Column alignItems="center" width="100%">
-            <Grid columns="1fr" width="100%" borderRadius={borders.radii.sm} overflow="hidden">
+            <Grid columns="1fr" width="100%" borderRadius={12} overflow="hidden">
                 <AnimatePresence initial={false} custom={direction}>
                     <Slide
                         key={activeBanner.key}

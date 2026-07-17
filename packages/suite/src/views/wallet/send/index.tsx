@@ -15,7 +15,6 @@ import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { selectBaseCurrency, selectFees, selectSendRaw } from '@suite-common/wallet-core';
 import { Banner, Column } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
-import { spacings, spacingsPx } from '@trezor/theme';
 
 import { ConfirmEvmExplanationModal } from 'src/components/suite/modals/ConfirmEvmExplanationModal';
 import { WalletLayout } from 'src/components/wallet';
@@ -31,7 +30,7 @@ import { SendRaw } from './SendRaw';
 import { TotalSent } from './TotalSent/TotalSent';
 
 const FormGrid = styled.div`
-    gap: ${spacingsPx.md};
+    gap: 16px;
 
     ${SCREEN_QUERY.ABOVE_DESKTOP} {
         display: grid;
@@ -103,7 +102,7 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
         <WalletLayout title="TR_NAV_SEND" isSubpage account={selectedAccount}>
             <SendContext.Provider value={sendContextValues}>
                 <FormProvider {...sendContextValues.methods}>
-                    <Column gap={spacings.xl}>
+                    <Column gap={24}>
                         <SendHeader />
 
                         <FormGrid data-testid="@wallet/send/outputs-and-options">

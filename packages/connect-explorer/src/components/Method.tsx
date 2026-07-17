@@ -15,7 +15,6 @@ import {
     variables,
 } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
-import { spacingsPx } from '@trezor/theme';
 
 import * as methodActions from '../actions/methodActions';
 import { useActions, useSelector } from '../hooks';
@@ -172,7 +171,7 @@ const Container = styled.div`
     border-radius: 12px;
     width: 100%;
     overflow-x: auto;
-    padding: ${spacingsPx.sm} ${spacingsPx.md};
+    padding: 12px 16px;
     overflow-wrap: break-word;
     word-break: break-all;
     min-height: 150px;

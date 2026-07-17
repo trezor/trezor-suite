@@ -21,7 +21,6 @@ import {
 import { Banner, Card, Column, IconButton, Link, Row, Text } from '@trezor/components';
 import { CaretDownIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import { BaseCurrencyValue, FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
@@ -112,7 +111,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
 
             <Card type="raised" paddingType="normal" onClick={onOpenTokensModal}>
                 <Row justifyContent="space-between" height={64}>
-                    <Row justifyContent="flex-start" gap={spacings.sm}>
+                    <Row justifyContent="flex-start" gap={12}>
                         {selectedToken ? (
                             <TokenIcon
                                 symbol={account.symbol}
@@ -163,7 +162,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                         priority="secondary"
                                         typographyStyle="body-sm"
                                     >
-                                        <Row gap={spacings.xxs}>
+                                        <Row gap={4}>
                                             <Translation
                                                 id={getTokenAddressTranslationId(
                                                     account.networkType,

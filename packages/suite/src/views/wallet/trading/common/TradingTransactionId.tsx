@@ -2,7 +2,6 @@ import { Translation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Button, Row, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { spacings } from '@trezor/theme';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -20,7 +19,7 @@ export const TradingTransactionId = ({ transactionId }: TradingTransactionIdProp
     };
 
     return (
-        <Row margin={{ top: spacings.sm }} gap={spacings.xs}>
+        <Row margin={{ top: 12 }} gap={8}>
             <Text
                 intent="neutral"
                 priority="secondary"

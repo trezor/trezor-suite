@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { InfoIcon } from '@trezor/icons';
-import { type SpacingValues, spacings } from '@trezor/theme';
+import { type SpacingValue } from '@trezor/theme';
 
 import { type FrameProps, type FramePropsKeys } from '../../utils/frameProps';
 import { Row } from '../Flex/Flex';
@@ -17,7 +17,7 @@ export type NoteProps = AllowedFrameProps & {
     intent?: TextIntent;
     priority?: TextPriority;
     isDisabled?: boolean;
-    gap?: SpacingValues;
+    gap?: SpacingValue;
     children: ReactNode;
     'data-testid'?: string;
     isInverse?: boolean;
@@ -27,7 +27,7 @@ export const Note = ({
     children,
     icon = InfoIcon,
     margin,
-    gap = spacings.xxs,
+    gap = 4,
     minWidth,
     intent = 'neutral',
     priority = 'secondary',

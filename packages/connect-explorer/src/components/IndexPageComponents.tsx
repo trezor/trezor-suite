@@ -3,20 +3,18 @@ import type { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Card, variables } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
-
 export const SectionCard = ({ children }: { children: ReactNode }) => (
-    <Card margin={{ bottom: spacings.xl }}>{children}</Card>
+    <Card margin={{ bottom: 24 }}>{children}</Card>
 );
 
 export const SdkHeading = styled.h2`
     display: flex;
     flex-flow: row wrap;
     align-items: center;
-    gap: ${spacingsPx.sm};
+    gap: 12px;
     font-size: 1.5rem;
     font-weight: 600;
-    margin-bottom: ${spacingsPx.sm};
+    margin-bottom: 12px;
 `;
 
 export const HiddenNextraHeading = styled.div`
@@ -38,8 +36,8 @@ export const SdkTag = styled.div`
 export const SdkContainer = styled.div`
     display: grid;
     grid-template-columns: 1fr;
-    margin-top: ${spacingsPx.xxl};
-    gap: ${spacingsPx.xxl};
+    margin-top: 32px;
+    gap: 32px;
 
     @media (min-width: ${variables.SCREEN_SIZE.LG}) {
         grid-template-columns: 2fr 1fr;
@@ -50,7 +48,7 @@ export const SdkDescription = styled.div``;
 
 export const ExamplesAside = styled.div`
     p {
-        margin-top: ${spacingsPx.xs};
+        margin-top: 8px;
     }
 
     ul {

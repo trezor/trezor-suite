@@ -7,7 +7,7 @@ import {
     DeviceWithScene,
     getLargeModelImagePath,
 } from '@trezor/product-components';
-import { borders, breakpoints } from '@trezor/theme';
+import { breakpoints } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { ContentFlex } from 'src/support/suite/ContentFlex';
@@ -57,7 +57,7 @@ export const SecurityCheckLayout = ({
             {model && (
                 <Box
                     backgroundColor="surfaceFillRaised"
-                    borderRadius={borders.radii.sm}
+                    borderRadius={12}
                     padding={32}
                     width="100%"
                     maxWidth={260}

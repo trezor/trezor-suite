@@ -5,7 +5,6 @@ import { type SignOperator } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import type { CryptoGraphProps } from 'src/components/suite/graph/types';
@@ -26,7 +25,7 @@ const formatAmount = (
     return (
         <Row>
             {amount && (
-                <Row margin={{ right: spacings.xxs }}>
+                <Row margin={{ right: 4 }}>
                     <FormattedCryptoAmount
                         value={amount}
                         symbol={symbol}

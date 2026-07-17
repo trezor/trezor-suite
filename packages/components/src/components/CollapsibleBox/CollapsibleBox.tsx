@@ -3,7 +3,6 @@ import { type ReactNode, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { CaretCircleDownIcon } from '@trezor/icons';
-import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { type FillType, type HeadingSize, type PaddingType } from './types';
 import {
@@ -66,7 +65,7 @@ export type CollapsibleBoxProps = AllowedFrameProps & {
 
 const Container = styled.section<TransientProps<AllowedFrameProps> & ContainerProps>`
     width: 100%;
-    border-radius: ${borders.radii.sm};
+    border-radius: 12px;
     transition: background 0.3s;
     background: ${({ theme }) => theme.surfaceFillRaised};
     outline: 1px solid ${({ theme }) => theme.surfaceBorderRaised};
@@ -74,7 +73,7 @@ const Container = styled.section<TransientProps<AllowedFrameProps> & ContainerPr
     ${({ $paddingType }) =>
         $paddingType === 'large' &&
         css`
-            border-radius: ${borders.radii.md};
+            border-radius: 16px;
         `}
 
     ${({ $fillType }) =>
@@ -114,7 +113,7 @@ const Content = styled.div<ContentProps>`
         `}
 
     ${({ $paddingType, $hasDivider }) => css`
-        ${$paddingType === 'none' && $hasDivider && `margin-top: ${spacingsPx.xs};`}
+        ${$paddingType === 'none' && $hasDivider && `margin-top: 8px;`}
         ${$paddingType !== 'none' && !$hasDivider && `padding-top: 0;`}
     `}
 `;
@@ -146,7 +145,7 @@ export const CollapsibleBox = ({
     ) as TransientProps<AllowedFrameProps>;
 
     const headerContent = (
-        <Row gap={spacings.xs} justifyContent="space-between">
+        <Row gap={8} justifyContent="space-between">
             <Column alignItems="flex-start">
                 <Text
                     as="div"
@@ -170,7 +169,7 @@ export const CollapsibleBox = ({
                 )}
             </Column>
             <Toggle>
-                <Row gap={spacings.sm}>
+                <Row gap={12}>
                     {toggleLabel && (
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                             {toggleLabel}

@@ -3,7 +3,6 @@ import { type NetworkType } from '@suite-common/wallet-config';
 import { type RbfTransactionType } from '@suite-common/wallet-types';
 import { Box, Card, Column, IconCircle, Text, TextButton } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 import {
     HELP_CENTER_CANCEL_TRANSACTION,
     HELP_CENTER_REPLACE_BY_FEE_BITCOIN,
@@ -53,8 +52,8 @@ export const ReplaceByFeeFailedOriginalTxConfirmed = ({
 
     return (
         <Card type="contrast">
-            <Column gap={spacings.xs}>
-                <Box margin={{ bottom: spacings.md }}>
+            <Column gap={8}>
+                <Box margin={{ bottom: 16 }}>
                     <IconCircle icon={WarningIcon} size={112} intent="critical" />
                 </Box>
 

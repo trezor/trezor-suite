@@ -9,7 +9,6 @@ import {
     getAccountTotalStakingBalance,
 } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
-import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
@@ -21,13 +20,13 @@ const Section = styled.div<{ $selected?: boolean; $isSidebarCollapsed?: boolean 
     display: flex;
     flex-direction: column;
     position: relative;
-    border-radius: ${borders.radii.sm};
+    border-radius: 12px;
 
     outline: 1px solid
         ${({ theme, $selected }) => ($selected ? theme.elementBorderNeutralSofter : 'transparent')};
     outline-offset: -1px;
-    padding: ${spacingsPx.xxs};
-    margin: 0 -${spacingsPx.xxs};
+    padding: 4px;
+    margin: 0 -4px;
 
     &::before {
         content: '';
@@ -80,7 +79,7 @@ export const AccountItemsGroup = ({
 
     return (
         <Section $selected={selected} $isSidebarCollapsed={isSidebarCollapsed}>
-            <Column gap={spacings.xxs}>
+            <Column gap={4}>
                 <AccountItem
                     type="coin"
                     account={account}
