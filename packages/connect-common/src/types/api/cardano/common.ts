@@ -1,5 +1,5 @@
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
-import type { Static } from '@trezor/schema-utils';
+import type { Static, TUnsafe } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
 import { CARDANO } from '../../../constants';
@@ -246,8 +246,33 @@ export const CardanoAuxiliaryData = Type.Object({
     cVoteRegistrationParameters: Type.Optional(CardanoCVoteRegistrationParameters),
 });
 
-export type CardanoSignTransaction = Static<typeof CardanoSignTransaction>;
-export const CardanoSignTransaction = Type.Object({
+export type CardanoSignTransaction = {
+    inputs: CardanoInput[];
+    outputs: CardanoOutput[];
+    fee: string | number;
+    ttl?: string | number;
+    certificates?: CardanoCertificate[];
+    withdrawals?: CardanoWithdrawal[];
+    validityIntervalStart?: string;
+    auxiliaryData?: CardanoAuxiliaryData;
+    mint?: CardanoMint;
+    scriptDataHash?: string;
+    collateralInputs?: CardanoCollateralInput[];
+    requiredSigners?: CardanoRequiredSigner[];
+    collateralReturn?: CardanoOutput;
+    totalCollateral?: string;
+    referenceInputs?: CardanoReferenceInput[];
+    additionalWitnessRequests?: DerivationPath[];
+    protocolMagic: number;
+    networkId: number;
+    signingMode: Static<typeof PROTO.EnumCardanoTxSigningMode>;
+    derivationType?: Static<typeof PROTO.EnumCardanoDerivationType>;
+    includeNetworkId?: boolean;
+    chunkify?: boolean;
+    tagCborSets?: boolean;
+    payment_req?: Static<typeof PROTO.PaymentRequest>;
+};
+export const CardanoSignTransaction: TUnsafe<CardanoSignTransaction> = Type.Object({
     inputs: Type.Array(CardanoInput),
     outputs: Type.Array(CardanoOutput),
     fee: Type.Uint(),
@@ -274,17 +299,24 @@ export const CardanoSignTransaction = Type.Object({
     payment_req: Type.Optional(PROTO.PaymentRequest),
 });
 
-export type CardanoSignTransactionExtended = Static<typeof CardanoSignTransactionExtended>;
-export const CardanoSignTransactionExtended = Type.Intersect([
-    CardanoSignTransaction,
-    Type.Object({
-        unsignedTx: Type.Object({
-            body: Type.String(),
-            hash: Type.String(),
+export type CardanoSignTransactionExtended = CardanoSignTransaction & {
+    unsignedTx: {
+        body: string;
+        hash: string;
+    };
+    testnet: boolean;
+};
+export const CardanoSignTransactionExtended: TUnsafe<CardanoSignTransactionExtended> =
+    Type.Intersect([
+        CardanoSignTransaction,
+        Type.Object({
+            unsignedTx: Type.Object({
+                body: Type.String(),
+                hash: Type.String(),
+            }),
+            testnet: Type.Boolean(),
         }),
-        testnet: Type.Boolean(),
-    }),
-]);
+    ]);
 
 export type CardanoSignedTxWitness = Static<typeof CardanoSignedTxWitness>;
 export const CardanoSignedTxWitness = Type.Object({
