@@ -11,14 +11,14 @@ import {
 
 const ACTION_PREFIX = '@suite-common/connect-popup';
 
+type InitiateCallPayload = Pick<
+    ConnectPopupCall & { state: 'ongoing' },
+    'method' | 'methodInfo' | 'source' | 'payload'
+>;
+
 const initiateCall = createAction(
     `${ACTION_PREFIX}/initiateCall`,
-    (
-        payload: Pick<
-            ConnectPopupCall & { state: 'ongoing' },
-            'method' | 'methodInfo' | 'source' | 'payload'
-        >,
-    ) => ({
+    (payload: InitiateCallPayload) => ({
         payload,
     }),
 );
@@ -35,65 +35,70 @@ const finishCall = createAction(`${ACTION_PREFIX}/finishCall`);
 
 const clearCall = createAction(`${ACTION_PREFIX}/clearCall`);
 
+type ConfirmAddressesPayload = Pick<
+    ConnectPopupCall & { state: 'address-confirmation' },
+    'addresses' | 'exported'
+>;
+
 const confirmAddresses = createAction(
     `${ACTION_PREFIX}/confirmAddresses`,
-    (
-        payload: Pick<
-            ConnectPopupCall & { state: 'address-confirmation' },
-            'addresses' | 'exported'
-        >,
-    ) => ({
+    (payload: ConfirmAddressesPayload) => ({
         payload,
     }),
 );
+
+type SelectAccountPayload = Pick<
+    ConnectPopupCallWithState<'select-account'>,
+    'options' | 'selectedAccountTypeKey' | 'candidates' | 'page' | 'exported' | 'manualPhase'
+>;
 
 const selectAccount = createAction(
     `${ACTION_PREFIX}/selectAccount`,
-    (
-        payload: Pick<
-            ConnectPopupCallWithState<'select-account'>,
-            | 'options'
-            | 'selectedAccountTypeKey'
-            | 'candidates'
-            | 'page'
-            | 'exported'
-            | 'manualPhase'
-        >,
-    ) => ({
+    (payload: SelectAccountPayload) => ({
         payload,
     }),
 );
+
+type UpdateSelectAccountPayload = Partial<
+    Pick<
+        ConnectPopupCallWithState<'select-account'>,
+        | 'selectedAccountTypeKey'
+        | 'candidates'
+        | 'page'
+        | 'exported'
+        | 'totalCandidates'
+        | 'manualPhase'
+        | 'manualAccountIndex'
+    >
+>;
 
 const updateSelectAccount = createAction(
     `${ACTION_PREFIX}/updateSelectAccount`,
-    (
-        payload: Partial<
-            Pick<
-                ConnectPopupCallWithState<'select-account'>,
-                | 'selectedAccountTypeKey'
-                | 'candidates'
-                | 'page'
-                | 'exported'
-                | 'totalCandidates'
-                | 'manualPhase'
-                | 'manualAccountIndex'
-            >
-        >,
-    ) => ({
+    (payload: UpdateSelectAccountPayload) => ({
         payload,
     }),
 );
+
+type SetSelectedAccountKeyPayload = Pick<
+    ConnectPopupCall & { state: 'ongoing' },
+    'selectedAccountKey'
+>;
 
 const setSelectedAccountKey = createAction(
     `${ACTION_PREFIX}/setSelectedAccountKey`,
-    (payload: Pick<ConnectPopupCall & { state: 'ongoing' }, 'selectedAccountKey'>) => ({
+    (payload: SetSelectedAccountKeyPayload) => ({
         payload,
     }),
 );
 
+type DeeplinkCallbackPayload = Pick<
+    ConnectPopupCall & { state: 'deeplink-callback' },
+    'callbackUrl'
+>;
+
 const deeplinkCallback = createAction(
     `${ACTION_PREFIX}/deeplinkCallback`,
-    (payload: Pick<ConnectPopupCall & { state: 'deeplink-callback' }, 'callbackUrl'>) => ({
+    (payload: DeeplinkCallbackPayload) => ({
         payload,
     }),
 );
@@ -130,16 +135,23 @@ const setAppSilentMode = createAction(
     }),
 );
 
+type TxSimulationPayload = Pick<ConnectPopupCallWithState<'tx-simulation'>, 'fromAddress'>;
+
 const txSimulation = createAction(
     `${ACTION_PREFIX}/txSimulation`,
-    (payload: Pick<ConnectPopupCallWithState<'tx-simulation'>, 'fromAddress'>) => ({
+    (payload: TxSimulationPayload) => ({
         payload,
     }),
 );
 
+type SetSelectedFeePayload = Pick<
+    ConnectPopupCallWithState<'tx-simulation' | 'ongoing'>,
+    'selectedFee'
+>;
+
 const setSelectedFee = createAction(
     `${ACTION_PREFIX}/txSimulationSetFee`,
-    (payload: Pick<ConnectPopupCallWithState<'tx-simulation' | 'ongoing'>, 'selectedFee'>) => ({
+    (payload: SetSelectedFeePayload) => ({
         payload,
     }),
 );

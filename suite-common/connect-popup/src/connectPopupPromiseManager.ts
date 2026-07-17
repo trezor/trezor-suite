@@ -1,6 +1,9 @@
 import { type CallMethodAnyResponse } from '@trezor/connect';
 import { type Deferred, createDeferred } from '@trezor/utils';
 
+type GetDeferred<Resolve> = (clear?: boolean) => Deferred<Resolve>;
+type AwaitDeferred = () => Promise<void>;
+
 // Custom helper, createDeferredManager didn't fit the needs here
 const createDeferredWrapper = <Resolve = void>(id: string) => {
     let _deferred: Deferred<Resolve> | undefined;
@@ -30,9 +33,10 @@ const createDeferredWrapper = <Resolve = void>(id: string) => {
 
 // Deferred for the entire Connect call
 const callDeferredWrapper = createDeferredWrapper<Awaited<CallMethodAnyResponse>>('popup-call');
-export const getPopupCallDeferred = callDeferredWrapper.getDeferred;
-export const queuePopupCall = callDeferredWrapper.awaitDeferred;
+export const getPopupCallDeferred: GetDeferred<Awaited<CallMethodAnyResponse>> =
+    callDeferredWrapper.getDeferred;
+export const queuePopupCall: AwaitDeferred = callDeferredWrapper.awaitDeferred;
 
 // Deferred for the permission request
 const permissionDeferredWrapper = createDeferredWrapper('popup-permission');
-export const getPermissionDeferred = permissionDeferredWrapper.getDeferred;
+export const getPermissionDeferred: GetDeferred<void> = permissionDeferredWrapper.getDeferred;
