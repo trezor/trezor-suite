@@ -15,20 +15,26 @@ import { KycPolicyWarning, hasKycPolicyWarning } from '@suite-native/trading-pro
 import { SlippagePicker } from '@suite-native/trading-slippage';
 
 import { ExchangeEIP712Info } from './ExchangeEIP712Info';
-import { ExchangeFiatDeviationWarning } from './ExchangeFiatDeviationWarning';
 import { ExchangeFromAccountTradePreviewCard } from './ExchangeFromAccountTradePreviewCard';
 import { ExchangeInfo } from './ExchangeInfo';
+import { ExchangePreviewIssueBanner } from './ExchangePreviewIssueBanner';
 import { ExchangeToAccountTradePreviewCard } from './ExchangeToAccountTradePreviewCard';
 import { LastErrorMessage } from '../../general/Error/LastErrorMessage';
 
 export type ExchangePreviewViewProps = {
     quote: ExchangeTrade | undefined;
     txnErrorString: ReactNode | null;
+    onSignTransactionNavigation: () => void;
     isApproved?: boolean;
 };
 
 export const ExchangePreviewView = memo(
-    ({ quote, txnErrorString, isApproved }: ExchangePreviewViewProps) => {
+    ({
+        quote,
+        txnErrorString,
+        onSignTransactionNavigation,
+        isApproved,
+    }: ExchangePreviewViewProps) => {
         const { translate } = useTranslate();
 
         const kycPolicy = useSelector((state: TradingRootState) =>
@@ -57,7 +63,6 @@ export const ExchangePreviewView = memo(
                 <AnimatedVStack layout={LinearTransition} spacing="sp16">
                     <ExchangeFromAccountTradePreviewCard quote={quote} />
                     <ExchangeToAccountTradePreviewCard quote={quote} />
-                    <ExchangeFiatDeviationWarning quote={quote} />
                     {hasEIP712SignData ? (
                         <ExchangeEIP712Info exchange={quote?.exchange}>
                             <SlippagePicker />
@@ -67,6 +72,13 @@ export const ExchangePreviewView = memo(
                             <SlippagePicker />
                         </ExchangeInfo>
                     )}
+
+                    {!isTxnError && (
+                        <ExchangePreviewIssueBanner
+                            onSignTransactionNavigation={onSignTransactionNavigation}
+                        />
+                    )}
+
                     {hasKycPolicyWarning(kycPolicy) && (
                         <InlineAlertBox
                             iconName="identificationCard"

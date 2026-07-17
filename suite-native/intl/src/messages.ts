@@ -3454,6 +3454,21 @@ export const messages = {
         transactionSimulation: {
             title: 'Simulation powered by Blockaid',
             simulating: 'Simulating transaction',
+            continueAnyway: 'Continue anyway',
+            backToTradeForm: 'Back to trade form',
+            issues: {
+                priceImpact: {
+                    title: "You'll lose {percent} in value",
+                    bullet: "You'll lose {percent} in value.",
+                    description:
+                        'Low market liquidity is affecting this swap. Try another provider or wait for the market to stabilize.',
+                },
+                highRisk: {
+                    title: 'High-risk swap detected',
+                    description:
+                        "This swap was flagged as unsafe. The provider's contract interaction may put your funds at risk. Choose another provider.",
+                },
+            },
         },
         tradingExchangePreviewScreen: {
             title: 'Swap',
@@ -3472,7 +3487,6 @@ export const messages = {
                 bullet3:
                     'Your swap may be completed in multiple parts, depending on market conditions',
             },
-            fiatDeviationWarning: 'Receiving {percent} less in estimated value.',
         },
         tradingSellPreviewScreen: {
             title: 'Sell',

@@ -9,15 +9,49 @@ import {
     oneInchFusionPlusWithoutEip712SignDataQuote,
 } from '@suite-native/trading-fixtures';
 
+<<<<<<< HEAD:suite-native/module-trading/src/components/exchange/ExchangePreview/ExchangePreviewView.test.tsx
 import { ExchangePreviewView, type ExchangePreviewViewProps } from './ExchangePreviewView';
 import { renderWithTradingProvider } from '../../../__tests__/tradingTestUtils';
+=======
+import { renderWithTradingProvider } from '../../../../__tests__/tradingTestUtils';
+import { useDexSwapTxSimulation } from '../../../../hooks/exchange/useDexSwapTxSimulation';
+import { useExchangeIssue } from '../../../../hooks/exchange/useExchangeIssue';
+import { ExchangePreviewView, type ExchangePreviewViewProps } from '../ExchangePreviewView';
+>>>>>>> 02c2c48d5d (feat(suite-native): wire issues to exchange preview, replace ExchangeFiatDeviationWarning):suite-native/module-trading/src/components/exchange/ExchangePreview/__tests__/ExchangePreviewView.test.tsx
+
+jest.mock('../../../../hooks/exchange/useDexSwapTxSimulation', () => ({
+    useDexSwapTxSimulation: jest.fn(),
+}));
+
+jest.mock('../../../../hooks/exchange/useExchangeIssue', () => ({
+    useExchangeIssue: jest.fn(),
+}));
+
+const mockUseDexSwapTxSimulation = jest.mocked(useDexSwapTxSimulation);
+const mockUseExchangeIssue = jest.mocked(useExchangeIssue);
 
 describe('ExchangePreviewView', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockUseDexSwapTxSimulation.mockReturnValue({
+            isEnabled: false,
+            isLoading: false,
+            error: null,
+            data: undefined,
+        });
+        mockUseExchangeIssue.mockReturnValue({
+            isSimulationEnabled: false,
+            isSimulationLoading: false,
+            issue: null,
+        });
+    });
+
     const renderExchangePreviewView = (props: Partial<ExchangePreviewViewProps> = {}) =>
         renderWithTradingProvider(
             <ExchangePreviewView
                 quote={mercuryoFixedWorstQuote}
                 txnErrorString={null}
+                onSignTransactionNavigation={jest.fn()}
                 {...props}
             />,
             {
