@@ -3,7 +3,11 @@ import { type CryptoId } from 'invity-api';
 import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type TradingAssetSellOption } from '@suite-common/trading';
 import { type BaseCurrencyOption } from '@suite-common/wallet-types';
-import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import {
+    mockAccountKey,
+    mockAccountToken,
+    mockWalletAccount,
+} from '@suite-common/wallet-types/mocks';
 
 import { useTradingSendAssetBalance } from '../useTradingSendAssetBalance';
 
@@ -17,6 +21,19 @@ jest.mock('src/hooks/wallet/trading/form/common/useTradingFiatValues', () => ({
 
 const ACCOUNT = mockWalletAccount({ symbol: 'btc', formattedBalance: '2' });
 const EMPTY_ACCOUNT = mockWalletAccount({ symbol: 'btc', formattedBalance: '0' });
+
+const TOKEN_CONTRACT = '0x' + 'a'.repeat(40);
+
+const FUNDED_TOKEN_ACCOUNT = mockWalletAccount({
+    symbol: 'eth',
+    formattedBalance: '0',
+    tokens: [mockAccountToken({ contract: TOKEN_CONTRACT, balance: '100' })],
+});
+const EMPTY_TOKEN_ACCOUNT = mockWalletAccount({
+    symbol: 'eth',
+    formattedBalance: '2',
+    tokens: [mockAccountToken({ contract: TOKEN_CONTRACT, balance: '0' })],
+});
 
 const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     id: 'bitcoin' as CryptoId,
@@ -33,7 +50,7 @@ const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
 
 const OUTPUT_CURRENCY: BaseCurrencyOption = { value: 'usd', label: 'USD' };
 
-const renderSendAssetBalance = (account = ACCOUNT) => {
+const renderSendAssetBalance = (account = ACCOUNT, tokenAddress: string | null = null) => {
     const store = configureMockStore({
         preloadedState: { wallet: { accounts: [account] } },
     });
@@ -43,7 +60,7 @@ const renderSendAssetBalance = (account = ACCOUNT) => {
             useTradingSendAssetBalance({
                 account,
                 sendCryptoSelect: SEND_CRYPTO_SELECT,
-                tokenAddress: null,
+                tokenAddress,
                 outputCurrency: OUTPUT_CURRENCY,
                 composedLevels: undefined,
                 composedTransactionInfo: { selectedFee: undefined },
@@ -61,6 +78,18 @@ describe('useTradingSendAssetBalance', () => {
 
     it('reports a zero balance for an empty native account', () => {
         const { result } = renderSendAssetBalance(EMPTY_ACCOUNT);
+
+        expect(result.current.isBalanceZero).toBe(true);
+    });
+
+    it('reports a non-zero balance from the token data, ignoring the empty native balance', () => {
+        const { result } = renderSendAssetBalance(FUNDED_TOKEN_ACCOUNT, TOKEN_CONTRACT);
+
+        expect(result.current.isBalanceZero).toBe(false);
+    });
+
+    it('reports a zero balance from the token data, ignoring the funded native balance', () => {
+        const { result } = renderSendAssetBalance(EMPTY_TOKEN_ACCOUNT, TOKEN_CONTRACT);
 
         expect(result.current.isBalanceZero).toBe(true);
     });

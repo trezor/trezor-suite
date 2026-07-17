@@ -219,15 +219,11 @@ export const useExchangeQuotes = ({
         setIsScheduledQuotesRefresh(true);
     }, []);
 
-    const refreshQuotes = useCallback(async () => {
-        await fetchQuotes();
-    }, [fetchQuotes]);
-
     return {
         cexQuotes,
         dexQuotes,
         isScheduledQuotesRefresh,
         resetSelectedOffer,
-        refreshQuotes,
+        refreshQuotes: fetchQuotes,
     };
 };

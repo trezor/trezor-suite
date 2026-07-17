@@ -64,6 +64,7 @@ export const useTradingExchangeTradeActions = () => {
     const confirmTrade = async ({
         receiveAddress,
         trade: confirmedTrade,
+        approvalFlow,
         ...props
     }: TradingExchangeConfirmTradeProps): Promise<ExchangeTrade | undefined> => {
         if (!account) {
@@ -86,6 +87,7 @@ export const useTradingExchangeTradeActions = () => {
                 account,
                 extraField: props.extraField ?? extraField,
                 trade: confirmedTrade,
+                approvalFlow,
                 triggerAnalyticsTradeConfirmation,
                 processResponseData,
                 nextStep,
