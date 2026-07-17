@@ -8,6 +8,7 @@ import { localeInitialState } from '@suite-native/intl';
 import {
     type PreloadedStatePartial,
     type RenderOptionsExtended,
+    type RenderResult,
     mergePreloadedState,
     renderWithStoreProvider,
 } from '@suite-native/test-utils-store';
@@ -45,7 +46,7 @@ type RenderWithTradingProviderOptions = TradingProviderOptions &
 export const renderWithTradingHistoryProvider = (
     element: ReactElement,
     { overrides, ...options }: RenderWithTradingProviderOptions = {},
-) =>
+): RenderResult =>
     renderWithStoreProvider(element, {
         preloadedState: createTradingPreloadedState({ overrides }),
         ...options,
