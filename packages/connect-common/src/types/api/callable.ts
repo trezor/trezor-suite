@@ -1,4 +1,4 @@
-import { type Static, Type } from '@trezor/schema-utils';
+import { type TUnsafe, Type } from '@trezor/schema-utils';
 
 import { TrezorConnectAccount } from './account';
 import { TrezorConnectBitcoin } from './bitcoin';
@@ -16,7 +16,23 @@ import { TrezorConnectStellar } from './stellar';
 import { TrezorConnectTezos } from './tezos';
 import { TrezorConnectTron } from './tron';
 
-export const TrezorConnectCallable = Type.Composite([
+export type TrezorConnectCallable = TrezorConnectManagement &
+    TrezorConnectDevice &
+    TrezorConnectBlockchain &
+    TrezorConnectAccount &
+    TrezorConnectBitcoin &
+    TrezorConnectEthereum &
+    TrezorConnectCardano &
+    TrezorConnectMonero &
+    TrezorConnectRipple &
+    TrezorConnectSolana &
+    TrezorConnectStellar &
+    TrezorConnectTezos &
+    TrezorConnectTron &
+    TrezorConnectEvolu &
+    TrezorConnectNostr;
+
+export const TrezorConnectCallable: TUnsafe<TrezorConnectCallable> = Type.Composite([
     TrezorConnectManagement,
     TrezorConnectDevice,
     TrezorConnectBlockchain,
@@ -33,4 +49,3 @@ export const TrezorConnectCallable = Type.Composite([
     TrezorConnectEvolu,
     TrezorConnectNostr,
 ]);
-export type TrezorConnectCallable = Static<typeof TrezorConnectCallable>;
