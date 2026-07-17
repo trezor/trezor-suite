@@ -225,6 +225,21 @@ describe('useTradingExchangeTradeActions', () => {
             expect(args.extraField).toBe('destination-tag');
         });
 
+        it('forwards the approvalFlow flag to confirmTradeThunk', async () => {
+            const { result } = renderActions();
+
+            await result.current.confirmTrade({
+                receiveAddress: '0xReceiveAddress',
+                trade: SELECTED_QUOTE,
+                approvalFlow: true,
+            });
+
+            expect(mockConfirmTradeThunk).toHaveBeenCalledTimes(1);
+            const [args] = mockConfirmTradeThunk.mock.calls[0] as [{ approvalFlow?: boolean }];
+
+            expect(args.approvalFlow).toBe(true);
+        });
+
         it('returns undefined without dispatching when the account is missing', async () => {
             const { result } = renderActions({ accountKey: undefined, accounts: [] });
 

@@ -67,7 +67,9 @@ export const useExchangeApproval = ({
             receiveAddress,
         });
 
-        return !!newTrade;
+        const isApproved = !!newTrade;
+
+        return isApproved;
     };
 
     const revokeApproval = async (exchangeTrade: ExchangeTrade) => {
@@ -87,7 +89,9 @@ export const useExchangeApproval = ({
             receiveAddress,
         });
 
-        return !!newTrade;
+        const isRevoked = !!newTrade;
+
+        return isRevoked;
     };
 
     return {

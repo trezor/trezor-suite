@@ -64,12 +64,11 @@ export const useExchangeDexQuote = ({
         composeRequestRef.current();
     }, [dispatch, account.symbol, composeRequestRef]);
 
-    const setValueRef = useCurrentRef(setValue);
     useEffect(() => {
         const fromAddress = isAccountBasedNetwork(account.symbol) ? account.descriptor : undefined;
 
-        setValueRef.current('fromAddress', fromAddress);
-    }, [account.symbol, account.descriptor, setValueRef]);
+        setValue('fromAddress', fromAddress);
+    }, [account.symbol, account.descriptor, setValue]);
 
     // set transactionData from DEX quote for correct fees fetching
     useEffect(() => {
@@ -101,8 +100,15 @@ export const useExchangeDexQuote = ({
         setValue('transactionData', getDexEstimationData(quote) ?? '');
         setValue(TRADING_FORM_OUTPUT_ADDRESS, dexTx.to);
         setValue('ethereumAdjustGasLimit', ETHEREUM_ADJUST_GAS_LIMIT);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dexQuotes, selectedQuote, exchangeType, sendCryptoSelect, isFormLoading, isLoadingQuote]);
+    }, [
+        dexQuotes,
+        selectedQuote,
+        exchangeType,
+        sendCryptoSelect,
+        isFormLoading,
+        isLoadingQuote,
+        setValue,
+    ]);
 
     const fetchFeesAndComposeRef = useCurrentRef(fetchFeesAndCompose);
     // fetch fees when transactionData changes

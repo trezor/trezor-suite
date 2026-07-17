@@ -20,6 +20,7 @@ import {
 } from 'src/types/trading/tradingForm';
 import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
 
+// TODO: own props interface instead of Pick from the deleted useTradingFormActions
 interface UseTradingCryptoAssetChangeProps<T extends TradingSellExchangeFormProps> extends Pick<
     TradingUseFormActionsProps<T>,
     | 'account'
