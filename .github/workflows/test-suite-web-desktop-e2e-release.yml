@@ -18,6 +18,11 @@ on:
         required: false
         default: false
         type: boolean
+      reporterWatchdog:
+        description: "Reporter watchdog mode: run only the synthetic reporter-watchdog tests against the sandbox project"
+        required: false
+        default: "false"
+        type: string
   workflow_call:
     inputs:
       publish_results_to_github:
@@ -25,6 +30,11 @@ on:
         required: false
         default: false
         type: boolean
+      reporterWatchdog:
+        description: "Reporter watchdog mode: run only the synthetic reporter-watchdog tests against the sandbox project"
+        required: false
+        default: "false"
+        type: string
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -49,6 +59,42 @@ jobs:
           echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
           echo "release_build=${BRANCH_NAME}-${GITHUB_SHA:0:7}" >> $GITHUB_OUTPUT
 
+  resolve-matrix:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    outputs:
+      matrix-desktop: ${{ steps.matrix.outputs.matrix-desktop }}
+      matrix-web: ${{ steps.matrix.outputs.matrix-web }}
+      currents-desktop: ${{ steps.mode.outputs.currents-desktop }}
+      currents-web: ${{ steps.mode.outputs.currents-web }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6
+
+      - name: Resolve worker counts and Currents projects
+        id: mode
+        shell: bash
+        # Reporter Watchdog runs minimal number of groups and reports to sandbox Currents project
+        run: |
+          if [[ "${{ inputs.reporterWatchdog }}" == "true" ]]; then
+            echo "max-desktop=1" >> $GITHUB_OUTPUT
+            echo "max-web=1" >> $GITHUB_OUTPUT
+            echo "currents-desktop=iBEsWE" >> $GITHUB_OUTPUT
+            echo "currents-web=iBEsWE" >> $GITHUB_OUTPUT
+          else
+            echo "max-desktop=7" >> $GITHUB_OUTPUT
+            echo "max-web=10" >> $GITHUB_OUTPUT
+            echo "currents-desktop=4ytF0E" >> $GITHUB_OUTPUT
+            echo "currents-web=Og0NOQ" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Resolve test matrix
+        id: matrix
+        uses: ./.github/actions/resolve-test-matrix
+        with:
+          max-desktop: ${{ steps.mode.outputs.max-desktop }}
+          max-web: ${{ steps.mode.outputs.max-web }}
+
   # ── Desktop ────────────────────────────────────────────────────────────────
 
   build-app:
@@ -60,20 +106,22 @@ jobs:
     needs:
       - build-app
       - extract-branch
+      - resolve-matrix
     strategy:
       fail-fast: false
       matrix:
-        TEST_GROUP: [1, 2, 3, 4, 5, 6, 7]
+        TEST_GROUP: ${{ fromJSON(needs.resolve-matrix.outputs.matrix-desktop) }}
     uses: ./.github/workflows/template-suite-run-e2e.yml
     with:
       target: "desktop"
       pw-config: "./playwright-config/playwright-desktop.config.ts"
       test-group: ${{ matrix.TEST_GROUP }}
       fail-fast: "false"
-      currents-project-id: "4ytF0E"
+      currents-project-id: ${{ needs.resolve-matrix.outputs.currents-desktop }}
       download-artifact-name: "desktop-app-build-e2e"
       release-build: ${{ needs.extract-branch.outputs.release_build }}
       run-reporter: ${{ inputs.publish_results_to_github == true }}
+      reporterWatchdog: ${{ inputs.reporterWatchdog }}
     secrets:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
       e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
@@ -114,20 +162,22 @@ jobs:
       - build-web
       - build-connect
       - extract-branch
+      - resolve-matrix
     strategy:
       fail-fast: false
       matrix:
-        TEST_GROUP: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        TEST_GROUP: ${{ fromJSON(needs.resolve-matrix.outputs.matrix-web) }}
     uses: ./.github/workflows/template-suite-run-e2e.yml
     with:
       target: "web"
       pw-config: "./playwright-config/playwright-web.config.ts"
       test-group: ${{ matrix.TEST_GROUP }}
       fail-fast: "false"
-      currents-project-id: "Og0NOQ"
+      currents-project-id: ${{ needs.resolve-matrix.outputs.currents-web }}
       release-build: ${{ needs.extract-branch.outputs.release_build }}
       run-reporter: ${{ inputs.publish_results_to_github == true }}
       download-artifact-name: "connect-explorer-webextension-dev.suite.sldev.cz"
+      reporterWatchdog: ${{ inputs.reporterWatchdog }}
     secrets:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
       e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}

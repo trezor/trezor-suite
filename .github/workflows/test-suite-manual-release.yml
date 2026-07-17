@@ -9,6 +9,17 @@ on:
         required: false
         default: ""
   workflow_call:
+    inputs:
+      testFilter:
+        description: "(optional) Run the publisher for specific tests. Can be multiple tests' filenames separated by whitespace."
+        required: false
+        default: ""
+        type: string
+      reporterWatchdog:
+        description: "Reporter watchdog mode: target the sandbox GitHub Project instead of the real release board"
+        required: false
+        default: "false"
+        type: string
 
 concurrency:
   group: manual-${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -66,6 +77,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
           GITHUB_REPORTER_VERBOSE: true
           RELEASE_BUILD: ${{ env.release_build }}
+          REPORTER_WATCHDOG: ${{ inputs.reporterWatchdog }}
         run: |
           echo "Starting Playwright Reporter for manual regression suite"
           yarn workspace @trezor/suite-e2e github:report:manual ${{ inputs.testFilter }}
