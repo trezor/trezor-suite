@@ -72,10 +72,9 @@ export const invityRequest = {
     sellWatchPayload,
 };
 
-/**
- * `unknown` keeps the heterogeneous JSON payload types out of this aggregate's declaration.
- * The individual fixture exports below retain their inferred types for direct use.
- */
+// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// inferred type in the emitted declaration.
+// The individual fixture exports below retain their inferred types for direct use.
 export const invityGeneralResponses: Partial<
     Record<(typeof invityEndpoint)[keyof typeof invityEndpoint], unknown>
 > = {

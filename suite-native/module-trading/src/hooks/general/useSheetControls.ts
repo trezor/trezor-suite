@@ -10,7 +10,8 @@ import {
 
 type BottomSheetControls = ReturnType<typeof useBottomSheetControls>;
 type FormUnion = BuyFormValues | ExchangeFormValues | SellFormValues;
-// explicit return type declaration, because typescript reaches its limits when trying to infer type
+// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// inferred type in the emitted declaration.
 type SheetControls<
     FormValues extends FormUnion,
     Key extends Path<FormValues>,

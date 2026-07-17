@@ -38,7 +38,6 @@ import suite, { type SuiteState } from './suiteReducer';
 import window, { type WindowState } from './windowReducer';
 
 const analytics = prepareAnalyticsReducer(extraDependencies);
-// Type annotation as a workaround for type-check error "The inferred type of 'default' cannot be named..."
 const messageSystem = prepareMessageSystemReducer(extraDependencies);
 const device = prepareDesktopDeviceReducer(extraDependencies);
 const flags = prepareFlagsReducer(extraDependencies);

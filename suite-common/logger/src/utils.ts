@@ -26,7 +26,8 @@ export const startTime = new Date().toUTCString();
 
 export const prettifyLog = (json: Record<any, any>) => JSON.stringify(json, null, 2);
 
-/** Prevents redacted data from expanding complete account and device unions in declarations. */
+// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// inferred type in the emitted declaration.
 type RedactedAccount = Omit<
     DeepPartial<Account>,
     | 'descriptor'
@@ -94,6 +95,8 @@ export const redactAccount = (
     };
 };
 
+// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// inferred type in the emitted declaration.
 type RedactedDevice = Omit<
     DeepPartial<TrezorDevice>,
     'id' | 'label' | 'state' | 'firmwareReleaseConfigInfo' | 'features' | 'metadata'
