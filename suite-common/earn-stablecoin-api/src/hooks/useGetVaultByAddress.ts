@@ -1,4 +1,5 @@
-import { commonQueryKeys, useQuery } from '@suite-common/react-query';
+import { type YieldDtoV2Output } from '@suite-common/earn-stablecoin-defs';
+import { type UseQueryResult, commonQueryKeys, useQuery } from '@suite-common/react-query';
 
 import { getYields } from '../services';
 
@@ -7,7 +8,10 @@ interface GetVaultByAddressProps {
     outputToken: string | undefined;
 }
 
-export function useGetVaultByAddress({ enabled, outputToken }: GetVaultByAddressProps) {
+export function useGetVaultByAddress({
+    enabled,
+    outputToken,
+}: GetVaultByAddressProps): UseQueryResult<YieldDtoV2Output | null, Error> {
     return useQuery({
         enabled: Boolean(enabled && outputToken),
         queryKey: commonQueryKeys.yieldOpportunitiesByAddress(outputToken),
