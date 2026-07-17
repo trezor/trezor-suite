@@ -13,7 +13,6 @@
         "test:e2e:web:canary": "yarn xvfb-maybe -- playwright test --config=./playwright-config/playwright-web-local-canary.config.ts",
         "test:orchestrated:e2e": "NODE_OPTIONS='--no-warnings=DEP0040' yarn xvfb-maybe -- pwc-p",
         "github:report:manual": "NODE_OPTIONS='--no-warnings=DEP0040' yarn xvfb-maybe -- playwright test --config=./playwright-config/playwright-manual.config.ts --reporter=./support/reporters/gitHubReporter.ts",
-        "github:create:project": "tsx ./support/reporters/scriptCreateProject.ts",
         "git:bisect": "./scripts/bisect-commits.sh",
         "decode:sol:stake": "tsx ./scripts/decode-sol-staking-account.ts",
         "docker:suite-sync": "./scripts/docker-suite-sync.sh",

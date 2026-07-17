@@ -3,10 +3,13 @@ import type { Octokit } from '@octokit/rest';
 import {
     type CreateFieldResponse,
     type CreateProjectMutation,
+    type DeleteProjectItemResponse,
     type LoggingFunctions,
     type Project,
     type ProjectField,
     type ProjectFieldsResponse,
+    type ProjectItem,
+    type ProjectItemsResponse,
     type ProjectQueryResponse,
 } from './types';
 
@@ -187,5 +190,60 @@ export class ProjectRequests {
 
         await this.octokit.graphql(mutation);
         this.logger.log(`Successfully replaced all options for field ${fieldId}`);
+    }
+
+    async getProjectItems(projectId: string): Promise<ProjectItem[]> {
+        this.logger.log(`Fetching items for project ${projectId}...`);
+
+        const query = `
+            query ($projectId: ID!) {
+              node(id: $projectId) {
+                ... on ProjectV2 {
+                  items(first: 100) {
+                    nodes {
+                      id
+                      content { ... on DraftIssue { title } }
+                      fieldValues(first: 20) {
+                        nodes {
+                          ... on ProjectV2ItemFieldSingleSelectValue {
+                            name
+                            field { ... on ProjectV2FieldCommon { name } }
+                          }
+                          ... on ProjectV2ItemFieldTextValue {
+                            text
+                            field { ... on ProjectV2FieldCommon { name } }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+        `;
+
+        const response = await this.octokit.graphql<ProjectItemsResponse>(query, { projectId });
+        this.logger.log(`Successfully retrieved items for project ${projectId}`);
+
+        return response.node.items.nodes;
+    }
+
+    async deleteProjectV2Item(projectId: string, itemId: string): Promise<string> {
+        this.logger.log(`Deleting item ${itemId} from project ${projectId}...`);
+
+        const mutation = `
+            mutation ($projectId: ID!, $itemId: ID!) {
+              deleteProjectV2Item(input: { projectId: $projectId, itemId: $itemId }) {
+                deletedItemId
+              }
+            }
+        `;
+
+        const response = await this.octokit.graphql<DeleteProjectItemResponse>(mutation, {
+            projectId,
+            itemId,
+        });
+
+        return response.deleteProjectV2Item.deletedItemId;
     }
 }

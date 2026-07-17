@@ -12,6 +12,11 @@ export { GoogleMock } from './mocks/google';
 export { GitHubReporterBase, InitializationState } from './githubReporter/gitHubReporterBase';
 export { GitHubProject } from './githubReporter/gitHubProject';
 export { IssueRequests } from './githubReporter/issueRequests';
+export { ProjectRequests } from './githubReporter/projectRequests';
+export {
+    REPORTER_WATCHDOG_AUTOMATED_SAMPLES,
+    REPORTER_WATCHDOG_MANUAL_SAMPLES,
+} from './githubReporter/watchdog/samples';
 export { TestReportProviderBase, createTestAnnotation } from './githubReporter/annotationBase';
 export type { TestDetailsAnnotation, TestMetadataInput } from './githubReporter/types';
 export type * from './githubReporter/types';

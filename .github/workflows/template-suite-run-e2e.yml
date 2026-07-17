@@ -46,6 +46,11 @@ on:
         description: "Flag to run GitHub Reporter, only on Release workflows"
         required: false
         type: string
+      reporterWatchdog:
+        description: "Reporter watchdog mode. When 'true', targets the sandbox GitHub Project and makes the test step non-blocking (a genuine synthetic failure must not red the job)."
+        required: false
+        default: "false"
+        type: string
       enable-coverage:
         description: "Enable code coverage collection with Currents and upload the coverage map. Only works for web and requires instrumentation of the code."
         required: false
@@ -182,9 +187,12 @@ jobs:
 
       - name: Run Playwright E2E Tests
         shell: bash
+        # in reporter-watchdog mode a synthetic test fails on purpose; the separate verify job is the health verdict.
+        continue-on-error: ${{ inputs.reporterWatchdog == 'true' }}
         env:
           COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
           GITHUB_ACTION: true
+          REPORTER_WATCHDOG: ${{ inputs.reporterWatchdog }}
           CURRENTS_PROJECT_ID: ${{ inputs.currents-project-id }}
           CURRENTS_RECORD_KEY: ${{ secrets.currents-record-key }}
           CURRENTS_CI_BUILD_ID: ${{ inputs.currents-ci-build-id }}
@@ -215,6 +223,12 @@ jobs:
             COVERAGE_OPT="--pwc-coverage"
           else
             COVERAGE_OPT=""
+          fi
+
+          if [[ "${{ inputs.reporterWatchdog }}" == "true" ]]; then
+            PW_CONFIG="./playwright-config/playwright-reporter-watchdog.config.ts"
+          else
+            PW_CONFIG="${{ inputs.pw-config }}"
           fi
 
           # Build spec filter args if a spec list was provided
@@ -255,7 +269,7 @@ jobs:
           # Start services
           docker compose up -d ${{ inputs.containers }}
 
-          echo "Starting ${{ inputs.target }} Playwright tests with config ${{ inputs.pw-config }} for test group ${{ inputs.test-group }}"
+          echo "Starting ${{ inputs.target }} Playwright tests with config $PW_CONFIG for test group ${{ inputs.test-group }}"
 
           # Currents orchestration is a two-step process since @currents/playwright v2:
           #   1. discover: list/select the tests (all test-selection flags live here)
@@ -264,7 +278,7 @@ jobs:
 
           yarn workspace @trezor/suite-e2e test:orchestrated:e2e discover \
             --pwc-discovery-file "$DISCOVERY_FILE" \
-            --config=${{ inputs.pw-config }} \
+            --config=$PW_CONFIG \
             $PASS_WITH_NO_TESTS \
             $SPEC_ARGS
 
@@ -275,7 +289,7 @@ jobs:
 
           yarn workspace @trezor/suite-e2e test:orchestrated:e2e run \
             --pwc-discovery-file "$DISCOVERY_FILE" \
-            --config=${{ inputs.pw-config }} \
+            --config=$PW_CONFIG \
             --pwc-cancel-after-failures ${{ inputs.fail-fast }} \
             --pwc-disable-test-tags \
             --pwc-skip-reporter-injection \
