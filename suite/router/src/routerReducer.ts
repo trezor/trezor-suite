@@ -81,6 +81,7 @@ const routerSlice = createSlice({
     },
 });
 
+// Keep declaration emit from expanding the full RouterState route union.
 export const routerReducer: Reducer<RouterState> = routerSlice.reducer;
 export const { routerLocationChange, anchorChange } = routerSlice.actions;
 
