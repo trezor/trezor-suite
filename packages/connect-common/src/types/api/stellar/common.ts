@@ -2,7 +2,7 @@
 // https://github.com/stellar/js-stellar-base
 
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
-import type { Static } from '@trezor/schema-utils';
+import type { Static, TSchema, TUnsafe } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
 import { DerivationPath } from '../../params';
@@ -181,8 +181,26 @@ export const StellarClaimClaimableBalanceOperation = Type.Object({
     balanceId: Type.String(), // Proto: "balance_id"
 });
 
-export type StellarOperation = Static<typeof StellarOperation>;
-export const StellarOperation = Type.Union([
+// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// inferred type in the emitted declaration.
+export type StellarOperation =
+    | StellarCreateAccountOperation
+    | StellarPaymentOperation
+    | StellarPathPaymentStrictReceiveOperation
+    | StellarPathPaymentStrictSendOperation
+    | StellarPassiveSellOfferOperation
+    | StellarManageSellOfferOperation
+    | StellarManageBuyOfferOperation
+    | StellarSetOptionsOperation
+    | StellarChangeTrustOperation
+    | StellarAllowTrustOperation
+    | StellarAccountMergeOperation
+    | StellarInflationOperation
+    | StellarManageDataOperation
+    | StellarBumpSequenceOperation
+    | StellarClaimClaimableBalanceOperation;
+
+export const StellarOperation: TUnsafe<StellarOperation> = Type.Union([
     StellarCreateAccountOperation,
     StellarPaymentOperation,
     StellarPathPaymentStrictReceiveOperation,
@@ -247,8 +265,42 @@ export const StellarSignedTx = Type.Object({
 });
 
 // NOTE: StellarOperation (stellar-sdk) transformed to type & payload from PROTO
-export type StellarOperationMessage = Static<typeof StellarOperationMessage>;
-export const StellarOperationMessage = Type.Union([
+type StellarOperationMessageOf<
+    TType extends string,
+    TOperation extends TSchema,
+> = Static<TOperation> & { type: TType };
+
+// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// inferred type in the emitted declaration.
+export type StellarOperationMessage =
+    | StellarOperationMessageOf<'StellarCreateAccountOp', typeof PROTO.StellarCreateAccountOp>
+    | StellarOperationMessageOf<'StellarPaymentOp', typeof PROTO.StellarPaymentOp>
+    | StellarOperationMessageOf<
+          'StellarPathPaymentStrictReceiveOp',
+          typeof PROTO.StellarPathPaymentStrictReceiveOp
+      >
+    | StellarOperationMessageOf<
+          'StellarPathPaymentStrictSendOp',
+          typeof PROTO.StellarPathPaymentStrictSendOp
+      >
+    | StellarOperationMessageOf<'StellarManageSellOfferOp', typeof PROTO.StellarManageSellOfferOp>
+    | StellarOperationMessageOf<'StellarManageBuyOfferOp', typeof PROTO.StellarManageBuyOfferOp>
+    | StellarOperationMessageOf<
+          'StellarCreatePassiveSellOfferOp',
+          typeof PROTO.StellarCreatePassiveSellOfferOp
+      >
+    | StellarOperationMessageOf<'StellarSetOptionsOp', typeof PROTO.StellarSetOptionsOp>
+    | StellarOperationMessageOf<'StellarChangeTrustOp', typeof PROTO.StellarChangeTrustOp>
+    | StellarOperationMessageOf<'StellarAllowTrustOp', typeof PROTO.StellarAllowTrustOp>
+    | StellarOperationMessageOf<'StellarAccountMergeOp', typeof PROTO.StellarAccountMergeOp>
+    | StellarOperationMessageOf<'StellarManageDataOp', typeof PROTO.StellarManageDataOp>
+    | StellarOperationMessageOf<'StellarBumpSequenceOp', typeof PROTO.StellarBumpSequenceOp>
+    | StellarOperationMessageOf<
+          'StellarClaimClaimableBalanceOp',
+          typeof PROTO.StellarClaimClaimableBalanceOp
+      >;
+
+export const StellarOperationMessage: TUnsafe<StellarOperationMessage> = Type.Union([
     Type.Intersect([
         Type.Object({
             type: Type.Literal('StellarCreateAccountOp'),
