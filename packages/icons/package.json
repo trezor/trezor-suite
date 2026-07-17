@@ -10,7 +10,7 @@
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build",
-        "generate-icons": "yarn g:rimraf src/generated/icons && yarn svgr --config-file svgr.web.config.mjs -- assets && node generateIconTypes.mjs && prettier --write --log-level silent 'src/generated/icons/**/*.{ts,tsx}' 'src/index.ts' 'src/types/**/*.ts'"
+        "generate-icons": "yarn g:rimraf src/generated/icons && yarn svgr --config-file svgr.web.config.mjs -- assets && node generateIconTypes.mjs && prettier --write --log-level silent 'src/generated/icons/**/*.{ts,tsx}' 'src/index.ts'"
     },
     "dependencies": {
         "react": "19.2.3"
