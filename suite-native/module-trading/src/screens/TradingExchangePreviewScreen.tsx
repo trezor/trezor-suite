@@ -31,7 +31,7 @@ import { useSubscribeForSolanaBlockUpdates } from '@suite-native/transaction-man
 import { useDebounce } from '@trezor/react-utils';
 
 import {
-    ExchangePreviewContinueButton,
+    ExchangePreviewFooter,
     ExchangePreviewScreenHeader,
     ExchangePreviewView,
 } from '../components/exchange/ExchangePreview';
@@ -188,8 +188,8 @@ const TradingExchangePreviewScreenContent = ({
         <Screen
             header={<ExchangePreviewScreenHeader />}
             footer={
-                <ExchangePreviewContinueButton
-                    isDisabled={!!errorString}
+                <ExchangePreviewFooter
+                    isContinueDisabled={!!errorString}
                     onSignTransactionNavigation={onSignTransactionNavigation}
                 />
             }
@@ -198,6 +198,7 @@ const TradingExchangePreviewScreenContent = ({
                 <ExchangePreviewView
                     quote={quote}
                     txnErrorString={errorString}
+                    onSignTransactionNavigation={onSignTransactionNavigation}
                     isApproved={isApproved}
                 />
                 <Footer />
