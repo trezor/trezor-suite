@@ -26,7 +26,7 @@ import { type AccountKey, type FormState, type Output } from '@suite-common/wall
 import { useSelector } from 'src/hooks/suite';
 import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
 
-import { useTradingDefaultSellAsset } from './common/useTradingDefaultSellAsset';
+import { useTradingDefaultSellAsset } from '../common/useTradingDefaultSellAsset';
 
 export const useTradingExchangeFormDefaultValues = (accountKey: AccountKey, cryptoId: CryptoId) => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);

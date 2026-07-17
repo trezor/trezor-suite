@@ -46,7 +46,7 @@ import { useTradingExchangeHandleChange } from 'src/hooks/wallet/trading/form/co
 import { useTradingExchangeQuotesFilter } from 'src/hooks/wallet/trading/form/common/useTradingExchangeQuotesFilter';
 import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
 import { useTradingFormActions } from 'src/hooks/wallet/trading/form/common/useTradingFormActions';
-import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/form/useTradingExchangeFormDefaultValues';
+import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/form/exchange/useTradingExchangeFormDefaultValues';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { type Dispatch } from 'src/types/suite';
@@ -55,10 +55,10 @@ import {
     type TradingExchangeFormContextProps,
 } from 'src/types/trading/tradingForm';
 
-import { useTradingClearStaleQuotes } from './common/useTradingClearStaleQuotes';
-import { useTradingExchangeTradeRequest } from './common/useTradingExchangeTradeRequest';
-import { useTradingFormAccount } from './useTradingFormAccount';
-import { useTradingReceiveAddress } from './useTradingReceiveAddress';
+import { useTradingClearStaleQuotes } from '../common/useTradingClearStaleQuotes';
+import { useTradingExchangeTradeRequest } from '../common/useTradingExchangeTradeRequest';
+import { useTradingFormAccount } from '../useTradingFormAccount';
+import { useTradingReceiveAddress } from '../useTradingReceiveAddress';
 
 export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const type = 'exchange';
