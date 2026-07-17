@@ -285,8 +285,6 @@ export interface TradingFormInputCurrencyProps {
 export interface TradingUseFormActionsProps<T extends TradingSellExchangeFormProps> {
     account: Account;
     methods: UseFormReturn<T>;
-    type: TradingTradeSellExchangeType;
-    handleChange: (offLoading?: boolean) => Promise<void>;
     setAmountLimits: (limits?: AmountLimitProps) => void;
     changeFeeLevel: (level: FeeLevel['label']) => void;
     composeRequest: SendContextValues<TradingSellExchangeFormProps>['composeTransaction'];
@@ -295,10 +293,6 @@ export interface TradingUseFormActionsProps<T extends TradingSellExchangeFormPro
     composedLevels: PrecomposedLevels | PrecomposedLevelsCardano | undefined;
     composedTransactionInfo: TradingComposedTransactionInfo;
     setShowReserveBanner: (showReserveBanner: boolean) => void;
-    // Exchange-only: receiveAddress is sourced from useTradingReceiveAddress rather
-    // than mirrored onto the outer form. Passed in so the receive-address change
-    // detection can trigger a quotes refetch.
-    receiveAddress?: string;
 }
 
 export interface TradingUseFormActionsReturnProps {

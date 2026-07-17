@@ -29,10 +29,7 @@ import {
     calcRatioAmount,
 } from 'src/utils/wallet/trading/sellExchangeAmountUtils';
 
-type UseExchangeFormInputsProps = Omit<
-    TradingUseFormActionsProps<TradingExchangeFormProps>,
-    'type' | 'handleChange' | 'receiveAddress'
->;
+type UseExchangeFormInputsProps = TradingUseFormActionsProps<TradingExchangeFormProps>;
 
 export const useExchangeFormInputs = ({
     account,
