@@ -3628,7 +3628,6 @@ export const messages = {
                 bullet3:
                     'Your swap may be completed in multiple parts, depending on market conditions',
             },
-            fiatDeviationWarning: 'Receiving {percent} less in estimated value.',
         },
         tradingSellPreviewScreen: {
             title: 'Sell',
