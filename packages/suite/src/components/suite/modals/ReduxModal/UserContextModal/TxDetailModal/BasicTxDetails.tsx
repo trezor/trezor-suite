@@ -34,7 +34,6 @@ import {
     WarningIcon,
 } from '@trezor/icons';
 import { FeeRate, TokenIcon } from '@trezor/product-components';
-import { borders, spacings, spacingsPx } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
@@ -47,17 +46,17 @@ import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 const IconWrapper = styled.div`
     display: flex;
     position: relative;
-    border: ${spacingsPx.xxs} solid ${({ theme }) => theme.elementBorderNeutralSofter};
-    border-radius: ${borders.radii.full};
+    border: 4px solid ${({ theme }) => theme.elementBorderNeutralSofter};
+    border-radius: calc(infinity * 1px);
 `;
 
 const NestedIconWrapper = styled.div`
     position: absolute;
-    top: -${spacingsPx.xxs};
-    right: -${spacingsPx.xxs};
+    top: -4px;
+    right: -4px;
     background: ${({ theme }) => theme.elementFillElevated};
-    border-radius: ${borders.radii.full};
-    padding: ${spacingsPx.xxxs};
+    border-radius: calc(infinity * 1px);
+    padding: 2px;
 `;
 
 const Item = ({ label, icon, children }: Partial<InfoItemProps>) => (
@@ -103,7 +102,7 @@ export const BasicTxDetails = ({
 
     return (
         <Card>
-            <Row gap={spacings.sm}>
+            <Row gap={12}>
                 <IconWrapper>
                     <TokenIcon symbol={tx.symbol} size={48} showNetworkIcon />
                     <NestedIconWrapper>
@@ -119,7 +118,7 @@ export const BasicTxDetails = ({
                     <TransactionHeader transaction={tx} isPending={isPending(tx)} />
                 </H3>
 
-                <Row gap={spacings.xxs} margin={{ left: 'auto' }}>
+                <Row gap={4} margin={{ left: 'auto' }}>
                     {isConfirmed ? (
                         <InfoSegments
                             typographyStyle="body-sm"

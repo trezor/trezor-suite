@@ -41,7 +41,7 @@ export const IOGroup = ({
     if (!hasInputs && !hasOutputs) return null;
 
     return (
-        <Row gap={60} alignItems="stretch" justifyContent="space-between">
+        <Row gap={64} alignItems="stretch" justifyContent="space-between">
             {hasInputs && (
                 <Column width="40%" flex="0 0 40%" gap={8}>
                     {hasHeadings && (

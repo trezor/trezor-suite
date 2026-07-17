@@ -14,7 +14,6 @@ import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { CheckCircleIcon, CheckIcon, WarningIcon } from '@trezor/icons';
 import { ConfirmOnDevicePill, mapTrezorModelToIcon } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
@@ -100,9 +99,9 @@ export const ConnectAddressConfirmation = () => {
                     </>
                 }
             >
-                <Column gap={spacings.xs}>
+                <Column gap={8}>
                     {popupCall.exported ? (
-                        <Row alignItems="center" gap={spacings.sm}>
+                        <Row alignItems="center" gap={12}>
                             <Icon as={CheckCircleIcon} size={32} intent="brand" />
                             <H3 intent="brand">
                                 <Translation id="TR_CONNECT_ADDRESS_CONFIRMATION_SUCCESS" />
@@ -146,22 +145,17 @@ export const ConnectAddressConfirmation = () => {
                                 <Translation id="TR_ADDRESSES" />
                             )
                         }
-                        margin={{ top: spacings.md }}
+                        margin={{ top: 16 }}
                     >
-                        <Column gap={spacings.sm}>
+                        <Column gap={12}>
                             {popupCall?.addresses.map((address, index) => (
                                 <Row
                                     key={index}
                                     alignItems="center"
                                     justifyContent="space-between"
-                                    gap={spacings.sm}
+                                    gap={12}
                                 >
-                                    <Row
-                                        gap={spacings.sm}
-                                        alignItems="center"
-                                        flex="1"
-                                        minWidth={0}
-                                    >
+                                    <Row gap={12} alignItems="center" flex="1" minWidth={0}>
                                         <Paragraph overflowWrap="anywhere">
                                             {address.address}
                                         </Paragraph>

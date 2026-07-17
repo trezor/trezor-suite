@@ -1,15 +1,14 @@
 import styled from 'styled-components';
 
 import { Text, Tooltip } from '@trezor/components';
-import { borders, spacingsPx } from '@trezor/theme';
 
 const Content = styled.div`
-    margin: ${spacingsPx.xxs};
+    margin: 4px;
     overflow: hidden;
 `;
 
 const Circle = styled.div<{ $size: number }>`
-    border-radius: ${borders.radii.full};
+    border-radius: calc(infinity * 1px);
     align-items: center;
     justify-content: center;
     display: flex;

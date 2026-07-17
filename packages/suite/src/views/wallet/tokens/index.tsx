@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { goto, selectRouteName } from '@suite/router';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { Route } from 'src/components/suite/Route';
 import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
@@ -64,7 +63,7 @@ export const Tokens = () => {
 
     return (
         <WalletLayout title="TR_TOKENS" account={selectedAccount}>
-            <Column gap={spacings.lg}>
+            <Column gap={20}>
                 <TokensNavigation
                     selectedAccount={selectedAccount}
                     searchQuery={searchQuery}

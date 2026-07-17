@@ -21,7 +21,6 @@ import {
     isNetworkSymbolWithIcon,
     mapTrezorModelToIcon,
 } from '@trezor/product-components';
-import { borders, spacings } from '@trezor/theme';
 
 interface SelectAccountRowProps {
     candidate: SelectAccountCandidate;
@@ -86,7 +85,7 @@ export const SelectAccountRow = ({
             return (
                 <>
                     <Skeleton width={48} height={16} />
-                    <Skeleton width={80} height={32} borderRadius={borders.radii.full} />
+                    <Skeleton width={80} height={32} borderRadius="full" />
                 </>
             );
         }
@@ -110,7 +109,7 @@ export const SelectAccountRow = ({
 
         if (interactionMode === 'drillIn') {
             return (
-                <Row alignItems="center" gap={spacings.xs}>
+                <Row alignItems="center" gap={8}>
                     <Text typographyStyle="body-sm">
                         {balance ?? '0'} {getNetworkDisplaySymbol(symbol)}
                     </Text>
@@ -125,7 +124,7 @@ export const SelectAccountRow = ({
                     {balance ?? '0'} {getNetworkDisplaySymbol(symbol)}
                 </Text>
                 {displayValue && (
-                    <Row alignItems="center" gap={spacings.xs} onClick={stop}>
+                    <Row alignItems="center" gap={8} onClick={stop}>
                         {validated === 'valid' && (
                             <Badge
                                 intent="brand"
@@ -191,7 +190,7 @@ export const SelectAccountRow = ({
             onClick={interactive ? onToggle : undefined}
             data-testid={`@connect-select-account/account/${accountIndex}`}
         >
-            <Row alignItems="center" gap={spacings.sm}>
+            <Row alignItems="center" gap={12}>
                 {showCheckbox && (
                     <div onClick={stop} role="presentation">
                         <Checkbox
@@ -207,12 +206,12 @@ export const SelectAccountRow = ({
                     <NetworkIcon networkSymbol={symbol} size={24} />
                 )}
 
-                <Column gap={spacings.xxxs} flex="1" minWidth={0} alignItems="flex-start">
+                <Column gap={2} flex="1" minWidth={0} alignItems="flex-start">
                     <Text typographyStyle="body-sm-strong">{label}</Text>
                     {renderSecondaryLine()}
                 </Column>
 
-                <Column alignItems="flex-end" gap={spacings.xs}>
+                <Column alignItems="flex-end" gap={8}>
                     {renderRightColumn()}
                 </Column>
             </Row>

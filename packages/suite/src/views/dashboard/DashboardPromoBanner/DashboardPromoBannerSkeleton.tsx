@@ -1,6 +1,5 @@
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { Box, Skeleton } from '@trezor/components';
-import { borders } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
@@ -14,7 +13,7 @@ export const DashboardPromoBannerSkeleton = () => {
             <Skeleton
                 width="100%"
                 height={isVerticalLayout ? 320 : 213}
-                borderRadius={borders.radii.sm}
+                borderRadius={12}
                 animate={shouldAnimate}
             />
         </Box>

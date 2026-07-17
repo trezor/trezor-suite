@@ -2,18 +2,18 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { type SpacingValuesNew, borders } from '@trezor/theme';
+import { type SpacingValue } from '@trezor/theme';
 
 export type Offset =
     | {
-          top?: SpacingValuesNew;
-          bottom?: SpacingValuesNew;
-          left?: SpacingValuesNew;
-          right?: SpacingValuesNew;
-          horizontal?: SpacingValuesNew;
-          vertical?: SpacingValuesNew;
+          top?: SpacingValue;
+          bottom?: SpacingValue;
+          left?: SpacingValue;
+          right?: SpacingValue;
+          horizontal?: SpacingValue;
+          vertical?: SpacingValue;
       }
-    | SpacingValuesNew;
+    | SpacingValue;
 
 const mapOffsetToInset = (offset: Offset) => {
     if (typeof offset === 'object') {
@@ -35,13 +35,13 @@ const Wrapper = styled.div<{ $shouldHighlight?: boolean; $offset: Offset }>`
         content: '';
         position: absolute;
         inset: ${({ $offset }) => mapOffsetToInset($offset)};
-        outline: solid ${borders.widths.large} ${({ theme }) => theme.elementBorderWarningSofter};
+        outline: solid 2px ${({ theme }) => theme.elementBorderWarningSofter};
         background: ${({ theme }) => theme.elementFillWarningSofter};
         transition: opacity 0.6s ease-in;
         transition-delay: 0.3s;
         opacity: 0;
-        border-radius: ${borders.radii.md};
-        outline-offset: -${borders.widths.large};
+        border-radius: 16px;
+        outline-offset: -2px;
         pointer-events: none;
 
         ${({ $shouldHighlight }) => $shouldHighlight && 'opacity: 1;'};

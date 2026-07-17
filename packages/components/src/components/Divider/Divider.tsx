@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { type Color, type SpacingValues, spacings } from '@trezor/theme';
+import { type Color, type SpacingValue } from '@trezor/theme';
 
 import {
     type FrameProps,
@@ -28,7 +28,7 @@ export type DividerProps = AllowedFrameProps & {
     color?: Color;
     children?: ReactNode;
     contentPosition?: 'start' | 'center' | 'end'; // TODO: unify with uiAlignments in the future"
-    gap?: SpacingValues;
+    gap?: SpacingValue;
 };
 
 const Line = styled.div<
@@ -95,12 +95,12 @@ export const Divider = ({
     orientation = 'horizontal',
     children,
     contentPosition = 'center',
-    gap = spacings.xxl,
+    gap = 32,
     ...rest
 }: DividerProps) => {
     const frameProps: AllowedFrameProps = {
         ...rest,
-        margin: rest.margin ?? { top: spacings.md, bottom: spacings.md },
+        margin: rest.margin ?? { top: 16, bottom: 16 },
     };
 
     const framePropsTransient = pickAndPrepareFrameProps(frameProps, allowedDividerFrameProps);

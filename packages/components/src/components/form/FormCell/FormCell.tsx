@@ -2,8 +2,6 @@ import { type ReactNode, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { spacings } from '@trezor/theme';
-
 import {
     type FrameProps,
     type FramePropsKeys,
@@ -83,7 +81,7 @@ export const FormCell = ({
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <Column gap={spacings.xs}>
+            <Column gap={8}>
                 <TopAddons
                     isHovered={isHovered}
                     addonLeft={labelLeft}

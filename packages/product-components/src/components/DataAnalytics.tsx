@@ -3,8 +3,6 @@ import { FormattedMessage } from 'react-intl';
 
 import { Button, Card, Center, Column, Icon, List, Row, Switch, Text } from '@trezor/components';
 import { BugIcon, EyeSlashIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
-
 type DataAnalyticsProps = {
     onConfirm: (trackingEnabled: boolean) => void;
     analyticsLink?: (chunks: ReactNode[]) => JSX.Element;
@@ -22,8 +20,8 @@ export const DataAnalytics = ({
 
     return (
         <Card data-testid="@analytics/consent" paddingType="large" maxWidth={550}>
-            <Column gap={spacings.md}>
-                <Column gap={spacings.md}>
+            <Column gap={16}>
+                <Column gap={16}>
                     <Text typographyStyle="body-sm-strong" data-testid="@analytics/consent/heading">
                         <FormattedMessage
                             id="TR_ONBOARDING_DATA_COLLECTION_HEADING"
@@ -42,10 +40,10 @@ export const DataAnalytics = ({
                     </Text>
 
                     <Card type="contrast">
-                        <Column gap={spacings.lg}>
-                            <List gap={spacings.md}>
+                        <Column gap={20}>
+                            <List gap={16}>
                                 <List.Item bulletComponent={<Icon size={16} as={EyeSlashIcon} />}>
-                                    <Column gap={spacings.xxxs} flex="1">
+                                    <Column gap={2} flex="1">
                                         <Text typographyStyle="body-sm-strong">
                                             <FormattedMessage
                                                 id="TR_ALLOW_ANALYTICS_PRIVACY_TITLE"
@@ -65,7 +63,7 @@ export const DataAnalytics = ({
                                     </Column>
                                 </List.Item>
                                 <List.Item bulletComponent={<Icon size={16} as={BugIcon} />}>
-                                    <Column gap={spacings.xxxs} flex="1">
+                                    <Column gap={2} flex="1">
                                         <Text typographyStyle="body-sm-strong">
                                             <FormattedMessage
                                                 id="TR_WHAT_DATA_WE_COLLECT"

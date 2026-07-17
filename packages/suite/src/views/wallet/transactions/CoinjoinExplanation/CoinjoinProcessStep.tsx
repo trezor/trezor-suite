@@ -11,7 +11,7 @@ import {
     useMediaQuery,
     variables,
 } from '@trezor/components';
-import { belowBreakpoint, breakpoints, spacings } from '@trezor/theme';
+import { belowBreakpoint, breakpoints } from '@trezor/theme';
 
 const Image = styled.div`
     margin: -8px;
@@ -50,7 +50,7 @@ const Container = styled.div`
     max-width: 220px;
 
     & + & {
-        margin-left: 15px;
+        margin-left: 16px;
 
         &::before {
             content: '';
@@ -63,7 +63,7 @@ const Container = styled.div`
     }
 
     &:not(:last-child) {
-        margin-right: 15px;
+        margin-right: 16px;
     }
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
@@ -74,7 +74,7 @@ const Container = styled.div`
 
         &:not(:last-child) {
             margin-right: 0;
-            margin-bottom: 26px;
+            margin-bottom: 24px;
         }
 
         & + & {
@@ -112,7 +112,7 @@ export const CoinjoinProcessStep = ({
                     typographyStyle="body-sm"
                     intent="neutral"
                     priority="secondary"
-                    margin={{ top: spacings.xl, bottom: 6 }}
+                    margin={{ top: 24, bottom: 6 }}
                 >
                     <Translation id="TR_STEP" values={{ number }} />
                 </Paragraph>
@@ -120,7 +120,7 @@ export const CoinjoinProcessStep = ({
             <StepTitleSlot>
                 <H3
                     typographyStyle={isBelowLaptop ? 'body-md-strong' : 'headline-sm'}
-                    margin={{ bottom: spacings.lg }}
+                    margin={{ bottom: 20 }}
                 >
                     {title}
                 </H3>

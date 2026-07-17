@@ -3,7 +3,6 @@ import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { Column, H3, Link, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 import { UNINSTALL_BRIDGE_URL } from '@trezor/urls';
 
 import { Metadata } from 'src/components/suite';
@@ -43,7 +42,7 @@ export const BridgeDeprecated = () => {
             isBackdropCancelable
         >
             <Metadata title="Bridge | Trezor Suite" />
-            <Column gap={spacings.xxs}>
+            <Column gap={4}>
                 <H3>
                     <Translation id="TR_STANDALONE_BRIDGE_DEPRECATED" />
                 </H3>

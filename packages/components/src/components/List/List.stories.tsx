@@ -2,7 +2,7 @@ import React, { type SVGProps } from 'react';
 
 import { type Meta, type StoryObj } from '@storybook/react';
 
-import { spacings } from '@trezor/theme';
+import { spacingValues } from '@trezor/theme';
 
 import { List as ListComponent, allowedListFrameProps, allowedListTextProps } from './List';
 import { bulletVerticalAlignments, listIntents } from './types';
@@ -49,24 +49,24 @@ export const List: StoryObj<typeof ListComponent> = {
         </ListComponent>
     ),
     args: {
-        gap: spacings.xl,
-        bulletGap: spacings.xl,
+        gap: 24,
+        bulletGap: 24,
         bulletAlignment: 'center',
         bulletComponent: null,
         ...getFramePropsStory(allowedListFrameProps).args,
         ...getTextPropsStory(allowedListTextProps).args,
         width: '70%',
-        margin: { vertical: spacings.lg, horizontal: 'auto' },
+        margin: { vertical: 20, horizontal: 'auto' },
     },
     argTypes: {
         gap: {
-            options: Object.values(spacings),
+            options: spacingValues,
             control: {
                 type: 'select',
             },
         },
         bulletGap: {
-            options: Object.values(spacings),
+            options: spacingValues,
             control: {
                 type: 'select',
             },

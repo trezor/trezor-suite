@@ -2,7 +2,6 @@ import { type CoinjoinSession } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { RoundPhase } from '@trezor/coinjoin';
 import { Column, StepList, type StepListItemState } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
@@ -23,8 +22,8 @@ export const CoinjoinPhaseProgress = ({
     roundPhase,
     phaseDeadline,
 }: CoinjoinPhaseProgressProps) => (
-    <Column gap={spacings.md}>
-        <StepList gap={spacings.md} bulletSize="medium">
+    <Column gap={16}>
+        <StepList gap={16} bulletSize="medium">
             {Object.values(RoundPhase).map(phase => (
                 <StepList.Item
                     key={phase}

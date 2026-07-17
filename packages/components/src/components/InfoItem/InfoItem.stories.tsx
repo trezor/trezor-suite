@@ -3,7 +3,7 @@ import React from 'react';
 import { type Meta, type StoryObj } from '@storybook/react';
 
 import * as generatedIcons from '@trezor/icons';
-import { spacings } from '@trezor/theme';
+import { spacingValues } from '@trezor/theme';
 
 import {
     InfoItem as InfoItemComponent,
@@ -74,12 +74,9 @@ export const InfoItem: StoryObj<typeof InfoItemComponent> = {
             },
         },
         gap: {
-            options: Object.values(spacings),
+            options: spacingValues,
             control: {
                 type: 'select',
-                labels: Object.fromEntries(
-                    Object.entries(spacings).map(([key, value]) => [value, `${key}: ${value}`]),
-                ),
             },
         },
         ...getTextPropsStory(allowedInfoItemTextProps).argTypes,

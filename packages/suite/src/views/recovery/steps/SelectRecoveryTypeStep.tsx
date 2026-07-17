@@ -2,8 +2,6 @@ import { Translation } from '@suite/intl';
 import { type RecoveryType, recoveryTypes } from '@suite/recovery';
 import { Card, Column, Grid, H4, Icon, Paragraph, RadioCard, Row } from '@trezor/components';
 import { RecoverySeedFilledIcon, TrezorModelOneFilledIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
-
 type SelectRecoveryTypeStepProps = {
     setRecoveryType: (type: RecoveryType) => void;
     recoveryType?: RecoveryType;
@@ -13,12 +11,12 @@ export const SelectRecoveryTypeStep = ({
     setRecoveryType,
     recoveryType,
 }: SelectRecoveryTypeStepProps) => (
-    <Card margin={{ top: spacings.xs }}>
-        <Column gap={spacings.md}>
+    <Card margin={{ top: 8 }}>
+        <Column gap={16}>
             <H4>
                 <Translation id="TR_CHOOSE_RECOVERY_TYPE" />
             </H4>
-            <Grid columns={2} gap={spacings.md}>
+            <Grid columns={2} gap={16}>
                 {recoveryTypes.map(type => (
                     <RadioCard
                         key={type}
@@ -26,7 +24,7 @@ export const SelectRecoveryTypeStep = ({
                         onClick={() => setRecoveryType(type)}
                         dataTestId={`@recovery/select-type/${type}`}
                     >
-                        <Row gap={spacings.md} padding={{ left: spacings.xxs }}>
+                        <Row gap={16} padding={{ left: 4 }}>
                             <Icon
                                 as={
                                     type === 'standard'
@@ -37,7 +35,7 @@ export const SelectRecoveryTypeStep = ({
                                 intent="neutral"
                                 priority="secondary"
                             />
-                            <Column gap={spacings.xxxs}>
+                            <Column gap={2}>
                                 <Paragraph typographyStyle="body-md-strong">
                                     <Translation
                                         id={

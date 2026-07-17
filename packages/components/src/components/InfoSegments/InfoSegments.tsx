@@ -1,7 +1,7 @@
 import { Children, Fragment, type ReactNode, useId } from 'react';
 
 import { DotOutlineFilledIcon } from '@trezor/icons';
-import { type SpacingValuesNew } from '@trezor/theme';
+import { type SpacingValue } from '@trezor/theme';
 
 import { type FrameProps, type FramePropsKeys } from '../../utils/frameProps';
 import { Row } from '../Flex/Flex';
@@ -21,7 +21,7 @@ export type InfoSegmentsProps = AllowedFrameProps &
         priority?: TextProps['priority'];
         isDisabled?: TextProps['isDisabled'];
         'data-testid'?: string;
-        gap?: SpacingValuesNew;
+        gap?: SpacingValue;
         children: Array<ReactNode>;
     };
 

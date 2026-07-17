@@ -2,8 +2,6 @@ import { type KeyboardEvent, type ReactNode, useCallback, useEffect, useState } 
 
 import styled, { css } from 'styled-components';
 
-import { borders, spacings } from '@trezor/theme';
-
 import { type SelectBarOrientation, type SelectBarSize } from './types';
 import { mapSizeToPadding, mapSizeToTypographyStyle, mapStateToTextIntent } from './utils';
 import { variables } from '../../../config';
@@ -18,7 +16,7 @@ import { Text } from '../../typography/Text/Text';
 export const allowedSelectBarFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedSelectBarFrameProps)[number]>;
 
-const GAP = spacings.xxs;
+const GAP = 4;
 
 const getTranslateValue = (index: number = 0) => `calc(${index * 100}% + ${index * GAP}px)`;
 
@@ -28,7 +26,7 @@ const getPuckDimension = (optionsCount: number) =>
 const Options = styled.div`
     background: ${({ theme }) => theme.elementFillNeutralSofter};
     border: 1px solid ${({ theme }) => theme.elementBorderNeutralSofterAlt};
-    border-radius: ${borders.radii.lg};
+    border-radius: 20px;
     flex: 1;
     min-width: 0;
 `;
@@ -44,7 +42,7 @@ const Puck = styled.div<{
     bottom: 0;
     width: ${({ $optionsCount }) => getPuckDimension($optionsCount)};
     background: ${({ theme }) => theme.elementFillElevated};
-    border-radius: ${borders.radii.full};
+    border-radius: calc(infinity * 1px);
     box-shadow: ${({ theme }) => theme.elementShadowElevated};
     transform: ${({ $selectedIndex }) => `translateX(${getTranslateValue($selectedIndex)})`};
     transition:
@@ -179,7 +177,7 @@ export const SelectBar = <V extends ValueTypes>({
             margin={margin}
             width={isFullWidth || isVertical ? '100%' : 'auto'}
             alignItems={isVertical ? 'stretch' : 'center'}
-            gap={spacings.sm}
+            gap={12}
         >
             {label && (
                 <Text
@@ -193,7 +191,7 @@ export const SelectBar = <V extends ValueTypes>({
             )}
 
             <Options>
-                <Box margin={spacings.xxs} position={{ type: 'relative' }}>
+                <Box margin={4} position={{ type: 'relative' }}>
                     <Puck
                         $optionsCount={options.length}
                         $selectedIndex={selectedIndex}

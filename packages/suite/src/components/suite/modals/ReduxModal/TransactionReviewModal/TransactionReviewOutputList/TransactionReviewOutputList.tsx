@@ -19,7 +19,6 @@ import {
     isEvmYieldTxByTextSignature,
 } from '@suite-common/wallet-utils';
 import { Column, H4 } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import type { Account } from 'src/types/wallet';
@@ -45,11 +44,11 @@ export type TransactionReviewOutputListProps = {
 };
 
 const Wrapper = styled.div`
-    scroll-margin-top: ${spacingsPx.xxxxl};
+    scroll-margin-top: 48px;
 `;
 
 const SectionHeading = ({ output, index }: { output: ReviewOutput; index: number }) => (
-    <H4 margin={{ top: index === 0 ? spacings.zero : spacings.xs }}>
+    <H4 margin={{ top: index === 0 ? 0 : 8 }}>
         {output.type === 'address' ? (
             <Translation
                 id="TR_SEND_RECIPIENT_ADDRESS"
@@ -156,7 +155,7 @@ export const TransactionReviewOutputList = ({
     }
 
     return (
-        <Column gap={spacings.md}>
+        <Column gap={16}>
             {outputs.map((output, index) => {
                 const isHeadingShown =
                     isMultirecipient && (output.type === 'address' || index === summaryIndex);
@@ -171,7 +170,7 @@ export const TransactionReviewOutputList = ({
                             outputRefs.current[index] = ref;
                         }}
                     >
-                        <Column gap={spacings.sm}>
+                        <Column gap={12}>
                             {isHeadingShown && (
                                 <SectionHeading output={output} index={recipientIndex} />
                             )}
@@ -199,9 +198,9 @@ export const TransactionReviewOutputList = ({
             {!(isRbfAction && networkType === 'bitcoin') &&
                 (networkType !== 'tron' || isTronStakeFreeze) && (
                     <Wrapper ref={totalOutputRef}>
-                        <Column gap={spacings.sm}>
+                        <Column gap={12}>
                             {isMultirecipient && summaryIndex === -1 && (
-                                <H4 margin={{ top: spacings.xs }}>
+                                <H4 margin={{ top: 8 }}>
                                     <Translation id="TR_SUMMARY" />
                                 </H4>
                             )}

@@ -1,6 +1,6 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
-import { spacings } from '@trezor/theme';
+import { spacingValues } from '@trezor/theme';
 
 import { Collapsible as CollapsibleComponent } from './Collapsible';
 import { Button } from '../buttons/Button/Button';
@@ -30,7 +30,7 @@ export const Collapsible: StoryObj<typeof CollapsibleComponent> = {
     ),
     args: {
         defaultIsOpen: false,
-        gap: spacings.lg,
+        gap: 20,
     },
     argTypes: {
         defaultIsOpen: {
@@ -41,7 +41,7 @@ export const Collapsible: StoryObj<typeof CollapsibleComponent> = {
         },
         gap: {
             control: 'select',
-            options: Object.values(spacings),
+            options: spacingValues,
         },
     },
 };

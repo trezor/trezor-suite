@@ -1,7 +1,6 @@
 import { useTranslation } from '@suite/intl';
 import type { TradingTransaction } from '@suite-common/trading';
 import { InfoSegments } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { FormattedDate } from 'src/components/suite';
 import { translationKeys } from 'src/utils/wallet/trading/tradingUtils';
@@ -22,7 +21,7 @@ export const TradingTransactionInfo = ({ trade }: TradingTransactionInfoProps) =
             intent="neutral"
             priority="secondary"
             typographyStyle="body-xs"
-            margin={{ top: spacings.xs }}
+            margin={{ top: 8 }}
         >
             {tradeType}
             <span data-testid="@trading/transactions/date">

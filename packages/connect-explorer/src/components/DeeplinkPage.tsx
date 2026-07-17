@@ -2,7 +2,6 @@ import Head from 'next/head';
 import styled from 'styled-components';
 
 import { Button, H2, Paragraph } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
 import { SUITE_MOBILE_APP_STORE, SUITE_MOBILE_PLAY_STORE } from '@trezor/urls';
 
 const Wrapper = styled.div`
@@ -11,16 +10,16 @@ const Wrapper = styled.div`
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    padding: ${spacingsPx.xl};
+    padding: 24px;
     text-align: center;
-    gap: ${spacingsPx.lg};
+    gap: 20px;
 `;
 
 const ButtonsWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: ${spacingsPx.md};
+    gap: 16px;
 `;
 
 export const DeeplinkPage = () => (

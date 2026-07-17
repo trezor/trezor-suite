@@ -11,7 +11,7 @@ import { convertAmountSubunitsToUnits, formatNetworkAmount } from '@suite-common
 import { Box, Card, Column, H4, InfoItem, Note, Row, Text, TextButton } from '@trezor/components';
 import { type TokenInfo } from '@trezor/connect';
 import { CaretDownIcon, CaretUpIcon } from '@trezor/icons';
-import { type Color, spacings } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
@@ -192,10 +192,10 @@ export const TransactionReviewOutputElement = ({
             paddingType="small"
             type={state === 'confirmed' ? 'contrast' : 'raised'}
             header={
-                <Row gap={spacings.sm}>
+                <Row gap={12}>
                     <TransactionReviewOutputStatus state={state} />
                     <H4
-                        margin={{ left: spacings.xxs }}
+                        margin={{ left: 4 }}
                         typographyStyle={state !== 'unconfirmed' ? 'body-sm-strong' : 'body-sm'}
                     >
                         {title}
@@ -203,7 +203,7 @@ export const TransactionReviewOutputElement = ({
                 </Row>
             }
         >
-            <Column gap={spacings.md} padding={{ left: spacings.xxl }}>
+            <Column gap={16} padding={{ left: 32 }}>
                 {lines.map(line => {
                     const value = (
                         <Value

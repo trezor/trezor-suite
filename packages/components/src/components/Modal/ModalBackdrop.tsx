@@ -4,7 +4,7 @@ import FocusLock from 'react-focus-lock';
 
 import styled, { css } from 'styled-components';
 
-import { type ZIndexValues, spacings, zIndices } from '@trezor/theme';
+import { type ZIndexValues, zIndices } from '@trezor/theme';
 
 import { useModalTarget } from './ModalProvider';
 import { type ModalAlignment } from './types';
@@ -44,7 +44,7 @@ export const ModalBackdrop = ({
     onClick,
     children,
     alignment = { x: 'center', y: 'center' },
-    padding = spacings.xs,
+    padding = 8,
     zIndex = zIndices.modal,
     opaque = false,
     'data-testid': dataTest,
@@ -60,7 +60,7 @@ export const ModalBackdrop = ({
                         <Column
                             alignItems={mapAlignmentToAlignItems(alignment)}
                             justifyContent={mapAlignmentToJustifyContent(alignment)}
-                            gap={spacings.md}
+                            gap={16}
                             height="100%"
                         >
                             <InnerWrapper onMouseDown={e => e.stopPropagation()}>

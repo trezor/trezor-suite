@@ -9,8 +9,6 @@ import {
     WarningIcon,
     XCircleIcon,
 } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
-
 type MessageSystemManagerInfoProps = {
     message: Message;
     allValidMessages: Message[];
@@ -22,7 +20,7 @@ export const MessageSystemManagerInfo = ({
     allValidMessages,
     isInApp,
 }: MessageSystemManagerInfoProps) => (
-    <Column gap={spacings.xs}>
+    <Column gap={8}>
         <InfoItem label="Active" icon={InfoIcon} direction="row">
             <Icon
                 as={CircleFilledIcon}

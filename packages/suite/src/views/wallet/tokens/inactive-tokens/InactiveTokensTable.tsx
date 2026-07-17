@@ -9,7 +9,6 @@ import { type SelectedAccountLoaded, type StellarTokenInfo } from '@suite-common
 import { getStellarInactiveTokens } from '@suite-common/wallet-utils';
 import { Button, Card, Row, Table, Text, Tooltip } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { Loading } from 'src/components/suite';
 import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
@@ -109,7 +108,7 @@ export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTo
     return (
         <Card paddingType="none" overflow="hidden">
             <Table
-                margin={{ top: spacings.xs }}
+                margin={{ top: 8 }}
                 colWidths={[
                     { minWidth: '200px', maxWidth: '250px' },
                     { minWidth: '140px', maxWidth: '250px' },
@@ -131,7 +130,7 @@ export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTo
                     {filteredTokens.map(token => (
                         <Table.Row key={token.contract}>
                             <Table.Cell>
-                                <Row gap={spacings.xs}>
+                                <Row gap={8}>
                                     <TokenIcon
                                         placeholder={token.name || token.symbol || ''}
                                         symbol={account.symbol}
@@ -139,7 +138,7 @@ export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTo
                                         size={24}
                                         shouldTryToFetch={true}
                                     />
-                                    <Row gap={spacings.xs}>
+                                    <Row gap={8}>
                                         <Text typographyStyle="body-md">{token.name}</Text>
                                         <Text
                                             typographyStyle="body-md"

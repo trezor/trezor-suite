@@ -7,7 +7,6 @@ import { parseCSV } from '@suite-common/wallet-utils';
 import { Card, CollapsibleBox, Column, Modal, Tabs, Text, Textarea } from '@trezor/components';
 import { FileCsvIcon } from '@trezor/icons';
 import { DropZone } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { DelimiterForm } from './DelimiterForm';
 import { useExampleCSV } from './useExampleCSV';
@@ -74,7 +73,7 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
             }
             width={600}
         >
-            <Column gap={spacings.md}>
+            <Column gap={16}>
                 <CollapsibleBox
                     heading={<Translation id="TR_IMPORT_CSV_MODAL_SHOW_EXAMPLE" />}
                     hasDivider={false}
@@ -86,7 +85,7 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
                     </Card>
                 </CollapsibleBox>
                 <Card>
-                    <Column gap={spacings.lg}>
+                    <Column gap={20}>
                         <Tabs activeItemId={mode}>
                             <Tabs.Item id="upload" onClick={() => setMode('upload')}>
                                 <Translation id="TR_IMPORT_CSV_FROM_FILE" />

@@ -5,7 +5,6 @@ import styled from 'styled-components';
 
 import * as deviceUtils from '@suite-common/suite-utils';
 import { Column, motionAnimation } from '@trezor/components';
-import { borders } from '@trezor/theme';
 
 import type { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
@@ -13,7 +12,7 @@ import { DeviceHeader } from './DeviceItem/DeviceHeader';
 import { NeedsAttentionBanner } from './NeedsAttentionBanner';
 
 const Container = styled.section`
-    border-radius: ${borders.radii.md};
+    border-radius: 16px;
     background: ${({ theme }) => theme.surfaceFillModal};
     outline: 1px solid ${({ theme }) => theme.surfaceBorderModal};
     box-shadow: ${({ theme }) => theme.surfaceShadowModal};

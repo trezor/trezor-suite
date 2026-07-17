@@ -11,6 +11,7 @@ const MoreBadge = styled.div`
     height: ${ICON_SIZE}px;
     min-width: ${ICON_SIZE}px;
     width: fit-content;
+    /* stylelint-disable-next-line trezor/dimension-token-values -- Badge width scales with its text. */
     padding: 0 0.5em;
     margin-left: -8px;
     display: flex;

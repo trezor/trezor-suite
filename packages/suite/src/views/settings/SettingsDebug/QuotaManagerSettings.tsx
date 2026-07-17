@@ -14,7 +14,7 @@ import {
 } from '@suite-common/suite-sync-quota-manager';
 import { Button, ButtonGroup, Checkbox, Code, Column, Input, Text } from '@trezor/components';
 import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/product-components';
-import { breakpoints, spacings } from '@trezor/theme';
+import { breakpoints } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
@@ -63,7 +63,7 @@ export const QuotaManagerSettings = () => {
             <SectionItem>
                 <TextColumn title="Quota Manager URL" />
                 <ActionColumn>
-                    <Column gap={spacings.xxs}>
+                    <Column gap={4}>
                         <Input
                             data-testid="@settings/debug/quota-manager-url-input"
                             disabled={isUpdateUrlLoading}
@@ -131,7 +131,7 @@ export const QuotaManagerSettings = () => {
             <SectionItem>
                 <TextColumn title="Registered Devices" />
                 <ActionColumn>
-                    <Column gap={spacings.xxs}>
+                    <Column gap={4}>
                         {registeredDevices.length === 0 ? (
                             <div>No devices registered.</div>
                         ) : (
@@ -157,7 +157,7 @@ export const QuotaManagerSettings = () => {
             <SectionItem>
                 <TextColumn title="Assigned Owner IDs" />
                 <ActionColumn>
-                    <Column gap={spacings.xxs}>
+                    <Column gap={4}>
                         {ownersAllowance.length === 0 ? (
                             <div>No owner IDs assigned.</div>
                         ) : (

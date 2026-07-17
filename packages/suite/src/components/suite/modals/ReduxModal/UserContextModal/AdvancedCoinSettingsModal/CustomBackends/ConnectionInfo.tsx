@@ -1,7 +1,6 @@
 import { Translation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column, InfoItem, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -17,7 +16,7 @@ const ConnectionInfo = ({ symbol }: ConnectionInfoProps) => {
     return (
         <Paragraph typographyStyle="body-sm">
             {connected ? (
-                <Column gap={spacings.sm}>
+                <Column gap={12}>
                     <InfoItem label={<Translation id="SETTINGS_ADV_COIN_CONN_INFO_URL" />}>
                         {url}
                     </InfoItem>

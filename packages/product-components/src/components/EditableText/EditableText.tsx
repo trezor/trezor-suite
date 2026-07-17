@@ -12,7 +12,7 @@ import {
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '@trezor/components';
-import { type SpacingValuesNew, borders, zIndices } from '@trezor/theme';
+import { type SpacingValue, zIndices } from '@trezor/theme';
 
 import { ActionsContainer } from './ActionsContainer';
 import { type SavingStatus } from './types';
@@ -41,7 +41,7 @@ export type EditableTextProps = AllowedFrameProps & {
     placeholder?: string;
     leftAddon?: ReactNode;
     rightAddon?: ReactNode;
-    gap?: SpacingValuesNew;
+    gap?: SpacingValue;
     'data-testid'?: string;
 } & (
         | { defaultValue?: undefined; displayValue?: undefined }
@@ -106,7 +106,7 @@ const EditableContainer = styled.span<{
 `;
 
 type ContainerProps = {
-    $gap: SpacingValuesNew;
+    $gap: SpacingValue;
     $isActive: boolean;
     $isAlwaysActive: boolean;
 } & TransientProps<AllowedFrameProps>;
@@ -131,7 +131,7 @@ const Container = styled.span<ContainerProps>`
         position: absolute;
         inset: 0;
         background: ${({ theme }) => theme.elementFillNeutralSofter};
-        border-radius: ${borders.radii.xs};
+        border-radius: 4px;
         pointer-events: none;
         opacity: 0;
         transform-origin: left;

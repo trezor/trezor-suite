@@ -3,7 +3,7 @@ import { Children, type ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 
 import { Text } from '@trezor/components';
-import { type SpacingValuesNew, type TypographyStyle, borders } from '@trezor/theme';
+import { type SpacingValue, type TypographyStyle } from '@trezor/theme';
 
 import { type TokenIconSize } from '../TokenIcon/tokenIconTypes';
 
@@ -24,7 +24,7 @@ const mapSizeToTypographyStyle = (size: TokenIconSize): TypographyStyle => {
 const Container = styled.div<{
     $length: number;
     $size: TokenIconSize;
-    $gap: SpacingValuesNew;
+    $gap: SpacingValue;
     $maxVisibleIcons: number;
     $isCountVisible: boolean;
     $isCentered: boolean;
@@ -77,14 +77,14 @@ const overlappingIconStyles = ($size: number, $gap: number, $length: number) =>
     `;
 
 export const IconWrapper = styled.div<{ $size: number; $gap: number; $length: number }>`
-    border-radius: ${borders.radii.full};
+    border-radius: calc(infinity * 1px);
 
     ${({ $size, $gap, $length }) => overlappingIconStyles($size, $gap, $length)}
 `;
 
 const CountContainer = styled.div<{
     $size: TokenIconSize;
-    $gap: SpacingValuesNew;
+    $gap: SpacingValue;
     $length: number;
 }>`
     ${({ $size }) => css`
@@ -103,7 +103,7 @@ const CountContainer = styled.div<{
 
 export type CommonIconSetProps = {
     size: TokenIconSize;
-    gap: SpacingValuesNew;
+    gap: SpacingValue;
     /** Maximum number of icons to show. When `null`, all icons are shown. @default 3 */
     maxVisibleIcons?: number | null;
     isCountVisible?: boolean;

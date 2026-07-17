@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { type ActiveView } from '@suite-common/suite-types';
 import { Box, Modal, ResizableBox, variables } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
-import { spacings, zIndices } from '@trezor/theme';
+import { zIndices } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
 import { setWidth as setGuideWidth } from 'src/actions/suite/guideActions';
@@ -135,7 +135,7 @@ export const GuideRouter = () => {
                 (isGuideOnTop ? (
                     <Modal.Backdrop
                         alignment={{ x: 'end', y: 'center' }}
-                        padding={spacings.zero}
+                        padding={0}
                         onClick={closeGuide}
                         zIndex={zIndices.guide}
                     >

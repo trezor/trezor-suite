@@ -8,7 +8,6 @@ import {
 } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { Card, Tabs } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { AmountDetails } from './AmountDetails';
 import { Data } from './Data';
@@ -62,7 +61,7 @@ export const AdvancedTxDetails = ({
 
     return (
         <Card type="contrast">
-            <Tabs activeItemId={selectedTab} margin={{ bottom: spacings.md }}>
+            <Tabs activeItemId={selectedTab} margin={{ bottom: 16 }}>
                 <Tabs.Item id="amount" onClick={() => setSelectedTab('amount')}>
                     <Translation id="TR_TX_TAB_AMOUNT" />
                 </Tabs.Item>

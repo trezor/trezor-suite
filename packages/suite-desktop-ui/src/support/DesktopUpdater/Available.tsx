@@ -3,7 +3,6 @@ import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
 import { type UpdateInfo, desktopApi } from '@trezor/suite-desktop-api';
-import { spacings } from '@trezor/theme';
 
 import { MarkdownWithComponents } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -64,7 +63,7 @@ export const Available = ({ onCancel, latest }: AvailableProps) => {
                 <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
                     <Translation id="TR_WERE_CONSTANTLY_WORKING_TO_IMPROVE" />
                 </Paragraph>
-                <Card maxHeight={400} overflow="auto" margin={{ top: spacings.sm }}>
+                <Card maxHeight={400} overflow="auto" margin={{ top: 12 }}>
                     {latest?.changelog ? (
                         <MarkdownWithComponents>{latest?.changelog}</MarkdownWithComponents>
                     ) : (
@@ -73,7 +72,7 @@ export const Available = ({ onCancel, latest }: AvailableProps) => {
                 </Card>
             </Column>
 
-            <Card margin={{ top: spacings.xxl }}>
+            <Card margin={{ top: 32 }}>
                 <Checkbox
                     isChecked={enableAutoupdateOnNextRun}
                     onChange={handleToggleAutoUpdateClick}

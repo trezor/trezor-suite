@@ -1,4 +1,4 @@
-import { type SpacingValuesNew } from '@trezor/theme';
+import { type SpacingValue } from '@trezor/theme';
 
 import { type Padding } from '../../../utils/frameProps';
 import { type ButtonSize } from '../types';
@@ -13,8 +13,8 @@ export const mapSizeToPadding = (size: ButtonSize): Padding => {
     return paddingMap[size];
 };
 
-export const mapSizeToGap = (size: ButtonSize): SpacingValuesNew => {
-    const gapMap: Record<ButtonSize, SpacingValuesNew> = {
+export const mapSizeToGap = (size: ButtonSize): SpacingValue => {
+    const gapMap: Record<ButtonSize, SpacingValue> = {
         large: 4,
         medium: 2,
         small: 0,

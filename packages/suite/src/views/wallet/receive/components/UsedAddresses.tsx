@@ -14,7 +14,6 @@ import { Button, Card, Column, Row, Table, Text } from '@trezor/components';
 import { type AccountAddress } from '@trezor/connect';
 import { getAddressPathIndex } from '@trezor/crypto-utils';
 import { CaretDownIcon, CaretUpIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -44,7 +43,7 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
         <Table.Row>
             <Table.Cell>
                 <Row
-                    gap={spacings.xxs}
+                    gap={4}
                     alignItems="center"
                     data-testid={`@wallet/receive/used-address/${index}`}
                 >
@@ -147,8 +146,8 @@ export const UsedAddresses = ({ account, pendingAddresses, locked }: UsedAddress
 
     return (
         <Card paddingType="none">
-            <Column gap={spacings.md}>
-                <Table margin={{ top: spacings.xs, bottom: spacings.xs }}>
+            <Column gap={16}>
+                <Table margin={{ top: 8, bottom: 8 }}>
                     <Table.Header>
                         <Table.Row>
                             <Table.Cell>
@@ -190,7 +189,7 @@ export const UsedAddresses = ({ account, pendingAddresses, locked }: UsedAddress
                 </Table>
 
                 {actionButtonsVisible && (
-                    <Row justifyContent="center" gap={spacings.md} margin={{ bottom: spacings.md }}>
+                    <Row justifyContent="center" gap={16} margin={{ bottom: 16 }}>
                         {actionShowVisible && (
                             <Button
                                 intent="neutral"

@@ -8,7 +8,6 @@ import { selectSelectedDevice } from '@suite-common/device';
 import type { PasswordEntry, PasswordEntryDecoded } from '@suite-common/metadata-types';
 import { Button, Checkbox, Input } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-import { spacingsPx } from '@trezor/theme';
 import { isUrl } from '@trezor/utils';
 
 import { getDisplayKey } from './passwords';
@@ -20,14 +19,14 @@ const FormWrapper = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
-    gap: ${spacingsPx.md};
+    gap: 16px;
 `;
 
 // horizontal box for tags
 const TagsSelection = styled.div`
     display: flex;
     flex-direction: row;
-    column-gap: ${spacingsPx.md};
+    column-gap: 16px;
 `;
 
 interface Props {

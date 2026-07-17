@@ -11,7 +11,6 @@ import {
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '@trezor/components';
-import { borders } from '@trezor/theme';
 
 import { TokenInitials } from './TokenInitials';
 import { type TokenIconProps, allowedTokenIconFrameProps } from './tokenIconTypes';
@@ -38,7 +37,7 @@ const Container = styled.div<TransientProps<AllowedFrameProps> & { $size: number
 const LogoWrapper = styled.div<{ $size: number; $isBordered: boolean }>`
     width: ${({ $size }) => $size}px;
     height: ${({ $size }) => $size}px;
-    border-radius: ${borders.radii.full};
+    border-radius: calc(infinity * 1px);
     overflow: hidden;
 
     ${({ $isBordered }) =>
@@ -52,7 +51,7 @@ const Logo = styled.img<{ $size: number }>`
     display: block;
     width: ${({ $size }) => $size}px;
     height: ${({ $size }) => $size}px;
-    border-radius: ${borders.radii.full};
+    border-radius: calc(infinity * 1px);
     background-color: ${({ theme }) => theme.elementFillElevated};
 `;
 

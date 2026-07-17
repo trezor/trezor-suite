@@ -18,7 +18,6 @@ import { findAccountsByAddress } from '@suite-common/wallet-utils';
 import { Card, Column, DotIndicator, H4, Modal, Row } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevicePill, TokenIcon } from '@trezor/product-components';
-import { spacings, spacingsPx } from '@trezor/theme';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
@@ -28,7 +27,7 @@ const MessageText = styled.pre`
     font-family: monospace;
     white-space: pre-wrap;
     word-break: break-all;
-    margin-left: ${spacingsPx.xxl};
+    margin-left: 32px;
 `;
 
 interface SignMessageModalProps {
@@ -101,14 +100,9 @@ export const SignMessageModal = ({
                     )
                 }
                 description={
-                    <Row
-                        columnGap={spacings.md}
-                        rowGap={spacings.xxs}
-                        flexWrap="wrap"
-                        margin={{ top: spacings.xs }}
-                    >
+                    <Row columnGap={16} rowGap={4} flexWrap="wrap" margin={{ top: 8 }}>
                         {network && (
-                            <Row gap={spacings.xxs}>
+                            <Row gap={4}>
                                 <TokenIcon size={16} symbol={network.symbol} />
                                 {account ? (
                                     <AccountLabel
@@ -126,16 +120,13 @@ export const SignMessageModal = ({
                 }
                 onCancel={onCancel}
             >
-                <Column gap={spacings.xs}>
+                <Column gap={8}>
                     {address && (
                         <Card
                             header={
-                                <Row gap={spacings.sm}>
+                                <Row gap={12}>
                                     <DotIndicator isActive={device.buttonRequests.length === 1} />
-                                    <H4
-                                        margin={{ left: spacings.xxs }}
-                                        typographyStyle="body-sm-strong"
-                                    >
+                                    <H4 margin={{ left: 4 }} typographyStyle="body-sm-strong">
                                         <Translation id="TR_ADDRESS" />
                                     </H4>
                                 </Row>
@@ -150,12 +141,9 @@ export const SignMessageModal = ({
                     {isEip712 && (
                         <Card
                             header={
-                                <Row gap={spacings.sm}>
+                                <Row gap={12}>
                                     <DotIndicator isActive={device.buttonRequests.length === 2} />
-                                    <H4
-                                        margin={{ left: spacings.xxs }}
-                                        typographyStyle="body-sm-strong"
-                                    >
+                                    <H4 margin={{ left: 4 }} typographyStyle="body-sm-strong">
                                         <Translation id="TR_DOMAIN" />
                                     </H4>
                                 </Row>
@@ -169,14 +157,11 @@ export const SignMessageModal = ({
                     )}
                     <Card
                         header={
-                            <Row gap={spacings.sm}>
+                            <Row gap={12}>
                                 <DotIndicator
                                     isActive={device.buttonRequests.length === (isEip712 ? 3 : 2)}
                                 />
-                                <H4
-                                    margin={{ left: spacings.xxs }}
-                                    typographyStyle="body-sm-strong"
-                                >
+                                <H4 margin={{ left: 4 }} typographyStyle="body-sm-strong">
                                     <Translation id="TR_MESSAGE" />
                                 </H4>
                             </Row>

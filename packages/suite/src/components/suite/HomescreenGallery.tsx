@@ -8,7 +8,6 @@ import {
     hasBitcoinOnlyFirmware,
 } from '@trezor/device-utils';
 import { resolveStaticPath } from '@trezor/env-utils';
-import { borders, spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 import { versionUtils } from '@trezor/utils';
 
@@ -41,7 +40,7 @@ const HomescreenImage = styled.img`
     display: block;
     width: 100%;
     cursor: pointer;
-    border-radius: ${borders.radii.xs};
+    border-radius: 4px;
 `;
 
 type HomescreenGalleryProps = {
@@ -90,7 +89,7 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
     const isColorScreen = path.startsWith('COLOR');
 
     return (
-        <Grid gap={spacings.md} columns={4}>
+        <Grid gap={16} columns={4}>
             {homescreens[deviceModelInternal].map(image => {
                 const src = resolveStaticPath(
                     `images/homescreens/${path}/${image}.${isColorScreen ? 'jpg' : 'png'}`,

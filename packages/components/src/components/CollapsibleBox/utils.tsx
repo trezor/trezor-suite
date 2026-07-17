@@ -1,4 +1,4 @@
-import { type TypographyStyle, spacingsPx } from '@trezor/theme';
+import { type TypographyStyle } from '@trezor/theme';
 
 import { type HeadingSize, type PaddingType } from './types';
 import { type IconSize } from '../Icon/Icon';
@@ -14,9 +14,9 @@ type SizeMapArgs = {
 export const mapPaddingTypeToHeaderPadding = ({ $paddingType }: PaddingMapArgs): string => {
     const paddingMap: Record<PaddingType, string> = {
         none: '0',
-        small: `${spacingsPx.xs} ${spacingsPx.sm}`,
-        normal: `${spacingsPx.sm} ${spacingsPx.md}`,
-        large: `${spacingsPx.md} ${spacingsPx.xl}`,
+        small: `8px 12px`,
+        normal: `12px 16px`,
+        large: `16px 24px`,
     };
 
     return paddingMap[$paddingType];
@@ -24,10 +24,10 @@ export const mapPaddingTypeToHeaderPadding = ({ $paddingType }: PaddingMapArgs):
 
 export const mapPaddingTypeToContentPadding = ({ $paddingType }: PaddingMapArgs): string => {
     const paddingMap: Record<PaddingType, string> = {
-        none: `${spacingsPx.sm} 0 0`,
-        small: `${spacingsPx.md} ${spacingsPx.sm}`,
-        normal: `${spacingsPx.lg} ${spacingsPx.md}`,
-        large: `${spacingsPx.xl}`,
+        none: `12px 0 0`,
+        small: `16px 12px`,
+        normal: `20px 16px`,
+        large: `24px`,
     };
 
     return paddingMap[$paddingType];

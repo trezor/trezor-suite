@@ -5,7 +5,7 @@ import { useSelector } from 'src/hooks/suite';
 
 const barProps = {
     width: 12,
-    borderRadius: 2,
+    borderRadius: 4,
     animate: false,
 } as const;
 

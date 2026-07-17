@@ -2,8 +2,6 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { spacings } from '@trezor/theme';
-
 import { SubTabsContext } from './SubTabsContext';
 import { SubTabsItem } from './SubTabsItem';
 import { type SubTabsSize } from './types';
@@ -35,7 +33,7 @@ const SubTabs = ({ activeItemId, size = 'medium', children, ...rest }: SubTabsPr
     return (
         <SubTabsContext.Provider value={{ activeItemId, size }}>
             <Container {...frameProps}>
-                <Row alignItems="stretch" gap={spacings.xxs}>
+                <Row alignItems="stretch" gap={4}>
                     {children}
                 </Row>
             </Container>

@@ -7,7 +7,7 @@ import { selectLanguage } from '@suite/settings';
 import { Button, Row } from '@trezor/components';
 import { CaretLeftIcon, CaretRightIcon } from '@trezor/icons';
 import { NumberInput } from '@trezor/product-components';
-import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
+import { typography } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -16,21 +16,21 @@ const Wrapper = styled.div<{ $hasPages?: boolean }>`
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    gap: ${$hasPages => ($hasPages ? spacingsPx.xs : spacingsPx.xxxs)};
+    gap: ${$hasPages => ($hasPages ? '8px' : '2px')};
 `;
 
 const PageItem = styled.div<{ $isActive?: boolean }>`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: ${spacingsPx.xxl};
-    height: ${spacingsPx.xxl};
-    padding: ${spacingsPx.xxs} ${spacingsPx.xs};
+    width: 32px;
+    height: 32px;
+    padding: 4px 8px;
     background: ${({ $isActive, theme }) =>
         $isActive ? theme.elementFillBrandBold : 'transparent'};
     text-align: center;
     color: ${({ $isActive, theme }) => $isActive && theme.contentPrimaryInverse};
-    border-radius: ${borders.radii.md};
+    border-radius: 16px;
     transition:
         background 0.15s ease-out,
         color 0.15s ease-out;
@@ -202,7 +202,7 @@ export const Pagination = ({
             </Actions>
 
             {explicitNavigation && (
-                <Row alignItems="center" gap={spacings.sm} maxWidth="140px">
+                <Row alignItems="center" gap={12} maxWidth="140px">
                     <NumberInput
                         name="pageInput"
                         control={control}

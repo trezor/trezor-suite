@@ -13,7 +13,6 @@ import { useServices } from '@suite-common/dependency-injection';
 import { Banner, Button, Checkbox, Column, Row, Switch } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
 import { typedObjectKeys } from '@trezor/utils';
 
@@ -61,7 +60,7 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
     };
 
     return (
-        <Row gap={spacings.sm}>
+        <Row gap={12}>
             <TextColumn
                 title={title ? <Translation {...title} /> : feature}
                 description={description ? <Translation {...description} /> : undefined}
@@ -187,7 +186,7 @@ export const Experimental = () => {
             <AnimatePresence>
                 {enabledFeatures && experimentalFeatures.length > 0 && (
                     <motion.div {...motionDivProps}>
-                        <Column gap={spacings.xxl} hasDivider>
+                        <Column gap={32} hasDivider>
                             {experimentalFeatures.map(feature => (
                                 <FeatureLine
                                     key={feature}

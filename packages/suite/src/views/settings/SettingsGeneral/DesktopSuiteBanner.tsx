@@ -11,7 +11,6 @@ import { useServices } from '@suite-common/dependency-injection';
 import { Box, Button, H2, Icon, IconButton, Image, Paragraph, Row } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { AppleLogoIcon, LinuxLogoIcon, WindowsLogoIcon, XIcon } from '@trezor/icons';
-import { spacings, spacingsPx } from '@trezor/theme';
 import { SUITE_URL } from '@trezor/urls';
 
 import { useDispatch } from 'src/hooks/suite/useDispatch';
@@ -23,7 +22,7 @@ const Container = styled(motion.div)`
     border-radius: 12px;
     background: ${({ theme }) => theme.surfaceFillBrandDark};
     overflow: hidden;
-    margin-bottom: ${spacingsPx.xxxxl};
+    margin-bottom: 48px;
 `;
 
 const ImageContainer = styled.div`
@@ -79,11 +78,7 @@ export const DesktopSuiteBanner = () => {
                     }
                     {...bannerAnimationConfig}
                 >
-                    <Row
-                        alignItems="center"
-                        width="100%"
-                        margin={{ vertical: spacings.sm, horizontal: spacings.lg }}
-                    >
+                    <Row alignItems="center" width="100%" margin={{ vertical: 12, horizontal: 20 }}>
                         <Box position={{ type: 'absolute', top: 16, right: 16 }} cursor="pointer">
                             <IconButton
                                 icon={XIcon}

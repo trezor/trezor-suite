@@ -1,4 +1,4 @@
-import { type TypographyStyle, spacings, spacingsPx } from '@trezor/theme';
+import { type TypographyStyle } from '@trezor/theme';
 
 import { type TabsSize } from './types';
 
@@ -18,9 +18,9 @@ export const mapSizeToTypography = ({ $size }: mapArgs): TypographyStyle => {
 
 export const mapSizeToItemPadding = ({ $size }: mapArgs): string => {
     const paddingMap: Record<TabsSize, string> = {
-        large: `${spacingsPx.xxs} ${spacingsPx.sm}`,
-        medium: `${spacingsPx.xxs} ${spacingsPx.xs}`,
-        small: `${spacingsPx.xxxs} ${spacingsPx.xs}`,
+        large: `4px 12px`,
+        medium: `4px 8px`,
+        small: `2px 8px`,
     };
 
     return paddingMap[$size];
@@ -28,9 +28,9 @@ export const mapSizeToItemPadding = ({ $size }: mapArgs): string => {
 
 export const mapSizeToContainerPaddingBottom = ({ $size }: mapArgs): string => {
     const paddingMap: Record<TabsSize, string> = {
-        large: `${spacings.xxxs + spacings.xs}px`,
-        medium: `${spacings.xxxs + spacings.xxs}px`,
-        small: `${spacings.xxxs + spacings.xxxs}px`,
+        large: `${2 + 8}px`,
+        medium: `${2 + 4}px`,
+        small: `${2 + 2}px`,
     };
 
     return paddingMap[$size];

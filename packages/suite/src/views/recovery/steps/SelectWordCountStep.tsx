@@ -1,20 +1,18 @@
 import { Translation } from '@suite/intl';
 import { type WordCount, wordCounts } from '@suite/recovery';
 import { Card, Column, Grid, H4, Paragraph, RadioCard } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-
 type SelectWordCountStepProps = {
     setWordCount: (number: WordCount) => void;
     wordCount?: WordCount;
 };
 
 export const SelectWordCountStep = ({ setWordCount, wordCount }: SelectWordCountStepProps) => (
-    <Card margin={{ top: spacings.xs }}>
-        <Column gap={spacings.md}>
+    <Card margin={{ top: 8 }}>
+        <Column gap={16}>
             <H4>
                 <Translation id="TR_SELECT_NUMBER_OF_WORDS" />
             </H4>
-            <Grid columns={3} gap={spacings.md}>
+            <Grid columns={3} gap={16}>
                 {wordCounts.map(count => (
                     <RadioCard
                         key={count}

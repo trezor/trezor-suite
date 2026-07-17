@@ -2,7 +2,6 @@ import { Translation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Button, Column, DotIndicator, Input, List, Row, Text } from '@trezor/components';
 import { PlusIcon, TrashIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { useDefaultUrls } from 'src/hooks/settings/backends';
 import { type BackendsForm } from 'src/hooks/settings/backends/useBackendsForm';
@@ -29,9 +28,9 @@ export function BackendUrls({
     });
 
     return (
-        <Column gap={spacings.xxl}>
+        <Column gap={32}>
             {(urls.length || (!isEditable && defaultUrls.length)) && (
-                <List bulletComponent={<DotIndicator />} gap={spacings.sm}>
+                <List bulletComponent={<DotIndicator />} gap={12}>
                     {(isEditable ? urls : defaultUrls).map(url => (
                         <List.Item
                             data-testid="@settings/advance/url"
@@ -42,7 +41,7 @@ export function BackendUrls({
                                 ) : undefined
                             }
                         >
-                            <Row gap={spacings.sm}>
+                            <Row gap={12}>
                                 <Text
                                     overflowWrap="anywhere"
                                     intent="neutral"
@@ -69,7 +68,7 @@ export function BackendUrls({
                 </List>
             )}
             {isEditable && (
-                <Column gap={spacings.sm}>
+                <Column gap={12}>
                     <Input
                         data-testid="@settings/advance/url"
                         placeholder={input.placeholder}

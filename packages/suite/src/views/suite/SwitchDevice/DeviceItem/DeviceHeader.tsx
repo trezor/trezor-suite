@@ -4,7 +4,6 @@ import { Translation } from '@suite/intl';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { IconButton, Row, TOOLTIP_DELAY_LONG } from '@trezor/components';
 import { CaretLeftIcon, XIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
 import { type ForegroundAppProps, type TrezorDevice } from 'src/types/suite';
@@ -38,7 +37,7 @@ export const DeviceHeader = ({
     }
 
     return (
-        <Row gap={spacings.sm}>
+        <Row gap={12}>
             {onBackButtonClick && (
                 <IconButton
                     icon={CaretLeftIcon}
@@ -58,7 +57,7 @@ export const DeviceHeader = ({
                 />
             )}
 
-            <Row gap={spacings.xxs} margin={{ left: 'auto' }}>
+            <Row gap={4} margin={{ left: 'auto' }}>
                 {isDefaultCancelVisible && (
                     <IconButton
                         icon={XIcon}

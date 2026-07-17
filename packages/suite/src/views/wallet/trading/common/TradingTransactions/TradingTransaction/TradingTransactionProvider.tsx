@@ -1,7 +1,6 @@
 import { PaymentMethodType } from '@suite/trading';
 import type { TradingPaymentMethodType, TradingUtilsProvidersProps } from '@suite-common/trading';
 import { Flex, type FlexProps } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useLayoutSize } from 'src/hooks/suite';
 
@@ -36,7 +35,7 @@ export const TradingTransactionProvider = ({
           };
 
     return (
-        <Flex gap={spacings.sm} {...flexProps}>
+        <Flex gap={12} {...flexProps}>
             <TradingUtilsProvider exchange={exchange} providers={providers} />
             {paymentMethod && (
                 <PaymentMethodType method={paymentMethod} methodName={paymentMethodName} />

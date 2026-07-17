@@ -4,7 +4,6 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectDiscoveryByDevicePath } from '@suite-common/wallet-core';
 import { Banner, Column, H3 } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
@@ -41,7 +40,7 @@ export const PassphraseWalletConfirmation = ({
     return (
         <SwitchDeviceModal onCancel={onCancel}>
             <CardWithDevice onCancel={onCancel} device={device} onBackButtonClick={onBack}>
-                <Column gap={spacings.sm}>
+                <Column gap={12}>
                     <H3>
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_TITLE" />
                     </H3>

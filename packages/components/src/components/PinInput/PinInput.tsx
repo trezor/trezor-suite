@@ -2,7 +2,7 @@ import { type ChangeEvent, type ClipboardEvent, useEffect, useRef, useState } fr
 
 import styled from 'styled-components';
 
-import { borders, typography } from '@trezor/theme';
+import { typography } from '@trezor/theme';
 
 import { Row } from '../Flex/Flex';
 
@@ -11,7 +11,7 @@ const SymbolBox = styled.input<{ $fakeDisabled?: boolean }>`
     width: 50px;
     background: ${({ theme }) => theme.elementFillField};
     border: 1px solid ${({ theme }) => theme.elementBorderField};
-    border-radius: ${borders.radii.lg};
+    border-radius: 20px;
     outline: 0;
     text-align: center;
     caret-color: transparent;

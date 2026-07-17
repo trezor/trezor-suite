@@ -4,7 +4,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import { useTheme } from 'styled-components';
 
 import { Box, Flex } from '@trezor/components';
-import { type Color, borders, spacings } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
 // The center icon must stay within the error-correction budget so it never damages the encoded
 // data. Capped at 25% of the QR width (~6% of its area), well below level H's ~30% recovery budget.
@@ -36,8 +36,8 @@ export const QrCode = ({ value, color = 'contentPrimary', centerIcon }: QrCodePr
                     height="fit-content"
                     maxWidth={QR_CENTER_ICON_MAX_RATIO}
                     maxHeight={QR_CENTER_ICON_MAX_RATIO}
-                    padding={spacings.xxs}
-                    borderRadius={borders.radii.full}
+                    padding={4}
+                    borderRadius="full"
                     overflow="hidden"
                     backgroundColor="surfaceFillRaised"
                 >

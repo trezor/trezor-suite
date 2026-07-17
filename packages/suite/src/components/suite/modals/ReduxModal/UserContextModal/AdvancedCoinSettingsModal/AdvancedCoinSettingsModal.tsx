@@ -17,7 +17,6 @@ import {
     Row,
     Text,
 } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { useBackendsForm } from 'src/hooks/settings/backends';
@@ -136,7 +135,7 @@ export const AdvancedCoinSettingsModal = ({
                 </>
             }
         >
-            <Column gap={spacings.lg}>
+            <Column gap={20}>
                 <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                     <Translation id="SETTINGS_BACKEND_SETTINGS_DESCRIPTION" />
                 </Paragraph>
@@ -168,7 +167,7 @@ export const AdvancedCoinSettingsModal = ({
 
                 <CollapsibleBox
                     heading={
-                        <Row gap={spacings.sm}>
+                        <Row gap={12}>
                             <Translation id="TR_EXPLORER" />
 
                             {usesCustomExplorer ? (
@@ -190,7 +189,7 @@ export const AdvancedCoinSettingsModal = ({
                     <CollapsibleBox
                         heading={<Translation id="SETTINGS_BACKEND_SETTINGS_CUSTOM_GAP_LIMIT" />}
                     >
-                        <Column gap={spacings.sm} alignItems="flex-start">
+                        <Column gap={12} alignItems="flex-start">
                             <Input
                                 type="number"
                                 value={gapLimitForm.value}

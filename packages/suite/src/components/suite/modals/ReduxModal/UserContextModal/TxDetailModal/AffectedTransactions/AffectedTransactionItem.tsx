@@ -4,7 +4,6 @@ import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { type Transaction } from '@trezor/blockchain-link-types';
 import { Icon, InfoSegments, Row, Text } from '@trezor/components';
 import { ArrowDownIcon, ArrowUpIcon, ClockIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { FormattedDate } from 'src/components/suite/FormattedDate';
 
@@ -25,7 +24,7 @@ type AffectedTransactionItemProps = {
 };
 
 export const AffectedTransactionItem = ({ tx, isAccountOwned }: AffectedTransactionItemProps) => (
-    <Row gap={spacings.sm}>
+    <Row gap={12}>
         <RowIcon isAccountOwned={isAccountOwned} txType={tx.type} />
 
         <InfoSegments>

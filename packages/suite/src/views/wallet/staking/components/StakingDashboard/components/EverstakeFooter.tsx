@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { Button } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
 
 import { PoweredByBadge } from 'src/components/earn';
 import { getStakingGuideLink } from 'src/components/earn/utils/getStakingGuideLink';
@@ -16,10 +15,10 @@ const Wrapper = styled.div`
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: ${spacingsPx.md};
+    gap: 16px;
     justify-content: space-between;
     border-top: 1px solid ${({ theme }) => theme.surfaceBorderRaised};
-    margin-top: ${spacingsPx.xxl};
+    margin-top: 32px;
 `;
 
 export const EverstakeFooter = () => {

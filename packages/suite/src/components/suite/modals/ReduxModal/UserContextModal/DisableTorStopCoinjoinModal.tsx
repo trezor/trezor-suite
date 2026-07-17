@@ -2,8 +2,6 @@ import { Translation } from '@suite/intl';
 import { type UserContextPayload } from '@suite-common/suite-types';
 import { Banner, Column, Modal, Paragraph } from '@trezor/components';
 import { TorBrowserIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
-
 type DisableTorStopCoinjoinModalProps = {
     decision: Extract<UserContextPayload, { type: 'disable-tor-stop-coinjoin' }>['decision'];
     onCancel: () => void;
@@ -40,7 +38,7 @@ export const DisableTorStopCoinjoinModal = ({
                 </>
             }
         >
-            <Column gap={spacings.xl}>
+            <Column gap={24}>
                 <Banner
                     intent="warning"
                     icon={TorBrowserIcon}

@@ -7,8 +7,6 @@ import {
 
 import styled, { css } from 'styled-components';
 
-import { borders } from '@trezor/theme';
-
 import { pickAndPrepareFrameProps } from '../../../utils/frameProps';
 import { Row } from '../../Flex/Flex';
 import { Text } from '../../typography/Text/Text';
@@ -26,7 +24,7 @@ const HiddenInput = styled.input`
 const FakeInput = styled.div`
     ${commonCheckInputStyles}
 
-    border-radius: ${borders.radii.full};
+    border-radius: calc(infinity * 1px);
 
     &::after {
         content: '';

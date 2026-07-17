@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const Floating = styled.div`
     float: right;
     text-align: right;
-    margin-top: -2rem;
+    margin-top: -32px;
 `;
 
 const StyledLink = styled(Link)`

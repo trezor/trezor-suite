@@ -2,7 +2,7 @@ import { type ReactNode, useId, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { type SpacingValues, spacings } from '@trezor/theme';
+import { type SpacingValue } from '@trezor/theme';
 
 import { CollapsibleContent } from './CollapsibleContent';
 import { CollapsibleContext } from './CollapsibleContext';
@@ -15,14 +15,14 @@ export type CollapsibleProps = {
     children: ReactNode;
     isOpen?: boolean;
     defaultIsOpen?: boolean;
-    gap?: SpacingValues;
+    gap?: SpacingValue;
     'data-testid'?: string;
 };
 
 export const Collapsible = ({
     children,
     isOpen,
-    gap = spacings.zero,
+    gap = 0,
     defaultIsOpen = false,
     'data-testid': dataTest,
 }: CollapsibleProps) => {

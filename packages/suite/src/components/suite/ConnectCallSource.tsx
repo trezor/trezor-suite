@@ -2,7 +2,6 @@ import { Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { CALL_SOURCE_WALLETCONNECT } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { Row, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -19,10 +18,10 @@ export const ConnectCallSource = () => {
         return null;
 
     return (
-        <Row gap={spacings.xs} alignItems="center">
+        <Row gap={8} alignItems="center">
             <ConnectAppIcon
                 src={connectPopupCall.source?.manifest?.appIcon}
-                size={spacings.lg}
+                size={20}
                 type={
                     connectPopupCall.source?.type === CALL_SOURCE_WALLETCONNECT
                         ? 'walletConnect'

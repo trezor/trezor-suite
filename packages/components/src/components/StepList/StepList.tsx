@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { type SpacingValuesNew } from '@trezor/theme';
+import { type SpacingValue } from '@trezor/theme';
 
 import { StepListContext } from './StepListContext';
 import { StepListItem } from './StepListItem';
@@ -34,9 +34,9 @@ const Container = styled.ul<TransientProps<AllowedFrameProps> & { $direction: St
 `;
 
 export type StepListProps = AllowedFrameProps & {
-    gap?: SpacingValuesNew;
-    bulletGap?: SpacingValuesNew;
-    titleGap?: SpacingValuesNew;
+    gap?: SpacingValue;
+    bulletGap?: SpacingValue;
+    titleGap?: SpacingValue;
     isOrdered?: boolean;
     bulletSize?: BulletSize;
     lineWidth?: StepLineWidth;

@@ -11,8 +11,6 @@ import {
     Text,
     type TextProps,
 } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-
 const Container = styled.span<{ $isAction?: boolean }>`
     width: stretch;
     ${({ $isAction }) =>
@@ -62,7 +60,7 @@ export const DeviceConnectionText = ({
             data-testid={dataTest}
             data-testid-alt={dataTestAlt}
         >
-            <Row gap={spacings.xxs}>
+            <Row gap={4}>
                 {isLoading ? (
                     <Spinner size={16} isDisabled={true} />
                 ) : (

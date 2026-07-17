@@ -4,7 +4,6 @@ import { type ExchangeTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { Button, Column, Row, Switch } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
@@ -41,7 +40,7 @@ export const TradingExtraField = ({
     };
 
     return (
-        <Column gap={spacings.md}>
+        <Column gap={16}>
             <Row justifyContent="space-between">
                 <Switch
                     data-testid="@trading/extra-field-switch"

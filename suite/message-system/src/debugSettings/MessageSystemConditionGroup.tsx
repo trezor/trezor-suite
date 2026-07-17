@@ -1,7 +1,6 @@
 import { type Action } from '@suite-common/suite-types';
 import { Column, InfoItem, Row } from '@trezor/components';
 import { BrowsersIcon, CheckFatIcon, CoinsIcon, DevicesIcon, GlobeIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { MessageSystemCondition } from './MessageSystemCondition';
 import { MessageSystemDevices } from './MessageSystemDevices';
@@ -21,8 +20,8 @@ export const MessageSystemConditionGroup = ({ conditions }: MessageSystemConditi
     }
 
     return conditions.map(({ environment, os, devices, settings, countryCodes }, index) => (
-        <Column key={index} gap={spacings.sm}>
-            <Row gap={spacings.sm} alignItems="flex-start">
+        <Column key={index} gap={12}>
+            <Row gap={12} alignItems="flex-start">
                 <MessageSystemCondition label="Environment" icon={DevicesIcon} data={environment} />
 
                 <MessageSystemCondition label="Operating System" icon={BrowsersIcon} data={os} />

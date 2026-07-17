@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Column, InfoItem, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-
 const ParagraphWrapper = styled.div`
     white-space: pre-wrap;
     overflow-wrap: anywhere;
@@ -37,7 +35,7 @@ export const Data = ({ tx }: DataProps) => {
     const { function: fn, methodId, name, params } = parsedData || {};
 
     return (
-        <Column gap={spacings.lg}>
+        <Column gap={20}>
             {methodId && name && (
                 <DataRow translationId="TR_TX_DATA_METHOD_NAME" content={`${name} (${methodId})`} />
             )}

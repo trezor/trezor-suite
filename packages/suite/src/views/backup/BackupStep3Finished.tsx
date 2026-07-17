@@ -1,7 +1,6 @@
 import { type BackupState, canContinue } from '@suite/backup';
 import { Translation } from '@suite/intl';
 import { Modal, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useOnboarding } from 'src/hooks/suite';
 
@@ -42,7 +41,7 @@ export const BackupStep3Finished = ({
                 priority="secondary"
                 typographyStyle="body-sm"
                 data-testid="@backup/success-message"
-                margin={{ bottom: spacings.xl }}
+                margin={{ bottom: 24 }}
             >
                 <Translation
                     id={isUsingNfc ? 'TR_BACKUP_FINISHED_TEXT_NFC' : 'TR_BACKUP_FINISHED_TEXT'}

@@ -3,7 +3,6 @@ import { selectDeviceLabelOrNameById, selectSelectedDevice } from '@suite-common
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { Image, Row } from '@trezor/components';
 import { LinkBreakIcon, LinkIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -25,11 +24,7 @@ export const SmallDeviceItem = ({ forceAlternativeDeviceLabel }: SmallDeviceItem
     const selectedDeviceModelInternal = getDeviceInternalModel(selectedDevice);
 
     return (
-        <Row
-            gap={spacings.xs}
-            padding={{ vertical: spacings.xs, horizontal: spacings.xs }}
-            alignItems="center"
-        >
+        <Row gap={8} padding={{ vertical: 8, horizontal: 8 }} alignItems="center">
             <Image
                 width={18}
                 objectFit="contain"

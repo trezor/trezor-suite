@@ -21,7 +21,6 @@ import {
 } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { CheckIcon, CopyIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { isVerifySupported, sign, verify } from 'src/actions/wallet/signVerifyActions';
 import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
@@ -156,7 +155,7 @@ const SignVerify = () => {
             {!isDeviceConnected && <ConnectDeviceGenericPromo />}
 
             <Card>
-                <Tabs activeItemId={page} size="large" margin={{ bottom: spacings.lg }}>
+                <Tabs activeItemId={page} size="large" margin={{ bottom: 20 }}>
                     <Tabs.Item
                         id="sign"
                         onClick={() => setPage('sign')}
@@ -175,7 +174,7 @@ const SignVerify = () => {
                     )}
                 </Tabs>
                 <form onSubmit={formSubmit(onSubmit)}>
-                    <Column gap={spacings.md} margin={{ bottom: spacings.xxl }}>
+                    <Column gap={16} margin={{ bottom: 32 }}>
                         <Textarea
                             labelLeft={<Translation id="TR_MESSAGE" />}
                             labelRight={
@@ -199,7 +198,7 @@ const SignVerify = () => {
                         />
                         {isSignPage ? (
                             <>
-                                <Row gap={spacings.xxxl} alignItems="flex-start">
+                                <Row gap={40} alignItems="flex-start">
                                     <Box flex="1" minWidth={0}>
                                         <SignAddressInput
                                             name="path"

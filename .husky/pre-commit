@@ -6,6 +6,10 @@ if ! bash "$script_dir/eslint.sh"; then
   exit 1
 fi
 
+if ! bash "$script_dir/stylelint.sh"; then
+  exit 1
+fi
+
 if ! bash "$script_dir/format.sh"; then
   exit 1
 fi

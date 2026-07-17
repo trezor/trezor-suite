@@ -7,7 +7,7 @@ import { Translation } from '@suite/intl';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { isLowAnonymityWarning } from '@suite-common/wallet-utils';
 import { Banner, Button, Checkbox, Column, Paragraph, Tooltip } from '@trezor/components';
-import { paletteV2, spacingsPx } from '@trezor/theme';
+import { paletteV2 } from '@trezor/theme';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -17,7 +17,7 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     grid-column: 1 / 3;
-    gap: ${spacingsPx.md};
+    gap: 16px;
 `;
 const TooltipHeading = styled.p`
     opacity: 0.6;

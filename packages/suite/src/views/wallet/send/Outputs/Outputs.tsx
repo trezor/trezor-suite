@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
 import { Card, Column, motionEasing } from '@trezor/components';
 import { motionEasingStrings } from '@trezor/components/src/config/motion';
-import { spacings } from '@trezor/theme';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 
@@ -69,7 +68,7 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
     return (
         <Container $height={height || 0}>
             <div ref={ref}>
-                <Column gap={spacings.md}>
+                <Column gap={16}>
                     {outputs.map((output, index) => (
                         <motion.div
                             key={output.id}
@@ -84,13 +83,13 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                                 ease: motionEasing.transition,
                             }}
                         >
-                            <Column gap={spacings.sm}>
+                            <Column gap={12}>
                                 {areTokensSupported && <TokenSelect outputId={index} />}
                                 <Card>
                                     {output.type === 'opreturn' ? (
                                         <OpReturn outputId={index} />
                                     ) : (
-                                        <Column gap={spacings.md}>
+                                        <Column gap={16}>
                                             <Address
                                                 output={output}
                                                 outputId={index}
@@ -113,8 +112,8 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                     ))}
                 </Column>
                 {outputs.length > 1 && isSendingTokens && (
-                    <Card margin={{ vertical: spacings.md }}>
-                        <Column gap={spacings.md}>
+                    <Card margin={{ vertical: 16 }}>
+                        <Column gap={16}>
                             <CardanoMinAmountInfo />
                         </Column>
                     </Card>

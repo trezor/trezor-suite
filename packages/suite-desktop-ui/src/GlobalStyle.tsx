@@ -11,7 +11,7 @@ export const GlobalStyle = createGlobalStyle`
         position: relative;
         background: yellow;
         color: black;
-        border-radius: 2px;
+        border-radius: 4px;
         transition: transform 0.16s ease, background 0.16s ease;
     }
 

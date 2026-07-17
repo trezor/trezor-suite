@@ -2,7 +2,6 @@ import { Translation } from '@suite/intl';
 import { selectNftDefinitions } from '@suite-common/token-definitions';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Banner, Column, H3 } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { getTokens } from 'src/utils/wallet/tokenUtils';
@@ -41,7 +40,7 @@ export const NftsTablesSection = ({
         !nfts?.unverifiedWithBalance.length && !nfts?.unverifiedWithoutBalance.length;
 
     const hiddenEvmNfts = (
-        <Column gap={spacings.xl}>
+        <Column gap={24}>
             <NftsTable
                 selectedAccount={selectedAccount}
                 isShown={false}

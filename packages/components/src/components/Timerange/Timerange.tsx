@@ -4,7 +4,7 @@ import { DateRange } from 'react-date-range';
 import type { Locale } from 'date-fns';
 import styled, { css } from 'styled-components';
 
-import { borders, spacingsPx, zIndices } from '@trezor/theme';
+import { zIndices } from '@trezor/theme';
 
 import { commonFocusStyles } from '../../utils/utils';
 import { Row } from '../Flex/Flex';
@@ -421,7 +421,7 @@ const StyledTimerange = styled.div`
     width: 345px;
     display: flex;
     flex-direction: column;
-    border-radius: ${borders.radii.md};
+    border-radius: 16px;
     background: ${({ theme }) => theme.surfaceFillRaised};
     box-shadow: ${({ theme }) => theme.surfaceShadowModeless};
     outline: 1px solid ${({ theme }) => theme.surfaceBorderAction};
@@ -431,7 +431,7 @@ const StyledTimerange = styled.div`
 
 const Calendar = styled.div`
     width: 345px;
-    padding: ${spacingsPx.sm} ${spacingsPx.sm} 0;
+    padding: 12px 12px 0;
     border-bottom: 1px solid ${({ theme }) => theme.surfaceBorderRaised};
 
     ${datepickerStyle}
@@ -456,7 +456,7 @@ const Calendar = styled.div`
     }
 
     .rdrDateDisplayItem {
-        border-radius: ${borders.radii.xxs};
+        border-radius: 4px;
         background-color: transparent;
     }
 
@@ -502,7 +502,7 @@ const Calendar = styled.div`
     }
 
     .rdrPprevButton i {
-        margin: 0 0 0 ${spacingsPx.xs};
+        margin: 0 0 0 8px;
         border-color: transparent ${({ theme }) => theme.elementFillBrandBold} transparent
             transparent;
     }
@@ -560,10 +560,10 @@ const Calendar = styled.div`
     }
 
     .rdrDateDisplayWrapper {
-        padding-bottom: ${spacingsPx.sm};
+        padding-bottom: 12px;
         background: ${({ theme }) => theme.surfaceFillRaised};
         border-bottom: 1px solid ${({ theme }) => theme.surfaceBorderRaised};
-        border-radius: ${borders.radii.xs};
+        border-radius: 4px;
     }
 
     .rdrMonthAndYearWrapper {
@@ -576,7 +576,7 @@ const Calendar = styled.div`
         background: ${({ theme }) => theme.elementFillBrandBold};
         color: ${({ theme }) => theme.contentButtonBrandPrimary};
         ${commonFocusStyles}
-        border-radius: ${borders.radii.xxs};
+        border-radius: 4px;
         z-index: ${zIndices.base};
     }
 

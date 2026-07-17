@@ -1,7 +1,6 @@
 import { type ConfirmKey, backupActions } from '@suite/backup';
 import { Translation } from '@suite/intl';
 import { Card, Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { CheckItem } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -14,7 +13,7 @@ export const PreBackupCheckboxes = () => {
 
     return (
         <Card>
-            <Column gap={spacings.xl}>
+            <Column gap={24}>
                 <CheckItem
                     data-testid="@backup/check-item/has-enough-time"
                     onClick={() => dispatch(backupActions.toggleCheckboxByKey('has-enough-time'))}

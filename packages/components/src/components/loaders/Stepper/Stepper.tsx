@@ -1,20 +1,18 @@
 import styled from 'styled-components';
 
-import { borders, spacingsPx } from '@trezor/theme';
-
 const Container = styled.div<{ $maxWidth: number }>`
     display: flex;
     align-items: center;
-    gap: ${spacingsPx.xxs};
+    gap: 4px;
     width: 100%;
     max-width: ${({ $maxWidth }) => $maxWidth}px;
-    padding: ${spacingsPx.xs};
+    padding: 8px;
 `;
 
 const Step = styled.div<{ $isActive: boolean }>`
     width: 100%;
     height: 2px;
-    border-radius: ${borders.radii.full};
+    border-radius: calc(infinity * 1px);
     transition: background-color 0.2s;
     background: ${({ theme, $isActive }) =>
         $isActive ? theme.elementFillFieldSelected : theme.elementFillNeutralBold};

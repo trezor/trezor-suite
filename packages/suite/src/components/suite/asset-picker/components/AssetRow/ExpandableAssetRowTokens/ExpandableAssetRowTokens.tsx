@@ -49,7 +49,7 @@ export function ExpandableAssetRowTokens({
 
     return (
         <Collapsible isOpen={expanded} data-testid={dataTestId}>
-            <Box padding={1} height={height}>
+            <Box padding={2} height={height}>
                 <Card type="contrast" paddingType="none">
                     <Collapsible.Toggle
                         onClick={() => {

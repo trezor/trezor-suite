@@ -3,7 +3,6 @@ import styled, { useTheme } from 'styled-components';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { type FirmwareOperationStatus } from '@suite-common/firmware';
 import { Box, Column, ProgressBar, Row, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useFirmwareDesktopUpdate } from './useFirmwareDesktopUpdate';
 
@@ -27,12 +26,12 @@ export const FirmwareProgressBar = () => {
 
     return (
         <Box width="100%">
-            <Column margin={{ vertical: spacings.md, horizontal: spacings.lg }}>
+            <Column margin={{ vertical: 16, horizontal: 20 }}>
                 <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                     {operation ? <Translation id={mapOperationToTranslationId[operation]} /> : ' '}
                 </Text>
 
-                <Row gap={spacings.lg} justifyContent="space-between">
+                <Row gap={20} justifyContent="space-between">
                     <ProgressBar
                         value={progress}
                         backgroundColor={theme.elementFillNeutralSofter}

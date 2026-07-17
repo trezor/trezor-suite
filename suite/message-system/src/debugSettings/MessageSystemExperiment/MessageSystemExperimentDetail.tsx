@@ -9,12 +9,11 @@ import {
 import { type ExperimentsItem } from '@suite-common/suite-types';
 import { InfoItem, Row, Text } from '@trezor/components';
 import { LightbulbIcon, UsersThreeIcon } from '@trezor/icons';
-import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 const BarTrack = styled.div`
     flex: 1;
     display: flex;
-    gap: ${spacingsPx.xxs};
+    gap: 4px;
 `;
 
 const BarSegment = styled.div<{ $width: number; $isActive?: boolean }>`
@@ -24,25 +23,25 @@ const BarSegment = styled.div<{ $width: number; $isActive?: boolean }>`
     align-items: center;
     justify-content: center;
     color: ${({ $isActive }) => ($isActive ? '#ffffff' : '#000000')};
-    border-radius: ${borders.radii.xxs};
+    border-radius: 4px;
     background: ${({ $isActive }) => ($isActive ? '#3666BF' : '#ADCAFF')};
 `;
 
 const SegmentLabel = styled.span<{ $isActive?: boolean }>`
     display: flex;
     flex-direction: column;
-    gap: ${spacingsPx.xxs};
+    gap: 4px;
 
     line-height: 1;
     text-align: center;
-    padding: ${spacingsPx.xs};
+    padding: 8px;
 
     ${({ $isActive }) =>
         $isActive &&
         css`
-            outline: ${spacingsPx.xxxs} dotted rgb(255 255 255 / 0.8);
-            outline-offset: -${spacingsPx.xxs};
-            border-radius: ${borders.radii.xs};
+            outline: 2px dotted rgb(255 255 255 / 0.8);
+            outline-offset: -4px;
+            border-radius: 4px;
             width: 100%;
         `}
 `;
@@ -50,7 +49,7 @@ const SegmentLabel = styled.span<{ $isActive?: boolean }>`
 const StyledList = styled.div`
     display: grid;
     grid-template-columns: repeat(3, max-content);
-    gap: ${spacingsPx.xxxs} ${spacingsPx.md};
+    gap: 2px 16px;
 
     font-variant-numeric: tabular-nums;
 `;
@@ -107,7 +106,7 @@ export const MessageSystemExperimentDetail = ({
                 intent="neutral"
                 priority="primary"
             >
-                <Row margin={{ vertical: spacings.md }}>
+                <Row margin={{ vertical: 16 }}>
                     <BarTrack>
                         {ranges
                             .filter(({ range }) => range.end - range.start > 0)

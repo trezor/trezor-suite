@@ -1,14 +1,14 @@
 import styled from 'styled-components';
 
-import { borders, paletteV2, typography } from '@trezor/theme';
+import { paletteV2, typography } from '@trezor/theme';
 
 const TagRow = styled.div`
     display: flex;
 `;
 
 const Tag = styled.div`
-    padding: 3px 8px 0;
-    border-radius: ${borders.radii.xs};
+    padding: 2px 8px 0;
+    border-radius: 4px;
     background: ${({ theme }) => theme.contentWarning};
     color: ${paletteV2.globalWhiteAlpha1000};
     ${typography['body-xs']}

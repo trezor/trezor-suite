@@ -1,15 +1,14 @@
 import styled from 'styled-components';
 
 import { type PasswordTag } from '@suite-common/metadata-types';
-import { spacingsPx } from '@trezor/theme';
 
 import { Tag } from './Tag';
 
 const TagsListWrapper = styled.div`
     display: flex;
     flex-direction: row;
-    margin-bottom: ${spacingsPx.xs};
-    gap: ${spacingsPx.xxs};
+    margin-bottom: 8px;
+    gap: 4px;
 `;
 
 interface TagsListProps {

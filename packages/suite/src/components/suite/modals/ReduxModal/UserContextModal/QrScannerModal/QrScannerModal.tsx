@@ -4,7 +4,6 @@ import { Translation } from '@suite/intl';
 import { type UserContextPayload } from '@suite-common/suite-types';
 import { Column, Modal, type ModalProps, Row, SubTabs } from '@trezor/components';
 import { CameraIcon, ImageIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { CameraQRReader } from './CameraQRReader';
 import { ImageQRReader } from './ImageQRReader';
@@ -27,7 +26,7 @@ export const QrScannerModal = ({ decision, onCancel }: QrScannerModalProps) => {
 
     return (
         <Modal onCancel={onCancel} heading={<Translation id="TR_SCAN_QR_CODE" />}>
-            <Column gap={spacings.md}>
+            <Column gap={16}>
                 <Row justifyContent="center">
                     <SubTabs activeItemId={activeTab} size="small">
                         <SubTabs.Item

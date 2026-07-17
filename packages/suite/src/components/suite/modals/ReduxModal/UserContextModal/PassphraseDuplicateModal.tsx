@@ -7,7 +7,6 @@ import {
 } from '@suite-common/wallet-core';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
 import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useDispatch } from 'src/hooks/suite';
 import { type TrezorDevice } from 'src/types/suite';
@@ -57,7 +56,7 @@ export const PassphraseDuplicateModal = ({
     return (
         <SwitchDeviceModal>
             <CardWithDevice device={device} onBackButtonClick={onBack}>
-                <Column gap={spacings.xs}>
+                <Column gap={8}>
                     <H3 data-testid="@passphrase-duplicate-header">
                         <Translation id="TR_WALLET_DUPLICATE_TITLE" />
                     </H3>
@@ -68,7 +67,7 @@ export const PassphraseDuplicateModal = ({
                     >
                         <Translation id="TR_WALLET_DUPLICATE_DESC" />
                     </Text>
-                    <Column gap={spacings.xs} margin={{ top: spacings.lg }} alignItems="stretch">
+                    <Column gap={8} margin={{ top: 20 }} alignItems="stretch">
                         <Tooltip
                             isActive={isDeviceLocked}
                             content={

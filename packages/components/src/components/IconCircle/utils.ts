@@ -1,4 +1,4 @@
-import { type BorderWidths, type Color } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
 import { type IconCircleIntent, type IconCircleSize } from './types';
 import { type IconSize } from '../Icon/types';
@@ -16,8 +16,8 @@ export const mapIntentToBorderColor = (intent: IconCircleIntent): Color => {
     return colorMap[intent];
 };
 
-export const mapSizeToBorderWidth = (size: IconCircleSize): BorderWidths => {
-    const borderWidthMap: Record<IconCircleSize, BorderWidths> = {
+export const mapSizeToBorderWidth = (size: IconCircleSize) => {
+    const borderWidthMap = {
         16: 0,
         24: 0,
         32: 0,
@@ -26,12 +26,15 @@ export const mapSizeToBorderWidth = (size: IconCircleSize): BorderWidths => {
         64: 6,
         96: 10,
         112: 12,
-    };
+    } as const satisfies Record<IconCircleSize, number>;
 
     return borderWidthMap[size];
 };
 
-export const mapIntentToBackground = (intent: IconCircleIntent, size: IconCircleSize): Color => {
+export const mapIntentToBackgroundColor = (
+    intent: IconCircleIntent,
+    size: IconCircleSize,
+): Color => {
     const noBorderColorMap: Record<IconCircleIntent, Color> = {
         brand: 'elementFillBrandSoft',
         warning: 'elementFillWarningSoft',

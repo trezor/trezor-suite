@@ -7,7 +7,6 @@ import { type AddressType } from '@suite-common/wallet-types';
 import { Card, Checkbox, H2, Modal, Paragraph } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { WarningIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 
@@ -64,10 +63,10 @@ export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddress
             <H2>
                 <Translation id="TR_NOT_YOUR_RECEIVE_ADDRRESS" />
             </H2>
-            <Paragraph intent="neutral" priority="secondary" margin={{ top: spacings.xs }}>
+            <Paragraph intent="neutral" priority="secondary" margin={{ top: 8 }}>
                 <Translation id={getAddressTypeText(addressType)} />
             </Paragraph>
-            <Card margin={{ top: spacings.xl }}>
+            <Card margin={{ top: 24 }}>
                 <Checkbox isChecked={checked} onChange={() => setChecked(!checked)}>
                     <Translation id="TR_DO_NOT_SHOW_AGAIN" />
                 </Checkbox>

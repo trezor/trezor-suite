@@ -2,7 +2,6 @@ import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { AppWindowIcon, CaretLeftIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { Metadata } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -55,7 +54,7 @@ export const BridgeUnavailable = () => {
             }
         >
             <Metadata title="Bridge | Trezor Suite" />
-            <Column gap={spacings.xxs}>
+            <Column gap={4}>
                 <H3>
                     <Translation id="TR_BRIDGE" />
                 </H3>

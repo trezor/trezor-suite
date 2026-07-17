@@ -10,7 +10,6 @@ import { selectAccountClaimTransactions } from '@suite-common/wallet-core';
 import { getStakingDataForNetwork, isPending } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph, Tooltip } from '@trezor/components';
 import { ChecksIcon, InfoIcon, LightningIcon, SpinnerGapIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -104,7 +103,7 @@ export const ClaimCard = () => {
         </Card>
     ) : (
         <Card data-testid="@staking/can-claim-card">
-            <Column flex="1" gap={spacings.xl}>
+            <Column flex="1" gap={24}>
                 <InfoItem
                     label={<Translation id="TR_STAKE_UNSTAKED_AND_READY_TO_CLAIM" />}
                     icon={ChecksIcon}

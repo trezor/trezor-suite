@@ -1,12 +1,10 @@
 import styled from 'styled-components';
 
-import { spacings, spacingsPx } from '@trezor/theme';
-
 import { Box } from '../Box/Box';
 
 const Circle = styled.div<{ $isActive?: boolean }>`
-    width: ${spacingsPx.xs};
-    height: ${spacingsPx.xs};
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background: ${({ theme, $isActive }) =>
         $isActive ? theme.contentBrand : theme.elementFillNeutralBold};
@@ -14,7 +12,7 @@ const Circle = styled.div<{ $isActive?: boolean }>`
         background 0.5s,
         outline 0.5s;
     outline: ${({ theme, $isActive }) =>
-        `${spacingsPx.xxs} solid ${$isActive ? theme.elementFillBrandSofter : 'transparent'}`};
+        `4px solid ${$isActive ? theme.elementFillBrandSofter : 'transparent'}`};
 `;
 
 export type DotIndicatorProps = {
@@ -22,7 +20,7 @@ export type DotIndicatorProps = {
 };
 
 export const DotIndicator = ({ isActive }: DotIndicatorProps) => (
-    <Box padding={spacings.xxs}>
+    <Box padding={4}>
         <Circle $isActive={isActive} />
     </Box>
 );

@@ -17,7 +17,7 @@ interface ParamProps {
 }
 
 const ParamWrapper = styled.div`
-    margin-top: 0.5rem;
+    margin-top: 8px;
     border-radius: 12px;
     background-image: linear-gradient(
         to bottom,
@@ -30,12 +30,12 @@ const ParamRow = styled.a`
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    padding: 0.5rem 1rem;
-    gap: 1rem;
+    padding: 8px 16px;
+    gap: 16px;
 `;
 const ParamDescription = styled.div`
-    margin: 0 0.5rem;
-    padding: 0.5rem 1rem;
+    margin: 0 8px;
+    padding: 8px 16px;
     background: ${({ theme }) => theme.surfaceFillRaised};
     border-radius: 12px;
 `;

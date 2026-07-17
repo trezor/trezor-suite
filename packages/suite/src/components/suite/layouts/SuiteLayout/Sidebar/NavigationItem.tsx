@@ -16,7 +16,6 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { commonFocusStyles } from '@trezor/components/src/utils/utils';
-import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
@@ -25,9 +24,9 @@ const Container = styled.button<{ $isActive?: boolean }>`
     flex: 1;
     display: flex;
     align-items: center;
-    gap: ${spacingsPx.md};
-    padding: ${spacingsPx.xs};
-    border-radius: ${borders.radii.sm};
+    gap: 16px;
+    padding: 8px;
+    border-radius: 12px;
     transition: 0.2s ease-in-out;
     cursor: pointer;
     border: 0;
@@ -114,7 +113,7 @@ const NavItem = ({
             flex="1"
             content={
                 shortcut ? (
-                    <Row gap={spacings.sm}>
+                    <Row gap={12}>
                         <Title nameId={nameId} values={values} />
                         <ShortcutBadge shortcut={shortcut} isInverse />
                     </Row>

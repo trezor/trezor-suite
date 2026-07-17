@@ -41,7 +41,7 @@ import {
     TOOLTIP_DELAY_LONG,
 } from '@trezor/components';
 import { GridNineFilledIcon, PlusIcon, RowsFilledIcon, WarningIcon } from '@trezor/icons';
-import { spacingsPx, typography } from '@trezor/theme';
+import { typography } from '@trezor/theme';
 import { type PartialRecord } from '@trezor/type-utils';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
@@ -56,7 +56,7 @@ import { type AssetData } from './AssetData';
 import { AssetTable } from './AssetTable/AssetTable';
 
 const InfoMessage = styled.div`
-    padding: ${spacingsPx.md} ${spacingsPx.xl};
+    padding: 16px 24px;
     align-items: center;
     display: flex;
     color: ${({ theme }) => theme.contentCritical};
@@ -65,7 +65,7 @@ const InfoMessage = styled.div`
 
 const GridWrapper = styled.div`
     display: grid;
-    gap: ${spacingsPx.sm};
+    gap: 12px;
     grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
 `;
 

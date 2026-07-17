@@ -3,8 +3,6 @@ import { useForm, useWatch } from 'react-hook-form';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { Button, Column, Input, Modal, Row, Text } from '@trezor/components';
 import stellar from '@trezor/network-stellar/runtime';
-import { spacings } from '@trezor/theme';
-
 type StellarTokenInputModalProps = {
     onSubmit: (assetCode: string, assetIssuer: string) => void;
     onCancel: () => void;
@@ -72,7 +70,7 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
             onCancel={onCancel}
             heading={<Translation id="TR_ACTIVATE_TOKEN_MANUALLY" />}
             bottomContent={
-                <Row gap={spacings.xs}>
+                <Row gap={8}>
                     <Button onClick={handleContinue} isDisabled={!isValid} intent="brand">
                         <Translation id="TR_CONTINUE" />
                     </Button>
@@ -82,12 +80,12 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
                 </Row>
             }
         >
-            <Column gap={spacings.lg}>
+            <Column gap={20}>
                 <Text typographyStyle="body-md" intent="neutral" priority="secondary">
                     <Translation id="TR_MANUAL_TOKEN_ACTIVATION_DESCRIPTION" />
                 </Text>
 
-                <Column gap={spacings.md}>
+                <Column gap={16}>
                     <Input
                         label={<Translation id="TR_ASSET_CODE" />}
                         value={assetCode}

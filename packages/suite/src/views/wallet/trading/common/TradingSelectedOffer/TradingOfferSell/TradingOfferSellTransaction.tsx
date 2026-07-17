@@ -11,7 +11,6 @@ import {
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Column, Divider, Spinner, Text } from '@trezor/components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
-import { spacings } from '@trezor/theme';
 
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 import { useSelector } from 'src/hooks/suite';
@@ -65,9 +64,9 @@ export const TradingSelectedOfferSellTransaction = () => {
             <Column
                 alignItems="center"
                 justifyContent="center"
-                margin={{ horizontal: spacings.lg, vertical: spacings.xxxxl }}
+                margin={{ horizontal: 20, vertical: 48 }}
             >
-                <Spinner size={40} isDisabled={true} margin={{ bottom: spacings.xl }} />
+                <Spinner size={40} isDisabled={true} margin={{ bottom: 24 }} />
                 <Text>
                     <Translation
                         id="TR_SELL_DETAIL_WAITING_FOR_SEND_CRYPTO"

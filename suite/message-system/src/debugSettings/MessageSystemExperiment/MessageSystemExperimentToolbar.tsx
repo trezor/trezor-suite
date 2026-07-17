@@ -16,7 +16,7 @@ import {
     Text,
 } from '@trezor/components';
 import { CodeBlockFilledIcon, PlusIcon, QuestionIcon } from '@trezor/icons';
-import { spacings, zIndices } from '@trezor/theme';
+import { zIndices } from '@trezor/theme';
 
 import { MessageSystemManual } from '../MessageSystemManual';
 
@@ -42,7 +42,7 @@ export const MessageSystemExperimentToolbar = ({
 
     return (
         <Row justifyContent="space-between" alignItems="center">
-            <Row alignItems="center" gap={spacings.xs}>
+            <Row alignItems="center" gap={8}>
                 <Text>Preset:</Text>
                 <Button
                     intent="neutral"
@@ -79,7 +79,7 @@ export const MessageSystemExperimentToolbar = ({
                     </Button>
                 </Popover>
             </Row>
-            <Row gap={spacings.xs}>
+            <Row gap={8}>
                 <Popover
                     content={
                         <Card>

@@ -27,7 +27,6 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { AsteriskIcon, EjectIcon, XIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
 import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
@@ -207,7 +206,7 @@ export const WalletInstance = ({
                     </Column>
 
                     <Collapsible.Content>
-                        <Divider margin={{ vertical: spacings.sm }} />
+                        <Divider margin={{ vertical: 12 }} />
                         <EjectConfirmation
                             instance={instance}
                             onClick={stopPropagation}

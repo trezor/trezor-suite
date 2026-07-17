@@ -10,7 +10,6 @@ import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Button, Card, Flex, InfoItem, Row, Text } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { TokenIcon } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
 import { DashboardSection } from 'src/components/dashboard';
@@ -121,13 +120,13 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                     direction={isBelowTablet ? 'column' : 'row'}
                     flexWrap="wrap"
                     justifyContent={isBelowTablet ? 'flex-start' : 'space-between'}
-                    gap={spacings.lg}
+                    gap={20}
                 >
                     <Flex
                         direction={isBelowMobile ? 'column' : 'row'}
-                        gap={isBelowMobile ? spacings.md : spacings.xxxl}
+                        gap={isBelowMobile ? 16 : 40}
                     >
-                        <Row gap={spacings.sm}>
+                        <Row gap={12}>
                             <TokenIcon size={40} symbol={account.symbol} showNetworkIcon />
                             <InfoItem
                                 label={getNetworkDisplaySymbolName(account.symbol)}
@@ -169,7 +168,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                             </>
                         ) : null}
                     </Flex>
-                    <Row gap={spacings.sm}>
+                    <Row gap={12}>
                         {isStakeNetwork && (
                             <ActionButton type="stake">
                                 <Translation id="TR_STAKE_STAKE" />

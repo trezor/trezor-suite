@@ -54,7 +54,7 @@ export const DayHeader = ({
             columnGap={24}
             flex="1"
             padding={{ right: 24 }}
-            margin={{ right: 1 }}
+            margin={{ right: 2 }}
         >
             <Text {...commonTextProps}>
                 {isDateValid && (

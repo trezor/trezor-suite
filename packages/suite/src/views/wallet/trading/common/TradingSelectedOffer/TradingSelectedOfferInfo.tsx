@@ -1,6 +1,5 @@
 import { Translation } from '@suite/intl';
 import { Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import type { TradingSelectedOfferInfoProps } from 'src/types/trading/tradingForm';
 import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
@@ -26,7 +25,7 @@ export const TradingSelectedOfferInfo = ({
     const amountLabels = tradingGetAmountLabels({ type, amountInCrypto });
 
     return (
-        <Column gap={spacings.lg} data-testid="@trading/form/info">
+        <Column gap={20} data-testid="@trading/form/info">
             <TradingInfoItem
                 account={selectedAccount}
                 label={amountLabels.receiveLabel}
@@ -36,7 +35,7 @@ export const TradingSelectedOfferInfo = ({
                 isReceive={type === 'buy'}
             />
 
-            <Column gap={spacings.xs}>
+            <Column gap={8}>
                 <TradingFiatAmountInfoItem
                     amount={quoteAmounts?.sendAmount}
                     currency={quoteAmounts?.sendCurrency}

@@ -4,7 +4,6 @@ import { Translation } from '@suite/intl';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Card, Column, Table } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { type GetTokensOutputType } from 'src/utils/wallet/tokenUtils';
 
@@ -46,7 +45,7 @@ const NftsTable = ({ selectedAccount, isShown, verified, nfts }: NftsTableProps)
         <Column width="100%" alignItems="start" gap={12}>
             <Card paddingType="none">
                 <Table
-                    margin={{ top: spacings.xs }}
+                    margin={{ top: 8 }}
                     colWidths={[
                         { minWidth: '200px', maxWidth: '250px' },
                         { minWidth: '100px', maxWidth: '250px' },

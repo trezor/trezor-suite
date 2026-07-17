@@ -5,7 +5,7 @@ import { action } from 'storybook/actions';
 
 import { Badge, Box, Button, Column, Icon, Text, getFramePropsStory } from '@trezor/components';
 import { TagIcon } from '@trezor/icons';
-import { spacingsNew } from '@trezor/theme';
+import { spacingValues } from '@trezor/theme';
 
 import {
     EditableText as EditableTextComponent,
@@ -156,7 +156,7 @@ export const EditableText: StoryObj<EditableTextProps> = {
             },
         },
         gap: {
-            options: spacingsNew,
+            options: spacingValues,
             control: {
                 type: 'select',
             },

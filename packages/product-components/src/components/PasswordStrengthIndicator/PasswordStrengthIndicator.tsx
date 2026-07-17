@@ -18,7 +18,7 @@ const Wrapper = styled.div<WrapperProps>`
     flex: 1;
     height: 5px;
     overflow: hidden;
-    border-radius: 5px;
+    border-radius: 4px;
     width: ${props => (props.$width ? `${props.$width}px` : '100%')};
 `;
 
