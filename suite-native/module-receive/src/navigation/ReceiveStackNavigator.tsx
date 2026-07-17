@@ -8,6 +8,7 @@ import {
 
 import { ReceiveAccountsScreen } from '../screens/ReceiveAccountsScreen';
 import { ReceiveAddressScreen } from '../screens/ReceiveAddressScreen';
+import { ReceiveAddressVerificationScreen } from '../screens/ReceiveAddressVerificationScreen';
 
 const ReceiveStack = createNativeStackNavigator<ReceiveStackParamList>();
 
@@ -23,6 +24,10 @@ export const ReceiveStackNavigator = () => (
         <ReceiveStack.Screen
             name={ReceiveStackRoutes.ReceiveAddress}
             component={ReceiveAddressScreen}
+        />
+        <ReceiveStack.Screen
+            name={ReceiveStackRoutes.ReceiveAddressVerification}
+            component={ReceiveAddressVerificationScreen}
         />
     </ReceiveStack.Navigator>
 );

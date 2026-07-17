@@ -37,6 +37,7 @@ import {
     type HomeStackRoutes,
     type OnboardingStackRoutes,
     type PassphraseStackRoutes,
+    type ReceiveAddressVerificationSource,
     type ReceiveStackRoutes,
     type RootStackRoutes,
     type SendStackRoutes,
@@ -172,6 +173,9 @@ export type SettingsStackParamList = {
 export type ReceiveStackParamList = {
     [ReceiveStackRoutes.ReceiveAccounts]: undefined;
     [ReceiveStackRoutes.ReceiveAddress]: AccountDetailParams;
+    [ReceiveStackRoutes.ReceiveAddressVerification]: {
+        source: ReceiveAddressVerificationSource;
+    };
 };
 
 export type SendStackParamList = {

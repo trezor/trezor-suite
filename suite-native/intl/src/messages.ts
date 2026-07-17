@@ -976,6 +976,30 @@ export const messages = {
         deviceCompromisedScreen: {
             title: 'Receiving is disabled',
         },
+        addressActions: {
+            verify: 'Verify',
+        },
+        addressCopiedBottomSheet: {
+            title: 'Address copied.',
+            subtitle: 'Verify before you receive.',
+            steps: {
+                pasteAddress:
+                    'Paste the address into the exchange or app from where you will receive the funds.',
+                verifyAddress: 'Verify the pasted address against your Trezor for maximum safety.',
+            },
+            buttons: {
+                verifyOnTrezor: 'Verify on Trezor',
+                skipVerification: 'Skip verification',
+            },
+        },
+        addressSharedBottomSheet: {
+            title: 'Verify the shared address',
+            subtitle: 'Verify the address you just shared against your Trezor for maximum safety.',
+        },
+        addressVerificationScreen: {
+            pastedTitle: 'Compare the pasted address against your Trezor',
+            sharedTitle: 'Compare the shared address against your Trezor',
+        },
     },
     moduleSettings: {
         getTrezorCta: {
