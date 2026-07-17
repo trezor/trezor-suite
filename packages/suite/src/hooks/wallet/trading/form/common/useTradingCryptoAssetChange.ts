@@ -20,7 +20,7 @@ import {
 } from 'src/types/trading/tradingForm';
 import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
 
-// TODO: own props interface instead of Pick from the deleted useTradingFormActions
+// TODO: own props interface instead of Pick from the deleted useTradingFormActions; base type, not union
 interface UseTradingCryptoAssetChangeProps<T extends TradingSellExchangeFormProps> extends Pick<
     TradingUseFormActionsProps<T>,
     | 'account'
@@ -49,6 +49,7 @@ export const useTradingCryptoAssetChange = <T extends TradingSellExchangeFormPro
     setComposedLevels,
     setAccountOnChange,
 }: UseTradingCryptoAssetChangeProps<T>) => {
+    // TODO: drop this cast via capability callbacks instead of methods: UseFormReturn<T>
     const { getValues, setValue, control } =
         methods as unknown as UseFormReturn<TradingSellExchangeFormProps>;
 
