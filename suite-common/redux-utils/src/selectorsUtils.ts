@@ -26,10 +26,9 @@ const createWeakMapSelectorInternal = createSelectorCreator({
     argsMemoize: weakMapMemoize,
 });
 
-/**
- * Forces selectors to expose only their callable contract. Reselect's inferred output type includes
- * recursive input-selector and memoization metadata, which produces oversized declaration files.
- */
+// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// inferred type in the emitted declaration.
+// Reselect's inferred output includes recursive input-selector and memoization metadata.
 export type CreateWeakMapSelectorFunction<StateType = never> = {
     <InputSelectors extends SelectorArray<StateType>, Result>(
         inputSelectors: [...InputSelectors],

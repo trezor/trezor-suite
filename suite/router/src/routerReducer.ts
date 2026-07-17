@@ -81,7 +81,8 @@ const routerSlice = createSlice({
     },
 });
 
-// Keep declaration emit from expanding the full RouterState route union.
+// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// inferred type in the emitted declaration.
 export const routerReducer: Reducer<RouterState> = routerSlice.reducer;
 export const { routerLocationChange, anchorChange } = routerSlice.actions;
 

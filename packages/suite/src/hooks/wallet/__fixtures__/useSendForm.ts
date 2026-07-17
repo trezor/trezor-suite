@@ -74,7 +74,8 @@ const UTXO = {
     }),
 };
 
-// The type was needed because of error TS7056: The inferred type of this node exceeds the maximum length the compiler will serialize. An explicit type annotation is needed.
+// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// inferred type in the emitted declaration.
 export const BTC_ACCOUNT: Omit<SelectedAccountStatus, 'network'> & { network: Partial<Network> } = {
     status: 'loaded',
     account: mockWalletAccount({
@@ -272,7 +273,9 @@ const DEFAULT_FEES: FeesState = {
 
 // - default selectedAccount needs to be explicitly passed from test. merging default with custom will override custom
 // - default fees needs to be explicitly passed from test. merge Arrays will add items, not replace them
-// Todo: Type properly as the Error: "The inferred type of this node exceeds the maximum length the compiler will serialize. An explicit type annotation is needed."
+// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// inferred type in the emitted declaration.
+// Todo: Replace `any` with an accurate type.
 export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEES) =>
     combineReducers({
         suite: createReducer(

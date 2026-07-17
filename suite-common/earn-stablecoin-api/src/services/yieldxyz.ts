@@ -33,14 +33,16 @@ type GetYieldOptions = YieldXyzRequestOptions & {
     routeParams: { vaultId: string };
 };
 
-/** Prevents declaration emit from expanding the inferred Yield.xyz list schema. */
+// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// inferred type in the emitted declaration.
 export const getYields: (options?: GetYieldsOptions) => Promise<YieldsResponseV2Output> =
     yieldXyzApi('/yields', {
         method: 'GET',
         schema: YieldsResponseV2,
     });
 
-/** Prevents declaration emit from expanding the inferred Yield.xyz detail schema. */
+// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// inferred type in the emitted declaration.
 export const getYield: (options: GetYieldOptions) => Promise<YieldResponseV2Output> = yieldXyzApi(
     '/yields/:vaultId',
     {

@@ -9,7 +9,22 @@ import { sendTransactionThunk } from './sendTransactionThunk';
 import { signDataAndConfirmThunk } from './signDataAndConfirmThunk';
 import { watchExchangeApprovalThunk } from './watchExchangeApprovalThunk';
 
-export const exchangeThunks = {
+// [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
+// inferred type in the emitted declaration.
+type ExchangeThunks = {
+    loadInfoThunk: typeof loadExchangeInfoThunk;
+    handleRequestThunk: typeof handleExchangeRequestThunk;
+    selectQuoteThunk: typeof selectExchangeQuoteThunk;
+    confirmTradeThunk: typeof confirmExchangeTradeThunk;
+    confirmApprovalThunk: typeof confirmApprovalThunk;
+    prefetchDexQuoteApprovalThunk: typeof prefetchDexQuoteApprovalThunk;
+    signDataAndConfirmThunk: typeof signDataAndConfirmThunk;
+    sendDexTransactionThunk: typeof sendDexTransactionThunk;
+    sendTransactionThunk: typeof sendTransactionThunk;
+    watchExchangeApprovalThunk: typeof watchExchangeApprovalThunk;
+};
+
+export const exchangeThunks: ExchangeThunks = {
     loadInfoThunk: loadExchangeInfoThunk,
     handleRequestThunk: handleExchangeRequestThunk,
     selectQuoteThunk: selectExchangeQuoteThunk,
