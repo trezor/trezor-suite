@@ -6,6 +6,8 @@ import { listAllWorkspaces } from '../../../workspaces';
 import type { RepoContext } from '../../Requirement';
 import {
     MAX_DECLARATION_SIZE_BYTES,
+    MAX_DECLARATION_SOURCE_RATIO,
+    MIN_DECLARATION_RATIO_SIZE_BYTES,
     requireTypeDeclarationSize,
 } from '../requireTypeDeclarationSize';
 
@@ -15,14 +17,17 @@ const mockListAllWorkspaces = jest.mocked(listAllWorkspaces);
 
 describe(requireTypeDeclarationSize.name, () => {
     let repoRoot: string;
+    let sourceDirectory: string;
     let libDevDirectory: string;
     let context: RepoContext;
 
     beforeEach(() => {
         repoRoot = mkdtempSync(join(tmpdir(), 'type-declarations-'));
+        sourceDirectory = join(repoRoot, 'packages', 'example', 'src');
         libDevDirectory = join(repoRoot, 'packages', 'example', 'libDev');
         context = { repoRoot };
 
+        mkdirSync(sourceDirectory, { recursive: true });
         mkdirSync(join(libDevDirectory, 'src'), { recursive: true });
         mockListAllWorkspaces.mockReturnValue([
             {
@@ -57,8 +62,89 @@ describe(requireTypeDeclarationSize.name, () => {
 
         expect(errors).toHaveLength(1);
         expect(errors[0]).toMatch(
-            /^packages\/example\/libDev\/src\/large\.d\.ts is \d+(?:\.\d+)? KiB; maximum is 100 KiB\.$/,
+            /^packages\/example\/libDev\/src\/large\.d\.ts is \d+(?:\.\d+)? KiB; maximum is 50 KiB\.$/,
         );
+    });
+
+    it('reports declarations larger than 5 KiB that exceed five times their source size', async () => {
+        writeFileSync(join(sourceDirectory, 'bloated.ts'), 'export const bloated = 1;');
+        writeFileSync(
+            join(libDevDirectory, 'src', 'bloated.d.ts'),
+            'x'.repeat(MIN_DECLARATION_RATIO_SIZE_BYTES + 1),
+        );
+
+        const errors = await requireTypeDeclarationSize.verify(context);
+
+        expect(errors).toHaveLength(1);
+        expect(errors[0]).toMatch(
+            /^packages\/example\/libDev\/src\/bloated\.d\.ts is \d+(?:\.\d+)? KiB, \d+(?:\.\d+)?x the size of packages\/example\/src\/bloated\.ts \(\d+(?:\.\d+)? B\); maximum is 5x for declarations larger than 5 KiB\.$/,
+        );
+    });
+
+    it('uses declaration maps when the output path does not match the source path', async () => {
+        const nestedDeclarationDirectory = join(libDevDirectory, 'example', 'src');
+        const declarationFile = join(nestedDeclarationDirectory, 'mapped.d.ts');
+        mkdirSync(nestedDeclarationDirectory, { recursive: true });
+        writeFileSync(join(sourceDirectory, 'mapped.ts'), 'export const mapped = 1;');
+        writeFileSync(declarationFile, 'x'.repeat(MIN_DECLARATION_RATIO_SIZE_BYTES + 1));
+        writeFileSync(
+            `${declarationFile}.map`,
+            JSON.stringify({ sources: ['../../../src/mapped.ts'] }),
+        );
+
+        const errors = await requireTypeDeclarationSize.verify(context);
+
+        expect(errors).toHaveLength(1);
+        expect(errors[0]).toContain('packages/example/libDev/example/src/mapped.d.ts');
+        expect(errors[0]).toContain('the size of packages/example/src/mapped.ts');
+    });
+
+    it('allows declarations at the minimum size even when their ratio is too large', async () => {
+        writeFileSync(join(sourceDirectory, 'minimum.ts'), 'x');
+        writeFileSync(
+            join(libDevDirectory, 'src', 'minimum.d.ts'),
+            'x'.repeat(MIN_DECLARATION_RATIO_SIZE_BYTES),
+        );
+
+        const errors = await requireTypeDeclarationSize.verify(context);
+
+        expect(errors).toEqual([]);
+    });
+
+    it('allows declarations at the maximum source ratio', async () => {
+        const sourceSizeBytes = 1025;
+        const declarationSizeBytes = sourceSizeBytes * MAX_DECLARATION_SOURCE_RATIO;
+        writeFileSync(join(sourceDirectory, 'ratio.ts'), 'x'.repeat(sourceSizeBytes));
+        writeFileSync(join(libDevDirectory, 'src', 'ratio.d.ts'), 'x'.repeat(declarationSizeBytes));
+
+        const errors = await requireTypeDeclarationSize.verify(context);
+
+        expect(errors).toEqual([]);
+    });
+
+    it('reports known violations that no longer exceed either limit', async () => {
+        const knownWorkspaceDirectory = join(repoRoot, 'packages', 'device-authenticity');
+        const knownSourceDirectory = join(knownWorkspaceDirectory, 'src');
+        const knownDeclarationDirectory = join(knownWorkspaceDirectory, 'libDev', 'src');
+        mkdirSync(knownSourceDirectory, { recursive: true });
+        mkdirSync(knownDeclarationDirectory, { recursive: true });
+        writeFileSync(
+            join(knownSourceDirectory, 'authenticateDeviceParams.ts'),
+            'export const small = 1;',
+        );
+        writeFileSync(
+            join(knownDeclarationDirectory, 'authenticateDeviceParams.d.ts'),
+            'export const small = 1;',
+        );
+        mockListAllWorkspaces.mockReturnValue([
+            { dir: knownWorkspaceDirectory, name: '@trezor/device-authenticity' },
+        ]);
+
+        const errors = await requireTypeDeclarationSize.verify(context);
+
+        expect(errors).toEqual([
+            'packages/device-authenticity/libDev/src/authenticateDeviceParams.d.ts no longer violates declaration size limits; remove it from known declaration size violations.',
+        ]);
     });
 
     it('scans declaration outputs recursively', async () => {
@@ -74,13 +160,21 @@ describe(requireTypeDeclarationSize.name, () => {
         expect(errors[0]).toContain('packages/example/libDev/src/nested/large.d.mts');
     });
 
-    it('ignores emitted declarations that are expected to grow', async () => {
-        const knownWorkspaceDirectory = join(repoRoot, 'suite-native', 'intl');
-        const knownDeclarationDirectory = join(knownWorkspaceDirectory, 'libDev', 'src');
+    it('ignores legitimately large declarations', async () => {
+        const knownWorkspaceDirectory = join(repoRoot, 'packages', 'protobuf');
+        const knownDeclarationDirectory = join(
+            knownWorkspaceDirectory,
+            'libDev',
+            'src',
+            'definitions',
+        );
         mkdirSync(knownDeclarationDirectory, { recursive: true });
-        writeFileSync(join(knownDeclarationDirectory, 'messages.d.ts'), 'x'.repeat(200 * 1024));
+        writeFileSync(
+            join(knownDeclarationDirectory, 'messages-stellar.d.ts'),
+            'x'.repeat(200 * 1024),
+        );
         mockListAllWorkspaces.mockReturnValue([
-            { dir: knownWorkspaceDirectory, name: '@suite-native/intl' },
+            { dir: knownWorkspaceDirectory, name: '@trezor/protobuf' },
         ]);
 
         const errors = await requireTypeDeclarationSize.verify(context);
