@@ -38,6 +38,8 @@
         {
             "path": "../../packages/styles-native"
         },
-        { "path": "../../packages/urls" }
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/urls" },
+        { "path": "../test-utils" }
     ]
 }

@@ -452,6 +452,11 @@ export const selectFreshAccountAddress = createMemoizedSelector(
         account ? getFirstFreshAddress(account, [], pendingAddresses, isAccountUtxoBased) : null,
 );
 
+export const selectFreshAccountAddressValue = createMemoizedSelector(
+    [selectFreshAccountAddress],
+    freshAddress => freshAddress?.address,
+);
+
 export const selectIsAccountDiscoveryFailed = createMemoizedSelector(
     [selectAccountByKey],
     account => !!account && isAccountFailed(account),
