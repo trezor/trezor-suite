@@ -32,8 +32,6 @@ const addKnownViolationFailureGuidance = (error: string, correction: string) =>
 const LEGIT_BIG_FILES = new Set<string>([
     'packages/connect-data/libDev/src/map-releases.d.ts',
     'packages/connect/libDev/e2e/__fixtures__/cardanoSignTransaction.d.ts',
-    // Runtime schemas intentionally export their complete inferred static types.
-    'packages/device-authenticity/libDev/src/authenticateDeviceParams.d.ts',
     'packages/icons/libDev/src/index.d.ts',
     'packages/protobuf/libDev/src/definitions/index.d.ts',
     'packages/protobuf/libDev/src/definitions/messages-bitcoin.d.ts',
