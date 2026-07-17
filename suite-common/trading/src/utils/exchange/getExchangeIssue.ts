@@ -6,35 +6,35 @@ import {
 
 import { type FiatDeviationResult } from '../../hooks/useExchangeFiatDeviation';
 
-export type ExchangeSimulationIssueSeverity = 'warning' | 'critical';
+export type ExchangeIssueSeverity = 'warning' | 'critical';
 
-export type ExchangeSimulationIssue =
+export type ExchangeIssue =
     | {
           type: 'high-risk';
-          severity: ExchangeSimulationIssueSeverity;
+          severity: ExchangeIssueSeverity;
           validation: TxSimulationValidationSummary;
       }
-    | { type: 'price-impact'; severity: ExchangeSimulationIssueSeverity; deviation: number }
+    | { type: 'price-impact'; severity: ExchangeIssueSeverity; deviation: number }
     | {
           type: 'high-risk-with-price-impact';
-          severity: ExchangeSimulationIssueSeverity;
+          severity: ExchangeIssueSeverity;
           validation: TxSimulationValidationSummary;
           deviation: number;
       };
 
-type GetExchangeSimulationIssueParams = {
+type GetExchangeIssueParams = {
     simulationResult: NetworkTxSimulationResult | undefined;
     fiatDeviation: FiatDeviationResult | null;
 };
 
 /**
- * Get the issues related to a swap on an exchange, based on the transaction simulation result and fiat deviation.
+ * Get the issues related to exchange, based on the transaction simulation result and fiat deviation.
  * Returns an object describing the issue, or null if there are no issues.
  */
-export const getExchangeSimulationIssue = ({
+export const getExchangeIssue = ({
     simulationResult,
     fiatDeviation,
-}: GetExchangeSimulationIssueParams): ExchangeSimulationIssue | null => {
+}: GetExchangeIssueParams): ExchangeIssue | null => {
     const { validationRisk } = getTxSimulationRiskSummary(simulationResult?.payload);
 
     if (validationRisk && fiatDeviation?.exceedsThreshold) {
