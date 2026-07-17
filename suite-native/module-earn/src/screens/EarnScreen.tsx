@@ -1,8 +1,9 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
+import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { TitleHeader, VStack } from '@suite-native/atoms';
@@ -75,6 +76,37 @@ const EarnScreenContent = () => {
             analytics.report({ type: events.earnNavigateEvent.name });
         }, [analytics]),
     );
+
+    const hasReportedYieldDashboardReadyRef = useRef(false);
+
+    useEffect(() => {
+        if (
+            hasReportedYieldDashboardReadyRef.current ||
+            isYieldLoading ||
+            isClaimSummariesLoading
+        ) {
+            return;
+        }
+
+        hasReportedYieldDashboardReadyRef.current = true;
+        analytics.report({
+            type: sharedEvents.yieldEarnDashboardReadyEvent.name,
+            payload: {
+                hasClaimBanner: stablecoinYieldClaimSummaries.length > 0,
+                hasActivePosition: stablecoinYieldActiveItems.length > 0,
+                availableVaultCount: stablecoinYieldPromoItems.filter(
+                    item => typeof item !== 'string' && item.type === 'stablecoin-yield',
+                ).length,
+            },
+        });
+    }, [
+        analytics,
+        isClaimSummariesLoading,
+        isYieldLoading,
+        stablecoinYieldActiveItems.length,
+        stablecoinYieldClaimSummaries.length,
+        stablecoinYieldPromoItems,
+    ]);
 
     const handlePromoItemPress = useCallback(
         (item: EarnPromoItem) => {

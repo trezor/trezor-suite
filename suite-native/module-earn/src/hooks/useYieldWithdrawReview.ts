@@ -32,6 +32,7 @@ import { handleEarnReviewError, isUserCancelledSignError } from '../utils';
 import { useShowDeviceDisconnectedDuringEarnReviewAlert } from './useShowDeviceDisconnectedDuringEarnReviewAlert';
 import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
 import { useYieldActionReviewBackNavigation } from './useYieldActionReviewBackNavigation';
+import { useYieldReviewAnalytics } from './useYieldReviewAnalytics';
 import { getSelectedEvmFeeFromFormDraft } from '../utils/yieldSelectedFeeUtils';
 import { getYieldWithdrawFormDraftKey } from '../utils/yieldWithdrawUtils';
 import { pushYieldActionReviewThunk, signYieldActionReviewThunk } from '../yieldTransactionThunks';
@@ -68,6 +69,14 @@ export const useYieldWithdrawReview = ({
     const { showPendingTransactionConflictAlert, showPushTransactionFailedAlert } =
         useShowPushTransactionFailedDuringReviewAlert('yield-withdraw');
     const showDeviceDisconnectedAlert = useShowDeviceDisconnectedDuringEarnReviewAlert();
+
+    const { reportError: reportWithdrawError, reportCancel: reportWithdrawCancel } =
+        useYieldReviewAnalytics({
+            flow: 'withdraw',
+            networkSymbol: flowData.account.symbol,
+            vaultId: flowData.vault.id,
+            operation: flowType,
+        });
     const [withdrawActionStatus, setWithdrawActionStatus] =
         useState<YieldReviewActionStatus>('idle');
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
@@ -133,6 +142,7 @@ export const useYieldWithdrawReview = ({
         setWithdrawActionStatus('idle');
 
         if (!deviceAccessResponse.success) {
+            reportWithdrawError('submit-failed');
             handleEarnReviewError({
                 payload: {
                     error: 'sign-transaction-failed',
@@ -151,10 +161,13 @@ export const useYieldWithdrawReview = ({
         const isSignRejected = isRejected(signResponse);
 
         if (isSignRejected && isUserCancelledSignError(signResponse.payload)) {
+            reportWithdrawCancel();
+
             return 'cancelled';
         }
 
         if (isSignRejected) {
+            reportWithdrawError('submit-failed');
             handleEarnReviewError({
                 payload: signResponse.payload,
                 navigation,
@@ -174,6 +187,8 @@ export const useYieldWithdrawReview = ({
         flowType,
         isDeviceConnected,
         navigation,
+        reportWithdrawCancel,
+        reportWithdrawError,
         reviewToken,
         selectedFee,
         showDeviceDisconnectedAlert,
@@ -201,6 +216,8 @@ export const useYieldWithdrawReview = ({
         const isPushRejected = isRejected(pushResponse);
 
         if (isPushRejected) {
+            reportWithdrawError('push-failed');
+
             if (pushResponse.payload?.error === 'push-transaction-pending-conflict') {
                 showPendingTransactionConflictAlert();
 
@@ -221,6 +238,7 @@ export const useYieldWithdrawReview = ({
         flowType,
         markReviewNavigationSuccess,
         navigation,
+        reportWithdrawError,
         showPendingTransactionConflictAlert,
         showPushTransactionFailedAlert,
         withdrawStatus,

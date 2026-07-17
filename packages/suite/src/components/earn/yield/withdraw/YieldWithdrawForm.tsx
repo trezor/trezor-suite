@@ -1,9 +1,11 @@
 import { useEffect, useRef } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { splitYieldPendingTransaction } from '@suite-common/wallet-core';
+import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
@@ -13,7 +15,6 @@ import { YieldActionStep } from '../common/YieldActionStep';
 import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
 import { YieldFlowCompleteWithdraw } from '../common/YieldFlowCompleteWithdraw';
 import { YieldFlowStepList } from '../common/YieldFlowStepList';
-import { getApyBreakdown } from '../yieldFlowUtils';
 
 export const YieldWithdrawForm = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);

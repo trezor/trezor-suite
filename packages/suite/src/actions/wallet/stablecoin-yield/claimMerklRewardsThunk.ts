@@ -1,5 +1,6 @@
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import { asTypedDesktopAnalytics } from '@suite/analytics';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
+import { events } from '@suite-common/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     buildClaimCalldata,

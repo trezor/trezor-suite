@@ -182,6 +182,7 @@ export const useYieldDepositRevokeScreen = () => {
         isScreenFocused: isFocused,
         onRevokeConfirmed: handleRevokeConfirmed,
         pendingTransaction: revokePendingTransaction,
+        vault: resolvedFlowData.vault,
     });
 
     useRefreshYieldDepositAllowanceOnIdle({

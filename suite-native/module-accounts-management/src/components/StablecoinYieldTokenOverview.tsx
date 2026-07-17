@@ -2,6 +2,8 @@ import { useCallback } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { getConvertedOutputTokenBalanceToInputTokenAmount } from '@suite-common/wallet-core';
 import {
     type AccountKey,
@@ -10,6 +12,7 @@ import {
     toTokenSymbol,
 } from '@suite-common/wallet-types';
 import { isApyAvailable } from '@suite-common/wallet-utils';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     Box,
     Button,
@@ -57,6 +60,7 @@ export const StablecoinYieldTokenOverview = ({
     const { applyStyle } = useNativeStyles();
     const { isFirmwareSupported, showFirmwareUpdateAlert } =
         useStablecoinYieldFirmwareUpdateAlert();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const { account, apy, resolutionStatus, depositedSharesAmount, vault } =
         useResolvedYieldFlowData({
             accountKey,
@@ -73,12 +77,33 @@ export const StablecoinYieldTokenOverview = ({
         }
 
         if (!isFirmwareSupported('deposit')) {
+            analytics.report({
+                type: events.yieldDepositEvent.name,
+                payload: {
+                    action: 'continue',
+                    type: 'firmware-upgrade-needed-modal',
+                    networkSymbol: account?.symbol,
+                    vaultId: vault?.id,
+                },
+            });
+
             showFirmwareUpdateAlert();
 
             return;
         }
 
         const underlyingTokenContract = toTokenAddress(vault.token.address);
+
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: 'account-detail',
+                to: 'deposit-in-a-nutshell-modal',
+                networkSymbol: account?.symbol,
+                vaultId: vault?.id,
+            },
+        });
 
         navigation.navigate(RootStackRoutes.YieldNavigator, {
             screen: YieldStackRoutes.HowYieldWorks,
@@ -88,14 +113,43 @@ export const StablecoinYieldTokenOverview = ({
                 yieldId: vault.id,
             },
         });
-    }, [accountKey, isFirmwareSupported, navigation, showFirmwareUpdateAlert, vault]);
+    }, [
+        account?.symbol,
+        analytics,
+        accountKey,
+        isFirmwareSupported,
+        navigation,
+        showFirmwareUpdateAlert,
+        vault,
+    ]);
 
     const handleWithdrawPress = useCallback(() => {
         if (!isFirmwareSupported('withdraw')) {
+            analytics.report({
+                type: events.yieldWithdrawEvent.name,
+                payload: {
+                    action: 'continue',
+                    type: 'firmware-upgrade-needed-modal',
+                    networkSymbol: account?.symbol,
+                    vaultId: vault?.id,
+                },
+            });
+
             showFirmwareUpdateAlert();
 
             return;
         }
+
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: 'account-detail',
+                to: 'withdraw-form',
+                networkSymbol: account?.symbol,
+                vaultId: vault?.id,
+            },
+        });
 
         navigation.navigate(RootStackRoutes.YieldNavigator, {
             screen: YieldStackRoutes.YieldWithdraw,
@@ -104,7 +158,16 @@ export const StablecoinYieldTokenOverview = ({
                 tokenContract,
             },
         });
-    }, [accountKey, isFirmwareSupported, navigation, showFirmwareUpdateAlert, tokenContract]);
+    }, [
+        account?.symbol,
+        analytics,
+        accountKey,
+        isFirmwareSupported,
+        navigation,
+        showFirmwareUpdateAlert,
+        tokenContract,
+        vault,
+    ]);
 
     if (resolutionStatus !== 'resolved' || !vault?.token.address) return null;
 

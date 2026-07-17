@@ -1,5 +1,8 @@
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -11,6 +14,7 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { YieldConsentsProviderCard } from '../components/YieldConsentsProviderCard';
+import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useStartYieldDepositFlow } from '../hooks/useStartYieldDepositFlow';
 
@@ -23,13 +27,44 @@ type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldConsents>
 export const YieldConsentsScreen = () => {
     const { applyStyle } = useNativeStyles();
     const route = useRoute<RouteProps>();
-    const { flowData, flowKey, providerName, tokenSymbol, resolutionStatus } =
+    const { account, flowData, flowKey, providerName, tokenSymbol, vault, resolutionStatus } =
         useResolvedYieldFlowData(route.params);
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const { handleStartYieldDepositFlow, isStartingDepositFlow } = useStartYieldDepositFlow({
         flowData,
         flowKey,
         routeParams: route.params,
     });
+    const registerNavigateBackAnalytics = useNavigateBackAnalytics({
+        type: events.yieldNavigateEvent.name,
+        payload: {
+            action: 'cancel',
+            from: 'deposit-legal-modal',
+            to: 'deposit-legal-modal',
+            networkSymbol: account?.symbol,
+            vaultId: vault?.id,
+        },
+    });
+
+    const handleConfirmConsents = () => {
+        void handleStartYieldDepositFlow().then(hasStartedDepositFlow => {
+            if (!hasStartedDepositFlow) {
+                return;
+            }
+
+            analytics.report({
+                type: events.yieldNavigateEvent.name,
+                payload: {
+                    action: 'continue',
+                    from: 'deposit-legal-modal',
+                    to: 'deposit-form',
+                    networkSymbol: account?.symbol,
+                    vaultId: vault?.id,
+                },
+            });
+            registerNavigateBackAnalytics();
+        });
+    };
 
     if (resolutionStatus !== 'resolved') {
         return;
@@ -44,7 +79,7 @@ export const YieldConsentsScreen = () => {
                 <YieldConsentsProviderCard
                     providerName={providerName}
                     tokenSymbol={tokenSymbol}
-                    onConfirm={handleStartYieldDepositFlow}
+                    onConfirm={handleConfirmConsents}
                     isConfirmLoading={isStartingDepositFlow}
                 />
             </VStack>

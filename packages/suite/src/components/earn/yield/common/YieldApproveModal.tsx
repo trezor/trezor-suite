@@ -2,7 +2,8 @@ import { useEffect, useRef } from 'react';
 
 import { type DexApprovalType } from 'invity-api';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
 import { parseCryptoId, toTokenCryptoId } from '@suite-common/trading';

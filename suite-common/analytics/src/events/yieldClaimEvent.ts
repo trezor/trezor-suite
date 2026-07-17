@@ -1,7 +1,7 @@
-import type { AttributeDef, EventDef } from '@suite-common/analytics';
-import { type EarnModalAction } from '@suite-common/suite-types';
+import type { EarnModalAction } from '@suite-common/suite-types';
 
 import { EventType } from '../constants';
+import type { AttributeDef, EventDef } from '../eventDefinition';
 
 type Attributes = {
     action: AttributeDef<EarnModalAction>;
@@ -15,7 +15,10 @@ type Attributes = {
 export const yieldClaimEvent: EventDef<Attributes, EventType.YieldClaim> = {
     name: EventType.YieldClaim,
     descriptionTrigger: 'fired on stablecoin yield claim actions',
-    changelog: [{ version: '26.5.0', notes: 'added' }],
+    changelog: [
+        { version: '26.5.0', notes: 'added' },
+        { version: '26.7.1', notes: 'moved to suite-common, reported from mobile as well' },
+    ],
 
     attributes: {
         action: {

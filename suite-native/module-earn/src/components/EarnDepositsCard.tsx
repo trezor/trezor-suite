@@ -2,7 +2,10 @@ import { useCallback } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     Box,
     Card,
@@ -84,14 +87,25 @@ export const EarnDepositsCard = ({
         openModal: openStablecoinYieldClaimRewardsSheet,
     } = useBottomSheetModal();
 
+    const { analytics } = useServices(selectNativeAnalyticsDep);
+
     const handleStablecoinYieldClaimRewardPress = useCallback(
-        ({ accountKey }: StablecoinYieldClaimSummary) => {
+        ({ accountKey, networkSymbol }: StablecoinYieldClaimSummary) => {
+            analytics.report({
+                type: events.yieldNavigateEvent.name,
+                payload: {
+                    action: 'continue',
+                    from: 'earn-dashboard',
+                    to: 'claim-form',
+                    networkSymbol,
+                },
+            });
             navigation.navigate(RootStackRoutes.YieldNavigator, {
                 screen: YieldStackRoutes.YieldClaim,
                 params: { accountKey },
             });
         },
-        [navigation],
+        [analytics, navigation],
     );
 
     const handleStablecoinYieldClaimRewardsPress = useCallback(() => {

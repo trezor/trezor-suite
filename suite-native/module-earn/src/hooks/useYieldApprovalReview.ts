@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { StackActions, useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
     type StablecoinYieldRootState,
@@ -16,6 +18,7 @@ import {
     sendFormActions,
     signTransactionThunk,
 } from '@suite-common/wallet-core';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import type {
     RootStackParamList,
@@ -25,17 +28,18 @@ import type {
 } from '@suite-native/navigation';
 import { selectIsTransactionAlreadySigned } from '@suite-native/transaction-management';
 
-import { useShowDeviceDisconnectedDuringEarnReviewAlert } from './useShowDeviceDisconnectedDuringEarnReviewAlert';
-import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
-import { useYieldApprovalReviewNavigation } from './useYieldApprovalReviewNavigation';
-import { useYieldApprovalReviewTransaction } from './useYieldApprovalReviewTransaction';
 import {
     type YieldAllowanceFormDraftTransactionType,
     type YieldApprovalLimitType,
     type YieldReviewSigningResult,
 } from '../types';
 import { handleEarnReviewError, isUserCancelledSignError } from '../utils';
+import { getYieldApprovalAnalyticsType } from '../utils/yieldAnalyticsUtils';
 import { getYieldAllowanceFormDraftKey } from '../yieldApprovalThunks';
+import { useShowDeviceDisconnectedDuringEarnReviewAlert } from './useShowDeviceDisconnectedDuringEarnReviewAlert';
+import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
+import { useYieldApprovalReviewNavigation } from './useYieldApprovalReviewNavigation';
+import { useYieldApprovalReviewTransaction } from './useYieldApprovalReviewTransaction';
 
 type UseYieldApprovalReviewParams = {
     approvalLimitType?: YieldApprovalLimitType;
@@ -70,8 +74,41 @@ export const useYieldApprovalReview = ({
 }: UseYieldApprovalReviewParams): UseYieldApprovalReviewResult => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const showDeviceDisconnectedAlert = useShowDeviceDisconnectedDuringEarnReviewAlert();
     const reviewAlertType = transactionType === 'revoke' ? 'yield-revoke' : 'yield-approval';
+
+    const reportApprovalReviewEvent = useCallback(
+        (payload: { action: 'continue' | 'cancel' } | { errorMessage: string }) => {
+            const networkSymbol = flowData.account.symbol;
+            const vaultId = flowData.vault.id;
+
+            if ('errorMessage' in payload) {
+                analytics.report({
+                    type: events.yieldDepositEvent.name,
+                    payload: {
+                        networkSymbol,
+                        vaultId,
+                        action: 'continue',
+                        type: 'error',
+                        ...payload,
+                    },
+                });
+            } else {
+                analytics.report({
+                    type: events.yieldDepositEvent.name,
+                    payload: {
+                        networkSymbol,
+                        vaultId,
+                        type: transactionType === 'revoke' ? 'revoke-modal' : 'approve-modal',
+                        approvalType: getYieldApprovalAnalyticsType(approvalLimitType),
+                        ...payload,
+                    },
+                });
+            }
+        },
+        [analytics, approvalLimitType, flowData.account.symbol, flowData.vault.id, transactionType],
+    );
     const { showPendingTransactionConflictAlert, showPushTransactionFailedAlert } =
         useShowPushTransactionFailedDuringReviewAlert(reviewAlertType);
     const formDraftKey = useMemo(
@@ -121,6 +158,7 @@ export const useYieldApprovalReview = ({
 
         const { formState, precomposedTransaction } = reviewTransaction;
 
+        reportApprovalReviewEvent({ action: 'continue' });
         setIsSigningApproval(true);
 
         const deviceAccessResponse = await requestPrioritizedDeviceAccess(() =>
@@ -135,6 +173,7 @@ export const useYieldApprovalReview = ({
 
         if (!deviceAccessResponse.success) {
             setIsSigningApproval(false);
+            reportApprovalReviewEvent({ errorMessage: 'submit-failed' });
             handleEarnReviewError({
                 payload: {
                     error: 'sign-transaction-failed',
@@ -155,9 +194,12 @@ export const useYieldApprovalReview = ({
             setIsSigningApproval(false);
 
             if (isUserCancelledSignError(signTransactionResponse.payload)) {
+                reportApprovalReviewEvent({ action: 'cancel' });
+
                 return 'cancelled';
             }
 
+            reportApprovalReviewEvent({ errorMessage: 'submit-failed' });
             handleEarnReviewError({
                 payload: signTransactionResponse.payload,
                 navigation,
@@ -178,6 +220,7 @@ export const useYieldApprovalReview = ({
         isApprovalSigned,
         isSigningApproval,
         navigation,
+        reportApprovalReviewEvent,
         reviewTransaction,
         showDeviceDisconnectedAlert,
         showPendingTransactionConflictAlert,
@@ -200,6 +243,7 @@ export const useYieldApprovalReview = ({
 
         if (isRejected(pushResponse)) {
             setIsSendingApproval(false);
+            reportApprovalReviewEvent({ errorMessage: 'push-failed' });
             handleEarnReviewError({
                 payload: pushResponse.payload,
                 navigation,
@@ -243,6 +287,7 @@ export const useYieldApprovalReview = ({
         isSendingApproval,
         markReviewNavigationSuccess,
         navigation,
+        reportApprovalReviewEvent,
         reviewTransaction?.precomposedTransaction.fee,
         showDeviceDisconnectedAlert,
         showPendingTransactionConflictAlert,

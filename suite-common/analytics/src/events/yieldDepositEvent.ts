@@ -1,7 +1,7 @@
-import type { AttributeDef, EventDef } from '@suite-common/analytics';
-import { type EarnModalAction } from '@suite-common/suite-types';
+import type { EarnModalAction } from '@suite-common/suite-types';
 
 import { EventType } from '../constants';
+import type { AttributeDef, EventDef } from '../eventDefinition';
 
 type Attributes = {
     action: AttributeDef<EarnModalAction>;
@@ -34,6 +34,7 @@ export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
     changelog: [
         { version: '26.5.0', notes: 'added (as yield/supply)' },
         { version: '26.5.2', notes: 'renamed from yield/supply to yield/deposit' },
+        { version: '26.7.1', notes: 'moved to suite-common, reported from mobile as well' },
     ],
 
     attributes: {
@@ -58,7 +59,7 @@ export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
         },
         approvalType: {
             description:
-                "Type of approve selected by the user in the device-confirmation modal: 'MINIMAL' = exact amount, 'INFINITE' = unlimited allowance",
+                "Type of allowance selected by the user: 'MINIMAL' = exact amount for this deposit, 'INFINITE' = unlimited allowance",
             changelog: [{ version: '26.5.2', notes: 'added' }],
         },
         durationMs: {
@@ -71,7 +72,7 @@ export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
         },
         apyBreakdown: {
             description:
-                'Per-component breakdown of the displayed APY as a single comma-separated string in `SYMBOL,APY,SYMBOL,APY,…` order, sorted alphabetically by symbol. APYs are decimal percentages (e.g. `USDT,3.45,MORPHO,0.5` means 3.45% paid in USDT plus 0.5% paid in MORPHO). Each reward component is emitted independently; if two components share a token symbol they appear twice in the string. Reported on `type=deposit` (click to submit) and `type=success` (deposit confirmed).',
+                'Per-component breakdown of the displayed APY as a single comma-separated string in `SYMBOL,APY,SYMBOL,APY,…` order, sorted alphabetically by symbol. APYs are decimal percentages (e.g. `USDT,3.45,MORPHO,0.5` means 3.45% paid in USDT plus 0.5% paid in MORPHO). Each reward component is emitted independently; if two components share a token symbol they appear twice in the string. Reported on `type=deposit` (click/tap to submit) and `type=success` (deposit confirmed).',
             changelog: [{ version: '26.5.2', notes: 'added' }],
         },
     },

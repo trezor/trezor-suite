@@ -15,13 +15,19 @@ type YieldNavigateFn = StackNavigationProps<
     RootStackRoutes.YieldNavigator
 >['navigate'];
 
+export type YieldAccountNavigationDestination =
+    | 'account-detail'
+    | 'deposit-in-a-nutshell-modal'
+    | 'insufficient-balance-screen'
+    | 'firmware-update-alert';
+
 export const navigateByYieldAccountState = (
     account: Account,
     item: StablecoinYieldNavigationItem,
     navigate: YieldNavigateFn,
     isFirmwareSupported: (flowType: YieldFlowType) => boolean,
     showFirmwareUpdateAlert: () => void,
-) => {
+): YieldAccountNavigationDestination => {
     const { yieldId, underlyingTokenContract, receiptTokenContract } = item;
 
     if (receiptTokenContract && hasPositiveContractTokenBalance(account, receiptTokenContract)) {
@@ -31,14 +37,14 @@ export const navigateByYieldAccountState = (
             closeActionType: 'back',
         });
 
-        return;
+        return 'account-detail';
     }
 
     if (hasPositiveContractTokenBalance(account, underlyingTokenContract)) {
         if (!isFirmwareSupported('deposit')) {
             showFirmwareUpdateAlert();
 
-            return;
+            return 'firmware-update-alert';
         }
 
         navigate(RootStackRoutes.YieldNavigator, {
@@ -50,7 +56,7 @@ export const navigateByYieldAccountState = (
             },
         });
 
-        return;
+        return 'deposit-in-a-nutshell-modal';
     }
 
     navigate(RootStackRoutes.YieldInsufficientBalance, {
@@ -58,4 +64,6 @@ export const navigateByYieldAccountState = (
         tokenContract: underlyingTokenContract,
         yieldId,
     });
+
+    return 'insufficient-balance-screen';
 };
