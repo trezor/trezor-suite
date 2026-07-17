@@ -135,10 +135,12 @@ test.describe(
             await test.step('Send crypto to provider', async () => {
                 await devicePrompt.sendButton.click();
 
-                await expect(tradingPage.swapToastSendAccount).toContainText(accountLabel);
-                await expect(tradingPage.swapToastReceiveAccount).toContainText(accountLabel);
-                await expect(tradingPage.swapToastSendAmount).toContainText(sendAmount);
-                await expect(tradingPage.swapToastReceiveAmount).toContainText(receiveAmount);
+                await tradingPage.verifySwapToast({
+                    sendAccount: accountLabel,
+                    receiveAccount: accountLabel,
+                    sendAmount,
+                    receiveAmount,
+                });
 
                 await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                     'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',

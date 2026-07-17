@@ -178,10 +178,11 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                     nonce: '2',
                 });
                 await devicePrompt.sendButton.click();
-                await expect(stakingSection.stakedToastAccount).toContainText('Ethereum #1');
-                await expect(stakingSection.stakedToastAmount).toContainText(
-                    '0.100204158497493752 ETH',
-                );
+                await stakingSection.verifyStakingToast({
+                    type: 'staked',
+                    account: 'Ethereum #1',
+                    amount: '0.100204158497493752 ETH',
+                });
             });
 
             await test.step('Verify pending transaction', async () => {

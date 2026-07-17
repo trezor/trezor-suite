@@ -54,8 +54,7 @@ export class TradingPage {
     readonly transactions: TradingTransactionsSection;
 
     // Swap toast notifications
-    readonly swapToastSendAccount: Locator;
-    readonly swapToastReceiveAccount: Locator;
+    readonly swapToastMessage: Locator;
     readonly swapToastSendAmount: Locator;
     readonly swapToastReceiveAmount: Locator;
 
@@ -94,8 +93,7 @@ export class TradingPage {
         this.transactions = new TradingTransactionsSection(page);
 
         // Swap toast notifications
-        this.swapToastSendAccount = this.page.getByTestId('@toast/tx-exchange/send-account');
-        this.swapToastReceiveAccount = this.page.getByTestId('@toast/tx-exchange/receive-account');
+        this.swapToastMessage = this.page.getByTestId('@toast/tx-exchange/message');
         this.swapToastSendAmount = this.page.getByTestId('@toast/tx-exchange/send-amount');
         this.swapToastReceiveAmount = this.page.getByTestId('@toast/tx-exchange/receive-amount');
     }
@@ -333,6 +331,34 @@ export class TradingPage {
         await this.inputs.cryptoAmount.fill(amount);
         await quotesResponsePromise;
         await this.quotes.waitForSync();
+    }
+
+    /**
+     * @param params.sendAccount - The account label the swap is sent from (e.g., 'Solana #1')
+     * @param params.receiveAccount - The account label the swap is received to (e.g., 'Bitcoin #1')
+     * @param params.sendAmount - The expected send amount (e.g., '0.001')
+     * @param params.receiveAmount - The expected receive amount (localized, e.g., '0.00002')
+     */
+    @step()
+    async verifySwapToast({
+        sendAccount,
+        receiveAccount,
+        sendAmount,
+        receiveAmount,
+    }: {
+        sendAccount: string;
+        receiveAccount: string;
+        sendAmount: string;
+        receiveAmount: string;
+    }) {
+        await expect(this.swapToastMessage).toHaveTranslation('TOAST_TX_EXCHANGE_BROADCASTED', {
+            values: {
+                sendAccount,
+                receiveAccount,
+            },
+        });
+        await expect(this.swapToastSendAmount).toHaveText(sendAmount);
+        await expect(this.swapToastReceiveAmount).toHaveText(receiveAmount);
     }
 
     @step()

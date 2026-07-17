@@ -234,10 +234,12 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@webOnly', '@T3T1', '@T3W1'
         await test.step('Broadcast the signed DEX transaction', async () => {
             await page.clock.install();
             await devicePrompt.sendButton.click();
-            await expect(tradingPage.swapToastSendAccount).toContainText(accountLabel);
-            await expect(tradingPage.swapToastReceiveAccount).toContainText(accountLabel);
-            await expect(tradingPage.swapToastSendAmount).toContainText(sendAmount);
-            await expect(tradingPage.swapToastReceiveAmount).toContainText(receiveAmount);
+            await tradingPage.verifySwapToast({
+                sendAccount: accountLabel,
+                receiveAccount: accountLabel,
+                sendAmount,
+                receiveAmount,
+            });
         });
 
         await test.step('Wait 30s for watch refresh and status change to Processing', async () => {

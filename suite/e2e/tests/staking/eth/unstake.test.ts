@@ -107,8 +107,11 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                     nonce: '2',
                 });
                 await devicePrompt.sendButton.click();
-                await expect(stakingSection.unstakedToastAccount).toContainText('Ethereum #1');
-                await expect(stakingSection.unstakedToastAmount).toContainText('3234 ETH');
+                await stakingSection.verifyStakingToast({
+                    type: 'unstaked',
+                    account: 'Ethereum #1',
+                    amount: '3234 ETH',
+                });
             });
 
             await test.step('Verify pending transaction', async () => {
@@ -238,8 +241,11 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                     ],
                 });
                 await devicePrompt.sendButton.click();
-                await expect(stakingSection.claimedToastAccount).toContainText('Ethereum #1');
-                await expect(stakingSection.claimedToastAmount).toContainText('3234 ETH');
+                await stakingSection.verifyStakingToast({
+                    type: 'claimed',
+                    account: 'Ethereum #1',
+                    amount: '3234 ETH',
+                });
                 await expect(stakingSection.claimCard).toBeHidden();
                 await expect(walletPage.balanceOfAccount({ symbol: 'eth', atIndex: 0 })).toHaveText(
                     '4,468',

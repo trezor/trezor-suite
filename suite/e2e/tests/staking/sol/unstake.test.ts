@@ -110,10 +110,11 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
             await test.step('Send Unstake and verify on dashboard', async () => {
                 solanaStakingMock.confirmTransaction();
                 await devicePrompt.sendButton.click();
-                await expect(stakingSection.unstakedToastAccount).toContainText('Solana #1');
-                await expect(stakingSection.unstakedToastAmount).toContainText(
-                    stakedAmountFormatted,
-                );
+                await stakingSection.verifyStakingToast({
+                    type: 'unstaked',
+                    account: 'Solana #1',
+                    amount: stakedAmountFormatted,
+                });
                 solanaStakingMock.setupUnstakingAccount();
                 await stakingSection.expectStakingAmounts({
                     expected: {
@@ -197,10 +198,11 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await devicePrompt.waitForFinalPromptAndConfirm();
                 solanaStakingMock.setStakeAccounts([]);
                 await devicePrompt.sendButton.click();
-                await expect(stakingSection.claimedToastAccount).toContainText('Solana #1');
-                await expect(stakingSection.claimedToastAmount).toContainText(
-                    unstakingAndRentFormatted,
-                );
+                await stakingSection.verifyStakingToast({
+                    type: 'claimed',
+                    account: 'Solana #1',
+                    amount: unstakingAndRentFormatted,
+                });
             });
 
             await test.step('Verify dashboard is back to initial state', async () => {
