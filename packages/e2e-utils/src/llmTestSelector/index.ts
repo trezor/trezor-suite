@@ -465,7 +465,7 @@ const selectTestsViaApi = async (
     const maxTokens = 16384;
 
     const response = await client.messages.create({
-        model: 'claude-opus-4-6',
+        model: 'claude-sonnet-5',
         max_tokens: maxTokens,
         tools: [
             {
