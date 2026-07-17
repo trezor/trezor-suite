@@ -116,7 +116,11 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
 
                     if (response.success) {
                         setStep('backup-seed');
-                        TrezorConnect.backupDevice().then(response => {
+                        TrezorConnect.backupDevice({
+                            device: {
+                                path: device.path,
+                            },
+                        }).then(response => {
                             if (response.success) {
                                 analytics.report({
                                     type: events.settingsDeviceMultiShareBackupEvent.name,
