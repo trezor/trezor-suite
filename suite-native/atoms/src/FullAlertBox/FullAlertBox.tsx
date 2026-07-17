@@ -1,3 +1,5 @@
+import { type PropsWithChildren } from 'react';
+
 import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -35,6 +37,7 @@ export type FullAlertBoxProps = {
 export const FullAlertBox = ({
     title,
     description,
+    children,
     primaryButtonLabel,
     onPressPrimaryButton,
     onPressSecondaryButton,
@@ -45,7 +48,7 @@ export const FullAlertBox = ({
     iconName,
     verticalAlignment = 'flex-start',
     ...restProps
-}: FullAlertBoxProps) => {
+}: PropsWithChildren<FullAlertBoxProps>) => {
     const { applyStyle } = useNativeStyles();
     const { backgroundColor, borderColor, textColor } = intentToColorMap[intent];
 
@@ -66,6 +69,7 @@ export const FullAlertBox = ({
                                     {description}
                                 </Text>
                             )}
+                            {children}
                         </VStack>
                     </VStack>
                 </HStack>
