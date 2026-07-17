@@ -7,7 +7,7 @@ import { cryptoIdToNetworkSymbolAndContractAddress, useTradingAssets } from '@su
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
-import { AssetLogo, CoinLogo } from '@trezor/product-components';
+import { AssetIcon, shouldShowNetworkBadge } from '@trezor/product-components';
 
 import { BaseCurrencyValue } from 'src/components/suite';
 import { type TradingPayGetLabelType } from 'src/types/trading/trading';
@@ -43,20 +43,12 @@ export const TradingInfoItem = ({
     const isExternalAddress = !account && !!receiveAddress;
     const testIdPrefix = `@trading/detail/${isReceive ? 'receive' : 'send'}`;
 
-    const {
-        id,
-        isNativeToken,
-        networkSymbol,
-        name,
-        displaySymbol,
-        networkName,
-        contractAddress,
-        symbol,
-    } = createAssetOptionFromCryptoId(currency);
+    const { id, isNativeToken, networkSymbol, name, displaySymbol, networkName, contractAddress } =
+        createAssetOptionFromCryptoId(currency);
 
     const displayName = isNativeToken ? getNetworkDisplaySymbolName(networkSymbol) : name;
 
-    const showNetwork = networkSymbol !== displaySymbol.toLowerCase();
+    const showNetwork = shouldShowNetworkBadge(networkSymbol);
 
     if (!amount || !currency) return null;
 
@@ -98,17 +90,12 @@ export const TradingInfoItem = ({
                 <Card type="contrast" paddingType="none">
                     <Row padding={16} gap={8} justifyContent="space-between">
                         <Row gap={8} alignItems="center">
-                            {isNativeToken ? (
-                                <CoinLogo size={40} symbol={symbol} type="tokenWithNetwork" />
-                            ) : (
-                                <AssetLogo
-                                    size={40}
-                                    symbol={networkSymbol}
-                                    contractAddress={contractAddress}
-                                    placeholder={displaySymbol}
-                                    showNetworkIcon={showNetwork}
-                                />
-                            )}
+                            <AssetIcon
+                                size={40}
+                                symbol={networkSymbol}
+                                contractAddress={contractAddress}
+                                placeholder={displaySymbol}
+                            />
                             <Column alignItems="start">
                                 <Text data-testid={`${testIdPrefix}-asset-name`}>
                                     {displayName}

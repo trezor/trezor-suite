@@ -1,11 +1,4 @@
-import { isNetworkIconSymbol } from '@suite-common/icons/src/iconUtils';
-import {
-    type NetworkSymbolExtended,
-    getNetwork,
-    getNetworkByCoingeckoId,
-    getNetworkFeatures,
-    isNetworkSymbol,
-} from '@suite-common/wallet-config';
+import { getNetwork, getNetworkByCoingeckoId, isNetworkSymbol } from '@suite-common/wallet-config';
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -19,19 +12,6 @@ export const makeCacheKey = (coingeckoId: string, addressesKey: string) =>
 
 export const makeAddressKey = (coingeckoId: string, address: string) =>
     `${coingeckoId}::${address}`;
-
-export function shouldShowNetworkIcon(
-    networkSymbol?: NetworkSymbolExtended,
-    contractAddress?: string | null,
-) {
-    return (
-        networkSymbol &&
-        isNetworkIconSymbol(networkSymbol) &&
-        isNetworkSymbol(networkSymbol) &&
-        Boolean(contractAddress) &&
-        getNetworkFeatures(networkSymbol).includes('tokens')
-    );
-}
 
 export const getCoingeckoIdAndContractAddressIncludesNativeTokens = (
     coingeckoId: string,

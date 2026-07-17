@@ -25,6 +25,8 @@ export { type ModelFor, type ColorsFor } from './components/DeviceAnimation/devi
 export { DeviceWithScene } from './components/DeviceWithScene/DeviceWithScene';
 export { getModelFrontColor, getLargeModelImagePath } from './utils/getModelFrontColor';
 export { DataAnalytics } from './components/DataAnalytics';
+export { AssetIcon, type AssetIconProps } from './components/AssetIcon/AssetIcon';
+export { shouldShowNetworkBadge } from '@suite-common/wallet-config';
 export { AssetLogo } from './components/AssetLogo/AssetLogo';
 export { AssetLogoWithId } from './components/AssetLogo/AssetLogoWithId';
 export {
@@ -33,7 +35,6 @@ export {
     type AssetLogoSize,
     allowedAssetLogoSizes,
 } from './components/AssetLogo/AssetLogoWithId';
-export { shouldShowNetworkIcon } from './components/AssetLogo/assetLogoUtils';
 export { isNetworkIconSymbol as isNetworkSymbolWithIcon } from '@suite-common/icons/src/iconUtils';
 export * from './components/TopAssets/TopAssets';
 export { ExchangeInfoNotification } from './components/Notifications/ExchangeInfoNotification';

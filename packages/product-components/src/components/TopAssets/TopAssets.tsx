@@ -1,9 +1,8 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Card, Column, GhostContainer, Row, Text } from '@trezor/components';
 
-import { AssetLogo } from '../AssetLogo/AssetLogo';
+import { AssetIcon } from '../AssetIcon/AssetIcon';
 import { type AssetLogoProps } from '../AssetLogo/AssetLogoWithId';
-import { CoinLogo } from '../CoinLogo/CoinLogo';
 
 export type Asset = {
     id: string;
@@ -47,21 +46,12 @@ export function TopAssets({
                         cursor="pointer"
                     >
                         <Column alignItems="center" justifyContent="center" gap={4}>
-                            {asset.isNativeToken ? (
-                                <CoinLogo
-                                    size={logoSize}
-                                    // @ts-expect-error
-                                    symbol={asset.symbol}
-                                    type="tokenWithNetwork"
-                                />
-                            ) : (
-                                <AssetLogo
-                                    size={logoSize}
-                                    symbol={asset.networkSymbol}
-                                    contractAddress={asset.contractAddress}
-                                    placeholder={asset.displaySymbol}
-                                />
-                            )}
+                            <AssetIcon
+                                size={logoSize}
+                                symbol={asset.networkSymbol}
+                                contractAddress={asset.contractAddress}
+                                placeholder={asset.displaySymbol}
+                            />
                             <Text typographyStyle="body-sm" intent="neutral">
                                 {asset.displaySymbol}
                             </Text>
