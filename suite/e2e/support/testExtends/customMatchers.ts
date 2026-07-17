@@ -353,4 +353,4 @@ export const expect = baseExpect.extend({
             pass: true,
         };
     },
-});
+}) satisfies typeof baseExpect;
