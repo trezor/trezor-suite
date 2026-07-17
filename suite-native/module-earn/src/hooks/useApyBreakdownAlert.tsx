@@ -1,9 +1,12 @@
 import { useCallback } from 'react';
 
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type Account } from '@suite-common/wallet-types';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
 
 import { StablecoinYieldApyBreakdown } from '../components/StablecoinYieldApyBreakdown';
@@ -17,6 +20,7 @@ interface UseApyBreakdownAlertProps {
 export const useApyBreakdownAlert = ({ account, vault, apy }: UseApyBreakdownAlertProps) => {
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
 
     const apyValue = apy && isApyAvailable(apy) ? `~${apy.toFixed(2)}%` : null;
 
@@ -24,6 +28,15 @@ export const useApyBreakdownAlert = ({ account, vault, apy }: UseApyBreakdownAle
         if (!account || !vault) {
             return;
         }
+
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: 'apy-tooltip',
+                networkSymbol: account.symbol,
+                vaultId: vault.id,
+            },
+        });
 
         showAlert({
             title: vault.outputToken?.name ?? '',
@@ -43,7 +56,7 @@ export const useApyBreakdownAlert = ({ account, vault, apy }: UseApyBreakdownAle
             titleSpacing: 'sp4',
             primaryButtonTitle: translate('generic.buttons.close'),
         });
-    }, [account, vault, showAlert, translate, apyValue]);
+    }, [account, analytics, vault, showAlert, translate, apyValue]);
 
     return { onPress };
 };

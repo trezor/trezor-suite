@@ -21,7 +21,12 @@ export const useNavigateBackAnalytics = (event: AnalyticsNativeEvents) => {
     useEffect(
         () =>
             navigation.addListener('beforeRemove', e => {
-                if (e.data.action.type === 'GO_BACK' && !hasContinuedRef.current) {
+                // Native-stack dismissals (iOS swipe-back, native header back) dispatch POP,
+                // while JS navigation.goBack() dispatches GO_BACK.
+                const isBackRemoval =
+                    e.data.action.type === 'GO_BACK' || e.data.action.type === 'POP';
+
+                if (isBackRemoval && !hasContinuedRef.current) {
                     analytics.report(eventRef.current);
                 }
             }),

@@ -3,12 +3,15 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccountByKey,
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Box, FullAlertBox, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { useFiatFromCryptoValue } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
@@ -26,6 +29,7 @@ import { YieldClaimRewardsCard } from '../components/YieldClaimRewardsCard';
 import { YieldFeeEstimationErrorAlert } from '../components/YieldFeeEstimationErrorAlert';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { YieldTxSimulationBottomSheet } from '../components/YieldTxSimulationBottomSheet';
+import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransactionFailureAlert';
 import { type PreparedYieldClaimAction, useYieldClaimFees } from '../hooks/useYieldClaimFees';
 import { useYieldClaimRewards } from '../hooks/useYieldClaimRewards';
@@ -44,6 +48,7 @@ export const YieldClaimScreen = () => {
     const { accountKey } = route.params;
     const isFocused = useIsFocused();
     const dispatch = useDispatch();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const {
         bottomSheetRef: simulationBottomSheetRef,
         closeModal: closeSimulationBottomSheet,
@@ -55,6 +60,16 @@ export const YieldClaimScreen = () => {
         selectAccountByKey(state, accountKey),
     );
     const flowKey = account?.key ?? null;
+
+    useNavigateBackAnalytics({
+        type: events.yieldNavigateEvent.name,
+        payload: {
+            action: 'cancel',
+            from: 'claim-form',
+            to: 'claim-form',
+            networkSymbol: account?.symbol,
+        },
+    });
     const session = useYieldSession({
         flowKey,
         flowType: 'claim',
@@ -140,14 +155,34 @@ export const YieldClaimScreen = () => {
         }
     }, [navigation, route.params, session?.step]);
 
+    const reportClaimEvent = useCallback(
+        (payload: { action: 'continue' | 'cancel'; type: 'claim' | 'tx-simulation-modal' }) => {
+            analytics.report({
+                type: events.yieldClaimEvent.name,
+                payload: {
+                    ...payload,
+                    networkSymbol: account?.symbol,
+                    rewardCount: accountRewards?.rewards.length,
+                },
+            });
+        },
+        [account?.symbol, accountRewards?.rewards.length, analytics],
+    );
+
     const handleContinue = useCallback(() => {
         if (isContinueDisabled || !claimFee.preparedAction) {
             return;
         }
 
+        reportClaimEvent({ action: 'continue', type: 'claim' });
         setSimulationPreparedAction(claimFee.preparedAction);
         requestAnimationFrame(openSimulationBottomSheet);
-    }, [claimFee.preparedAction, isContinueDisabled, openSimulationBottomSheet]);
+    }, [claimFee.preparedAction, isContinueDisabled, openSimulationBottomSheet, reportClaimEvent]);
+
+    const handleCancelSimulation = useCallback(() => {
+        reportClaimEvent({ action: 'cancel', type: 'tx-simulation-modal' });
+        closeSimulationBottomSheet();
+    }, [closeSimulationBottomSheet, reportClaimEvent]);
 
     const handleConfirmSimulation = useCallback(() => {
         if (!account || !flowKey || !simulationPreparedAction) {
@@ -161,6 +196,8 @@ export const YieldClaimScreen = () => {
             account,
             rewards: simulationPreparedAction.rewards,
         });
+
+        reportClaimEvent({ action: 'continue', type: 'tx-simulation-modal' });
 
         dispatch(
             stablecoinYieldActions.storeActionReviewData({
@@ -178,6 +215,7 @@ export const YieldClaimScreen = () => {
         dispatch,
         flowKey,
         navigation,
+        reportClaimEvent,
         route.params,
         simulationPreparedAction,
     ]);
@@ -281,7 +319,7 @@ export const YieldClaimScreen = () => {
                     ref={simulationBottomSheetRef}
                     account={account}
                     flow="claim"
-                    onCancel={closeSimulationBottomSheet}
+                    onCancel={handleCancelSimulation}
                     onConfirm={handleConfirmSimulation}
                     unsignedTx={simulationPreparedAction.unsignedTransaction}
                 />

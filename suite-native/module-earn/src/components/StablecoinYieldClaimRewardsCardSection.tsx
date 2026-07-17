@@ -1,8 +1,11 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
@@ -25,13 +28,22 @@ export const StablecoinYieldClaimRewardsCardSection = ({
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isDisabled = claimRewards.length === 0 || isLoading;
 
+    const { analytics } = useServices(selectNativeAnalyticsDep);
+
     const handlePress = useCallback(() => {
         if (isDisabled) {
             return;
         }
 
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: 'earn-dashboard-claim-rewards',
+            },
+        });
+
         onPress();
-    }, [isDisabled, onPress]);
+    }, [isDisabled, onPress, analytics]);
 
     if (isPortfolioTrackerDevice || (claimRewards.length === 0 && !isLoading)) {
         return null;

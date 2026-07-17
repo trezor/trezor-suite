@@ -9,8 +9,12 @@ import {
     useRoute,
 } from '@react-navigation/native';
 
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { getNetwork } from '@suite-common/wallet-config';
 import { stablecoinYieldActions } from '@suite-common/wallet-core';
+import { getApyBreakdown } from '@suite-common/wallet-utils';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Box, FullAlertBox, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -33,6 +37,7 @@ import { YieldDepositStepCard } from '../components/YieldDepositStepCard';
 import { YieldFeeEstimationErrorAlert } from '../components/YieldFeeEstimationErrorAlert';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { YieldTxSimulationBottomSheet } from '../components/YieldTxSimulationBottomSheet';
+import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 import { useRefreshYieldDepositAllowanceOnIdle } from '../hooks/useRefreshYieldDepositAllowanceOnIdle';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransactionFailureAlert';
@@ -54,6 +59,7 @@ export const YieldDepositScreen = () => {
     const dispatch = useDispatch();
     const isFocused = useIsFocused();
     const navigateToInitialScreen = useNavigateToInitialScreen();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
 
     const {
         bottomSheetRef: infoBottomSheetRef,
@@ -84,6 +90,16 @@ export const YieldDepositScreen = () => {
         resolutionStatus,
     } = resolvedFlowData;
 
+    useNavigateBackAnalytics({
+        type: events.yieldNavigateEvent.name,
+        payload: {
+            action: 'cancel',
+            from: 'deposit-form',
+            to: 'deposit-form',
+            networkSymbol: account?.symbol,
+            vaultId: resolvedFlowData.vault?.id,
+        },
+    });
     const session = useYieldSession({
         flowKey,
         flowType: 'deposit',
@@ -158,6 +174,7 @@ export const YieldDepositScreen = () => {
         flowKey,
         flowType: 'deposit',
         pendingTransaction: actionPendingTransaction,
+        vault: resolvedFlowData.vault,
     });
 
     useRefreshYieldDepositAllowanceOnIdle({
@@ -176,6 +193,16 @@ export const YieldDepositScreen = () => {
             return;
         }
 
+        analytics.report({
+            type: events.yieldDepositEvent.name,
+            payload: {
+                action: 'continue',
+                type: 'modify-allowance',
+                networkSymbol: account?.symbol,
+                vaultId: resolvedFlowData.vault?.id,
+            },
+        });
+
         dispatch(
             stablecoinYieldActions.enterModifyMode({
                 flowType: 'deposit',
@@ -187,7 +214,17 @@ export const YieldDepositScreen = () => {
         navigation.dispatch(
             StackActions.popTo(YieldStackRoutes.YieldDepositApproval, route.params),
         );
-    }, [amountValue, dispatch, flowKey, isDepositPending, navigation, route.params]);
+    }, [
+        account?.symbol,
+        amountValue,
+        analytics,
+        dispatch,
+        flowKey,
+        isDepositPending,
+        navigation,
+        resolvedFlowData.vault?.id,
+        route.params,
+    ]);
 
     const handleActionReady = useCallback(
         (preparedAction: PreparedYieldDepositAction) => {
@@ -196,11 +233,26 @@ export const YieldDepositScreen = () => {
         },
         [openSimulationBottomSheet],
     );
+    const reportSimulationAction = useCallback(
+        (action: 'continue' | 'cancel') => {
+            analytics.report({
+                type: events.yieldDepositEvent.name,
+                payload: {
+                    action,
+                    type: 'tx-simulation-modal',
+                    networkSymbol: account?.symbol,
+                    vaultId: resolvedFlowData.vault?.id,
+                },
+            });
+        },
+        [account?.symbol, analytics, resolvedFlowData.vault?.id],
+    );
     const handleConfirmSimulation = useCallback(() => {
         if (!flowKey || !simulationPreparedAction) {
             return;
         }
 
+        reportSimulationAction('continue');
         dispatch(
             stablecoinYieldActions.storeActionReviewData({
                 amount: simulationPreparedAction.amount,
@@ -217,9 +269,14 @@ export const YieldDepositScreen = () => {
         dispatch,
         flowKey,
         navigation,
+        reportSimulationAction,
         route.params,
         simulationPreparedAction,
     ]);
+    const handleCancelSimulation = useCallback(() => {
+        reportSimulationAction('cancel');
+        closeSimulationBottomSheet();
+    }, [closeSimulationBottomSheet, reportSimulationAction]);
     const { handleSubmitDeposit } = useYieldDepositSubmit({
         amount: amountValue,
         onActionReady: handleActionReady,
@@ -231,8 +288,52 @@ export const YieldDepositScreen = () => {
             return;
         }
 
+        const apyBreakdown = getApyBreakdown(resolvedFlowData.vault?.rewardRate?.components);
+
+        analytics.report({
+            type: events.yieldDepositEvent.name,
+            payload: {
+                action: 'continue',
+                type: 'deposit',
+                networkSymbol: account?.symbol,
+                vaultId: resolvedFlowData.vault?.id,
+                ...(apyBreakdown && { apyBreakdown }),
+            },
+        });
+
         handleSubmitDeposit();
-    }, [handleSubmitDeposit, isSubmitDisabled]);
+    }, [account?.symbol, analytics, handleSubmitDeposit, isSubmitDisabled, resolvedFlowData.vault]);
+
+    const handleMaxChangeWithAnalytics = useCallback(
+        (value: boolean) => {
+            if (value) {
+                analytics.report({
+                    type: events.yieldInteractionEvent.name,
+                    payload: {
+                        element: 'deposit-max',
+                        networkSymbol: account?.symbol,
+                        vaultId: resolvedFlowData.vault?.id,
+                    },
+                });
+            }
+
+            handleMaxChange(value);
+        },
+        [account?.symbol, analytics, handleMaxChange, resolvedFlowData.vault?.id],
+    );
+
+    const handleOpenInfoBottomSheet = useCallback(() => {
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: 'in-a-nutshell-process-tab',
+                value: 'deposit',
+                networkSymbol: account?.symbol,
+                vaultId: resolvedFlowData.vault?.id,
+            },
+        });
+        openInfoBottomSheet();
+    }, [account?.symbol, analytics, openInfoBottomSheet, resolvedFlowData.vault?.id]);
 
     const handleCloseInfoBottomSheet = useCallback(() => {
         closeInfoBottomSheet();
@@ -262,7 +363,7 @@ export const YieldDepositScreen = () => {
                 <YieldDepositFlowScreenHeader
                     account={account}
                     closeAction={handleCloseDeposit}
-                    onInfoPress={openInfoBottomSheet}
+                    onInfoPress={handleOpenInfoBottomSheet}
                     tokenContract={route.params.tokenContract}
                     vaultName={vaultTokenName}
                 />
@@ -300,7 +401,7 @@ export const YieldDepositScreen = () => {
                                 balance={token.balance}
                                 isMaxSelected={isMaxSelected}
                                 onAmountChange={handleAmountChange}
-                                onMaxChange={handleMaxChange}
+                                onMaxChange={handleMaxChangeWithAnalytics}
                                 tokenSymbol={tokenSymbol}
                             />
                         </Form>
@@ -377,7 +478,7 @@ export const YieldDepositScreen = () => {
                     ref={simulationBottomSheetRef}
                     account={account}
                     flow="deposit"
-                    onCancel={closeSimulationBottomSheet}
+                    onCancel={handleCancelSimulation}
                     onConfirm={handleConfirmSimulation}
                     unsignedTx={simulationPreparedAction.unsignedTransaction}
                 />

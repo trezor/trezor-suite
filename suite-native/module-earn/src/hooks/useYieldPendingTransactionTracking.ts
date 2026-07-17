@@ -1,6 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
     type AccountsRootState,
     type FeesRootState,
@@ -13,7 +16,9 @@ import {
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { isPending } from '@suite-common/wallet-utils';
+import { getApyBreakdown, isPending } from '@suite-common/wallet-utils';
+import { type NativeAnalyticsDep, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { exhaustive } from '@trezor/type-utils';
 
 import { getPollIntervalMs } from '../utils/getPollIntervalMs';
 
@@ -27,7 +32,100 @@ type UseYieldPendingTransactionTrackingParams = {
     onApprovalConfirmed?: () => void;
     onRevokeConfirmed?: () => void;
     pendingTransaction: YieldPendingTransactionState | undefined;
+    vault?: YieldDtoV2 | null;
     waitForMerklToResolveClaim?: () => Promise<unknown>;
+};
+
+type YieldResolutionOutcome = 'success' | 'error' | 'leftPending';
+
+type ReportYieldTransactionResolutionParams = {
+    analytics: NativeAnalyticsDep['analytics'];
+    networkSymbol: string;
+    outcome: YieldResolutionOutcome;
+    pendingTransactionType: YieldPendingTransactionState['type'];
+    submittedAt: number | undefined;
+    vault: YieldDtoV2 | null | undefined;
+};
+
+const reportYieldTransactionResolution = ({
+    analytics,
+    networkSymbol,
+    outcome,
+    pendingTransactionType,
+    submittedAt,
+    vault,
+}: ReportYieldTransactionResolutionParams) => {
+    const durationMs = submittedAt ? Date.now() - submittedAt : undefined;
+    const errorMessage = outcome === 'error' ? { errorMessage: 'on-chain-failure' } : {};
+
+    switch (pendingTransactionType) {
+        case 'approve':
+        case 'revoke':
+        case 'deposit': {
+            const successType = {
+                approve: 'approve-success',
+                revoke: 'revoke-success',
+                deposit: 'success',
+            } as const;
+
+            const apyBreakdown =
+                pendingTransactionType === 'deposit' && outcome === 'success'
+                    ? getApyBreakdown(vault?.rewardRate?.components)
+                    : '';
+
+            analytics.report({
+                type: events.yieldDepositEvent.name,
+                payload: {
+                    action: 'continue',
+                    type: outcome === 'success' ? successType[pendingTransactionType] : outcome,
+                    networkSymbol,
+                    vaultId: vault?.id,
+                    durationMs,
+                    ...(apyBreakdown && { apyBreakdown }),
+                    ...errorMessage,
+                },
+            });
+
+            return;
+        }
+        case 'withdraw':
+        case 'redeem': {
+            const apyBreakdown =
+                outcome === 'success' ? getApyBreakdown(vault?.rewardRate?.components) : '';
+
+            analytics.report({
+                type: events.yieldWithdrawEvent.name,
+                payload: {
+                    action: 'continue',
+                    type: outcome,
+                    operation: pendingTransactionType,
+                    networkSymbol,
+                    vaultId: vault?.id,
+                    durationMs,
+                    ...(apyBreakdown && { apyBreakdown }),
+                    ...errorMessage,
+                },
+            });
+
+            return;
+        }
+        case 'claim': {
+            analytics.report({
+                type: events.yieldClaimEvent.name,
+                payload: {
+                    action: 'continue',
+                    type: outcome,
+                    networkSymbol,
+                    durationMs,
+                    ...errorMessage,
+                },
+            });
+
+            return;
+        }
+        default:
+            exhaustive(pendingTransactionType);
+    }
 };
 
 export const useYieldPendingTransactionTracking = ({
@@ -38,9 +136,11 @@ export const useYieldPendingTransactionTracking = ({
     flowType,
     isScreenFocused,
     pendingTransaction,
+    vault,
     waitForMerklToResolveClaim,
 }: UseYieldPendingTransactionTrackingParams) => {
     const dispatch = useDispatch();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const pendingTxidRef = useRef(pendingTransaction?.txid);
     const claimCompletionTxidRef = useRef<string | null>(null);
     const accountKey = account?.key;
@@ -60,6 +160,38 @@ export const useYieldPendingTransactionTracking = ({
         !!flowKey &&
         !!pendingTransaction &&
         (!trackedPendingTransaction || isPending(trackedPendingTransaction));
+
+    // Snapshot of the still-unresolved transaction so the unmount cleanup can emit `leftPending`.
+    const leftPendingSnapshotRef = useRef<Omit<
+        ReportYieldTransactionResolutionParams,
+        'analytics' | 'outcome'
+    > | null>(null);
+    leftPendingSnapshotRef.current =
+        pendingTransaction &&
+        accountSymbol &&
+        (!trackedPendingTransaction || isPending(trackedPendingTransaction))
+            ? {
+                  networkSymbol: accountSymbol,
+                  pendingTransactionType: pendingTransaction.type,
+                  submittedAt: pendingTransaction.submittedAt,
+                  vault,
+              }
+            : null;
+
+    useEffect(
+        () => () => {
+            if (!leftPendingSnapshotRef.current) {
+                return;
+            }
+
+            reportYieldTransactionResolution({
+                ...leftPendingSnapshotRef.current,
+                analytics,
+                outcome: 'leftPending',
+            });
+        },
+        [analytics],
+    );
 
     useEffect(() => {
         pendingTxidRef.current = pendingTransaction?.txid;
@@ -91,14 +223,30 @@ export const useYieldPendingTransactionTracking = ({
         }
 
         const sessionParams = { flowType, flowKey };
+        const reportResolution = (outcome: Exclude<YieldResolutionOutcome, 'leftPending'>) => {
+            if (!accountSymbol) {
+                return;
+            }
+
+            reportYieldTransactionResolution({
+                analytics,
+                networkSymbol: accountSymbol,
+                outcome,
+                pendingTransactionType: pendingTransaction.type,
+                submittedAt: pendingTransaction.submittedAt,
+                vault,
+            });
+        };
 
         if (trackedPendingTransaction.type === 'failed') {
+            reportResolution('error');
             dispatch(stablecoinYieldActions.transactionFailed(sessionParams));
 
             return;
         }
 
         if (pendingTransaction.type === 'revoke') {
+            reportResolution('success');
             dispatch(stablecoinYieldActions.revokeSuccess(sessionParams));
             dispatch(stablecoinYieldActions.invalidateAllowance(sessionParams));
 
@@ -115,6 +263,7 @@ export const useYieldPendingTransactionTracking = ({
             }
 
             claimCompletionTxidRef.current = pendingTransaction.txid;
+            reportResolution('success');
 
             const completeClaimAction = async () => {
                 try {
@@ -139,6 +288,7 @@ export const useYieldPendingTransactionTracking = ({
         }
 
         if (pendingTransaction.type !== 'approve') {
+            reportResolution('success');
             dispatch(
                 stablecoinYieldActions.completeAction({
                     ...sessionParams,
@@ -153,6 +303,7 @@ export const useYieldPendingTransactionTracking = ({
             return;
         }
 
+        reportResolution('success');
         dispatch(
             stablecoinYieldActions.completeApproval({
                 ...sessionParams,
@@ -165,6 +316,8 @@ export const useYieldPendingTransactionTracking = ({
             onApprovalConfirmed();
         }
     }, [
+        accountSymbol,
+        analytics,
         dispatch,
         flowKey,
         flowType,
@@ -173,6 +326,7 @@ export const useYieldPendingTransactionTracking = ({
         onRevokeConfirmed,
         pendingTransaction,
         trackedPendingTransaction,
+        vault,
         waitForMerklToResolveClaim,
     ]);
 };

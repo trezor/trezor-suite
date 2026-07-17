@@ -1,5 +1,10 @@
+import { useCallback } from 'react';
+
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -9,13 +14,39 @@ import {
 } from '@suite-native/navigation';
 
 import { EarnInsufficientBalanceContent } from '../components/EarnInsufficientBalanceContent';
+import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 
 type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.YieldInsufficientBalance>;
 
 export const YieldInsufficientBalanceScreen = () => {
     const route = useRoute<RouteProps>();
-    const { resolutionStatus, tokenSymbol } = useResolvedYieldFlowData(route.params);
+    const { account, resolutionStatus, tokenSymbol, vault } = useResolvedYieldFlowData(
+        route.params,
+    );
+    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const registerNavigateBackAnalytics = useNavigateBackAnalytics({
+        type: events.yieldNavigateEvent.name,
+        payload: {
+            action: 'cancel',
+            from: 'insufficient-balance-screen',
+            to: 'insufficient-balance-screen',
+            networkSymbol: account?.symbol,
+            vaultId: vault?.id,
+        },
+    });
+
+    const handleGetTokenPress = useCallback(() => {
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: 'insufficient-funds-banner',
+                networkSymbol: account?.symbol,
+                vaultId: vault?.id,
+            },
+        });
+        registerNavigateBackAnalytics();
+    }, [account?.symbol, analytics, registerNavigateBackAnalytics, vault?.id]);
 
     if (resolutionStatus !== 'resolved') {
         return null;
@@ -42,6 +73,7 @@ export const YieldInsufficientBalanceScreen = () => {
                         values={{ tokenSymbol }}
                     />
                 }
+                onPrimaryButtonPress={handleGetTokenPress}
             />
         </Screen>
     );

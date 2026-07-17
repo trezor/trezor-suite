@@ -10,6 +10,7 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { showAddressThunk } from '@suite/receive';
 import { goto } from '@suite/router';
+import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
@@ -148,7 +149,7 @@ const TokenRowBasicActions = ({
         const contractAddress = availableVault.token.address;
 
         analytics.report({
-            type: events.yieldNavigateEvent.name,
+            type: sharedEvents.yieldNavigateEvent.name,
             payload: {
                 action: 'continue',
                 from: 'account-defi-tokens',
@@ -177,7 +178,7 @@ const TokenRowBasicActions = ({
         const contractAddress = availableVault.token.address;
 
         analytics.report({
-            type: events.yieldNavigateEvent.name,
+            type: sharedEvents.yieldNavigateEvent.name,
             payload: {
                 action: 'continue',
                 from: 'account-defi-tokens',

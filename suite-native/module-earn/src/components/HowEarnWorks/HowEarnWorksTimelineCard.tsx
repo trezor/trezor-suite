@@ -20,21 +20,28 @@ type HowEarnWorksTimelineCardProps = {
     cardTitle: ReactNode;
     bottomSheetTitle: ReactNode;
     children: ReactNode;
+    onOpen?: () => void;
 };
 
 export const HowEarnWorksTimelineCard = ({
     cardTitle,
     bottomSheetTitle,
     children,
+    onOpen,
 }: HowEarnWorksTimelineCardProps) => {
     const { applyStyle } = useNativeStyles();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal({
         isNestedSheet: true,
     });
 
+    const handleOpen = () => {
+        onOpen?.();
+        openModal();
+    };
+
     return (
         <>
-            <PressableOpacity style={applyStyle(timelineCardPressableStyle)} onPress={openModal}>
+            <PressableOpacity style={applyStyle(timelineCardPressableStyle)} onPress={handleOpen}>
                 <Card borderColor="borderNeutral" noShadow>
                     <HStack alignItems="center" justifyContent="space-between">
                         <Text variant="body-md-strong">{cardTitle}</Text>

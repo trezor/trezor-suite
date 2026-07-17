@@ -1,8 +1,9 @@
 import { AccountLabel } from '@suite/account';
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type EarnParams, goto } from '@suite/router';
+import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {

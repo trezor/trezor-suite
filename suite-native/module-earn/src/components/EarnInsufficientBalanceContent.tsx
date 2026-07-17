@@ -16,6 +16,7 @@ type EarnInsufficientBalanceContentProps = {
     title: ReactNode;
     subtitle: ReactNode;
     primaryButtonContent: ReactNode;
+    onPrimaryButtonPress?: () => void;
 };
 
 type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes>;
@@ -24,10 +25,12 @@ export const EarnInsufficientBalanceContent = ({
     title,
     subtitle,
     primaryButtonContent,
+    onPrimaryButtonPress,
 }: EarnInsufficientBalanceContentProps) => {
     const navigation = useNavigation<NavigationProp>();
 
     const handleGetCoin = () => {
+        onPrimaryButtonPress?.();
         navigation.navigate(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.TradeStack,
             params: {

@@ -197,11 +197,12 @@ describe('useStartYieldDepositFlow', () => {
             }),
         );
         const { result } = renderUseStartYieldDepositFlow(store);
-        let startPromise: Promise<void> = Promise.resolve();
+        let startPromise: Promise<boolean> = Promise.resolve(false);
+        let duplicateStartPromise: Promise<boolean> = Promise.resolve(false);
 
         act(() => {
             startPromise = result.current.handleStartYieldDepositFlow();
-            void result.current.handleStartYieldDepositFlow();
+            duplicateStartPromise = result.current.handleStartYieldDepositFlow();
         });
 
         expect(fetchAllowanceMock).toHaveBeenCalledTimes(1);
@@ -209,7 +210,8 @@ describe('useStartYieldDepositFlow', () => {
 
         await act(async () => {
             resolveAllowance(allowanceSubunits('1000000'));
-            await startPromise;
+            await expect(startPromise).resolves.toBe(true);
+            await expect(duplicateStartPromise).resolves.toBe(false);
         });
 
         expect(fetchAllowanceMock).toHaveBeenCalledTimes(1);

@@ -33,3 +33,9 @@ export {
     type NoDeviceEshopCtaOrigin,
 } from './promoNoDeviceEshopCtaEvent';
 export { guideSupportChatOpenedEvent } from './guideSupportChatOpenedEvent';
+export { yieldEarnDashboardReadyEvent } from './yieldEarnDashboardReadyEvent';
+export { yieldInteractionEvent } from './yieldInteractionEvent';
+export { yieldNavigateEvent } from './yieldNavigateEvent';
+export { yieldDepositEvent } from './yieldDepositEvent';
+export { yieldWithdrawEvent } from './yieldWithdrawEvent';
+export { yieldClaimEvent } from './yieldClaimEvent';
