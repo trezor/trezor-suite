@@ -5,22 +5,22 @@ import { type Account } from '@suite-common/wallet-types';
 import { accountEth } from '../../__fixtures__/utils';
 import { createTradingTestState, renderHookWithTradingStore } from '../../__tests__/testUtils';
 import { initialState } from '../../reducers/tradingCommonReducer';
-import { useDexSwapTxSimulation } from '../useDexSwapTxSimulation';
+import { useDexExchangeTxSimulation } from '../useDexExchangeTxSimulation';
 import { useExchangeFiatDeviation } from '../useExchangeFiatDeviation';
 import { useExchangeIssue } from '../useExchangeIssue';
 
-type SimulationResult = NonNullable<ReturnType<typeof useDexSwapTxSimulation>['data']>;
+type SimulationResult = NonNullable<ReturnType<typeof useDexExchangeTxSimulation>['data']>;
 type SimulationPayload = Pick<SimulationResult['payload'], 'validation' | 'simulation'>;
 
-jest.mock('../useDexSwapTxSimulation', () => ({
-    useDexSwapTxSimulation: jest.fn(),
+jest.mock('../useDexExchangeTxSimulation', () => ({
+    useDexExchangeTxSimulation: jest.fn(),
 }));
 
 jest.mock('../useExchangeFiatDeviation', () => ({
     useExchangeFiatDeviation: jest.fn(),
 }));
 
-const mockUseDexSwapTxSimulation = jest.mocked(useDexSwapTxSimulation);
+const mockUseDexExchangeTxSimulation = jest.mocked(useDexExchangeTxSimulation);
 const mockUseExchangeFiatDeviation = jest.mocked(useExchangeFiatDeviation);
 
 // Contract-less receive crypto id so the NATIVE asset diff of the simulation matches it.
@@ -81,7 +81,7 @@ const renderUseExchangeIssue = () =>
 describe('useExchangeIssue', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        mockUseDexSwapTxSimulation.mockReturnValue({
+        mockUseDexExchangeTxSimulation.mockReturnValue({
             isEnabled: true,
             isLoading: false,
             error: null,
@@ -100,14 +100,14 @@ describe('useExchangeIssue', () => {
         });
     });
 
-    it('forwards the simulation params to useDexSwapTxSimulation', () => {
+    it('forwards the simulation params to useDexExchangeTxSimulation', () => {
         renderUseExchangeIssue();
 
-        expect(mockUseDexSwapTxSimulation).toHaveBeenCalledWith(defaultParams);
+        expect(mockUseDexExchangeTxSimulation).toHaveBeenCalledWith(defaultParams);
     });
 
     it('reports a high-risk issue for a malicious verdict', () => {
-        mockUseDexSwapTxSimulation.mockReturnValue({
+        mockUseDexExchangeTxSimulation.mockReturnValue({
             isEnabled: true,
             isLoading: false,
             error: null,
@@ -136,7 +136,7 @@ describe('useExchangeIssue', () => {
     });
 
     it('feeds the simulated receive amount, quote data, and base currency into the fiat deviation', () => {
-        mockUseDexSwapTxSimulation.mockReturnValue({
+        mockUseDexExchangeTxSimulation.mockReturnValue({
             isEnabled: true,
             isLoading: false,
             error: null,

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
-import { useDexSwapTxSimulation } from './useDexSwapTxSimulation';
+import { useDexExchangeTxSimulation } from './useDexExchangeTxSimulation';
 import { useExchangeFiatDeviation } from './useExchangeFiatDeviation';
 import { selectTradingExchangeSelectedQuote } from '../selectors/tradingSelectors';
 import { type ExchangeIssue, getExchangeIssue } from '../utils/exchange/getExchangeIssue';
@@ -33,7 +33,7 @@ export const useExchangeIssue = ({
         isEnabled: isSimulationEnabled,
         isLoading: isSimulationLoading,
         data: simulationResult,
-    } = useDexSwapTxSimulation({ account, isEnabled, sourceOrigin });
+    } = useDexExchangeTxSimulation({ account, isEnabled, sourceOrigin });
 
     const simulatedReceiveAmount = getSimulatedReceiveAmount(simulationResult, quote?.receive);
 
