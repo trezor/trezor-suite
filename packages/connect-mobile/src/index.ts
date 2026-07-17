@@ -8,7 +8,10 @@ import {
 import { type CallMethodPayload, createErrorMessage } from '@trezor/connect-common/src/events';
 import { factoryPublic } from '@trezor/connect-common/src/factory';
 import type { ConnectMobileSettings, Manifest } from '@trezor/connect-common/src/types';
-import type { TrezorConnectCore } from '@trezor/connect-common/src/types/api';
+import type {
+    TrezorConnectCore,
+    TrezorConnectPublicAPI,
+} from '@trezor/connect-common/src/types/api';
 import {
     type CancelParams,
     normalizeCancelParams,
@@ -27,6 +30,10 @@ type BuildUrlParams = {
     connectSrc: string | undefined;
     callbackUrl: string;
     manifest?: Manifest;
+};
+
+type TrezorConnectMobileAPI = TrezorConnectPublicAPI<ConnectMobileSettings> & {
+    handleDeeplink: (url: string) => void;
 };
 
 const buildUrl = ({ method, id, params, connectSrc, callbackUrl, manifest }: BuildUrlParams) => {
@@ -184,7 +191,7 @@ export class TrezorConnectDeeplink implements TrezorConnectCore<ConnectMobileSet
     }
 }
 
-const TrezorConnect = factoryPublic(new TrezorConnectDeeplink());
+const TrezorConnect: TrezorConnectMobileAPI = factoryPublic(new TrezorConnectDeeplink());
 
 // eslint-disable-next-line import/no-default-export
 export default TrezorConnect;

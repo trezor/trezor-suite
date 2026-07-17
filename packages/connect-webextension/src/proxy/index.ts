@@ -2,7 +2,10 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import { CORE_CALL, POPUP, createErrorMessage } from '@trezor/connect-common/src/events';
 import { factoryPublic } from '@trezor/connect-common/src/factory';
 import { WindowServiceWorkerChannel } from '@trezor/connect-common/src/messageChannel/window-serviceworker';
-import type { ConnectDynamicSettings } from '@trezor/connect-common/src/types';
+import type {
+    ConnectDynamicSettings,
+    TrezorConnectPublicAPI,
+} from '@trezor/connect-common/src/types';
 import {
     type CancelParams,
     createCoreCallCancelMessage,
@@ -70,7 +73,12 @@ const call = async (params: any) => {
     }
 };
 
-const TrezorConnect = factoryPublic({ init, call, cancel, dispose });
+const TrezorConnect: TrezorConnectPublicAPI<ConnectDynamicSettings> = factoryPublic({
+    init,
+    call,
+    cancel,
+    dispose,
+});
 
 // eslint-disable-next-line import/no-default-export
 export default TrezorConnect;

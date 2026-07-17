@@ -2,6 +2,7 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type {
     BitcoinNetworkInfo,
+    CoinInfo,
     CoinSymbol,
     EthereumNetworkInfo,
     MiscNetworkInfo,
@@ -118,7 +119,7 @@ export const fixCoinInfoNetwork = (ci: BitcoinNetworkInfo, path: number[]) => {
 const getCoinInfo = (coin: CoinSymbol) =>
     getBitcoinNetwork(coin) || getEthereumNetwork(coin) || getMiscNetwork(coin);
 
-export const getCoinInfoOrThrow = (coin: string) => {
+export const getCoinInfoOrThrow = (coin: string): Readonly<CoinInfo> => {
     // `coin` is unvalidated caller input; a non-shortcut resolves to undefined below
     const coinInfo = getCoinInfo(coin as CoinSymbol);
     if (!coinInfo) {
@@ -272,7 +273,11 @@ export const getUniqueNetworks = <T extends { shortcut: string }>(networks: (T |
         return result.concat(info);
     }, []);
 
-export const getAllNetworks = () => [...bitcoinNetworks, ...ethereumNetworks, ...miscNetworks];
+export const getAllNetworks = (): CoinInfo[] => [
+    ...bitcoinNetworks,
+    ...ethereumNetworks,
+    ...miscNetworks,
+];
 
 // Populate the network registries from the bundled coin definitions on module load.
 parseCoinsJson({ ...coins, ...coinsEth });
