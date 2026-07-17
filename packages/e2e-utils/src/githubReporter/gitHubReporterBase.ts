@@ -34,7 +34,7 @@ abstract class GitHubReporterBase implements LoggingFunctions {
     protected _fieldsInGitHub: ProjectField[] | null = null;
     protected pendingOperations: Promise<any>[] = [];
     protected initState: InitializationState = InitializationState.NOT_STARTED;
-    protected createdIssuesMap: Map<string, string> = new Map();
+    protected issueCreationPromises: Map<string, Promise<string>> = new Map();
     protected failedTestFilenames: string[] = [];
 
     protected initializationPromise: Promise<void> | null = null;
@@ -191,18 +191,24 @@ abstract class GitHubReporterBase implements LoggingFunctions {
                 try {
                     await this.waitForOnBeginInit();
 
-                    if (report.isRetryAttempt && this.createdIssuesMap.has(report.id)) {
-                        // Retry attempts update the existing issue instead of creating a new one
-                        await this.updateIssue(report);
+                    const pendingCreation = this.issueCreationPromises.get(report.id);
+
+                    if (report.isRetryAttempt && pendingCreation) {
+                        // If this is a retry attempt, update the issue
+                        const issueNodeId = await pendingCreation;
+                        await this.updateIssue(report, issueNodeId);
                     } else if (!report.isManual && report.status === TestStatus.AutoPass) {
+                        // If it is passed automated test, we don't need to create an issue
                         this.log(
                             `Skipping reporting because test is automated and passed: "${report.testTitle}"`,
                         );
 
                         return;
                     } else {
-                        // Otherwise, create a new issue(s)
-                        await this.createIssuePerOs(report);
+                        // Otherwise, create a new issue(s).
+                        const creationPromise = this.createIssuePerOs(report);
+                        this.issueCreationPromises.set(report.id, creationPromise);
+                        await creationPromise;
                     }
                 } catch (error) {
                     this.logError(`Failed to process test end for "${report.testTitle}":`, error);
@@ -345,11 +351,10 @@ abstract class GitHubReporterBase implements LoggingFunctions {
         }
     }
 
-    protected async updateIssue(report: TestReportProviderBase): Promise<void> {
-        const issueNodeId = this.createdIssuesMap.get(report.id);
-        if (!issueNodeId) {
-            throw new Error(`Issue ID not found for test retried test "${report.testTitle}"`);
-        }
+    protected async updateIssue(
+        report: TestReportProviderBase,
+        issueNodeId: string,
+    ): Promise<void> {
         this.log(
             `[${issueNodeId}] Updating GitHub draft issue with a retry of test "${report.testTitle}"...`,
         );
@@ -371,10 +376,12 @@ abstract class GitHubReporterBase implements LoggingFunctions {
         this.log(`[${issueNodeId}] Successfully updated test result for "${report.testTitle}"`);
     }
 
-    protected async createIssuePerOs(report: TestReportProviderBase): Promise<void> {
+    protected async createIssuePerOs(report: TestReportProviderBase): Promise<string> {
         if (!report.osMatrix || report.osMatrix.length === 0) {
             throw new Error(`No OS matrix found for test "${report.testTitle}"`);
         }
+
+        let lastIssueNodeId = '';
 
         for (const operationSystem of report.osMatrix) {
             const issueNodeId = await scheduleAction(async () => {
@@ -403,7 +410,7 @@ abstract class GitHubReporterBase implements LoggingFunctions {
                 );
             }
 
-            this.createdIssuesMap.set(report.id, issueNodeId);
+            lastIssueNodeId = issueNodeId;
             this.log(
                 `[${issueNodeId}] Successfully created issue "(OS ${operationSystem}) ${report.testTitle}"`,
             );
@@ -431,6 +438,8 @@ abstract class GitHubReporterBase implements LoggingFunctions {
                 `[${issueNodeId}] Successfully recorded test result for "(OS ${operationSystem}) ${report.testTitle}"`,
             );
         }
+
+        return lastIssueNodeId;
     }
 }
 

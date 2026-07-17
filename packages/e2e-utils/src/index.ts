@@ -16,6 +16,7 @@ export { ProjectRequests } from './githubReporter/projectRequests';
 export {
     REPORTER_WATCHDOG_AUTOMATED_SAMPLES,
     REPORTER_WATCHDOG_MANUAL_SAMPLES,
+    REPORTER_WATCHDOG_NATIVE_MANUAL_SAMPLES,
 } from './githubReporter/watchdog/samples';
 export { TestReportProviderBase, createTestAnnotation } from './githubReporter/annotationBase';
 export type { TestDetailsAnnotation, TestMetadataInput } from './githubReporter/types';

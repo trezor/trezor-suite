@@ -7,7 +7,7 @@ name: "[Test] Reporter watchdog"
 # See packages/e2e-utils/src/githubReporter/watchdog/README.md for the full design.
 
 permissions:
-  id-token: write # nested build-suite-web-e2e / release-connect use AWS OIDC
+  id-token: write
   contents: read
 
 on:
@@ -24,9 +24,13 @@ on:
       - "suite/e2e/playwright-config/playwright-manual.config.ts"
       - "suite/e2e/playwright-config/playwright-reporter-watchdog.config.ts"
       - "suite/e2e/reporter-watchdog/**"
+      - "suite-native/app/e2e/support/reporter/**"
+      - "suite-native/app/e2e/reporter-watchdog/**"
+      - "suite-native/app/e2e/jest.config.reporter.js"
       - ".github/workflows/template-suite-run-e2e.yml"
       - ".github/workflows/test-suite-manual-release.yml"
       - ".github/workflows/test-suite-web-desktop-e2e-release.yml"
+      - ".github/workflows/test-suite-native-e2e-manual-reporter.yml"
       - ".github/workflows/test-suite-reporter-watchdog.yml"
       - ".github/actions/resolve-test-matrix/**"
 
@@ -78,19 +82,27 @@ jobs:
 
   call-test-suite-web-desktop-e2e-release:
     needs: wipe-sandbox
+    # Skipped on PR to not clash with web deploy of PR test workflow
+    if: github.event_name != 'pull_request'
     uses: ./.github/workflows/test-suite-web-desktop-e2e-release.yml
     secrets: inherit
     with:
       publish_results_to_github: true
       reporterWatchdog: "true"
 
-  # Read-back of the sandbox project is the sole health verdict, not the Playwright exit codes.
+  call-test-suite-native-manual-release:
+    needs: wipe-sandbox
+    uses: ./.github/workflows/test-suite-native-e2e-manual-reporter.yml
+    secrets: inherit
+    with:
+      reporterWatchdog: "true"
+
   verify:
     needs:
       - wipe-sandbox
       - call-test-suite-manual-release
       - call-test-suite-web-desktop-e2e-release
-    # Run even if the callers failed (missing items => correct red verdict), but never on a non-wiped sandbox.
+      - call-test-suite-native-manual-release
     if: ${{ !cancelled() && needs.wipe-sandbox.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
@@ -118,4 +130,6 @@ jobs:
         shell: bash
         env:
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+          # Automated workflow is skipped on PR to not clash with web deploy of PR test workflow
+          REPORTER_WATCHDOG_EXPECT_AUTOMATED: ${{ github.event_name != 'pull_request' }}
         run: yarn workspace @trezor/e2e-utils reporter-watchdog:verify

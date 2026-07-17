@@ -62,6 +62,41 @@ export const EXPECTED_MANUAL = REPORTER_WATCHDOG_MANUAL_SAMPLES.map(sample => ({
     },
 }));
 
+export const REPORTER_WATCHDOG_NATIVE_MANUAL_SAMPLES: ReporterWatchdogManualSample[] = [
+    {
+        testCase: 'Reporter watchdog native manual sample A',
+        prerequisites: ['none'],
+        steps: ['step one'],
+        category: TestCategory.Dashboard,
+        priority: TestPriority.Medium,
+        stream: TestStream.Growth,
+        deviceModel: DeviceModel.T2T1,
+        osMatrix: [TestOsMatrix.Android],
+    },
+    {
+        testCase: 'Reporter watchdog native manual sample B',
+        prerequisites: ['none'],
+        steps: ['step one'],
+        category: TestCategory.Accounts,
+        priority: TestPriority.AsNecessary,
+        stream: TestStream.Wallet,
+        deviceModel: DeviceModel.T3B1,
+        osMatrix: [TestOsMatrix.MacOSArm],
+    },
+];
+
+export const EXPECTED_NATIVE_MANUAL = REPORTER_WATCHDOG_NATIVE_MANUAL_SAMPLES.map(sample => ({
+    title: sample.testCase,
+    fields: {
+        Status: TestStatus.Todo,
+        'Test Run': 'Manual',
+        Stream: sample.stream,
+        Priority: sample.priority,
+        'OS Matrix': sample.osMatrix[0],
+        'Device Model': sample.deviceModel,
+    },
+}));
+
 interface ReporterWatchdogAutomatedSample {
     testCase: string;
     shouldFail: boolean;

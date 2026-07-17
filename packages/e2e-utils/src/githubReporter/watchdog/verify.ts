@@ -3,7 +3,11 @@ import { scheduleAction } from '@trezor/utils';
 import { TestStatus } from '../../enums/testAnnotations';
 import { ProjectRequests } from '../projectRequests';
 import { type ProjectItem } from '../types';
-import { EXPECTED_MANUAL, REPORTER_WATCHDOG_AUTOMATED_SAMPLES } from './samples';
+import {
+    EXPECTED_MANUAL,
+    EXPECTED_NATIVE_MANUAL,
+    REPORTER_WATCHDOG_AUTOMATED_SAMPLES,
+} from './samples';
 import { RETRY_CONF, createLogger, createOctokit, resolveSandboxProject } from './sandboxProject';
 
 // Flattens an item's field values into a { fieldName: value } map.
@@ -30,25 +34,30 @@ async function main() {
     logger.log(`Found ${items.length} item(s)`);
 
     const errors: string[] = [];
+    const expectAutomated = process.env.REPORTER_WATCHDOG_EXPECT_AUTOMATED !== 'false';
 
     // 1. Automated failures must create an Auto FAIL issue; automated passes must create nothing.
-    for (const sample of REPORTER_WATCHDOG_AUTOMATED_SAMPLES) {
-        const item = items.find(i => i.content?.title === sample.testCase);
-        if (sample.shouldFail) {
-            if (!item) {
-                errors.push(`Missing automated FAIL issue "${sample.testCase}"`);
-            } else if (fieldMap(item).Status !== TestStatus.AutoFail) {
+    if (expectAutomated) {
+        for (const sample of REPORTER_WATCHDOG_AUTOMATED_SAMPLES) {
+            const item = items.find(i => i.content?.title === sample.testCase);
+            if (sample.shouldFail) {
+                if (!item) {
+                    errors.push(`Missing automated FAIL issue "${sample.testCase}"`);
+                } else if (fieldMap(item).Status !== TestStatus.AutoFail) {
+                    errors.push(
+                        `Automated FAIL issue "${sample.testCase}" has Status "${fieldMap(item).Status}", expected "${TestStatus.AutoFail}"`,
+                    );
+                }
+            } else if (item) {
                 errors.push(
-                    `Automated FAIL issue "${sample.testCase}" has Status "${fieldMap(item).Status}", expected "${TestStatus.AutoFail}"`,
+                    `Automated PASS issue "${sample.testCase}" should be absent but was found`,
                 );
             }
-        } else if (item) {
-            errors.push(`Automated PASS issue "${sample.testCase}" should be absent but was found`);
         }
     }
 
-    // 2. Each manual sample must be present with its fields resolved.
-    for (const expected of EXPECTED_MANUAL) {
+    // 2. Each manual sample (web + native) must be present with its fields resolved.
+    for (const expected of [...EXPECTED_MANUAL, ...EXPECTED_NATIVE_MANUAL]) {
         const item = items.find(i => i.content?.title === expected.title);
         if (!item) {
             errors.push(`Missing manual issue "${expected.title}"`);

@@ -18,5 +18,9 @@ module.exports = {
     },
     verbose: true,
     reporters: ['<rootDir>/e2e/support/reporter/index.js'],
-    testMatch: ['<rootDir>/e2e/tests/manual/**/*.test.ts'],
+    // In reporter-watchdog mode the synthetic manual specs live in their own reporter-watchdog/ folder instead.
+    testMatch:
+        process.env.REPORTER_WATCHDOG === 'true'
+            ? ['<rootDir>/e2e/reporter-watchdog/**/*.test.ts']
+            : ['<rootDir>/e2e/tests/manual/**/*.test.ts'],
 };
