@@ -1,6 +1,33 @@
+import { type Route } from '../route';
 import { getRoute } from '../router';
 
-export const init = [
+type InitFixture = {
+    description: string;
+    state?: {
+        router: {
+            loaded: boolean;
+            url: string;
+            pathname: string;
+            hash?: string;
+            app: string;
+            params?: unknown;
+            route?: Route;
+        };
+    };
+    result?: {
+        app: string;
+        hash: string;
+        params?: unknown;
+        pathname: string;
+        loaded: boolean;
+        anchor?: string;
+        search: string;
+        route?: Route;
+        settingsBackRoute: { name: string };
+    };
+};
+
+export const init: readonly InitFixture[] = [
     {
         description: `success`,
         state: undefined,
