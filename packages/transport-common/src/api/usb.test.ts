@@ -280,4 +280,48 @@ describe('api/usb', () => {
         expect(listener).toHaveBeenCalledTimes(1);
         expect(listener).toHaveBeenCalledWith([]);
     });
+
+    it('runInIsolation isolates per path: other paths run in parallel, same path serializes', async () => {
+        const api = new UsbApi({ usbInterface: createUsbMock() });
+
+        const blocker = createDeferred();
+        const order: string[] = [];
+
+        // long operation (e.g. signing awaiting on-device confirmation) holds path 1
+        const path1 = api.runInIsolation(
+            { lock: { read: false, write: true }, path: '1' },
+            async () => {
+                order.push('path1-start');
+                await blocker.promise;
+                order.push('path1-end');
+
+                return { success: true as const, payload: undefined };
+            },
+        );
+
+        // an operation on another device must not queue behind it
+        const path2 = await Promise.race([
+            api.runInIsolation({ lock: { read: true, write: true }, path: '2' }, () => ({
+                success: true as const,
+                payload: 'path2',
+            })),
+            new Promise(resolve => setTimeout(() => resolve('blocked'), 100)),
+        ]);
+        expect(path2).toEqual({ success: true, payload: 'path2' });
+
+        // while an operation on the same path (non-conflicting lock) still serializes
+        const path1Again = api.runInIsolation(
+            { lock: { read: true, write: false }, path: '1' },
+            () => {
+                order.push('path1-again');
+
+                return { success: true as const, payload: undefined };
+            },
+        );
+
+        blocker.resolve(undefined);
+        await path1;
+        await path1Again;
+        expect(order).toEqual(['path1-start', 'path1-end', 'path1-again']);
+    });
 });
