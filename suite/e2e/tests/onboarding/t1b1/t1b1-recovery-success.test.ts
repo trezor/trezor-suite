@@ -34,25 +34,27 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@firmware-ready', '@T
             recoveryModal,
             trezorInput,
         }) => {
-            await analyticsSection.passThroughAnalytics();
+            await test.step('Start wallet recovery process', async () => {
+                await analyticsSection.passThroughAnalytics();
+                await onboardingPage.firmware.continueThroughFirmware();
+                await onboardingPage.recoverWalletButton.click();
+                await recoveryModal.selectWordCount(24);
+                await recoveryModal.selectRecoveryButton('standard').click();
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await page.waitForTimeout(1000);
+                await device.pressYes();
+            });
 
-            // Start wallet recovery process
-            await onboardingPage.firmware.continueThroughFirmware();
-            await onboardingPage.recoverWalletButton.click();
-            await recoveryModal.selectWordCount(24);
-            await recoveryModal.selectRecoveryButton('standard').click();
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await page.waitForTimeout(1000);
-            await device.pressYes();
+            await test.step('Input mnemonic', async () => {
+                await trezorInput.inputMnemonicT1B1(mnemonic);
+            });
 
-            // Input mnemonic
-            await trezorInput.inputMnemonicT1B1(mnemonic);
-
-            // Finalize recovery, skip pin, and verify success
-            await onboardingPage.continueRecoveryButton.click();
-            await onboardingPage.pin.skip();
-            await onboardingPage.finalButton.click();
-            await expect(onboardingPage.suiteLoadedIndicator).toBeVisible({ timeout: 30_000 });
+            await test.step('Finalize recovery, skip pin, and verify success', async () => {
+                await onboardingPage.continueRecoveryButton.click();
+                await onboardingPage.pin.skip();
+                await onboardingPage.finalButton.click();
+                await expect(onboardingPage.suiteLoadedIndicator).toBeVisible({ timeout: 30_000 });
+            });
         },
     );
 });

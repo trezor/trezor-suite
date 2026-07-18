@@ -16,25 +16,27 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@firmware-ready', '@T
         recoveryModal,
         devicePrompt,
     }) => {
-        await analyticsSection.passThroughAnalytics();
+        await test.step('Start wallet recovery process', async () => {
+            await analyticsSection.passThroughAnalytics();
+            await onboardingPage.firmware.continueThroughFirmware();
+            await onboardingPage.recoverWalletButton.click();
+            await recoveryModal.selectWordCount(24);
+            await recoveryModal.selectRecoveryButton('standard').click();
+            await devicePrompt.confirmOnDevicePromptIsShown();
+            await device.pressYes();
+        });
 
-        // Start wallet recovery process
-        await onboardingPage.firmware.continueThroughFirmware();
-        await onboardingPage.recoverWalletButton.click();
-        await recoveryModal.selectWordCount(24);
-        await recoveryModal.selectRecoveryButton('standard').click();
-        await devicePrompt.confirmOnDevicePromptIsShown();
-        await device.pressYes();
+        await test.step('Disconnect the device', async () => {
+            await device.powerOff();
+            await devicePrompt.connectDevicePromptIsShown();
+            await device.powerOn();
+        });
 
-        // Disconnect the device
-        await device.powerOff();
-        await devicePrompt.connectDevicePromptIsShown();
-        await device.powerOn();
-
-        // Retry recovery process
-        await onboardingPage.retryRecoveryButton.click();
-        await recoveryModal.selectWordCount(24);
-        await recoveryModal.selectRecoveryButton('standard').click();
-        await devicePrompt.confirmOnDevicePromptIsShown();
+        await test.step('Retry recovery process', async () => {
+            await onboardingPage.retryRecoveryButton.click();
+            await recoveryModal.selectWordCount(24);
+            await recoveryModal.selectRecoveryButton('standard').click();
+            await devicePrompt.confirmOnDevicePromptIsShown();
+        });
     });
 });
