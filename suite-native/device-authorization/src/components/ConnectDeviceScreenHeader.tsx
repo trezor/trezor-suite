@@ -13,8 +13,8 @@ import { Translation } from '@suite-native/intl';
 import {
     type AuthorizeDeviceStackParamList,
     type AuthorizeDeviceStackRoutes,
+    type CancelNavigationTarget,
     type CloseActionType,
-    type NavigateParameters,
     type RootStackParamList,
     type StackToStackCompositeNavigationProps,
     useInterceptNativeNavigation,
@@ -25,7 +25,7 @@ import { selectDeviceRequestedPin } from '../deviceAuthorizationSlice';
 
 type ConnectDeviceScreenHeaderProps = {
     shouldDisplayCancelButton?: boolean;
-    onCancelNavigationTarget?: NavigateParameters<RootStackParamList>;
+    onCancelNavigationTarget?: CancelNavigationTarget;
     closeActionType?: CloseActionType;
     onCancel?: () => void;
 };

@@ -400,9 +400,17 @@ export type DeviceAuthenticityStackParamList = {
     [DeviceAuthenticityStackRoutes.AuthenticitySuccess]: undefined;
 };
 
+type CancelNavigationTargetParamList = {
+    [RootStackRoutes.AppTabs]: NavigatorScreenParams<AppTabsParamList>;
+    [RootStackRoutes.SendStack]: NavigatorScreenParams<SendStackParamList>;
+    [RootStackRoutes.StellarManageTokenStack]: NavigatorScreenParams<StellarManageTokenStackParamList>;
+};
+
+export type CancelNavigationTarget = NavigateParameters<CancelNavigationTargetParamList>;
+
 export type AuthorizeDeviceStackParamList = {
     [AuthorizeDeviceStackRoutes.DeviceConnectionGuard]:
-        | { onCancelNavigationTarget: NavigateParameters<RootStackParamList> }
+        | { onCancelNavigationTarget: CancelNavigationTarget }
         | undefined;
     [AuthorizeDeviceStackRoutes.ConnectDeviceCrossroads]: undefined;
     [AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice]: undefined;
