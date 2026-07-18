@@ -1,4 +1,8 @@
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import {
+    type StakingCardanoPoolDelegationPayload,
+    asTypedDesktopAnalytics,
+    events,
+} from '@suite/analytics';
 import { closeModal, openDeferredModal, openModal, preserveModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
@@ -89,7 +93,7 @@ export const cancelSignTx =
 
 // private, called from signTransaction only
 const pushTransaction =
-    (stakeType: StakeType) =>
+    (stakeType: StakeType, cardanoPoolDelegation?: StakingCardanoPoolDelegationPayload) =>
     async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
         const { serializedTx, precomposedTx } = getState().wallet.stake;
         const { account } = getState().wallet.selectedAccount;
@@ -130,6 +134,13 @@ const pushTransaction =
                 symbol: account.symbol,
                 txid,
             };
+
+            if (cardanoPoolDelegation) {
+                asTypedDesktopAnalytics(extra.services.analytics).report({
+                    type: events.stakingCardanoPoolDelegationEvent.name,
+                    payload: cardanoPoolDelegation,
+                });
+            }
 
             if (stakeType === 'stake') {
                 dispatch(
@@ -268,10 +279,18 @@ export const signTransaction =
             );
         }
 
+        let cardanoPoolDelegation: StakingCardanoPoolDelegationPayload | undefined;
         if (isSupportedAdaStakingNetworkSymbol(account.symbol)) {
-            serializedTx = await dispatch(
+            const signResult = await dispatch(
                 stakeFormCardanoActions.signTransaction(formValues, enhancedTxInfo),
             );
+
+            if (signResult && 'serializedTx' in signResult) {
+                serializedTx = signResult.serializedTx;
+                cardanoPoolDelegation = signResult.poolDelegation;
+            } else {
+                serializedTx = signResult;
+            }
         }
 
         if (typeof serializedTx !== 'string') {
@@ -305,7 +324,7 @@ export const signTransaction =
         );
 
         if (account?.networkType === 'cardano') {
-            return dispatch(pushTransaction(formValues.stakeType));
+            return dispatch(pushTransaction(formValues.stakeType, cardanoPoolDelegation));
         }
 
         // Open a deferred modal and get the decision
