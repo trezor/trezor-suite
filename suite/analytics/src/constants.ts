@@ -100,6 +100,7 @@ export enum EventType {
     SettingsLoadNetworksClicked = 'settings/load-networks-clicked',
     SettingsTor = 'settings/tor',
     SettingsTorOnionLinks = 'settings/tor/onion-links',
+    StakingCardanoPoolDelegation = 'staking/cardano-pool-delegation',
     StakingChangeDelegate = 'staking/change-delegate',
     StakingClaim = 'staking/claim',
     StakingConfirm = 'staking/confirm',

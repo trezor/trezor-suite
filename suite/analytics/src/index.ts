@@ -10,7 +10,11 @@ export {
     AppUpdateEventStatus,
 } from './definitions';
 export { asTypedDesktopAnalytics } from './asTypedDesktopAnalytics';
-export type { AnalyticsDesktopEvents, SuiteReadyPayload } from './analyticsEvents';
+export type {
+    AnalyticsDesktopEvents,
+    StakingCardanoPoolDelegationPayload,
+    SuiteReadyPayload,
+} from './analyticsEvents';
 
 export * from './events';
 export * as events from './events';

@@ -11,3 +11,8 @@ export type SuiteReadyPayload = Extract<
     AnalyticsDesktopEvents,
     { type: EventType.SuiteReady }
 >['payload'];
+
+export type StakingCardanoPoolDelegationPayload = Extract<
+    AnalyticsDesktopEvents,
+    { type: EventType.StakingCardanoPoolDelegation }
+>['payload'];

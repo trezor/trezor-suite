@@ -80,6 +80,7 @@ export { settingsGeneralNetworkReserveEvent } from './settingsGeneralNetworkRese
 export { settingsLoadNetworksClickedEvent } from './settingsLoadNetworksClickedEvent';
 export { settingsTorEvent } from './settingsTorEvent';
 export { settingsTorOnionLinksEvent } from './settingsTorOnionLinksEvent';
+export { stakingCardanoPoolDelegationEvent } from './stakingCardanoPoolDelegationEvent';
 export { stakingChangeDelegateEvent } from './stakingChangeDelegateEvent';
 export { stakingClaimEvent } from './stakingClaimEvent';
 export { stakingConfirmEvent } from './stakingConfirmEvent';

@@ -1,4 +1,8 @@
-import { asTypedDesktopAnalytics, events } from '@suite/analytics';
+import {
+    type StakingCardanoPoolDelegationPayload,
+    asTypedDesktopAnalytics,
+    events,
+} from '@suite/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type AdaPools } from '@suite-common/earn-staking-api';
 import { type ExtraDependencies } from '@suite-common/redux-utils';
@@ -10,6 +14,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     CARDANO_EVERSTAKE_DREP,
+    EVERSTAKE_POOL_NAMES,
     MIN_CARDANO_AMOUNT_FOR_STAKING,
     MIN_CARDANO_BALANCE_FOR_STAKING,
     MIN_CARDANO_FOR_WITHDRAWALS,
@@ -37,6 +42,7 @@ import {
     getStakingPath,
     getUnusedChangeAddress,
     getVotingCertificates,
+    isCardanoStakedWithEverstake,
     isTestnet,
     networkAmountToSmallestUnit,
     parseDrepBech32,
@@ -177,7 +183,7 @@ export const prepareTxPlan = async (
 
     if (!response.success) throw new Error(response.error.message);
 
-    return { txPlan: response.payload[0], certificates, withdrawals };
+    return { txPlan: response.payload[0], certificates, withdrawals, selectedPool };
 };
 
 const getTransactionData = (
@@ -303,6 +309,30 @@ export const composeTransaction =
         );
     };
 
+// Report the pool from the certificate that was actually signed, not a later
+// recomputation — a divergence from the account pool must stay observable.
+const getPoolDelegation = (
+    stakeType: StakeType,
+    account: Account,
+    selectedPool: ReturnType<typeof selectBestCardanoPool>,
+    cardanoPools: AdaPools['pools'],
+): StakingCardanoPoolDelegationPayload | undefined => {
+    if (stakeType !== 'stake') return undefined;
+
+    const fromPool = getCardanoAccountPoolId(account);
+
+    return {
+        fromPool: fromPool ? (EVERSTAKE_POOL_NAMES[fromPool] ?? fromPool) : undefined,
+        toPool: EVERSTAKE_POOL_NAMES[selectedPool.bech32] ?? selectedPool.bech32,
+        toPoolSaturation: cardanoPools.find(pool => pool.id === selectedPool.bech32)?.saturation,
+        poolsDataAvailable: cardanoPools.length > 0,
+        isEverstakeToEverstake:
+            fromPool !== null &&
+            fromPool !== selectedPool.bech32 &&
+            isCardanoStakedWithEverstake(account, cardanoPools),
+    };
+};
+
 export const signTransaction =
     (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
     async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
@@ -338,7 +368,7 @@ export const signTransaction =
             return;
         }
 
-        const { txPlan, certificates, withdrawals } = txData;
+        const { txPlan, certificates, withdrawals, selectedPool } = txData;
 
         if (!txPlan || txPlan.type === 'nonfinal') return;
 
@@ -396,5 +426,13 @@ export const signTransaction =
             return signedTx;
         }
 
-        return signedTx.payload.serializedTx;
+        return {
+            serializedTx: signedTx.payload.serializedTx,
+            poolDelegation: getPoolDelegation(
+                formValues.stakeType,
+                account,
+                selectedPool,
+                cardanoPools,
+            ),
+        };
     };
