@@ -1,4 +1,9 @@
-import { ERRORS, type UpdateConnectSettings, factoryPrivileged } from '@trezor/connect-common';
+import {
+    ERRORS,
+    type UiResponseEvent,
+    type UpdateConnectSettings,
+    factoryPrivileged,
+} from '@trezor/connect-common';
 // Deep import bypasses the `@trezor/transport` barrel so browser bundlers
 // do not resolve sibling node-only modules (`UdpTransport`/`dgram`,
 // `NodeUsbTransport`/`usb`).
@@ -40,7 +45,11 @@ const TrezorConnect = factoryPrivileged(new CoreInModuleWeb());
 
 export default TrezorConnect;
 
-// allowed only here
+export const uiResponse = (response: UiResponseEvent): void => {
+    TrezorConnect.uiResponse(response);
+};
+
+// This restricted barrel is allowed only at the public entry point.
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 export * from './exports';
 

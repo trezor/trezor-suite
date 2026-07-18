@@ -1,4 +1,8 @@
-import { type UpdateConnectSettings, factoryPrivileged } from '@trezor/connect-common';
+import {
+    type UiResponseEvent,
+    type UpdateConnectSettings,
+    factoryPrivileged,
+} from '@trezor/connect-common';
 import { BridgeTransport } from '@trezor/transport/src/transports/bridge';
 import type { AbstractTransportParams } from '@trezor/transport-common';
 
@@ -19,6 +23,10 @@ const TrezorConnect = factoryPrivileged(new CoreInModuleNode());
 
 export default TrezorConnect;
 
-// allowed only here
+export const uiResponse = (response: UiResponseEvent): void => {
+    TrezorConnect.uiResponse(response);
+};
+
+// This restricted barrel is allowed only at the public entry point.
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 export * from './exports';

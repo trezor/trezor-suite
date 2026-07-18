@@ -4,7 +4,7 @@ import { type SelectInstance, createFilter } from 'react-select';
 import { useTranslation } from '@suite/intl';
 import { selectModalRequestId } from '@suite/modal';
 import { Select } from '@trezor/components';
-import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
+import { UI_RESPONSE, uiResponse } from '@trezor/connect';
 import { bip39EnglishWordlist } from '@trezor/crypto-utils';
 import { resolveAfter } from '@trezor/utils';
 
@@ -30,7 +30,7 @@ export const WordInput = memo(() => {
             }
             onChange={async (item: Option, ref?: SelectInstance<Option, boolean> | null) => {
                 await resolveAfter(600);
-                TrezorConnect.uiResponse({
+                uiResponse({
                     type: UI_RESPONSE.RECEIVE_WORD,
                     payload: item.value,
                     requestId,
