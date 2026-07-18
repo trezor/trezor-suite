@@ -32,3 +32,10 @@ Undocumented reason, introduced in [#25924](https://github.com/trezor/trezor-sui
 ## nextra
 
 Undocumented reason, introduced in [#26620](https://github.com/trezor/trezor-suite/pull/26620)
+
+## @styled/typescript-styled-plugin
+
+When validation is disabled, avoid registering semantic-diagnostic and optional outlining hooks.
+Without this patch, the plugin traverses every file in the TypeScript project even though it cannot
+produce styled-template diagnostics. Remove the patch when the upstream fork supports
+completion-only operation.

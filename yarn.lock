@@ -10160,6 +10160,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@styled/typescript-styled-plugin@patch:@styled/typescript-styled-plugin@npm%3A1.0.1#~/.yarn/patches/@styled-typescript-styled-plugin-npm-1.0.1-b220b7a7fd.patch":
+  version: 1.0.1
+  resolution: "@styled/typescript-styled-plugin@patch:@styled/typescript-styled-plugin@npm%3A1.0.1#~/.yarn/patches/@styled-typescript-styled-plugin-npm-1.0.1-b220b7a7fd.patch::version=1.0.1&hash=b99a54"
+  dependencies:
+    "@vscode/emmet-helper": "npm:^2.9.2"
+    typescript-template-language-service-decorator: "npm:^2.3.2"
+    vscode-css-languageservice: "npm:^6.2.11"
+    vscode-languageserver-textdocument: "npm:^1.0.11"
+    vscode-languageserver-types: "npm:^3.17.5"
+  checksum: 10/cadd36d6d4b51ec665f4807a1764ac6c44eab0613da5f286c9500fe23361c7e590beba5e3eec5efd4a2c85a1c464e7af97aa52a72ba342a9aabcc59a6364de76
+  languageName: node
+  linkType: hard
+
 "@suite-common/address@workspace:*, @suite-common/address@workspace:suite-common/address":
   version: 0.0.0-use.local
   resolution: "@suite-common/address@workspace:suite-common/address"
@@ -16086,7 +16099,7 @@ __metadata:
     "@storybook/addon-links": "npm:^10.3.4"
     "@storybook/react": "npm:^10.3.4"
     "@storybook/react-webpack5": "npm:^10.3.4"
-    "@styled/typescript-styled-plugin": "npm:1.0.1"
+    "@styled/typescript-styled-plugin": "patch:@styled/typescript-styled-plugin@npm%3A1.0.1#~/.yarn/patches/@styled-typescript-styled-plugin-npm-1.0.1-b220b7a7fd.patch"
     "@suite-common/flags": "workspace:*"
     "@suite-common/illustrations": "workspace:*"
     "@testing-library/dom": "npm:^10.4.1"
@@ -16231,7 +16244,7 @@ __metadata:
     "@codemirror/state": "npm:^6.6.0"
     "@hbsnow/rehype-sectionize": "npm:^1.0.7"
     "@sinclair/typebox": "npm:^0.34.49"
-    "@styled/typescript-styled-plugin": "npm:1.0.1"
+    "@styled/typescript-styled-plugin": "patch:@styled/typescript-styled-plugin@npm%3A1.0.1#~/.yarn/patches/@styled-typescript-styled-plugin-npm-1.0.1-b220b7a7fd.patch"
     "@trezor/components": "workspace:^"
     "@trezor/connect-common": "workspace:^"
     "@trezor/connect-explorer-theme": "workspace:^"
@@ -16576,7 +16589,7 @@ __metadata:
     "@storybook/addon-links": "npm:^10.3.4"
     "@storybook/react": "npm:^10.3.4"
     "@storybook/react-webpack5": "npm:^10.3.4"
-    "@styled/typescript-styled-plugin": "npm:1.0.1"
+    "@styled/typescript-styled-plugin": "patch:@styled/typescript-styled-plugin@npm%3A1.0.1#~/.yarn/patches/@styled-typescript-styled-plugin-npm-1.0.1-b220b7a7fd.patch"
     "@suite-common/feedback": "workspace:*"
     "@suite-common/icons": "workspace:*"
     "@suite-common/jsonl": "workspace:*"
@@ -17058,7 +17071,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.12.0"
     "@sentry/core": "npm:10.62.0"
-    "@styled/typescript-styled-plugin": "npm:1.0.1"
+    "@styled/typescript-styled-plugin": "patch:@styled/typescript-styled-plugin@npm%3A1.0.1#~/.yarn/patches/@styled-typescript-styled-plugin-npm-1.0.1-b220b7a7fd.patch"
     "@suite-common/address": "workspace:*"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/analytics-redux": "workspace:*"

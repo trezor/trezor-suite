@@ -52,7 +52,7 @@
         "@storybook/addon-links": "^10.3.4",
         "@storybook/react": "^10.3.4",
         "@storybook/react-webpack5": "^10.3.4",
-        "@styled/typescript-styled-plugin": "1.0.1",
+        "@styled/typescript-styled-plugin": "patch:@styled/typescript-styled-plugin@npm%3A1.0.1#~/.yarn/patches/@styled-typescript-styled-plugin-npm-1.0.1-b220b7a7fd.patch",
         "@trezor/eslint": "workspace:*",
         "@types/react": "19.2.14",
         "@types/zxcvbn": "4.4.5",
