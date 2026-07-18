@@ -1,7 +1,13 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "outDir": "libDev"
+        "outDir": "libDev",
+        "plugins": [
+            {
+                "name": "@styled/typescript-styled-plugin",
+                "tags": ["styled"]
+            }
+        ]
     },
     "include": ["src/**/*", "styled.d.ts"],
     "references": [
