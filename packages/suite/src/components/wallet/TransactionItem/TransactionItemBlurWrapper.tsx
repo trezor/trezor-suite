@@ -1,6 +1,14 @@
+import type { ComponentType, PropsWithChildren } from 'react';
+
 import styled, { css } from 'styled-components';
 
-export const BlurWrapper = styled.span<{ $isBlurred: boolean }>`
+type BlurWrapperProps = {
+    $isBlurred: boolean;
+};
+
+type BlurWrapperComponent = ComponentType<PropsWithChildren<BlurWrapperProps>>;
+
+const StyledBlurWrapper = styled.span<BlurWrapperProps>`
     ${({ $isBlurred }) =>
         $isBlurred &&
         css`
@@ -12,3 +20,5 @@ export const BlurWrapper = styled.span<{ $isBlurred: boolean }>`
             }
         `};
 `;
+
+export const BlurWrapper: BlurWrapperComponent = StyledBlurWrapper;
