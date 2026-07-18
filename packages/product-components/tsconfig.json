@@ -6,9 +6,6 @@
                 "./packages/theme/src/*"
             ]
         },
-        "plugins": [
-            { "name": "typescript-styled-plugin" }
-        ],
         "outDir": "./libDev"
     },
     "include": [".", "**/*.json"],

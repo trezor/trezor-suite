@@ -9,10 +9,7 @@
             "@suite-common/icons/src/icons": [
                 "./src/icons/minimalIcons.ts"
             ]
-        },
-        "plugins": [
-            { "name": "typescript-styled-plugin" }
-        ]
+        }
     },
     "include": [
         "next-env.d.ts",
