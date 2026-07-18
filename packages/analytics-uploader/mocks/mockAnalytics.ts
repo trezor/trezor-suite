@@ -1,8 +1,7 @@
 import type { Analytics } from '../src/analytics';
-import type { Event } from '../src/types';
 
 /** `report` is a spy, so a test asserts on it through the mock it was given. */
-export type MockedAnalytics<T extends Event> = Analytics<T> & {
+export type MockedAnalytics<T> = Analytics<T> & {
     report: jest.MockedFunction<Analytics<T>['report']>;
 };
 
@@ -11,7 +10,7 @@ export type MockedAnalytics<T extends Event> = Analytics<T> & {
  * (e.g. `mockAnalytics<AnalyticsSharedEvents>()`) or use a typed wrapper such
  * as `mockNativeAnalytics` / `mockDesktopAnalytics`.
  */
-export const mockAnalytics = <T extends Event = never>(
+export const mockAnalytics = <T = never>(
     report: jest.MockedFunction<Analytics<T>['report']> = jest.fn(),
 ): MockedAnalytics<T> => ({
     init: () => {},
