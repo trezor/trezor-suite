@@ -2,6 +2,7 @@ import type { TrezorConnectCallable } from './callable';
 import type { TrezorConnectInternal } from './internal';
 import type { TrezorConnectManagement } from './management';
 import type { CallMethodPayload } from '../../events/call';
+import type { UiResponseEvent } from '../../events/ui-response';
 import type { ConnectSettings, Manifest } from '../settings';
 
 export type { TrezorConnectCallable };
@@ -16,6 +17,7 @@ export interface TrezorConnectCore<InitSettings extends Record<string, any>> {
 export type TrezorConnectPublicAPI<InitSettings extends Record<string, any>> =
     TrezorConnectCore<InitSettings> & Omit<TrezorConnectCallable, keyof TrezorConnectManagement>;
 
-export type TrezorConnectPrivilegedAPI = TrezorConnectCore<ConnectSettings> &
-    TrezorConnectInternal &
-    TrezorConnectCallable;
+export interface TrezorConnectPrivilegedAPI
+    extends TrezorConnectCore<ConnectSettings>, TrezorConnectInternal, TrezorConnectCallable {
+    uiResponse(response: UiResponseEvent): void;
+}

@@ -215,7 +215,7 @@ export abstract class CoreInModule implements TrezorConnectCore<ConnectSettings>
         }
     }
 
-    public uiResponse(response: UiResponseEvent) {
+    public uiResponse(response: UiResponseEvent): void {
         this.handleCoreMessage(response);
     }
 
