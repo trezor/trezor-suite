@@ -48,6 +48,7 @@
         "@storybook/addon-links": "^10.3.4",
         "@storybook/react": "^10.3.4",
         "@storybook/react-webpack5": "^10.3.4",
+        "@styled/typescript-styled-plugin": "1.0.1",
         "@testing-library/dom": "^10.4.1",
         "@testing-library/react": "^16.3.2",
         "@testing-library/user-event": "^14.6.1",
@@ -59,7 +60,6 @@
         "storybook": "^10.3.4",
         "stream-browserify": "^3.0.0",
         "stylelint": "^17.1.1",
-        "stylelint-config-standard": "^40.0.0",
-        "typescript-styled-plugin": "patch:typescript-styled-plugin@npm%3A0.18.3#~/.yarn/patches/typescript-styled-plugin-npm-0.18.3-c4f86e482e.patch"
+        "stylelint-config-standard": "^40.0.0"
     }
 }

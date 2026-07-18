@@ -180,6 +180,7 @@
         "styled-components": "^6.3.9"
     },
     "devDependencies": {
+        "@styled/typescript-styled-plugin": "1.0.1",
         "@testing-library/react": "^16.3.2",
         "@testing-library/user-event": "^14.6.1",
         "@trezor/eslint": "workspace:*",
@@ -197,7 +198,6 @@
         "postcss-styled-syntax": "^0.7.1",
         "redux-mock-store": "^1.5.5",
         "stylelint": "^17.1.1",
-        "stylelint-config-standard": "^40.0.0",
-        "typescript-styled-plugin": "patch:typescript-styled-plugin@npm%3A0.18.3#~/.yarn/patches/typescript-styled-plugin-npm-0.18.3-c4f86e482e.patch"
+        "stylelint-config-standard": "^40.0.0"
     }
 }
