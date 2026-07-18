@@ -252,13 +252,20 @@ export class SessionsBackground
     }
 
     private releaseDone(payload: ReleaseDoneRequest) {
-        const { descriptors } = this;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const descriptor: Descriptor = descriptors[payload.path];
+        // release the lock first (mirroring acquireDone): it was taken by
+        // releaseIntent and must be freed even when the device is already gone,
+        // otherwise the queue head gets permanently stuck
+        this.clearLock();
+
+        const descriptor = this.descriptors[payload.path];
+
+        // device disconnected between releaseIntent and releaseDone
+        if (!descriptor) {
+            return error({ code: ERRORS.DEVICE_NOT_FOUND });
+        }
+
         descriptor.session = null;
         descriptor.sessionOwner = undefined;
-
-        this.clearLock();
 
         return Promise.resolve(success({ descriptors: Object.values(this.descriptors) }));
     }
