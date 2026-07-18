@@ -46591,14 +46591,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vscode-languageserver-textdocument@npm:^1.0.1":
-  version: 1.0.7
-  resolution: "vscode-languageserver-textdocument@npm:1.0.7"
-  checksum: 10/dfc3a59c533ba0abbb0380d37b4c9c198b58c929e52882ccf559cd4698f06e79eeb8187b2542566e58a045b6b5a728ef056565d3192117cb27337bd853edea31
-  languageName: node
-  linkType: hard
-
-"vscode-languageserver-textdocument@npm:^1.0.11, vscode-languageserver-textdocument@npm:^1.0.12":
+"vscode-languageserver-textdocument@npm:^1.0.1, vscode-languageserver-textdocument@npm:^1.0.11, vscode-languageserver-textdocument@npm:^1.0.12":
   version: 1.0.13
   resolution: "vscode-languageserver-textdocument@npm:1.0.13"
   checksum: 10/0962cd125e932d81f18667eb5048da34b93f9060c3f7bc808138ead7741d1672bcebe638e4dd3634398b0ab0175c1d1e58ad5c418ee7afed30717c20c788354b
@@ -46612,14 +46605,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vscode-languageserver-types@npm:^3.15.1":
-  version: 3.17.2
-  resolution: "vscode-languageserver-types@npm:3.17.2"
-  checksum: 10/117964de44586292b39209c067f057b440c82d2dc278114f9da2d851ccb4f4a70fa7b7af6cf10c3041e63cb927f326e5b08d04fb0bdcf9c15075df1563322a7a
-  languageName: node
-  linkType: hard
-
-"vscode-languageserver-types@npm:^3.17.5":
+"vscode-languageserver-types@npm:^3.15.1, vscode-languageserver-types@npm:^3.17.5":
   version: 3.18.0
   resolution: "vscode-languageserver-types@npm:3.18.0"
   checksum: 10/7a0c61005e863b291cca864a96c81dd4281468ae88c0d60048b7c1445ed7842f9ad627a05d14adc6c4f8fa221b1f803184e6be81e6d50bb4692320f549ed973a
