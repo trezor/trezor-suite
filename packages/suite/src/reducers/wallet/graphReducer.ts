@@ -74,7 +74,9 @@ const remove = (draft: GraphState, accounts: Account[]) => {
         );
         affected.forEach(d => {
             const index = draft.data.indexOf(d);
-            draft.data.splice(index, 1);
+            if (index !== -1) {
+                draft.data.splice(index, 1);
+            }
         });
     });
     updateError(draft);

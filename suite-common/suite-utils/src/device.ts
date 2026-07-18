@@ -392,7 +392,7 @@ export const getDeviceInstances = (
             if (!a.instance) return -1;
             if (!b.instance) return 1;
 
-            return a.instance > b.instance ? 1 : -1;
+            return a.instance - b.instance;
         }) as AcquiredDevice[];
 };
 
