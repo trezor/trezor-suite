@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type ComponentPropsWithRef, type ComponentType } from 'react';
 
 import styled from 'styled-components';
 
@@ -6,10 +6,13 @@ import { spacings } from '@trezor/theme';
 
 import { Row } from '../Flex/Flex';
 
-export const HoverAddonRight = styled.div<{ $isVisible?: boolean }>`
-    opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
-    transition: opacity 0.1s ease-out;
-`;
+type HoverAddonRightProps = { $isVisible?: boolean };
+
+export const HoverAddonRight: ComponentType<ComponentPropsWithRef<'div'> & HoverAddonRightProps> =
+    styled.div<HoverAddonRightProps>`
+        opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
+        transition: opacity 0.1s ease-out;
+    `;
 
 type TopAddonsProps = {
     isHovered?: boolean;

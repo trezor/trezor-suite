@@ -1,10 +1,12 @@
+import { type ComponentPropsWithRef, type ComponentType } from 'react';
+
 import styled from 'styled-components';
 
 import { variables } from '@trezor/components';
 
 const { SCREEN_SIZE } = variables;
 
-export const ActionColumn = styled.div`
+export const ActionColumn: ComponentType<ComponentPropsWithRef<'div'>> = styled.div`
     display: flex;
     align-items: center;
     justify-content: flex-end;

@@ -1,3 +1,5 @@
+import { type ComponentPropsWithRef, type ComponentType } from 'react';
+
 import styled, { css } from 'styled-components';
 
 import { borders } from '@trezor/theme';
@@ -24,9 +26,13 @@ const mapPositionToBottom = (position: DashedLinePosition) => {
     }
 };
 
-export const AssetTableExtraRowsSection = styled.div<{
+type AssetTableExtraRowsSectionProps = {
     $dashedLinePosition?: DashedLinePosition;
-}>`
+};
+
+export const AssetTableExtraRowsSection: ComponentType<
+    ComponentPropsWithRef<'div'> & AssetTableExtraRowsSectionProps
+> = styled.div<AssetTableExtraRowsSectionProps>`
     ${({ $dashedLinePosition }) =>
         $dashedLinePosition &&
         css`

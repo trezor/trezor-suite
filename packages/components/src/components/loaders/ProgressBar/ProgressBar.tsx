@@ -1,3 +1,5 @@
+import { type ComponentType } from 'react';
+
 import styled, { useTheme } from 'styled-components';
 
 import { type CSSColor } from '@trezor/theme';
@@ -30,7 +32,7 @@ export type ProgressBarProps = {
     'data-testid'?: string;
 };
 
-export const ProgressBar = ({
+const ProgressBarComponent = ({
     max = 100,
     value,
     backgroundColor,
@@ -46,4 +48,8 @@ export const ProgressBar = ({
     );
 };
 
-ProgressBar.Value = Value;
+ProgressBarComponent.Value = Value;
+
+export const ProgressBar: ComponentType<ProgressBarProps> & {
+    Value: ComponentType<ValueProps>;
+} = ProgressBarComponent;

@@ -1,4 +1,4 @@
-import { Children, type ReactNode } from 'react';
+import { Children, type ComponentPropsWithRef, type ComponentType, type ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
@@ -76,11 +76,14 @@ const overlappingIconStyles = ($size: number, $gap: number, $length: number) =>
         }
     `;
 
-export const IconWrapper = styled.div<{ $size: number; $gap: number; $length: number }>`
-    border-radius: ${borders.radii.full};
+type IconWrapperProps = { $size: number; $gap: number; $length: number };
 
-    ${({ $size, $gap, $length }) => overlappingIconStyles($size, $gap, $length)}
-`;
+export const IconWrapper: ComponentType<ComponentPropsWithRef<'div'> & IconWrapperProps> =
+    styled.div<IconWrapperProps>`
+        border-radius: ${borders.radii.full};
+
+        ${({ $size, $gap, $length }) => overlappingIconStyles($size, $gap, $length)}
+    `;
 
 const CountContainer = styled.div<{
     $size: TokenIconSize;

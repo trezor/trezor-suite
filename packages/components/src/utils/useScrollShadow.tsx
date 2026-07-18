@@ -1,4 +1,12 @@
-import { type RefObject, useCallback, useEffect, useRef, useState } from 'react';
+import {
+    type ComponentPropsWithRef,
+    type ComponentType,
+    type RefObject,
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 
 import styled, { type DefaultTheme } from 'styled-components';
 
@@ -21,6 +29,16 @@ type MapArgs = {
 type UseScrollShadowProps = {
     externalRef?: RefObject<HTMLDivElement | null>;
     backgroundColor?: Color;
+};
+
+type UseScrollShadowReturn = {
+    scrollElementRef: RefObject<HTMLDivElement | null>;
+    onScroll: () => void;
+    ShadowContainer: ComponentType<ComponentPropsWithRef<'div'>>;
+    ShadowTop: ComponentType;
+    ShadowBottom: ComponentType;
+    ShadowLeft: ComponentType;
+    ShadowRight: ComponentType;
 };
 
 export const mapDirectionToGradient = ({
@@ -61,7 +79,10 @@ const Gradient = styled.div<GradientProps>`
         mapDirectionToGradient({ $direction, $backgroundColor, theme })};
 `;
 
-export const useScrollShadow = ({ externalRef, backgroundColor }: UseScrollShadowProps = {}) => {
+export const useScrollShadow = ({
+    externalRef,
+    backgroundColor,
+}: UseScrollShadowProps = {}): UseScrollShadowReturn => {
     const internalRef = useRef<HTMLDivElement | null>(null);
     const scrollElementRef = externalRef || internalRef;
 

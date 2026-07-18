@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { type ComponentType, type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
@@ -9,8 +9,10 @@ const { SCREEN_SIZE } = variables;
 
 type WithTooltipProps = { tooltipContent?: ReactNode; isTooltipActive?: boolean };
 
-export const ActionSelect = styled(
-    ({ tooltipContent, isTooltipActive, ...selectProps }: SelectProps & WithTooltipProps) => (
+export type ActionSelectProps = SelectProps & WithTooltipProps;
+
+export const ActionSelect: ComponentType<ActionSelectProps> = styled(
+    ({ tooltipContent, isTooltipActive, ...selectProps }: ActionSelectProps) => (
         <Tooltip content={tooltipContent} isActive={isTooltipActive} cursor="inherit">
             <Select
                 {...selectProps}

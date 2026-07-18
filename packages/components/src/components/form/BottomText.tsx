@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { type ComponentPropsWithRef, type ComponentType, type ReactNode } from 'react';
 
 import styled, { keyframes } from 'styled-components';
 
@@ -19,7 +19,7 @@ const slideDown = keyframes`
     }
 `;
 
-export const Container = styled.div`
+export const Container: ComponentType<ComponentPropsWithRef<'div'>> = styled.div`
     animation: ${slideDown} 0.18s ease-in-out forwards;
 `;
 

@@ -1,4 +1,4 @@
-import { type ReactNode, forwardRef } from 'react';
+import { type ComponentPropsWithRef, type ComponentType, type ReactNode, forwardRef } from 'react';
 
 import styled, { css } from 'styled-components';
 
@@ -12,56 +12,59 @@ import { useLayoutSize } from 'src/hooks/suite';
 
 import { typesToLabelMap } from './typesToLabelMap';
 
-export const OptionText = styled.div`
+export const OptionText: ComponentType<ComponentPropsWithRef<'div'>> = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
     justify-content: center;
 `;
 
-export const OptionStyled = styled.div<{ $hasHoverInteraction?: boolean; $disabled?: boolean }>`
-    display: flex;
-    flex-direction: row;
+type OptionStyledProps = { $hasHoverInteraction?: boolean; $disabled?: boolean };
 
-    gap: ${spacingsPx.md};
+export const OptionStyled: ComponentType<ComponentPropsWithRef<'div'> & OptionStyledProps> =
+    styled.div<OptionStyledProps>`
+        display: flex;
+        flex-direction: row;
 
-    padding-top: ${spacingsPx.sm};
-    padding-bottom: ${spacingsPx.sm};
+        gap: ${spacingsPx.md};
 
-    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        padding-top: ${spacingsPx.xs};
-        padding-bottom: ${spacingsPx.xs};
-    }
+        padding-top: ${spacingsPx.sm};
+        padding-bottom: ${spacingsPx.sm};
 
-    align-items: center;
-    cursor: pointer;
+        ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+            padding-top: ${spacingsPx.xs};
+            padding-bottom: ${spacingsPx.xs};
+        }
 
-    color: ${({ $disabled, theme }) => ($disabled ? theme.contentSecondary : undefined)};
+        align-items: center;
+        cursor: pointer;
 
-    ${({ $hasHoverInteraction }) =>
-        $hasHoverInteraction
-            ? css`
-                  &:hover {
-                      background-color: ${({ theme }) => theme.elementFillElevatedHovered};
-                      transition: background 0.2s ease;
+        color: ${({ $disabled, theme }) => ($disabled ? theme.contentSecondary : undefined)};
 
-                      margin-left: -10px;
-                      margin-right: -10px;
-                      padding-left: 10px;
-                      padding-right: 10px;
+        ${({ $hasHoverInteraction }) =>
+            $hasHoverInteraction
+                ? css`
+                      &:hover {
+                          background-color: ${({ theme }) => theme.elementFillElevatedHovered};
+                          transition: background 0.2s ease;
 
-                      ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-                          margin-left: -6px;
-                          margin-right: -6px;
-                          padding-left: 6px;
-                          padding-right: 6px;
+                          margin-left: -10px;
+                          margin-right: -10px;
+                          padding-left: 10px;
+                          padding-right: 10px;
+
+                          ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+                              margin-left: -6px;
+                              margin-right: -6px;
+                              padding-left: 6px;
+                              padding-right: 6px;
+                          }
+
+                          border-radius: ${borders.radii.xs};
                       }
-
-                      border-radius: ${borders.radii.xs};
-                  }
-              `
-            : ''};
-`;
+                  `
+                : ''};
+    `;
 
 const DownIconCircle = styled.div`
     border-radius: ${borders.radii.full};

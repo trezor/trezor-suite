@@ -1,4 +1,10 @@
-import { type ReactNode, useRef, useState } from 'react';
+import {
+    type ComponentPropsWithRef,
+    type ComponentType,
+    type ReactNode,
+    useRef,
+    useState,
+} from 'react';
 
 import styled from 'styled-components';
 
@@ -24,14 +30,16 @@ import { SwitchDeviceLayer } from './SwitchDeviceLayer';
 import { useResponsiveContextOnChange } from './useResponsiveContextOnChange';
 import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';
 
-export const Wrapper = styled.div`
+type DivComponent = ComponentType<ComponentPropsWithRef<'div'>>;
+
+export const Wrapper: DivComponent = styled.div`
     display: flex;
     flex: 1;
     flex-direction: row;
     overflow: auto;
 `;
 
-export const PageWrapper = styled.div`
+export const PageWrapper: DivComponent = styled.div`
     position: relative;
     display: flex;
     flex: 1;
@@ -40,7 +48,7 @@ export const PageWrapper = styled.div`
     overflow-x: hidden;
 `;
 
-export const Body = styled.div`
+export const Body: DivComponent = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -48,7 +56,7 @@ export const Body = styled.div`
 `;
 
 // AppWrapper and MenuSecondary creates own scrollbars independently
-export const Columns = styled.div`
+export const Columns: DivComponent = styled.div`
     display: flex;
     flex-direction: row;
     flex: 1 0 100%;
@@ -56,7 +64,7 @@ export const Columns = styled.div`
     padding: 0;
 `;
 
-export const AppWrapper = styled.div`
+export const AppWrapper: DivComponent = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -71,7 +79,7 @@ export const AppWrapper = styled.div`
     }
 `;
 
-export const MainContentContainer = styled.div`
+export const MainContentContainer: DivComponent = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;

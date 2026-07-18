@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { type ComponentPropsWithRef, type ComponentType, useMemo } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
@@ -13,7 +13,7 @@ import { BalancePrivacyBreakdown } from './BalancePrivacyBreakdown/BalancePrivac
 import { CoinjoinBalanceError, type CoinjoinBalanceErrorProps } from './CoinjoinBalanceError';
 import { CoinjoinStatusWheel } from './CoinjoinStatusWheel/CoinjoinStatusWheel';
 
-export const Container = styled.div`
+export const Container: ComponentType<ComponentPropsWithRef<'div'>> = styled.div`
     display: flex;
     justify-content: space-between;
     gap: 8px;

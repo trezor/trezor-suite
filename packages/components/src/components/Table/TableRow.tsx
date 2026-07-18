@@ -1,17 +1,19 @@
-import { type ReactNode } from 'react';
+import { type ComponentPropsWithRef, type ComponentType, type ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
 import { useTable } from './TableContext';
 import { useTableHeader } from './TableHeader';
 
-export const Row = styled.tr<{
+type RowProps = {
     $isCollapsed: boolean;
     $verticalAlign?: string;
     $isHighlighted: boolean;
     $isHeader: boolean;
     $hasBorderTop: boolean;
-}>`
+};
+
+export const Row: ComponentType<ComponentPropsWithRef<'tr'> & RowProps> = styled.tr<RowProps>`
     ${({ $hasBorderTop, theme }) =>
         $hasBorderTop &&
         css`

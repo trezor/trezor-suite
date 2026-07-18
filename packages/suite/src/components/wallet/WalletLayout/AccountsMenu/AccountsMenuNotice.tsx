@@ -1,8 +1,10 @@
+import { type ComponentPropsWithRef, type ComponentType } from 'react';
+
 import styled from 'styled-components';
 
 import { spacingsPx, typography } from '@trezor/theme';
 
-export const AccountsMenuNotice = styled.div`
+export const AccountsMenuNotice: ComponentType<ComponentPropsWithRef<'div'>> = styled.div`
     display: flex;
     justify-content: center;
     text-align: center;

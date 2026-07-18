@@ -1,3 +1,5 @@
+import { type ComponentPropsWithRef, type ComponentType } from 'react';
+
 import styled from 'styled-components';
 
 import { useExternalLink } from '@suite/external-links';
@@ -16,7 +18,7 @@ type TS7BannerProps = {
     onCTAClick: () => void;
 };
 
-export const ImageContainer = styled.div`
+export const ImageContainer: ComponentType<ComponentPropsWithRef<'div'>> = styled.div`
     height: 100%;
     display: flex;
     align-items: flex-end;

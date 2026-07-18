@@ -1,3 +1,5 @@
+import { type ComponentPropsWithRef, type ComponentType } from 'react';
+
 import styled, { css } from 'styled-components';
 
 import { INPUT_PADDING } from './utils';
@@ -8,32 +10,33 @@ type FloatingLabelProps = {
     $isDisabled?: boolean;
 };
 
-export const FloatingLabel = styled.label<FloatingLabelProps>`
-    --transform: translateY(-50%) translateY(-10px) scale(0.75);
+export const FloatingLabel: ComponentType<ComponentPropsWithRef<'label'> & FloatingLabelProps> =
+    styled.label<FloatingLabelProps>`
+        --transform: translateY(-50%) translateY(-10px) scale(0.75);
 
-    position: absolute;
-    left: ${INPUT_PADDING}px;
-    top: 50%;
-    transition: 120ms ${motionEasingStrings.enter};
-    transform-origin: left;
-    transform: translateY(-50%);
-    pointer-events: none;
-    color: ${({ theme }) => theme.contentSecondary};
+        position: absolute;
+        left: ${INPUT_PADDING}px;
+        top: 50%;
+        transition: 120ms ${motionEasingStrings.enter};
+        transform-origin: left;
+        transform: translateY(-50%);
+        pointer-events: none;
+        color: ${({ theme }) => theme.contentSecondary};
 
-    ${({ $isActive }) =>
-        $isActive &&
-        css`
-            transform: var(--transform);
-        `}
+        ${({ $isActive }) =>
+            $isActive &&
+            css`
+                transform: var(--transform);
+            `}
 
-    :is(input, textarea):focus ~ &,
+        :is(input, textarea):focus ~ &,
     :is(input, textarea):not(:placeholder-shown) ~ & {
-        transform: var(--transform);
-    }
+            transform: var(--transform);
+        }
 
-    ${({ $isDisabled }) =>
-        $isDisabled &&
-        css`
-            color: ${({ theme }) => theme.contentDisabled};
-        `}
-`;
+        ${({ $isDisabled }) =>
+            $isDisabled &&
+            css`
+                color: ${({ theme }) => theme.contentDisabled};
+            `}
+    `;

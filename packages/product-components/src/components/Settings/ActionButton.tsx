@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { type ComponentType, type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
@@ -9,13 +9,10 @@ const { SCREEN_SIZE } = variables;
 
 type WithTooltipProps = { tooltipContent?: ReactNode; isTooltipActive?: boolean };
 
-export const ActionButton = styled(
-    ({
-        tooltipContent,
-        isTooltipActive,
-        children,
-        ...buttonProps
-    }: WithTooltipProps & ButtonProps) => (
+export type ActionButtonProps = WithTooltipProps & ButtonProps;
+
+export const ActionButton: ComponentType<ActionButtonProps> = styled(
+    ({ tooltipContent, isTooltipActive, children, ...buttonProps }: ActionButtonProps) => (
         <div>
             <Tooltip content={tooltipContent} isActive={isTooltipActive} cursor="inherit">
                 <Button

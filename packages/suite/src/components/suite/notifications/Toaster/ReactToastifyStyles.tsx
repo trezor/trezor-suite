@@ -1,3 +1,5 @@
+import { type ComponentPropsWithRef, type ComponentType } from 'react';
+
 import styled from 'styled-components';
 
 /**
@@ -5,7 +7,7 @@ import styled from 'styled-components';
  * Styles are inlined based on:
  * https://fkhadra.github.io/react-toastify/ssr
  */
-export const ReactToastifyStyles = styled.div`
+export const ReactToastifyStyles: ComponentType<ComponentPropsWithRef<'div'>> = styled.div`
     /* stylelint-disable */
     :root {
         --toastify-color-light: #fff;

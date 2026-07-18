@@ -66,7 +66,7 @@ const Puck = styled.div<{
         `}
 `;
 
-const Option = styled.div<{ $isSelected: boolean; $isDisabled: boolean }>`
+const OptionWrapper = styled.div<{ $isSelected: boolean; $isDisabled: boolean }>`
     position: relative;
     width: 100%;
     min-width: 0;
@@ -222,7 +222,7 @@ export const SelectBar = <V extends ValueTypes>({
                                     minWidth={0}
                                     overflow="hidden"
                                 >
-                                    <Option
+                                    <OptionWrapper
                                         onClick={handleOptionClick(option)}
                                         $isDisabled={!!isDisabled}
                                         $isSelected={isSelected}
@@ -251,7 +251,7 @@ export const SelectBar = <V extends ValueTypes>({
                                                 </Text>
                                             </Box>
                                         </Column>
-                                    </Option>
+                                    </OptionWrapper>
                                 </Text>
                             );
                         })}

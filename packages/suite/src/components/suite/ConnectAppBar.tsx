@@ -1,3 +1,5 @@
+import { type ComponentPropsWithRef, type ComponentType } from 'react';
+
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
@@ -17,7 +19,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { SuiteBanners } from './banners';
 
-export const ConnectBarWrapper = styled.div`
+export const ConnectBarWrapper: ComponentType<ComponentPropsWithRef<'div'>> = styled.div`
     position: absolute;
     top: 0;
     left: 0;

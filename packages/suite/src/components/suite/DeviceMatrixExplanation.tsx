@@ -25,7 +25,7 @@ const Wrapper = styled.div<{ $isGuideOpen?: boolean }>`
     }
 `;
 
-const Item = styled.div`
+const ItemWrapper = styled.div`
     display: flex;
     align-items: center;
     width: 100%;
@@ -77,7 +77,7 @@ export const DeviceMatrixExplanation = ({ items }: DeviceMatrixExplanationProps)
     return (
         <Wrapper $isGuideOpen={isGuideOpen}>
             {items.map(item => (
-                <Item key={item.key}>
+                <ItemWrapper key={item.key}>
                     <ItemIconWrapper>
                         {item.icon ? (
                             <Icon
@@ -96,7 +96,7 @@ export const DeviceMatrixExplanation = ({ items }: DeviceMatrixExplanationProps)
                         )}
                     </ItemIconWrapper>
                     <ItemText>{item.title}</ItemText>
-                </Item>
+                </ItemWrapper>
             ))}
         </Wrapper>
     );
