@@ -48,6 +48,7 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/network-solana": "workspace:*",
         "@trezor/network-stellar": "workspace:*",
+        "@trezor/network-tron": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",

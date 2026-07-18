@@ -1,4 +1,4 @@
-import { tronUtils } from '@trezor/blockchain-link-utils';
+import * as tronUtils from '@trezor/network-tron/utils';
 
 import { type Encoder } from '../types/encoder';
 import { type TronAddress, type TronFunctionAbi, type TronParamName } from '../types/tron';

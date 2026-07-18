@@ -5,9 +5,6 @@ import type { TronContracts } from '@trezor/connect-common';
 import { protobufManager } from '@trezor/protobuf';
 import { TronRawContractType } from '@trezor/protobuf/src/definitions/messages-tron';
 
-// DATA_HEX_PROTOBUF_EXTRA + MAX_RESULT_SIZE_IN_TX + A_SIGNATURE
-export const TRON_BANDWIDTH_FORMULA_OVERHEAD = 3 + 64 + 67;
-
 type BlockParams = {
     ref_block_bytes: string;
     ref_block_hash: string;

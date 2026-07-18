@@ -1,8 +1,8 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
-import { tronUtils } from '@trezor/blockchain-link-utils';
 import TrezorConnect from '@trezor/connect';
+import * as tronUtils from '@trezor/network-tron/utils';
 
 import { type TronClaimContract } from '../actions/claim/claimContract';
 import { type TronFreezeContract } from '../actions/freeze/freezeContract';

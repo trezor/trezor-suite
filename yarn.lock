@@ -10244,7 +10244,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/calldata@workspace:suite-common/calldata"
   dependencies:
-    "@trezor/blockchain-link-utils": "workspace:*"
+    "@trezor/network-tron": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     viem: "npm:^2.54.1"
@@ -11184,6 +11184,7 @@ __metadata:
     "@suite-common/wallet-constants": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/network-solana": "workspace:*"
+    "@trezor/network-tron": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
@@ -11237,6 +11238,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/network-solana": "workspace:*"
     "@trezor/network-stellar": "workspace:*"
+    "@trezor/network-tron": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -11286,6 +11288,7 @@ __metadata:
     "@trezor/device-utils": "workspace:*"
     "@trezor/network-solana": "workspace:*"
     "@trezor/network-stellar": "workspace:*"
+    "@trezor/network-tron": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -15994,7 +15997,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-utils@workspace:packages/blockchain-link-utils"
   dependencies:
-    "@noble/hashes": "npm:^2.0.1"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
@@ -16358,6 +16360,7 @@ __metadata:
     "@trezor/network-cardano": "workspace:*"
     "@trezor/network-solana": "workspace:*"
     "@trezor/network-stellar": "workspace:*"
+    "@trezor/network-tron": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:*"
     "@trezor/schema-utils": "workspace:*"
@@ -16543,6 +16546,14 @@ __metadata:
   dependencies:
     "@stellar/stellar-sdk": "npm:14.5.0"
     "@trezor/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-tron@workspace:*, @trezor/network-tron@workspace:networks/tron/network-tron":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-tron@workspace:networks/tron/network-tron"
+  dependencies:
+    "@noble/hashes": "npm:^2.0.1"
   languageName: unknown
   linkType: soft
 

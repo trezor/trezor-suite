@@ -13,6 +13,7 @@ const publishableTrezorPackages = [
     '@trezor/network-ripple',
     '@trezor/network-solana',
     '@trezor/network-stellar',
+    '@trezor/network-tron',
     '@trezor/connect',
     '@trezor/connect-common',
     '@trezor/connect-data',

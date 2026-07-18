@@ -26,6 +26,9 @@
         {
             "path": "../../networks/stellar/network-stellar"
         },
+        {
+            "path": "../../networks/tron/network-tron"
+        },
         { "path": "../protobuf" },
         { "path": "../protocol" },
         { "path": "../schema-utils" },
