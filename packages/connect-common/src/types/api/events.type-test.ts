@@ -237,6 +237,9 @@ export const events = (api: TrezorConnect) => {
         payload.shortcut.toLowerCase();
     });
 
+    // @ts-expect-error callback payload must match the selected event
+    api.on(BLOCKCHAIN.CONNECT, (_payload: string) => {});
+
     api.on(BLOCKCHAIN.FIAT_RATES_UPDATE, payload => {
         payload.rates.usd?.toFixed();
     });
