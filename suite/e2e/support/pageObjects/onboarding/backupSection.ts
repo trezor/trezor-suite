@@ -54,11 +54,15 @@ export class BackupSection {
     }
 
     @step()
-    async passThroughShamirBackup(
-        shares: number,
-        threshold: number,
-        { deviceConfirmations }: { deviceConfirmations: number },
-    ) {
+    async passThroughShamirBackup({
+        shares = 1,
+        threshold = 1,
+        deviceConfirmations,
+    }: {
+        shares?: number;
+        threshold?: number;
+        deviceConfirmations: number;
+    }) {
         const backupButton = this.page.getByTestId('@onboarding/create-backup-button');
         const closeButton = this.page.getByTestId('@onboarding/continue-button');
 
@@ -77,7 +81,12 @@ export class BackupSection {
         }
 
         await this.page.waitForTimeout(1000);
-        await this.device.readAndConfirmAtomicShamirMnemonic({ shares, threshold });
+
+        if (shares > 1) {
+            await this.device.readAndConfirmAtomicShamirMnemonic({ shares, threshold });
+        } else {
+            await this.device.readAndConfirmSingleShamirMnemonic();
+        }
 
         await closeButton.click();
     }

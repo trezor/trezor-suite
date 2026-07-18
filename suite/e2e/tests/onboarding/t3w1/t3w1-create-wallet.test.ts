@@ -45,10 +45,9 @@ test.describe('Onboarding - create wallet', { tag: ['@T3W1'] }, () => {
             await onboardingPage.selectSeedType('shamir-advanced');
 
             // Create backup with Shamir shares and threshold
-            const shares = 3;
-            const threshold = 2;
-
-            await onboardingPage.backup.passThroughShamirBackup(shares, threshold, {
+            await onboardingPage.backup.passThroughShamirBackup({
+                shares: 3,
+                threshold: 2,
                 deviceConfirmations: 3,
             });
 
