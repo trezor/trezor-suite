@@ -1,10 +1,9 @@
-import type { TrezorConnectCallable } from './callable';
+import type { TrezorConnectCallable, TrezorConnectPublicCallable } from './callable';
 import type { TrezorConnectInternal } from './internal';
-import type { TrezorConnectManagement } from './management';
 import type { CallMethodPayload } from '../../events/call';
 import type { ConnectSettings, Manifest } from '../settings';
 
-export type { TrezorConnectCallable };
+export type { TrezorConnectCallable, TrezorConnectPublicCallable };
 
 export interface TrezorConnectCore<InitSettings extends Record<string, any>> {
     init(settings: InitSettings & { manifest: Manifest }): Promise<void>;
@@ -13,9 +12,8 @@ export interface TrezorConnectCore<InitSettings extends Record<string, any>> {
     dispose(): void;
 }
 
-export type TrezorConnectPublicAPI<InitSettings extends Record<string, any>> =
-    TrezorConnectCore<InitSettings> & Omit<TrezorConnectCallable, keyof TrezorConnectManagement>;
+export interface TrezorConnectPublicAPI<InitSettings extends Record<string, any>>
+    extends TrezorConnectCore<InitSettings>, TrezorConnectPublicCallable {}
 
-export type TrezorConnectPrivilegedAPI = TrezorConnectCore<ConnectSettings> &
-    TrezorConnectInternal &
-    TrezorConnectCallable;
+export interface TrezorConnectPrivilegedAPI
+    extends TrezorConnectCore<ConnectSettings>, TrezorConnectInternal, TrezorConnectCallable {}

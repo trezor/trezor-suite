@@ -1,6 +1,3 @@
-import type { Static } from '@trezor/schema-utils';
-import { Type } from '@trezor/schema-utils';
-
 import type { applyFlags } from './applyFlags';
 import type { applySettings } from './applySettings';
 import type { authenticateDevice } from './authenticateDevice';
@@ -24,27 +21,26 @@ import type { thpRemoveCredentials } from './thpRemoveCredentials';
 import type { wipeDevice } from './wipeDevice';
 
 // Device configuration, firmware, security, and hardware control
-export const TrezorConnectManagement = Type.Object({
-    getFirmwareHash: Type.Unsafe<typeof getFirmwareHash>(),
-    resetDevice: Type.Unsafe<typeof resetDevice>(),
-    loadDevice: Type.Unsafe<typeof loadDevice>(),
-    recoveryDevice: Type.Unsafe<typeof recoveryDevice>(),
-    wipeDevice: Type.Unsafe<typeof wipeDevice>(),
-    backupDevice: Type.Unsafe<typeof backupDevice>(),
-    changePin: Type.Unsafe<typeof changePin>(),
-    changeWipeCode: Type.Unsafe<typeof changeWipeCode>(),
-    changeLanguage: Type.Unsafe<typeof changeLanguage>(),
-    applySettings: Type.Unsafe<typeof applySettings>(),
-    applyFlags: Type.Unsafe<typeof applyFlags>(),
-    authenticateDevice: Type.Unsafe<typeof authenticateDevice>(),
-    setBusy: Type.Unsafe<typeof setBusy>(),
-    setBrightness: Type.Unsafe<typeof setBrightness>(),
-    bleUnpair: Type.Unsafe<typeof bleUnpair>(),
-    thpGetCredentials: Type.Unsafe<typeof thpGetCredentials>(),
-    thpRemoveCredentials: Type.Unsafe<typeof thpRemoveCredentials>(),
-    telemetryGet: Type.Unsafe<typeof telemetryGet>(),
-    pingDevice: Type.Unsafe<typeof pingDevice>(),
-    getNonce: Type.Unsafe<typeof getNonce>(),
-    getSettings: Type.Unsafe<typeof getSettings>(),
-});
-export type TrezorConnectManagement = Static<typeof TrezorConnectManagement>;
+export interface TrezorConnectManagement {
+    getFirmwareHash: typeof getFirmwareHash;
+    resetDevice: typeof resetDevice;
+    loadDevice: typeof loadDevice;
+    recoveryDevice: typeof recoveryDevice;
+    wipeDevice: typeof wipeDevice;
+    backupDevice: typeof backupDevice;
+    changePin: typeof changePin;
+    changeWipeCode: typeof changeWipeCode;
+    changeLanguage: typeof changeLanguage;
+    applySettings: typeof applySettings;
+    applyFlags: typeof applyFlags;
+    authenticateDevice: typeof authenticateDevice;
+    setBusy: typeof setBusy;
+    setBrightness: typeof setBrightness;
+    bleUnpair: typeof bleUnpair;
+    thpGetCredentials: typeof thpGetCredentials;
+    thpRemoveCredentials: typeof thpRemoveCredentials;
+    telemetryGet: typeof telemetryGet;
+    pingDevice: typeof pingDevice;
+    getNonce: typeof getNonce;
+    getSettings: typeof getSettings;
+}
