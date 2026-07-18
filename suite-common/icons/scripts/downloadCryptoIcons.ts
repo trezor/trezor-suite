@@ -167,7 +167,7 @@ async function ensureDirectoryExists(path: string) {
         await fs.writeFile(UPDATED_ICONS_LIST_FILE, JSON.stringify(updatedIcons, null, 2));
 
         if (Date.now() - startedAt > RUN_LIMIT_SECONDS * 1000) {
-            console.log(`${i + 1 / coins.length}: Run limit reached`);
+            console.log(`${i + 1}/${coins.length}: Run limit reached`);
             break;
         }
 
