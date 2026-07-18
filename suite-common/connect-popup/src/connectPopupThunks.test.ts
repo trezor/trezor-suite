@@ -7,8 +7,9 @@ import { connectPopupActions } from './connectPopupActions';
 import { prepareConnectPopupReducer, selectConnectPopupCallWithState } from './connectPopupReducer';
 import { connectPopupLoadSelectAccountPageThunk } from './connectPopupThunks';
 
-// prepareNewAccountPayload is the single awaited device round-trip in the load thunk; mocking it
-// with a controllable deferred lets us interleave two concurrent loads deterministically.
+// prepareNewAccountPayload is the device round-trip the load thunk awaits — exactly once on the
+// manual address-phase path these tests exercise (the account-index path loops it per row). Mocking
+// it with a controllable deferred lets us interleave two concurrent loads deterministically.
 jest.mock('@suite-common/wallet-utils', () => ({
     ...jest.requireActual('@suite-common/wallet-utils'),
     prepareNewAccountPayload: jest.fn(),
@@ -89,7 +90,10 @@ describe('connectPopupLoadSelectAccountPageThunk — concurrent loads', () => {
         const loadFirst = store.dispatch(connectPopupLoadSelectAccountPageThunk({ page: 0 }));
         const loadSecond = store.dispatch(connectPopupLoadSelectAccountPageThunk({ page: 0 }));
 
-        // The second load is deduped at entry — it never issues its own (expensive) device round-trip.
+        // The second load is deduped at entry (loadingKey is stamped synchronously, before any
+        // await), so it never issues its own (expensive) device round-trip — the count is already 1
+        // here, not merely once the load settles.
+        expect(mockedPrepare).toHaveBeenCalledTimes(1);
         await loadSecond;
         expect(mockedPrepare).toHaveBeenCalledTimes(1);
 
@@ -117,9 +121,18 @@ describe('connectPopupLoadSelectAccountPageThunk — concurrent loads', () => {
 
         expect(mockedPrepare).toHaveBeenCalledTimes(2);
 
-        page0.resolve(usedAddress('ADDR_PAGE0'));
+        // Resolve the newer page-1 load first and let the superseded page-0 load land LAST. The
+        // ordering matters: this is what actually exercises loadEpoch. With the opposite order page 1
+        // would win on timing alone and the assertion below would pass even with the epoch guard
+        // removed — the stale page-0 result has to arrive last for the guard to be the thing that
+        // keeps it from painting.
         page1.resolve(usedAddress('ADDR_PAGE1'));
+        page0.resolve(usedAddress('ADDR_PAGE0'));
         await Promise.all([loadPage0, loadPage1]);
+
+        // Latest-wins: the stale page-0 load lands last but must not paint the user back onto page 0
+        // — loadEpoch makes it bail.
+        expect(selectConnectPopupCallWithState(store.getState(), 'select-account')?.page).toBe(1);
     });
 
     it('a superseded load does not release a newer same-view load’s dedup slot (X→Y→X re-navigation)', async () => {
