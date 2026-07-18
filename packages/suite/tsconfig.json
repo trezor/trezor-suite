@@ -4,7 +4,14 @@
         "plugins": [
             {
                 "name": "typescript-styled-plugin",
-                "tags": ["styled", "css", "sty"]
+                "tags": [
+                    "styled",
+                    "css",
+                    "createGlobalStyle",
+                    "keyframes"
+                ],
+                "validate": false,
+                "outlining": false
             }
         ],
         "outDir": "./libDev",

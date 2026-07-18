@@ -11,7 +11,13 @@
             ]
         },
         "plugins": [
-            { "name": "typescript-styled-plugin" }
+            {
+                "name": "typescript-styled-plugin",
+                "tags": [
+                    "styled",
+                    "createGlobalStyle"
+                ]
+            }
         ]
     },
     "include": [

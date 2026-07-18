@@ -1,0 +1,20 @@
+diff --git a/lib/_plugin.js b/lib/_plugin.js
+index 90546aa9af1aa9d5ee5c63a60eb7a397adcc9c60..1cc7011f6a2d935106a1d4b4bcbc1da02218a9c5 100644
+--- a/lib/_plugin.js
++++ b/lib/_plugin.js
+@@ -22,7 +22,14 @@ class StyledPlugin {
+             this._logger.log('Invalid typescript version detected. TypeScript 3.x required.');
+             return info.languageService;
+         }
+-        return (0, typescript_template_language_service_decorator_1.decorateWithTemplateLanguageService)(this.typescript, info.languageService, info.project, new _language_service_1.StyledTemplateLanguageService(this.typescript, this._configManager, new _virtual_document_provider_1.StyledVirtualDocumentFactory(), this._logger), getTemplateSettings(this._configManager), { logger: this._logger });
++        const templateLanguageService = new _language_service_1.StyledTemplateLanguageService(this.typescript, this._configManager, new _virtual_document_provider_1.StyledVirtualDocumentFactory(), this._logger);
++        if (!this._configManager.config.validate) {
++            templateLanguageService.getSemanticDiagnostics = undefined;
++        }
++        if (info.config.outlining === false) {
++            templateLanguageService.getOutliningSpans = undefined;
++        }
++        return (0, typescript_template_language_service_decorator_1.decorateWithTemplateLanguageService)(this.typescript, info.languageService, info.project, templateLanguageService, getTemplateSettings(this._configManager), { logger: this._logger });
+     }
+     onConfigurationChanged(config) {
+         if (this._logger) {

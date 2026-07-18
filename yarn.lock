@@ -16106,7 +16106,7 @@ __metadata:
     styled-components: "npm:^6.3.9"
     stylelint: "npm:^17.1.1"
     stylelint-config-standard: "npm:^40.0.0"
-    typescript-styled-plugin: "npm:^0.18.3"
+    typescript-styled-plugin: "patch:typescript-styled-plugin@npm%3A0.18.3#~/.yarn/patches/typescript-styled-plugin-npm-0.18.3-c4f86e482e.patch"
   languageName: unknown
   linkType: soft
 
@@ -16263,7 +16263,7 @@ __metadata:
     stylelint: "npm:^17.1.1"
     stylelint-config-standard: "npm:^40.0.0"
     swr: "npm:^2.4.1"
-    typescript-styled-plugin: "npm:^0.18.3"
+    typescript-styled-plugin: "patch:typescript-styled-plugin@npm%3A0.18.3#~/.yarn/patches/typescript-styled-plugin-npm-0.18.3-c4f86e482e.patch"
     webpack: "npm:5.108.1"
     webpack-cli: "npm:^7.0.3"
   languageName: unknown
@@ -16596,7 +16596,7 @@ __metadata:
     stylelint: "npm:^17.1.1"
     stylelint-config-standard: "npm:^40.0.0"
     svgo: "npm:^4.0.1"
-    typescript-styled-plugin: "npm:^0.18.3"
+    typescript-styled-plugin: "patch:typescript-styled-plugin@npm%3A0.18.3#~/.yarn/patches/typescript-styled-plugin-npm-0.18.3-c4f86e482e.patch"
     yup: "npm:1.7.1"
     zxcvbn: "npm:^4.4.2"
   languageName: unknown
@@ -17221,6 +17221,7 @@ __metadata:
     styled-components: "npm:^6.3.9"
     stylelint: "npm:^17.1.1"
     stylelint-config-standard: "npm:^40.0.0"
+    typescript-styled-plugin: "patch:typescript-styled-plugin@npm%3A0.18.3#~/.yarn/patches/typescript-styled-plugin-npm-0.18.3-c4f86e482e.patch"
   languageName: unknown
   linkType: soft
 
@@ -45139,7 +45140,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript-styled-plugin@npm:^0.18.3":
+"typescript-styled-plugin@npm:0.18.3":
   version: 0.18.3
   resolution: "typescript-styled-plugin@npm:0.18.3"
   dependencies:
@@ -45149,6 +45150,19 @@ __metadata:
     vscode-languageserver-textdocument: "npm:^1.0.1"
     vscode-languageserver-types: "npm:^3.16.0"
   checksum: 10/77a728d83b3baf140cdb0224c3a1bba92202fb1359c1dbbb144119283cc7958b7c1c4f19e434ab4069904b7f454257a54cb1608bb16f739178bb9ec448440ce7
+  languageName: node
+  linkType: hard
+
+"typescript-styled-plugin@patch:typescript-styled-plugin@npm%3A0.18.3#~/.yarn/patches/typescript-styled-plugin-npm-0.18.3-c4f86e482e.patch":
+  version: 0.18.3
+  resolution: "typescript-styled-plugin@patch:typescript-styled-plugin@npm%3A0.18.3#~/.yarn/patches/typescript-styled-plugin-npm-0.18.3-c4f86e482e.patch::version=0.18.3&hash=5c055b"
+  dependencies:
+    typescript-template-language-service-decorator: "npm:^2.3.2"
+    vscode-css-languageservice: "npm:^5.1.4"
+    vscode-emmet-helper: "npm:^2.6.4"
+    vscode-languageserver-textdocument: "npm:^1.0.1"
+    vscode-languageserver-types: "npm:^3.16.0"
+  checksum: 10/3a62498539aced1177cdfddba4b9b46650567dd2a500bd4596b950c5c7afc38a952882738814be8f335394937ca0e8e0d62083a6d2b3f05fcb830ddff4ca0956
   languageName: node
   linkType: hard
 

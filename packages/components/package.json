@@ -60,6 +60,6 @@
         "stream-browserify": "^3.0.0",
         "stylelint": "^17.1.1",
         "stylelint-config-standard": "^40.0.0",
-        "typescript-styled-plugin": "^0.18.3"
+        "typescript-styled-plugin": "patch:typescript-styled-plugin@npm%3A0.18.3#~/.yarn/patches/typescript-styled-plugin-npm-0.18.3-c4f86e482e.patch"
     }
 }
