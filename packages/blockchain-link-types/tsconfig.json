@@ -1,6 +1,10 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": { "outDir": "libDev" },
+    "compilerOptions": {
+        "allowJs": false,
+        "isolatedDeclarations": true,
+        "outDir": "libDev"
+    },
     "references": [
         { "path": "../utils" },
         { "path": "../utxo-lib" },

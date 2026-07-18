@@ -52,12 +52,13 @@ export const valuablesBaseCurrencies = {
     xau: { code: 'xau', label: 'Gold' },
 } as const;
 
-export const valuablesBaseCurrencyCodes = typedObjectKeys(valuablesBaseCurrencies);
+export const valuablesBaseCurrencyCodes: (keyof typeof valuablesBaseCurrencies)[] =
+    typedObjectKeys(valuablesBaseCurrencies);
 
-export const baseCurrencies = {
+export const baseCurrencies: typeof fiatBaseCurrencies & typeof valuablesBaseCurrencies = {
     ...fiatBaseCurrencies,
     ...valuablesBaseCurrencies,
-} as const;
+};
 
 export type BaseCurrencyCode = keyof typeof baseCurrencies;
 export type BaseCurrency = (typeof baseCurrencies)[BaseCurrencyCode];

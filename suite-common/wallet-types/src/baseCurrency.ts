@@ -6,9 +6,10 @@ import { type BigNumber } from '@trezor/utils';
  * In case of BTC this also can contain value converted to Sats. // Todo: Consider to separate those situations.
  */
 export type BaseCurrencyAmount = BigNumber & Branded<`base-currency-amount`>;
-export const asBaseCurrencyAmount = (value: BigNumber) => value as BaseCurrencyAmount;
+export const asBaseCurrencyAmount = (value: BigNumber): BaseCurrencyAmount =>
+    value as BaseCurrencyAmount;
 
 export const areBaseCurrencyAmountsEqual = (
     a: BaseCurrencyAmount | undefined,
     b: BaseCurrencyAmount | undefined,
-) => a === b || (a !== undefined && b !== undefined && a.eq(b));
+): boolean => a === b || (a !== undefined && b !== undefined && a.eq(b));

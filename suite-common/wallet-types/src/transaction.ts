@@ -22,7 +22,16 @@ import { type AccountDescriptor } from './account';
 
 export type { PrecomposedTransactionFinalCardano } from '@trezor/connect';
 
-const COMMON_PRECOMPOSE_ERRORS = {
+type CommonPrecomposeErrors = {
+    readonly AMOUNT_NOT_ENOUGH_CURRENCY_FEE: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE';
+    readonly AMOUNT_IS_NOT_ENOUGH: 'AMOUNT_IS_NOT_ENOUGH';
+    readonly AMOUNT_IS_TOO_LOW: 'AMOUNT_IS_TOO_LOW';
+    readonly AMOUNT_IS_LESS_THAN_RESERVE: 'AMOUNT_IS_LESS_THAN_RESERVE';
+    readonly REMAINING_BALANCE_LESS_THAN_RENT: 'REMAINING_BALANCE_LESS_THAN_RENT';
+    readonly AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT';
+};
+
+const COMMON_PRECOMPOSE_ERRORS: CommonPrecomposeErrors = {
     AMOUNT_NOT_ENOUGH_CURRENCY_FEE: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
     AMOUNT_IS_NOT_ENOUGH: 'AMOUNT_IS_NOT_ENOUGH',
     AMOUNT_IS_TOO_LOW: 'AMOUNT_IS_TOO_LOW',
@@ -30,27 +39,37 @@ const COMMON_PRECOMPOSE_ERRORS = {
     REMAINING_BALANCE_LESS_THAN_RENT: 'REMAINING_BALANCE_LESS_THAN_RENT',
     AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT:
         'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
-} as const satisfies Record<string, string>;
+};
+
+type SuitePrecomposeErrors = typeof COMMON_PRECOMPOSE_ERRORS & {
+    readonly TR_NOT_ENOUGH_SELECTED: 'TR_NOT_ENOUGH_SELECTED';
+    readonly TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING';
+    readonly TR_GENERIC_ERROR_TITLE: 'TR_GENERIC_ERROR_TITLE';
+};
+
+type SuiteNativePrecomposeErrors = typeof COMMON_PRECOMPOSE_ERRORS & {
+    readonly TR_STAKE_NOT_ENOUGH_FUNDS: 'TR_STAKE_NOT_ENOUGH_FUNDS';
+};
 
 /**
  * @trezor/suite (packages/suite) errors
  */
-export const SUITE_PRECOMPOSE_ERRORS = {
+export const SUITE_PRECOMPOSE_ERRORS: SuitePrecomposeErrors = {
     ...COMMON_PRECOMPOSE_ERRORS,
     TR_NOT_ENOUGH_SELECTED: 'TR_NOT_ENOUGH_SELECTED',
     TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING: 'TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING',
     TR_GENERIC_ERROR_TITLE: 'TR_GENERIC_ERROR_TITLE',
-} as const satisfies Record<string, string>;
+};
 
 type SuitePrecomposeError = ObjectValues<typeof SUITE_PRECOMPOSE_ERRORS>;
 
 /**
  * @suite-native/* errors
  */
-export const SUITE_NATIVE_PRECOMPOSE_ERRORS = {
+export const SUITE_NATIVE_PRECOMPOSE_ERRORS: SuiteNativePrecomposeErrors = {
     ...COMMON_PRECOMPOSE_ERRORS,
     TR_STAKE_NOT_ENOUGH_FUNDS: 'TR_STAKE_NOT_ENOUGH_FUNDS',
-} as const satisfies Record<string, string>;
+};
 
 type SuiteNativePrecomposeError = ObjectValues<typeof SUITE_NATIVE_PRECOMPOSE_ERRORS>;
 
