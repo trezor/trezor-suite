@@ -32,5 +32,7 @@ export const factoryPrivileged = <
         (core as any)[method] = (params: any) => core.call({ ...params, method });
     }
 
+    // The loop adds callable methods dynamically, which TypeScript cannot reflect in C.
+    // Cast through unknown to describe the core's post-augmentation runtime shape.
     return core as unknown as ExtendedPrivilegedAPI<C>;
 };
