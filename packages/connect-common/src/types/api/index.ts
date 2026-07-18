@@ -19,5 +19,7 @@ export type TrezorConnectPublicAPI<InitSettings extends Record<string, any>> =
 
 export interface TrezorConnectPrivilegedAPI
     extends TrezorConnectCore<ConnectSettings>, TrezorConnectInternal, TrezorConnectCallable {
+    // Keep this member explicit so TypeScript can resolve it from the named interface without
+    // expanding the schema-generated TrezorConnectCallable API.
     uiResponse(response: UiResponseEvent): void;
 }
