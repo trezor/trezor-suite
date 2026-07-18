@@ -8,6 +8,7 @@ import {
 } from '@suite-common/wallet-types';
 import {
     getAddressParameters,
+    getCardanoAccountPoolId,
     getDelegationCertificates,
     getStakingPath,
     getUnusedChangeAddress,
@@ -70,7 +71,10 @@ export const useCardanoStaking = (): CardanoStaking => {
 
             const addressParameters = getAddressParameters(account, changeAddress.path);
 
-            const selectedPool = selectBestCardanoPool(cardanoPools);
+            const selectedPool = selectBestCardanoPool(
+                cardanoPools,
+                getCardanoAccountPoolId(account),
+            );
 
             let certificates: CardanoCertificate[] = [];
 

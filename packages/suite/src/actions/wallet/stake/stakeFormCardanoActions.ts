@@ -29,6 +29,7 @@ import {
 import {
     asAmountSubunit,
     getAddressParameters,
+    getCardanoAccountPoolId,
     getDelegationCertificates,
     getDerivationType,
     getNetworkId,
@@ -115,7 +116,7 @@ export const prepareTxPlan = async (
 
     const addressParameters = getAddressParameters(account, changeAddress.path);
 
-    const selectedPool = selectBestCardanoPool(cardanoPools);
+    const selectedPool = selectBestCardanoPool(cardanoPools, getCardanoAccountPoolId(account));
 
     const certificates = [];
 

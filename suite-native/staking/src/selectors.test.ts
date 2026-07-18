@@ -100,19 +100,19 @@ const getTestState = (accounts: Account[]) => ({
                     ada: {
                         pools: [
                             {
-                                apy: 2.43,
-                                saturation: 81.09,
-                                id: 'pool1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzqs6cy',
+                                apy: 2.4,
+                                saturation: 80.77,
+                                id: 'pool1sysgx87cwxnqy0pqn8g97gdhd0dmre9rw3jvpn2k7apuwa7cgkn',
                             },
                             {
-                                apy: 5.8,
-                                saturation: 1.92,
+                                apy: 2.06,
+                                saturation: 76.42,
+                                id: 'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj',
+                            },
+                            {
+                                apy: 1.96,
+                                saturation: 62.64,
                                 id: 'pool13rt3ngkek4l876980ect869cu978d36dcyh22ts4nwuf7ncq02u',
-                            },
-                            {
-                                apy: 2.43,
-                                saturation: 0.05,
-                                id: 'pool1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq2crtxv',
                             },
                         ],
                     },
@@ -230,7 +230,7 @@ describe('main staking selectors', () => {
 
             const result = selectApy(testState as any, { networkSymbol: 'ada' });
 
-            expect(result).toBe(5.8);
+            expect(result).toBe(1.96);
         });
 
         it('should return matched pool APY for ADA account with known poolId', () => {
@@ -243,7 +243,7 @@ describe('main staking selectors', () => {
                 networkType: 'cardano',
                 misc: {
                     staking: {
-                        poolId: 'pool1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqzqs6cy',
+                        poolId: 'pool1sysgx87cwxnqy0pqn8g97gdhd0dmre9rw3jvpn2k7apuwa7cgkn',
                     },
                 },
             } as unknown as Account;
@@ -251,7 +251,7 @@ describe('main staking selectors', () => {
 
             const result = selectApy(testState as any, { accountKey: ada1Key });
 
-            expect(result).toBe(2.43);
+            expect(result).toBe(2.4);
         });
 
         it('should return null for ADA account staked outside known pools', () => {
