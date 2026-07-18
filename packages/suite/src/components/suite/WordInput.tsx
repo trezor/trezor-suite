@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { type SelectInstance, createFilter } from 'react-select';
+import { createFilter } from 'react-select';
 
 import { useTranslation } from '@suite/intl';
 import { selectModalRequestId } from '@suite/modal';
@@ -13,6 +13,7 @@ import { useSelector } from 'src/hooks/suite';
 const options = bip39EnglishWordlist.map(item => ({ label: item, value: item }));
 
 type Option = { label: string; value: string };
+type WordInputSelectRef = { clearValue: () => void };
 
 export const WordInput = memo(() => {
     const { translationString } = useTranslation();
@@ -28,7 +29,7 @@ export const WordInput = memo(() => {
             noOptionsMessage={({ inputValue }: { inputValue: string }) =>
                 translationString('TR_WORD_DOES_NOT_EXIST', { word: inputValue })
             }
-            onChange={async (item: Option, ref?: SelectInstance<Option, boolean> | null) => {
+            onChange={async (item: Option, ref?: WordInputSelectRef | null) => {
                 await resolveAfter(600);
                 TrezorConnect.uiResponse({
                     type: UI_RESPONSE.RECEIVE_WORD,
