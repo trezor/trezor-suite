@@ -53,15 +53,12 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1'] }, 
             });
 
             await test.step('Select backup type and create wallet with backup', async () => {
-                // Select backup type (no device interaction, just navigates to SecurityStep)
                 await onboardingPage.createWalletButton.click();
                 await onboardingPage.selectSeedType('shamir-advanced');
 
-                // SecurityStep: check backup seed cards, create wallet + backup on device, continue
-                // In the new atomic flow, wallet creation and backup happen together
-                const shares = 3;
-                const threshold = 2;
-                await onboardingPage.backup.passThroughShamirBackup(shares, threshold, {
+                await onboardingPage.backup.passThroughShamirBackup({
+                    shares: 3,
+                    threshold: 2,
                     deviceConfirmations: 3,
                 });
             });
@@ -70,8 +67,8 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1'] }, 
                 await onboardingPage.pin.setPinButton.click();
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await device.pressYes();
-                await device.selectNumberOfWords(12);
-                await device.selectNumberOfWords(12);
+                await device.inputPin('12');
+                await device.inputPin('12');
 
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await device.pressYes();

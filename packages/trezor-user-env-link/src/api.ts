@@ -4,6 +4,7 @@ import { TypedEmitter, resolveAfter } from '@trezor/utils';
 
 import { type Firmwares, Model } from './types';
 import { WebsocketClient, type WebsocketClientEvents } from './websocket-client';
+
 export interface SetupEmu {
     mnemonic?: string;
     pin?: string;
@@ -125,7 +126,6 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
         // todo: legacy api, should be removed
         this.send = this.client.send.bind(this.client);
     }
-
     public async setupEmu(options?: SetupEmu) {
         const defaults = {
             pin: '',
@@ -243,7 +243,6 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
 
         return null;
     }
-
     async stopEmu() {
         await this.client.send({ type: 'emulator-stop' });
 
@@ -316,6 +315,12 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
 
         return null;
     }
+    async readAndConfirmSingleShamirMnemonicEmu() {
+        await resolveAfter(EMU_RACE_CONDITION_WORKAROUND_DELAY);
+        await this.client.send({ type: 'emulator-read-and-confirm-single-shamir-mnemonic' });
+
+        return null;
+    }
     async applySettings(options: ApplySettings) {
         if (JSON.stringify(this.currentEmulatorSettings) === JSON.stringify(options)) {
             console.log('Emulator already has the same settings applied, skipping setup');
@@ -335,26 +340,29 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
 
         return null;
     }
+    async inputPin(pin: string) {
+        await resolveAfter(EMU_RACE_CONDITION_WORKAROUND_DELAY);
+        await this.client.send({ type: 'emulator-input-pin', pin });
+
+        return null;
+    }
     async selectNumOfWordsEmu(num: number) {
         await resolveAfter(EMU_RACE_CONDITION_WORKAROUND_DELAY * 2);
         await this.client.send({ type: 'emulator-select-num-of-words', num });
 
         return null;
     }
-
     async getScreenContent() {
         const { response } = await this.client.send({ type: 'emulator-get-screen-content' });
 
         return response;
     }
-
     async getDebugState() {
         await resolveAfter(EMU_RACE_CONDITION_WORKAROUND_DELAY);
         const { response } = await this.client.send({ type: 'emulator-get-debug-state' });
 
         return response;
     }
-
     async getPairingInfo(thp_channel_id: string, nfcData?: string) {
         // user-env expects something, cannot be undefined
         const d = nfcData ? Buffer.from(nfcData, 'hex') : undefined;
@@ -374,7 +382,6 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
             code_entry_code: Number(response.code_entry_code).toString().padStart(6, '0'),
         };
     }
-
     async logTestDetails(text: string) {
         await this.client.send({ type: 'log', text });
 

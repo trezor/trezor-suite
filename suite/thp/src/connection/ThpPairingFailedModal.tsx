@@ -28,7 +28,7 @@ export const ThpPairingFailedModal = () => {
         <Modal
             heading={<Translation id="TR_THP_ENTER_ONE_TIME_CODE" />}
             description={<Translation id="TR_THP_CHECK_TREZOR_FOR_CODE" />}
-            data-testid="@modal/thp-paring-failed"
+            data-testid="@modal/thp-pairing-failed"
             width={600}
             bottomContent={
                 <>
