@@ -1,10 +1,9 @@
 import { type ExternalOutput, type PrecomposedTransaction } from '@suite-common/wallet-types';
-import { TRON_MEMO_FEE_SUN, calculateMax, calculateTotal } from '@suite-common/wallet-utils';
+import { calculateMax, calculateTotal } from '@suite-common/wallet-utils';
+import { TRON_ACCOUNT_ACTIVATION_FEE_SUN, TRON_MEMO_FEE_SUN } from '@trezor/network-tron/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { type EstimateFeeLevel } from './types';
-
-const TRON_ACCOUNT_ACTIVATION_FEE_SUN = 1_000_000;
 
 export const calculateTrxTransfer = (
     availableBalance: string,

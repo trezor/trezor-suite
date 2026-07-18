@@ -1,5 +1,5 @@
 import { type Account, type FormState } from '@suite-common/wallet-types';
-import { tronUtils } from '@trezor/blockchain-link-utils';
+import * as tronUtils from '@trezor/network-tron/utils';
 
 export const buildWithdrawExpireUnfreezeContract = ({ ownerHex }: { ownerHex: string }) =>
     ({

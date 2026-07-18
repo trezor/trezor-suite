@@ -95,6 +95,7 @@
         "@trezor/network-cardano": "workspace:*",
         "@trezor/network-solana": "workspace:*",
         "@trezor/network-stellar": "workspace:*",
+        "@trezor/network-tron": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/protocol": "workspace:*",
         "@trezor/schema-utils": "workspace:*",

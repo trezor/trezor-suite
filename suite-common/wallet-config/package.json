@@ -16,6 +16,7 @@
         "@suite-common/wallet-constants": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/network-solana": "workspace:*",
+        "@trezor/network-tron": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     }

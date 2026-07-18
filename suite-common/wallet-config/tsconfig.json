@@ -8,6 +8,9 @@
         {
             "path": "../../networks/solana/network-solana"
         },
+        {
+            "path": "../../networks/tron/network-tron"
+        },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]

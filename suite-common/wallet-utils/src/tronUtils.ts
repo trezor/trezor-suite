@@ -1,18 +1,14 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import { type ResponseTypes, type TronAccountExtraData } from '@trezor/blockchain-link-types';
-import { tronUtils } from '@trezor/blockchain-link-utils';
+import {
+    TRON_BANDWIDTH_SUN_PRICE,
+    TRON_CREATE_ACCOUNT_FEE_SUN,
+} from '@trezor/network-tron/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { asAmountSubunit } from './AmountTypes';
 import { subunitsToUnits } from './amountUtils';
-
-export const TRON_MEMO_FEE_SUN = 1_000_000;
-
-// The `getCreateAccountFee` chain parameter: a transfer that activates the recipient account
-// is charged this flat fee instead of the per-byte bandwidth price, and only staked bandwidth
-// (never the free daily allotment) can cover it.
-export const TRON_CREATE_ACCOUNT_FEE_SUN = 100_000;
 
 export type TronFeeLevel = ResponseTypes.EstimateFee['payload'][number];
 
@@ -32,16 +28,16 @@ export const computeBandwidthFeeLevel = ({
 
         return {
             feePerTx: String(feeInSun),
-            feePerUnit: String(tronUtils.TRON_BANDWIDTH_SUN_PRICE),
+            feePerUnit: String(TRON_BANDWIDTH_SUN_PRICE),
         };
     }
 
     const availableBandwidth = Math.max(availableStakedBandwidth, availableFreeBandwidth);
-    const feeInSun = availableBandwidth < bytes ? bytes * tronUtils.TRON_BANDWIDTH_SUN_PRICE : 0;
+    const feeInSun = availableBandwidth < bytes ? bytes * TRON_BANDWIDTH_SUN_PRICE : 0;
 
     return {
         feePerTx: String(feeInSun),
-        feePerUnit: String(tronUtils.TRON_BANDWIDTH_SUN_PRICE),
+        feePerUnit: String(TRON_BANDWIDTH_SUN_PRICE),
     };
 };
 
@@ -81,7 +77,7 @@ export const calculateTronFeeBreakdown = (
     if (!isContractCall) {
         const uncoveredBandwidthSun = isNewAccount
             ? TRON_CREATE_ACCOUNT_FEE_SUN
-            : bandwidthBytes * tronUtils.TRON_BANDWIDTH_SUN_PRICE;
+            : bandwidthBytes * TRON_BANDWIDTH_SUN_PRICE;
         const bandwidthBurnSun = new BigNumber(isBandwidthCovered ? 0 : uncoveredBandwidthSun);
         const trxBurned = toTrx(bandwidthBurnSun.plus(memoFeeSun), symbol);
 
@@ -90,7 +86,7 @@ export const calculateTronFeeBreakdown = (
 
     const energyPrice = tx.feePerByte ?? '0';
     const bandwidthBurnSun = new BigNumber(
-        isBandwidthCovered ? 0 : bandwidthBytes * tronUtils.TRON_BANDWIDTH_SUN_PRICE,
+        isBandwidthCovered ? 0 : bandwidthBytes * TRON_BANDWIDTH_SUN_PRICE,
     );
 
     const feeLimitSun = feeLimitSunOverride != null ? new BigNumber(feeLimitSunOverride) : null;

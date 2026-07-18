@@ -11,8 +11,8 @@ import {
     subunitsToUnits,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
-import { tronUtils } from '@trezor/blockchain-link-utils';
 import TrezorConnect from '@trezor/connect';
+import * as tronUtils from '@trezor/network-tron/utils';
 import { BigNumber } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from '../sendFormConstants';

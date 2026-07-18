@@ -1,4 +1,5 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { TRON_DECIMALS } from '@trezor/network-tron/constants';
 import { typedObjectEntries } from '@trezor/utils';
 
 import { getExplorerUrls } from './getExplorerUrls';
@@ -368,7 +369,7 @@ export const networks = {
         name: 'Tron',
         networkType: 'tron',
         bip43Path: "m/44'/195'/0'/0/i",
-        decimals: 6,
+        decimals: TRON_DECIMALS,
         testnet: false,
         features: ['tokens', 'coin-definitions', 'graph', 'nfts', 'staking'],
         explorer: getExplorerUrls('https://tronscan.org/#', 'tron'),
@@ -739,7 +740,7 @@ export const networks = {
         name: 'Tron Nile',
         networkType: 'tron',
         bip43Path: "m/44'/195'/0'/0/i",
-        decimals: 6,
+        decimals: TRON_DECIMALS,
         testnet: true,
         features: ['tokens', 'graph', 'nfts'],
         explorer: getExplorerUrls('https://nile.tronscan.org/#', 'tron'),

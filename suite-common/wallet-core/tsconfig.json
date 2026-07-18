@@ -49,6 +49,9 @@
         {
             "path": "../../networks/stellar/network-stellar"
         },
+        {
+            "path": "../../networks/tron/network-tron"
+        },
         { "path": "../../packages/protobuf" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
