@@ -1,5 +1,4 @@
-import type { UnionToIntersection } from '@trezor/type-utils';
-import { TypedEmitter } from '@trezor/utils';
+import { type EventReceiver, TypedEmitter } from '@trezor/utils';
 
 import type {
     BLOCKCHAIN_EVENT,
@@ -28,15 +27,9 @@ type ConnectEventMap = {
 
 export type ConnectEvents = keyof ConnectEventMap;
 
-export type ConnectEventCallbacks = UnionToIntersection<
-    {
-        [K in ConnectEvents]: (
-            type: K,
-            cb: ConnectEventMap[K] extends undefined
-                ? () => void
-                : (event: ConnectEventMap[K]) => void,
-        ) => void;
-    }[ConnectEvents]
->;
+export type ConnectEventCallbacks = <T extends ConnectEvents>(
+    type: T,
+    callback: EventReceiver<ConnectEventMap[T]>,
+) => void;
 
 export class ConnectEmitter extends TypedEmitter<ConnectEventMap> {}

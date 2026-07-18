@@ -47,7 +47,6 @@ const LEGIT_BIG_FILES = new Set<string>([
 // Existing violations to fix incrementally. The requirement reports entries once they can be removed.
 const KNOWN_DECLARATION_SIZE_VIOLATIONS = new Set<string>([
     'packages/connect-common/libDev/src/types/api/cardano/common.d.ts',
-    'packages/connect-common/libDev/src/types/api/internal/index.d.ts',
     'suite-common/calldata/libDev/src/calldata.d.ts',
     'suite-common/calldata/libDev/src/verifier.d.ts',
     'suite-common/receive/libDev/src/receiveSlice.d.ts',
