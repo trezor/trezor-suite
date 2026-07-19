@@ -1,3 +1,5 @@
+import './styled';
+
 export * as variables from './config/variables';
 export * as animations from './config/animations';
 export { motionAnimation, motionEasing } from './config/motion';
