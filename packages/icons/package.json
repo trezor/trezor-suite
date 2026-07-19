@@ -5,11 +5,11 @@
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/generated/icons/index",
-    "types": "src/index.ts",
+    "types": "./libDev/src/index.d.ts",
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "generate-icons": "yarn g:rimraf src/generated/icons && yarn svgr --config-file svgr.web.config.mjs -- assets && node generateIconTypes.mjs && prettier --write --log-level silent 'src/generated/icons/**/*.{ts,tsx}' 'src/index.ts'"
     },
     "dependencies": {

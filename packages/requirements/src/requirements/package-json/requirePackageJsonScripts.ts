@@ -160,7 +160,7 @@ export const requirePackageJsonScripts: Requirement<'workspace'> = {
                 return;
             }
 
-            if (scriptConfig.command === undefined) {
+            if (typeof scriptConfig.command !== 'string') {
                 return;
             }
 

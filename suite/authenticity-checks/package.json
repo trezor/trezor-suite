@@ -8,12 +8,13 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json"
     },
     "dependencies": {
         "@suite-common/device": "workspace:*",
         "@suite-common/firmware-authenticity": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite/settings": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }
