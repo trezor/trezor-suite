@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
-import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
+import { desktopQueryKeys } from '@suite/react-query';
+import { useQuery } from '@suite-common/react-query';
 import { selectAccountTransactions } from '@suite-common/wallet-core';
 import {
     type AccountWithNetworkType,

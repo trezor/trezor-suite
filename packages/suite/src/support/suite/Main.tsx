@@ -1,7 +1,7 @@
 import { HelmetProvider } from 'react-helmet-async';
 
+import { ReactQueryProvider } from '@suite/react-query';
 import { FormatterProvider } from '@suite-common/formatters';
-import { ReactQueryProvider } from '@suite-common/react-query/src/components/ReactQueryProvider';
 import { SelectCacheProvider } from '@trezor/components';
 
 import { useFormattersConfig } from 'src/hooks/suite';

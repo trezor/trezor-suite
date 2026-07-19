@@ -2,7 +2,8 @@ import { useState } from 'react';
 
 import { type CryptoId } from 'invity-api';
 
-import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
+import { desktopQueryKeys } from '@suite/react-query';
+import { useQuery } from '@suite-common/react-query';
 import { cryptoIdToNetworkAndContractAddress } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
 import { getStellarInactiveTokens } from '@suite-common/wallet-utils';

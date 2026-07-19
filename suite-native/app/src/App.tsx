@@ -10,7 +10,6 @@ import * as Sentry from '@sentry/react-native';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { FormatterProvider } from '@suite-common/formatters';
-import { ReactNativeQueryProvider } from '@suite-common/react-query/src/components/ReactNativeQueryProvider';
 import { applicationInit } from '@suite-native/app-init';
 import { selectShouldUserBeAuthenticated } from '@suite-native/biometrics';
 import { launchArguments } from '@suite-native/config';
@@ -19,6 +18,7 @@ import { useFormattersConfig } from '@suite-native/formatters-config';
 import { IntlProvider } from '@suite-native/intl';
 import { KillswitchMessageScreen } from '@suite-native/message-system';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
+import { ReactNativeQueryProvider } from '@suite-native/react-query';
 import { initSentry } from '@suite-native/sentry';
 import {
     type PreloadedState,

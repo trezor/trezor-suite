@@ -1,16 +1,20 @@
 import { type PropsWithChildren, useMemo } from 'react';
 
-import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-import { isDevEnv } from '../config';
+import {
+    MutationCache,
+    QueryCache,
+    QueryClient,
+    QueryClientProvider,
+} from '@suite-common/react-query';
+import { isDevEnv } from '@suite-common/suite-utils';
 
 /**
- * Fail fast during development, retry in production
+ * Fail fast during development, retry in production.
  */
 const MAX_RETRY_COUNT = isDevEnv ? 0 : 3;
 
 /**
- * React Query provider for React Native (@suite-native/app)
+ * React Query provider for the Suite Native application.
  * @url https://tanstack.com/query/v5/docs/framework/react/react-native
  */
 export const ReactNativeQueryProvider = ({ children }: PropsWithChildren) => {

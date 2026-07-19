@@ -16,9 +16,6 @@
             "path": "../../suite-common/formatters"
         },
         {
-            "path": "../../suite-common/react-query"
-        },
-        {
             "path": "../../suite-common/suite-constants"
         },
         {
@@ -79,6 +76,7 @@
         { "path": "../module-trading" },
         { "path": "../module-transactions" },
         { "path": "../navigation" },
+        { "path": "../react-query" },
         { "path": "../sentry" },
         { "path": "../services" },
         { "path": "../settings" },

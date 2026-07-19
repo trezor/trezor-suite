@@ -3,7 +3,8 @@ import { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
+import { desktopQueryKeys } from '@suite/react-query';
+import { useQuery } from '@suite-common/react-query';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type SelectedAccountLoaded, type StellarTokenInfo } from '@suite-common/wallet-types';
 import { getStellarInactiveTokens } from '@suite-common/wallet-utils';
