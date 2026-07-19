@@ -100,6 +100,22 @@ test.describe('TrezorConnect.selectAccount', { tag: ['@T3T1', '@T3W1', '@desktop
         await connectSelectAccountModal.closeButton.click();
     });
 
+    test('rejects a coin Suite cannot render before asking for permissions', async ({
+        connectPermissionsModal,
+    }) => {
+        // `xtz` is Connect-valid but not modeled by Suite. The guard runs before the permissions
+        // modal, so this rejects with no user interaction — unlike the other tests we never click
+        // confirm; a regressed guard would hang here until timeout.
+        const res = TrezorConnect.selectAccount({ coin: 'xtz' });
+
+        const response = await res;
+        expect(response.success).toBe(false);
+        if (response.success) return;
+
+        expect(response.error.code).toBe('Method_UnsupportedCoinForHost');
+        await expect(connectPermissionsModal.confirmButton).toBeHidden();
+    });
+
     test('cancelling returns a Method_Cancel error', async ({
         connectPermissionsModal,
         connectSelectAccountModal,
