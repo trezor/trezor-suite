@@ -37,6 +37,8 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedSelectFrameProps)[numbe
 
 export type { Option } from './types';
 
+// This intentionally exposes only the capability used by consumers instead of deriving it from
+// react-select's generic SelectInstance, which would leak that implementation type into our public API.
 export type SelectRef = {
     clearValue: () => void;
 };
