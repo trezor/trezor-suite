@@ -36,6 +36,7 @@ export const allowedSelectFrameProps = allowedFormCellFrameProps;
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedSelectFrameProps)[number]>;
 
 export type { Option } from './types';
+export { Option as SelectOption } from './customComponents';
 
 // This intentionally exposes only the capability used by consumers instead of deriving it from
 // react-select's generic SelectInstance, which would leak that implementation type into our public API.
