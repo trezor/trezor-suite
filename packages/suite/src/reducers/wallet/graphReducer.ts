@@ -1,12 +1,14 @@
 import { produce } from 'immer';
+import { type Action } from 'redux';
 
 import { accountsActions } from '@suite-common/wallet-core';
 
 import { STORAGE } from 'src/actions/suite/constants';
+import { type StorageLoadAction } from 'src/actions/suite/storageActions';
 import { GRAPH } from 'src/actions/wallet/constants';
+import { type GraphAction } from 'src/actions/wallet/graphActions';
 import { SETTINGS } from 'src/config/suite';
-import { type Action as SuiteAction } from 'src/types/suite';
-import { type Account, type WalletAction } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 import { type AccountIdentifier, type GraphData, type GraphRange } from 'src/types/wallet/graph';
 
 export interface GraphState {
@@ -80,11 +82,32 @@ const remove = (draft: GraphState, accounts: Account[]) => {
     updateError(draft);
 };
 
-const graphReducer = (
-    state: GraphState = initialState,
-    action: WalletAction | SuiteAction,
-): GraphState =>
-    produce(state, draft => {
+type GraphReducerAction =
+    | GraphAction
+    | StorageLoadAction
+    | ReturnType<typeof accountsActions.removeAccount>;
+
+const isGraphReducerAction = (action: Action): action is GraphReducerAction => {
+    switch (action.type) {
+        case STORAGE.LOAD:
+        case GRAPH.ACCOUNT_GRAPH_START:
+        case GRAPH.ACCOUNT_GRAPH_SUCCESS:
+        case GRAPH.ACCOUNT_GRAPH_FAIL:
+        case GRAPH.AGGREGATED_GRAPH_START:
+        case GRAPH.AGGREGATED_GRAPH_SUCCESS:
+        case GRAPH.SET_SELECTED_RANGE:
+            return true;
+        default:
+            return accountsActions.removeAccount.match(action);
+    }
+};
+
+const graphReducer = (state: GraphState = initialState, action: Action): GraphState => {
+    if (!isGraphReducerAction(action)) {
+        return state;
+    }
+
+    return produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOAD:
                 loadFromStorage(draft, action.payload.graph);
@@ -107,14 +130,12 @@ const graphReducer = (
             case GRAPH.SET_SELECTED_RANGE:
                 draft.selectedRange = action.payload;
                 break;
-            case accountsActions.removeAccount.type: {
-                if (accountsActions.removeAccount.match(action)) {
-                    remove(draft, action.payload);
-                }
+            case accountsActions.removeAccount.type:
+                remove(draft, action.payload);
                 break;
-            }
             // no default
         }
     });
+};
 
 export default graphReducer;
