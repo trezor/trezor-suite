@@ -3,6 +3,7 @@
     "suiteVersion": "26.8.0",
     "version": "1.0.0",
     "private": true,
+    "types": "./libDev/index.d.ts",
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint": "yarn lint:styles && yarn lint:js",
