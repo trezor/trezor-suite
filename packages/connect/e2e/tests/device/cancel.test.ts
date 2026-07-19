@@ -1,9 +1,8 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import TrezorConnect from '@trezor/connect';
 import type { CoinSymbol } from '@trezor/connect-common';
 import type { TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 import { Model } from '@trezor/trezor-user-env-link';
 
+import TrezorConnect from '../../../src';
 import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
 
 const getAddress = (showOnTrezor: boolean, coin: CoinSymbol = 'regtest') =>

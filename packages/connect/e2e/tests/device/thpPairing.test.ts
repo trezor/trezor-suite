@@ -1,8 +1,6 @@
 import { vi } from 'vitest';
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-import TrezorConnect, { type Device, type ThpSettings, type UiEvent } from '@trezor/connect';
-
+import TrezorConnect, { type Device, type ThpSettings, type UiEvent } from '../../../src';
 import { THP_CREDENTIALS } from '../../common-thp-credentials';
 import { getController, initTrezorConnect, restartEmu, setup } from '../../common.setup';
 
