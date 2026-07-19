@@ -74,7 +74,7 @@ const breadcrumbActions = new Set<Action['type']>([
 const sentryMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
-    (action: Action): Action | undefined => {
+    (action: Action): Action => {
         // pass action
         next(action);
 
@@ -129,7 +129,7 @@ const sentryMiddleware =
             }
             case deviceActions.setDeviceAuthenticityResult.type: {
                 const { result } = action.payload;
-                if (!result) return;
+                if (!result) break;
 
                 const reportToSentry = (error: string, errorDetails?: string) => {
                     withSentryScope(scope => {
