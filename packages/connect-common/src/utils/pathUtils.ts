@@ -11,7 +11,7 @@ import { arrayPartition } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
 import type { CoinInfo } from '../types/coinInfo';
-import type { DerivationPath, ProtoWithAddressN, ProtoWithDerivationPath } from '../types/params';
+import type { DerivationPath, ProtoWithDerivationPath } from '../types/params';
 
 export const getSlip44ByPath = (path: number[]) => {
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
@@ -185,13 +185,11 @@ export const getSerializedPath = (path: number[]) =>
         })
         .join('/')}`;
 
-export const fixPath = <
-    T extends
-        | ProtoWithDerivationPath<PROTO.TxInputType>
-        | ProtoWithDerivationPath<PROTO.TxOutputType>,
->(
-    utxo: T,
-): ProtoWithAddressN<T> => {
+export function fixPath(utxo: ProtoWithDerivationPath<PROTO.TxInputType>): PROTO.TxInputType;
+export function fixPath(utxo: ProtoWithDerivationPath<PROTO.TxOutputType>): PROTO.TxOutputType;
+export function fixPath(
+    utxo: ProtoWithDerivationPath<PROTO.TxInputType> | ProtoWithDerivationPath<PROTO.TxOutputType>,
+): PROTO.TxInputType | PROTO.TxOutputType {
     // make sure bip32 indices are unsigned
     if (utxo.address_n && Array.isArray(utxo.address_n)) {
         utxo.address_n = utxo.address_n.map(i => i >>> 0);
@@ -201,8 +199,8 @@ export const fixPath = <
         utxo.address_n = getHDPath(utxo.address_n);
     }
 
-    return utxo as ProtoWithAddressN<T>;
-};
+    return utxo as PROTO.TxInputType | PROTO.TxOutputType;
+}
 
 export const getLabel = (label: string, coinInfo?: CoinInfo) => {
     if (coinInfo) {
