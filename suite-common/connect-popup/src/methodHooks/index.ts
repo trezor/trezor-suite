@@ -18,6 +18,13 @@ export const compatibilityHooks = <M extends CallMethodKeys>(
     params: CompatibilityHookParams<M>,
 ): CompatibilityHookParams<M> => composeTransaction.compatibilityHook(params) ?? params;
 
+// Runs before the permissions modal, so a call the host cannot fulfil is rejected up front.
+export const validateCallHooks = <M extends CallMethodKeys>(
+    params: Pick<PreCallHookParams<M>, 'method' | 'payload'>,
+) => {
+    selectAccountHooks.validateHook(params);
+};
+
 export const preCallHooks = async <M extends CallMethodKeys>(params: PreCallHookParams<M>) => {
     await bitcoinSignTransaction.preCallHook(params);
     await solanaSignTransaction.preCallHook(params);

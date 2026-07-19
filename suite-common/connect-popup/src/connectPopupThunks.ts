@@ -43,7 +43,7 @@ import {
     type SelectAccountCandidate,
     isUtxoNetwork,
 } from './connectPopupTypes';
-import { compatibilityHooks, postCallHooks, preCallHooks } from './methodHooks';
+import { compatibilityHooks, postCallHooks, preCallHooks, validateCallHooks } from './methodHooks';
 import type { DistributiveOmit } from './methodHooks/types';
 import {
     deriveCardanoEnabledNetworks,
@@ -116,6 +116,10 @@ export const connectPopupCallThunkInner = createThunk<
                     source,
                 }),
             );
+
+            // Reject a call this host cannot fulfil (e.g. selectAccount for a coin Suite can't render)
+            // before asking for permissions, so the user doesn't approve access only to hit an error.
+            validateCallHooks({ method, payload });
 
             // Check if permission remembered (permission, coin). Keyed on THIS call's required
             // permissions (not the declared superset) so a call is silent whenever its own needs are
