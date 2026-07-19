@@ -7,6 +7,7 @@ import {
     type MiddlewareAPI,
     type Reducer,
     type ReducersMapObject,
+    type Action as ReduxAction,
     type UnknownAction,
     combineReducers,
     configureStore,
@@ -165,9 +166,7 @@ const patchConfirm = (statePatch: any) =>
             JSON.stringify(statePatch, null, 4),
     );
 
-type RootReducerShape = typeof rootReducer;
 export type PreloadedState = Partial<AppState>;
-type InferredAction = Parameters<RootReducerShape>[1];
 
 export type SuiteStoreDeps = HistoryDep &
     PlatformEncryptionDep &
@@ -223,7 +222,7 @@ export const initStore = (
     > | null;
 
     const store = configureStore({
-        reducer: rootReducer as Reducer<AppState, InferredAction, PreloadedState>,
+        reducer: rootReducer as Reducer<AppState, ReduxAction, PreloadedState>,
         preloadedState: patchedState,
         middleware: getDefaultMiddleware =>
             getDefaultMiddleware({

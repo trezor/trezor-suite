@@ -1,13 +1,26 @@
 import { produce } from 'immer';
+import { type Action as ReduxAction } from 'redux';
 
 import { type OnboardingAnalytics } from '@suite/analytics';
 import { type BackupType } from '@suite-common/suite-types';
-import { DEVICE } from '@trezor/connect';
+import { DEVICE, type DeviceEvent } from '@trezor/connect';
+import { isArrayMember } from '@trezor/utils';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
+import { type OnboardingAction } from 'src/actions/onboarding/onboardingActions';
 import * as STEP from 'src/constants/onboarding/steps';
 import type { AnyPath, AnyStepId } from 'src/types/onboarding';
-import { type Action } from 'src/types/suite';
+
+type DeviceDisconnectAction = DeviceEvent & { type: typeof DEVICE.DISCONNECT };
+type OnboardingReducerAction = OnboardingAction | DeviceDisconnectAction;
+
+const ONBOARDING_REDUCER_ACTION_TYPES = [
+    ...Object.values(ONBOARDING),
+    DEVICE.DISCONNECT,
+] as const satisfies OnboardingReducerAction['type'][];
+
+const isOnboardingReducerAction = (action: ReduxAction): action is OnboardingReducerAction =>
+    isArrayMember(action.type, ONBOARDING_REDUCER_ACTION_TYPES);
 
 export interface OnboardingRootState {
     onboarding: OnboardingState;
@@ -51,42 +64,51 @@ const addPath = (path: AnyPath, state: OnboardingState) => {
 const removePath = (paths: AnyPath[], state: OnboardingState) =>
     state.path.filter(p => !paths.includes(p));
 
-const ALLOWED_ACTION_TYPES = new Set<Action['type']>([
+const ALLOWED_ACTION_TYPES = new Set<OnboardingReducerAction['type']>([
     ONBOARDING.RESET_ONBOARDING,
     ONBOARDING.ENABLE_ONBOARDING_REDUCER,
     ONBOARDING.ANALYTICS,
 ]);
 
-const onboarding = (state: OnboardingState = initialState, action: Action) => {
+const onboarding = (state: OnboardingState = initialState, action: ReduxAction) => {
+    if (!isOnboardingReducerAction(action)) {
+        return state;
+    }
+
     if (!state.isActive && !ALLOWED_ACTION_TYPES.has(action.type)) {
         return state;
     }
 
+    const onboardingAction: OnboardingReducerAction = action;
+
     return produce(state, draft => {
-        switch (action.type) {
+        switch (onboardingAction.type) {
             case ONBOARDING.ENABLE_ONBOARDING_REDUCER:
-                draft.isActive = action.payload;
+                draft.isActive = onboardingAction.payload;
                 break;
             case ONBOARDING.SET_STEP_ACTIVE:
-                draft.activeStepId = action.stepId;
+                draft.activeStepId = onboardingAction.stepId;
                 break;
             case ONBOARDING.ADD_PATH:
-                draft.path = addPath(action.payload, state);
+                draft.path = addPath(onboardingAction.payload, state);
                 break;
             case ONBOARDING.REMOVE_PATH:
-                draft.path = removePath(action.payload, state);
+                draft.path = removePath(onboardingAction.payload, state);
                 break;
             case DEVICE.DISCONNECT:
-                draft.prevDeviceId = action.payload.id ?? null;
+                draft.prevDeviceId = onboardingAction.payload.id ?? null;
                 break;
             case ONBOARDING.ANALYTICS:
-                draft.onboardingAnalytics = { ...state.onboardingAnalytics, ...action.payload };
+                draft.onboardingAnalytics = {
+                    ...state.onboardingAnalytics,
+                    ...onboardingAction.payload,
+                };
                 break;
             case ONBOARDING.SELECT_BACKUP_TYPE:
-                draft.backupType = action.payload;
+                draft.backupType = onboardingAction.payload;
                 break;
             case ONBOARDING.SELECT_BACKUP_MEDIUM:
-                draft.backupMedium = action.payload;
+                draft.backupMedium = onboardingAction.payload;
                 break;
 
             case ONBOARDING.RESET_ONBOARDING:

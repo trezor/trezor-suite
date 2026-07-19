@@ -1,3 +1,5 @@
+import { type Action } from 'redux';
+
 import { metadataActions } from '@suite/metadata';
 import {
     routerLocationChange,
@@ -20,7 +22,7 @@ import { type SelectedAccountStatus, type WalletParams } from '@suite-common/wal
 import { isChanged } from '@trezor/utils';
 
 import { accountSearchActions } from 'src/reducers/wallet/accountSearchReducer';
-import { type Action, type AppState, type Dispatch, type GetState } from 'src/types/suite';
+import { type AppState, type Dispatch, type GetState } from 'src/types/suite';
 import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
 
 // move to selector!!!!

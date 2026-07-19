@@ -1,11 +1,38 @@
 import { produce } from 'immer';
+import { type Action as ReduxAction } from 'redux';
 
 import type { CountryCode } from '@suite-common/geolocation';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { TRANSPORT, type TransportInfo } from '@trezor/connect';
+import { TRANSPORT, type TransportEvent, type TransportInfo } from '@trezor/connect';
+import { isArrayMember } from '@trezor/utils';
 
 import { STORAGE, SUITE } from 'src/actions/suite/constants';
-import { type Action } from 'src/types/suite';
+import { type StorageAction } from 'src/actions/suite/storageActions';
+import { type SuiteAction } from 'src/actions/suite/suiteActions';
+
+type SuiteReducerAction = StorageAction | SuiteAction | TransportEvent;
+
+const SUITE_REDUCER_ACTION_TYPES = [
+    STORAGE.LOAD,
+    STORAGE.ERROR,
+    STORAGE.CORRUPTED,
+    SUITE.INIT,
+    SUITE.READY,
+    SUITE.ERROR,
+    SUITE.SET_RECENTLY_CONNECTED_DEVICE,
+    SUITE.SET_RECENTLY_DISCONNECTED_DEVICE,
+    SUITE.ADD_DEVICE_ID_TO_SEEN_DISCONNECT_NOTIFICATION,
+    SUITE.EVM_CONFIRM_EXPLANATION_MODAL,
+    SUITE.EVM_CLOSE_EXPLANATION_BANNER,
+    SUITE.SET_SEND_FORM_PREFILL,
+    SUITE.SET_TRANSACTION_HISTORY_PREFILL,
+    TRANSPORT.START,
+    TRANSPORT.ERROR,
+    SUITE.ONLINE_STATUS,
+] as const satisfies SuiteReducerAction['type'][];
+
+const isSuiteReducerAction = (action: ReduxAction): action is SuiteReducerAction =>
+    isArrayMember(action.type, SUITE_REDUCER_ACTION_TYPES);
 
 export type SuiteRootState = {
     suite: SuiteState;
@@ -69,24 +96,31 @@ const initialState: SuiteState = {
 
 export const suiteInitialState = initialState;
 
-const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteState =>
-    produce(state, draft => {
-        switch (action.type) {
+const suiteReducer = (state: SuiteState = initialState, action: ReduxAction): SuiteState => {
+    if (!isSuiteReducerAction(action)) {
+        return state;
+    }
+
+    const suiteAction: SuiteReducerAction = action;
+
+    return produce(state, draft => {
+        switch (suiteAction.type) {
             case STORAGE.LOAD:
                 draft.evmSettings = {
                     ...draft.evmSettings,
-                    ...action.payload.suiteSettings?.evmSettings,
+                    ...suiteAction.payload.suiteSettings?.evmSettings,
                 };
                 draft.seenDisconnectNotificationForDeviceIds = [
                     ...draft.seenDisconnectNotificationForDeviceIds,
-                    ...(action.payload.suiteSettings?.seenDisconnectNotificationForDeviceIds ?? []),
+                    ...(suiteAction.payload.suiteSettings?.seenDisconnectNotificationForDeviceIds ??
+                        []),
                 ];
                 break;
             case STORAGE.ERROR:
-                draft.lifecycle = { status: 'db-error', error: action.payload };
+                draft.lifecycle = { status: 'db-error', error: suiteAction.payload };
                 break;
             case STORAGE.CORRUPTED:
-                draft.lifecycle = { status: 'db-corrupted', error: action.payload };
+                draft.lifecycle = { status: 'db-corrupted', error: suiteAction.payload };
                 break;
             case SUITE.INIT:
                 draft.lifecycle = { status: 'loading' };
@@ -96,19 +130,19 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 break;
 
             case SUITE.ERROR:
-                draft.lifecycle = { status: 'error', error: action.error };
+                draft.lifecycle = { status: 'error', error: suiteAction.error };
                 break;
 
             case SUITE.SET_RECENTLY_CONNECTED_DEVICE:
-                draft.recentlyConnectedDeviceRef = action.payload;
+                draft.recentlyConnectedDeviceRef = suiteAction.payload;
                 break;
             case SUITE.SET_RECENTLY_DISCONNECTED_DEVICE:
-                draft.recentlyDisconnectedDevice = action.payload;
+                draft.recentlyDisconnectedDevice = suiteAction.payload;
                 break;
             case SUITE.ADD_DEVICE_ID_TO_SEEN_DISCONNECT_NOTIFICATION:
                 draft.seenDisconnectNotificationForDeviceIds = [
                     ...draft.seenDisconnectNotificationForDeviceIds,
-                    action.payload.deviceId,
+                    suiteAction.payload.deviceId,
                 ];
                 break;
 
@@ -117,9 +151,9 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                     ...draft.evmSettings,
                     confirmExplanationModalClosed: {
                         ...draft.evmSettings.confirmExplanationModalClosed,
-                        [action.symbol]: {
-                            ...draft.evmSettings.confirmExplanationModalClosed[action.symbol],
-                            [action.route]: true,
+                        [suiteAction.symbol]: {
+                            ...draft.evmSettings.confirmExplanationModalClosed[suiteAction.symbol],
+                            [suiteAction.route]: true,
                         },
                     },
                 };
@@ -130,21 +164,21 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                     ...draft.evmSettings,
                     explanationBannerClosed: {
                         ...draft.evmSettings.explanationBannerClosed,
-                        [action.symbol]: true,
+                        [suiteAction.symbol]: true,
                     },
                 };
                 break;
 
             case SUITE.SET_SEND_FORM_PREFILL:
-                draft.prefillFields.sendForm = action.payload.contractAddress;
+                draft.prefillFields.sendForm = suiteAction.payload.contractAddress;
                 break;
 
             case SUITE.SET_TRANSACTION_HISTORY_PREFILL:
-                draft.prefillFields.transactionHistory = action.payload;
+                draft.prefillFields.transactionHistory = suiteAction.payload;
                 break;
 
             case TRANSPORT.START: {
-                const { ...transport } = action.payload;
+                const { ...transport } = suiteAction.payload;
                 const transports = draft.transport?.transports ?? [];
                 const index = transports.findIndex(t => t.apiType === transport.apiType);
                 if (index >= 0) transports[index] = transport;
@@ -153,7 +187,7 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 break;
             }
             case TRANSPORT.ERROR: {
-                const { apiType, error } = action.payload;
+                const { apiType, error } = suiteAction.payload;
                 const transports =
                     !draft.transport || !apiType
                         ? (draft.transport?.transports ?? [])
@@ -162,11 +196,12 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 break;
             }
             case SUITE.ONLINE_STATUS:
-                draft.online = action.payload;
+                draft.online = suiteAction.payload;
                 break;
 
             // no default
         }
     });
+};
 
 export default suiteReducer;

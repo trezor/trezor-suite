@@ -1,7 +1,7 @@
-import { type Reducer, type UnknownAction, combineReducers } from 'redux';
+import { type Reducer, type Action as ReduxAction, combineReducers } from 'redux';
 
 import { selectedAccountReducer } from '@suite/account';
-import { type CoinjoinAction, type CoinjoinState, coinjoinReducer } from '@suite/coinjoin';
+import { type CoinjoinState, coinjoinReducer } from '@suite/coinjoin';
 import { type TradingState, prepareTradingReducer } from '@suite-common/trading';
 import {
     type AccountsState,
@@ -37,7 +37,6 @@ import {
 } from '@suite-common/wallet-types';
 
 import { extraDependencies } from 'src/support/extraDependencies';
-import { type Action } from 'src/types/suite';
 
 import accountSearchReducer, { type AccountSearchState } from './accountSearchReducer';
 import formDraftReducer from './formDraftReducer';
@@ -79,7 +78,7 @@ export type WalletState = {
 
 export const walletReducers: Reducer<
     WalletState,
-    Action | UnknownAction | CoinjoinAction,
+    ReduxAction,
     Partial<Omit<WalletState, 'graph' | 'coinjoin'>>
 > = combineReducers({
     fiat: fiatRatesReducer,

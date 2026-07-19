@@ -1,9 +1,11 @@
+import { type Action as ReduxAction } from 'redux';
+
 import type { ActiveView, GuideCategory, GuideNode } from '@suite-common/suite-types';
 import { variables } from '@trezor/components';
 import * as indexNodeJSON from '@trezor/suite-data/files/guide/index.json';
 
 import { GUIDE } from 'src/actions/suite/constants';
-import { type Action } from 'src/types/suite';
+import { type GuideAction } from 'src/actions/suite/guideActions';
 
 export interface GuideState {
     open: boolean;
@@ -24,8 +26,10 @@ export const initialState: GuideState = {
 };
 
 // NOTE: we cannot use immer in this reducer, because GuideCategory mimics the react node and immer uses Object.freeze()
-const guideReducer = (state: GuideState = initialState, action: Action): GuideState => {
-    switch (action.type) {
+const guideReducer = (state: GuideState = initialState, action: ReduxAction): GuideState => {
+    const guideAction = action as GuideAction;
+
+    switch (guideAction.type) {
         case GUIDE.OPEN:
             return {
                 ...state,
@@ -40,12 +44,12 @@ const guideReducer = (state: GuideState = initialState, action: Action): GuideSt
         case GUIDE.SET_VIEW:
             return {
                 ...state,
-                view: action.payload,
+                view: guideAction.payload,
             };
         case GUIDE.SET_INDEX_NODE:
             return {
                 ...state,
-                indexNode: action.payload,
+                indexNode: guideAction.payload,
             };
         case GUIDE.UNSET_NODE:
             return {
@@ -55,12 +59,12 @@ const guideReducer = (state: GuideState = initialState, action: Action): GuideSt
         case GUIDE.OPEN_NODE:
             return {
                 ...state,
-                currentNode: action.payload,
+                currentNode: guideAction.payload,
             };
         case GUIDE.SET_WIDTH:
             return {
                 ...state,
-                width: action.payload,
+                width: guideAction.payload,
             };
         default:
             return state;
