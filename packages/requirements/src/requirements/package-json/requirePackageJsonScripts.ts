@@ -62,6 +62,7 @@ const REQUIRED_SCRIPTS: Record<string, RequiredScriptConfig> = {
             'connect-example-electron-main',
             'connect-mobile-example',
             'connect-example-node',
+            '@trezor/webextension-mv3-sw-ts',
         ],
     },
     'test:unit': {
