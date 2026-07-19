@@ -15,7 +15,6 @@ const FILES_EXPECTED_TO_GROW = new Set<string>([
     'suite/intl/libDev/src/messages.d.ts',
     'suite-native/intl/libDev/src/messages.d.ts',
     'suite-native/intl/libDev/src/Translate.d.ts',
-    'suite-common/message-system/libDev/files/config.v1.d.ts',
     'packages/protobuf/libDev/src/definitions/index.d.ts',
     'packages/protobuf/libDev/src/definitions/messages-bitcoin.d.ts',
 ]);
