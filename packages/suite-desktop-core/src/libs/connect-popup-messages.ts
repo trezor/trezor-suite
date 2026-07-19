@@ -3,7 +3,7 @@
  * Used by both connect-ws (WebSocket) and mcp-server (MCP) modules
  * to route responses from the renderer back to the correct caller.
  */
-import type { ConnectPopupResponse } from '@trezor/suite-desktop-api/src/messages';
+import type { ConnectPopupResponse } from '@trezor/suite-desktop-api';
 import { type Deferred, createDeferred } from '@trezor/utils';
 
 import { ipcMain } from '../typed-electron';
