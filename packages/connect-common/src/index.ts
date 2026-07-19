@@ -16,6 +16,7 @@ export {
     corsValidator,
 } from './data/connectSettings';
 export * from './utils/debug';
+export * from './utils/cancelParams';
 export * from './utils/urlUtils';
 export { getSerializedPath, getSlip44ByPath, validatePath } from './utils/pathUtils';
 export { connectCallableMethods } from './callableMethods';
