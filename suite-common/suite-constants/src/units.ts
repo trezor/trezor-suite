@@ -1,20 +1,20 @@
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import { AmountUnit } from '@trezor/protobuf/src/definitions/messages-bitcoin';
 
 export const UNIT_ABBREVIATIONS = {
-    [PROTO.AmountUnit.BITCOIN]: 'BTC',
-    [PROTO.AmountUnit.MICROBITCOIN]: 'μBTC',
-    [PROTO.AmountUnit.MILLIBITCOIN]: 'mBTC',
-    [PROTO.AmountUnit.SATOSHI]: 'sat',
+    [AmountUnit.BITCOIN]: 'BTC',
+    [AmountUnit.MICROBITCOIN]: 'μBTC',
+    [AmountUnit.MILLIBITCOIN]: 'mBTC',
+    [AmountUnit.SATOSHI]: 'sat',
 };
 
 export const UNIT_LABELS = {
-    [PROTO.AmountUnit.BITCOIN]: 'Bitcoin',
-    [PROTO.AmountUnit.SATOSHI]: 'Satoshis',
+    [AmountUnit.BITCOIN]: 'Bitcoin',
+    [AmountUnit.SATOSHI]: 'Satoshis',
 };
 
 export const UNIT_OPTIONS = [
-    { label: UNIT_LABELS[PROTO.AmountUnit.BITCOIN], value: PROTO.AmountUnit.BITCOIN },
-    { label: UNIT_LABELS[PROTO.AmountUnit.SATOSHI], value: PROTO.AmountUnit.SATOSHI },
+    { label: UNIT_LABELS[AmountUnit.BITCOIN], value: AmountUnit.BITCOIN },
+    { label: UNIT_LABELS[AmountUnit.SATOSHI], value: AmountUnit.SATOSHI },
 ];
 
-export type UNIT_ABBREVIATION = (typeof UNIT_ABBREVIATIONS)[PROTO.AmountUnit];
+export type UNIT_ABBREVIATION = (typeof UNIT_ABBREVIATIONS)[AmountUnit];
