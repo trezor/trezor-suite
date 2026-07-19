@@ -14,6 +14,7 @@ const TrezorConnect = factoryPublic(
 );
 
 export default TrezorConnect;
+export { CoreInSuiteDesktop, CoreInSuiteWeb };
 export * from '@trezor/connect-common/src/constants';
 export * from '@trezor/connect-common/src/events';
 export * from '@trezor/connect-common/src/types';

@@ -1,15 +1,13 @@
-// note: at the moment, there is something in the root of @trezor/connect-common that pulls entire PROTO runtime, thus
-// these targeted imports
-import { CORE_CALL_CANCEL, POPUP } from '@trezor/connect-common/src/events';
-import { factoryPublic } from '@trezor/connect-common/src/factory';
-import { TrezorConnectDynamic } from '@trezor/connect-common/src/impl/dynamic';
-// Import as src not lib due to webpack issues with inlining content script later
-import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window';
-import type { ConnectDynamicSettings } from '@trezor/connect-common/src/types';
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- intra-tier wiring: connect-webextension composes implementations from connect-web (see #27376)
-import { CoreInSuiteDesktop } from '@trezor/connect-web/src/impl/core-in-suite-desktop';
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- intra-tier wiring: connect-webextension composes implementations from connect-web (see #27376)
-import { CoreInSuiteWeb } from '@trezor/connect-web/src/impl/core-in-suite-web';
+import {
+    CORE_CALL_CANCEL,
+    type ConnectDynamicSettings,
+    POPUP,
+    ServiceWorkerWindowChannel,
+    TrezorConnectDynamic,
+    type TrezorConnectPublicAPI,
+    factoryPublic,
+} from '@trezor/connect-common';
+import { CoreInSuiteDesktop, CoreInSuiteWeb } from '@trezor/connect-web';
 
 const impl = new TrezorConnectDynamic({
     implementations: {
@@ -19,7 +17,7 @@ const impl = new TrezorConnectDynamic({
 });
 
 // Bind all methods due to shadowing `this`
-const TrezorConnect = factoryPublic(impl);
+const TrezorConnect: TrezorConnectPublicAPI<ConnectDynamicSettings> = factoryPublic(impl);
 
 const initProxyChannel = () => {
     const channel = new ServiceWorkerWindowChannel<{
@@ -103,6 +101,4 @@ initProxyChannel();
 
 // eslint-disable-next-line import/no-default-export
 export default TrezorConnect;
-export * from '@trezor/connect-common/src/constants';
-export * from '@trezor/connect-common/src/events';
-export type * from '@trezor/connect-common/src/types';
+export * from '@trezor/connect-common';

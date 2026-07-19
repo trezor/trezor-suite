@@ -1,12 +1,15 @@
-import { ERRORS } from '@trezor/connect-common/src/constants';
-import { CORE_CALL, POPUP, createErrorMessage } from '@trezor/connect-common/src/events';
-import { factoryPublic } from '@trezor/connect-common/src/factory';
-import { WindowServiceWorkerChannel } from '@trezor/connect-common/src/messageChannel/window-serviceworker';
-import type { ConnectDynamicSettings } from '@trezor/connect-common/src/types';
 import {
+    CORE_CALL,
     type CancelParams,
+    type ConnectDynamicSettings,
+    ERRORS,
+    POPUP,
+    type TrezorConnectPublicAPI,
+    WindowServiceWorkerChannel,
     createCoreCallCancelMessage,
-} from '@trezor/connect-common/src/utils/cancelParams';
+    createErrorMessage,
+    factoryPublic,
+} from '@trezor/connect-common';
 
 let _channel: any;
 
@@ -70,10 +73,13 @@ const call = async (params: any) => {
     }
 };
 
-const TrezorConnect = factoryPublic({ init, call, cancel, dispose });
+const TrezorConnect: TrezorConnectPublicAPI<ConnectDynamicSettings> = factoryPublic({
+    init,
+    call,
+    cancel,
+    dispose,
+});
 
 // eslint-disable-next-line import/no-default-export
 export default TrezorConnect;
-export * from '@trezor/connect-common/src/constants';
-export * from '@trezor/connect-common/src/events';
-export * from '@trezor/connect-common/src/types';
+export * from '@trezor/connect-common';
