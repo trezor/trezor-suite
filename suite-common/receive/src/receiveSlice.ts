@@ -1,4 +1,4 @@
-import { type ActionCreatorWithPayload, type PayloadAction } from '@reduxjs/toolkit';
+import { type PayloadAction } from '@reduxjs/toolkit';
 
 import { createSliceWithExtraDeps, createWeakMapSelector } from '@suite-common/redux-utils';
 import { accountsActions } from '@suite-common/wallet-core';
@@ -31,14 +31,6 @@ type ReceiveActionPayload = {
 type SetCurrentFreshAddressPayload = {
     accountKey: AccountKey;
     currentFreshAddress?: CurrentFreshAddress;
-};
-
-type ReceiveActions = {
-    showAddress: ActionCreatorWithPayload<ReceiveActionPayload, 'receive/showAddress'>;
-    setCurrentFreshAddress: ActionCreatorWithPayload<
-        SetCurrentFreshAddressPayload,
-        'receive/setCurrentFreshAddress'
-    >;
 };
 
 export const receiveInitialState: ReceiveState = {
@@ -118,5 +110,5 @@ export const selectCurrentFreshAddress = createMemoizedSelector(
     accountState => accountState?.currentFreshAddress,
 );
 
-export const receiveActions: ReceiveActions = receiveSlice.actions;
+export const receiveActions = receiveSlice.actions;
 export const prepareReceiveReducer = receiveSlice.prepareReducer;
