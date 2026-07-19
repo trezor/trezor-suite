@@ -40,6 +40,38 @@
                 "types": "./lib/index.d.ts",
                 "default": "./lib/index.js"
             },
+            "./workers/baseWorker": {
+                "types": "./lib/workers/baseWorker.d.ts",
+                "default": "./lib/workers/baseWorker.js"
+            },
+            "./workers/blockbook": {
+                "types": "./lib/workers/blockbook/index.d.ts",
+                "default": "./lib/workers/blockbook/index.js"
+            },
+            "./workers/blockfrost": {
+                "types": "./lib/workers/blockfrost/index.d.ts",
+                "default": "./lib/workers/blockfrost/index.js"
+            },
+            "./workers/electrum": {
+                "types": "./lib/workers/electrum/index.d.ts",
+                "default": "./lib/workers/electrum/index.js"
+            },
+            "./workers/evm-rpc": {
+                "types": "./lib/workers/evm-rpc/index.d.ts",
+                "default": "./lib/workers/evm-rpc/index.js"
+            },
+            "./workers/ripple": {
+                "types": "./lib/workers/ripple/index.d.ts",
+                "default": "./lib/workers/ripple/index.js"
+            },
+            "./workers/solana": {
+                "types": "./lib/workers/solana/index.d.ts",
+                "default": "./lib/workers/solana/index.js"
+            },
+            "./workers/stellar": {
+                "types": "./lib/workers/stellar/index.d.ts",
+                "default": "./lib/workers/stellar/index.js"
+            },
             "./lib/*": "./lib/*"
         },
         "browser": {
