@@ -4,7 +4,14 @@ import { join } from 'node:path';
 import type { Requirement, WorkspaceContext } from '../Requirement';
 
 const PACKAGE_JSON_FILE = 'package.json';
-const REQUIRED_TYPES_FIELD = './libDev/src/index.d.ts';
+const DEFAULT_TYPES_FIELD = './libDev/src/index.d.ts';
+
+const TYPES_FIELD_OVERRIDES: Record<string, string> = {
+    '@trezor/suite': './libDev/index.d.ts',
+};
+
+const getRequiredTypesField = (workspaceName: string) =>
+    TYPES_FIELD_OVERRIDES[workspaceName] ?? DEFAULT_TYPES_FIELD;
 
 const isIgnoredWorkspace = (workspaceName: string) =>
     [
@@ -34,6 +41,7 @@ const getVerificationErrors = (context: WorkspaceContext) => {
 
     const packageJsonPath = join(context.workspaceDir, PACKAGE_JSON_FILE);
     const parsed = readPackageJson(packageJsonPath);
+    const requiredTypesField = getRequiredTypesField(context.workspaceName);
 
     if (!parsed) {
         return [
@@ -41,9 +49,9 @@ const getVerificationErrors = (context: WorkspaceContext) => {
         ];
     }
 
-    if (parsed.types !== REQUIRED_TYPES_FIELD) {
+    if (parsed.types !== requiredTypesField) {
         return [
-            `${context.workspaceName}: types must be "${REQUIRED_TYPES_FIELD}" in ${PACKAGE_JSON_FILE}.`,
+            `${context.workspaceName}: types must be "${requiredTypesField}" in ${PACKAGE_JSON_FILE}.`,
         ];
     }
 
@@ -61,6 +69,7 @@ export const requirePackageJsonTypes: Requirement<'workspace'> = {
 
         const packageJsonPath = join(context.workspaceDir, PACKAGE_JSON_FILE);
         const parsed = readPackageJson(packageJsonPath);
+        const requiredTypesField = getRequiredTypesField(context.workspaceName);
 
         if (!parsed) {
             return Promise.resolve([
@@ -73,7 +82,7 @@ export const requirePackageJsonTypes: Requirement<'workspace'> = {
             `${JSON.stringify(
                 {
                     ...parsed,
-                    types: REQUIRED_TYPES_FIELD,
+                    types: requiredTypesField,
                 },
                 null,
                 4,

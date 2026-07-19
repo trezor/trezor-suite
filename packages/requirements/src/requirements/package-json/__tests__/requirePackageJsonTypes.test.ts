@@ -76,6 +76,24 @@ describe(requirePackageJsonTypes.name, () => {
         });
     });
 
+    it('uses the Suite application declaration entry', async () => {
+        context = {
+            ...context,
+            workspaceName: '@trezor/suite',
+        };
+        writeFileSync(
+            join(workspaceDir, 'package.json'),
+            JSON.stringify({ types: './libDev/src/index.d.ts' }),
+        );
+
+        const errors = await requirePackageJsonTypes.fix!(context);
+
+        expect(errors).toEqual([]);
+        expect(JSON.parse(readFileSync(join(workspaceDir, 'package.json'), 'utf8'))).toEqual({
+            types: './libDev/index.d.ts',
+        });
+    });
+
     it('reports missing or invalid package.json', async () => {
         const errorsWithoutFile = await requirePackageJsonTypes.verify(context);
 
