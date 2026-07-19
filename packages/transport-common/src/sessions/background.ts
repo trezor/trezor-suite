@@ -47,8 +47,10 @@ export class SessionsBackground
     /**
      * Dictionary where key is path and value is Descriptor
      */
-    private descriptors: DescriptorsDict = {};
-    private pathInternalPathPublicMap: Record<PathInternal, PathPublic> = {};
+    // null prototype: paths are raw USB serial numbers, so inherited keys
+    // ('toString', '__proto__', ...) must not read as existing entries
+    private descriptors: DescriptorsDict = Object.create(null);
+    private pathInternalPathPublicMap: Record<PathInternal, PathPublic> = Object.create(null);
 
     // if lock is set, somebody is doing something with device. we have to wait
     private locksQueue: { id: TimerId; dfd: Deferred<void> }[] = [];
@@ -337,7 +339,7 @@ export class SessionsBackground
     dispose() {
         this.locksQueue.forEach(lock => clearTimeout(lock.id));
         this.locksTimeoutQueue.forEach(timeout => clearTimeout(timeout));
-        this.descriptors = {};
+        this.descriptors = Object.create(null);
         this.lastSessionId = 0;
         this.removeAllListeners();
     }
