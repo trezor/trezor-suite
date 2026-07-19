@@ -5,6 +5,8 @@ type Country = Readonly<{
     name: string;
 }>;
 
+// Keep the catalogue keys explicit so additions and removals remain exhaustively type-checked
+// without TypeScript serializing every country implementation literal into public declarations.
 type CountryCatalogue = {
     readonly AD: Country;
     readonly AE: Country;
