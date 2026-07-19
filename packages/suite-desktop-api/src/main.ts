@@ -19,4 +19,9 @@ export type {
     BootstrapTorEvent,
     TorStatusEvent,
     HandshakeTorModule,
+    BridgeSettings,
+    ConnectPopupResponse,
+    Status,
+    TorSettings,
+    TraySettings,
 } from './messages';

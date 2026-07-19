@@ -6,7 +6,7 @@ import path from 'path';
 
 import { DEVICE, type DeviceEvent } from '@trezor/connect';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
-import { type Status, type TraySettings } from '@trezor/suite-desktop-api/src/messages';
+import { type Status, type TraySettings } from '@trezor/suite-desktop-api';
 
 import { app, ipcMain } from '../typed-electron';
 import { type ModuleInitBackground, mainThreadEmitter } from './module';

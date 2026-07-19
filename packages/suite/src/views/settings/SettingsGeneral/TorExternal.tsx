@@ -4,8 +4,7 @@ import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectTorState } from '@suite/tor';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
-import { desktopApi } from '@trezor/suite-desktop-api';
-import { type TorSettings } from '@trezor/suite-desktop-api/src/messages';
+import { type TorSettings, desktopApi } from '@trezor/suite-desktop-api';
 
 import { useSelector } from 'src/hooks/suite';
 
