@@ -17,7 +17,7 @@ const alias = [
     },
 ];
 
-// Plugin to resolve bare module specifiers (e.g. @trezor/blockchain-link/src/workers/blockbook)
+// Plugin to resolve bare module specifiers (e.g. @trezor/blockchain-link/workers/blockbook)
 // inside new Worker(new URL(..., import.meta.url)) calls.
 // In dev mode, Vite doesn't bundle — the browser constructs the URL at runtime and has no way to
 // resolve bare package specifiers, so we must expand them to /@fs/ paths that the dev server
