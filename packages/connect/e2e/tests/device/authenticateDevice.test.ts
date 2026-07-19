@@ -1,9 +1,8 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import TrezorConnect from '@trezor/connect';
 import type { DeviceAuthenticityConfig } from '@trezor/device-authenticity';
 import { deviceAuthenticityConfig } from '@trezor/device-authenticity';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
+import TrezorConnect from '../../../src';
 import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
 
 const controller = getController();
