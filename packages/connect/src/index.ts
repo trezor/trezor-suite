@@ -1,4 +1,8 @@
-import { type UpdateConnectSettings, factoryPrivileged } from '@trezor/connect-common';
+import {
+    type TrezorConnectPrivilegedAPI,
+    type UpdateConnectSettings,
+    factoryPrivileged,
+} from '@trezor/connect-common';
 import { BridgeTransport } from '@trezor/transport/src/transports/bridge';
 import type { AbstractTransportParams } from '@trezor/transport-common';
 
@@ -15,7 +19,7 @@ class CoreInModuleNode extends CoreInModule {
     }
 }
 
-const TrezorConnect = factoryPrivileged(new CoreInModuleNode());
+const TrezorConnect: TrezorConnectPrivilegedAPI = factoryPrivileged(new CoreInModuleNode());
 
 export default TrezorConnect;
 
