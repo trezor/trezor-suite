@@ -38,6 +38,14 @@ const connectDeepImportPatterns = [
     },
 ];
 
+const suiteDesktopApiDeepImportPattern = {
+    group: ['@trezor/suite-desktop-api/src/**'],
+    message:
+        'Import from "@trezor/suite-desktop-api" instead. Deep paths into "@trezor/suite-desktop-api/src/**" bypass the public API.',
+};
+
+const packageDeepImportPatterns = [...connectDeepImportPatterns, suiteDesktopApiDeepImportPattern];
+
 // Deny importing internal suite packages from outside the suite app itself.
 const suiteInternalPatterns = {
     group: ['@suite-common/**', '@suite-native/**'],
@@ -49,7 +57,7 @@ export const restrictedImportsPatterns = [
     buildArtifactPatterns,
     suiteInternalPatterns,
     networksPackagePattern,
-    ...connectDeepImportPatterns,
+    ...packageDeepImportPatterns,
 ];
 
 /** @type {import('typescript-eslint').ConfigArray} */
@@ -73,7 +81,7 @@ export const typescriptConfig = [
                     patterns: [
                         buildArtifactPatterns,
                         networksPackagePattern,
-                        ...connectDeepImportPatterns,
+                        ...packageDeepImportPatterns,
                     ],
                 },
             ],
