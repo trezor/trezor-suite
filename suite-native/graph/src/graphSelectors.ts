@@ -10,6 +10,7 @@ import { deserializeGraphEvents, deserializeGraphPoints } from './graphDataUtils
 import {
     type GraphInstanceId,
     getAccountGraphInstanceId,
+    getGraphInstanceStateKey,
     getPortfolioGraphInstanceId,
 } from './graphInstances';
 import { type GraphSliceRootState, getGraphTimeframeOrDefault } from './slice';
@@ -24,18 +25,22 @@ const createGraphMemoizedSelector = createWeakMapSelector.withTypes<GraphSliceRo
 const selectStoredGraphPoints = (
     state: GraphSliceRootState,
     instanceId: GraphInstanceId,
-): StoredFiatGraphPoint[] | undefined => state.graph.graphs[instanceId]?.points;
+): StoredFiatGraphPoint[] | undefined =>
+    state.graph.graphs[getGraphInstanceStateKey(instanceId)]?.points;
 
 const selectStoredGraphEvents = (
     state: GraphSliceRootState,
     instanceId: GraphInstanceId,
-): StoredGroupedBalanceMovementEvent[] | undefined => state.graph.graphs[instanceId]?.events;
+): StoredGroupedBalanceMovementEvent[] | undefined =>
+    state.graph.graphs[getGraphInstanceStateKey(instanceId)]?.events;
 
 export const selectGraphTimeframe = (
     state: GraphSliceRootState,
     instanceId: GraphInstanceId,
 ): TimeframeHoursValue =>
-    getGraphTimeframeOrDefault(state.graph.graphs[instanceId]?.timeframeHours);
+    getGraphTimeframeOrDefault(
+        state.graph.graphs[getGraphInstanceStateKey(instanceId)]?.timeframeHours,
+    );
 
 export const selectPortfolioGraphTimeframe = (state: GraphSliceRootState): TimeframeHoursValue =>
     selectGraphTimeframe(state, getPortfolioGraphInstanceId());
@@ -50,7 +55,7 @@ export const selectAccountGraphTimeframe = (
 export const selectGraphIsLoading = (
     state: GraphSliceRootState,
     instanceId: GraphInstanceId,
-): boolean => state.graph.graphs[instanceId]?.isLoading ?? true;
+): boolean => state.graph.graphs[getGraphInstanceStateKey(instanceId)]?.isLoading ?? true;
 
 export const selectPortfolioGraphIsLoading = (state: GraphSliceRootState): boolean =>
     selectGraphIsLoading(state, getPortfolioGraphInstanceId());
@@ -64,7 +69,7 @@ export const selectAccountGraphIsLoading = (
 export const selectGraphError = (
     state: GraphSliceRootState,
     instanceId: GraphInstanceId,
-): string | null => state.graph.graphs[instanceId]?.error ?? null;
+): string | null => state.graph.graphs[getGraphInstanceStateKey(instanceId)]?.error ?? null;
 
 export const selectPortfolioGraphError = (state: GraphSliceRootState): string | null =>
     selectGraphError(state, getPortfolioGraphInstanceId());

@@ -6,7 +6,9 @@ import { filterKeysByPartialMatch } from '@suite-native/storage';
 
 import {
     type GraphInstanceId,
+    type GraphInstanceStateKey,
     getAccountGraphInstanceId,
+    getGraphInstanceStateKey,
     getPortfolioGraphInstanceId,
     isGraphInstanceId,
 } from './graphInstances';
@@ -37,7 +39,7 @@ export type GraphInstanceState = {
     events?: StoredGroupedBalanceMovementEvent[];
 };
 
-type Graphs = Partial<Record<GraphInstanceId, GraphInstanceState>>;
+type Graphs = Partial<Record<GraphInstanceStateKey, GraphInstanceState>>;
 
 export type GraphState = {
     graphs: Graphs;
@@ -59,8 +61,9 @@ const getOrCreateGraphInstance = (
         throw new Error('Invalid graph instance ID.');
     }
 
-    const graph = state.graphs[instanceId] ?? getDefaultGraphInstanceState();
-    state.graphs[instanceId] = graph;
+    const stateKey = getGraphInstanceStateKey(instanceId);
+    const graph = state.graphs[stateKey] ?? getDefaultGraphInstanceState();
+    state.graphs[stateKey] = graph;
 
     return graph;
 };
@@ -105,7 +108,7 @@ const graphSlice = createSlice({
             state,
             { payload: { instanceId } }: PayloadAction<{ instanceId: GraphInstanceId }>,
         ) => {
-            const graph = state.graphs[instanceId];
+            const graph = state.graphs[getGraphInstanceStateKey(instanceId)];
 
             if (!graph) return;
 

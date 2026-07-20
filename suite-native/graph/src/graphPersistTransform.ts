@@ -5,8 +5,12 @@ import { filterKeysByPartialMatch, selectDeviceStatesNotRemembered } from '@suit
 
 import {
     type GraphInstanceId,
+    type GraphInstanceStateKey,
     getAccountGraphInstanceId,
+    getGraphInstanceIdFromStateKey,
+    getGraphInstanceStateKey,
     getPortfolioGraphInstanceId,
+    isGraphInstanceId,
 } from './graphInstances';
 import { type GraphInstanceState, type GraphState, getGraphTimeframeOrDefault } from './slice';
 import { type TimeframeHoursValue } from './types';
@@ -22,8 +26,10 @@ type PersistedGraphState = Partial<{
 
 const persistGraphs = (graphs: Graphs): PersistedGraphs =>
     Object.fromEntries(
-        Object.entries(graphs).flatMap(([instanceId, graph]) => {
+        Object.entries(graphs).flatMap(([stateKey, graph]) => {
             if (!graph) return [];
+
+            const instanceId = getGraphInstanceIdFromStateKey(stateKey as GraphInstanceStateKey);
 
             return [[instanceId, { timeframeHours: graph.timeframeHours }]];
         }),
@@ -33,15 +39,15 @@ const rehydrateGraphState = (persistedState: PersistedGraphState | undefined): G
     const graphs: Graphs = {};
 
     Object.entries(persistedState?.graphs ?? {}).forEach(([instanceId, persistedGraph]) => {
-        if (persistedGraph) {
-            graphs[instanceId as GraphInstanceId] = {
+        if (persistedGraph && isGraphInstanceId(instanceId)) {
+            graphs[getGraphInstanceStateKey(instanceId)] = {
                 timeframeHours: getGraphTimeframeOrDefault(persistedGraph.timeframeHours),
             };
         }
     });
 
     if (persistedState?.portfolioGraphTimeframe !== undefined) {
-        graphs[getPortfolioGraphInstanceId()] = {
+        graphs[getGraphInstanceStateKey(getPortfolioGraphInstanceId())] = {
             timeframeHours: persistedState.portfolioGraphTimeframe,
         };
     }
@@ -49,7 +55,7 @@ const rehydrateGraphState = (persistedState: PersistedGraphState | undefined): G
     Object.entries(persistedState?.accountToGraphTimeframeMap ?? {}).forEach(
         ([accountKey, timeframeHours]) => {
             const instanceId = getAccountGraphInstanceId({ accountKey: accountKey as AccountKey });
-            graphs[instanceId] = { timeframeHours };
+            graphs[getGraphInstanceStateKey(instanceId)] = { timeframeHours };
         },
     );
 

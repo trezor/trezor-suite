@@ -2,7 +2,11 @@ import { type AccountItem } from '@suite-common/graph';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 
-import { type GraphInstanceId, getPortfolioGraphInstanceId } from '../graphInstances';
+import {
+    type GraphInstanceId,
+    getGraphInstanceStateKey,
+    getPortfolioGraphInstanceId,
+} from '../graphInstances';
 import { graphPersistTransform } from '../graphPersistTransform';
 import { selectGraphTimeframe } from '../graphSelectors';
 import { RefetchGraphThunkStatus } from '../graphThunkTypes';
@@ -15,6 +19,7 @@ import {
 } from '../slice';
 
 const instanceId = getPortfolioGraphInstanceId();
+const stateKey = getGraphInstanceStateKey(instanceId);
 
 const refetchGraphThunkArg = {
     instanceId,
@@ -57,8 +62,8 @@ describe('graphReducer', () => {
             ),
         );
 
-        expect(state.graphs[instanceId]?.points).toEqual([{ date: 1000, value: 1 }]);
-        expect(state.graphs[instanceId]?.events).toEqual([
+        expect(state.graphs[stateKey]?.points).toEqual([{ date: 1000, value: 1 }]);
+        expect(state.graphs[stateKey]?.events).toEqual([
             {
                 date: 2000,
                 payload: {
@@ -109,18 +114,18 @@ describe('graphReducer', () => {
             ),
         );
 
-        expect(state.graphs[instanceId]?.points).toEqual([{ date: 1000, value: 1 }]);
-        expect(state.graphs[instanceId]?.events).toEqual(
-            stateWithFetchedData.graphs[instanceId]?.events,
+        expect(state.graphs[stateKey]?.points).toEqual([{ date: 1000, value: 1 }]);
+        expect(state.graphs[stateKey]?.events).toEqual(
+            stateWithFetchedData.graphs[stateKey]?.events,
         );
-        expect(state.graphs[instanceId]?.error).toBe('Fetch failed');
+        expect(state.graphs[stateKey]?.error).toBe('Fetch failed');
     });
 
     it('resets runtime status without removing fetched data', () => {
         const state = graphReducer(
             {
                 graphs: {
-                    [instanceId]: {
+                    [stateKey]: {
                         timeframeHours: 24,
                         isLoading: true,
                         error: 'Fetch failed',
@@ -132,7 +137,7 @@ describe('graphReducer', () => {
             resetGraphRuntimeState({ instanceId }),
         );
 
-        expect(state.graphs[instanceId]).toEqual({
+        expect(state.graphs[stateKey]).toEqual({
             timeframeHours: 24,
             points: [{ date: 1000, value: 1 }],
             events: [],
@@ -157,7 +162,7 @@ describe('all-time graph timeframe', () => {
         const state: GraphSliceRootState = {
             graph: {
                 graphs: {
-                    [instanceId]: { timeframeHours: null },
+                    [stateKey]: { timeframeHours: null },
                 },
             },
         };
@@ -172,6 +177,6 @@ describe('all-time graph timeframe', () => {
             {},
         );
 
-        expect(state.graphs[instanceId]?.timeframeHours).toBeNull();
+        expect(state.graphs[stateKey]?.timeframeHours).toBeNull();
     });
 });
