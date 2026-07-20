@@ -16,7 +16,7 @@
         "translations:backport-en": "yarn g:tsx ./scripts/backport-en.ts && yarn g:prettier --write \"./src/messages.ts\"",
         "translations:list-duplicates": "yarn g:tsx ./scripts/list-duplicates.ts",
         "translations:list-unused": "yarn g:tsx ./scripts/list-unused.ts",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json"
     },
     "dependencies": {
         "@crowdin/cli": "4.13.0",
@@ -26,5 +26,6 @@
         "@trezor/utils": "workspace:^",
         "react": "19.2.3",
         "react-intl": "^8.1.3"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

@@ -7,7 +7,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json"
     },
     "dependencies": {
         "@suite-common/formatters": "workspace:*",
@@ -23,5 +23,15 @@
     },
     "devDependencies": {
         "@types/react": "19.2.14"
+    },
+    "exports": {
+        "./src/common": {
+            "types": "./libDev/src/common/index.d.ts",
+            "default": "./src/common/index.ts"
+        },
+        "./src/evm": {
+            "types": "./libDev/src/evm/index.d.ts",
+            "default": "./src/evm/index.ts"
+        }
     }
 }

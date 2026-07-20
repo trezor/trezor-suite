@@ -10,7 +10,7 @@
         "build:native": "node scripts/build-native.js",
         "clean": "node scripts/clean.js",
         "copy-binary": "node scripts/copy-binary.js",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
@@ -19,5 +19,6 @@
     "devDependencies": {
         "@types/node": "22.13.10",
         "node-gyp": "12.2.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

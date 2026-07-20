@@ -1,4 +1,4 @@
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -11,7 +11,7 @@ const validScripts = {
     depcheck: 'yarn g:depcheck',
     'lint:js': "yarn g:eslint '**/*.{ts,tsx,js}'",
     'test:unit': 'yarn g:jest',
-    'type-check': 'yarn g:tsc --build',
+    'type-check': 'yarn g:tsc --build tsconfig.typecheck.json',
 };
 
 describe(requirePackageJsonScripts.name, () => {
@@ -42,20 +42,22 @@ describe(requirePackageJsonScripts.name, () => {
         expect(errors).toEqual([]);
     });
 
-    it('passes when type-check script matches the configured regex', async () => {
+    it('reports invalid type-check value when it does not match the configured command', async () => {
         writeFileSync(
             join(workspaceDir, 'package.json'),
             JSON.stringify({
                 scripts: {
                     ...validScripts,
-                    'type-check': 'yarn g:tsc --build tsconfig.json',
+                    'type-check': 'yarn g:tsc --build',
                 },
             }),
         );
 
         const errors = await requirePackageJsonScripts.verify(context);
 
-        expect(errors).toEqual([]);
+        expect(errors).toEqual([
+            '@trezor/example: scripts.type-check must be "yarn g:tsc --build tsconfig.typecheck.json" in package.json.',
+        ]);
     });
 
     it('reports missing depcheck script', async () => {
@@ -94,7 +96,7 @@ describe(requirePackageJsonScripts.name, () => {
         ]);
     });
 
-    it('reports invalid type-check value when it does not match the configured regex', async () => {
+    it('reports invalid type-check value when it does not use the global TypeScript command', async () => {
         writeFileSync(
             join(workspaceDir, 'package.json'),
             JSON.stringify({
@@ -108,8 +110,33 @@ describe(requirePackageJsonScripts.name, () => {
         const errors = await requirePackageJsonScripts.verify(context);
 
         expect(errors).toEqual([
-            '@trezor/example: scripts.type-check must be matching /^yarn g:tsc --build.*$/ in package.json.',
+            '@trezor/example: scripts.type-check must be "yarn g:tsc --build tsconfig.typecheck.json" in package.json.',
         ]);
+    });
+
+    it('adds missing required scripts in fix', async () => {
+        writeFileSync(
+            join(workspaceDir, 'package.json'),
+            JSON.stringify({
+                name: '@trezor/example',
+                scripts: {
+                    custom: 'echo custom',
+                },
+            }),
+        );
+
+        const errors = await requirePackageJsonScripts.fix!(context);
+
+        expect(errors).toEqual([]);
+        expect(JSON.parse(readFileSync(join(workspaceDir, 'package.json'), 'utf8'))).toEqual({
+            name: '@trezor/example',
+            scripts: {
+                custom: 'echo custom',
+                depcheck: validScripts.depcheck,
+                'lint:js': validScripts['lint:js'],
+                'type-check': validScripts['type-check'],
+            },
+        });
     });
 
     it('passes without test:unit script when package has no test files', async () => {
@@ -274,5 +301,28 @@ describe(requirePackageJsonScripts.name, () => {
         const errors = await requirePackageJsonScripts.verify(context);
 
         expect(errors).toEqual([]);
+    });
+
+    it('does not add ignored scripts in fix', async () => {
+        context = {
+            ...context,
+            workspaceName: 'connect-example-node',
+        };
+
+        writeFileSync(
+            join(workspaceDir, 'package.json'),
+            JSON.stringify({
+                scripts: {},
+            }),
+        );
+
+        const errors = await requirePackageJsonScripts.fix!(context);
+
+        expect(errors).toEqual([]);
+        expect(JSON.parse(readFileSync(join(workspaceDir, 'package.json'), 'utf8'))).toEqual({
+            scripts: {
+                'lint:js': validScripts['lint:js'],
+            },
+        });
     });
 });

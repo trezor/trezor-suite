@@ -7,7 +7,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "generate-illustrations": "yarn g:tsx generateIllustrations.mjs",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
@@ -15,5 +15,6 @@
         "chalk": "^5.6.2",
         "prettier": "^3.8.4",
         "svgo": "^4.0.1"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

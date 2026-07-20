@@ -9,7 +9,7 @@
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json"
     },
     "dependencies": {
         "@suite-common/test-utils": "workspace:*",
@@ -19,5 +19,6 @@
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.3"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

@@ -8,7 +8,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint './**/*.{ts,mjs}'",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:unit": "yarn g:jest"
     },
     "dependencies": {
@@ -25,5 +25,6 @@
         "@trezor/utils": "workspace:^",
         "react": "19.2.3",
         "zod": "4.3.6"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

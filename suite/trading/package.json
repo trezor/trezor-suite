@@ -8,7 +8,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:unit": "yarn g:jest --coverage",
         "test:unit:watch": "yarn g:jest --watch"
     },
@@ -30,5 +30,6 @@
     },
     "devDependencies": {
         "@types/invity-api": "^1.1.19"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

@@ -7,7 +7,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:unit": "yarn g:jest:native",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
@@ -47,5 +47,6 @@
     },
     "devDependencies": {
         "@suite-native/test-utils": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

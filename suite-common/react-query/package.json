@@ -8,11 +8,12 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json"
     },
     "dependencies": {
         "@tanstack/react-query": "5.101.2",
         "@tanstack/react-query-devtools": "5.101.2",
         "react": "19.2.3"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

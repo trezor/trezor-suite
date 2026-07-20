@@ -7,7 +7,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
@@ -31,5 +31,6 @@
         "react-native-reanimated": "4.3.1",
         "react-native-safe-area-context": "5.6.2",
         "react-native-worklets": "0.8.3"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

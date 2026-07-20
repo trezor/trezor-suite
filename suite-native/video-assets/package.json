@@ -8,7 +8,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "generate-videos": "yarn g:tsx ./scripts/generateVideos.ts",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
@@ -20,5 +20,6 @@
         "react": "19.2.3",
         "react-native": "0.85.3",
         "react-native-reanimated": "4.3.1"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

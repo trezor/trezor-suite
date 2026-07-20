@@ -38,7 +38,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "test:unit": "yarn g:jest",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib && DTS_OUT_DIR=lib yarn build:dts:inline",
         "build:dts:inline": "node ../../scripts/inline-devdep-types.mjs",
         "test:e2e": "yarn playwright install && yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
@@ -61,5 +61,6 @@
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
-    }
+    },
+    "types": "./libDev/connect-web/src/index.d.ts"
 }

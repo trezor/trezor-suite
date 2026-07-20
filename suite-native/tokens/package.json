@@ -7,7 +7,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:unit": "yarn g:jest:native",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
@@ -22,5 +22,6 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@trezor/blockchain-link": "workspace:*",
         "react": "19.2.3"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

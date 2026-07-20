@@ -5,9 +5,11 @@ import { requireDocsSummary } from './docs-summary/requireDocsSummary';
 import { requireFirmwareReleaseVersionMonotonicity } from './firmware-releases/requireFirmwareReleaseVersionMonotonicity';
 import { requireForbiddenDeps } from './forbidden-deps/requireForbiddenDeps';
 import { requirePackageJsonScripts } from './package-json/requirePackageJsonScripts';
+import { requirePackageJsonTypes } from './package-json/requirePackageJsonTypes';
 import { requirePublishConfig } from './package-json/requirePublishConfig';
 import { requireConnectPublicDependencies } from './public-package-dependencies/requireConnectPublicDependencies';
 import { requireTypeDeclarationSize } from './type-declarations/requireTypeDeclarationSize';
+import { requireTypecheckTsconfig } from './tsconfig/requireTypecheckTsconfig';
 
 export const requirements: ReadonlyArray<Requirement<RequirementScope>> = [
     requireAgentsSkills,
@@ -17,6 +19,8 @@ export const requirements: ReadonlyArray<Requirement<RequirementScope>> = [
     requireFirmwareReleaseVersionMonotonicity,
     requireForbiddenDeps,
     requirePackageJsonScripts,
+    requirePackageJsonTypes,
+    requireTypecheckTsconfig,
     requirePublishConfig,
     requireTypeDeclarationSize,
 ];

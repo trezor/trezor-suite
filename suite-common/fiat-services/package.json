@@ -7,7 +7,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:unit": "yarn g:jest",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
@@ -20,5 +20,6 @@
         "@trezor/network-stellar": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

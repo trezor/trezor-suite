@@ -7,7 +7,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:unit": "yarn g:jest",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
@@ -46,5 +46,6 @@
         "react-redux": "9.3.0",
         "react-select": "^5.10.2",
         "redux": "^5.0.1"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

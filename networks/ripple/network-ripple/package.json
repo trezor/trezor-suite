@@ -41,10 +41,11 @@
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest --passWithNoTests",
-        "type-check": "yarn g:tsc --build tsconfig.json",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../../scripts/publish/replace-imports.sh ./lib"
     },
     "dependencies": {
         "xrpl": "4.6.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

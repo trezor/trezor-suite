@@ -9,7 +9,7 @@
         "test:all": "SKIP_FLAKY_TESTS=1 yarn g:jest",
         "test:unit": "yarn g:jest --testPathIgnorePatterns e2e",
         "test:e2e": "yarn g:jest --runInBand --testPathIgnorePatterns tests",
-        "type-check": "yarn g:tsc --build tsconfig.json",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:stress": "tsx ./e2e/identities-stress.ts",
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
@@ -25,5 +25,6 @@
         "@trezor/e2e-utils": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "tsx": "^4.21.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

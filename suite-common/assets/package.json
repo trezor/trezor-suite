@@ -7,12 +7,13 @@
     "sideEffects": false,
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:unit": "yarn g:jest",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/utils": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

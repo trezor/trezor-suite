@@ -8,6 +8,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "yarn g:tsc --build"
-    }
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json"
+    },
+    "types": "./libDev/src/index.d.ts"
 }

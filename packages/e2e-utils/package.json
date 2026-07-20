@@ -7,7 +7,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test-health": "tsx ./src/quarantineBot/index.ts",
         "select-tests": "tsx ./src/testCoverage/selectTestsByChangedFiles.ts",
         "build-coverage-map": "tsx ./src/testCoverage/buildCoverageMap.ts",
@@ -39,5 +39,6 @@
         "@playwright/test": "1.60.0",
         "@trezor/node-utils": "workspace:*",
         "tsx": "^4.21.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

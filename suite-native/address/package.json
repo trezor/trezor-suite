@@ -7,7 +7,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
@@ -30,5 +30,6 @@
         "react": "19.2.3",
         "react-native": "0.85.3",
         "react-redux": "9.3.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

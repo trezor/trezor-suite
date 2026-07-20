@@ -4,7 +4,7 @@
     "description": "React Native WebUSB implementation",
     "main": "src/index",
     "scripts": {
-        "type-check": "yarn g:tsc --build tsconfig.json",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "open:ios": "open -a \"Xcode\" example/ios",
         "open:android": "open -a \"Android Studio\" example/android",
         "depcheck": "yarn g:depcheck",
@@ -28,5 +28,6 @@
         "expo-modules-core": "*",
         "react": "*",
         "react-native": "*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

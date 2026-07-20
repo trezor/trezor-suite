@@ -9,7 +9,7 @@
         "nfts": "yarn g:tsx ./scripts/index.ts nft",
         "coins": "yarn g:tsx ./scripts/index.ts coin",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:unit": "yarn g:jest",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
@@ -32,5 +32,6 @@
         "ajv": "^8.20.0",
         "jws": "^4.0.1",
         "toml": "^4.1.2"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

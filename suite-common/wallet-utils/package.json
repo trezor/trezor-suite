@@ -7,7 +7,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:unit": "yarn g:jest",
         "test-unit:watch": "yarn g:jest -o --watch",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
@@ -37,5 +37,6 @@
         "date-fns": "^4.1.0",
         "react": "19.2.3",
         "react-hook-form": "^7.77.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

@@ -58,9 +58,9 @@
         "build:workers": "yarn g:rimraf build && yarn build:workers-web && yarn build:workers-module",
         "build:workers-web": "webpack --config ./webpack/workers.web.js",
         "build:workers-module": "webpack --config ./webpack/workers.module.js",
-        "test:unit": "yarn g:jest -c jest.config.unit.cjs",
-        "test:integration": "yarn g:jest -c jest.config.integration.cjs",
-        "type-check": "yarn g:tsc --build tsconfig.json",
+        "test:unit": "yarn g:jest -c jest.config.unit.js",
+        "test:integration": "yarn g:jest -c jest.config.integration.js",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
@@ -90,5 +90,6 @@
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

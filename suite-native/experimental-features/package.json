@@ -8,11 +8,12 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json"
     },
     "dependencies": {
         "@suite-native/intl": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "react": "19.2.3"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

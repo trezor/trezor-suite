@@ -1,6 +1,11 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
+    "include": [
+        ".",
+        ".rnstorybook/**/*.ts",
+        ".rnstorybook/**/*.tsx"
+    ],
     "references": [
         { "path": "../alerts" },
         { "path": "../intl" },

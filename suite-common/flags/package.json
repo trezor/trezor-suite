@@ -7,7 +7,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
@@ -15,5 +15,6 @@
     },
     "devDependencies": {
         "@types/invity-api": "^1.1.19"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

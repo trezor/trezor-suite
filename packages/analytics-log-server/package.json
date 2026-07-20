@@ -3,7 +3,7 @@
     "private": true,
     "type": "module",
     "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
+    "types": "./libDev/index.d.ts",
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
@@ -16,6 +16,6 @@
         "dev": "yarn g:tsx src/server.ts",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "start": "node dist/server.js",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json"
     }
 }

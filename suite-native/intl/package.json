@@ -9,7 +9,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:unit": "yarn g:jest:native",
         "translations:format": "yarn g:prettier --write \"translations/*\"",
         "translations:extract": "yarn g:tsx ./scripts/extractTranslations.ts",
@@ -38,5 +38,6 @@
     },
     "devDependencies": {
         "@crowdin/cli": "4.13.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

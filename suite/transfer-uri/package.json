@@ -9,7 +9,7 @@
         "depcheck": "yarn g:depcheck",
         "test:unit": "yarn g:jest",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json"
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
@@ -18,5 +18,6 @@
         "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/transfer-uri": "workspace:*",
         "@suite/analytics": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

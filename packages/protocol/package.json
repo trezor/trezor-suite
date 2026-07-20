@@ -42,11 +42,12 @@
     "scripts": {
         "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

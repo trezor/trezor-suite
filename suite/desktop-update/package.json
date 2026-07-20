@@ -9,7 +9,7 @@
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json"
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
@@ -32,5 +32,6 @@
         "react-redux": "9.3.0",
         "redux": "^5.0.1",
         "redux-thunk": "^3.1.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

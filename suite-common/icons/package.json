@@ -7,7 +7,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "generate-icons": "yarn g:tsx generateIcons.mjs && yarn g:tsx generateIconFont.ts",
         "generate-icon-font": "yarn g:tsx generateIconFont.ts",
         "download-crypto-icons": "yarn g:tsx ./scripts/downloadCryptoIcons.ts",
@@ -19,5 +19,6 @@
         "prettier": "^3.8.4",
         "sharp": "^0.34.2",
         "svgo": "^4.0.1"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

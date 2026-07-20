@@ -7,7 +7,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:unit": "yarn g:jest --coverage",
         "test:unit:watch": "yarn g:jest --watch",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
@@ -45,5 +45,6 @@
         "@suite-common/test-utils": "workspace:*",
         "@testing-library/react": "^16.3.2",
         "@types/invity-api": "^1.1.19"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

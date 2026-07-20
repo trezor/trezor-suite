@@ -8,7 +8,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json"
     },
     "dependencies": {
         "@suite/intl": "workspace:*",
@@ -18,5 +18,6 @@
         "@trezor/theme": "workspace:*",
         "react": "19.2.3",
         "styled-components": "^6.3.9"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

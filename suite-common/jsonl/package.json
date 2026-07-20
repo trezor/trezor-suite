@@ -7,12 +7,13 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:unit": "yarn g:jest",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
         "@trezor/type-utils": "workspace:*",
         "yup": "1.7.1"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

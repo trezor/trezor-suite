@@ -9,7 +9,7 @@
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest:native",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json"
     },
     "dependencies": {
         "@animatereactnative/marquee": "^0.5.2",
@@ -66,5 +66,6 @@
     "devDependencies": {
         "@suite-native/test-utils-store": "workspace:*",
         "@trezor/requirements": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

@@ -21,7 +21,7 @@
         "test:anonymity": "yarn g:tsx ./tests/tools/anonymity-test.ts",
         "test:benchmark": "yarn g:tsx ./tests/tools/benchmark-test.ts",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
@@ -41,5 +41,6 @@
         "node-fetch": "^3.3.2",
         "socks-proxy-agent": "8.0.5",
         "ws": "^8.20.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

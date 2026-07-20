@@ -6,7 +6,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:e2e": "tsx ./e2e/api.test.ts",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
@@ -17,5 +17,6 @@
     },
     "devDependencies": {
         "tsx": "^4.21.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

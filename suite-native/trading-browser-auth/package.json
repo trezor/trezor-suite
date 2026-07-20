@@ -9,7 +9,7 @@
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "lint:js:fix": "yarn lint:js --fix",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "test:unit": "yarn g:jest:native",
         "test:unit:watch": "yarn g:jest --watch"
     },
@@ -45,5 +45,6 @@
         "@suite-native/trading-types": "workspace:*",
         "@suite-native/transaction-management": "workspace:*",
         "@types/invity-api": "^1.1.19"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

@@ -7,7 +7,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build tsconfig.json",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
@@ -29,5 +29,6 @@
     },
     "devDependencies": {
         "@types/react": "19.2.14"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

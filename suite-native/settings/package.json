@@ -7,7 +7,7 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
@@ -16,5 +16,6 @@
         "@suite-native/config": "workspace:*",
         "@trezor/connect": "workspace:*",
         "react": "19.2.3"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

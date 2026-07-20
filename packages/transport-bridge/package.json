@@ -8,7 +8,7 @@
     "scripts": {
         "test:unit": "yarn g:jest",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
+        "type-check": "yarn g:tsc --build tsconfig.typecheck.json",
         "build:node:bin": "yarn esbuild ./src/bin.ts --bundle --outfile=dist/bin.js --platform=node --target=node18 --external:usb",
         "build:node:module": "yarn esbuild ./src/index.ts --bundle --outfile=dist/index.js --platform=node --target=node18 --external:usb",
         "build:node": "yarn build:node:bin && yarn build:node:module",
@@ -39,5 +39,6 @@
         "react-intl": "^8.1.3",
         "styled-components": "^6.3.9",
         "usb": "^2.17.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }
