@@ -1,14 +1,5 @@
 export const ICONS_URL_BASE = 'https://data.trezor.io/suite/icons/coins';
 
-/**
- * @deprecated Use `COIN_IMAGE_SIZES` instead
- */
-export const LEGACY_COIN_IMAGE_SIZES = [24, 48] as const satisfies number[];
-/**
- * @deprecated Use `CoinImageSize` instead
- */
-export type LegacyCoinImageSize = (typeof LEGACY_COIN_IMAGE_SIZES)[number];
-
 export const COIN_IMAGE_SIZES = [24, 40, 48, 80] as const satisfies number[];
 
 export type CoinImageSize = (typeof COIN_IMAGE_SIZES)[number];
@@ -38,23 +29,4 @@ export function createCoinImageName<Size extends CoinImageSize>({
     const cryptoId = createCryptoId(coingeckoId, contractAddress);
 
     return `${cryptoId}${IMAGE_SIZE_SEPARATOR}${size}.webp` as const;
-}
-
-export interface CreateCoinImageNameLegacyParams {
-    coingeckoId: string;
-    contractAddress?: string;
-    size: LegacyCoinImageSize;
-}
-
-/**
- * @deprecated Use `createCoinImageName` instead
- */
-export function createCoinImageNameLegacy({
-    coingeckoId,
-    contractAddress,
-    size,
-}: CreateCoinImageNameLegacyParams) {
-    const cryptoId = createCryptoId(coingeckoId, contractAddress);
-
-    return `${cryptoId}${size === 24 ? '' : '@2x'}.webp` as const;
 }
