@@ -12,7 +12,7 @@ import {
     getAccountGraphInstanceId,
     getPortfolioGraphInstanceId,
 } from './graphInstances';
-import { DEFAULT_GRAPH_TIMEFRAME_HOURS, type GraphSliceRootState } from './slice';
+import { type GraphSliceRootState, getGraphTimeframeOrDefault } from './slice';
 import {
     type StoredFiatGraphPoint,
     type StoredGroupedBalanceMovementEvent,
@@ -35,7 +35,7 @@ export const selectGraphTimeframe = (
     state: GraphSliceRootState,
     instanceId: GraphInstanceId,
 ): TimeframeHoursValue =>
-    state.graph.graphs[instanceId]?.timeframeHours ?? DEFAULT_GRAPH_TIMEFRAME_HOURS;
+    getGraphTimeframeOrDefault(state.graph.graphs[instanceId]?.timeframeHours);
 
 export const selectPortfolioGraphTimeframe = (state: GraphSliceRootState): TimeframeHoursValue =>
     selectGraphTimeframe(state, getPortfolioGraphInstanceId());

@@ -20,6 +20,14 @@ import {
 // Default is 720 hours (1 month).
 export const DEFAULT_GRAPH_TIMEFRAME_HOURS = 720;
 
+export const getGraphTimeframeOrDefault = (
+    timeframeHours: TimeframeHoursValue | undefined,
+): TimeframeHoursValue => {
+    if (timeframeHours === undefined) return DEFAULT_GRAPH_TIMEFRAME_HOURS;
+
+    return timeframeHours;
+};
+
 export type GraphInstanceState = {
     timeframeHours: TimeframeHoursValue;
     isLoading?: boolean;

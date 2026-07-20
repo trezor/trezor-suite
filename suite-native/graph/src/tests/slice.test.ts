@@ -4,9 +4,11 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { getPortfolioGraphInstanceId } from '../graphInstances';
+import { graphPersistTransform } from '../graphPersistTransform';
+import { selectGraphTimeframe } from '../graphSelectors';
 import { RefetchGraphThunkStatus } from '../graphThunkTypes';
 import { refetchGraphThunk } from '../graphThunks';
-import { graphInitialState, graphReducer } from '../slice';
+import { type GraphSliceRootState, graphInitialState, graphReducer } from '../slice';
 
 const instanceId = getPortfolioGraphInstanceId();
 
@@ -108,5 +110,29 @@ describe('graphReducer', () => {
             stateWithFetchedData.graphs[instanceId]?.events,
         );
         expect(state.graphs[instanceId]?.error).toBe('Fetch failed');
+    });
+});
+
+describe('all-time graph timeframe', () => {
+    it('selects null as the all-time timeframe', () => {
+        const state: GraphSliceRootState = {
+            graph: {
+                graphs: {
+                    [instanceId]: { timeframeHours: null },
+                },
+            },
+        };
+
+        expect(selectGraphTimeframe(state, instanceId)).toBeNull();
+    });
+
+    it('rehydrates null as the all-time timeframe', () => {
+        const state = graphPersistTransform.out(
+            { graphs: { [instanceId]: { timeframeHours: null } } },
+            'graph',
+            {},
+        );
+
+        expect(state.graphs[instanceId]?.timeframeHours).toBeNull();
     });
 });
