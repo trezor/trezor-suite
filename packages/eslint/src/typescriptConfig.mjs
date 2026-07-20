@@ -144,6 +144,11 @@ export const typescriptConfig = [
             // Low-noise type-checked safety/hygiene rules (recommended/strict tiers), enabled
             // here because the src override is the only block with type info.
             '@typescript-eslint/prefer-string-starts-ends-with': ['error'],
+            // `error-handling-correctness-only`: require `return await` inside try/catch/finally
+            // so the local catch sees the rejection and finally runs at the right time. Unlike
+            // `in-try-catch` it does NOT strip harmless awaits elsewhere, avoiding churn and a
+            // clash with `require-await` (removing the sole await of an async fn).
+            '@typescript-eslint/return-await': ['error', 'error-handling-correctness-only'],
         },
     },
     {

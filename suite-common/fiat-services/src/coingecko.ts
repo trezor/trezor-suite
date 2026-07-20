@@ -36,7 +36,7 @@ const fetchCoinGecko = async (url: string, skipCache?: boolean) => {
             return;
         }
 
-        return res.json();
+        return await res.json();
     } catch (error) {
         // Do not report to Sentry to save the issues count limit.
         console.warn(error);

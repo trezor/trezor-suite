@@ -55,7 +55,7 @@ export const createAsyncMigrate =
                 }
             }
 
-            return Promise.resolve(migratedState);
+            return await Promise.resolve(migratedState);
         } catch (err) {
             console.error(err);
 
