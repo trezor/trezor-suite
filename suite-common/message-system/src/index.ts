@@ -16,5 +16,6 @@ export * from './ExperimentWrapper';
 export * from './featureFlagUtils';
 export * from './useConditionControls';
 export * from './useExperiment';
+export * from './useMessageSystemExperimentForm';
 export * from './useMessageSystemMessageForm';
 export * from './useMessageSystemStaking';

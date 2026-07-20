@@ -443,6 +443,7 @@ export type RootStackParamList = {
     [RootStackRoutes.TransactionDetailStack]: NavigatorScreenParams<TransactionDetailStackParamList>;
     [RootStackRoutes.DevUtils]: undefined;
     [RootStackRoutes.MessageSystemManager]: undefined;
+    [RootStackRoutes.MessageSystemExperiments]: undefined;
     [RootStackRoutes.AccountAssets]: {
         accountKey: AccountKey;
         tab?: AccountAssetsTab;

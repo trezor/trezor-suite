@@ -11497,6 +11497,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/walletconnect": "workspace:*"
     "@suite-native/analytics-redux": "workspace:*"
+    "@suite-native/message-system": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/state": "workspace:*"
   languageName: unknown
@@ -14905,7 +14906,6 @@ __metadata:
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
-    "@suite-common/validators": "workspace:*"
     "@suite/external-links": "workspace:*"
     "@suite/intl": "workspace:*"
     "@suite/router": "workspace:*"

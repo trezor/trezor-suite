@@ -59,6 +59,16 @@ export const MessageSystemCard = () => {
                     >
                         Message manager
                     </Button>
+                    <Button
+                        intent="neutral"
+                        priority="secondary"
+                        size="medium"
+                        onPress={() =>
+                            navigation.navigate(RootStackRoutes.MessageSystemExperiments)
+                        }
+                    >
+                        Experiments
+                    </Button>
                 </VStack>
                 <Text variant="body-md-strong">Valid messages:</Text>
                 <VStack spacing="sp8">
