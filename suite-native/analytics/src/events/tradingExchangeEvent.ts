@@ -31,9 +31,13 @@ export const tradingExchangeEvent: EventDef<Attributes, EventType.TradingExchang
             changelog: [
                 { version: '25.10.1', notes: 'added' },
                 { version: '26.6.1', notes: 'modified' },
+                {
+                    version: '26.8.1',
+                    notes: 'added `simulation_completed`, `simulation_issue`, `simulation_failed`, `price_impact_none`, `price_impact_warning`, `price_impact_critical`, `continue_anyway`, and `back_to_trade_form`',
+                },
             ],
             description:
-                'Action type: `continue` | `cancel` | `retry` | `visit` | `revoke` | `value_change`',
+                'Action type: `continue` | `cancel` | `retry` | `visit` | `revoke` | `value_change` | `simulation_completed` | `simulation_issue` | `simulation_failed` | `price_impact_none` | `price_impact_warning` | `price_impact_critical` | `continue_anyway` | `back_to_trade_form`',
         },
         step: {
             changelog: [

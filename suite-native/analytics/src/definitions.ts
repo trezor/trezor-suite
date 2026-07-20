@@ -63,6 +63,14 @@ export type TradingNavigateFrom =
     | 'trade/concierge';
 export type TradingExchangeAction =
     | 'continue'
+    | 'continue_anyway'
+    | 'back_to_trade_form'
+    | 'simulation_completed'
+    | 'simulation_issue'
+    | 'simulation_failed'
+    | 'price_impact_none'
+    | 'price_impact_warning'
+    | 'price_impact_critical'
     | 'cancel'
     | 'retry'
     | 'visit'

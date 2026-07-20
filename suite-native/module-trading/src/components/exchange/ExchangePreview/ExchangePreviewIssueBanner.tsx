@@ -2,6 +2,7 @@ import { type ReactNode, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type ExchangeIssue } from '@suite-common/trading';
+import { type TradingExchangeAction } from '@suite-native/analytics';
 import { AnimatedFullAlertBox, BulletListItem, VStack } from '@suite-native/atoms';
 import { Translation, selectLocale } from '@suite-native/intl';
 import { exhaustive } from '@trezor/type-utils';
@@ -89,7 +90,9 @@ const getIssueContent = (
 };
 
 type ExchangePreviewIssueBannerProps = {
-    onSignTransactionNavigation: () => void;
+    onSignTransactionNavigation: (
+        action?: Extract<TradingExchangeAction, 'continue' | 'continue_anyway'>,
+    ) => void;
 };
 
 export const ExchangePreviewIssueBanner = ({
@@ -101,7 +104,7 @@ export const ExchangePreviewIssueBanner = ({
     useExchangeIssueAnalytics({ issue, isSimulationLoading, isSimulation });
 
     const { handleSignTransaction, isSigningPreparationLoading } = useExchangeSignTransaction({
-        onSignTransactionNavigation,
+        onSignTransactionNavigation: () => onSignTransactionNavigation('continue_anyway'),
     });
 
     const percentFormatter = useMemo(

@@ -515,6 +515,67 @@ describe('TradingExchangePreviewScreen', () => {
         });
     });
 
+    it('reports continue_anyway without also reporting continue', async () => {
+        mockUseExchangeIssue.mockReturnValue({
+            isSimulationEnabled: true,
+            isSimulationLoading: false,
+            issue: { type: 'price-impact', severity: 'warning', deviation: 0.15 },
+        });
+        mockUseDexExchangeTxSimulation.mockReturnValue({
+            isEnabled: true,
+            isLoading: false,
+            error: null,
+            data: createSimulationResult(),
+        });
+        const { result, reportMock } = renderTradingExchangePreviewScreen();
+        reportMock.mockClear();
+
+        await userEvent.press(
+            result.getByText(getTranslation('moduleTrading.transactionSimulation.continueAnyway')),
+        );
+
+        expect(reportMock).toHaveBeenCalledTimes(1);
+        expect(reportMock).toHaveBeenCalledWith({
+            type: events.tradingExchangeEvent.name,
+            payload: expect.objectContaining({
+                step: 'transaction-preview',
+                action: 'continue_anyway',
+            }),
+        });
+        expect(reportMock).not.toHaveBeenCalledWith({
+            type: events.tradingExchangeEvent.name,
+            payload: expect.objectContaining({ action: 'continue' }),
+        });
+    });
+
+    it('reports back_to_trade_form from the back button', async () => {
+        mockUseExchangeIssue.mockReturnValue({
+            isSimulationEnabled: true,
+            isSimulationLoading: false,
+            issue: { type: 'price-impact', severity: 'warning', deviation: 0.15 },
+        });
+        mockUseDexExchangeTxSimulation.mockReturnValue({
+            isEnabled: true,
+            isLoading: false,
+            error: null,
+            data: createSimulationResult(),
+        });
+        const { result, reportMock } = renderTradingExchangePreviewScreen();
+        reportMock.mockClear();
+
+        await userEvent.press(
+            result.getByText(getTranslation('moduleTrading.transactionSimulation.backToTradeForm')),
+        );
+
+        expect(reportMock).toHaveBeenCalledWith({
+            type: events.tradingExchangeEvent.name,
+            payload: expect.objectContaining({
+                step: 'transaction-preview',
+                action: 'back_to_trade_form',
+            }),
+        });
+    });
+
     describe('Approval Required Redirect', () => {
         it('redirects to TradingExchangeApproval when selectedQuote.status is APPROVAL_REQ', async () => {
             const approvalReqQuote: ExchangeTrade = {

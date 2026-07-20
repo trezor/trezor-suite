@@ -9,6 +9,7 @@ import {
     hasEip712SignData,
     selectTradingProviderKycPolicy,
 } from '@suite-common/trading';
+import { type TradingExchangeAction } from '@suite-native/analytics';
 import { AnimatedVStack, InlineAlertBox, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { KycPolicyWarning, hasKycPolicyWarning } from '@suite-native/trading-provider-utils';
@@ -24,7 +25,9 @@ import { LastErrorMessage } from '../../general/Error/LastErrorMessage';
 export type ExchangePreviewViewProps = {
     quote: ExchangeTrade | undefined;
     txnErrorString: ReactNode | null;
-    onSignTransactionNavigation: () => void;
+    onSignTransactionNavigation: (
+        action?: Extract<TradingExchangeAction, 'continue' | 'continue_anyway'>,
+    ) => void;
     isApproved?: boolean;
 };
 

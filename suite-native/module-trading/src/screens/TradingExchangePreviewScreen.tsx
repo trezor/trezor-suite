@@ -12,6 +12,7 @@ import {
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { useAlert } from '@suite-native/alerts';
+import { type TradingExchangeAction } from '@suite-native/analytics';
 import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -111,10 +112,13 @@ const TradingExchangePreviewScreenContent = ({
 
     useSlippageLifecycle(handleConfirmTrade);
 
-    const onSignTransactionNavigation = useCallback(() => {
-        hasRequestedTradeConfirmation.current = false;
-        reportToAnalytics('continue');
-    }, [reportToAnalytics]);
+    const onSignTransactionNavigation = useCallback(
+        (action: Extract<TradingExchangeAction, 'continue' | 'continue_anyway'> = 'continue') => {
+            hasRequestedTradeConfirmation.current = false;
+            reportToAnalytics(action);
+        },
+        [reportToAnalytics],
+    );
 
     useFocusEffect(
         useCallback(() => {
