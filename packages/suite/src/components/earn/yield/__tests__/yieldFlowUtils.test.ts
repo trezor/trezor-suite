@@ -15,6 +15,8 @@ const withdrawWithUnwrapSequence = getYieldFlowStepSequence({
 
 describe('yieldFlowUtils', () => {
     describe('getYieldFlowSteps', () => {
+        // A normal deposit lists only approve + action (the leading `wrap` step is native-only and
+        // excluded from the list), so `wrap` shows as an out-of-flow (done, unnumbered) step.
         it('describes deposit steps on the approve step', () => {
             expect(getYieldFlowSteps(depositSequence, 'approve')).toEqual({
                 wrap: { state: 'done', indicator: { index: 0, total: 2 } },
