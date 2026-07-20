@@ -4,9 +4,8 @@ import { useSelector } from 'react-redux';
 import type { DexApprovalType } from 'invity-api';
 
 import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
-import { Text } from '@suite-native/atoms';
+import { Text, useBottomSheetControls } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useBottomSheetControls } from '@suite-native/trading-atoms';
 
 import { ExchangeApprovalLimitSheet } from './ExchangeApprovalLimitSheet/ExchangeApprovalLimitSheet';
 import { LimitInfoRow } from './LimitInfoRow';

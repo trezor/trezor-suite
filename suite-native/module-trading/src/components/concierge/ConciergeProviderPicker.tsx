@@ -1,7 +1,7 @@
 import { type OtcProviderType } from '@suite-common/trading';
-import { Box, InlineAlertBox, Text } from '@suite-native/atoms';
+import { Box, InlineAlertBox, Text, useBottomSheetControls } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { OverviewRow, useBottomSheetControls } from '@suite-native/trading-atoms';
+import { OverviewRow } from '@suite-native/trading-atoms';
 
 import { ConciergeProviderSheet } from './ConciergeProviderSheet';
 import { useConciergeProviders } from '../../hooks/concierge/useConciergeProviders';

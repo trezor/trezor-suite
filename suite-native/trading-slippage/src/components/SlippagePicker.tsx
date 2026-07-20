@@ -5,10 +5,10 @@ import {
     selectTradingExchangeSelectedQuoteIsDex,
     selectTradingExchangeSelectedQuoteSwapSlippage,
 } from '@suite-common/trading';
-import { HStack, Text } from '@suite-native/atoms';
+import { HStack, Text, useBottomSheetControls } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, selectLocale } from '@suite-native/intl';
-import { TradeInfoRow, useBottomSheetControls } from '@suite-native/trading-atoms';
+import { TradeInfoRow } from '@suite-native/trading-atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { SlippageBottomSheet } from './SlippageBottomSheet';

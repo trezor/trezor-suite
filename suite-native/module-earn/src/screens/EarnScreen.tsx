@@ -289,6 +289,7 @@ const EarnScreenContent = () => {
                     accounts={stablecoinYield.chosenAccounts}
                     onAccountSelected={stablecoinYield.handleAccountSelected}
                     onClose={stablecoinYield.closeChooseAccountModal}
+                    onDismiss={stablecoinYield.handleChooseAccountDismiss}
                     tokenBalance={stablecoinYield.chooseAccountTokenBalance}
                 />
                 <EnableNetworkForEarnBottomSheet
@@ -296,6 +297,7 @@ const EarnScreenContent = () => {
                     symbol={stablecoinYield.pendingEnableSymbol}
                     type="stablecoin-yield"
                     onEnablePress={stablecoinYield.handleEnableNetworkPress}
+                    onDismiss={stablecoinYield.handleEnableNetworkDismiss}
                 />
             </VStack>
         </Screen>

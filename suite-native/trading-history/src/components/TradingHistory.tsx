@@ -10,8 +10,7 @@ import {
     type TradingTransaction,
     selectDeviceTradingTradesOrderedByDate,
 } from '@suite-common/trading';
-import { Box, EdgeFades } from '@suite-native/atoms';
-import { useBottomSheetControls } from '@suite-native/trading-atoms';
+import { Box, EdgeFades, useBottomSheetControls } from '@suite-native/atoms';
 import { Footer } from '@suite-native/trading-provider-utils';
 import { selectTradeToBeOpened, tradingActions } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';

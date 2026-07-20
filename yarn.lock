@@ -11807,6 +11807,7 @@ __metadata:
   dependencies:
     "@gorhom/bottom-sheet": "npm:5.2.9"
     "@mobily/ts-belt": "npm:^3.13.1"
+    "@react-navigation/native": "npm:7.1.28"
     "@shopify/flash-list": "npm:2.3.0"
     "@shopify/react-native-skia": "npm:2.5.1"
     "@storybook/react-native": "npm:^10.2.1"
@@ -14179,7 +14180,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/trading-atoms@workspace:suite-native/trading-atoms"
   dependencies:
-    "@react-navigation/native": "npm:7.1.28"
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/device": "workspace:*"
     "@suite-common/flags": "workspace:*"
