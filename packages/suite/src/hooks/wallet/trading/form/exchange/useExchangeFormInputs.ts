@@ -44,7 +44,7 @@ export const useExchangeFormInputs = ({
     setAccountOnChange,
 }: UseExchangeFormInputsProps): TradingUseFormActionsReturnProps => {
     const dispatch = useDispatch();
-    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account?.symbol);
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
     const accounts = useSelector(selectVisibleDeviceAccounts);
 
@@ -88,6 +88,10 @@ export const useExchangeFormInputs = ({
     });
 
     const setRatioAmount = (divisor: number) => {
+        if (!account) {
+            return;
+        }
+
         clearErrors([TRADING_FORM_OUTPUT_FIAT, TRADING_FORM_OUTPUT_AMOUNT]);
 
         const { cryptoInputValue, cryptoAmountWithReserve } = calcRatioAmount({

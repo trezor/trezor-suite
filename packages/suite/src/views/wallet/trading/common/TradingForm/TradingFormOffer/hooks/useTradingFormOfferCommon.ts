@@ -2,7 +2,11 @@ import type { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { type TranslationKey } from '@suite/intl';
 import { selectTorState } from '@suite/tor';
-import { type TradingType, selectTradingProviderCompanyName } from '@suite-common/trading';
+import {
+    type TradingType,
+    selectTradingProviderCompanyName,
+    selectTradingSendAccount,
+} from '@suite-common/trading';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { type IconComponent } from '@trezor/components';
 import { ArrowSquareOutIcon } from '@trezor/icons';
@@ -30,18 +34,18 @@ type TradingQuoteByType = {
 export const useTradingFormOfferCommon = <T extends TradingType>() => {
     const context = useTradingFormContext();
     const {
-        account,
         isAmountEmpty,
         watch,
         form: { state },
         type,
     } = context;
+    const account = useSelector(reduxState => selectTradingSendAccount(reduxState, type));
 
     const { amountInCrypto } = watch();
 
     const { isTorEnabled } = useSelector(selectTorState);
     const areFeesLoading = useSelector(suiteState =>
-        selectAreFeesLoading(suiteState, account.symbol),
+        selectAreFeesLoading(suiteState, account?.symbol),
     );
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();

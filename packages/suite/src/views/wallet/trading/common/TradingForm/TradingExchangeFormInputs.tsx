@@ -15,6 +15,7 @@ import {
     selectTradingExchangeSelectedQuote,
     selectTradingExchangeSellCryptoIds,
     selectTradingLoadingAndTimestamp,
+    selectTradingSendAccount,
     tradingActions,
 } from '@suite-common/trading';
 import { type TokenAddress } from '@suite-common/wallet-types';
@@ -59,7 +60,6 @@ export const TradingExchangeFormInputs = () => {
     const {
         type,
         feeInfo,
-        account,
         composedLevels,
         form: { helpers },
         changeFeeLevel,
@@ -69,6 +69,7 @@ export const TradingExchangeFormInputs = () => {
         setAmountLimits,
     } = context;
     const asset = useSelectedTradingAsset(type);
+    const account = useSelector(state => selectTradingSendAccount(state, type));
 
     const displayComposedLevels = useMemo(
         () => getDisplayComposedLevels(selectedQuote, composedLevels),
@@ -194,7 +195,7 @@ export const TradingExchangeFormInputs = () => {
             {receiveCryptoSelect && (
                 <TradingFormCard>
                     {!isLoading && <TradingReceiveAddress />}
-                    {!!quotes.length && (
+                    {!!quotes.length && account && (
                         <TradingFormFees
                             feeInfo={feeInfo}
                             account={account}

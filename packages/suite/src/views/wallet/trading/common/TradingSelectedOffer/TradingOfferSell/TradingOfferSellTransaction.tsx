@@ -91,11 +91,13 @@ export const TradingSelectedOfferSellTransaction = () => {
                     <Translation id="TR_SELL_SEND_FROM" />
                 </Text>
                 <Column data-testid="@trading/form/verify/account">
-                    <AccountLabeling
-                        account={account}
-                        showAccountTypeBadge
-                        accountTypeBadgeSize="small"
-                    />
+                    {account && (
+                        <AccountLabeling
+                            account={account}
+                            showAccountTypeBadge
+                            accountTypeBadgeSize="small"
+                        />
+                    )}
                 </Column>
             </Column>
             <Column margin={24}>

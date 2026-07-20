@@ -50,12 +50,13 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     const { getValues, setValue, setError, clearErrors, control } =
         methods as unknown as UseFormReturn<TradingSellFormProps | TradingExchangeFormProps>;
     const chunkify = addressDisplayType === AddressDisplayOptions.CHUNKED;
-    const { symbol, networkType } = account;
+    const symbol = account?.symbol;
+    const networkType = account?.networkType;
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, symbol));
     const feeInfo = useMemo(
         () =>
             getConvertedOrDefaultFeeInfo({
-                networkType,
+                networkType: networkType ?? 'bitcoin',
                 feeInfo: rawFeeInfo,
             }),
         [networkType, rawFeeInfo],
@@ -76,7 +77,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
 
     useEffect(() => {
         const currentDevice = deviceRef.current;
-        if (networkType !== 'tron' || !currentDevice) {
+        if (networkType !== 'tron' || !currentDevice || !account || !network) {
             setFeeEstimationRecipient(undefined);
 
             return;
@@ -97,19 +98,27 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
-        account.descriptor,
-        account.symbol,
-        account.accountType,
+        account?.descriptor,
+        account?.symbol,
+        account?.accountType,
         networkType,
         device?.state,
         network,
         chunkify,
     ]);
 
-    const composeContext = useMemo(
-        () => ({ ...state, feeEstimationRecipient }),
-        [state, feeEstimationRecipient],
-    );
+    const composeContext = useMemo(() => {
+        if (!state.account || !state.network) {
+            return undefined;
+        }
+
+        return {
+            account: state.account,
+            network: state.network,
+            feeInfo: state.feeInfo,
+            feeEstimationRecipient,
+        };
+    }, [state, feeEstimationRecipient]);
 
     // sub-hook, Composing transaction
     const {
@@ -133,6 +142,10 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     });
 
     useEffect(() => {
+        if (!account || !network) {
+            return;
+        }
+
         const setStateAsync = async () => {
             const address = await getComposeAddressPlaceholder(
                 account,
@@ -152,8 +165,8 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
             }
         };
         const hasAccountChanged = !(
-            state.account.descriptor === initState.account.descriptor &&
-            state.account.symbol === initState.account.symbol
+            state.account?.descriptor === initState.account?.descriptor &&
+            state.account?.symbol === initState.account?.symbol
         );
 
         // update fee info only if the block height has increased.
@@ -170,15 +183,15 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         // call effect only when listed dependencies will change
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
-        account.symbol,
-        account.descriptor,
+        account?.symbol,
+        account?.descriptor,
         chunkify,
         device,
         network,
-        state.account.descriptor,
-        state.account.symbol,
-        initState.account.descriptor,
-        initState.account.symbol,
+        state.account?.descriptor,
+        state.account?.symbol,
+        initState.account?.descriptor,
+        initState.account?.symbol,
         initState.feeInfo,
         outputAddress,
         type,
@@ -236,7 +249,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
-        account.symbol,
+        account?.symbol,
         composedLevels,
         selectedFee,
         clearErrors,

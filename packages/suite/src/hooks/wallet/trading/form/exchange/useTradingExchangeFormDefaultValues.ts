@@ -28,7 +28,10 @@ import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingDefaultSellAsset } from '../common/useTradingDefaultSellAsset';
 
-export const useTradingExchangeFormDefaultValues = (accountKey: AccountKey, cryptoId: CryptoId) => {
+export const useTradingExchangeFormDefaultValues = (
+    accountKey: AccountKey | undefined,
+    cryptoId: CryptoId | undefined,
+) => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
 
     const defaultCurrency = useMemo(

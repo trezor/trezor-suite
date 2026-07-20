@@ -25,7 +25,7 @@ import { type SendContextValues } from 'src/types/wallet/sendForm';
 const DEFAULT_FIELD = 'outputs.0.amount';
 
 interface Props<TFieldValues extends FormState> extends UseFormReturn<TFieldValues> {
-    state: ComposeActionContext;
+    state: ComposeActionContext | undefined;
     defaultField?: FieldPath<TFieldValues>;
 }
 
@@ -61,7 +61,9 @@ export const useCompose = <TFieldValues extends FormState>({
     const composeRequest = useCallback(
         async (field = defaultFieldRef.current) => {
             // skip compose for cached older fee (edge case for trading)
-            if (!state || prevFeeInfoRef.current.blockHeight > state.feeInfo.blockHeight) return;
+            if (!state || (prevFeeInfoRef.current?.blockHeight ?? 0) > state.feeInfo.blockHeight) {
+                return;
+            }
 
             // reset precomposed transactions
             setComposedLevels(undefined);
@@ -259,6 +261,8 @@ export const useCompose = <TFieldValues extends FormState>({
 
     // called from the UI, triggers signing process
     const sign = async () => {
+        if (!state) return;
+
         const formState = getValues();
         const precomposedTransaction = composedLevels
             ? composedLevels[formState.selectedFee || 'normal']

@@ -7,7 +7,7 @@ import {
 import type { Account } from 'src/types/wallet';
 
 export interface TradingDetailContextValues<T extends TradingType> {
-    account: Account;
+    account: Account | undefined;
     trade: TradingTradeMapProps[T] | undefined;
     info?: TradingTradeInfoMapProps[T] | undefined;
 }

@@ -51,10 +51,10 @@ const renderForSell = (
 };
 
 describe('useTradingFormAccount – sell account across redirect', () => {
-    it('resolves no account when tradingAccountKey is lost and none is prefilled', () => {
+    it('preselects the first eligible account when tradingAccountKey is lost and none is prefilled', () => {
         const result = renderForSell(undefined);
 
-        expect(result.current.account).toBeUndefined();
+        expect(result.current.account?.key).toBe(FIRST_ELIGIBLE_ACCOUNT.key);
     });
 
     it('resolves the trade account when tradingAccountKey is rehydrated from the trade', () => {

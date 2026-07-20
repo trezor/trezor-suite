@@ -115,11 +115,13 @@ export const TradingBuyDetailContent = () => {
                         />
                         <Box margin={{ top: 32, bottom: 12 }}>
                             <TradingDetailStepList>
-                                <TradingBuyDetailPaymentWaitingForUserStep
-                                    trade={trade.data}
-                                    account={account}
-                                    providerName={provider?.brandName || provider?.companyName}
-                                />
+                                {account && (
+                                    <TradingBuyDetailPaymentWaitingForUserStep
+                                        trade={trade.data}
+                                        account={account}
+                                        providerName={provider?.brandName || provider?.companyName}
+                                    />
+                                )}
                                 <TradingBuyDetailPaymentProcessingStep
                                     trade={trade.data}
                                     provider={provider}

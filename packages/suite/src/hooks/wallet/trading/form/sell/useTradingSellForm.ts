@@ -63,8 +63,8 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
 
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
 
-    const network = networks[account.symbol];
-    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const network = account ? networks[account.symbol] : undefined;
+    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account?.symbol);
 
     const { defaultValues } = useTradingSellFormDefaultValues(
         accountKey,
@@ -206,7 +206,6 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
         },
         ...methods,
         methods,
-        account,
         sellInfo,
         quotesRequest,
         quotes: quotesByPaymentMethod,

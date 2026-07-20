@@ -105,12 +105,14 @@ export const TradingOfferExchange = () => {
                         isReceive
                     />
                     <TradingFiatDeviationWarning selectedQuote={selectedTrade} />
-                    <TradingOfferExchangeDetails
-                        account={sendAccount}
-                        exchangeQuote={selectedTrade}
-                        providers={providers as TradingExchangeProvidersInfoProps}
-                        exchange={exchange}
-                    />
+                    {sendAccount && (
+                        <TradingOfferExchangeDetails
+                            account={sendAccount}
+                            exchangeQuote={selectedTrade}
+                            providers={providers as TradingExchangeProvidersInfoProps}
+                            exchange={exchange}
+                        />
+                    )}
 
                     <Button
                         data-testid="@trading/offer/confirm-on-trezor-and-send"

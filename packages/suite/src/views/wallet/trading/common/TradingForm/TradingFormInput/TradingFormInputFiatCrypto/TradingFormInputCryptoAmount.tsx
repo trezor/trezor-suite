@@ -10,11 +10,13 @@ import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingBuyFormProps,
     getNetworkDecimalsWithFallback,
+    selectTradingSendAccount,
     useTradingUtils,
 } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountByKey, selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';
 
@@ -36,13 +38,18 @@ import { getFeeInUnits, tradingGetAccountLabel } from 'src/utils/wallet/trading/
 
 import { getCryptoInputRules } from './tradingFormInputFiatCryptoRules';
 
-export const TradingFormInputCryptoAmount = ({
+type TradingFormInputCryptoAmountContentProps = TradingFormInputFiatCryptoProps & {
+    validationAccount: Account;
+};
+
+const TradingFormInputCryptoAmountContent = ({
+    validationAccount,
     cryptoInputName,
     fiatInputName,
     cryptoSelectName,
     labelLeft,
     labelRight,
-}: TradingFormInputFiatCryptoProps) => {
+}: TradingFormInputCryptoAmountContentProps) => {
     const { translationString } = useTranslation();
     const { CryptoAmountFormatter } = useFormatters();
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
@@ -51,7 +58,7 @@ export const TradingFormInputCryptoAmount = ({
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
 
     const context = useTradingFormContext();
-    const { amountLimits, account, network } = context;
+    const { amountLimits, network } = context;
     const {
         control,
         formState: { errors },
@@ -61,14 +68,6 @@ export const TradingFormInputCryptoAmount = ({
         clearErrors,
     } = context as UseFormReturn<TradingAllFormProps>;
 
-    const sendCryptoSelect = useWatch({
-        control,
-        name: TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    });
-    const selectedSendAccount = useSelector(state =>
-        selectAccountByKey(state, sendCryptoSelect?.accountKey),
-    );
-    const validationAccount = selectedSendAccount ?? account;
     const { shouldSendInSats } = useBitcoinAmountUnit(validationAccount.symbol);
 
     const isBuyContext = isTradingBuyContext(context);
@@ -89,7 +88,7 @@ export const TradingFormInputCryptoAmount = ({
         shouldSendInSats,
     );
     const decimals = isBuyContext
-        ? getNetworkDecimalsWithFallback(network.symbol)
+        ? getNetworkDecimalsWithFallback(network?.symbol)
         : getAssetDecimals({
               accountKey: getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT)?.accountKey,
               cryptoId: cryptoSelect?.id,
@@ -177,4 +176,25 @@ export const TradingFormInputCryptoAmount = ({
             data-testid="@trading/form/crypto-input"
         />
     );
+};
+
+export const TradingFormInputCryptoAmount = (props: TradingFormInputFiatCryptoProps) => {
+    const context = useTradingFormContext();
+    const { control } = context as UseFormReturn<TradingAllFormProps>;
+
+    const sendCryptoSelect = useWatch({
+        control,
+        name: TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+    });
+    const selectedSendAccount = useSelector(state =>
+        selectAccountByKey(state, sendCryptoSelect?.accountKey),
+    );
+    const sendAccount = useSelector(state => selectTradingSendAccount(state, context.type));
+    const validationAccount = selectedSendAccount ?? sendAccount;
+
+    if (!validationAccount) {
+        return null;
+    }
+
+    return <TradingFormInputCryptoAmountContent validationAccount={validationAccount} {...props} />;
 };
