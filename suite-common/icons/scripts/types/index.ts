@@ -6,6 +6,15 @@ export interface UpdatedIconsList {
 
 export interface CoinListData {
     id: string;
+    // present because /coins/list is queried with include_platform=true
+    platforms?: Record<string, string>;
+}
+
+// Subset of the /coins/markets response we rely on. `image` is the "large" asset URL
+// (same one as CoinData.image.large), or a "missing_large.png" placeholder for logo-less coins.
+export interface CoinMarketData {
+    id: string;
+    image: string;
 }
 
 export interface CoinData {
