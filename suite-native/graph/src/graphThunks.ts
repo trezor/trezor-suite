@@ -1,41 +1,33 @@
 import { type useDispatch } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
-import { getDefaultStore } from 'jotai';
 
 import {
     type AccountItem,
     type FetchGraphDataParams,
-    type FiatGraphPoint,
-    type FiatGraphPointWithCryptoBalance,
     fetchGraphData,
     getTimeFrameForHistoryHours,
 } from '@suite-common/graph';
 import { createThunk } from '@suite-common/redux-utils';
 
-import { accountDetailGraphAtoms } from './accountDetailGraphAtoms';
-import { type GraphInstanceId, isPortfolioGraphInstanceId } from './graphInstances';
+import { serializeGraphEvents, serializeGraphPoints } from './graphDataUtils';
+import { type GraphInstanceId } from './graphInstances';
 import {
     type RefetchGraphThunkParams,
     type RefetchGraphThunkResult,
     RefetchGraphThunkStatus,
 } from './graphThunkTypes';
-import { portfolioGraphAtoms } from './portfolioGraphAtoms';
 import { type TimeframeHoursValue } from './types';
 import { checkAndReportGraphError, omitErrorMessageSensitiveData } from './utils';
 
 const GRAPH_MODULE_PREFIX = '@suite-native/graph';
 const GRAPH_NOT_AVAILABLE_ERROR_MESSAGE = 'Graph is not available for testnet coins.';
 
-// The app doesn't mount any jotai Provider, so all atoms live in the default store
-// and it is safe to write them from outside of React. Do not add a jotai Provider.
-const jotaiStore = getDefaultStore();
-
-// Timestamp of the last started fetch per atom bundle, so a finished fetch can detect
+// Timestamp of the last started fetch per graph instance, so a finished fetch can detect
 // that it was interrupted by a newer one and its result should be thrown away.
-const lastFetchTimestamps = new WeakMap<object, number>();
+const lastFetchTimestamps = new Map<GraphInstanceId, number>();
 
-type FetchGraphDataToAtomsParams = {
+type FetchGraphDataForReduxParams = {
     instanceId: GraphInstanceId;
     accounts: AccountItem[];
     eventsAccount?: AccountItem;
@@ -46,31 +38,6 @@ type FetchGraphDataToAtomsParams = {
     dispatch: ReturnType<typeof useDispatch>;
 };
 
-const getGraphAtomsForInstanceId = (instanceId: GraphInstanceId) => {
-    if (isPortfolioGraphInstanceId(instanceId)) {
-        return portfolioGraphAtoms;
-    }
-
-    return accountDetailGraphAtoms;
-};
-
-const setGraphPointsForInstanceId = (
-    instanceId: GraphInstanceId,
-    points: FiatGraphPoint[] | FiatGraphPointWithCryptoBalance[],
-) => {
-    // FIXME: Remove this atom-specific branch once graph points/events are stored in Redux graph instances.
-    if (isPortfolioGraphInstanceId(instanceId)) {
-        jotaiStore.set(portfolioGraphAtoms.graphPointsAtom, points as FiatGraphPoint[]);
-
-        return;
-    }
-
-    jotaiStore.set(
-        accountDetailGraphAtoms.graphPointsAtom,
-        points as FiatGraphPointWithCryptoBalance[],
-    );
-};
-
 const getGraphError = (error: unknown): Error => {
     if (error instanceof Error) {
         return error;
@@ -79,7 +46,7 @@ const getGraphError = (error: unknown): Error => {
     return new Error(String(error));
 };
 
-const fetchGraphDataToAtoms = async ({
+const fetchGraphDataForRedux = async ({
     instanceId,
     accounts,
     eventsAccount,
@@ -88,10 +55,9 @@ const fetchGraphDataToAtoms = async ({
     baseCurrencyCode,
     forceRefetch,
     dispatch,
-}: FetchGraphDataToAtomsParams): Promise<RefetchGraphThunkResult> => {
-    const atoms = getGraphAtomsForInstanceId(instanceId);
+}: FetchGraphDataForReduxParams): Promise<RefetchGraphThunkResult> => {
     const fetchTimestamp = Date.now();
-    lastFetchTimestamps.set(atoms, fetchTimestamp);
+    lastFetchTimestamps.set(instanceId, fetchTimestamp);
 
     const { startOfTimeFrameDate, endOfTimeFrameDate } =
         getTimeFrameForHistoryHours(timeframeHours);
@@ -107,20 +73,15 @@ const fetchGraphDataToAtoms = async ({
         dispatch,
     });
 
-    if (events) {
-        // We need to set events after graph points, othewise it will mess up events randomly
-        // because of strange useEffect in AnimatedLineGraph component.
-        jotaiStore.set(atoms.graphEventsAtom, events);
-    }
-
-    if (lastFetchTimestamps.get(atoms) !== fetchTimestamp) {
+    if (lastFetchTimestamps.get(instanceId) !== fetchTimestamp) {
         return { status: RefetchGraphThunkStatus.Interrupted };
     }
 
-    // The point type is determined by the accounts of the graph the bundle belongs to.
-    setGraphPointsForInstanceId(instanceId, points);
-
-    return { status: RefetchGraphThunkStatus.Fetched };
+    return {
+        status: RefetchGraphThunkStatus.Fetched,
+        points: serializeGraphPoints(points),
+        events: serializeGraphEvents(events),
+    };
 };
 
 export const refetchGraphThunk = createThunk<
@@ -150,7 +111,7 @@ export const refetchGraphThunk = createThunk<
     }
 
     try {
-        return await fetchGraphDataToAtoms({
+        return await fetchGraphDataForRedux({
             instanceId,
             accounts,
             eventsAccount,

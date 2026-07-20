@@ -8,6 +8,7 @@ import {
     selectHasDeviceHistoryEnabledAccounts,
     selectHasPortfolioGraphAccounts,
     selectPortfolioGraphIsLoading,
+    selectPortfolioGraphPoints,
 } from '@suite-native/graph';
 
 type PortfolioHeaderContentProps = {
@@ -17,15 +18,14 @@ type PortfolioHeaderContentProps = {
 const PortfolioHeaderContent = ({ isLoading }: PortfolioHeaderContentProps) => {
     const hasDeviceHistoryEnabledAccounts = useSelector(selectHasDeviceHistoryEnabledAccounts);
     const totalFiatBalance = useSelector(selectSelectedDeviceTotalFiatBalance);
+    const graphPoints = useSelector(selectPortfolioGraphPoints);
 
     return (
         <Box testID="@home/portfolio/header">
             <VStack spacing="sp4" alignItems="center">
                 <GraphBaseCurrencyBalance
-                    selectedPointFiatValueAtom={portfolioGraphAtoms.selectedPointFiatValueAtom}
-                    selectedPointTimestampAtom={portfolioGraphAtoms.selectedPointTimestampAtom}
-                    referencePointAtom={portfolioGraphAtoms.referencePointAtom}
-                    percentageChangeAtom={portfolioGraphAtoms.percentageChangeAtom}
+                    points={graphPoints}
+                    selectedPointAtom={portfolioGraphAtoms.selectedPointAtom}
                     isGestureActiveAtom={portfolioGraphAtoms.isGestureActiveAtom}
                     showChange={hasDeviceHistoryEnabledAccounts}
                     isLoading={isLoading}

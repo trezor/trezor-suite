@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useAtomValue, useSetAtom } from 'jotai';
-
 import { type FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
@@ -19,7 +17,9 @@ import {
     getAccountGraphInstanceId,
     resetGraphRuntimeState,
     selectAccountGraphError,
+    selectAccountGraphEvents,
     selectAccountGraphIsLoading,
+    selectAccountGraphPoints,
     selectAccountGraphTimeframe,
     selectIsHistoryEnabledAccountByAccountKey,
     useGraphData,
@@ -37,7 +37,6 @@ type AccountDetailGraphProps = {
 
 export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailGraphProps) => {
     const dispatch = useDispatch();
-    const resetGraph = useSetAtom(accountDetailGraphAtoms.resetGraphAtom);
     const graphInstanceId = getAccountGraphInstanceId({ accountKey, tokenContract });
 
     const isHistoryEnabledAccount = useSelector((state: AccountsRootState) =>
@@ -64,14 +63,18 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
         backendSymbol: accountItem?.symbol ?? 'btc',
     });
 
-    const graphPoints = useAtomValue(accountDetailGraphAtoms.graphPointsAtom);
+    const graphPoints = useSelector((state: GraphSliceRootState) =>
+        selectAccountGraphPoints(state, accountKey, tokenContract),
+    );
     const isLoading = useSelector((state: GraphSliceRootState) =>
         selectAccountGraphIsLoading(state, accountKey, tokenContract),
     );
     const error = useSelector((state: GraphSliceRootState) =>
         selectAccountGraphError(state, accountKey, tokenContract),
     );
-    const graphEvents = useAtomValue(accountDetailGraphAtoms.graphEventsAtom);
+    const graphEvents = useSelector((state: GraphSliceRootState) =>
+        selectAccountGraphEvents(state, accountKey, tokenContract),
+    );
 
     const { setSelectedPoint, handleGestureEnd } = useGraphGestureHandlers(
         accountDetailGraphAtoms.selectedPointAtom,
@@ -80,9 +83,8 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
     useEffect(
         () => () => {
             dispatch(resetGraphRuntimeState({ instanceId: graphInstanceId }));
-            resetGraph();
         },
-        [dispatch, graphInstanceId, resetGraph],
+        [dispatch, graphInstanceId],
     );
 
     const isTokenPriceUnavailable = !isLoading && (!!error || graphPoints.length <= 1);
@@ -98,6 +100,7 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
                 accountKey={accountKey}
                 tokenAddress={tokenContract}
                 totalFiatBalance={totalFiatBalance}
+                graphPoints={graphPoints}
             />
 
             {isHistoryEnabledAccount && !isGraphHidden && (

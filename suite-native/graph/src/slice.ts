@@ -11,7 +11,11 @@ import {
 } from './graphInstances';
 import { RefetchGraphThunkStatus } from './graphThunkTypes';
 import { refetchGraphThunk } from './graphThunks';
-import { type TimeframeHoursValue } from './types';
+import {
+    type StoredFiatGraphPoint,
+    type StoredGroupedBalanceMovementEvent,
+    type TimeframeHoursValue,
+} from './types';
 
 // Default is 720 hours (1 month).
 export const DEFAULT_GRAPH_TIMEFRAME_HOURS = 720;
@@ -20,6 +24,8 @@ export type GraphInstanceState = {
     timeframeHours: TimeframeHoursValue;
     isLoading?: boolean;
     error?: string | null;
+    points?: StoredFiatGraphPoint[];
+    events?: StoredGroupedBalanceMovementEvent[];
 };
 
 type Graphs = Partial<Record<GraphInstanceId, GraphInstanceState>>;
@@ -127,6 +133,13 @@ const graphSlice = createSlice({
 
                 graphInstance.isLoading = false;
                 graphInstance.error = null;
+                graphInstance.points = action.payload.points;
+
+                if (action.payload.events) {
+                    graphInstance.events = action.payload.events;
+                } else {
+                    delete graphInstance.events;
+                }
             })
             .addCase(refetchGraphThunk.rejected, (state, action) => {
                 const graphInstance = getOrCreateGraphInstance(state, action.meta.arg.instanceId);

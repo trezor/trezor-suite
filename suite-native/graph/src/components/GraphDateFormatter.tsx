@@ -1,22 +1,13 @@
-import { type Atom, useAtomValue } from 'jotai';
-
 import { useFormatters } from '@suite-common/formatters';
 import { Text } from '@suite-native/atoms';
 
-type SelectedPointTimestampAtom = Atom<number | null>;
-
 type GraphDateFormatterProps = {
     firstPointDate: Date;
-    selectedPointTimestampAtom: SelectedPointTimestampAtom;
+    selectedPointTimestamp: number | null;
 };
 
-const WeekFormatter = ({
-    selectedPointTimestampAtom,
-}: {
-    selectedPointTimestampAtom: SelectedPointTimestampAtom;
-}) => {
+const WeekFormatter = ({ selectedPointTimestamp }: { selectedPointTimestamp: number | null }) => {
     const { DateTimeFormatter } = useFormatters();
-    const selectedPointTimestamp = useAtomValue(selectedPointTimestampAtom);
 
     // Empty space to prevent layout shift
     if (selectedPointTimestamp === null) return <Text> </Text>;
@@ -25,13 +16,11 @@ const WeekFormatter = ({
 };
 
 const OtherDateFormatter = ({
-    selectedPointTimestampAtom,
+    selectedPointTimestamp,
 }: {
-    selectedPointTimestampAtom: SelectedPointTimestampAtom;
+    selectedPointTimestamp: number | null;
 }) => {
     const { DateFormatter } = useFormatters();
-
-    const selectedPointTimestamp = useAtomValue(selectedPointTimestampAtom);
 
     if (selectedPointTimestamp === null) return null;
 
@@ -42,7 +31,7 @@ const millisecondsPerTwoWeek = 1209600000;
 
 export const GraphDateFormatter = ({
     firstPointDate,
-    selectedPointTimestampAtom,
+    selectedPointTimestamp,
 }: GraphDateFormatterProps) => {
     const millisecondElapsedFromFistPoint = new Date().getTime() - firstPointDate.getTime();
     // this check is significantly faster than using date-fns/differenceInWeeks(days)
@@ -52,7 +41,7 @@ export const GraphDateFormatter = ({
 
     return (
         <Text variant="body-sm" color="contentSecondary">
-            <Formatter selectedPointTimestampAtom={selectedPointTimestampAtom} />
+            <Formatter selectedPointTimestamp={selectedPointTimestamp} />
         </Text>
     );
 };
