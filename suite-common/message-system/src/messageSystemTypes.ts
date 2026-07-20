@@ -101,6 +101,7 @@ export const Feature = {
         concierge: 'trading.concierge',
         survey: 'trading.survey',
         slip24: 'trading.slip24',
+        txSimulation: 'trading.txSimulation',
     },
     earn: {
         dashboard: {
