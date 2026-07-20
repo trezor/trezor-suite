@@ -3,6 +3,16 @@
     "suiteVersion": "26.8.0",
     "version": "1.0.0",
     "private": true,
+    "exports": {
+        ".": {
+            "types": "./libDev/index.d.ts",
+            "default": "./index.ts"
+        },
+        "./mocks": {
+            "types": "./libDev/mocks/index.d.ts",
+            "default": "./mocks/index.ts"
+        }
+    },
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint": "yarn lint:styles && yarn lint:js",

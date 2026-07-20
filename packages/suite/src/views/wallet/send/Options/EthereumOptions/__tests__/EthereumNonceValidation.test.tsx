@@ -1,4 +1,4 @@
-import '@suite-common/test-utils/src/globalOverrides';
+import '@suite-common/test-utils/globalOverrides';
 
 import { useForm } from 'react-hook-form';
 

@@ -1,4 +1,4 @@
-import '@suite-common/test-utils/src/globalOverrides';
+import '@suite-common/test-utils/globalOverrides';
 
 import { coinjoinReducer } from '@suite/coinjoin';
 import { initialRunCompleted, prepareFlagsReducer } from '@suite/flags';

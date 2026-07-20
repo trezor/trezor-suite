@@ -1,4 +1,4 @@
-import '@suite-common/test-utils/src/globalOverrides';
+import '@suite-common/test-utils/globalOverrides';
 import { type IDBPDatabase, deleteDB, openDB } from 'idb';
 
 import { initialWalletSettingsState } from '@suite-common/wallet-core';

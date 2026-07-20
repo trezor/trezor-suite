@@ -1,4 +1,4 @@
-import '@suite-common/test-utils/src/globalOverrides';
+import '@suite-common/test-utils/globalOverrides';
 
 import { type TranslationKey } from '@suite/intl';
 import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';

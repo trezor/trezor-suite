@@ -70,6 +70,7 @@ export const localRulesConfig = [
                         ...publishableTrezorPackages,
                         ...packagesWithSectionEntryPoints,
                     ],
+                    allowedEntryPoints: ['@suite-common/test-utils/globalOverrides'],
                 },
             ],
             'local-rules/analytics-event-name': 'error',
