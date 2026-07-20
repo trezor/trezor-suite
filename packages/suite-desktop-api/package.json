@@ -25,6 +25,5 @@
         "@suite/tor": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "electron": "42.5.0"
-    },
-    "types": "./libDev/src/index.d.ts"
+    }
 }

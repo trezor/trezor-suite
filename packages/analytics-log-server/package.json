@@ -3,7 +3,7 @@
     "private": true,
     "type": "module",
     "main": "./dist/index.js",
-    "types": "./libDev/src/index.d.ts",
+    "types": "./libDev/index.d.ts",
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",

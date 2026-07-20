@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -18,6 +18,8 @@ describe(requirePackageJsonTypes.name, () => {
             workspaceDir,
             workspaceName: '@trezor/example',
         };
+        mkdirSync(join(workspaceDir, 'src'));
+        writeFileSync(join(workspaceDir, 'src/index.ts'), 'export {};\n');
     });
 
     afterEach(() => {
@@ -76,10 +78,45 @@ describe(requirePackageJsonTypes.name, () => {
         });
     });
 
-    it('uses the Suite application declaration entry', async () => {
+    it('accepts a conventional TSX entry', async () => {
+        rmSync(join(workspaceDir, 'src/index.ts'));
+        writeFileSync(join(workspaceDir, 'src/index.tsx'), 'export {};\n');
+        writeFileSync(
+            join(workspaceDir, 'package.json'),
+            JSON.stringify({ types: './libDev/src/index.d.ts' }),
+        );
+
+        const errors = await requirePackageJsonTypes.verify(context);
+
+        expect(errors).toEqual([]);
+    });
+
+    it('does not invent an entry for an unclassified workspace', async () => {
+        rmSync(join(workspaceDir, 'src'), { recursive: true });
+        writeFileSync(
+            join(workspaceDir, 'package.json'),
+            JSON.stringify({ name: '@trezor/example' }),
+        );
+
+        const errors = await requirePackageJsonTypes.fix!(context);
+
+        expect(errors).toEqual([
+            '@trezor/example: workspace without src/index.ts(x) must configure a declaration entry or exemption.',
+        ]);
+        expect(JSON.parse(readFileSync(join(workspaceDir, 'package.json'), 'utf8'))).toEqual({
+            name: '@trezor/example',
+        });
+    });
+
+    it.each([
+        ['@trezor/analytics-log-server', './libDev/index.d.ts'],
+        ['@trezor/connect-web', './libDev/connect-web/src/index.d.ts'],
+        ['@trezor/eslint', './libDev/src/index.d.mts'],
+        ['@trezor/suite', './libDev/index.d.ts'],
+    ])('uses the declaration entry emitted by %s', async (workspaceName, types) => {
         context = {
             ...context,
-            workspaceName: '@trezor/suite',
+            workspaceName,
         };
         writeFileSync(
             join(workspaceDir, 'package.json'),
@@ -90,7 +127,66 @@ describe(requirePackageJsonTypes.name, () => {
 
         expect(errors).toEqual([]);
         expect(JSON.parse(readFileSync(join(workspaceDir, 'package.json'), 'utf8'))).toEqual({
-            types: './libDev/index.d.ts',
+            types,
+        });
+    });
+
+    it.each([
+        [
+            '@suite-common/earn-stablecoin',
+            {
+                './src/allowance': {
+                    types: './libDev/src/allowance/index.d.ts',
+                    default: './src/allowance/index.ts',
+                },
+                './src/signing': {
+                    types: './libDev/src/signing/index.d.ts',
+                    default: './src/signing/index.ts',
+                },
+                './src/tx-simulation': {
+                    types: './libDev/src/tx-simulation/index.d.ts',
+                    default: './src/tx-simulation/index.ts',
+                },
+            },
+        ],
+        [
+            '@suite-common/schemas',
+            {
+                './src/evm': {
+                    types: './libDev/src/evm/index.d.ts',
+                    default: './src/evm/index.ts',
+                },
+            },
+        ],
+        [
+            '@suite/tx-simulation',
+            {
+                './src/common': {
+                    types: './libDev/src/common/index.d.ts',
+                    default: './src/common/index.ts',
+                },
+                './src/evm': {
+                    types: './libDev/src/evm/index.d.ts',
+                    default: './src/evm/index.ts',
+                },
+            },
+        ],
+    ])('configures the typed public subpaths exposed by %s', async (workspaceName, exports) => {
+        context = {
+            ...context,
+            workspaceName,
+        };
+        writeFileSync(
+            join(workspaceDir, 'package.json'),
+            JSON.stringify({ name: workspaceName, types: './libDev/src/index.d.ts' }),
+        );
+
+        const errors = await requirePackageJsonTypes.fix!(context);
+
+        expect(errors).toEqual([]);
+        expect(JSON.parse(readFileSync(join(workspaceDir, 'package.json'), 'utf8'))).toEqual({
+            name: workspaceName,
+            exports,
         });
     });
 
@@ -114,10 +210,10 @@ describe(requirePackageJsonTypes.name, () => {
         expect(requirePackageJsonTypes.scope).toBe('workspace');
     });
 
-    it('ignores configured packages', async () => {
+    it('does not require types for workspaces without a typed package root', async () => {
         context = {
             ...context,
-            workspaceName: 'connect-example-node',
+            workspaceName: '@trezor/analytics-docs',
         };
 
         const errors = await requirePackageJsonTypes.verify(context);
@@ -125,19 +221,28 @@ describe(requirePackageJsonTypes.name, () => {
         expect(errors).toEqual([]);
     });
 
-    it('does not add types for ignored packages in fix', async () => {
+    it('removes types from workspaces without a typed package root', async () => {
         context = {
             ...context,
-            workspaceName: 'connect-mobile-example',
+            workspaceName: '@suite-native/app',
         };
 
-        writeFileSync(join(workspaceDir, 'package.json'), JSON.stringify({ name: 'example' }));
+        writeFileSync(
+            join(workspaceDir, 'package.json'),
+            JSON.stringify({ name: '@suite-native/app', types: './libDev/src/index.d.ts' }),
+        );
+
+        const verificationErrors = await requirePackageJsonTypes.verify(context);
+
+        expect(verificationErrors).toEqual([
+            '@suite-native/app: types must be omitted because the workspace does not expose a typed package root in package.json.',
+        ]);
 
         const errors = await requirePackageJsonTypes.fix!(context);
 
         expect(errors).toEqual([]);
         expect(JSON.parse(readFileSync(join(workspaceDir, 'package.json'), 'utf8'))).toEqual({
-            name: 'example',
+            name: '@suite-native/app',
         });
     });
 });

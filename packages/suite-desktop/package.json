@@ -34,6 +34,5 @@
     "devDependencies": {
         "electron": "42.5.0",
         "electron-builder": "26.15.3"
-    },
-    "types": "./libDev/src/index.d.ts"
+    }
 }

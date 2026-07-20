@@ -61,6 +61,5 @@
         "minimizer-webpack-plugin": "^5.6.1",
         "rimraf": "^6.1.2",
         "webpack": "5.108.1"
-    },
-    "types": "./libDev/src/index.d.ts"
+    }
 }

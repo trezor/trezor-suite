@@ -57,6 +57,5 @@
         "react-refresh": "^0.18.0",
         "vite": "^8.0.7",
         "vite-plugin-wasm": "^3.6.0"
-    },
-    "types": "./libDev/src/index.d.ts"
+    }
 }

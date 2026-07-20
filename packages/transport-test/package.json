@@ -35,6 +35,5 @@
     },
     "dependencies": {
         "@trezor/transport-common": "workspace:*"
-    },
-    "types": "./libDev/src/index.d.ts"
+    }
 }
