@@ -6,11 +6,13 @@ import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-na
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
+import { Context } from '@suite-common/message-system';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type YieldWithdrawFlowType,
     getConvertedOutputTokenBalanceToInputTokenAmount,
     getWithdrawRequestAmount,
+    getYieldVaultContractAddress,
     getYieldWithdrawInputToken,
     splitYieldPendingTransaction,
     stablecoinYieldActions,
@@ -35,6 +37,7 @@ import {
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { decimalTransformer } from '@suite-native/helpers';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { ContextMessage } from '@suite-native/message-system';
 import {
     Screen,
     type StackNavigationProps,
@@ -47,9 +50,11 @@ import { BigNumber } from '@trezor/utils';
 
 import { YieldDepositFlowScreenHeader } from '../components/YieldDepositFlowScreenHeader';
 import { YieldDepositInfoBottomSheet } from '../components/YieldDepositInfoBottomSheet';
+import { YieldDisabledAlert } from '../components/YieldDisabledAlert';
 import { YieldFeeEstimationErrorAlert } from '../components/YieldFeeEstimationErrorAlert';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { YieldWithdrawWarning } from '../components/YieldWithdrawWarning';
+import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
 import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransactionFailureAlert';
@@ -124,6 +129,13 @@ export const YieldWithdrawScreen = () => {
         vaultTokenSymbol: resolvedVaultTokenSymbol,
         vaultTokenName,
     } = useResolvedYieldFlowData(route.params);
+
+    const vaultContractAddress = vault ? getYieldVaultContractAddress(vault) : undefined;
+    const {
+        isDisabled: isWithdrawDisabled,
+        content: withdrawDisabledContent,
+        variant: withdrawDisabledVariant,
+    } = useMessageSystemYield('withdraw', { vaultContractAddress });
 
     useNavigateBackAnalytics({
         type: events.yieldNavigateEvent.name,
@@ -261,7 +273,8 @@ export const YieldWithdrawScreen = () => {
         !!amountValidationError ||
         !isWithdrawReviewReady ||
         isComposingWithdrawFee ||
-        isFeeUnavailable;
+        isFeeUnavailable ||
+        isWithdrawDisabled;
 
     useShowYieldTransactionFailureAlert({
         error: session?.error,
@@ -416,7 +429,7 @@ export const YieldWithdrawScreen = () => {
     );
 
     const handleContinue = useCallback(() => {
-        if (!flowKey || !isWithdrawReviewReady || !preparedAction) {
+        if (!flowKey || !isWithdrawReviewReady || !preparedAction || isWithdrawDisabled) {
             return;
         }
 
@@ -454,6 +467,7 @@ export const YieldWithdrawScreen = () => {
         dispatch,
         flowType,
         flowKey,
+        isWithdrawDisabled,
         isWithdrawReviewReady,
         navigation,
         preparedAction,
@@ -531,6 +545,14 @@ export const YieldWithdrawScreen = () => {
                 paddingHorizontal="sp16"
                 pointerEvents={isWithdrawPending ? 'none' : 'auto'}
             >
+                <ContextMessage context={Context.getEarnYield('withdraw')} />
+                {isWithdrawDisabled && (
+                    <YieldDisabledAlert
+                        type="withdraw"
+                        content={withdrawDisabledContent}
+                        variant={withdrawDisabledVariant}
+                    />
+                )}
                 <Card style={applyStyle(withdrawFormCardStyle)}>
                     <VStack spacing="sp12">
                         <HStack justifyContent="space-between" alignItems="center">

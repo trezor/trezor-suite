@@ -6,10 +6,11 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { Button, HStack, Text, VStack } from '@suite-native/atoms';
+import { Button, HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 
+import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
 import { type StablecoinYieldClaimSummary } from '../types';
 
 type StablecoinYieldClaimRewardsCardSectionProps = {
@@ -26,7 +27,12 @@ export const StablecoinYieldClaimRewardsCardSection = ({
     onPress,
 }: StablecoinYieldClaimRewardsCardSectionProps) => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
-    const isDisabled = claimRewards.length === 0 || isLoading;
+    const {
+        isDisabled: isClaimFeatureDisabled,
+        content: claimDisabledContent,
+        variant: claimDisabledVariant,
+    } = useMessageSystemYield('claim');
+    const isDisabled = claimRewards.length === 0 || isLoading || isClaimFeatureDisabled;
 
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
@@ -50,28 +56,36 @@ export const StablecoinYieldClaimRewardsCardSection = ({
     }
 
     return (
-        <HStack spacing="sp24" alignItems="center">
-            <VStack spacing={2} flex={1}>
-                <Text variant="body-md" color="contentSecondary">
-                    <Translation id="earn.earnScreen.depositsCard.availableRewards" />
-                </Text>
-                <BaseCurrencyAmountFormatter
-                    value={totalFiatClaimableAmount}
-                    variant="headline-md"
-                    isDiscreetText={false}
-                    isLoading={isLoading}
+        <VStack spacing="sp12">
+            {isClaimFeatureDisabled && claimDisabledContent && (
+                <InlineAlertBox
+                    intent={claimDisabledVariant ?? 'warning'}
+                    title={claimDisabledContent}
                 />
-            </VStack>
-            <Button
-                size="medium"
-                intent="neutral"
-                priority="secondary"
-                isDisabled={isDisabled}
-                isLoading={isLoading}
-                onPress={handlePress}
-            >
-                <Translation id="earn.earnScreen.depositsCard.claimRewardsButton" />
-            </Button>
-        </HStack>
+            )}
+            <HStack spacing="sp24" alignItems="center">
+                <VStack spacing={2} flex={1}>
+                    <Text variant="body-md" color="contentSecondary">
+                        <Translation id="earn.earnScreen.depositsCard.availableRewards" />
+                    </Text>
+                    <BaseCurrencyAmountFormatter
+                        value={totalFiatClaimableAmount}
+                        variant="headline-md"
+                        isDiscreetText={false}
+                        isLoading={isLoading}
+                    />
+                </VStack>
+                <Button
+                    size="medium"
+                    intent="neutral"
+                    priority="secondary"
+                    isDisabled={isDisabled}
+                    isLoading={isLoading}
+                    onPress={handlePress}
+                >
+                    <Translation id="earn.earnScreen.depositsCard.claimRewardsButton" />
+                </Button>
+            </HStack>
+        </VStack>
     );
 };

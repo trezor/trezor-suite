@@ -4,7 +4,10 @@ import { useNavigation } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { getConvertedOutputTokenBalanceToInputTokenAmount } from '@suite-common/wallet-core';
+import {
+    getConvertedOutputTokenBalanceToInputTokenAmount,
+    getYieldVaultContractAddress,
+} from '@suite-common/wallet-core';
 import {
     type AccountKey,
     type TokenAddress,
@@ -19,6 +22,7 @@ import {
     Card,
     CardDivider,
     HStack,
+    InlineAlertBox,
     PressableOpacity,
     Text,
     VStack,
@@ -28,6 +32,7 @@ import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     useApyBreakdownAlert,
+    useMessageSystemYield,
     useResolvedYieldFlowData,
     useStablecoinYieldFirmwareUpdateAlert,
 } from '@suite-native/module-earn';
@@ -70,6 +75,10 @@ export const StablecoinYieldTokenOverview = ({
     const apyValueText = apy && isApyAvailable(apy) ? `~${apy.toFixed(2)}%` : null;
 
     const apyBreakdownAlert = useApyBreakdownAlert({ account, vault, apy });
+
+    const vaultContractAddress = vault ? getYieldVaultContractAddress(vault) : undefined;
+    const depositMessageSystem = useMessageSystemYield('deposit', { vaultContractAddress });
+    const withdrawMessageSystem = useMessageSystemYield('withdraw', { vaultContractAddress });
 
     const handleDepositMorePress = useCallback(() => {
         if (!vault?.token.address) {
@@ -248,30 +257,46 @@ export const StablecoinYieldTokenOverview = ({
                         )}
                     </HStack>
                     {depositedPosition && (
-                        <HStack spacing="sp12">
-                            <Box flex={1}>
-                                <Button
-                                    onPress={handleDepositMorePress}
-                                    intent="brand"
-                                    priority="secondary"
-                                    size="medium"
-                                    testID="@account-detail/stablecoin-yield/deposit-more-button"
-                                >
-                                    <Translation id="moduleAccounts.accountDetail.stablecoinYield.depositMore" />
-                                </Button>
-                            </Box>
-                            <Box flex={1}>
-                                <Button
-                                    onPress={handleWithdrawPress}
-                                    intent="brand"
-                                    priority="secondary"
-                                    size="medium"
-                                    testID="@account-detail/stablecoin-yield/withdraw-button"
-                                >
-                                    <Translation id="moduleAccounts.accountDetail.stablecoinYield.withdraw" />
-                                </Button>
-                            </Box>
-                        </HStack>
+                        <>
+                            {depositMessageSystem.isDisabled && depositMessageSystem.content && (
+                                <InlineAlertBox
+                                    intent={depositMessageSystem.variant ?? 'warning'}
+                                    title={depositMessageSystem.content}
+                                />
+                            )}
+                            {withdrawMessageSystem.isDisabled && withdrawMessageSystem.content && (
+                                <InlineAlertBox
+                                    intent={withdrawMessageSystem.variant ?? 'warning'}
+                                    title={withdrawMessageSystem.content}
+                                />
+                            )}
+                            <HStack spacing="sp12">
+                                <Box flex={1}>
+                                    <Button
+                                        onPress={handleDepositMorePress}
+                                        isDisabled={depositMessageSystem.isDisabled}
+                                        intent="brand"
+                                        priority="secondary"
+                                        size="medium"
+                                        testID="@account-detail/stablecoin-yield/deposit-more-button"
+                                    >
+                                        <Translation id="moduleAccounts.accountDetail.stablecoinYield.depositMore" />
+                                    </Button>
+                                </Box>
+                                <Box flex={1}>
+                                    <Button
+                                        onPress={handleWithdrawPress}
+                                        isDisabled={withdrawMessageSystem.isDisabled}
+                                        intent="brand"
+                                        priority="secondary"
+                                        size="medium"
+                                        testID="@account-detail/stablecoin-yield/withdraw-button"
+                                    >
+                                        <Translation id="moduleAccounts.accountDetail.stablecoinYield.withdraw" />
+                                    </Button>
+                                </Box>
+                            </HStack>
+                        </>
                     )}
                 </VStack>
             </Card>
