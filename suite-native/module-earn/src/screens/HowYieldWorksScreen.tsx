@@ -2,6 +2,7 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Button, TimelineDetailsCard, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -16,7 +17,9 @@ import {
 import { HowEarnWorksBenefitsSection } from '../components/HowEarnWorks/HowEarnWorksBenefitsSection';
 import { HowEarnWorksHeaderSection } from '../components/HowEarnWorks/HowEarnWorksHeaderSection';
 import { HowEarnWorksTimelineCard } from '../components/HowEarnWorks/HowEarnWorksTimelineCard';
+import { YieldDisabledAlert } from '../components/YieldDisabledAlert';
 import { useApyBreakdownAlert } from '../hooks/useApyBreakdownAlert';
+import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
 import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { createHowYieldWorksPreset } from '../presets/HowEarnWorks/yieldPresets';
@@ -48,6 +51,13 @@ export const HowYieldWorksScreen = () => {
             vaultId: vault?.id,
         },
     });
+
+    const vaultContractAddress = vault ? getYieldVaultContractAddress(vault) : undefined;
+    const {
+        isDisabled: isDepositDisabled,
+        content: depositDisabledContent,
+        variant: depositDisabledVariant,
+    } = useMessageSystemYield('deposit', { vaultContractAddress });
 
     const handleNavigateToYieldConsents = () => {
         analytics.report({
@@ -114,9 +124,18 @@ export const HowYieldWorksScreen = () => {
                         ))}
                     </HowEarnWorksTimelineCard>
                 </VStack>
-                <Button onPress={handleNavigateToYieldConsents}>
-                    <Translation id="generic.buttons.continue" />
-                </Button>
+                <VStack spacing="sp16">
+                    {isDepositDisabled && (
+                        <YieldDisabledAlert
+                            type="deposit"
+                            content={depositDisabledContent}
+                            variant={depositDisabledVariant}
+                        />
+                    )}
+                    <Button onPress={handleNavigateToYieldConsents} isDisabled={isDepositDisabled}>
+                        <Translation id="generic.buttons.continue" />
+                    </Button>
+                </VStack>
             </VStack>
         </Screen>
     );

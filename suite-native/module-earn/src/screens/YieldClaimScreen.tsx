@@ -5,6 +5,7 @@ import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-na
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { Context } from '@suite-common/message-system';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -15,6 +16,7 @@ import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Box, FullAlertBox, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { useFiatFromCryptoValue } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
+import { ContextMessage } from '@suite-native/message-system';
 import {
     Screen,
     ScreenHeader,
@@ -26,9 +28,11 @@ import { FeeSelector } from '@suite-native/transaction-management';
 
 import { YieldClaimFlowFooter } from '../components/YieldClaimFlowFooter';
 import { YieldClaimRewardsCard } from '../components/YieldClaimRewardsCard';
+import { YieldDisabledAlert } from '../components/YieldDisabledAlert';
 import { YieldFeeEstimationErrorAlert } from '../components/YieldFeeEstimationErrorAlert';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { YieldTxSimulationBottomSheet } from '../components/YieldTxSimulationBottomSheet';
+import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
 import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransactionFailureAlert';
 import { type PreparedYieldClaimAction, useYieldClaimFees } from '../hooks/useYieldClaimFees';
@@ -60,6 +64,11 @@ export const YieldClaimScreen = () => {
         selectAccountByKey(state, accountKey),
     );
     const flowKey = account?.key ?? null;
+    const {
+        isDisabled: isClaimDisabled,
+        content: claimDisabledContent,
+        variant: claimDisabledVariant,
+    } = useMessageSystemYield('claim');
 
     useNavigateBackAnalytics({
         type: events.yieldNavigateEvent.name,
@@ -70,6 +79,7 @@ export const YieldClaimScreen = () => {
             networkSymbol: account?.symbol,
         },
     });
+
     const session = useYieldSession({
         flowKey,
         flowType: 'claim',
@@ -132,7 +142,8 @@ export const YieldClaimScreen = () => {
         claimFee.isPreparingClaimFee ||
         claimFee.isFeeUnavailable ||
         !accountRewards ||
-        !claimFee.preparedAction;
+        !claimFee.preparedAction ||
+        isClaimDisabled;
 
     useShowYieldTransactionFailureAlert({
         error: session?.error,
@@ -258,6 +269,14 @@ export const YieldClaimScreen = () => {
         >
             <Box paddingHorizontal="sp16" pointerEvents={isClaimPending ? 'none' : 'auto'}>
                 <VStack spacing="sp20">
+                    <ContextMessage context={Context.getEarnYield('claim')} />
+                    {isClaimDisabled && (
+                        <YieldDisabledAlert
+                            type="claim"
+                            content={claimDisabledContent}
+                            variant={claimDisabledVariant}
+                        />
+                    )}
                     <YieldClaimRewardsCard
                         accountRewards={accountRewards}
                         isFiatLoading={isClaimRewardsFiatLoading}

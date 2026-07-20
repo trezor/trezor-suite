@@ -11,13 +11,15 @@ import {
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { Context } from '@suite-common/message-system';
 import { getNetwork } from '@suite-common/wallet-config';
-import { stablecoinYieldActions } from '@suite-common/wallet-core';
+import { getYieldVaultContractAddress, stablecoinYieldActions } from '@suite-common/wallet-core';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Box, FullAlertBox, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import { ContextMessage } from '@suite-native/message-system';
 import {
     Screen,
     type StackNavigationProps,
@@ -34,9 +36,11 @@ import { YieldDepositFlowFooter } from '../components/YieldDepositFlowFooter';
 import { YieldDepositFlowScreenHeader } from '../components/YieldDepositFlowScreenHeader';
 import { YieldDepositInfoBottomSheet } from '../components/YieldDepositInfoBottomSheet';
 import { YieldDepositStepCard } from '../components/YieldDepositStepCard';
+import { YieldDisabledAlert } from '../components/YieldDisabledAlert';
 import { YieldFeeEstimationErrorAlert } from '../components/YieldFeeEstimationErrorAlert';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { YieldTxSimulationBottomSheet } from '../components/YieldTxSimulationBottomSheet';
+import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
 import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 import { useRefreshYieldDepositAllowanceOnIdle } from '../hooks/useRefreshYieldDepositAllowanceOnIdle';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
@@ -85,10 +89,18 @@ export const YieldDepositScreen = () => {
         flowKey,
         token,
         tokenSymbol,
+        vault,
         vaultTokenSymbol,
         vaultTokenName,
         resolutionStatus,
     } = resolvedFlowData;
+
+    const vaultContractAddress = vault ? getYieldVaultContractAddress(vault) : undefined;
+    const {
+        isDisabled: isDepositDisabled,
+        content: depositDisabledContent,
+        variant: depositDisabledVariant,
+    } = useMessageSystemYield('deposit', { vaultContractAddress });
 
     useNavigateBackAnalytics({
         type: events.yieldNavigateEvent.name,
@@ -100,6 +112,7 @@ export const YieldDepositScreen = () => {
             vaultId: resolvedFlowData.vault?.id,
         },
     });
+
     const session = useYieldSession({
         flowKey,
         flowType: 'deposit',
@@ -160,7 +173,10 @@ export const YieldDepositScreen = () => {
         isEnabled: canPrepareDepositFee,
     });
     const isSubmitDisabled =
-        !canContinueDepositFlow || isApprovalInsufficient || !depositFee.isDepositFeeReady;
+        !canContinueDepositFlow ||
+        isApprovalInsufficient ||
+        !depositFee.isDepositFeeReady ||
+        isDepositDisabled;
 
     useShowYieldTransactionFailureAlert({
         error: session?.error,
@@ -382,6 +398,19 @@ export const YieldDepositScreen = () => {
         >
             <Box pointerEvents={isDepositPending ? 'none' : 'auto'}>
                 <VStack spacing="sp16">
+                    <ContextMessage
+                        context={Context.getEarnYield('deposit')}
+                        marginHorizontal="sp16"
+                    />
+                    {isDepositDisabled && (
+                        <Box paddingHorizontal="sp16">
+                            <YieldDisabledAlert
+                                type="deposit"
+                                content={depositDisabledContent}
+                                variant={depositDisabledVariant}
+                            />
+                        </Box>
+                    )}
                     <YieldDepositStepCard currentStepIndex={1} />
 
                     <Box paddingHorizontal="sp16">
