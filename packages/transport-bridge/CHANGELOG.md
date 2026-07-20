@@ -1,4 +1,4 @@
-# 3.2.0
+# 3.2.1
 
 - added: `/abort` endpoint
 - fixed: http route matching
