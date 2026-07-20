@@ -32,7 +32,7 @@ import {
     type GeneralPrecomposedTransactionFinal,
     type TokenAddress,
 } from '@suite-common/wallet-types';
-import { type PROTO } from '@trezor/connect';
+import { type PROTO, type TokenInfo } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type Err, type Ok, type PrimitiveType } from '@trezor/type-utils';
 
@@ -46,6 +46,16 @@ export type TradingSellType = 'sell';
 export type TradingExchangeType = 'exchange';
 export type TradingType = TradingBuyType | TradingSellType | TradingExchangeType;
 export type TradingTypeWithConcierge = TradingType | 'concierge';
+
+export type SelectedTradingAsset = {
+    symbol: NetworkSymbol;
+    decimals: number;
+    balance: string;
+    formattedBalance: string;
+    tokens: TokenInfo[] | undefined;
+    cryptoId: CryptoId;
+    isToken: boolean;
+};
 
 export type TradingTradeBuySellType = Exclude<TradingType, TradingExchangeType>;
 export type TradingTradeBuyExchangeType = Exclude<TradingType, TradingSellType>;

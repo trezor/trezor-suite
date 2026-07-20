@@ -61,6 +61,7 @@ import {
     type TradingPaymentMethodListProps,
     type TradingPaymentMethodProps,
     type TradingSellPaymentMethodProps,
+    type SelectedTradingAsset,
     type TradingTransaction,
     type TradingTransactionExchange,
     type TradingTransactionSell,
@@ -68,6 +69,7 @@ import {
 } from '../types';
 import {
     cryptoIdToNetwork,
+    cryptoIdToNetworkSymbolAndContractAddress,
     getTradingQuotesByPaymentMethod,
     isBuyTrade,
     isExchangeProvider,
@@ -1040,6 +1042,25 @@ const selectTradingActiveTradeSendAccount = (
 export const selectTradingSendAccount = createMemoizedFormAccountSelector(
     [selectTradingActiveTradeSendAccount, selectTradingFormAccount],
     (tradeSendAccount, formAccount) => tradeSendAccount ?? formAccount,
+);
+
+export const selectSelectedTradingAsset = createMemoizedFormAccountSelector(
+    [selectTradingSendAccount, selectTradingFormCryptoId],
+    (account, cryptoId): SelectedTradingAsset | undefined => {
+        if (!account || !cryptoId) {
+            return undefined;
+        }
+
+        return {
+            symbol: account.symbol,
+            decimals: getNetwork(account.symbol).decimals,
+            balance: account.balance,
+            formattedBalance: account.formattedBalance,
+            tokens: account.tokens,
+            cryptoId,
+            isToken: !!cryptoIdToNetworkSymbolAndContractAddress(cryptoId).contractAddress,
+        };
+    },
 );
 
 export const selectTradingBuyTransactionId = (state: TradingRootState) =>
