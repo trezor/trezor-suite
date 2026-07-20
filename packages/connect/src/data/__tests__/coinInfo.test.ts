@@ -9,11 +9,23 @@ describe('data/coinInfo', () => {
         expect(getCoinInfoOrThrow('BTC').shortcut).toBe('BTC');
         expect(getCoinInfoOrThrow('ada').shortcut).toBe('ADA');
         expect(getCoinInfoOrThrow('eth').shortcut).toBe('ETH');
+        expect(getCoinInfoOrThrow('rhc')).toMatchObject({
+            shortcut: 'RHC',
+            chainId: 4663,
+            slip44: 4663,
+        });
 
         // the network name and label forms are no longer accepted (D2/D3)
         expect(() => getCoinInfoOrThrow('bitcoin')).toThrow('Coin not found');
         expect(() => getCoinInfoOrThrow('Bitcoin Cash')).toThrow('Coin not found');
         expect(() => getCoinInfoOrThrow('cardano')).toThrow('Coin not found');
+    });
+
+    it('uses the production Robinhood Blockbook', () => {
+        expect(getCoinInfoOrThrow('rhc').blockchainLink).toEqual({
+            type: 'blockbook',
+            url: ['https://rhc.trezor.io'],
+        });
     });
 
     it('resolves every misc firmware-gating shortcut (requiredFirmwareCoins is never [undefined])', () => {
