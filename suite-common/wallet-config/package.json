@@ -11,6 +11,9 @@
         "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
+    "devDependencies": {
+        "viem": "^2.54.1"
+    },
     "dependencies": {
         "@suite-common/earn-stablecoin-defs": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",
