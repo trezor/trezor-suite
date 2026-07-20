@@ -5,9 +5,13 @@ import {
     buildEvmSelectedFee,
     buildYieldDepositCalldata,
     buildYieldUnsignedTransaction,
+    buildYieldUnwrapTransactionData,
     buildYieldWithdrawCalldata,
+    buildYieldWrapTransactionData,
     getNextYieldFlowStep,
+    getYieldDepositableBalance,
     getYieldFlowStepSequence,
+    getYieldWrapAmount,
     splitYieldPendingTransaction,
 } from '../stablecoinYieldUtils';
 
@@ -90,7 +94,8 @@ describe('stablecoinYieldUtils', () => {
     });
 
     describe('getNextYieldFlowStep', () => {
-        it('advances deposit through approve → action → complete', () => {
+        it('advances deposit through wrap → approve → action → complete', () => {
+            expect(getNextYieldFlowStep('deposit', 'wrap')).toBe('approve');
             expect(getNextYieldFlowStep('deposit', 'approve')).toBe('action');
             expect(getNextYieldFlowStep('deposit', 'action')).toBe('complete');
         });
@@ -301,6 +306,96 @@ describe('stablecoinYieldUtils', () => {
             maxFeePerGas: '0x165a0bc00',
             maxPriorityFeePerGas: '0x3b9aca00',
             type: 'eip1559',
+        });
+    });
+
+    describe('buildYieldWrapTransactionData', () => {
+        it('encodes the WETH deposit() selector and carries the amount in the value', () => {
+            expect(buildYieldWrapTransactionData({ wrapAmount: '1', decimals: 18 })).toEqual({
+                data: '0xd0e30db0',
+                value: '0xde0b6b3a7640000',
+            });
+        });
+    });
+
+    describe('buildYieldUnwrapTransactionData', () => {
+        it('encodes WETH withdraw(uint256) calldata for the amount', () => {
+            const { data } = buildYieldUnwrapTransactionData({ unwrapAmount: '1', decimals: 18 });
+
+            expect(Calldata.evm.weth.withdraw.decode(data)).toEqual({
+                wad: 1_000_000_000_000_000_000n,
+            });
+        });
+
+        it('throws for a zero amount', () => {
+            expect(() =>
+                buildYieldUnwrapTransactionData({ unwrapAmount: '0', decimals: 18 }),
+            ).toThrow('Failed to encode WETH withdraw calldata');
+        });
+    });
+
+    describe('getYieldDepositableBalance', () => {
+        const WETH_ADDRESS = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+        const USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+
+        it('returns only the matched token balance for a non-wrapped-native vault', () => {
+            expect(
+                getYieldDepositableBalance({
+                    networkSymbol: 'eth',
+                    nativeFormattedBalance: '5',
+                    vaultTokenAddress: USDC_ADDRESS,
+                    matchedTokenBalance: '100',
+                }),
+            ).toBe('100');
+        });
+
+        it('adds the native balance minus the gas reserve for a wrapped-native vault', () => {
+            expect(
+                getYieldDepositableBalance({
+                    networkSymbol: 'eth',
+                    nativeFormattedBalance: '0.2',
+                    vaultTokenAddress: WETH_ADDRESS,
+                    matchedTokenBalance: '1.5',
+                }),
+            ).toBe('1.695');
+        });
+
+        it('ignores native balance below the gas reserve', () => {
+            expect(
+                getYieldDepositableBalance({
+                    networkSymbol: 'eth',
+                    nativeFormattedBalance: '0.003',
+                    vaultTokenAddress: WETH_ADDRESS,
+                    matchedTokenBalance: '1',
+                }),
+            ).toBe('1');
+        });
+
+        it('returns the spendable native balance when no token is matched', () => {
+            expect(
+                getYieldDepositableBalance({
+                    networkSymbol: 'eth',
+                    nativeFormattedBalance: '1',
+                    vaultTokenAddress: WETH_ADDRESS,
+                    matchedTokenBalance: undefined,
+                }),
+            ).toBe('0.995');
+        });
+    });
+
+    describe('getYieldWrapAmount', () => {
+        it('wraps the shortfall between the deposit total and held WETH', () => {
+            expect(getYieldWrapAmount({ totalAmount: '2', matchedWethBalance: '1.5' })).toBe('0.5');
+        });
+
+        it('returns 0 when held WETH already covers the total', () => {
+            expect(getYieldWrapAmount({ totalAmount: '1', matchedWethBalance: '2' })).toBe('0');
+        });
+
+        it('wraps the whole total when no WETH is held', () => {
+            expect(getYieldWrapAmount({ totalAmount: '1', matchedWethBalance: undefined })).toBe(
+                '1',
+            );
         });
     });
 });
