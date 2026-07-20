@@ -31,6 +31,10 @@
                 "types": "./lib/index.d.ts",
                 "default": "./lib/index.js"
             },
+            "./pathUtils": {
+                "types": "./lib/utils/pathUtils.d.ts",
+                "default": "./lib/utils/pathUtils.js"
+            },
             "./lib/*": "./lib/*",
             "./lib/constants": {
                 "types": "./lib/constants/index.d.ts",
@@ -80,5 +84,72 @@
         "@types/chrome": "^0.1.40",
         "@types/jest": "30.0.0",
         "@types/node": "22.13.10"
+    },
+    "types": "./libDev/src/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./libDev/src/index.d.ts",
+            "default": "./src/index.ts"
+        },
+        "./pathUtils": {
+            "types": "./libDev/src/utils/pathUtils.d.ts",
+            "default": "./src/utils/pathUtils.ts"
+        },
+        "./src/callableMethods": {
+            "types": "./libDev/src/callableMethods.d.ts",
+            "default": "./src/callableMethods.ts"
+        },
+        "./src/constants": {
+            "types": "./libDev/src/constants/index.d.ts",
+            "default": "./src/constants/index.ts"
+        },
+        "./src/constants/*": {
+            "types": "./libDev/src/constants/*.d.ts",
+            "default": "./src/constants/*.ts"
+        },
+        "./src/data": {
+            "types": "./libDev/src/data/index.d.ts",
+            "default": "./src/data/index.ts"
+        },
+        "./src/data/*": {
+            "types": "./libDev/src/data/*.d.ts",
+            "default": "./src/data/*.ts"
+        },
+        "./src/events": {
+            "types": "./libDev/src/events/index.d.ts",
+            "default": "./src/events/index.ts"
+        },
+        "./src/events/*": {
+            "types": "./libDev/src/events/*.d.ts",
+            "default": "./src/events/*.ts"
+        },
+        "./src/factory": {
+            "types": "./libDev/src/factory.d.ts",
+            "default": "./src/factory.ts"
+        },
+        "./src/impl/*": {
+            "types": "./libDev/src/impl/*.d.ts",
+            "default": "./src/impl/*.ts"
+        },
+        "./src/messageChannel/*": {
+            "types": "./libDev/src/messageChannel/*.d.ts",
+            "default": "./src/messageChannel/*.ts"
+        },
+        "./src/types": {
+            "types": "./libDev/src/types/index.d.ts",
+            "default": "./src/types/index.ts"
+        },
+        "./src/types/api": {
+            "types": "./libDev/src/types/api/index.d.ts",
+            "default": "./src/types/api/index.ts"
+        },
+        "./src/types/*": {
+            "types": "./libDev/src/types/*.d.ts",
+            "default": "./src/types/*.ts"
+        },
+        "./src/utils/*": {
+            "types": "./libDev/src/utils/*.d.ts",
+            "default": "./src/utils/*.ts"
+        }
     }
 }

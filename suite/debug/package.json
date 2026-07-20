@@ -22,5 +22,6 @@
         "react": "19.2.3",
         "react-redux": "9.3.0",
         "styled-components": "^6.3.9"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

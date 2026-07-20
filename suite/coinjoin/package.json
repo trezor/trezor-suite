@@ -44,5 +44,6 @@
         "@suite-common/test-utils": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/eslint": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

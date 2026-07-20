@@ -34,5 +34,6 @@
         "react-redux": "9.3.0",
         "redux": "^5.0.1",
         "styled-components": "^6.3.9"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

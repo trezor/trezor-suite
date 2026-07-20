@@ -16,5 +16,6 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "ajv": "^8.20.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

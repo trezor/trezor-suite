@@ -14,5 +14,6 @@
         "@suite-common/platform-encryption": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@trezor/type-utils": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

@@ -64,5 +64,6 @@
     "devDependencies": {
         "@suite-native/test-utils-store": "workspace:*",
         "@trezor/requirements": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

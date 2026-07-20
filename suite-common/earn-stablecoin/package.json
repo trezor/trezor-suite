@@ -22,5 +22,19 @@
         "@trezor/utils": "workspace:*",
         "react": "19.2.3",
         "zod": "4.3.6"
+    },
+    "exports": {
+        "./src/allowance": {
+            "types": "./libDev/src/allowance/index.d.ts",
+            "default": "./src/allowance/index.ts"
+        },
+        "./src/signing": {
+            "types": "./libDev/src/signing/index.d.ts",
+            "default": "./src/signing/index.ts"
+        },
+        "./src/tx-simulation": {
+            "types": "./libDev/src/tx-simulation/index.d.ts",
+            "default": "./src/tx-simulation/index.ts"
+        }
     }
 }

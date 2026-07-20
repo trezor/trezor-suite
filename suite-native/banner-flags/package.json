@@ -13,5 +13,6 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
         "@trezor/connect": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

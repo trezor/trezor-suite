@@ -15,5 +15,6 @@
         "@suite-common/firmware-authenticity": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite/settings": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

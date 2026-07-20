@@ -11,5 +11,6 @@
         "test:e2e": "yarn g:jest -c ../../jest.config.base.js --testPathPattern=tests/e2e",
         "test:unit": "yarn g:jest -c ../../jest.config.base.js --testPathIgnorePatterns tests/e2e",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

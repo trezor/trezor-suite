@@ -23,5 +23,6 @@
     },
     "devDependencies": {
         "tsx": "^4.21.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

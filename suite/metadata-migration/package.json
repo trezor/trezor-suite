@@ -39,5 +39,6 @@
         "react": "19.2.3",
         "react-redux": "9.3.0",
         "redux-thunk": "^3.1.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

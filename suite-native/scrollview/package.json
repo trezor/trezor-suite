@@ -15,5 +15,6 @@
         "react": "19.2.3",
         "react-native": "0.85.3",
         "react-native-reanimated": "4.3.1"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

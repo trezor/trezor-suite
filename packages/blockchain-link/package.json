@@ -122,5 +122,64 @@
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
+    },
+    "types": "./libDev/src/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./libDev/src/index.d.ts",
+            "default": "./src/index.ts"
+        },
+        "./workers/baseWorker": {
+            "types": "./libDev/workers/baseWorker/index.d.ts",
+            "default": "./workers/baseWorker/index.ts"
+        },
+        "./workers/blockbook": {
+            "types": "./libDev/workers/blockbook/index.d.ts",
+            "default": "./workers/blockbook/index.ts"
+        },
+        "./workers/blockfrost": {
+            "types": "./libDev/workers/blockfrost/index.d.ts",
+            "default": "./workers/blockfrost/index.ts"
+        },
+        "./workers/electrum": {
+            "types": "./libDev/workers/electrum/index.d.ts",
+            "default": "./workers/electrum/index.ts"
+        },
+        "./workers/evm-rpc": {
+            "types": "./libDev/workers/evm-rpc/index.d.ts",
+            "default": "./workers/evm-rpc/index.ts"
+        },
+        "./workers/ripple": {
+            "types": "./libDev/workers/ripple/index.d.ts",
+            "default": "./workers/ripple/index.ts"
+        },
+        "./workers/solana": {
+            "types": "./libDev/workers/solana/index.d.ts",
+            "default": "./workers/solana/index.ts"
+        },
+        "./workers/stellar": {
+            "types": "./libDev/workers/stellar/index.d.ts",
+            "default": "./workers/stellar/index.ts"
+        },
+        "./src/workers/blockbook": {
+            "types": "./libDev/src/workers/blockbook/index.d.ts",
+            "default": "./src/workers/blockbook/index.ts"
+        },
+        "./src/workers/blockbook/websocket": {
+            "types": "./libDev/src/workers/blockbook/websocket.d.ts",
+            "default": "./src/workers/blockbook/websocket.ts"
+        },
+        "./src/workers/blockfrost": {
+            "types": "./libDev/src/workers/blockfrost/index.d.ts",
+            "default": "./src/workers/blockfrost/index.ts"
+        },
+        "./src/workers/ripple": {
+            "types": "./libDev/src/workers/ripple/index.d.ts",
+            "default": "./src/workers/ripple/index.ts"
+        },
+        "./src/utils/socks-proxy-agent.ts": {
+            "types": "./libDev/src/utils/socks-proxy-agent.d.ts",
+            "default": "./src/utils/socks-proxy-agent.ts"
+        }
     }
 }
