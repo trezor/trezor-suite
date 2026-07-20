@@ -64,7 +64,7 @@ export const EarnFormScreen = () => {
         updateFeeLevelThunk,
     } = earnForm;
     const {
-        formState: { isValid, isDirty },
+        formState: { isValid },
     } = form;
 
     const handleSubmit = form.handleSubmit(() => {
@@ -93,7 +93,6 @@ export const EarnFormScreen = () => {
                     symbol={account.symbol}
                     amountValue={amountValue}
                     isDisabled={!isValid || isFeeUnavailable || isPrecomposeError}
-                    isDirty={isDirty}
                     onPress={() => handleSubmit()}
                 />
             }
