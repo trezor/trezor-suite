@@ -7,6 +7,8 @@ import { buildStake } from './builder/evm/everstake/stake';
 import { buildUnstake } from './builder/evm/everstake/unstake';
 import { buildRedeem } from './builder/evm/redeem';
 import { buildTransfer } from './builder/evm/transfer';
+import { buildWethDeposit } from './builder/evm/weth/deposit';
+import { buildWethWithdraw } from './builder/evm/weth/withdraw';
 import { buildWithdraw } from './builder/evm/withdraw';
 import { buildTrc20Transfer } from './builder/tron/trc20/transfer';
 import { EVM_ABI } from './constants/evm';
@@ -49,6 +51,16 @@ export const Calldata = {
             stake: { encode: buildStake },
             unstake: { encode: buildUnstake },
             claimWithdrawRequest: { encode: buildClaimWithdrawRequest },
+        },
+        weth: {
+            deposit: {
+                encode: buildWethDeposit,
+                decode: createEvmDecoder(EVM_ABI.weth.deposit),
+            },
+            withdraw: {
+                encode: buildWethWithdraw,
+                decode: createEvmDecoder(EVM_ABI.weth.withdraw),
+            },
         },
     },
     tron: {

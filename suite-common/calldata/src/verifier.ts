@@ -20,5 +20,9 @@ export const Verifier = {
             unstake: createVerifier({ abi: EVM_ABI.everstake.unstake }),
             claimWithdrawRequest: createVerifier({ abi: EVM_ABI.everstake.claimWithdrawRequest }),
         },
+        weth: {
+            deposit: createVerifier({ abi: EVM_ABI.weth.deposit }),
+            withdraw: createVerifier({ abi: EVM_ABI.weth.withdraw }),
+        },
     },
 } as const;
