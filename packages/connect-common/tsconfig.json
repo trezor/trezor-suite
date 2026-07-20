@@ -6,6 +6,7 @@
     },
     "include": ["."],
     "references": [
+        { "path": "../crypto-utils" },
         { "path": "../device-utils" },
         { "path": "../protobuf" },
         { "path": "../protocol" },

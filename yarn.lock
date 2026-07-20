@@ -16131,6 +16131,7 @@ __metadata:
   dependencies:
     "@trezor/blockchain-link": "workspace:^"
     "@trezor/blockchain-link-types": "workspace:^"
+    "@trezor/crypto-utils": "workspace:*"
     "@trezor/device-authenticity": "workspace:^"
     "@trezor/device-utils": "workspace:*"
     "@trezor/network-cardano": "workspace:*"
