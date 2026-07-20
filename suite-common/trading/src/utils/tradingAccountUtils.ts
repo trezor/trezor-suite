@@ -48,19 +48,3 @@ export const isAccountEligibleForTrade = (
         }) ?? false
     );
 };
-
-// Standalone so #29479 can drop the fallback and its lying non-null type in a single commit.
-export const pickFallbackAccount = (
-    accounts: Account[],
-    tradingType: TradingType,
-    tokenDefinitions: TokenDefinitionsState,
-) => {
-    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-    const first: Account = accounts[0];
-
-    return (
-        accounts.find(account =>
-            isAccountEligibleForTrade(account, tradingType, tokenDefinitions),
-        ) ?? first
-    );
-};
