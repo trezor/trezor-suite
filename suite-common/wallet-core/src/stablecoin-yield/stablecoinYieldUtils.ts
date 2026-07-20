@@ -1,12 +1,14 @@
 import { Calldata, type EvmAddress } from '@suite-common/calldata';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import { type AccountKey, type EvmSelectedFee } from '@suite-common/wallet-types';
 import {
     asAmountUnit,
     fromGwei,
     fromIntegerString,
     getContractAddressForNetworkSymbol,
+    isWrappedNativeToken,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
@@ -94,6 +96,8 @@ type BuildYieldUnsignedTransactionParams = {
     gasLimit: string;
     nonce: number;
     to: string;
+    /** Native value carried by the transaction (hex). Non-zero for wraps; defaults to `0x0`. */
+    value?: string;
 };
 
 type BuildEvmFeeFieldsParams = {
@@ -143,19 +147,26 @@ export const getYieldFlowStepSequence = <TFlowType extends YieldFlowType>({
 /**
  * Returns the step that follows `step` in the flow's step sequence. Stays on `step`
  * when it is the last one or not part of the flow at all.
+ *
+ * The full sequence (wrap/unwrap included) is used to locate `step`, so an optional step
+ * such as `wrap` can be advanced from. Optional steps are skipped as *targets* though —
+ * they are entered explicitly (e.g. `wrap` is left via `skipWrapStep`), never as the
+ * automatic next step of the preceding one.
  */
 export const getNextYieldFlowStep = (
     flowType: YieldFlowType,
     step: YieldFlowStepId,
 ): YieldFlowStepId => {
-    const sequence = getYieldFlowStepSequence({ flowType });
+    const sequence = getYieldFlowStepSequence({ flowType, isWrappedNativeVault: true });
     const stepIndex = sequence.indexOf(step);
 
     if (stepIndex === -1) {
         return step;
     }
 
-    return sequence[stepIndex + 1] ?? step;
+    const nextStep = sequence.slice(stepIndex + 1).find(s => s !== 'wrap' && s !== 'unwrap');
+
+    return nextStep ?? step;
 };
 
 export const getYieldWithdrawInputToken = ({
@@ -282,13 +293,14 @@ export const buildYieldUnsignedTransaction = ({
     gasLimit,
     nonce,
     to,
+    value = '0x0',
 }: BuildYieldUnsignedTransactionParams) => {
     const feeFields = buildEvmFeeFields({ feeLevel, gasLimit });
     const commonFields = {
         from,
         to,
         data,
-        value: '0x0',
+        value,
         nonce,
         chainId,
         gasLimit: feeFields.gasLimit,
@@ -308,6 +320,106 @@ export const buildYieldUnsignedTransaction = ({
         gasPrice: feeFields.gasPrice,
     };
 };
+
+type BuildYieldWrapTransactionDataParams = {
+    wrapAmount: string;
+    decimals: number;
+};
+
+// WETH `deposit()` carries the wrapped amount in the transaction value, not in calldata.
+export const buildYieldWrapTransactionData = ({
+    wrapAmount,
+    decimals,
+}: BuildYieldWrapTransactionDataParams) => {
+    const builderResult = Calldata.evm.weth.deposit.encode({});
+
+    if (!builderResult.isValid || !builderResult.data) {
+        throw new Error('Failed to encode WETH deposit calldata.');
+    }
+
+    const valueSubunits = unitsToSubunits({
+        value: asAmountUnit(new BigNumber(wrapAmount)),
+        decimals,
+    });
+
+    return {
+        data: builderResult.data,
+        value: fromIntegerString(valueSubunits.toFixed(0)).toHex(),
+    };
+};
+
+type BuildYieldUnwrapTransactionDataParams = {
+    unwrapAmount: string;
+    decimals: number;
+};
+
+export const buildYieldUnwrapTransactionData = ({
+    unwrapAmount,
+    decimals,
+}: BuildYieldUnwrapTransactionDataParams) => {
+    const wadSubunits = unitsToSubunits({
+        value: asAmountUnit(new BigNumber(unwrapAmount)),
+        decimals,
+    });
+
+    const builderResult = Calldata.evm.weth.withdraw.encode({ wad: wadSubunits });
+
+    if (!builderResult.isValid || !builderResult.data) {
+        const issues = builderResult.errors.map(issue => issue.code).join(', ');
+
+        throw new Error(`Failed to encode WETH withdraw calldata${issues ? `: ${issues}` : '.'}`);
+    }
+
+    return { data: builderResult.data };
+};
+
+type GetYieldDepositableBalanceParams = {
+    networkSymbol: NetworkSymbol;
+    /** Native coin balance in display units, NOT subunits. */
+    nativeFormattedBalance: string;
+    vaultTokenAddress?: string | null;
+    matchedTokenBalance?: string | null;
+};
+
+/**
+ * Balance available for a yield deposit. For a wrapped-native (WETH) vault the native balance can
+ * be wrapped, so it counts in after keeping `WETH_WRAP_GAS_RESERVE` aside to cover the follow-up
+ * wrap + approve + deposit (+ exit) fees.
+ */
+export const getYieldDepositableBalance = ({
+    networkSymbol,
+    nativeFormattedBalance,
+    vaultTokenAddress,
+    matchedTokenBalance,
+}: GetYieldDepositableBalanceParams): string => {
+    // Normal deposit: only the already-held vault-token balance is spendable.
+    const tokenDepositBalance = matchedTokenBalance ?? '0';
+
+    if (!isWrappedNativeToken(networkSymbol, vaultTokenAddress)) {
+        return tokenDepositBalance;
+    }
+
+    // Native-asset deposit: the native balance can also be wrapped, after keeping the fee reserve
+    // aside for the follow-up wrap + approve + deposit (+ exit) transactions.
+    const wrappableNativeBalance = BigNumber.max(
+        0,
+        new BigNumber(nativeFormattedBalance || '0').minus(WETH_WRAP_GAS_RESERVE),
+    );
+
+    return new BigNumber(tokenDepositBalance).plus(wrappableNativeBalance).toString();
+};
+
+type GetYieldWrapAmountParams = {
+    totalAmount: string;
+    matchedWethBalance?: string | null;
+};
+
+/** Native portion of a deposit that must be wrapped — the total minus already-held WETH. */
+export const getYieldWrapAmount = ({
+    totalAmount,
+    matchedWethBalance,
+}: GetYieldWrapAmountParams): string =>
+    BigNumber.max(0, new BigNumber(totalAmount || '0').minus(matchedWethBalance || '0')).toString();
 
 type YieldTxReviewFlowIdentity = {
     accountKey?: AccountKey;
