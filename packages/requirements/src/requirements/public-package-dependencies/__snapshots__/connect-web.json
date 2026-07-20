@@ -4,6 +4,7 @@
         "@sinclair/typebox",
         "@trezor/connect-common",
         "@trezor/connect-web",
+        "@trezor/crypto-utils",
         "@trezor/device-utils",
         "@trezor/protobuf",
         "@trezor/protocol",
