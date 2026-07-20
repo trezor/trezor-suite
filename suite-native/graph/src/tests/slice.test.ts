@@ -1,14 +1,18 @@
 import { type AccountItem } from '@suite-common/graph';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
-import { getPortfolioGraphInstanceId } from '../graphInstances';
+import { type GraphInstanceId, getPortfolioGraphInstanceId } from '../graphInstances';
 import { graphPersistTransform } from '../graphPersistTransform';
 import { selectGraphTimeframe } from '../graphSelectors';
 import { RefetchGraphThunkStatus } from '../graphThunkTypes';
 import { refetchGraphThunk } from '../graphThunks';
-import { type GraphSliceRootState, graphInitialState, graphReducer } from '../slice';
+import {
+    type GraphSliceRootState,
+    graphInitialState,
+    graphReducer,
+    resetGraphRuntimeState,
+} from '../slice';
 
 const instanceId = getPortfolioGraphInstanceId();
 
@@ -23,7 +27,7 @@ const refetchGraphThunkArg = {
     ] satisfies AccountItem[],
     timeframeHours: 24,
     isElectrumBackend: false,
-    baseCurrencyCode: 'usd' as BaseCurrencyCode,
+    baseCurrencyCode: 'usd' as const,
 };
 
 describe('graphReducer', () => {
@@ -110,6 +114,41 @@ describe('graphReducer', () => {
             stateWithFetchedData.graphs[instanceId]?.events,
         );
         expect(state.graphs[instanceId]?.error).toBe('Fetch failed');
+    });
+
+    it('resets runtime status without removing fetched data', () => {
+        const state = graphReducer(
+            {
+                graphs: {
+                    [instanceId]: {
+                        timeframeHours: 24,
+                        isLoading: true,
+                        error: 'Fetch failed',
+                        points: [{ date: 1000, value: 1 }],
+                        events: [],
+                    },
+                },
+            },
+            resetGraphRuntimeState({ instanceId }),
+        );
+
+        expect(state.graphs[instanceId]).toEqual({
+            timeframeHours: 24,
+            points: [{ date: 1000, value: 1 }],
+            events: [],
+        });
+    });
+
+    it('rejects graph instance IDs that could access object prototypes', () => {
+        expect(() =>
+            graphReducer(
+                graphInitialState,
+                refetchGraphThunk.pending('request-id', {
+                    ...refetchGraphThunkArg,
+                    instanceId: '__proto__' as GraphInstanceId,
+                }),
+            ),
+        ).toThrow('Invalid graph instance ID.');
     });
 });
 

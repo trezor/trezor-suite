@@ -8,6 +8,7 @@ import {
     type GraphInstanceId,
     getAccountGraphInstanceId,
     getPortfolioGraphInstanceId,
+    isGraphInstanceId,
 } from './graphInstances';
 import { RefetchGraphThunkStatus } from './graphThunkTypes';
 import { refetchGraphThunk } from './graphThunks';
@@ -54,6 +55,10 @@ const getOrCreateGraphInstance = (
     state: GraphState,
     instanceId: GraphInstanceId,
 ): GraphInstanceState => {
+    if (!isGraphInstanceId(instanceId)) {
+        throw new Error('Invalid graph instance ID.');
+    }
+
     const graph = state.graphs[instanceId] ?? getDefaultGraphInstanceState();
     state.graphs[instanceId] = graph;
 
@@ -132,10 +137,7 @@ const graphSlice = createSlice({
             .addCase(refetchGraphThunk.fulfilled, (state, action) => {
                 const graphInstance = getOrCreateGraphInstance(state, action.meta.arg.instanceId);
 
-                if (
-                    action.payload.status === RefetchGraphThunkStatus.WaitingForDiscovery ||
-                    action.payload.status === RefetchGraphThunkStatus.Interrupted
-                ) {
+                if (action.payload.status !== RefetchGraphThunkStatus.Fetched) {
                     return;
                 }
 

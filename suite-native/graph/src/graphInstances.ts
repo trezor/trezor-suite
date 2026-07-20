@@ -8,6 +8,9 @@ export type AccountGraphInstanceId =
     | `account:${AccountKey}:token:${TokenAddress}`;
 export type GraphInstanceId = PortfolioGraphInstanceId | AccountGraphInstanceId;
 
+export const isGraphInstanceId = (instanceId: string): instanceId is GraphInstanceId =>
+    instanceId === PORTFOLIO_GRAPH_INSTANCE_ID || instanceId.startsWith('account:');
+
 type GetAccountGraphInstanceIdParams = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
