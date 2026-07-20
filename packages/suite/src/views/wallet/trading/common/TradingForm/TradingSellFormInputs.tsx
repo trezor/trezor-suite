@@ -18,6 +18,7 @@ import { useCurrentRef } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
+import { useSelectedTradingAsset } from 'src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
@@ -44,6 +45,7 @@ export const TradingSellFormInputs = () => {
     const sellSupportedCryptoIds = useSelector(selectTradingSellSupportedCryptoIds);
 
     const {
+        type,
         feeInfo,
         account,
         composedLevels,
@@ -52,6 +54,7 @@ export const TradingSellFormInputs = () => {
         changeFeeLevel,
         showReserveBanner,
     } = context;
+    const asset = useSelectedTradingAsset(type);
 
     const { control } = useFormContext<TradingSellFormProps>();
 
@@ -114,13 +117,13 @@ export const TradingSellFormInputs = () => {
                             currencySelectLabel={currencySelect?.value.toUpperCase() ?? ''}
                             cryptoCurrencyLabel={sendCryptoSelect?.id}
                         />
-                        {amountInCrypto && (
+                        {amountInCrypto && asset && (
                             <Row justifyContent="space-between" alignItems="center" gap={8}>
                                 <TradingFractionButtons />
                                 <TradingBalance
                                     balance={outputAmount}
                                     displaySymbol={sendCryptoSelect?.id}
-                                    symbol={account.symbol}
+                                    symbol={asset.symbol}
                                     tokenAddress={tokenAddress}
                                     showOnlyAmount
                                     amountInCrypto={amountInCrypto}
@@ -129,9 +132,9 @@ export const TradingSellFormInputs = () => {
                             </Row>
                         )}
                     </Column>
-                    {showReserveBanner && (
+                    {showReserveBanner && asset && (
                         <TradingNetworkReserveBanner
-                            symbol={account.symbol}
+                            symbol={asset.symbol}
                             contractAddress={tokenAddress}
                         />
                     )}
