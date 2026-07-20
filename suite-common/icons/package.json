@@ -19,5 +19,9 @@
         "prettier": "^3.8.4",
         "sharp": "^0.34.2",
         "svgo": "^4.0.1"
+    },
+    "dependencies": {
+        "@suite-common/http-client": "workspace:^",
+        "zod": "4.3.6"
     }
 }
