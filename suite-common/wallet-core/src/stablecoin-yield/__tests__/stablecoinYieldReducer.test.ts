@@ -15,10 +15,10 @@ const FLOW_KEY = 'account-key:yield-id:0xtoken';
 const getSession = (state: StablecoinYieldState, flowType: YieldFlowType) =>
     state[flowType][getStablecoinYieldSessionKey(FLOW_KEY)];
 
-const initSession = (flowType: YieldFlowType) =>
+const initSession = (flowType: YieldFlowType, isNativeDeposit?: boolean) =>
     stablecoinYieldReducer(
         initialStablecoinYieldState,
-        stablecoinYieldActions.initSession({ flowType, flowKey: FLOW_KEY }),
+        stablecoinYieldActions.initSession({ flowType, flowKey: FLOW_KEY, isNativeDeposit }),
     );
 
 describe('stablecoinYieldReducer', () => {
@@ -27,6 +27,34 @@ describe('stablecoinYieldReducer', () => {
             const state = initSession('deposit');
 
             expect(getSession(state, 'deposit')?.step).toBe('approve');
+        });
+
+        it('starts a native-token deposit at the wrap step', () => {
+            const state = initSession('deposit', true);
+
+            expect(getSession(state, 'deposit')?.step).toBe('wrap');
+        });
+
+        it('moves a native deposit from the wrap step to approve when it is skipped', () => {
+            const state = stablecoinYieldReducer(
+                initSession('deposit', true),
+                stablecoinYieldActions.skipWrapStep({ flowType: 'deposit', flowKey: FLOW_KEY }),
+            );
+
+            expect(getSession(state, 'deposit')?.step).toBe('approve');
+        });
+
+        it('does not regress once the wrap step has been left', () => {
+            // skipWrapStep must only advance from the wrap step, so a repeat can't pull the
+            // flow back from approve/action.
+            const skipWrap = stablecoinYieldActions.skipWrapStep({
+                flowType: 'deposit',
+                flowKey: FLOW_KEY,
+            });
+            const once = stablecoinYieldReducer(initSession('deposit', true), skipWrap);
+            const twice = stablecoinYieldReducer(once, skipWrap);
+
+            expect(getSession(twice, 'deposit')?.step).toBe('approve');
         });
 
         it.each(['withdraw', 'redeem', 'claim'] as const)(
