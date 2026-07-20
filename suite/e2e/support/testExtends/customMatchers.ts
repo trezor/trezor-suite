@@ -116,7 +116,7 @@ export const transformAddress = (address: string, lineFormat: LineFormats = 'fou
     }
 };
 
-export const expect: typeof baseExpect = baseExpect.extend({
+export const expect = baseExpect.extend({
     async toHaveTextGreaterThan(locator: Locator, expectedValue: number) {
         return await compareTextAndNumber(locator, expectedValue, (a, b) => a > b, 'greater');
     },
@@ -353,4 +353,4 @@ export const expect: typeof baseExpect = baseExpect.extend({
             pass: true,
         };
     },
-});
+}) satisfies typeof baseExpect;
