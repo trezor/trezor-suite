@@ -21,8 +21,8 @@ export const SettingsAdvancedScreen = () => {
             }
         >
             <VStack spacing="sp16">
-                <ToggleFirmwareAuthenticityCheckCard />
                 <ToggleDeviceAuthenticityCheckCard />
+                <ToggleFirmwareAuthenticityCheckCard />
                 <ToggleAddressDisplayCard />
                 <ToggleTestnetsCard />
                 {isNetworkReserveSettingsVisible && <ToggleNetworkReserveCheckCard />}
