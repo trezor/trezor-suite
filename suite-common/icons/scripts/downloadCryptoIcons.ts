@@ -12,10 +12,10 @@ import {
 } from './constants';
 import { COIN_IMAGE_SIZES, createCoinImageName } from '../src/coinImages';
 import {
+    fetchCoinList,
+    fetchUpdatedIconsList,
     getCoinData,
-    getCoinList,
     getCoinMarketImageUrls,
-    getUpdatedIconsList,
 } from './utils/fetchCoins';
 import { sleep } from './utils/sleep';
 
@@ -79,9 +79,7 @@ const updateIcon = async (
         }
 
         const originImageBuffer = await originImage.arrayBuffer();
-        const platforms = Object.entries(coinPlatforms).filter(
-            ([platform, contract]) => platform && contract,
-        );
+        const platforms = Object.entries(coinPlatforms);
 
         for (const size of COIN_IMAGE_SIZES) {
             const finalImageBuffer = await resizeImage(originImageBuffer, size);
@@ -114,17 +112,20 @@ async function ensureDirectoryExists(path: string) {
 }
 
 (async () => {
-    const startedAt = Date.now();
-    const updatedIcons = (await getUpdatedIconsList()) ?? {};
+    const updatedIcons = await fetchUpdatedIconsList();
 
-    const coins = await getCoinList();
-    if (!coins || coins.length === 0) {
+    const startedAt = Date.now();
+    const coins = await fetchCoinList();
+    if (coins.length === 0) {
         throw new Error('No coins found');
+    } else {
+        console.log('Total coins in coin list:', coins.length);
     }
 
     // Image urls in bulk (~250 coins/request) instead of one /coins/{id} request per coin.
     // Only coins with market data are covered here; the rest fall back to getCoinData below.
     const marketImageUrls = await getCoinMarketImageUrls();
+    console.log('Total market image urls fetched:', marketImageUrls.size);
 
     // process missing icons and icons updated the longest time ago first
     coins.sort(
@@ -138,8 +139,6 @@ async function ensureDirectoryExists(path: string) {
     );
 
     await ensureDirectoryExists(FILES_CRYPTOICONS_PATH);
-
-    const apiCallDelay = Math.ceil((60 / RATE_LIMIT_PER_MINUTE) * 1000);
 
     for (let i = 0; i < coins.length; i++) {
         if (Date.now() - startedAt > RUN_LIMIT_SECONDS * 1000) {
@@ -160,10 +159,12 @@ async function ensureDirectoryExists(path: string) {
         // Tail coins (no market data) are absent from /coins/markets — fall back to the
         // per-coin endpoint. This is the only remaining rate-limited call in the loop.
         if (!imageUrl) {
+            const apiCallDelay = Math.ceil((60 / RATE_LIMIT_PER_MINUTE) * 1000);
+
             await sleep(apiCallDelay);
             try {
                 const coinData = await getCoinData(coin.id);
-                imageUrl = coinData?.image?.large;
+                imageUrl = coinData?.image?.large ?? undefined;
                 if (Object.keys(platforms).length === 0 && coinData?.platforms) {
                     platforms = coinData.platforms;
                 }
