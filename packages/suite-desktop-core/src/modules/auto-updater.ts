@@ -186,7 +186,17 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
 
     autoUpdater.on('update-downloaded', async (info: UpdateDownloadedEvent) => {
         const { version, releaseDate, downloadedFile, releaseNotes } = info;
-        // Disable installation of the downloaded file before verification is complete
+
+        // Need to make the event handler async before setting `autoInstallOnAppQuit = false` here, because the Node.js
+        // EventEmitter is synchronous, and it would cause a macOS specific bug during app update, see upstream code:
+        // https://github.com/electron-userland/electron-builder/blob/a5121de49582eaa8870d4c05e6ae55eff160a592/packages/electron-updater/src/MacUpdater.ts#L253-L255
+        // autoInstallOnAppQuit is considered a permanent setting, not something that can toggle on/off during the process.
+        // → we need to make sure the MacUpdater code finishes with previous `autoInstallOnAppQuit` value.
+        await Promise.resolve();
+
+        // Disable installation of the downloaded file before our own verification is complete, it's quite hacky but
+        // electron-updater doesn't have an interface to delay the installation with an arbitrary async function.
+        // TODO refactor https://github.com/electron-userland/electron-builder/issues/10010
         const previousAutoInstallOnAppQuit = autoUpdater.autoInstallOnAppQuit;
         autoUpdater.autoInstallOnAppQuit = false;
 
