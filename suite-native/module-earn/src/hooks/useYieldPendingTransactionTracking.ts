@@ -123,6 +123,10 @@ const reportYieldTransactionResolution = ({
 
             return;
         }
+        case 'wrap':
+        case 'unwrap':
+            // Intermediate steps of the deposit/withdraw flows; they carry no analytics event of their own.
+            return;
         default:
             exhaustive(pendingTransactionType);
     }

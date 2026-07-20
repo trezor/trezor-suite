@@ -162,16 +162,24 @@ export const initialStablecoinYieldState: StablecoinYieldState = {
 
 const createInitialStablecoinYieldSessionState = (
     flowType: YieldFlowType,
-): StablecoinYieldSessionState => ({
-    ...initialStablecoinYieldSessionState,
-    step: YIELD_FLOW_STEP_SEQUENCES[flowType][0],
-    approval: { ...initialStablecoinYieldSessionState.approval },
-    action: { ...initialStablecoinYieldSessionState.action },
-    result: {
-        ...initialStablecoinYieldSessionState.result,
-        completedRewards: [...initialStablecoinYieldSessionState.result.completedRewards],
-    },
-});
+    isNativeDeposit = false,
+): StablecoinYieldSessionState => {
+    const sequence = YIELD_FLOW_STEP_SEQUENCES[flowType];
+    // Only native-token deposits start on the leading `wrap` step; everything else skips it.
+    const step =
+        sequence[0] === 'wrap' && !isNativeDeposit ? (sequence[1] ?? sequence[0]) : sequence[0];
+
+    return {
+        ...initialStablecoinYieldSessionState,
+        step,
+        approval: { ...initialStablecoinYieldSessionState.approval },
+        action: { ...initialStablecoinYieldSessionState.action },
+        result: {
+            ...initialStablecoinYieldSessionState.result,
+            completedRewards: [...initialStablecoinYieldSessionState.result.completedRewards],
+        },
+    };
+};
 
 export const getStablecoinYieldSessionKey = (flowKey: string) => `yield-session:${flowKey}`;
 
@@ -199,9 +207,11 @@ const stablecoinYieldSlice = createSlice({
     reducers: {
         initSession(
             state: StablecoinYieldState,
-            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+            action: PayloadAction<
+                StablecoinYieldSessionActionPayload & { isNativeDeposit?: boolean }
+            >,
         ) {
-            const { flowType, flowKey } = action.payload;
+            const { flowType, flowKey, isNativeDeposit } = action.payload;
 
             if (!isSafeObjectKey(flowKey)) {
                 return;
@@ -210,7 +220,10 @@ const stablecoinYieldSlice = createSlice({
             const sessionKey = getStablecoinYieldSessionKey(flowKey);
 
             if (!state[flowType][sessionKey]) {
-                state[flowType][sessionKey] = createInitialStablecoinYieldSessionState(flowType);
+                state[flowType][sessionKey] = createInitialStablecoinYieldSessionState(
+                    flowType,
+                    isNativeDeposit,
+                );
             }
         },
         disposeSession(
@@ -379,6 +392,17 @@ const stablecoinYieldSlice = createSlice({
         ) {
             withSession(state, action.payload, session => {
                 session.step = getNextYieldFlowStep(action.payload.flowType, 'approve');
+            });
+        },
+        skipWrapStep(
+            state: StablecoinYieldState,
+            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+        ) {
+            withSession(state, action.payload, session => {
+                // Only advance from the wrap step, so repeated init calls can't regress the flow.
+                if (session.step === 'wrap') {
+                    session.step = getNextYieldFlowStep(action.payload.flowType, 'wrap');
+                }
             });
         },
         revokeSuccess(

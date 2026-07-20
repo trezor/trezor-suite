@@ -180,6 +180,12 @@ export const YieldDepositForm = () => {
                         currentStep={flow.currentStep}
                         hasStepList
                         steps={{
+                            // Wrap is a native-token-deposit-only step; inert here (isListItem:false
+                            // keeps it out of the step numbering). The wrap UI lands in #30104.
+                            wrap: {
+                                isListItem: false,
+                                content: () => null,
+                            },
                             approve: {
                                 title: <Translation id="TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE" />,
                                 rightContent: view =>
