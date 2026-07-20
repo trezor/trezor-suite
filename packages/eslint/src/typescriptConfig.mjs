@@ -80,6 +80,9 @@ export const typescriptConfig = [
 
             // Additions from "plugin:@typescript-eslint/strict" (we may turn this on one day as a whole)
             '@typescript-eslint/no-useless-constructor': ['error'],
+            // `a! ?? b` is always a contradiction: the `!` asserts non-null, the `??` handles
+            // exactly that null. No type info needed, no current violations.
+            '@typescript-eslint/no-non-null-asserted-nullish-coalescing': ['error'],
             '@typescript-eslint/no-unused-vars': [
                 'error',
                 {
