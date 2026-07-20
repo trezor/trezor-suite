@@ -140,6 +140,10 @@ export const typescriptConfig = [
             // Known limitation: the rule mis-reports some load-bearing widening assertions
             // (removing them breaks tsc); such spots carry a scoped disable with a justification.
             '@typescript-eslint/no-unnecessary-type-assertion': ['error'],
+
+            // Low-noise type-checked safety/hygiene rules (recommended/strict tiers), enabled
+            // here because the src override is the only block with type info.
+            '@typescript-eslint/prefer-string-starts-ends-with': ['error'],
         },
     },
     {

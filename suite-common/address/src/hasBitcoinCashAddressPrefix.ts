@@ -1,2 +1,2 @@
 export const hasBitcoinCashAddressPrefix = (address: string) =>
-    /^bitcoincash:/.test(address.toLowerCase());
+    address.toLowerCase().startsWith('bitcoincash:');
