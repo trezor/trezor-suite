@@ -20,16 +20,19 @@ export const useYieldVaultName = ({
     account,
     precomposedForm,
 }: UseYieldVaultNameParams): string | undefined => {
+    const networkType = account?.networkType;
+    const outputs = precomposedForm?.outputs;
+    const transactionData = precomposedForm?.transactionData;
     const outputToken = useMemo(() => {
-        if (account?.networkType !== 'ethereum' || !precomposedForm?.transactionData) {
+        if (networkType !== 'ethereum' || !transactionData) {
             return undefined;
         }
 
         return getMatchAddress({
-            to: precomposedForm.outputs?.[0]?.address,
-            data: precomposedForm.transactionData,
+            to: outputs?.[0]?.address,
+            data: transactionData,
         });
-    }, [account?.networkType, precomposedForm?.outputs, precomposedForm?.transactionData]);
+    }, [networkType, outputs, transactionData]);
 
     const { data: vault } = useGetVaultByAddress({ enabled, outputToken });
 

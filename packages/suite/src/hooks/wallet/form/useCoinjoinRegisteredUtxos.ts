@@ -18,17 +18,19 @@ export const useCoinjoinRegisteredUtxos = ({ account }: UseCoinjoinRegisteredUtx
         selectRegisteredUtxosByAccountKey(state, account.key),
     );
 
+    const { utxo } = account;
+
     return useMemo(() => {
         const registeredUtxos: AccountUtxo[] = [];
 
         if (sessionPrison && Object.keys(sessionPrison).length > 0) {
-            account?.utxo?.forEach(utxo => {
-                if (sessionPrison?.[getUtxoOutpoint(utxo)]) {
-                    registeredUtxos.push(utxo);
+            utxo?.forEach(accountUtxo => {
+                if (sessionPrison?.[getUtxoOutpoint(accountUtxo)]) {
+                    registeredUtxos.push(accountUtxo);
                 }
             });
         }
 
         return registeredUtxos;
-    }, [sessionPrison, account?.utxo]);
+    }, [sessionPrison, utxo]);
 };

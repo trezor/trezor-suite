@@ -20,7 +20,10 @@ const useExplorerInput = (currentValues: Explorer) => {
         defaultValues: currentValues,
     });
 
-    const values = useWatch({ control });
+    const [base, tx, address, token, nft, queryString] = useWatch({
+        control,
+        name: ['base', 'tx', 'address', 'token', 'nft', 'queryString'],
+    });
 
     const { translationString } = useTranslation();
 
@@ -70,37 +73,37 @@ const useExplorerInput = (currentValues: Explorer) => {
         fields: {
             base: {
                 ref: baseInputRef,
-                value: values.base,
+                value: base,
                 field: baseInputField,
                 error: errors.base?.message,
             },
             tx: {
                 ref: txInputRef,
-                value: values.tx,
+                value: tx,
                 field: txInputField,
                 error: errors.tx?.message,
             },
             address: {
                 ref: addressInputRef,
-                value: values.address,
+                value: address,
                 field: addressInputField,
                 error: errors.address?.message,
             },
             token: {
                 ref: tokenInputRef,
-                value: values.token,
+                value: token,
                 field: tokenInputField,
                 error: errors.token?.message,
             },
             nft: {
                 ref: nftInputRef,
-                value: values.nft,
+                value: nft,
                 field: nftInputField,
                 error: errors.nft?.message,
             },
             queryString: {
                 ref: queryStringInputRef,
-                value: values.queryString,
+                value: queryString,
                 field: queryStringInputField,
                 error: errors.queryString?.message,
             },

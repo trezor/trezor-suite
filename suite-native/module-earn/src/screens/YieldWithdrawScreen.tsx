@@ -144,6 +144,8 @@ export const YieldWithdrawScreen = () => {
         decimals: activeInputToken?.decimals,
     });
 
+    const isAmountValidationErrorDisplayed = !!amountValidationError;
+
     const depositedAmount = useMemo(() => {
         if (resolutionStatus !== 'resolved') {
             return null;
@@ -190,7 +192,7 @@ export const YieldWithdrawScreen = () => {
             resolutionStatus === 'resolved' &&
             !!amount &&
             !isAmountTooHigh &&
-            !amountValidationError,
+            !isAmountValidationErrorDisplayed,
     });
     const feeFiatConverters = useCryptoFiatConverters({
         symbol: account?.symbol ?? null,
@@ -207,7 +209,7 @@ export const YieldWithdrawScreen = () => {
     const shouldShowNetworkFeeWarning = useMemo(() => {
         if (
             !amount ||
-            amountValidationError ||
+            isAmountValidationErrorDisplayed ||
             !withdrawFee ||
             resolutionStatus !== 'resolved' ||
             preparedAction?.amount !== amount ||
@@ -227,7 +229,7 @@ export const YieldWithdrawScreen = () => {
     }, [
         account,
         amount,
-        amountValidationError,
+        isAmountValidationErrorDisplayed,
         amountFiatConverters,
         feeFiatConverters,
         preparedAction,
@@ -258,7 +260,7 @@ export const YieldWithdrawScreen = () => {
         !amount ||
         isWithdrawPending ||
         isAmountTooHigh ||
-        !!amountValidationError ||
+        isAmountValidationErrorDisplayed ||
         !isWithdrawReviewReady ||
         isComposingWithdrawFee ||
         isFeeUnavailable;
@@ -558,7 +560,7 @@ export const YieldWithdrawScreen = () => {
                                     editable={!isMaxSelected && !isDisabled}
                                     onChangeText={handleAmountChange}
                                     onPress={onPress}
-                                    hasError={!isDisabled && !!amountValidationError}
+                                    hasError={!isDisabled && isAmountValidationErrorDisplayed}
                                     accessibilityLabel={translate(
                                         'earn.yieldWithdrawFlowScreen.amountToWithdraw',
                                     )}
@@ -585,7 +587,7 @@ export const YieldWithdrawScreen = () => {
                                     onChangeText={handleAmountChange}
                                     onPress={onPress}
                                     style={applyStyle(withdrawOutputAmountInputStyle)}
-                                    hasError={!isDisabled && !!amountValidationError}
+                                    hasError={!isDisabled && isAmountValidationErrorDisplayed}
                                     accessibilityLabel={translate(
                                         'earn.yieldWithdrawFlowScreen.amountToWithdraw',
                                     )}
@@ -638,10 +640,10 @@ export const YieldWithdrawScreen = () => {
                 )}
 
                 <YieldWithdrawWarning
-                    isAmountTooHigh={!amountValidationError && isAmountTooHigh}
+                    isAmountTooHigh={!isAmountValidationErrorDisplayed && isAmountTooHigh}
                     isMaxWithdrawInfoVisible={isMaxWithdrawInfoVisible}
                     shouldShowNetworkFeeWarning={
-                        !amountValidationError && shouldShowNetworkFeeWarning
+                        !isAmountValidationErrorDisplayed && shouldShowNetworkFeeWarning
                     }
                     vaultTokenSymbol={vaultTokenSymbol}
                 />

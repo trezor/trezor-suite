@@ -4,41 +4,39 @@ import type { AccountAddress } from '@trezor/connect';
 
 import type { Account } from 'src/types/wallet';
 
-export const useAccountAddressDictionary = (account: Account | undefined) =>
-    useMemo(() => {
-        switch (account?.networkType) {
+export const useAccountAddressDictionary = (account: Account | undefined) => {
+    const { addresses, descriptor, networkType, path } = account ?? {};
+    const { unused: unusedAddresses = [], used: usedAddresses = [] } = addresses ?? {};
+
+    return useMemo(() => {
+        switch (networkType) {
             case 'cardano':
             case 'bitcoin': {
-                return (account?.addresses?.unused ?? [])
-                    .concat(account?.addresses?.used ?? [])
-                    .reduce(
-                        (previous, current) => {
-                            previous[current.address] = current;
+                return (unusedAddresses ?? []).concat(usedAddresses ?? []).reduce(
+                    (previous, current) => {
+                        previous[current.address] = current;
 
-                            return previous;
-                        },
-                        {} as { [address: string]: AccountAddress },
-                    );
+                        return previous;
+                    },
+                    {} as { [address: string]: AccountAddress },
+                );
             }
             case 'solana':
             case 'ripple':
             case 'stellar':
             case 'tron':
             case 'ethereum': {
+                if (!descriptor || path === undefined) return {};
+
                 return {
-                    [account.descriptor]: {
-                        address: account.descriptor,
-                        path: account.path,
+                    [descriptor]: {
+                        address: descriptor,
+                        path,
                     },
                 };
             }
             default:
                 return {};
         }
-    }, [
-        account?.addresses?.unused,
-        account?.addresses?.used,
-        account?.descriptor,
-        account?.networkType,
-        account?.path,
-    ]);
+    }, [unusedAddresses, usedAddresses, descriptor, networkType, path]);
+};
