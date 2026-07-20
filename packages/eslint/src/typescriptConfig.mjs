@@ -149,14 +149,16 @@ export const typescriptConfig = [
             // `in-try-catch` it does NOT strip harmless awaits elsewhere, avoiding churn and a
             // clash with `require-await` (removing the sole await of an async fn).
             '@typescript-eslint/return-await': ['error', 'error-handling-correctness-only'],
+            '@typescript-eslint/only-throw-error': ['error'],
         },
     },
     {
-        // Type assertions on partial mocks and fixtures are idiomatic in tests,
-        // so scope the rule out of test and fixture files.
+        // Type assertions on partial mocks and fixtures are idiomatic in tests, and throwing
+        // bare strings/values to assert error paths is common, so scope these out of tests.
         files: ['**/__tests__/**', '**/__fixtures__/**', '**/tests/**', '**/*.test.{ts,tsx}'],
         rules: {
             '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+            '@typescript-eslint/only-throw-error': 'off',
         },
     },
 ];

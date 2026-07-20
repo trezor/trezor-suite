@@ -54,7 +54,7 @@ const OutputLabel = ({
                     return <Translation id="transactionManagement.review.outputs.addressLabel" />;
 
                 default:
-                    throw exhaustive(flowType);
+                    return exhaustive(flowType);
             }
         case 'amount':
             return <Translation id="transactionManagement.review.outputs.amountLabel" />;
@@ -81,7 +81,7 @@ const OutputLabel = ({
                     return <Translation id="transactionManagement.review.outputs.contractLabel" />;
 
                 default:
-                    throw exhaustive(flowType);
+                    return exhaustive(flowType);
             }
         case 'data':
             return <Translation id="transactionManagement.review.outputs.transactionDataLabel" />;

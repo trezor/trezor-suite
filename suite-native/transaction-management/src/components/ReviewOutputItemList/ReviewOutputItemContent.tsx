@@ -94,7 +94,7 @@ export const ReviewOutputItemContent = ({
                     return <AddressFormatter value={value} format="full" variant="body-sm" />;
 
                 default:
-                    throw exhaustive(flowType);
+                    return exhaustive(flowType);
             }
 
         case 'contract':
@@ -108,7 +108,7 @@ export const ReviewOutputItemContent = ({
                 case undefined:
                     return <AddressFormatter value={value} format="full" variant="body-sm" />;
                 default:
-                    throw exhaustive(flowType);
+                    return exhaustive(flowType);
             }
 
         case 'signing-with':

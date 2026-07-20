@@ -135,6 +135,6 @@ export class WebsocketClient extends WebsocketClientBase<WebsocketClientEvents> 
             }
         }
 
-        throw error;
+        throw new Error(error);
     }
 }

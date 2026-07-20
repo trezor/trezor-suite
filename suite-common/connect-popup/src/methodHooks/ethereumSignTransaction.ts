@@ -156,7 +156,7 @@ const preCallHook = async <M extends CallMethodKeys>({
                     __precomposed: true,
                 });
                 if (!methodInfo.success) {
-                    throw methodInfo.error;
+                    throw new Error(methodInfo.error.message);
                 }
                 txSigningPrecomposed = (methodInfo.payload as any as MethodInfo).precomposed;
                 if (txSigningPrecomposed)

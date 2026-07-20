@@ -72,7 +72,7 @@ const fetchMetadata =
         const response = await providerInstance.getFileContent(fileName);
 
         if (!response.success) {
-            throw response;
+            throw new Error(response.error);
         }
 
         if (!response.payload) {
