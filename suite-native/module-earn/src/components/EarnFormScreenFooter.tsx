@@ -11,7 +11,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const screenFooterStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp16,
-    paddingBottom: 0,
+    paddingBottom: utils.spacings.sp16,
     backgroundColor: utils.colors.surfaceFillPage,
 }));
 
