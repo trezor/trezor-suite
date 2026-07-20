@@ -25,6 +25,7 @@
     },
     "dependencies": {
         "@suite-common/flags": "workspace:*",
+        "@suite-common/release-notes": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
         "@suite/router-config": "workspace:*",
         "@trezor/bundler-security": "workspace:*",

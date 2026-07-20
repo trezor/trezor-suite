@@ -1,0 +1,16 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [],
+    "exclude": [
+        "**/node_modules",
+        "**/lib",
+        "**/libDev",
+        "**/build",
+        "**/dist",
+        "**/coverage",
+        "**/jest.config.*js",
+        "scripts",
+        "files"
+    ]
+}

@@ -68,14 +68,12 @@ const config: webpack.Configuration = {
                 },
                 {
                     from: path.join(
-                        __dirname,
-                        '..',
-                        '..',
-                        'suite-data',
+                        path.dirname(require.resolve('@suite-common/release-notes/package.json')),
                         'files',
-                        'release-notes.md',
+                        'desktop',
                     ),
-                    to: path.join(baseDir, 'build'),
+                    to: path.join(baseDir, 'build', 'static', 'release-notes'),
+                    noErrorOnMissing: true,
                 },
             ],
             options: {

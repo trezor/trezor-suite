@@ -10766,6 +10766,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/release-notes@workspace:*, @suite-common/release-notes@workspace:suite-common/release-notes":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/release-notes@workspace:suite-common/release-notes"
+  dependencies:
+    tsx: "npm:^4.21.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/schemas@workspace:*, @suite-common/schemas@workspace:^, @suite-common/schemas@workspace:suite-common/schemas":
   version: 0.0.0-use.local
   resolution: "@suite-common/schemas@workspace:suite-common/schemas"
@@ -16767,6 +16775,7 @@ __metadata:
     "@rolldown/plugin-babel": "npm:^0.2.1"
     "@sentry/webpack-plugin": "npm:^5.3.0"
     "@suite-common/flags": "workspace:*"
+    "@suite-common/release-notes": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite/router-config": "workspace:*"
     "@trezor/bundler-security": "workspace:*"
@@ -16902,6 +16911,7 @@ __metadata:
   dependencies:
     "@sentry/electron": "npm:^7.14.0"
     "@suite-common/dependency-injection": "workspace:*"
+    "@suite-common/release-notes": "workspace:*"
     "@suite/analytics": "workspace:*"
     "@suite/debug": "workspace:*"
     "@suite/desktop-update": "workspace:*"
@@ -16913,6 +16923,7 @@ __metadata:
     "@suite/sentry": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/connect-electron": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/suite": "workspace:*"
     "@trezor/suite-desktop-api": "workspace:*"
@@ -17093,6 +17104,7 @@ __metadata:
     "@suite-common/react-query": "workspace:*"
     "@suite-common/receive": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/release-notes": "workspace:*"
     "@suite-common/sentry": "workspace:*"
     "@suite-common/staking": "workspace:*"
     "@suite-common/suite-config": "workspace:*"

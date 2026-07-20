@@ -5,6 +5,9 @@
     "references": [
         { "path": "../../suite-common/flags" },
         {
+            "path": "../../suite-common/release-notes"
+        },
+        {
             "path": "../../suite-common/suite-config"
         },
         { "path": "../../suite/router-config" },

@@ -9,6 +9,9 @@
         {
             "path": "../../suite-common/dependency-injection"
         },
+        {
+            "path": "../../suite-common/release-notes"
+        },
         { "path": "../../suite/analytics" },
         { "path": "../../suite/debug" },
         { "path": "../../suite/desktop-update" },
@@ -22,6 +25,7 @@
         { "path": "../../suite/sentry" },
         { "path": "../components" },
         { "path": "../connect-electron" },
+        { "path": "../env-utils" },
         { "path": "../icons" },
         { "path": "../suite" },
         { "path": "../suite-desktop-api" },

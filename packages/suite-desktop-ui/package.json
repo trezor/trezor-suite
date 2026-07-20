@@ -15,6 +15,7 @@
     "dependencies": {
         "@sentry/electron": "^7.14.0",
         "@suite-common/dependency-injection": "workspace:*",
+        "@suite-common/release-notes": "workspace:*",
         "@suite/analytics": "workspace:*",
         "@suite/debug": "workspace:*",
         "@suite/desktop-update": "workspace:*",
@@ -26,6 +27,7 @@
         "@suite/sentry": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect-electron": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
         "@trezor/icons": "workspace:*",
         "@trezor/suite": "workspace:*",
         "@trezor/suite-desktop-api": "workspace:*",

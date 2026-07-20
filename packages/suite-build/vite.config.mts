@@ -78,6 +78,57 @@ const flagsPlugin = (): Plugin => {
     };
 };
 
+// Plugin to serve generated release notes from `@suite-common/release-notes` at
+// `/static/release-notes/*` (dev middleware + build-time copy). They live outside
+// `suite-data/files` (the vite publicDir), so — like flags — they need an explicit
+// handler that mirrors the webpack CopyPlugin config.
+const releaseNotesPlugin = (): Plugin => {
+    const releaseNotesDir = resolve(
+        require.resolve('@suite-common/release-notes/package.json'),
+        '../files/desktop',
+    );
+    let outDir: string | null = null;
+
+    return {
+        name: 'suite-release-notes',
+        enforce: 'pre',
+        configResolved(config) {
+            outDir = config.build.outDir;
+        },
+        configureServer(server: ViteDevServer) {
+            server.middlewares.use((req, res, next) => {
+                const match = req.url?.match(/^\/static\/release-notes\/([\w.-]+\.(?:json|md))$/);
+                if (!match) {
+                    next();
+
+                    return;
+                }
+                // @ts-expect-error: noUncheckedIndexedAccess
+                const fileName: string = match[1];
+                const filePath = resolve(releaseNotesDir, fileName);
+                if (!fs.existsSync(filePath)) {
+                    next();
+
+                    return;
+                }
+                res.setHeader(
+                    'Content-Type',
+                    fileName.endsWith('.json')
+                        ? 'application/json'
+                        : 'text/markdown; charset=utf-8',
+                );
+                fs.createReadStream(filePath).pipe(res);
+            });
+        },
+        closeBundle() {
+            if (!outDir || !fs.existsSync(releaseNotesDir)) return;
+            const dest = resolve(outDir, 'static/release-notes');
+            fs.mkdirSync(dest, { recursive: true });
+            fs.cpSync(releaseNotesDir, dest, { recursive: true });
+        },
+    };
+};
+
 const trezorLogosRequirePlugin = (): Plugin => ({
     name: 'trezor-logos-require',
     enforce: 'pre',
@@ -604,6 +655,7 @@ export default defineConfig({
         guideMarkdownPlugin(),
         trezorLogosRequirePlugin(),
         flagsPlugin(),
+        releaseNotesPlugin(),
         staticAliasPlugin(),
         sessionsSharedWorkerPlugin(),
         faviconPlugin(),

@@ -1,0 +1,29 @@
+{
+    "name": "@suite-common/release-notes",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "build:lib": "yarn release-notes:generate --platform desktop && yarn release-notes:generate --platform mobile",
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "release-notes:generate": "tsx scripts/generate.ts",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "devDependencies": {
+        "tsx": "^4.21.0"
+    },
+    "nx": {
+        "targets": {
+            "build:lib": {
+                "outputs": [
+                    "{projectRoot}/files/desktop",
+                    "{projectRoot}/files/mobile"
+                ]
+            }
+        }
+    }
+}
