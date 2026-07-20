@@ -40,6 +40,7 @@ const setIssue = (issue: ExchangeIssue | null) => {
     mockUseExchangeIssue.mockReturnValue({
         isSimulationEnabled: true,
         isSimulationLoading: false,
+        isSimulation: true,
         issue,
     });
 };

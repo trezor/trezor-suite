@@ -7,6 +7,7 @@ import { Translation, selectLocale } from '@suite-native/intl';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useExchangeIssue } from '../../../hooks/exchange/useExchangeIssue';
+import { useExchangeIssueAnalytics } from '../../../hooks/exchange/useExchangeIssueAnalytics';
 import { useExchangeSignTransaction } from '../../../hooks/exchange/useExchangeSignTransaction';
 
 const CONTINUE_ANYWAY_BUTTON_TEST_ID = '@trading/exchange-preview/continue-anyway-button';
@@ -96,7 +97,9 @@ export const ExchangePreviewIssueBanner = ({
 }: ExchangePreviewIssueBannerProps) => {
     const locale = useSelector(selectLocale);
 
-    const { isSimulationEnabled, issue } = useExchangeIssue();
+    const { issue, isSimulationEnabled, isSimulationLoading, isSimulation } = useExchangeIssue();
+    useExchangeIssueAnalytics({ issue, isSimulationLoading, isSimulation });
+
     const { handleSignTransaction, isSigningPreparationLoading } = useExchangeSignTransaction({
         onSignTransactionNavigation,
     });

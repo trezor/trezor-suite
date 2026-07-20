@@ -20,6 +20,7 @@ export type {
     TradingSellAction,
     TradingSellStep,
 } from './definitions';
+export type { TradingExchangeIssue } from './events/tradingExchangeIssueEvent';
 export type {
     DemoAccountQuestionnaireQuestion,
     DemoAccountQuestionnaireQuestionOption,

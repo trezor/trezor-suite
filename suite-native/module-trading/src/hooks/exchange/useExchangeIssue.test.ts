@@ -18,6 +18,7 @@ describe('useExchangeIssue', () => {
         const exchangeIssue = {
             isSimulationEnabled: true,
             isSimulationLoading: false,
+            isSimulation: false,
             issue: null,
         };
         mockUseCommonExchangeIssue.mockReturnValue(exchangeIssue);
