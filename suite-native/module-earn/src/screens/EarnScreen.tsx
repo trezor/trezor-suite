@@ -5,13 +5,16 @@ import { FlashList } from '@shopify/flash-list';
 
 import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { Context } from '@suite-common/message-system';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { TitleHeader, VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
+import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
 
 import { ChooseStakingAccountBottomSheet } from '../components/ChooseStakingAccountBottomSheet';
+import { EarnDashboardDisabledRow } from '../components/EarnDashboardDisabledRow';
 import { EarnItemInfoModal } from '../components/EarnItemInfoModal';
 import { EarnPortfolioTrackerGuard } from '../components/EarnPortfolioTrackerGuard';
 import { EarnPoweredByProvider } from '../components/EarnPoweredByProvider';
@@ -25,11 +28,28 @@ import { EarnScreenListHeader } from '../components/EarnScreenListHeader';
 import { EarnStakingProvidersInfo } from '../components/EarnStakingProvidersInfo';
 import { EnableNetworkForEarnBottomSheet } from '../components/EnableNetworkForEarnBottomSheet';
 import { StablecoinYieldLoadErrorAlert } from '../components/StablecoinYieldLoadErrorAlert';
+import { useMessageSystemEarnDashboard } from '../hooks/useMessageSystemEarnDashboard';
 import { useStablecoinYieldListData } from '../hooks/useStablecoinYieldListData';
 import { useStablecoinYieldPromoNavigation } from '../hooks/useStablecoinYieldPromoNavigation';
 import { useStakingListData } from '../hooks/useStakingListData';
 import { useStakingPromoNavigation } from '../hooks/useStakingPromoNavigation';
-import { type EarnPromoItem, type EarnPromoListDataItem } from '../types';
+import {
+    type EarnDashboardDisabledListItem,
+    type EarnPromoItem,
+    type EarnPromoListDataItem,
+} from '../types';
+
+const STAKING_DASHBOARD_DISABLED_ITEM = {
+    id: 'staking-dashboard-disabled',
+    type: 'dashboard-disabled',
+    dashboardType: 'staking',
+} as const satisfies EarnDashboardDisabledListItem;
+
+const YIELD_DASHBOARD_DISABLED_ITEM = {
+    id: 'yield-dashboard-disabled',
+    type: 'dashboard-disabled',
+    dashboardType: 'yield',
+} as const satisfies EarnDashboardDisabledListItem;
 
 const getEarnListItemType = (item: EarnPromoListDataItem) =>
     typeof item === 'string' ? 'section-header' : `row-${item.type}`;
@@ -66,10 +86,26 @@ const EarnScreenContent = () => {
     const { handleStakingPromoPress } = staking;
     const { handleStablecoinYieldPromoPress } = stablecoinYield;
 
-    const earnListData = useMemo(
-        (): EarnPromoListDataItem[] => [...stakingPromoItems, ...stablecoinYieldPromoItems],
-        [stablecoinYieldPromoItems, stakingPromoItems],
-    );
+    const stakingDashboard = useMessageSystemEarnDashboard('staking');
+    const yieldDashboard = useMessageSystemEarnDashboard('yield');
+    const isStakingDashboardDisabled = stakingDashboard.isDisabled;
+    const isYieldDashboardDisabled = yieldDashboard.isDisabled;
+
+    const earnListData = useMemo((): EarnPromoListDataItem[] => {
+        const stakingItems: EarnPromoListDataItem[] = isStakingDashboardDisabled
+            ? ['staking', STAKING_DASHBOARD_DISABLED_ITEM]
+            : stakingPromoItems;
+        const stablecoinYieldItems: EarnPromoListDataItem[] = isYieldDashboardDisabled
+            ? ['stablecoin-yield', YIELD_DASHBOARD_DISABLED_ITEM]
+            : stablecoinYieldPromoItems;
+
+        return [...stakingItems, ...stablecoinYieldItems];
+    }, [
+        isStakingDashboardDisabled,
+        isYieldDashboardDisabled,
+        stablecoinYieldPromoItems,
+        stakingPromoItems,
+    ]);
 
     useFocusEffect(
         useCallback(() => {
@@ -150,6 +186,15 @@ const EarnScreenContent = () => {
                 return <EarnPromoListSkeletonRow isLastInSection={isLastInSection} />;
             }
 
+            if (item.type === 'dashboard-disabled') {
+                return (
+                    <EarnDashboardDisabledRow
+                        type={item.dashboardType}
+                        isLastInSection={isLastInSection}
+                    />
+                );
+            }
+
             if (item.type === 'stablecoin-yield-load-error') {
                 return (
                     <EarnPromoListRowContainer isLastInSection={isLastInSection}>
@@ -183,17 +228,43 @@ const EarnScreenContent = () => {
                     data={earnListData}
                     getItemType={getEarnListItemType}
                     ListHeaderComponent={
-                        <EarnScreenListHeader
-                            isStablecoinYieldLoading={isYieldLoading}
-                            isStablecoinYieldClaimSummariesLoading={isClaimSummariesLoading}
-                            cardanoStakingAccountKey={accountStakedWithFiveBinaries?.key}
-                            stakingActiveItems={stakingActiveItems}
-                            stablecoinYieldActiveItems={stablecoinYieldActiveItems}
-                            stablecoinYieldClaimSummaries={stablecoinYieldClaimSummaries}
-                            stablecoinYieldTotalFiatClaimableAmount={
-                                stablecoinYieldTotalFiatClaimableAmount
-                            }
-                        />
+                        <>
+                            <ContextMessage
+                                context={Context.getEarnDashboard('staking')}
+                                marginBottom="sp16"
+                            />
+                            <ContextMessage
+                                context={Context.getEarnDashboard('yield')}
+                                marginBottom="sp16"
+                            />
+                            <EarnScreenListHeader
+                                isStablecoinYieldLoading={
+                                    !isYieldDashboardDisabled && isYieldLoading
+                                }
+                                isStablecoinYieldClaimSummariesLoading={
+                                    !isYieldDashboardDisabled && isClaimSummariesLoading
+                                }
+                                cardanoStakingAccountKey={
+                                    isStakingDashboardDisabled
+                                        ? undefined
+                                        : accountStakedWithFiveBinaries?.key
+                                }
+                                stakingActiveItems={
+                                    isStakingDashboardDisabled ? [] : stakingActiveItems
+                                }
+                                stablecoinYieldActiveItems={
+                                    isYieldDashboardDisabled ? [] : stablecoinYieldActiveItems
+                                }
+                                stablecoinYieldClaimSummaries={
+                                    isYieldDashboardDisabled ? [] : stablecoinYieldClaimSummaries
+                                }
+                                stablecoinYieldTotalFiatClaimableAmount={
+                                    isYieldDashboardDisabled
+                                        ? null
+                                        : stablecoinYieldTotalFiatClaimableAmount
+                                }
+                            />
+                        </>
                     }
                     keyExtractor={getEarnListItemKey}
                     renderItem={renderItem}
