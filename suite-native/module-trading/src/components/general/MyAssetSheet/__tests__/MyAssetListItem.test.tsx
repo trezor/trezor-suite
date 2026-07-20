@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
-import { getBtcAccount, getEthAccount } from '@suite-native/trading-fixtures';
+import { base1NormalAccount, getBtcAccount, getEthAccount } from '@suite-native/trading-fixtures';
 import { type MyAsset } from '@suite-native/trading-types';
 import { BigNumber, getIndexOrThrow } from '@trezor/utils';
 
@@ -30,6 +30,15 @@ describe('MyAssetListItem', () => {
         balance: '1000000000000000000',
         fiatBalance: asBaseCurrencyAmount(new BigNumber(2500)),
         cryptoId: 'ethereum' as CryptoId,
+        isEnabled: true,
+    };
+
+    const mockBaseEthAsset: MyAsset = {
+        symbol: 'base' as NetworkSymbol,
+        name: 'Base Ethereum',
+        balance: '1000000000000000000',
+        fiatBalance: asBaseCurrencyAmount(new BigNumber(2500)),
+        cryptoId: 'base--0x0000000000000000000000000000000000000000' as CryptoId,
         isEnabled: true,
     };
 
@@ -128,6 +137,15 @@ describe('MyAssetListItem', () => {
         expect(getAllByText('Ethereum')[0]).toBeTruthy();
         expect(getAllByText('1,000,000,000,000,000,000 ETH')[0]).toBeTruthy();
         expect(getAllByText('$2,500.00')[0]).toBeTruthy();
+    });
+
+    it('should render the native asset symbol instead of the network symbol', () => {
+        const { getByText } = renderComponent({
+            asset: mockBaseEthAsset,
+            account: base1NormalAccount,
+        });
+
+        expect(getByText('ETH')).toBeTruthy();
     });
 
     it('should render token asset with token formatter', () => {
