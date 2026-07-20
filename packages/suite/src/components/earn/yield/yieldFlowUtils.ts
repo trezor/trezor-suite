@@ -82,6 +82,7 @@ export const getYieldFlowSteps = (
     });
 
     return {
+        wrap: getStepView('wrap'),
         approve: getStepView('approve'),
         action: getStepView('action'),
         complete: getStepView('complete'),

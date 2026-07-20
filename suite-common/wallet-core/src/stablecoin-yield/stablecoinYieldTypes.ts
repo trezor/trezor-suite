@@ -4,7 +4,8 @@ import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
 
 export const YIELD_FLOW_TYPES = ['deposit', 'withdraw', 'redeem', 'claim'] as const;
-export const YIELD_FLOW_STEPS = ['approve', 'action', 'complete'] as const;
+// `wrap` is a leading deposit step used only for native-token deposits (see YIELD_FLOW_STEP_SEQUENCES).
+export const YIELD_FLOW_STEPS = ['wrap', 'approve', 'action', 'complete'] as const;
 
 export type YieldFlowType = (typeof YIELD_FLOW_TYPES)[number];
 export type YieldPositionFlowType = Exclude<YieldFlowType, 'claim'>;
@@ -68,7 +69,7 @@ export type YieldApproveModalState = {
 };
 
 export type YieldPendingTransactionState = {
-    type: 'approve' | 'revoke' | 'deposit' | 'withdraw' | 'redeem' | 'claim';
+    type: 'approve' | 'revoke' | 'deposit' | 'withdraw' | 'redeem' | 'claim' | 'wrap' | 'unwrap';
     txid: string;
     amount: string;
     fee?: string;
