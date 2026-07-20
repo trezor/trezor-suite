@@ -10,9 +10,13 @@ import {
     RUN_LIMIT_SECONDS,
     UPDATED_ICONS_LIST_FILE,
 } from './constants';
-import { CoinListData } from './types';
 import { COIN_IMAGE_SIZES, createCoinImageName } from '../src/coinImages';
-import { getCoinData, getCoinList, getUpdatedIconsList } from './utils/fetchCoins';
+import {
+    getCoinData,
+    getCoinList,
+    getCoinMarketImageUrls,
+    getUpdatedIconsList,
+} from './utils/fetchCoins';
 import { sleep } from './utils/sleep';
 
 async function writeImage(fileName: string, imageBuffer: Buffer) {
@@ -48,26 +52,23 @@ function isValidUrl(url: string): boolean {
     }
 }
 
-const updateIcon = async (coin: CoinListData) => {
+const updateIcon = async (
+    coinId: string,
+    imageUrl: string,
+    coinPlatforms: Record<string, string>,
+) => {
     try {
-        const coinData = await getCoinData(coin.id);
-        if (!coinData) {
-            console.error('No coin data for:', coin.id);
+        if (!isValidUrl(imageUrl)) {
+            console.error(`Invalid url (${coinId}):`, imageUrl);
 
             return;
         }
 
-        if (!isValidUrl(coinData.image.large)) {
-            console.error(`Invalid url (${coin.id}):`, coinData.image.large);
-
-            return;
-        }
-
-        const originImage = await fetch(coinData.image.large);
+        const originImage = await fetch(imageUrl);
         if (!originImage.ok) {
             console.error(
-                `Invalid image (${coin.id}):`,
-                coinData.image.large,
+                `Invalid image (${coinId}):`,
+                imageUrl,
                 originImage.status,
                 originImage.statusText,
             );
@@ -76,7 +77,7 @@ const updateIcon = async (coin: CoinListData) => {
         }
 
         const originImageBuffer = await originImage.arrayBuffer();
-        const platforms = Object.entries(coinData.platforms).filter(
+        const platforms = Object.entries(coinPlatforms).filter(
             ([platform, contract]) => platform && contract,
         );
 
@@ -85,16 +86,16 @@ const updateIcon = async (coin: CoinListData) => {
 
             for (const [coingeckoId, contractAddress] of platforms) {
                 const fileName = createCoinImageName({ coingeckoId, contractAddress, size });
-                console.log(`Writing image (${coin.id}):`, fileName);
+                console.log(`Writing image (${coinId}):`, fileName);
                 await writeImage(fileName, finalImageBuffer);
             }
 
-            const fileName = createCoinImageName({ coingeckoId: coinData.id, size });
-            console.log(`Writing image (${coin.id}):`, fileName);
+            const fileName = createCoinImageName({ coingeckoId: coinId, size });
+            console.log(`Writing image (${coinId}):`, fileName);
             await writeImage(fileName, finalImageBuffer);
         }
     } catch (error) {
-        console.error(`Error (${coin.id}):`, error);
+        console.error(`Error (${coinId}):`, error);
     }
 };
 
@@ -115,6 +116,10 @@ async function ensureDirectoryExists(path: string) {
         throw new Error('No coins found');
     }
 
+    // Image urls in bulk (~250 coins/request) instead of one /coins/{id} request per coin.
+    // Only coins with market data are covered here; the rest fall back to getCoinData below.
+    const marketImageUrls = await getCoinMarketImageUrls();
+
     // process missing icons and icons updated the longest time ago first
     coins.sort(
         (a, b) => (updatedIcons[a.id]?.updatedAt ?? 0) - (updatedIcons[b.id]?.updatedAt ?? 0),
@@ -122,9 +127,13 @@ async function ensureDirectoryExists(path: string) {
 
     const newIconsCount = coins.length - Object.keys(updatedIcons).length;
 
-    console.log(`Total coins: ${coins.length}, new icons: ${newIconsCount}`);
+    console.log(
+        `Total coins: ${coins.length}, new icons: ${newIconsCount}, market image urls: ${marketImageUrls.size}`,
+    );
 
     await ensureDirectoryExists(FILES_CRYPTOICONS_PATH);
+
+    const apiCallDelay = Math.ceil((60 / RATE_LIMIT_PER_MINUTE) * 1000);
 
     for (let i = 0; i < coins.length; i++) {
         const coin = coins[i];
@@ -133,7 +142,30 @@ async function ensureDirectoryExists(path: string) {
         }
 
         console.log(`${i + 1}/${coins.length}: Start icon updating for ${coin.id}`);
-        await updateIcon(coin);
+
+        let imageUrl = marketImageUrls.get(coin.id);
+        let platforms = coin.platforms ?? {};
+
+        // Tail coins (no market data) are absent from /coins/markets — fall back to the
+        // per-coin endpoint. This is the only remaining rate-limited call in the loop.
+        if (!imageUrl) {
+            await sleep(apiCallDelay);
+            try {
+                const coinData = await getCoinData(coin.id);
+                imageUrl = coinData?.image?.large;
+                if (Object.keys(platforms).length === 0 && coinData?.platforms) {
+                    platforms = coinData.platforms;
+                }
+            } catch (error) {
+                console.error(`Failed to fetch coin data (${coin.id}):`, error);
+            }
+        }
+
+        if (imageUrl) {
+            await updateIcon(coin.id, imageUrl, platforms);
+        } else {
+            console.error(`No image url for: ${coin.id}`);
+        }
 
         updatedIcons[coin.id] = {
             updatedAt: Math.floor(Date.now() / 1000),
@@ -145,7 +177,5 @@ async function ensureDirectoryExists(path: string) {
             console.log(`${i + 1}/${coins.length}: Run limit reached`);
             break;
         }
-
-        await sleep(Math.ceil((60 / RATE_LIMIT_PER_MINUTE) * 1000));
     }
 })();
