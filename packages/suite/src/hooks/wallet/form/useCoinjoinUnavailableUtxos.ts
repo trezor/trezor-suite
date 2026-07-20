@@ -47,5 +47,5 @@ export const useCoinjoinUnavailableUtxos = ({
         if (amountBN.gt(coinjoinClient.allowedInputAmounts.max)) {
             return translationString('TR_AMOUNT_TOO_BIG_FOR_COINJOIN');
         }
-    }, [utxo, coinjoinAccount?.prison, coinjoinClient?.allowedInputAmounts, translationString]);
+    }, [utxo, coinjoinAccount?.prison, coinjoinClient, translationString]);
 };

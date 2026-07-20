@@ -90,7 +90,7 @@ const Tabs = ({
 
         setIndicatorWidth(width ?? 0);
         setIndicatorPosition(position ?? 0);
-    }, [activeItemId]);
+    }, [activeItemId, setIndicatorWidth, setIndicatorPosition]);
 
     useEffect(() => {
         updateIndicator();
