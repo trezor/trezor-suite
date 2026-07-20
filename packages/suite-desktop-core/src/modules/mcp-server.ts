@@ -72,7 +72,7 @@ const MCP_TOOLS = [
             'Get a receive address from the Trezor device for a given cryptocurrency. ' +
             'The address can optionally be displayed on the Trezor screen for verification. ' +
             'Supports Bitcoin/UTXO coins via getAddress and all EVM chains (eth, pol, bsc, arb, ' +
-            'base, op, avax, etc) via ethereumGetAddress.',
+            'base, op, avax, rhc, etc) via ethereumGetAddress.',
         inputSchema: {
             type: 'object' as const,
             properties: {
@@ -360,7 +360,7 @@ const MCP_TOOLS = [
             'Just provide "to" address, "value", and "coin" — everything else is automatic. ' +
             'For Bitcoin/UTXO chains (btc, ltc, bch, doge, zec): ' +
             'handled by composeTransaction — account, UTXOs, and fees are resolved by Suite. ' +
-            'For Ethereum/EVM chains (eth, pol, bsc, arb, base, op, avax, etc): ' +
+            'For Ethereum/EVM chains (eth, pol, bsc, arb, base, op, avax, rhc, etc): ' +
             'nonce and EIP-1559 gas fees are auto-filled; use "accountIndex" to select account. ' +
             'For ERC-20 token transfers: set "tokenContract" and "tokenDecimals" — the server encodes the transfer calldata automatically. ' +
             'For XRP: sequence and fee are auto-filled. ' +
@@ -372,7 +372,7 @@ const MCP_TOOLS = [
                 coin: {
                     type: 'string',
                     description:
-                        'Coin symbol. Supported: eth, pol, bsc, arb, base, op, avax, etc, ' +
+                        'Coin symbol. Supported: eth, pol, bsc, arb, base, op, avax, rhc, etc, ' +
                         'tsep, thod (EVM); xrp, txrp (Ripple); btc, ltc, bch, doge, zec (UTXO).',
                 },
                 to: {

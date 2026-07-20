@@ -15,6 +15,7 @@ export const networkSymbols = [
     'op',
     'pol',
     'regtest',
+    'rhc',
     'sol',
     'test',
     'thod',

@@ -49,6 +49,13 @@ const representativeAssets: Partial<Record<NetworkSymbol, readonly Representativ
         { symbol: 'SNX', contract: '0x8700daec35af8ff88c16bdf0418774cb3d7599b4' },
         { symbol: 'VELO', contract: '0x9560e827af36c94d2ac33a39bce1fe78631088db' },
     ],
+    rhc: [
+        { symbol: 'ETH' },
+        { symbol: 'USDG', contract: '0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168' },
+        { symbol: 'AAPL', contract: '0xaF3D76f1834A1d425780943C99Ea8A608f8a93f9' },
+        { symbol: 'NVDA', contract: '0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC' },
+        { symbol: 'TSLA', contract: '0x322F0929c4625eD5bAd873c95208D54E1c003b2d' },
+    ],
     avax: [
         { symbol: 'AVAX' },
         { symbol: 'USDC', contract: '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e' },
