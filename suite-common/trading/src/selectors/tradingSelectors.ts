@@ -81,7 +81,7 @@ import {
     getTradingPlatformsInfoByCryptoId,
     getTradingSymbolAndContractAddressByCryptoId,
 } from '../utils/infoUtils';
-import { isAccountEligibleForTrade, pickFallbackAccount } from '../utils/tradingAccountUtils';
+import { isAccountEligibleForTrade } from '../utils/tradingAccountUtils';
 
 export { EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES, type GroupedTradingExchangeQuotes };
 
@@ -967,8 +967,7 @@ const selectPreferredTradingAccount = (
  * Selection priority:
  * 1) Preferred account (selected trading account key OR prefilled.key) if eligible.
  * 2) First account with the same symbol as the preferred account that is eligible.
- * 3) Fallback (pickFallbackAccount): first eligible account, otherwise the first
- *    available account as a last resort.
+ * 3) Otherwise undefined — the form renders empty (no preselected account).
  */
 export const selectTradingFormAccount = createMemoizedFormAccountSelector(
     [
@@ -978,7 +977,13 @@ export const selectTradingFormAccount = createMemoizedFormAccountSelector(
         selectPreferredTradingAccount,
         (_state: TradingFormAccountRootState, tradingType: TradingType) => tradingType,
     ],
-    (visibleDeviceAccounts, tokenDefinitions, prefilled, preferredAccount, tradingType) => {
+    (
+        visibleDeviceAccounts,
+        tokenDefinitions,
+        prefilled,
+        preferredAccount,
+        tradingType,
+    ): Account | undefined => {
         const eligibilityCryptoId = prefilled.key ? prefilled.cryptoId : undefined;
 
         const isEligible = (account: Account, cryptoId?: CryptoId) =>
@@ -994,17 +999,17 @@ export const selectTradingFormAccount = createMemoizedFormAccountSelector(
                 isEligible(account, eligibilityCryptoId),
         );
 
-        if (sameSymbolAccount) {
-            return sameSymbolAccount;
-        }
-
-        return pickFallbackAccount(visibleDeviceAccounts, tradingType, tokenDefinitions);
+        return sameSymbolAccount;
     },
 );
 
 export const selectTradingFormCryptoId = createMemoizedFormAccountSelector(
     [selectTradingFormAccount, selectPreferredTradingAccount, selectTradingPrefilledFromAccount],
-    (account, preferredAccount, prefilled): CryptoId => {
+    (account, preferredAccount, prefilled): CryptoId | undefined => {
+        if (!account) {
+            return undefined;
+        }
+
         if (prefilled.cryptoId && account.key === preferredAccount?.key) {
             return prefilled.cryptoId;
         }

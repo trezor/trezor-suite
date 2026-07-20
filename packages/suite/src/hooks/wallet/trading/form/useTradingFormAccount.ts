@@ -26,7 +26,7 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
     // clear the prefill; they will be removed once the account key is set directly from the
     // picker handlers (split empty-vs-full-form).
     useEffect(() => {
-        if (!accountKey && account.key) {
+        if (!accountKey && account?.key) {
             switch (tradingType) {
                 case 'exchange':
                     dispatch(tradingExchangeActions.setTradingAccountKey(account.key));
@@ -39,7 +39,7 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
                     break;
             }
         }
-    }, [account.key, accountKey, dispatch, tradingType]);
+    }, [account?.key, accountKey, dispatch, tradingType]);
 
     useEffect(() => {
         if (prefilled.key && accountKey) {
@@ -53,7 +53,7 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
     }, [accountKey, dispatch, prefilled.key, prefilled.cryptoId]);
 
     return {
-        tradingAccountKey: account.key,
+        tradingAccountKey: account?.key,
         account,
         cryptoId,
     };
