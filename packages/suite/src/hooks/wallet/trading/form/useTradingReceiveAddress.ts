@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 import { type CryptoId } from 'invity-api';
 
@@ -284,8 +284,8 @@ export const useTradingReceiveAddress = ({
         methods,
     ]);
 
-    const receiveAddressValue = methods.watch('address');
-    const extraFieldValue = methods.watch('extraField');
+    const receiveAddressValue = useWatch({ control: methods.control, name: 'address' });
+    const extraFieldValue = useWatch({ control: methods.control, name: 'extraField' });
 
     const addressDictionary = useAccountAddressDictionary(receiveAccount ?? undefined);
     const accountAddress = receiveAddressValue ? addressDictionary[receiveAddressValue] : undefined;

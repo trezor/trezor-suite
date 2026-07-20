@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { type UseFormReturn, useForm } from 'react-hook-form';
+import { type UseFormReturn, useForm, useWatch } from 'react-hook-form';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
@@ -435,7 +435,7 @@ export const useYieldFlow = ({
         openDeviceConnectionModal,
     ]);
 
-    const liveAmount = methods.watch('amountInput');
+    const liveAmount = useWatch({ control: methods.control, name: 'amountInput' });
 
     const approvalAction = getYieldApprovalAction({
         liveAmount,

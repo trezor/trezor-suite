@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useController, useForm } from 'react-hook-form';
+import { useController, useForm, useWatch } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -73,30 +73,21 @@ const DEFAULT_VALUES: SignVerifyFields = {
 };
 
 export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
-    const {
-        register,
-        handleSubmit,
-        formState,
-        reset,
-        setValue,
-        clearErrors,
-        control,
-        trigger,
-        watch,
-    } = useForm<SignVerifyFields, SignVerifyContext>({
-        mode: 'onBlur',
-        reValidateMode: 'onChange',
-        resolver: yupResolver(signVerifySchema),
-        context: {
-            isSignPage,
-            symbol: account?.symbol,
-        },
-        defaultValues: DEFAULT_VALUES,
-    });
+    const { register, handleSubmit, formState, reset, setValue, clearErrors, control, trigger } =
+        useForm<SignVerifyFields, SignVerifyContext>({
+            mode: 'onBlur',
+            reValidateMode: 'onChange',
+            resolver: yupResolver(signVerifySchema),
+            context: {
+                isSignPage,
+                symbol: account?.symbol,
+            },
+            defaultValues: DEFAULT_VALUES,
+        });
 
     const { isDirty, errors, isSubmitting } = formState;
 
-    const formValues = watch();
+    const formValues = useWatch({ control });
 
     const { field: addressField } = useController({
         control,

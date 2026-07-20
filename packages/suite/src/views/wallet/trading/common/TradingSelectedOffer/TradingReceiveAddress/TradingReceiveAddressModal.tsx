@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { cryptoIdToNetwork, parseCryptoId, useTradingUtils } from '@suite-common/trading';
@@ -83,7 +83,7 @@ export const TradingReceiveAddressModal = () => {
         },
     });
 
-    const receiveAddress = form.watch('address');
+    const receiveAddress = useWatch({ control: form.control, name: 'address' });
 
     const onCancel = () => {
         modalControls.close();

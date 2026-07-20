@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -53,9 +53,12 @@ export const TradingSellFormInputs = () => {
         showReserveBanner,
     } = context;
 
-    const { getValues } = useFormContext<TradingSellFormProps>();
+    const { control } = useFormContext<TradingSellFormProps>();
 
-    const { outputs, sendCryptoSelect, amountInCrypto, countrySelect } = getValues();
+    const [outputs, sendCryptoSelect, amountInCrypto, countrySelect] = useWatch({
+        control,
+        name: ['outputs', 'sendCryptoSelect', 'amountInCrypto', 'countrySelect'],
+    });
     const output = outputs[0];
     const currencySelect = output?.currency;
     const tokenAddress = (output?.token ?? undefined) as TokenAddress | undefined;

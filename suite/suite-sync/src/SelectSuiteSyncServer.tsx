@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -62,8 +62,9 @@ export const SelectSuiteSyncServer = ({ onCancel }: SelectSuiteSyncServerProps) 
         reValidateMode: 'onChange',
     });
 
-    const { handleSubmit, watch } = form;
-    const watchedServer = watch('server');
+    const { handleSubmit, control } = form;
+
+    const watchedServer = useWatch({ control, name: 'server' });
 
     const onSubmit = handleSubmit(async values => {
         const relayUrl =
