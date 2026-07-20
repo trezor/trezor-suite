@@ -16,5 +16,6 @@ export {
     corsValidator,
 } from './data/connectSettings';
 export * from './utils/debug';
+export * from './utils/cancelParams';
 export * from './utils/urlUtils';
 export { connectCallableMethods } from './callableMethods';
