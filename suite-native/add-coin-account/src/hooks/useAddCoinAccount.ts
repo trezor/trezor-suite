@@ -130,13 +130,21 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
             const types = typedObjectKeys(networks[symbol].accountTypes).filter(
                 t => !['coinjoin', 'imported', 'ledger'].includes(t),
             );
-
             availableTypes.set(symbol, [
                 NORMAL_ACCOUNT_TYPE,
                 // For Cardano and EVMs allow only normal account type
-                ...(['ada', 'eth', 'pol', 'bsc', 'sol', 'op', 'base', 'arb', 'avax'].includes(
-                    symbol,
-                )
+                ...([
+                    'ada',
+                    'eth',
+                    'pol',
+                    'bsc',
+                    'sol',
+                    'op',
+                    'base',
+                    'arb',
+                    'rhc',
+                    'avax',
+                ].includes(symbol)
                     ? []
                     : types),
             ]);
