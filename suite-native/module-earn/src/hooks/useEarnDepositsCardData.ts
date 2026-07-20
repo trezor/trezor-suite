@@ -2,15 +2,15 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import {
-    compareEarnByAmountDesc,
-    getFiatRateKey,
-    toFiatCurrency,
-} from '@suite-common/wallet-utils';
+    calculateEarnDepositsFiatData,
+    getEarnDepositsFiatStatus,
+    selectBaseCurrency,
+    selectCurrentFiatRates,
+    useMissingRateTickersQuery,
+} from '@suite-common/wallet-core';
+import { compareEarnByAmountDesc } from '@suite-common/wallet-utils';
 import { useTranslate } from '@suite-native/intl';
-import { BigNumber } from '@trezor/utils';
 
 import {
     type EarnDepositsCardActiveItem,
@@ -56,93 +56,110 @@ export const useEarnDepositsCardData = ({
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const fiatCurrency = useSelector(selectBaseCurrency);
 
+    const stakingDeposits = useMemo(
+        () =>
+            stakingActiveItems.flatMap(item => {
+                if (item.accountKey === null) {
+                    return [];
+                }
+
+                return [{ ...item, accountKey: item.accountKey }];
+            }),
+        [stakingActiveItems],
+    );
+    const stablecoinYieldDeposits = useMemo(
+        () =>
+            stablecoinYieldActiveItems.flatMap(item => {
+                if (item.accountKey === null) {
+                    return [];
+                }
+
+                return [
+                    {
+                        ...item,
+                        accountKey: item.accountKey,
+                        balance: item.tokenBalance,
+                    },
+                ];
+            }),
+        [stablecoinYieldActiveItems],
+    );
+
+    const {
+        stakingDeposits: calculatedStakingDeposits,
+        stablecoinYieldDeposits: calculatedStablecoinYieldDeposits,
+        missingStakingRateTickers,
+        missingStablecoinYieldRateTickers,
+        missingRateTickers,
+        totalDepositedFiatAmount,
+        hasStakingFiatRate,
+        hasStablecoinYieldFiatRate: hasStablecoinFiatRate,
+    } = useMemo(
+        () =>
+            calculateEarnDepositsFiatData({
+                stakingDeposits,
+                stablecoinYieldDeposits,
+                currentFiatRates,
+                baseCurrencyCode: fiatCurrency,
+            }),
+        [currentFiatRates, fiatCurrency, stablecoinYieldDeposits, stakingDeposits],
+    );
+
     const stakingRows = useMemo(
         () =>
-            stakingActiveItems
-                .flatMap(item => {
-                    if (item.accountKey === null || item.balance === null || item.balance === '0') {
-                        return [];
-                    }
-
-                    const fiatRateKey = getFiatRateKey(item.symbol, fiatCurrency);
-                    const fiatRate = currentFiatRates?.[fiatRateKey]?.rate;
-                    const fiatAmount = asBaseCurrencyAmount(
-                        new BigNumber(
-                            toFiatCurrency({ amount: item.balance, rate: fiatRate }) ?? '0',
-                        ),
-                    );
-
-                    return [
-                        {
-                            id: item.id,
+            calculatedStakingDeposits
+                .map(
+                    ({ deposit, balance, fiatAmount }) =>
+                        ({
+                            id: deposit.id,
                             type: 'staking',
-                            title: item.accountLabel ?? getNetworkDisplaySymbolName(item.symbol),
-                            symbol: item.symbol,
-                            accountKey: item.accountKey,
-                            balance: item.balance,
+                            title:
+                                deposit.accountLabel ?? getNetworkDisplaySymbolName(deposit.symbol),
+                            symbol: deposit.symbol,
+                            accountKey: deposit.accountKey,
+                            balance,
                             fiatAmount,
-                        } satisfies EarnDepositsCardActiveItem,
-                    ];
-                })
+                        }) satisfies EarnDepositsCardActiveItem,
+                )
                 // Active positions are ordered by fiat value, highest first (matches desktop).
                 .sort(compareEarnByAmountDesc(row => row.fiatAmount)),
-        [currentFiatRates, fiatCurrency, stakingActiveItems],
+        [calculatedStakingDeposits],
     );
 
     const stablecoinRows = useMemo(
         () =>
-            stablecoinYieldActiveItems.flatMap(item => {
-                if (
-                    item.accountKey === null ||
-                    item.tokenBalance === null ||
-                    item.tokenBalance === '0'
-                ) {
-                    return [];
-                }
-
-                const fiatRateKey = getFiatRateKey(
-                    item.networkSymbol,
-                    fiatCurrency,
-                    item.tokenContractAddress,
-                );
-
-                const fiatRate = currentFiatRates?.[fiatRateKey]?.rate;
-                const fiatAmount = asBaseCurrencyAmount(
-                    new BigNumber(
-                        toFiatCurrency({ amount: item.tokenBalance, rate: fiatRate }) ?? '0',
-                    ),
-                );
-
-                return [
-                    {
-                        id: item.id,
+            calculatedStablecoinYieldDeposits.map(
+                ({ deposit, balance, fiatAmount }) =>
+                    ({
+                        id: deposit.id,
                         type: 'stablecoin-yield',
-                        title: item.vaultName,
-                        networkSymbol: item.networkSymbol,
-                        tokenSymbol: item.tokenSymbol,
-                        contractAddress: item.contractAddress,
-                        tokenContractAddress: item.tokenContractAddress,
-                        accountKey: item.accountKey,
-                        accountLabel: item.accountLabel,
-                        balance: item.tokenBalance,
+                        title: deposit.vaultName,
+                        networkSymbol: deposit.networkSymbol,
+                        tokenSymbol: deposit.tokenSymbol,
+                        contractAddress: deposit.contractAddress,
+                        tokenContractAddress: deposit.tokenContractAddress,
+                        accountKey: deposit.accountKey,
+                        accountLabel: deposit.accountLabel,
+                        balance,
                         fiatAmount,
-                        apy: item.apy,
-                    } satisfies EarnDepositsCardActiveItem,
-                ];
-            }),
-        [currentFiatRates, fiatCurrency, stablecoinYieldActiveItems],
+                        apy: deposit.apy,
+                    }) satisfies EarnDepositsCardActiveItem,
+            ),
+        [calculatedStablecoinYieldDeposits],
     );
 
-    const totalDepositedFiatAmount = useMemo(
-        () =>
-            asBaseCurrencyAmount(
-                [...stakingRows, ...stablecoinRows].reduce(
-                    (sum, item) => sum.plus(item.fiatAmount),
-                    new BigNumber(0),
-                ),
-            ),
-        [stakingRows, stablecoinRows],
-    );
+    const missingRateTickersQuery = useMissingRateTickersQuery({
+        missingRateTickers,
+        baseCurrencyCode: fiatCurrency,
+    });
+    const isFiatRatesLoading = missingRateTickersQuery.isFetching;
+    const { isFiatTotalIncomplete, isFiatTotalUnavailable } = getEarnDepositsFiatStatus({
+        missingStakingRateTickers,
+        missingStablecoinYieldRateTickers,
+        hasStakingFiatRate,
+        hasStablecoinYieldFiatRate: hasStablecoinFiatRate,
+        isFiatRatesLoading,
+    });
 
     const stakingTitle = useMemo(() => {
         const firstStakingSymbol = stakingRows[0]?.symbol;
@@ -190,6 +207,10 @@ export const useEarnDepositsCardData = ({
         stakingRow,
         stablecoinYieldRow,
         totalDepositedFiatAmount,
+        isFiatRatesLoading,
+        isFiatTotalIncomplete,
+        isFiatTotalUnavailable,
+        retryMissingFiatRates: missingRateTickersQuery.refetch,
         shouldShowCard: stakingRow !== null || stablecoinYieldRow !== null,
     };
 };

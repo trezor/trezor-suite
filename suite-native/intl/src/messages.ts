@@ -17,6 +17,7 @@ export const messages = {
             enable: 'Enable',
             gotIt: 'Got it',
             next: 'Next',
+            retry: 'Retry',
             tryAgain: 'Try again',
             edit: 'Edit',
             yes: 'Yes',
@@ -2708,6 +2709,7 @@ export const messages = {
                 networkStaking: '{networkName} staking',
                 availableRewards: 'Available rewards',
                 claimRewardsButton: 'Claim rewards',
+                incompleteFiatTotal: 'Some fiat rates couldn’t load. Total may be incomplete.',
             },
             activeSheet: {
                 stakingTitle: 'Your stakes',
