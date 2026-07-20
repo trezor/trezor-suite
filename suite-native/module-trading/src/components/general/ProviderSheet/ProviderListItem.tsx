@@ -8,7 +8,7 @@ import {
     type TradingType,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
-import { Card, CardDivider, HStack, Radio, Text, VStack } from '@suite-native/atoms';
+import { Card, CardDivider, HStack, Text, VStack } from '@suite-native/atoms';
 import { ProviderLogo } from '@suite-native/trading-atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -28,7 +28,6 @@ const wrapperStyle = prepareNativeStyle(({ spacings }) => ({
 }));
 
 export const ProviderListItem = <T extends TradingTradeType>({
-    isSelected,
     onPress,
     quote,
     shouldShowExchangeType,
@@ -52,18 +51,11 @@ export const ProviderListItem = <T extends TradingTradeType>({
         <Pressable onPress={() => onPress(quote)} style={applyStyle(wrapperStyle)}>
             <Card>
                 <VStack>
-                    <HStack alignItems="center" justifyContent="space-between" paddingBottom="sp2">
-                        <HStack>
-                            <ProviderLogo logo={logo} />
-                            <Text variant="body-md" color="contentPrimary">
-                                {companyName}
-                            </Text>
-                        </HStack>
-                        <Radio
-                            value={orderId}
-                            onPress={() => onPress(quote)}
-                            isChecked={isSelected}
-                        />
+                    <HStack alignItems="center" paddingBottom="sp2">
+                        <ProviderLogo logo={logo} />
+                        <Text variant="body-md" color="contentPrimary">
+                            {companyName}
+                        </Text>
                     </HStack>
                     <ProviderListItemInfo
                         provider={provider}
