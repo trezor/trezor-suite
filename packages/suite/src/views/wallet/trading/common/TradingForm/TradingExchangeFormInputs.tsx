@@ -24,6 +24,7 @@ import { useCurrentRef } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelectedTradingAsset } from 'src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
@@ -56,6 +57,7 @@ export const TradingExchangeFormInputs = () => {
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
 
     const {
+        type,
         feeInfo,
         account,
         composedLevels,
@@ -66,6 +68,7 @@ export const TradingExchangeFormInputs = () => {
         resetSelectedOffer,
         setAmountLimits,
     } = context;
+    const asset = useSelectedTradingAsset(type);
 
     const displayComposedLevels = useMemo(
         () => getDisplayComposedLevels(selectedQuote, composedLevels),
@@ -154,13 +157,13 @@ export const TradingExchangeFormInputs = () => {
                             currencySelectLabel={currencySelect?.value.toUpperCase()}
                             cryptoCurrencyLabel={sendCryptoSelect?.id}
                         />
-                        {amountInCrypto && (
+                        {amountInCrypto && asset && (
                             <Row justifyContent="space-between" alignItems="center" gap={8}>
                                 <TradingFractionButtons />
                                 <TradingBalance
                                     balance={outputAmount}
                                     displaySymbol={sendCryptoSelect?.displaySymbol}
-                                    symbol={account.symbol}
+                                    symbol={asset.symbol}
                                     tokenAddress={tokenAddress}
                                     showOnlyAmount
                                     amountInCrypto={amountInCrypto}
@@ -170,9 +173,9 @@ export const TradingExchangeFormInputs = () => {
                         )}
                     </Column>
 
-                    {showReserveBanner && (
+                    {showReserveBanner && asset && (
                         <TradingNetworkReserveBanner
-                            symbol={account.symbol}
+                            symbol={asset.symbol}
                             contractAddress={tokenAddress}
                         />
                     )}
