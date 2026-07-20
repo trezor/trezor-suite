@@ -72,6 +72,7 @@ export { tradingCompareOffersEvent } from './tradingCompareOffersEvent';
 export { tradingConfirmTradeEvent } from './tradingConfirmTradeEvent';
 export { tradingCountrySelectionEvent } from './tradingCountrySelectionEvent';
 export { tradingExchangeEvent } from './tradingExchangeEvent';
+export { tradingExchangeIssueEvent } from './tradingExchangeIssueEvent';
 export { tradingNavigateEvent } from './tradingNavigateEvent';
 export { tradingParameterChangedEvent } from './tradingParameterChangedEvent';
 export { tradingQuoteReceivedEvent } from './tradingQuoteReceivedEvent';

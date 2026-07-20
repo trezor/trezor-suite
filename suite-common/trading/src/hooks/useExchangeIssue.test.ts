@@ -96,6 +96,7 @@ describe('useExchangeIssue', () => {
         expect(result.current).toEqual({
             isSimulationEnabled: true,
             isSimulationLoading: false,
+            isSimulation: false,
             issue: null,
         });
     });
@@ -117,6 +118,7 @@ describe('useExchangeIssue', () => {
         const { result } = renderUseExchangeIssue();
 
         expect(result.current.issue).toMatchObject({ type: 'high-risk', severity: 'critical' });
+        expect(result.current.isSimulation).toBe(true);
     });
 
     it('reports a price impact from the fiat deviation', () => {
@@ -133,6 +135,26 @@ describe('useExchangeIssue', () => {
             severity: 'warning',
             deviation: 0.15,
         });
+        expect(result.current.isSimulation).toBe(false);
+    });
+
+    it('identifies a price impact calculated from the simulated receive amount', () => {
+        mockUseDexExchangeTxSimulation.mockReturnValue({
+            isEnabled: true,
+            isLoading: false,
+            error: null,
+            data: successResultWithNativeReceive,
+        });
+        mockUseExchangeFiatDeviation.mockReturnValue({
+            deviation: 0.15,
+            exceedsThreshold: true,
+            exceedsHighThreshold: false,
+        });
+
+        const { result } = renderUseExchangeIssue();
+
+        expect(result.current.issue).toMatchObject({ type: 'price-impact' });
+        expect(result.current.isSimulation).toBe(true);
     });
 
     it('feeds the simulated receive amount, quote data, and base currency into the fiat deviation', () => {
