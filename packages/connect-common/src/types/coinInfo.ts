@@ -163,6 +163,7 @@ export const coinSymbols = [
     'bsc',
     'etc',
     'pol',
+    'rhc',
     'base',
     'thod',
     'arb',
