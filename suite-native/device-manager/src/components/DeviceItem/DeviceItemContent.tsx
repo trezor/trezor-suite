@@ -73,7 +73,7 @@ export const DeviceItemContent = React.memo(
                 isConnected: d.connected,
                 label: selectDeviceLabelOrNameById(state, d.id),
                 walletNumber: d.walletNumber,
-                isDeviceInBootloaderMode: !state && selectShouldFactoryResetBeVisible(state),
+                isDeviceInBootloaderMode: !device && selectShouldFactoryResetBeVisible(state),
                 useEmptyPassphrase: d.useEmptyPassphrase,
                 staticSessionId: d.state?.staticSessionId,
             };
