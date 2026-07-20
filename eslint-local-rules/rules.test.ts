@@ -31,6 +31,11 @@ ruleTester.run('no-package-deep-imports', rules['no-package-deep-imports'], {
             code: "import { connectCallableMethods } from '@trezor/connect/src/factory';",
             options: [{ ignoredPackages: ['@trezor/connect'] }],
         },
+        // Explicitly configured package entry points are allowed
+        {
+            code: "import '@suite-common/test-utils/globalOverrides';",
+            options: [{ allowedEntryPoints: ['@suite-common/test-utils/globalOverrides'] }],
+        },
     ],
     invalid: [
         // Deep imports from @suite-common
@@ -81,6 +86,20 @@ ruleTester.run('no-package-deep-imports', rules['no-package-deep-imports'], {
                     data: {
                         sourcePath: '@suite-common/bluetooth/mocks/createBluetoothDeviceCommon',
                         packageImportPath: '@suite-common/bluetooth/mocks',
+                    },
+                },
+            ],
+        },
+        // Imports below a configured entry point should suggest the public entry point
+        {
+            code: "import '@suite-common/test-utils/globalOverrides/internal';",
+            options: [{ allowedEntryPoints: ['@suite-common/test-utils/globalOverrides'] }],
+            errors: [
+                {
+                    messageId: 'doNotImportPackageDeepPath',
+                    data: {
+                        sourcePath: '@suite-common/test-utils/globalOverrides/internal',
+                        packageImportPath: '@suite-common/test-utils/globalOverrides',
                     },
                 },
             ],

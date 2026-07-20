@@ -55,12 +55,14 @@ const checkNodeForAvoidStyledComponent = (node, context, nodeRef, importedCompon
 
 /**
  * Returns the suggested import path for a deep import, or null if the import is allowed.
- * Handles the mocks convention: `@scope/pkg/mocks` is allowed, but `@scope/pkg/mocks/deep` suggests `@scope/pkg/mocks`.
+ * Handles configured entry points and the mocks convention. Imports below an entry point
+ * suggest that entry point instead of the package root.
  */
 const getSuggestedImportPath = (
     sourcePath: string,
     packageScopes: string[],
     ignoredPackages: string[],
+    allowedEntryPoints: string[],
 ): string | null => {
     const sourcePathParts = sourcePath.split('/');
 
@@ -80,6 +82,14 @@ const getSuggestedImportPath = (
 
     if (ignoredPackages.includes(packageImportPath)) {
         return null;
+    }
+
+    const allowedEntryPoint = allowedEntryPoints.find(
+        entryPoint => sourcePath === entryPoint || sourcePath.startsWith(`${entryPoint}/`),
+    );
+
+    if (allowedEntryPoint !== undefined) {
+        return sourcePath === allowedEntryPoint ? null : allowedEntryPoint;
     }
 
     // Allow @scope/pkg/mocks as a valid entry point
@@ -213,6 +223,10 @@ export const rules = {
                             type: 'array',
                             items: { type: 'string' },
                         },
+                        allowedEntryPoints: {
+                            type: 'array',
+                            items: { type: 'string' },
+                        },
                     },
                     additionalProperties: false,
                 },
@@ -226,6 +240,7 @@ export const rules = {
                 '@trezor',
             ];
             const ignoredPackages = context.options[0]?.ignoredPackages ?? [];
+            const allowedEntryPoints = context.options[0]?.allowedEntryPoints ?? [];
 
             const checkNode = (node: Rule.Node) => {
                 const sourcePath = getNodeSourcePath(node);
@@ -238,6 +253,7 @@ export const rules = {
                     sourcePath,
                     packageScopes,
                     ignoredPackages,
+                    allowedEntryPoints,
                 );
 
                 if (packageImportPath === null) {

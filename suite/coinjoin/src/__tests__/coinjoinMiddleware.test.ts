@@ -11,7 +11,7 @@ import {
     testMocks,
 } from '@suite-common/test-utils';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
-import '@suite-common/test-utils/src/globalOverrides';
+import '@suite-common/test-utils/globalOverrides';
 
 import { fixtures } from '../__fixtures__/coinjoinMiddleware';
 import { coinjoinMiddleware } from '../coinjoinMiddleware';
