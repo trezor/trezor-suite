@@ -17,6 +17,7 @@ const BLOCKAID_EVM_CHAIN_BY_CHAIN_ID = {
     [networks.pol.chainId]: 'polygon',
     [networks.base.chainId]: 'base',
     [networks.arb.chainId]: 'arbitrum',
+    [networks.rhc.chainId]: 'robinhood',
     [networks.avax.chainId]: 'avalanche',
 } as const satisfies Readonly<Record<ChainId, string>>;
 

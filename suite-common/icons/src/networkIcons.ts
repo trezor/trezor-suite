@@ -19,6 +19,7 @@ export const networkIcons = {
     nmc: require('../cryptoAssets/networkIcons/nmc.svg'),
     op: require('../cryptoAssets/networkIcons/op.svg'),
     pol: require('../cryptoAssets/networkIcons/pol.svg'),
+    rhc: require('../cryptoAssets/networkIcons/rhc.svg'),
     sol: require('../cryptoAssets/networkIcons/sol.svg'),
     trx: require('../cryptoAssets/networkIcons/trx.svg'),
     vtc: require('../cryptoAssets/networkIcons/vtc.svg'),

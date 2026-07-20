@@ -15,6 +15,7 @@ const NETWORK_SYMBOLS = [
     'base',
     'op',
     'avax',
+    'rhc',
     'sol',
     'trx',
     'ada',

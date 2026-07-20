@@ -38,6 +38,9 @@ export type Protocol =
     | 'arbitrum-ethereum'
     | 'base'
     | 'op'
+    | 'robinhood'
+    | 'robinhood-chain'
+    | 'rhc'
     | 'avax'
     | 'avalanche'
     | 'xlm'
@@ -70,6 +73,7 @@ export const NETWORK_TO_PROTOCOLS: Record<NetworkSymbol, Protocol[]> = {
     arb: ['arbitrum', 'arbitrum-one', 'arb', 'arbitrum-ethereum'],
     base: ['base'],
     op: ['optimism', 'op'],
+    rhc: ['robinhood', 'robinhood-chain', 'rhc'],
     avax: ['avalanche', 'avax'],
     test: ['test'],
     regtest: ['regtest'],
