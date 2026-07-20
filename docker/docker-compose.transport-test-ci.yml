@@ -1,6 +1,6 @@
 services:
   trezor-user-env-unix:
-    image: ghcr.io/trezor/trezor-user-env:97b797fb349737b93a1d2dbe6bda6673dcc9cafb
+    image: ghcr.io/trezor/trezor-user-env:d656287715562840ab53cce98204f2424a9c9306
     environment:
       - SDL_VIDEODRIVER=dummy
       - XDG_RUNTIME_DIR=/var/tmp
