@@ -3187,6 +3187,11 @@ export const messages = {
         apyPercentage: '~{apy}% APY',
         aprPercentage: '~{apy}% APR',
         notAvailableShort: 'N/A',
+        messageSystem: {
+            depositDisabled: 'Deposit is currently disabled.',
+            withdrawDisabled: 'Withdrawal is currently disabled.',
+            claimDisabled: 'Claim is currently disabled.',
+        },
         stakePendingCard: {
             totalStakePending: 'Total stake pending',
             addingToStakingPool: 'Adding to staking pool',

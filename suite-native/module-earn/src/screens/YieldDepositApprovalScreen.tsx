@@ -5,13 +5,19 @@ import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-na
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { Context } from '@suite-common/message-system';
 import { getNetwork } from '@suite-common/wallet-config';
-import { getYieldApprovalAction, stablecoinYieldActions } from '@suite-common/wallet-core';
+import {
+    getYieldApprovalAction,
+    getYieldVaultContractAddress,
+    stablecoinYieldActions,
+} from '@suite-common/wallet-core';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Box, FullAlertBox, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import { ContextMessage } from '@suite-native/message-system';
 import {
     Screen,
     type StackNavigationProps,
@@ -28,7 +34,9 @@ import { YieldDepositFlowFooter } from '../components/YieldDepositFlowFooter';
 import { YieldDepositFlowScreenHeader } from '../components/YieldDepositFlowScreenHeader';
 import { YieldDepositInfoBottomSheet } from '../components/YieldDepositInfoBottomSheet';
 import { YieldDepositStepCard } from '../components/YieldDepositStepCard';
+import { YieldDisabledAlert } from '../components/YieldDisabledAlert';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
+import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
 import { useRefreshYieldDepositAllowanceOnIdle } from '../hooks/useRefreshYieldDepositAllowanceOnIdle';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransactionFailureAlert';
@@ -75,10 +83,18 @@ export const YieldDepositApprovalScreen = () => {
         flowKey,
         token,
         tokenSymbol,
+        vault,
         vaultTokenSymbol,
         vaultTokenName,
         resolutionStatus,
     } = resolvedFlowData;
+
+    const vaultContractAddress = vault ? getYieldVaultContractAddress(vault) : undefined;
+    const {
+        isDisabled: isDepositDisabled,
+        content: depositDisabledContent,
+        variant: depositDisabledVariant,
+    } = useMessageSystemYield('deposit', { vaultContractAddress });
     const session = useYieldSession({
         flowKey,
         flowType: 'deposit',
@@ -157,7 +173,7 @@ export const YieldDepositApprovalScreen = () => {
         isApprovalSessionReady &&
         !isApprovalPending &&
         !isCheckingApproval;
-    const isSubmitDisabled = !canSubmitApproval;
+    const isSubmitDisabled = !canSubmitApproval || isDepositDisabled;
 
     useShowYieldTransactionFailureAlert({
         error: session?.error,
@@ -246,7 +262,7 @@ export const YieldDepositApprovalScreen = () => {
     }, [closeInfoBottomSheet, reopenPendingBottomSheet]);
 
     const handleSubmit = form.handleSubmit(async ({ amount }) => {
-        if (!canSubmitApproval) {
+        if (isSubmitDisabled) {
             return;
         }
 
@@ -318,6 +334,19 @@ export const YieldDepositApprovalScreen = () => {
             <Box pointerEvents={isApprovalPending ? 'none' : 'auto'}>
                 <Form form={form}>
                     <VStack spacing="sp16">
+                        <ContextMessage
+                            context={Context.getEarnYield('deposit')}
+                            marginHorizontal="sp16"
+                        />
+                        {isDepositDisabled && (
+                            <Box paddingHorizontal="sp16">
+                                <YieldDisabledAlert
+                                    type="deposit"
+                                    content={depositDisabledContent}
+                                    variant={depositDisabledVariant}
+                                />
+                            </Box>
+                        )}
                         <YieldDepositStepCard currentStepIndex={0} />
 
                         {shouldShowApprovedAmountCard && (
