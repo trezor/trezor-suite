@@ -62,6 +62,8 @@ jobs:
           branch: chore/update-protobuf-definitions
           title: "Update protobuf definitions"
           body: |
+            ## Description
+
             **Firmware commit:** [`${{ steps.firmware.outputs.commit }}`](https://github.com/trezor/trezor-firmware/commit/${{ steps.firmware.outputs.commit }})
           base: develop
           delete-branch: true
