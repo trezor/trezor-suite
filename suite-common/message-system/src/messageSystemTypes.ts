@@ -7,7 +7,7 @@ import type {
 } from '@suite-common/suite-types';
 import type { AccountType, NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
 
-type EarnDashboardType = 'staking' | 'yield';
+export type EarnDashboardType = 'staking' | 'yield';
 
 export type MessageState = { [key in Category]: boolean };
 
