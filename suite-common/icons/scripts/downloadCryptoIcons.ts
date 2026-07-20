@@ -52,16 +52,18 @@ function isValidUrl(url: string): boolean {
     }
 }
 
+// Returns true only if the icon was written successfully, so the caller can persist the
+// image-url fingerprint (and thereby skip this coin next run) exclusively on success.
 const updateIcon = async (
     coinId: string,
     imageUrl: string,
     coinPlatforms: Record<string, string>,
-) => {
+): Promise<boolean> => {
     try {
         if (!isValidUrl(imageUrl)) {
             console.error(`Invalid url (${coinId}):`, imageUrl);
 
-            return;
+            return false;
         }
 
         const originImage = await fetch(imageUrl);
@@ -73,7 +75,7 @@ const updateIcon = async (
                 originImage.statusText,
             );
 
-            return;
+            return false;
         }
 
         const originImageBuffer = await originImage.arrayBuffer();
@@ -94,8 +96,12 @@ const updateIcon = async (
             console.log(`Writing image (${coinId}):`, fileName);
             await writeImage(fileName, finalImageBuffer);
         }
+
+        return true;
     } catch (error) {
         console.error(`Error (${coinId}):`, error);
+
+        return false;
     }
 };
 
@@ -136,6 +142,11 @@ async function ensureDirectoryExists(path: string) {
     const apiCallDelay = Math.ceil((60 / RATE_LIMIT_PER_MINUTE) * 1000);
 
     for (let i = 0; i < coins.length; i++) {
+        if (Date.now() - startedAt > RUN_LIMIT_SECONDS * 1000) {
+            console.log(`${i + 1}/${coins.length}: Run limit reached`);
+            break;
+        }
+
         const coin = coins[i];
         if (!coin) {
             continue;
@@ -161,21 +172,25 @@ async function ensureDirectoryExists(path: string) {
             }
         }
 
-        if (imageUrl) {
-            await updateIcon(coin.id, imageUrl, platforms);
-        } else {
+        if (!imageUrl) {
             console.error(`No image url for: ${coin.id}`);
+            continue;
         }
+
+        // Skip coins whose source image is unchanged since the last successful run.
+        if (updatedIcons[coin.id]?.imageUrl === imageUrl) {
+            console.log(`${i + 1}/${coins.length}: Skipping unchanged icon for ${coin.id}`);
+            continue;
+        }
+
+        const success = await updateIcon(coin.id, imageUrl, platforms);
 
         updatedIcons[coin.id] = {
             updatedAt: Math.floor(Date.now() / 1000),
+            // Only fingerprint on success so a failed coin is retried on the next run.
+            ...(success ? { imageUrl } : {}),
         };
 
         await fs.writeFile(UPDATED_ICONS_LIST_FILE, JSON.stringify(updatedIcons, null, 2));
-
-        if (Date.now() - startedAt > RUN_LIMIT_SECONDS * 1000) {
-            console.log(`${i + 1}/${coins.length}: Run limit reached`);
-            break;
-        }
     }
 })();

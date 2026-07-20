@@ -1,6 +1,9 @@
 export interface UpdatedIconsList {
     [id: string]: {
         updatedAt: number;
+        // Source image URL (incl. CoinGecko's version query param) of the last successfully
+        // written icon. Used to skip coins whose logo has not changed since the previous run.
+        imageUrl?: string;
     };
 }
 
