@@ -36,6 +36,11 @@ const ethereumIsAddressValidCases: EthereumIsAddressValidCase[] = [
         expected: true,
     },
     {
+        address: '0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF',
+        symbol: 'rhc',
+        expected: true,
+    },
+    {
         address: '0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF0',
         symbol: 'eth',
         expected: false,
