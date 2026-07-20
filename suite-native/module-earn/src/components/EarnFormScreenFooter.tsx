@@ -15,22 +15,19 @@ const screenFooterStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.surfaceFillPage,
 }));
 
-const rewardsBoxStyle = prepareNativeStyle<{ hasValidationError: boolean }>(
-    (utils, { hasValidationError }) => ({
-        backgroundColor: utils.colors.legacyBackgroundPrimarySubtleOnElevationNegative,
-        borderTopLeftRadius: utils.borders.radii.r16,
-        borderTopRightRadius: utils.borders.radii.r16,
-        borderBottomLeftRadius: utils.borders.radii.r24,
-        borderBottomRightRadius: utils.borders.radii.r24,
-        paddingBottom: utils.spacings.sp48,
-        opacity: hasValidationError ? 0 : 1,
-    }),
-);
+const rewardsBoxStyle = prepareNativeStyle(utils => ({
+    backgroundColor: utils.colors.legacyBackgroundPrimarySubtleOnElevationNegative,
+    borderTopLeftRadius: utils.borders.radii.r16,
+    borderTopRightRadius: utils.borders.radii.r16,
+    borderBottomLeftRadius: utils.borders.radii.r24,
+    borderBottomRightRadius: utils.borders.radii.r24,
+    paddingBottom: utils.spacings.sp48,
+}));
 
-const continueButtonStyle = prepareNativeStyle<{ isEstimatedRewardsVisible: boolean }>(
-    (utils, { isEstimatedRewardsVisible }) => ({
+const continueButtonStyle = prepareNativeStyle<{ isRewardsBoxVisible: boolean }>(
+    (utils, { isRewardsBoxVisible }) => ({
         borderRadius: utils.borders.radii.round,
-        marginTop: isEstimatedRewardsVisible ? -utils.spacings.sp32 : 0,
+        marginTop: isRewardsBoxVisible ? -utils.spacings.sp32 : 0,
     }),
 );
 
@@ -38,7 +35,6 @@ type EarnFormScreenFooterProps = {
     symbol: NetworkSymbol;
     amountValue: string;
     isDisabled: boolean;
-    isDirty: boolean;
     onPress: () => void;
 };
 
@@ -46,7 +42,6 @@ export const EarnFormScreenFooter = ({
     symbol,
     amountValue,
     isDisabled,
-    isDirty,
     onPress,
 }: EarnFormScreenFooterProps) => {
     const { applyStyle } = useNativeStyles();
@@ -71,15 +66,14 @@ export const EarnFormScreenFooter = ({
 
     const buttonIntent = isDisabled ? 'neutral' : 'brand';
     const buttonPriority = isDisabled ? 'secondary' : 'primary';
-    const hasValidationError = isDirty && isDisabled;
-    const isEstimatedRewardsVisible = estimatedRewards !== null;
+    const isRewardsBoxVisible = estimatedRewards !== null && !isDisabled;
 
     return (
         <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
             <ScreenFooterGradient />
             <Box style={applyStyle(screenFooterStyle)}>
-                {isEstimatedRewardsVisible && (
-                    <Box style={applyStyle(rewardsBoxStyle, { hasValidationError })}>
+                {isRewardsBoxVisible && (
+                    <Box style={applyStyle(rewardsBoxStyle)}>
                         <VStack spacing="sp4" paddingTop="sp12" alignItems="center">
                             <Text variant="body-sm" color="contentPrimary">
                                 <Translation id="earn.earnFormScreen.estimatedRewardsLabel" />
@@ -98,7 +92,7 @@ export const EarnFormScreenFooter = ({
                     priority={buttonPriority}
                     onPress={onPress}
                     isDisabled={isDisabled}
-                    style={applyStyle(continueButtonStyle, { isEstimatedRewardsVisible })}
+                    style={applyStyle(continueButtonStyle, { isRewardsBoxVisible })}
                 >
                     <Translation id="generic.buttons.continue" />
                 </Button>
