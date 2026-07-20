@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 import styled, { css } from 'styled-components';
 
@@ -119,13 +119,13 @@ export const Pagination = ({
     const showPrev = currentPage > 1;
     const showNext = noUpperBound || currentPage < totalPages;
 
-    const { control, watch } = useForm({
+    const { control } = useForm({
         defaultValues: {
             pageInput: currentPage.toString(),
         },
     });
 
-    const pageInput = watch('pageInput');
+    const pageInput = useWatch({ control, name: 'pageInput' });
 
     const isPageInputInvalid =
         !Number.isInteger(Number(pageInput)) ||

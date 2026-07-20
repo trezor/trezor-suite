@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useTranslation } from '@suite/intl';
@@ -26,7 +26,7 @@ type BackendsFormData = {
 const useBackendUrlInput = (symbol: NetworkSymbol, type: ServerType, currentUrls: string[]) => {
     const {
         register,
-        watch,
+        control,
         setValue,
         formState: { errors },
     } = useForm<{ url: string }>({
@@ -48,13 +48,15 @@ const useBackendUrlInput = (symbol: NetworkSymbol, type: ServerType, currentUrls
         url: getServerAddressExample(symbol, type),
     });
 
+    const value = useWatch({ control, name });
+
     return {
         name,
         placeholder,
         register,
         validate,
         error: errors[name],
-        value: watch(name) || '',
+        value: value || '',
         reset: () => setValue(name, ''),
     };
 };

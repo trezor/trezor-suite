@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
@@ -28,7 +28,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
     const {
         register,
         setValue,
-        watch,
+        control,
         formState: { errors },
     } = useForm({
         mode: 'onChange',
@@ -39,7 +39,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const inputValue = watch(INPUT_NAME);
+    const inputValue = useWatch({ control, name: INPUT_NAME });
     const error = errors[INPUT_NAME];
     const hasError = !!error;
     const prefix = account.networkType === 'ethereum' ? '0x' : undefined;

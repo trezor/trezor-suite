@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
 
 import { selectSelectedAccount } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -83,9 +83,8 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
         composeRequest: () => {},
     });
 
-    const { watch, handleSubmit } = methods;
-    const selectedFee = watch('selectedFee');
-    const feePerUnit = watch('feePerUnit');
+    const { control, handleSubmit } = methods;
+    const [selectedFee, feePerUnit] = useWatch({ control, name: ['selectedFee', 'feePerUnit'] });
 
     const composedLevels = useComposedLevelsPlaceholder({
         feeInfo,
@@ -142,8 +141,11 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
         );
     }
 
-    const handleSubmitTrustline = async ({ selectedFee, feePerUnit }: FormState) => {
-        const resolvedSelectedFee = selectedFee || 'normal';
+    const handleSubmitTrustline = async ({
+        selectedFee: submittedSelectedFee,
+        feePerUnit: submittedFeePerUnit,
+    }: FormState) => {
+        const resolvedSelectedFee = submittedSelectedFee || 'normal';
         setIsProcessing(true);
 
         try {
@@ -151,7 +153,8 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                 account,
                 contractAddress,
                 selectedFee: resolvedSelectedFee,
-                customFeePerUnit: resolvedSelectedFee === 'custom' ? feePerUnit : undefined,
+                customFeePerUnit:
+                    resolvedSelectedFee === 'custom' ? submittedFeePerUnit : undefined,
             };
 
             const thunk =

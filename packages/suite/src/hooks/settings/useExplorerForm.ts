@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
 import { type Explorer, type NetworkSymbol } from '@suite-common/wallet-config';
@@ -13,12 +13,14 @@ const useExplorerInput = (currentValues: Explorer) => {
         register,
         formState: { errors },
         trigger,
-        watch,
+        control,
         setValue,
     } = useForm<Explorer>({
         mode: 'onChange',
         defaultValues: currentValues,
     });
+
+    const values = useWatch({ control });
 
     const { translationString } = useTranslation();
 
@@ -68,37 +70,37 @@ const useExplorerInput = (currentValues: Explorer) => {
         fields: {
             base: {
                 ref: baseInputRef,
-                value: watch('base'),
+                value: values.base,
                 field: baseInputField,
                 error: errors.base?.message,
             },
             tx: {
                 ref: txInputRef,
-                value: watch('tx'),
+                value: values.tx,
                 field: txInputField,
                 error: errors.tx?.message,
             },
             address: {
                 ref: addressInputRef,
-                value: watch('address'),
+                value: values.address,
                 field: addressInputField,
                 error: errors.address?.message,
             },
             token: {
                 ref: tokenInputRef,
-                value: watch('token'),
+                value: values.token,
                 field: tokenInputField,
                 error: errors.token?.message,
             },
             nft: {
                 ref: nftInputRef,
-                value: watch('nft'),
+                value: values.nft,
                 field: nftInputField,
                 error: errors.nft?.message,
             },
             queryString: {
                 ref: queryStringInputRef,
-                value: watch('queryString'),
+                value: values.queryString,
                 field: queryStringInputField,
                 error: errors.queryString?.message,
             },

@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { Button, Column, Input, Modal, Row, Text } from '@trezor/components';
@@ -35,7 +35,7 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
         register,
         handleSubmit,
         formState: { errors, isValid },
-        watch,
+        control,
     } = useForm<FormData>({
         mode: 'onChange',
         defaultValues: {
@@ -50,8 +50,7 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
     // `input:not([value='']) ~ &` selector moves the label up when value is not empty.
     // Without explicitly passing the value prop, the label won't animate correctly
     // when using react-hook-form's uncontrolled mode.
-    const assetCode = watch('assetCode');
-    const assetIssuer = watch('assetIssuer');
+    const [assetCode, assetIssuer] = useWatch({ control, name: ['assetCode', 'assetIssuer'] });
 
     const { ref: assetCodeRef, ...assetCodeField } = register('assetCode', {
         required: true,
