@@ -11196,6 +11196,7 @@ __metadata:
     "@trezor/network-tron": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+    viem: "npm:^2.54.1"
   languageName: unknown
   linkType: soft
 
