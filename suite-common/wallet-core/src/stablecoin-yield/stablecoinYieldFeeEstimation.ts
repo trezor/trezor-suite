@@ -14,6 +14,8 @@ type EstimateYieldFeeLevelParams = {
     from: string;
     to: string;
     data: string;
+    /** Native value carried by the transaction (hex). Non-zero for wraps. */
+    value?: string;
 };
 
 export const estimateYieldFeeLevel = async ({
@@ -22,6 +24,7 @@ export const estimateYieldFeeLevel = async ({
     from,
     to,
     data,
+    value = '0x0',
 }: EstimateYieldFeeLevelParams): Promise<
     Result<YieldEstimatedFeeLevel, YieldFeeEstimationError>
 > => {
@@ -34,7 +37,7 @@ export const estimateYieldFeeLevel = async ({
                 from,
                 to,
                 data,
-                value: '0x0',
+                value,
             },
         },
     });

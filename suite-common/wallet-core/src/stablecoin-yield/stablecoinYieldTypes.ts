@@ -68,7 +68,7 @@ export type YieldApproveModalState = {
 };
 
 export type YieldPendingTransactionState = {
-    type: 'approve' | 'revoke' | 'deposit' | 'withdraw' | 'redeem' | 'claim';
+    type: 'approve' | 'revoke' | 'deposit' | 'withdraw' | 'redeem' | 'claim' | 'wrap' | 'unwrap';
     txid: string;
     amount: string;
     fee?: string;
