@@ -5,10 +5,11 @@ import { type CryptoId, type DexApprovalType } from 'invity-api';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Calldata } from '@suite-common/calldata';
 import { useServices } from '@suite-common/dependency-injection';
-import { invityAPI } from '@suite-common/trading';
+import { invityAPI, selectTradingSendAccount } from '@suite-common/trading';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { ApproveModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/ApproveModal';
+import { useSelector } from 'src/hooks/suite';
 import { useAllowanceContext } from 'src/hooks/wallet/allowance';
 import { useModalLastValidParams } from 'src/hooks/wallet/trading/form/useModalLastValidParams';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -26,6 +27,7 @@ interface TradingApproveModalProps {
 export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalProps) => {
     const { state } = useAllowanceContext();
     const context = useTradingFormContext();
+    const account = useSelector(reduxState => selectTradingSendAccount(reduxState, context.type));
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const getCryptoInfo = useTradingExchangeCryptoAndProviderInfo();
 
@@ -102,7 +104,7 @@ export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalPro
     const { provider, spender, preapprovedAmount } =
         useModalLastValidParams(approveParams, state.isApproveModalOpen) ?? {};
 
-    if (!state.isApproveModalOpen || !provider || !spender) {
+    if (!state.isApproveModalOpen || !provider || !spender || !account) {
         return null;
     }
 
@@ -112,7 +114,7 @@ export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalPro
         <ApproveModal
             amount={amount}
             cryptoId={cryptoId}
-            account={context.account}
+            account={account}
             provider={{
                 ...provider,
                 logo: providerLogo,

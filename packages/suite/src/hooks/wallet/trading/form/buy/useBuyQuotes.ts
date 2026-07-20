@@ -37,7 +37,7 @@ type UseBuyQuotesProps = {
     control: Control<TradingBuyFormProps>;
     getValues: UseFormGetValues<TradingBuyFormProps>;
     setValue: UseFormSetValue<TradingBuyFormProps>;
-    account: Account;
+    account: Account | undefined;
 };
 
 type AbortableRequest = {
@@ -57,7 +57,7 @@ const BUY_QUOTES_KEY_FIELDS = [
 export const useBuyQuotes = ({ control, getValues, setValue, account }: UseBuyQuotesProps) => {
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account?.symbol);
 
     const previousRequest = useRef<AbortableRequest>(null);
 

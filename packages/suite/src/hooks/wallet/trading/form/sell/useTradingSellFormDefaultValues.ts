@@ -24,8 +24,8 @@ import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
 import { useTradingDefaultSellAsset } from '../common/useTradingDefaultSellAsset';
 
 export const useTradingSellFormDefaultValues = (
-    accountKey: AccountKey,
-    cryptoId: CryptoId,
+    accountKey: AccountKey | undefined,
+    cryptoId: CryptoId | undefined,
     sellInfoCountry: TradingCountryCode | undefined,
     sellInfoCountrySubdivision?: string,
 ): TradingSellFormDefaultValuesProps => {

@@ -33,7 +33,7 @@ type UseSellQuotesProps = {
     control: Control<TradingSellFormProps>;
     getValues: UseFormGetValues<TradingSellFormProps>;
     setValue: UseFormSetValue<TradingSellFormProps>;
-    network: Network;
+    network: Network | undefined;
     shouldSendInSats: boolean | undefined;
     composeRequestCallback: () => void;
 };
@@ -84,6 +84,10 @@ export const useSellQuotes = ({
     });
 
     const fetchQuotes = useCallback(async () => {
+        if (!network) {
+            return;
+        }
+
         const formValues = getValues();
 
         if (previousRequest.current) {

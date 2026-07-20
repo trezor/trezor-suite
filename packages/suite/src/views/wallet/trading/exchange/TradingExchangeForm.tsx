@@ -3,7 +3,7 @@ import { FormProvider } from 'react-hook-form';
 import { selectIsDeviceCompromised } from '@suite/authenticity-checks';
 import { ContextMessage } from '@suite/message-system';
 import { Context } from '@suite-common/message-system';
-import { type TradingType } from '@suite-common/trading';
+import { type TradingType, selectTradingSendAccount } from '@suite-common/trading';
 
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemTrading } from 'src/hooks/suite/useMessageSystemTrading';
@@ -19,7 +19,8 @@ import { TradingExchangeFormInputs } from '../common/TradingForm/TradingExchange
 
 const TradingExchangeFormWrapper = () => {
     const tradingExchangeContextValue = useTradingExchangeForm();
-    const allowanceContextValue = useAllowance({ account: tradingExchangeContextValue.account });
+    const account = useSelector(state => selectTradingSendAccount(state, 'exchange'));
+    const allowanceContextValue = useAllowance({ account });
 
     return (
         <TradingFormContext.Provider value={tradingExchangeContextValue}>

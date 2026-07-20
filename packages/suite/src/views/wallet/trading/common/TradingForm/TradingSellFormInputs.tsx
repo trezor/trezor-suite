@@ -10,6 +10,7 @@ import {
     isCountrySubdivisionRequired,
     selectTradingSellQuotes,
     selectTradingSellSupportedCryptoIds,
+    selectTradingSendAccount,
 } from '@suite-common/trading';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
@@ -47,7 +48,6 @@ export const TradingSellFormInputs = () => {
     const {
         type,
         feeInfo,
-        account,
         composedLevels,
         form: { helpers },
         shouldSendInSats,
@@ -55,6 +55,7 @@ export const TradingSellFormInputs = () => {
         showReserveBanner,
     } = context;
     const asset = useSelectedTradingAsset(type);
+    const account = useSelector(state => selectTradingSendAccount(state, type));
 
     const { control } = useFormContext<TradingSellFormProps>();
 
@@ -148,7 +149,7 @@ export const TradingSellFormInputs = () => {
                         country={countrySelect}
                     />
                 )}
-                {!!quotes.length && (
+                {!!quotes.length && account && (
                     <>
                         <TradingFormFees
                             feeInfo={feeInfo}

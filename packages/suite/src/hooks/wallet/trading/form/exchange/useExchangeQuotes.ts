@@ -36,7 +36,7 @@ type UseExchangeQuotesProps = {
     control: Control<TradingExchangeFormProps>;
     getValues: UseFormGetValues<TradingExchangeFormProps>;
     setValue: UseFormSetValue<TradingExchangeFormProps>;
-    network: Network;
+    network: Network | undefined;
     shouldSendInSats: boolean | undefined;
     // receiveAddress and receiveAccountKey are read from useTradingReceiveAddress
     // rather than mirrored onto the outer form, keeping the receive identity a
@@ -104,6 +104,10 @@ export const useExchangeQuotes = ({
     });
 
     const fetchQuotes = useCallback(async () => {
+        if (!network) {
+            return;
+        }
+
         const formValues = getValues();
 
         if (previousRequest.current) {

@@ -88,8 +88,7 @@ interface TradingFormStateProps {
 }
 
 interface TradingCommonFormProps {
-    account: Account;
-    network: Network;
+    network: Network | undefined;
 }
 
 interface TradingCommonFormBuySellProps {
@@ -283,7 +282,7 @@ export interface TradingFormInputCurrencyProps {
 }
 
 export interface TradingUseFormActionsProps<T extends TradingSellExchangeFormProps> {
-    account: Account;
+    account: Account | undefined;
     methods: UseFormReturn<T>;
     setAmountLimits: (limits?: AmountLimitProps) => void;
     changeFeeLevel: (level: FeeLevel['label']) => void;
@@ -309,16 +308,16 @@ export interface TradingUseFormActionsReturnProps {
 
 export interface TradingUseComposeTransactionProps<T extends TradingSellExchangeFormProps> {
     type: TradingTradeSellExchangeType;
-    account: Account;
-    network: Network;
+    account: Account | undefined;
+    network: Network | undefined;
     methods: UseFormReturn<T>;
     setShowReserveBanner: (showReserveBanner: boolean) => void;
     shouldSuppressComposeErrors?: boolean;
 }
 
 export interface TradingUseComposeTransactionStateProps {
-    account: Account;
-    network: Network;
+    account: Account | undefined;
+    network: Network | undefined;
     feeInfo: FeeInfo;
 }
 

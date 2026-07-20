@@ -3,9 +3,9 @@ import { useEffect } from 'react';
 import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
-export const useSolanaSubscribeBlocks = (account: Account) => {
+export const useSolanaSubscribeBlocks = (account: Account | undefined) => {
     useEffect(() => {
-        if (account.networkType === 'solana') {
+        if (account?.networkType === 'solana') {
             TrezorConnect.blockchainSubscribe({
                 coin: account.symbol,
                 blocks: true,

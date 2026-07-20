@@ -78,9 +78,9 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
 
     useServerEnvironment();
 
-    const { symbol } = account;
+    const symbol = account?.symbol;
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(symbol);
-    const network = getNetwork(account.symbol);
+    const network = account ? getNetwork(account.symbol) : undefined;
 
     const { defaultValues } = useTradingExchangeFormDefaultValues(accountKey, cryptoId);
 
@@ -252,7 +252,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     return {
         type,
         ...methods,
-        account,
 
         form: {
             state: {

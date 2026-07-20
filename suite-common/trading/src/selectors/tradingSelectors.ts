@@ -56,12 +56,12 @@ import { type ExchangeInfo, type TradingExchangeState } from '../reducers/exchan
 import { type SellInfo, type TradingSellState } from '../reducers/sellReducer';
 import type { TradingRootState, TradingState } from '../reducers/tradingCommonReducer';
 import {
+    type SelectedTradingAsset,
     type TradingBuyPaymentMethodProps,
     type TradingFiatCurrenciesProps,
     type TradingPaymentMethodListProps,
     type TradingPaymentMethodProps,
     type TradingSellPaymentMethodProps,
-    type SelectedTradingAsset,
     type TradingTransaction,
     type TradingTransactionExchange,
     type TradingTransactionSell,
@@ -969,7 +969,8 @@ const selectPreferredTradingAccount = (
  * Selection priority:
  * 1) Preferred account (selected trading account key OR prefilled.key) if eligible.
  * 2) First account with the same symbol as the preferred account that is eligible.
- * 3) Otherwise undefined — the form renders empty (no preselected account).
+ * 3) First eligible visible account (default preselect once discovery is done).
+ * 4) Otherwise undefined — no eligible account exists, the form renders empty.
  */
 export const selectTradingFormAccount = createMemoizedFormAccountSelector(
     [
@@ -1001,7 +1002,11 @@ export const selectTradingFormAccount = createMemoizedFormAccountSelector(
                 isEligible(account, eligibilityCryptoId),
         );
 
-        return sameSymbolAccount;
+        if (sameSymbolAccount) {
+            return sameSymbolAccount;
+        }
+
+        return visibleDeviceAccounts.find(account => isEligible(account, eligibilityCryptoId));
     },
 );
 

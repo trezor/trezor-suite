@@ -20,7 +20,7 @@ import { getFeeInUnits } from 'src/utils/wallet/trading/tradingUtils';
 import { useTradingAssetDecimals } from './useTradingAssetDecimals';
 
 interface UseTradingSendAssetBalanceProps {
-    account: Account;
+    account: Account | undefined;
     sendCryptoSelect: TradingAssetSellOption | undefined;
     tokenAddress: string | null | undefined;
     outputCurrency: BaseCurrencyOption | undefined;
@@ -44,12 +44,12 @@ export const useTradingSendAssetBalance = ({
     const sendCryptoAccount = useSelector(state =>
         selectAccountByKey(state, sendCryptoSelect?.accountKey),
     );
-    const tokenData = (sendCryptoAccount ?? account).tokens?.find(
+    const tokenData = (sendCryptoAccount ?? account)?.tokens?.find(
         t => t.contract.toLowerCase() === tokenAddress?.toLowerCase(),
     );
     const isBalanceZero = tokenData
         ? isZero(tokenData.balance || '0')
-        : isZero(account.formattedBalance);
+        : isZero(account?.formattedBalance ?? '0');
 
     const tradingFiatValues = useTradingFiatValues({
         cryptoId: sendCryptoSelect?.id,
@@ -68,11 +68,13 @@ export const useTradingSendAssetBalance = ({
         [getAssetDecimals, sendCryptoSelect?.accountKey, sendCryptoSelect?.id],
     );
 
-    const feeInUnits = getFeeInUnits({
-        symbol: account.symbol,
-        composedLevels,
-        selectedFee: composedTransactionInfo?.selectedFee,
-    });
+    const feeInUnits = account
+        ? getFeeInUnits({
+              symbol: account.symbol,
+              composedLevels,
+              selectedFee: composedTransactionInfo?.selectedFee,
+          })
+        : undefined;
 
     return {
         sendCryptoAccount,

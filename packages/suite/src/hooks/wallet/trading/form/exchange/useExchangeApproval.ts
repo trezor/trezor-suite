@@ -8,7 +8,7 @@ import { useTradingExchangeTradeRequest } from 'src/hooks/wallet/trading/form/co
 import { type Dispatch } from 'src/types/suite';
 
 interface UseExchangeApprovalProps {
-    account: Account;
+    account: Account | undefined;
     receiveAddress?: string;
     extraField?: string;
 }
@@ -44,6 +44,8 @@ export const useExchangeApproval = ({
         trade?: ExchangeTrade;
         receiveAddress: string;
     }) => {
+        if (!account) return undefined;
+
         const commonFunctions = await getTradeRequestParams(approvalTrade);
         if (!commonFunctions) return undefined;
         const { processResponseData } = commonFunctions;

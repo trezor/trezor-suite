@@ -92,7 +92,7 @@ export const useTradingCryptoAssetChange = <T extends TradingSellExchangeFormPro
     useEffect(() => {
         const selectedAccountKey = sendCryptoSelect?.accountKey;
 
-        if (!selectedAccountKey || selectedAccountKey === account.key) {
+        if (!selectedAccountKey || selectedAccountKey === account?.key) {
             return;
         }
 
@@ -103,7 +103,7 @@ export const useTradingCryptoAssetChange = <T extends TradingSellExchangeFormPro
         }
 
         setAccountOnChange(selectedAccount);
-    }, [account.key, accounts, sendCryptoSelect?.accountKey, setAccountOnChange]);
+    }, [account?.key, accounts, sendCryptoSelect?.accountKey, setAccountOnChange]);
 
     return {
         onCryptoCurrencyChange,
