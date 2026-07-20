@@ -16,7 +16,7 @@ describe('useBottomSheetControls', () => {
             expect(result.current.isSheetVisible).toBe(false);
         });
 
-        it('should be true after showTradeableAssetsSheet call and Keyboard.dismiss should be called one time', () => {
+        it('should be true after showSheet call and Keyboard.dismiss should be called one time', () => {
             const { result } = renderHookWithBasicProvider(() => useBottomSheetControls());
             const keyboardDismissSpy = jest.spyOn(Keyboard, 'dismiss');
 

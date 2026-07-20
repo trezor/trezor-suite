@@ -11,8 +11,8 @@ import { renderWithSlippageTestProvider } from '../test-utils/testUtils';
 const mockShowSheet = jest.fn();
 const mockHideSheet = jest.fn();
 
-jest.mock('@suite-native/trading-atoms', () => ({
-    ...jest.requireActual('@suite-native/trading-atoms'),
+jest.mock('@suite-native/atoms', () => ({
+    ...jest.requireActual('@suite-native/atoms'),
     useBottomSheetControls: () => ({
         isSheetVisible: false,
         showSheet: mockShowSheet,

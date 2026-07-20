@@ -14,6 +14,7 @@
     "dependencies": {
         "@gorhom/bottom-sheet": "5.2.9",
         "@mobily/ts-belt": "^3.13.1",
+        "@react-navigation/native": "7.1.28",
         "@shopify/flash-list": "2.3.0",
         "@shopify/react-native-skia": "2.5.1",
         "@storybook/react-native": "^10.2.1",

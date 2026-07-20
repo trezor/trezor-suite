@@ -11,7 +11,7 @@ import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useAccountAlerts } from '@suite-native/accounts';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { type BottomSheetModalRef, useBottomSheetModal } from '@suite-native/atoms';
+import { type BottomSheetModalRef, useBottomSheetModalControls } from '@suite-native/atoms';
 import {
     AddCoinAccountStackRoutes,
     type RootStackParamList,
@@ -31,11 +31,13 @@ type UseStablecoinYieldPromoNavigationReturn = {
     handleStablecoinYieldPromoPress: (item: StablecoinYieldPromoNavigationItem) => void;
     handleAccountSelected: (account: Account) => void;
     handleEnableNetworkPress: () => void;
+    handleEnableNetworkDismiss: () => void;
     chosenAccounts: Account[];
     pendingEnableSymbol: NetworkSymbol | null;
     chooseAccountSheetRef: BottomSheetModalRef;
     enableNetworkSheetRef: BottomSheetModalRef;
     closeChooseAccountModal: () => void;
+    handleChooseAccountDismiss: () => void;
     chooseAccountTokenBalance?: ChooseAccountTokenBalance;
 };
 
@@ -52,15 +54,15 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
 
     const {
         bottomSheetRef: chooseAccountSheetRef,
-        openModal: openChooseAccountModal,
-        closeModal: closeChooseAccountModal,
-    } = useBottomSheetModal();
+        showSheet: openChooseAccountModal,
+        hideSheet: closeChooseAccountModal,
+    } = useBottomSheetModalControls();
 
     const {
         bottomSheetRef: enableNetworkSheetRef,
-        openModal: openEnableNetworkModal,
-        closeModal: closeEnableNetworkModal,
-    } = useBottomSheetModal();
+        showSheet: openEnableNetworkModal,
+        hideSheet: closeEnableNetworkModal,
+    } = useBottomSheetModalControls();
 
     const [chosenAccounts, setChosenAccounts] = useState<Account[]>([]);
     const [chosenYieldItem, setChosenYieldItem] =
@@ -161,6 +163,14 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
         navigation,
     ]);
 
+    const handleChooseAccountDismiss = useCallback(() => {
+        closeChooseAccountModal(false);
+    }, [closeChooseAccountModal]);
+
+    const handleEnableNetworkDismiss = useCallback(() => {
+        closeEnableNetworkModal(false);
+    }, [closeEnableNetworkModal]);
+
     const handleStablecoinYieldPromoPress = useCallback(
         (item: StablecoinYieldPromoNavigationItem) => {
             if (isPortfolioTrackerDevice) {
@@ -216,11 +226,13 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
         handleStablecoinYieldPromoPress,
         handleAccountSelected,
         handleEnableNetworkPress,
+        handleEnableNetworkDismiss,
         chosenAccounts,
         pendingEnableSymbol,
         chooseAccountSheetRef,
         enableNetworkSheetRef,
         closeChooseAccountModal,
+        handleChooseAccountDismiss,
         chooseAccountTokenBalance,
     };
 };

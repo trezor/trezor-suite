@@ -27,11 +27,15 @@ jest.mock('@react-navigation/native', () => ({
     }),
 }));
 
-jest.mock('@suite-native/trading-atoms', () => ({
-    ...jest.requireActual('@suite-native/trading-atoms'),
+jest.mock('@suite-native/atoms', () => ({
+    ...jest.requireActual('@suite-native/atoms'),
     useBottomSheetControls: () => ({
         showSheet: mockShowSheet,
     }),
+}));
+
+jest.mock('@suite-native/trading-atoms', () => ({
+    ...jest.requireActual('@suite-native/trading-atoms'),
     IconByCryptoId: () => null,
 }));
 

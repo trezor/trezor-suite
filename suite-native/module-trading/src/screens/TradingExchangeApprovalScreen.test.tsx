@@ -76,8 +76,8 @@ jest.mock('@suite-native/trading-analytics', () => ({
             mockAnalyticsReport(action, ...args),
 }));
 
-jest.mock('@suite-native/trading-atoms', () => ({
-    ...jest.requireActual('@suite-native/trading-atoms'),
+jest.mock('@suite-native/atoms', () => ({
+    ...jest.requireActual('@suite-native/atoms'),
     useBottomSheetControls: () => ({
         isSheetVisible: false,
         showSheet: mockShowSheet,

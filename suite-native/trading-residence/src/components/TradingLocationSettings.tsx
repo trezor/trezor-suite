@@ -1,9 +1,8 @@
 import { type ReactNode } from 'react';
 
 import { type CountryChangeContextCheck } from '@suite-native/analytics';
-import { Box, Card, Text, VStack } from '@suite-native/atoms';
+import { Box, Card, Text, VStack, useBottomSheetControls } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useBottomSheetControls } from '@suite-native/trading-atoms';
 
 import { CountryChangeContextCheckContext } from './CountryChangeContextCheckContext';
 import { CountrySubdivisionPickerControlsContext } from './CountrySheet/CountrySubdivisionPickerControlsContext';

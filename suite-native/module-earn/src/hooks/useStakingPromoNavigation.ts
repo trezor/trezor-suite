@@ -10,7 +10,7 @@ import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useAccountAlerts } from '@suite-native/accounts';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { useBottomSheetModal } from '@suite-native/atoms';
+import { useBottomSheetModal, useBottomSheetModalControls } from '@suite-native/atoms';
 import {
     AddCoinAccountStackRoutes,
     type RootStackParamList,
@@ -41,15 +41,15 @@ export const useStakingPromoNavigation = () => {
 
     const {
         bottomSheetRef: chooseAccountSheetRef,
-        openModal: openChooseAccountModal,
-        closeModal: closeChooseAccountModal,
-    } = useBottomSheetModal();
+        showSheet: openChooseAccountModal,
+        hideSheet: closeChooseAccountModal,
+    } = useBottomSheetModalControls();
 
     const {
         bottomSheetRef: enableNetworkSheetRef,
-        openModal: openEnableNetworkModal,
-        closeModal: closeEnableNetworkModal,
-    } = useBottomSheetModal();
+        showSheet: openEnableNetworkModal,
+        hideSheet: closeEnableNetworkModal,
+    } = useBottomSheetModalControls();
 
     const [chosenAccounts, setChosenAccounts] = useState<Account[]>([]);
     const [pendingEnableSymbol, setPendingEnableSymbol] = useState<NetworkSymbol | null>(null);
@@ -71,6 +71,8 @@ export const useStakingPromoNavigation = () => {
     );
 
     const handleChooseAccountDismiss = useCallback(() => {
+        closeChooseAccountModal(false);
+
         if (chooseAccountContinuedRef.current) {
             chooseAccountContinuedRef.current = false;
 
@@ -84,7 +86,7 @@ export const useStakingPromoNavigation = () => {
                 networkSymbol: chooseAccountSymbolRef.current ?? undefined,
             },
         });
-    }, [analytics]);
+    }, [analytics, closeChooseAccountModal]);
 
     const handleEnableNetworkPress = useCallback(() => {
         if (!pendingEnableSymbol) {
@@ -116,6 +118,8 @@ export const useStakingPromoNavigation = () => {
     ]);
 
     const handleEnableNetworkDismiss = useCallback(() => {
+        closeEnableNetworkModal(false);
+
         if (enableNetworkContinuedRef.current) {
             enableNetworkContinuedRef.current = false;
 
@@ -129,7 +133,7 @@ export const useStakingPromoNavigation = () => {
                 networkSymbol: pendingEnableSymbolRef.current ?? undefined,
             },
         });
-    }, [analytics]);
+    }, [analytics, closeEnableNetworkModal]);
 
     const handleStakingPromoPress = useCallback(
         (item: StakingEarnItem) => {
