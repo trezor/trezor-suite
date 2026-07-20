@@ -11773,6 +11773,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/walletconnect": "workspace:*"
     "@suite-native/analytics-redux": "workspace:*"
+    "@suite-native/message-system": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/state": "workspace:*"
   languageName: unknown

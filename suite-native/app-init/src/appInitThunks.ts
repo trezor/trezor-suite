@@ -20,6 +20,7 @@ import {
 } from '@suite-common/wallet-core';
 import { walletConnectInitThunk } from '@suite-common/walletconnect';
 import { initAnalyticsThunk } from '@suite-native/analytics-redux';
+import { revalidateMessageSystemThunk } from '@suite-native/message-system';
 import { selectEarnYieldWorkerBaseUrl, selectIsOnboardingFinished } from '@suite-native/settings';
 import { setIsAppReady } from '@suite-native/state';
 
@@ -74,6 +75,9 @@ export const applicationInit = createThunk(
 
         dispatch(initAnalyticsThunk());
         dispatch(initMessageSystemThunk());
+        // Validity of messages and experiments is not persisted, recompute it
+        // over the rehydrated config instead of waiting for a config re-fetch.
+        dispatch(revalidateMessageSystemThunk());
 
         // Select latest remembered device or Portfolio Tracker device.
         dispatch(initDevices());

@@ -24,6 +24,7 @@
             "path": "../../suite-common/walletconnect"
         },
         { "path": "../analytics-redux" },
+        { "path": "../message-system" },
         { "path": "../settings" },
         { "path": "../state" }
     ]
