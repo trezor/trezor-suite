@@ -36,6 +36,7 @@ import {
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { getFeeInUnits, tradingGetAccountLabel } from 'src/utils/wallet/trading/tradingUtils';
 
+import { TradingFormInputAmountPlaceholder } from './TradingFormInputAmountPlaceholder';
 import { getCryptoInputRules } from './tradingFormInputFiatCryptoRules';
 
 type TradingFormInputCryptoAmountContentProps = TradingFormInputFiatCryptoProps & {
@@ -193,7 +194,13 @@ export const TradingFormInputCryptoAmount = (props: TradingFormInputFiatCryptoPr
     const validationAccount = selectedSendAccount ?? sendAccount;
 
     if (!validationAccount) {
-        return null;
+        return (
+            <TradingFormInputAmountPlaceholder
+                name={props.cryptoInputName}
+                labelLeft={props.labelLeft}
+                labelRight={props.labelRight}
+            />
+        );
     }
 
     return <TradingFormInputCryptoAmountContent validationAccount={validationAccount} {...props} />;

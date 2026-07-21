@@ -27,7 +27,6 @@ import {
     useTradingRefetchScheduler,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
 
 import { useDispatch } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
@@ -37,7 +36,6 @@ type UseBuyQuotesProps = {
     control: Control<TradingBuyFormProps>;
     getValues: UseFormGetValues<TradingBuyFormProps>;
     setValue: UseFormSetValue<TradingBuyFormProps>;
-    account: Account | undefined;
 };
 
 type AbortableRequest = {
@@ -54,10 +52,9 @@ const BUY_QUOTES_KEY_FIELDS = [
     TRADING_BUY_RECEIVE_ADDRESS,
 ] as const;
 
-export const useBuyQuotes = ({ control, getValues, setValue, account }: UseBuyQuotesProps) => {
+export const useBuyQuotes = ({ control, getValues, setValue }: UseBuyQuotesProps) => {
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account?.symbol);
 
     const previousRequest = useRef<AbortableRequest>(null);
 
@@ -66,6 +63,10 @@ export const useBuyQuotes = ({ control, getValues, setValue, account }: UseBuyQu
     const { isValid } = useFormState({ control });
 
     const values = getValues();
+
+    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(
+        values.cryptoSelect?.networkSymbol,
+    );
     const isFetchAllowed = isValid && isBuyQuotesFetchAllowed(values);
 
     const amountKey = JSON.stringify({

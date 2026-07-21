@@ -127,7 +127,7 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
         baseToggleAmountInCrypto();
     };
 
-    useBuyQuotes({ control, getValues, setValue, account });
+    useBuyQuotes({ control, getValues, setValue });
 
     useEffect(() => {
         setValue('receiveAddress', receiveAddress);

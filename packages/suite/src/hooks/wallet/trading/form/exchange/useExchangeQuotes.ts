@@ -209,6 +209,14 @@ export const useExchangeQuotes = ({
         onBeforeRefetch,
     });
 
+    useEffect(() => {
+        if (!network && previousRequest.current) {
+            previousRequest.current.abort('Request is canceled - network is no longer available.');
+            previousRequest.current = null;
+            setIsScheduledQuotesRefresh(false);
+        }
+    }, [network]);
+
     useEffect(
         () => () => {
             if (previousRequest.current) {
