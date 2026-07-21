@@ -29,18 +29,22 @@ const getTokenIconUrl = (contractAddress: string, size = 32) =>
     });
 
 describe('TokenIcon', () => {
-    it('renders the new asset icon immediately when a recycled instance receives new props', async () => {
-        const fresh = renderWithBasicProvider(<TokenIcon symbol="eth" />);
-        const ethSource = fresh.getByHintText(tokenIconHint).props.source;
+    const renderTokenIcon = (props: React.ComponentProps<typeof TokenIcon>) =>
+        renderWithBasicProvider(<TokenIcon {...props} />);
+
+    it('shows a placeholder immediately and the correct icon after resolving when a recycled instance receives new props', async () => {
+        const fresh = renderTokenIcon({ symbol: 'eth' });
         await act(async () => {});
+        const ethSource = fresh.getByHintText(tokenIconHint).props.source;
         fresh.unmount();
 
-        const { getByHintText, rerender } = renderWithBasicProvider(<TokenIcon symbol="btc" />);
+        const { getByHintText, queryByHintText, rerender } = renderTokenIcon({ symbol: 'btc' });
+        await act(async () => {});
 
         // simulates FlashList cell recycling: same mounted instance, new asset props
         rerender(<TokenIcon symbol="eth" />);
 
-        expect(getByHintText(tokenIconHint).props.source).toEqual(ethSource);
+        expect(queryByHintText(tokenIconHint)).toBeNull();
 
         await act(async () => {});
         expect(getByHintText(tokenIconHint).props.source).toEqual(ethSource);
@@ -53,9 +57,10 @@ describe('TokenIcon', () => {
                 contract === contractA ? deferredA.promise : Promise.resolve([contract]),
         );
 
-        const { getByHintText, rerender } = renderWithBasicProvider(
-            <TokenIcon symbol="eth" contractAddress={contractA} />,
-        );
+        const { getByHintText, rerender } = renderTokenIcon({
+            symbol: 'eth',
+            contractAddress: contractA,
+        });
 
         rerender(<TokenIcon symbol="eth" contractAddress={contractB} />);
 
@@ -73,18 +78,14 @@ describe('TokenIcon', () => {
         );
     });
 
-    it('keeps the bundled fallback icon when the url resolution rejects', async () => {
+    it('shows a text placeholder when the url resolution rejects', async () => {
         (getAssetLogoContractAddresses as jest.Mock).mockRejectedValue(new Error('failed'));
 
-        const { getByHintText } = renderWithBasicProvider(
-            <TokenIcon symbol="eth" contractAddress={contractA} />,
-        );
+        const { queryByHintText } = renderTokenIcon({ symbol: 'eth', contractAddress: contractA });
 
         await act(async () => {});
 
-        expect(JSON.stringify(getByHintText(tokenIconHint).props.source)).not.toContain(
-            getTokenIconUrl(contractA),
-        );
+        expect(queryByHintText(tokenIconHint)).toBeNull();
     });
 
     it('does not reuse retry failure state after the size changes', async () => {
@@ -92,9 +93,11 @@ describe('TokenIcon', () => {
             (_symbol: string, contract: string) => Promise.resolve([contract]),
         );
 
-        const { getByHintText, queryByHintText, rerender } = renderWithBasicProvider(
-            <TokenIcon symbol="eth" contractAddress={contractA} size={32} />,
-        );
+        const { getByHintText, queryByHintText, rerender } = renderTokenIcon({
+            symbol: 'eth',
+            contractAddress: contractA,
+            size: 32,
+        });
         await act(async () => {});
 
         // the only url candidate fails, so the placeholder is shown
@@ -109,34 +112,48 @@ describe('TokenIcon', () => {
         );
     });
 
-    it('should render without network icon for networks that are not l2 networks = op, arb, base', () => {
-        const { getByHintText, getByLabelText, queryByHintText } = renderWithBasicProvider(
-            <TokenIcon symbol="btc" showNetworkIcon />,
-        );
+    it('should render without network icon for networks that are not l2 networks = op, arb, base', async () => {
+        const { getByHintText, getByLabelText, queryByHintText } = renderTokenIcon({
+            symbol: 'btc',
+            showNetworkIcon: true,
+        });
 
-        expect(getByHintText(tokenIconHint)).toBeTruthy();
-        expect(getByLabelText('BTC')).toBeTruthy();
+        // network icon decision is synchronous; token image requires async resolution
         expect(queryByHintText(networkIconHint)).toBeNull();
+        await waitFor(() => {
+            expect(getByHintText(tokenIconHint)).toBeTruthy();
+            expect(getByLabelText('BTC')).toBeTruthy();
+            expect(queryByHintText(networkIconHint)).toBeNull();
+        });
     });
 
-    it('should render network with network icon for l2 networks = op, arb, base and ETH as icon', () => {
-        const { getByHintText, getByLabelText, queryByHintText } = renderWithBasicProvider(
-            <TokenIcon symbol="op" showNetworkIcon />,
-        );
+    it('should render network with network icon for l2 networks = op, arb, base and ETH as icon', async () => {
+        const { getByHintText, getByLabelText, queryByHintText } = renderTokenIcon({
+            symbol: 'op',
+            showNetworkIcon: true,
+        });
 
-        expect(getByHintText(tokenIconHint)).toBeTruthy();
-        expect(getByLabelText('ETH')).toBeTruthy();
         expect(queryByHintText(networkIconHint)).toBeTruthy();
+        await waitFor(() => {
+            expect(getByHintText(tokenIconHint)).toBeTruthy();
+            expect(getByLabelText('ETH')).toBeTruthy();
+            expect(queryByHintText(networkIconHint)).toBeTruthy();
+        });
     });
 
-    it('should render with network icon for contracts', () => {
+    it('should render with network icon for contracts', async () => {
         const contract = '2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo' as TokenAddress;
-        const { getByHintText, getByLabelText } = renderWithBasicProvider(
-            <TokenIcon symbol="op" contractAddress={contract} showNetworkIcon />,
-        );
+        const { getByHintText, getByLabelText } = renderTokenIcon({
+            symbol: 'op',
+            contractAddress: contract,
+            showNetworkIcon: true,
+        });
 
-        expect(getByHintText(tokenIconHint)).toBeTruthy();
-        expect(getByLabelText(`op:${contract}`)).toBeTruthy();
         expect(getByHintText(networkIconHint)).toBeTruthy();
+        await waitFor(() => {
+            expect(getByHintText(tokenIconHint)).toBeTruthy();
+            expect(getByLabelText(`op:${contract}`)).toBeTruthy();
+            expect(getByHintText(networkIconHint)).toBeTruthy();
+        });
     });
 });

@@ -134,10 +134,11 @@ const TokenIconComponent = ({ symbol, contractAddress, size = 'small' }: TokenIc
         return [cryptoIcons[symbol.toLowerCase() as CryptoIconName]];
     }, [contractAddress, sizeNumber, symbol]);
 
-    const sourceUrls = resolvedUrls ?? [cryptoIcons[symbol.toLowerCase() as CryptoIconName]];
+    const sourceUrls = resolvedUrls ?? [];
     const sourceKey = resolvedUrls ? `${asyncKey}#resolved` : `${asyncKey}#fallback`;
     const logoIndex = loadState?.sourceKey === sourceKey ? loadState.logoIndex : 0;
-    const showPlaceholder = loadState?.sourceKey === sourceKey ? loadState.failed : false;
+    const showPlaceholder =
+        !resolvedUrls || (loadState?.sourceKey === sourceKey ? loadState.failed : false);
 
     /**
      * Retries loading the icon with the next available address in sourceUrls.
