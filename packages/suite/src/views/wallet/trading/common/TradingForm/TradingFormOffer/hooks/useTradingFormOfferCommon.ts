@@ -12,7 +12,6 @@ import { type IconComponent } from '@trezor/components';
 import { ArrowSquareOutIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';
-import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     getCryptoQuoteAmountProps,
@@ -48,7 +47,6 @@ export const useTradingFormOfferCommon = <T extends TradingType>() => {
         selectAreFeesLoading(suiteState, account?.symbol),
     );
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
     const quote = getSelectedQuote(context) as TradingQuoteByType[T] | undefined;
     const quoteAmounts = getCryptoQuoteAmountProps(quote, context);
@@ -96,11 +94,7 @@ export const useTradingFormOfferCommon = <T extends TradingType>() => {
     const amountLabels = tradingGetAmountLabels({ type, amountInCrypto: !!amountInCrypto });
 
     const isBaseButtonDisabled =
-        isDiscoveryRunning ||
-        tradingDeviceDisconnected ||
-        state.isLoadingOrInvalid ||
-        !quote ||
-        areFeesLoading;
+        isDiscoveryRunning || state.isLoadingOrInvalid || !quote || areFeesLoading;
 
     return {
         quote,

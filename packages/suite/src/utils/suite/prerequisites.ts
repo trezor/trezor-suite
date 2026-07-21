@@ -130,6 +130,10 @@ export const isPrerequisiteGloballyExcluded = ({
         return true;
     }
 
+    if (router.route?.name.startsWith('wallet-trading')) {
+        return true;
+    }
+
     if (router.app === 'settings') {
         return !settingsAppActivePrerequisites.includes(prerequisite);
     }
