@@ -59,6 +59,7 @@ import { UnecoCoinjoinModal } from './UnecoCoinjoinModal';
 import { WalletConnectProposalModal } from './WalletConnectProposalModal';
 import { WalletConnectSwitchAccountModal } from './WalletConnectSwitchAccountModal';
 import { WipeDeviceSuccessModal } from './WipeDeviceSuccessModal';
+import { WrapNativeTokenModal } from './WrapNativeTokenModal';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTEXT_USER>) => {
@@ -205,6 +206,16 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
             );
         case 'wipe-device-success':
             return <WipeDeviceSuccessModal />;
+        case 'wrap-native-token':
+            return (
+                <WrapNativeTokenModal
+                    account={payload.account}
+                    maxWrapAmount={payload.maxWrapAmount}
+                    nativeSymbol={payload.nativeSymbol}
+                    wrappedSymbol={payload.wrappedSymbol}
+                    onCancel={onCancel}
+                />
+            );
         default:
             return exhaustive(payload);
     }
