@@ -140,14 +140,20 @@ export const typescriptConfig = [
             // Known limitation: the rule mis-reports some load-bearing widening assertions
             // (removing them breaks tsc); such spots carry a scoped disable with a justification.
             '@typescript-eslint/no-unnecessary-type-assertion': ['error'],
+
+            // Type-checked recommended rule (the src override is the only block with type info):
+            // throw Error instances, not bare strings/objects, to preserve stack traces and
+            // Sentry grouping.
+            '@typescript-eslint/only-throw-error': ['error'],
         },
     },
     {
-        // Type assertions on partial mocks and fixtures are idiomatic in tests,
-        // so scope the rule out of test and fixture files.
+        // Type assertions on partial mocks and fixtures are idiomatic in tests, and throwing
+        // bare strings/values to assert error paths is common, so scope these out of tests.
         files: ['**/__tests__/**', '**/__fixtures__/**', '**/tests/**', '**/*.test.{ts,tsx}'],
         rules: {
             '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+            '@typescript-eslint/only-throw-error': 'off',
         },
     },
 ];

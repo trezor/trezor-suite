@@ -156,6 +156,9 @@ const preCallHook = async <M extends CallMethodKeys>({
                     __precomposed: true,
                 });
                 if (!methodInfo.success) {
+                    // The catch below inspects `error.code === 'Method_Cancel'`, so preserve the
+                    // code-bearing connect error rather than flattening it to a plain Error.
+                    // eslint-disable-next-line @typescript-eslint/only-throw-error
                     throw methodInfo.error;
                 }
                 txSigningPrecomposed = (methodInfo.payload as any as MethodInfo).precomposed;

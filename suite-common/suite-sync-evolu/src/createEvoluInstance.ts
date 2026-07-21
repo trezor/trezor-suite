@@ -31,7 +31,7 @@ export const createEvoluInstanceFactory =
         if (!owner.ok) {
             console.error(owner.error);
 
-            throw owner.error;
+            throw new Error(`Failed to create Evolu owner: ${JSON.stringify(owner.error)}`);
         }
 
         const appName = AppName.from(`trezor-suite-v${VERSION}`);
@@ -39,7 +39,7 @@ export const createEvoluInstanceFactory =
         if (!appName.ok) {
             console.error(appName.error);
 
-            throw appName.error;
+            throw new Error(`Invalid Evolu app name: ${JSON.stringify(appName.error)}`);
         }
 
         return getOrThrow(
