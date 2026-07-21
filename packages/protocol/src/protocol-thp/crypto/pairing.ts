@@ -48,8 +48,7 @@ export const getTrezorState = (credentials: ThpHandshakeCredentials, payload: Bu
 type Curve25519KeyPair = ReturnType<typeof getCurve25519KeyPair>;
 
 // State HH1
-// TODO: link-to-public-docs
-// https://www.notion.so/satoshilabs/THP-Specification-2-0-18fdc5260606806ab573d0a7cba1897a#193dc526060681b4b871e6b761107fba
+// https://github.com/trezor/trezor-firmware/blob/41692dc2cdb937564abe7fecd4bfc3e508adc8d4/docs/common/thp/specification.md#state-hh1
 export const handleHandshakeInit = ({
     handshakeInitResponse,
     thpState,
@@ -185,8 +184,7 @@ export const handleHandshakeInit = ({
 };
 
 export const getCpaceHostKeys = (code: Buffer, handshakeHash: Buffer) => {
-    // TODO: link-to-public-docs
-    // https://www.notion.so/satoshilabs/Pairing-phase-996b0e879fff4ebd9460ae27376fce76
+    // https://github.com/trezor/trezor-firmware/blob/41692dc2cdb937564abe7fecd4bfc3e508adc8d4/docs/common/thp/specification.md#state-hp4
     // If the user enters code, take the following actions:
     // 2. Compute *pregenerator* as the first 32 bytes of SHA-512(*prefix* || *code* - 6 bytes || *padding || h*), where *prefix* is the byte-string  0x08 || 0x43 || 0x50 || 0x61 || 0x63 || 0x65 || 0x32 || 0x35 || 0x35 || 0x06 and *padding* is the byte-string 0x50 || 0x00 ^ 80 || 0x20.
     // 3. Set *generator =* ELLIGATOR2(*pregenerator*).

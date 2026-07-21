@@ -257,8 +257,7 @@ export const thpPairingEnd = async (device: IDevice) => {
 
 // State HH2/HH3 -> HP0 -> HP1 -> HP2 -> HP3 -> HP4
 // Workflow will require user interaction
-// TODO: link-to-public-docs
-// https://www.notion.so/satoshilabs/THP-Specification-2-1-203dc5260606804192aecaa58fb961ca
+// https://github.com/trezor/trezor-firmware/blob/41692dc2cdb937564abe7fecd4bfc3e508adc8d4/docs/common/thp/specification.md#state-hh2
 export const thpPairing = async (device: IDevice) => {
     const thpState = device.getThpState();
     if (!thpState?.handshakeCredentials) {
