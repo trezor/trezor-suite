@@ -2,6 +2,7 @@ import { type CallMethodKeys } from '@trezor/connect';
 
 import { addressConfirmationModalHooks } from './addressConfirmation';
 import { bitcoinSignTransaction } from './bitcoinSignTransaction';
+import { cardanoGetPublicKeyCompat } from './cardanoGetPublicKeyCompat';
 import { ethereumSignTransaction } from './ethereumSignTransaction';
 import { requestLoginHooks } from './requestLogin';
 import { selectAccountHooks } from './selectAccount';
@@ -31,6 +32,7 @@ export async function postCallHooks<M extends CallMethodKeys>(params: PostCallHo
         await solanaSignTransaction.postCallHook(params),
         await addressConfirmationModalHooks.postCallHook(params),
         await selectAccountHooks.postCallHook(params),
+        await cardanoGetPublicKeyCompat.postCallHook(params),
     ];
 
     return hooks.some(Boolean);
