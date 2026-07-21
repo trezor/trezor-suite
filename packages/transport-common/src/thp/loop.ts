@@ -1,5 +1,6 @@
 import { thp as protocolThp } from '@trezor/protocol';
 import { THP_CONTROL_BYTE } from '@trezor/protocol/src/protocol-v2/constants';
+import { getWeakRandomInt, resolveAfter } from '@trezor/utils';
 
 import {
     ATTEMPTS_LIMIT,
@@ -28,6 +29,8 @@ enum ThpLoopState {
     DONE,
 }
 
+const MAX_BUSY_BACKOFF_MS = 500;
+
 export const thpLoop = async ({
     chunks,
     thpState,
@@ -49,6 +52,8 @@ export const thpLoop = async ({
     const deadline = Date.now() + THP_ACK_DEADLINE;
     const isDeadlineReached = () => Date.now() >= deadline;
     const thpStateError = (message: string) => error({ code: THP_STATE_ERROR, message });
+    const isThpTransportBusy = (result: Buffer) =>
+        protocolThp.decodeThpError(result).message.code === 'ThpTransportBusy';
     let result;
 
     while (phase !== ThpLoopState.DONE) {
@@ -143,8 +148,16 @@ export const thpLoop = async ({
                         break;
                     }
                     case THP_CONTROL_BYTE.ERROR:
-                        result = ackResult;
-                        phase = ThpLoopState.DONE;
+                        if (isThpTransportBusy(ackResult.payload.payload)) {
+                            const backoff = getWeakRandomInt(0, MAX_BUSY_BACKOFF_MS);
+                            debug(`READ_ACK received ThpTransportBusy. retrying in ${backoff}ms`);
+                            await resolveAfter(backoff, signal);
+                            phase = ThpLoopState.WRITE_REQUEST;
+                        } else {
+                            result = ackResult;
+                            phase = ThpLoopState.DONE;
+                        }
+
                         break;
                     default:
                         if (
@@ -204,8 +217,18 @@ export const thpLoop = async ({
                     case THP_CONTROL_BYTE.ACK_MESSAGE:
                         break; // keep reading
                     case THP_CONTROL_BYTE.ERROR:
-                        result = receiveResult;
-                        phase = ThpLoopState.DONE;
+                        if (isThpTransportBusy(receiveResult.payload.payload)) {
+                            const backoff = getWeakRandomInt(0, MAX_BUSY_BACKOFF_MS);
+                            debug(
+                                `READ_RESPONSE received ThpTransportBusy. retrying in ${backoff}ms`,
+                            );
+                            await resolveAfter(backoff, signal);
+                            phase = ThpLoopState.WRITE_REQUEST;
+                        } else {
+                            result = receiveResult;
+                            phase = ThpLoopState.DONE;
+                        }
+
                         break;
                     default:
                         result = receiveResult;
