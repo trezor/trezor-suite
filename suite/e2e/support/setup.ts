@@ -1,4 +1,4 @@
-import { BrowserContext, TestInfo } from '@playwright/test';
+import { BrowserContext, TestInfo, expect } from '@playwright/test';
 import { execSync } from 'child_process';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
@@ -77,7 +77,12 @@ export const electronTeardown = async (
     const closePromise = suite.electronApp.close();
     // Handle modal that asks to enable auto-start
     if (electronConf.exposeConnectWs) {
-        await suite.window.getByTestId('@auto-start-before-quit/button-quit').click();
+        const autoStartQuitButton = suite.window.getByTestId('auto-start-quit-button');
+        await expect(
+            autoStartQuitButton,
+            'expected the AutoStart Quit button to be enabled',
+        ).toBeEnabled();
+        await autoStartQuitButton.click();
     }
     await closePromise;
 };
