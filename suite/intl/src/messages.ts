@@ -11316,6 +11316,14 @@ export const messages = defineMessages({
         id: 'TR_TX_STAKE_CLAIM',
         defaultMessage: 'Claim withdraw request',
     },
+    TR_TX_WRAP: {
+        id: 'TR_TX_WRAP',
+        defaultMessage: 'Wrap {nativeAmount} into {wrappedAmount}',
+    },
+    TR_TX_UNWRAP: {
+        id: 'TR_TX_UNWRAP',
+        defaultMessage: 'Unwrap {wrappedAmount} into {nativeAmount}',
+    },
     TR_STAKE_STAKE: {
         id: 'TR_STAKE_STAKE',
         defaultMessage: 'Stake',
