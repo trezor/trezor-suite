@@ -205,6 +205,7 @@ export class ThpState {
     sync(type: 'send' | 'recv', messageType: string) {
         // check if syncBit should be updated
         const updateSyncBit = ![
+            'ThpError',
             'ThpAck',
             'ThpCreateChannelRequest',
             'ThpCreateChannelResponse',
