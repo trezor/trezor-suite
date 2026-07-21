@@ -11324,6 +11324,22 @@ export const messages = defineMessages({
         id: 'TR_TX_UNWRAP',
         defaultMessage: 'Unwrap {wrappedAmount} into {nativeAmount}',
     },
+    TR_WRAP_NATIVE_TOKEN: {
+        id: 'TR_WRAP_NATIVE_TOKEN',
+        defaultMessage: 'Wrap',
+    },
+    TR_WRAP_NATIVE_TOKEN_MODAL_TITLE: {
+        id: 'TR_WRAP_NATIVE_TOKEN_MODAL_TITLE',
+        defaultMessage: 'Wrap {nativeSymbol} to {wrappedSymbol}',
+    },
+    TR_WRAP_NATIVE_TOKEN_AMOUNT_LABEL: {
+        id: 'TR_WRAP_NATIVE_TOKEN_AMOUNT_LABEL',
+        defaultMessage: 'Amount to wrap',
+    },
+    TR_WRAP_NATIVE_TOKEN_MAX: {
+        id: 'TR_WRAP_NATIVE_TOKEN_MAX',
+        defaultMessage: 'Max',
+    },
     TR_STAKE_STAKE: {
         id: 'TR_STAKE_STAKE',
         defaultMessage: 'Stake',

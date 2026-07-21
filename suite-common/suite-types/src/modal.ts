@@ -260,5 +260,13 @@ export type UserContextPayload =
           >;
       }
     | {
+          type: 'wrap-native-token';
+          account: Account;
+          /** Max native amount that can be wrapped (balance minus the gas reserve), display units. */
+          maxWrapAmount: string;
+          nativeSymbol: string;
+          wrappedSymbol: string;
+      }
+    | {
           type: 'wipe-device-success';
       };
