@@ -177,16 +177,6 @@ export const StakingManagementStakedCard = ({
                     <InlineAlertBox intent="warning" title={stakingMessageContent} />
                 )}
                 <HStack spacing="sp12">
-                    {hasStakedBalance && (
-                        <Button
-                            flex={1}
-                            priority="secondary"
-                            onPress={handleUnstake}
-                            isDisabled={isUnstakingDisabled}
-                        >
-                            <Translation id="earn.stakingManagementScreen.unstakeButton" />
-                        </Button>
-                    )}
                     <Button
                         flex={1}
                         priority="secondary"
@@ -201,6 +191,16 @@ export const StakingManagementStakedCard = ({
                             }
                         />
                     </Button>
+                    {hasStakedBalance && (
+                        <Button
+                            flex={1}
+                            priority="secondary"
+                            onPress={handleUnstake}
+                            isDisabled={isUnstakingDisabled}
+                        >
+                            <Translation id="earn.stakingManagementScreen.unstakeButton" />
+                        </Button>
+                    )}
                 </HStack>
             </VStack>
         </Card>
