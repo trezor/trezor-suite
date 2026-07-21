@@ -5,7 +5,8 @@ export const COIN_IMAGE_SIZES = [24, 40, 48, 80] as const satisfies number[];
 export type CoinImageSize = (typeof COIN_IMAGE_SIZES)[number];
 
 const CRYPTO_ID_SEPARATOR = '--';
-const IMAGE_SIZE_SEPARATOR = '@';
+export const IMAGE_SIZE_SEPARATOR = '@';
+export const IMAGE_EXTENSION = '.webp';
 
 function createCryptoId(coingeckoId: string, contractAddress?: string) {
     const cryptoId = contractAddress
@@ -28,5 +29,5 @@ export function createCoinImageName<Size extends CoinImageSize>({
 }: CreateCoinImageNameParams<Size>) {
     const cryptoId = createCryptoId(coingeckoId, contractAddress);
 
-    return `${cryptoId}${IMAGE_SIZE_SEPARATOR}${size}.webp` as const;
+    return `${cryptoId}${IMAGE_SIZE_SEPARATOR}${size}${IMAGE_EXTENSION}` as const;
 }
