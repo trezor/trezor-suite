@@ -6,7 +6,7 @@ import { type TransportProtocolDecode } from '../types';
 import { crc32 } from './crypto/crc32';
 import { getHandshakeHash, getTrezorState } from './crypto/pairing';
 import { getIvFromNonce } from './crypto/tools';
-import { type ThpDeviceProperties, type ThpError, type ThpMessageResponse } from './messages';
+import { type ThpDeviceProperties, type ThpMessageResponse } from './messages';
 
 type ThpMessage = ReturnType<TransportProtocolDecode> & {
     thpState: ThpState;
@@ -120,7 +120,7 @@ const decodeReadAck = (): ThpMessageResponse => ({
 // [magic | channel | len* | error | crc     ]
 // [42    | 1222    | 0005 | 02    | 70303cfa]
 // *len includes error+crc
-const decodeThpError = (payload: Buffer): ThpMessageResponse => {
+export const decodeThpError = (payload: Buffer): ThpMessageResponse<'ThpError'> => {
     const [errorType] = payload;
 
     const error = (() => {
@@ -138,14 +138,12 @@ const decodeThpError = (payload: Buffer): ThpMessageResponse => {
         }
     })();
 
-    const message: ThpError = {
-        code: error,
-        message: error ?? `Unknown ThpError ${errorType}`,
-    };
-
     return {
         type: 'ThpError',
-        message,
+        message: {
+            code: error,
+            message: error,
+        },
     };
 };
 
