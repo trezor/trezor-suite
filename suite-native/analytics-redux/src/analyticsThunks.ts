@@ -9,7 +9,7 @@ import {
 } from '@suite-common/analytics-redux';
 import { createThunk } from '@suite-common/redux-utils';
 import { asTypedNativeAnalytics, events } from '@suite-native/analytics';
-import { isDevelopEnv } from '@suite-native/config';
+import { isProduction } from '@suite-native/config';
 import { allowSentryReport, setSentryUser } from '@suite-native/sentry';
 import { type InitOptions, getTrackingRandomId } from '@trezor/analytics-uploader';
 import { getCommitHash } from '@trezor/env-utils';
@@ -63,7 +63,7 @@ export const initAnalyticsThunk = createThunk(
             url: customAnalyticsUrl,
             loggerEnabled,
             commitId: getCommitHash(),
-            isDev: isDevelopEnv(),
+            isDev: !isProduction(),
             callbacks: {
                 onEnable: () => dispatch(enableAnalyticsThunk()),
                 onDisable: () => dispatch(disableAnalyticsThunk()),
