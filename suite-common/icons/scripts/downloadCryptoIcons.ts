@@ -26,15 +26,10 @@ async function writeImage(fileName: string, imageBuffer: Buffer) {
 }
 
 async function resizeImage(imageBuffer: ArrayBuffer, size: number) {
-    const fullQualityImageBuffer = await sharp(imageBuffer)
-        .resize(size, size)
-        .webp({ quality: 100 })
-        .toBuffer();
+    const resizedImage = sharp(imageBuffer).resize(size, size);
 
-    const lossLessImageBuffer = await sharp(imageBuffer)
-        .resize(size, size)
-        .webp({ lossless: true })
-        .toBuffer();
+    const fullQualityImageBuffer = await resizedImage.webp({ quality: 100 }).toBuffer();
+    const lossLessImageBuffer = await resizedImage.clone().webp({ lossless: true }).toBuffer();
 
     // sometimes lossless image is much smaller than 100 quality compressed image
     return fullQualityImageBuffer.byteLength < lossLessImageBuffer.byteLength
