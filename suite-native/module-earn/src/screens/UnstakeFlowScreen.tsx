@@ -109,6 +109,7 @@ export const UnstakeFlowScreen = () => {
     return (
         <Screen
             header={<UnstakeFlowScreenHeader />}
+            isFooterKeyboardAware={false}
             footer={
                 <>
                     <ScreenFooterGradient />
