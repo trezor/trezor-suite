@@ -186,7 +186,7 @@ async function ensureDirectoryExists(path: string) {
             // Only fingerprint on success so a failed coin is retried on the next run.
             ...(success ? { imageUrl } : {}),
         };
-
-        await fs.writeFile(UPDATED_ICONS_LIST_FILE, JSON.stringify(updatedIcons, null, 2));
     }
+
+    await fs.writeFile(UPDATED_ICONS_LIST_FILE, JSON.stringify(updatedIcons, null, 2));
 })();
