@@ -272,7 +272,7 @@ export const createPaymentRequestsThunk = createThunk<
             }
 
             default:
-                throw exhaustive(type);
+                return exhaustive(type);
         }
     },
 );

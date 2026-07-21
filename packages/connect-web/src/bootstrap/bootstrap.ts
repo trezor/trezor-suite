@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/only-throw-error --
+   This module intentionally throws the predefined string error codes from bootstrap-errors.ts.
+   They are matched by value and forwarded to Suite as the `connect-popup-err` URL param (see
+   redirectToSuite below and popup/web.ts), so the thrown value must be the bare code, not an Error. */
 import { BootstrapError } from './bootstrap-errors';
 
 const logger = (() => {

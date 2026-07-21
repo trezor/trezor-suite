@@ -72,6 +72,9 @@ const fetchMetadata =
         const response = await providerInstance.getFileContent(fileName);
 
         if (!response.success) {
+            // Legacy code: the thrown value is the code-bearing provider error object; handleProviderError
+            // routes on `error.code` (dispose/disconnect on AUTH/ACCESS errors), so it must stay an object.
+            // eslint-disable-next-line @typescript-eslint/only-throw-error
             throw response;
         }
 
