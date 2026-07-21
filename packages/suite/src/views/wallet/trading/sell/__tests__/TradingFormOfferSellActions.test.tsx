@@ -3,7 +3,9 @@ import '@suite-common/test-utils/globalOverrides';
 import { screen } from '@testing-library/react';
 
 import { configureMockStore } from '@suite-common/test-utils';
-import { type Account } from '@suite-common/wallet-types';
+import { initialState as tradingInitialState } from '@suite-common/trading';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { type StaticSessionId } from '@trezor/connect';
 
 import { type AppState } from 'src/reducers/store';
 import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
@@ -46,15 +48,22 @@ jest.mock(
     () => ({ TradingFormOfferOTC: () => null }),
 );
 
-const account = { symbol: 'btc', availableBalance: '0', tokens: [] } as unknown as Account;
+const DEVICE_STATE: StaticSessionId = '1stTestnetAddress@device_id:0';
+
+const account = mockWalletAccount({ symbol: 'eth', balance: '1000000000000000000' });
 
 const renderWithNetworkFee = (composed: { fee: string } | undefined) => {
     const store = configureMockStore({
         preloadedState: {
             ...initialAppState,
+            device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
             wallet: {
                 ...initialAppState.wallet,
-                trading: { composedTransactionInfo: { composed } },
+                accounts: [account],
+                trading: {
+                    ...tradingInitialState,
+                    composedTransactionInfo: { composed },
+                },
             },
         } as unknown as AppState,
     });
@@ -69,7 +78,6 @@ const renderWithNetworkFee = (composed: { fee: string } | undefined) => {
 describe('TradingFormOfferSellActions', () => {
     beforeEach(() => {
         mockUseTradingFormContext.mockReturnValue({
-            account,
             watch: () => ({ outputs: [] }),
             shouldSendInSats: false,
             form: { state: { isFormLoading: false } },
