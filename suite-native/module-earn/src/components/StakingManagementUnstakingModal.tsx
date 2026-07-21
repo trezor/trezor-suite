@@ -1,7 +1,7 @@
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { selectAccountNetworkSymbol, useAccountsSelector } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { isPositiveBalance } from '@suite-common/wallet-utils';
+import { isPositiveBalance, isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import {
     BottomSheetModal,
     type BottomSheetModalRef,
@@ -68,20 +68,29 @@ export const StakingManagementUnstakingModal = ({
     );
 
     const currentStep: StakingDetailModalStep = (() => {
-        if (isPositiveBalance(claimableAmount)) return StakingDetailModalStep.Completed;
         if (isPositiveBalance(unstakingBalance)) return StakingDetailModalStep.InProgress;
+        if (isPositiveBalance(claimableAmount)) return StakingDetailModalStep.Completed;
 
         return StakingDetailModalStep.TransactionConfirmed;
     })();
 
-    const inProgressLabel = (
+    const isSolanaStaking = !!symbol && isSupportedSolStakingNetworkSymbol(symbol);
+
+    const inProgressLabel = isSolanaStaking ? (
+        <Translation
+            id="earn.stakingManagementScreen.pendingItemModal.sol.stepCoolDownPeriod"
+            values={{ days: unstakingPeriodInDays }}
+        />
+    ) : (
         <Translation
             id="earn.stakingManagementScreen.pendingItemModal.stepWithdrawalPeriod"
             values={{ days: unstakingPeriodInDays }}
         />
     );
 
-    const completedLabel = (
+    const completedLabel = isSolanaStaking ? (
+        <Translation id="earn.stakingManagementScreen.pendingItemModal.sol.stepUnstakedReadyToClaim" />
+    ) : (
         <Translation id="earn.stakingManagementScreen.pendingItemModal.stepReadyToClaim" />
     );
 

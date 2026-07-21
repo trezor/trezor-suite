@@ -2581,6 +2581,14 @@ export const messages = {
                 stepWithdrawalPeriod:
                     'Withdrawal period (~{days, plural, one {# day} other {# days}})',
                 stepReadyToClaim: 'Ready to claim',
+                sol: {
+                    stepWarmUpPeriod:
+                        'Warm-up period (~{days, plural, one {# day} other {# days}})',
+                    stepStakedReceivingRewards: 'Staked & receiving rewards',
+                    stepCoolDownPeriod:
+                        'Cool-down period (~{days, plural, one {# day} other {# days}})',
+                    stepUnstakedReadyToClaim: 'Unstaked and ready to claim',
+                },
             },
         },
         yieldInsufficientBalance: {
