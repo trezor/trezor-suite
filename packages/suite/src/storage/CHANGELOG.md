@@ -5,6 +5,7 @@
 - remove inaccurate historic ERC4626 fiat rates from storage
 - rename receive `revealedAddresses` to `touchedAddresses`
 - remove `isVerified` flag from receive address entries
+- remove receive data belonging to devices that are not remembered
 
 ## 26.6.0
 
