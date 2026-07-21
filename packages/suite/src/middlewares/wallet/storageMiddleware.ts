@@ -110,7 +110,14 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             if (
                 isAnyOf(receiveActions.showAddress, receiveActions.setCurrentFreshAddress)(action)
             ) {
-                api.dispatch(storageActions.saveAccountReceive(action.payload.accountKey));
+                const account = selectAccountByKey(api.getState(), action.payload.accountKey);
+                const device = account
+                    ? findAccountDevice(account, selectDevices(api.getState()))
+                    : undefined;
+
+                if (getIsDeviceRemembered(device)) {
+                    api.dispatch(storageActions.saveAccountReceive(action.payload.accountKey));
+                }
             }
 
             if (isAnyOf(metadataActions.setAccountAdd)(action)) {
