@@ -4,7 +4,6 @@
 - Users can now cancel pending EVM transactions
 - Option added to view and edit nonce in the EVM send form
 - A new preview step has been added to the Buy flow
-- SLIP24 enabled for Ripple transactions
 - WalletConnect button added to the account menu for quick access to connected apps
 
 ### 🎨 Improvements
