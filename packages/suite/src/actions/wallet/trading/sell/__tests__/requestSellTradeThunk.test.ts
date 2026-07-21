@@ -52,6 +52,7 @@ const DEVICE_STATE: StaticSessionId = '1stTestnetAddress@device_id:0';
 const ACCOUNT: Account = mockWalletAccount({
     symbol: 'btc',
     descriptor: asAccountDescriptor('btcAccount'),
+    balance: '100000000',
 });
 
 const QUOTE: SellFiatTrade = {

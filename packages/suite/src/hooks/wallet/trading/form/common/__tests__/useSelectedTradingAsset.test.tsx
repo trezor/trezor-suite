@@ -1,6 +1,6 @@
-import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type CryptoId } from 'invity-api';
 
+import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -48,10 +48,9 @@ describe('useSelectedTradingAsset', () => {
         const store = configureMockStore({
             preloadedState: buildState([INELIGIBLE_ACCOUNT]),
         });
-        const { result } = renderHookWithStoreProvider(
-            () => useSelectedTradingAsset('sell'),
-            { store },
-        );
+        const { result } = renderHookWithStoreProvider(() => useSelectedTradingAsset('sell'), {
+            store,
+        });
 
         expect(result.current).toBeUndefined();
     });
@@ -60,10 +59,9 @@ describe('useSelectedTradingAsset', () => {
         const store = configureMockStore({
             preloadedState: buildState([ELIGIBLE_ACCOUNT], ELIGIBLE_ACCOUNT.key),
         });
-        const { result } = renderHookWithStoreProvider(
-            () => useSelectedTradingAsset('sell'),
-            { store },
-        );
+        const { result } = renderHookWithStoreProvider(() => useSelectedTradingAsset('sell'), {
+            store,
+        });
 
         expect(result.current).toEqual({
             symbol: 'eth',
@@ -83,10 +81,9 @@ describe('useSelectedTradingAsset', () => {
                 cryptoId: TOKEN_CRYPTO_ID,
             }),
         });
-        const { result } = renderHookWithStoreProvider(
-            () => useSelectedTradingAsset('buy'),
-            { store },
-        );
+        const { result } = renderHookWithStoreProvider(() => useSelectedTradingAsset('buy'), {
+            store,
+        });
 
         expect(result.current?.cryptoId).toBe(TOKEN_CRYPTO_ID);
         expect(result.current?.isToken).toBe(true);
