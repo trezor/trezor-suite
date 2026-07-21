@@ -77,7 +77,7 @@ export const electronTeardown = async (
     const closePromise = suite.electronApp.close();
     // Handle modal that asks to enable auto-start
     if (electronConf.exposeConnectWs) {
-        const autoStartQuitButton = suite.window.getByTestId('auto-start-quit-button');
+        const autoStartQuitButton = suite.window.getByTestId('@auto-start-before-quit/button-quit');
         await expect(
             autoStartQuitButton,
             'expected the AutoStart Quit button to be enabled',
