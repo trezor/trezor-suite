@@ -45,6 +45,14 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Upload crypto icons
+        # The local folder contains only files produced by this run (fresh checkout, the script
+        # skips unchanged icons), so plain cp uploads the same set as sync without sync's LIST of
+        # the entire remote prefix. icons.json is the skip-checkpoint for the next run — it goes
+        # last so a job that dies mid-upload never records icons it didn't publish.
         run: |
-          aws s3 sync suite-common/icons/files/cryptoIcons s3://data.trezor.io/suite/icons/coins
+          aws configure set default.s3.max_concurrent_requests 100
+          aws configure set default.s3.max_queue_size 10000
+          aws s3 cp suite-common/icons/files/cryptoIcons s3://data.trezor.io/suite/icons/coins \
+            --recursive --exclude "icons.json" --only-show-errors
+          aws s3 cp suite-common/icons/files/cryptoIcons/icons.json s3://data.trezor.io/suite/icons/coins/icons.json
           aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths '/suite/icons/coins/*'
