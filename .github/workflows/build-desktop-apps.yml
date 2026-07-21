@@ -104,6 +104,7 @@ jobs:
 
       - name: Build ${{ matrix.platform }} suite-desktop
         env:
+          CSC_FOR_PULL_REQUEST: ${{ matrix.platform == 'mac' && 'true' || 'false' }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           yarn workspace @trezor/suite-desktop build:app
