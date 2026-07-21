@@ -7,6 +7,7 @@ import {
     useAccountsSelector,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { isSupportedSolStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import {
     BottomSheetModal,
     type BottomSheetModalRef,
@@ -81,14 +82,23 @@ export const StakingManagementPendingStakeModal = ({
         return StakingDetailModalStep.Completed;
     })();
 
-    const inProgressLabel = (
+    const isSolanaStaking = !!symbol && isSupportedSolStakingNetworkSymbol(symbol);
+
+    const inProgressLabel = isSolanaStaking ? (
+        <Translation
+            id="earn.stakingManagementScreen.pendingItemModal.sol.stepWarmUpPeriod"
+            values={{ days: entryPeriodEstimateInDays }}
+        />
+    ) : (
         <Translation
             id="earn.stakingManagementScreen.pendingItemModal.stepEntryPeriod"
             values={{ days: entryPeriodEstimateInDays }}
         />
     );
 
-    const completedLabel = (
+    const completedLabel = isSolanaStaking ? (
+        <Translation id="earn.stakingManagementScreen.pendingItemModal.sol.stepStakedReceivingRewards" />
+    ) : (
         <Translation id="earn.stakingManagementScreen.pendingItemModal.stepStakedReceivingRewards" />
     );
 
