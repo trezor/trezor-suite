@@ -141,7 +141,7 @@ export const serializeEthereumTx = (
     );
 
 const stripLeadingZeroes = (str: string) => {
-    while (/^00/.test(str)) {
+    while (str.startsWith('00')) {
         str = str.slice(2);
     }
 
