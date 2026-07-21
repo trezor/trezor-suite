@@ -1,10 +1,12 @@
 import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import { UINT256_MAX } from '@suite-common/suite-constants';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 import {
     buildApprovalTransactionData,
     getEvmTransactionTextSignature,
+    getNativeWrapTxKind,
     getUnwrapAmountByEthereumDataHex,
     isUnwrapNativeTx,
     isWrapNativeTx,
@@ -216,6 +218,58 @@ describe('eth utils', () => {
             expect(getUnwrapAmountByEthereumDataHex(DEPOSIT)).toBe(null);
             expect(getUnwrapAmountByEthereumDataHex('0xdeadbeef')).toBe(null);
             expect(getUnwrapAmountByEthereumDataHex(undefined)).toBe(null);
+        });
+    });
+
+    describe('getNativeWrapTxKind', () => {
+        const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+        const OTHER = '0x1111111111111111111111111111111111111111';
+        const DEPOSIT = '0xd0e30db0';
+        const WITHDRAW =
+            '0x2e1a7d4d0000000000000000000000000000000000000000000000000de0b6b3a7640000';
+
+        const tx = ({
+            targets = [],
+            internalTransfers = [],
+            data,
+        }: {
+            targets?: { addresses?: string[] }[];
+            internalTransfers?: { from: string }[];
+            data?: string;
+        }) =>
+            ({
+                symbol: 'eth',
+                targets,
+                internalTransfers,
+                ethereumSpecific: data ? { data } : undefined,
+            }) as unknown as WalletAccountTransaction;
+
+        it('detects a wrap when the WETH contract is the value target', () => {
+            expect(
+                getNativeWrapTxKind(tx({ targets: [{ addresses: [WETH] }], data: DEPOSIT })),
+            ).toBe('wrap');
+        });
+
+        it('detects an unwrap when the WETH contract is the internal ETH sender', () => {
+            expect(
+                getNativeWrapTxKind(tx({ internalTransfers: [{ from: WETH }], data: WITHDRAW })),
+            ).toBe('unwrap');
+        });
+
+        it('ignores a deposit() to a non-WETH contract', () => {
+            expect(
+                getNativeWrapTxKind(tx({ targets: [{ addresses: [OTHER] }], data: DEPOSIT })),
+            ).toBeUndefined();
+        });
+
+        it('ignores a WETH interaction with an unrelated selector', () => {
+            expect(
+                getNativeWrapTxKind(tx({ targets: [{ addresses: [WETH] }], data: '0xdeadbeef' })),
+            ).toBeUndefined();
+        });
+
+        it('returns undefined without a WETH target or data', () => {
+            expect(getNativeWrapTxKind(tx({}))).toBeUndefined();
         });
     });
 
