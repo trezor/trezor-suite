@@ -11524,6 +11524,14 @@ export const messages = defineMessages({
         id: 'TOAST_TX_YIELD_CLAIM',
         defaultMessage: 'Claim transaction from {account} has been broadcast',
     },
+    TOAST_TX_WRAP: {
+        id: 'TOAST_TX_WRAP',
+        defaultMessage: 'Wrap transaction from {account} has been broadcast',
+    },
+    TOAST_TX_UNWRAP: {
+        id: 'TOAST_TX_UNWRAP',
+        defaultMessage: 'Unwrap transaction from {account} has been broadcast',
+    },
     TOAST_SUCCESSFUL_CLAIM: {
         id: 'TOAST_SUCCESSFUL_CLAIM',
         defaultMessage: '{networkDisplaySymbol} claimed successfully',

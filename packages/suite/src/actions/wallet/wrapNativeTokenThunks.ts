@@ -6,6 +6,7 @@ import {
     getNetwork,
     getNetworkDisplaySymbol,
     getWrappedNativeAddress,
+    getWrappedNativeSymbol,
 } from '@suite-common/wallet-config';
 import { WETH_DEPOSIT_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
@@ -20,9 +21,9 @@ import { getAccountIdentity, getConvertedOrDefaultFeeInfo } from '@suite-common/
 
 import { sendYieldTransaction } from './stablecoin-yield/signingHelpers';
 
-// Standalone wrap flow for the debug "Wrap" action on the dashboard native-asset row. It reuses the
-// shared yield building blocks/signer but deliberately keeps its own thunks so the stablecoin-yield
-// flow thunks stay untouched.
+// Standalone wrap flow for the debug "Wrap" action in the account TradeBox. It reuses the shared
+// yield building blocks/signer but deliberately keeps its own thunks so the stablecoin-yield flow
+// thunks stay untouched.
 const WRAP_NATIVE_TOKEN_PREFIX = '@wallet/wrap-native-token';
 
 export type ComposeWrapNativeTokenErrorReason =
@@ -196,9 +197,14 @@ export const submitWrapNativeTokenThunk = createThunk(
                 return;
             }
 
+            const wrappedSymbol =
+                getWrappedNativeSymbol(account.symbol) ?? getNetworkDisplaySymbol(account.symbol);
+
             dispatch(
                 notificationsActions.addToast({
-                    type: 'raw-tx-sent',
+                    type: 'tx-wrap',
+                    // Amount shown in the destination unit — the wrapped-native token (e.g. WETH).
+                    formattedAmount: `${wrapAmount} ${wrappedSymbol}`,
                     descriptor: account.descriptor,
                     symbol: account.symbol,
                     txid: sendResult.txid,
