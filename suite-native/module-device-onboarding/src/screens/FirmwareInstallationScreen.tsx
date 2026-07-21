@@ -1,25 +1,27 @@
 import { FirmwareInstallationScreenContent } from '@suite-native/firmware';
-import { ScreenHeader, useOverrideBackNavigation } from '@suite-native/navigation';
+import { ScreenHeader, useNavigationRemoveActionInterceptor } from '@suite-native/navigation';
 
 import { useExitAlert } from '../hooks/useExitAlert';
 import { useNavigateToNextScreenAfterFirmwareInstallation } from '../hooks/useNavigateToNextScreenAfterFirmwareInstallation';
 
-const FirmwareInstallationScreenHeader = () => {
-    const { handleExitButtonPress } = useExitAlert();
-    useOverrideBackNavigation({ onNavigateBack: handleExitButtonPress });
-
-    return <ScreenHeader closeActionType="close" closeAction={handleExitButtonPress} />;
-};
+const FirmwareInstallationScreenHeader = ({
+    handleExitButtonPress,
+}: {
+    handleExitButtonPress: () => void;
+}) => <ScreenHeader closeActionType="close" closeAction={handleExitButtonPress} />;
 
 export const FirmwareInstallationScreen = () => {
     const { handleExitButtonPress } = useExitAlert();
     const { navigateToNextScreenAfterFirmwareInstallation } =
         useNavigateToNextScreenAfterFirmwareInstallation();
-    useOverrideBackNavigation();
+
+    useNavigationRemoveActionInterceptor({ onInterceptedAction: handleExitButtonPress });
 
     return (
         <FirmwareInstallationScreenContent
-            customHeader={<FirmwareInstallationScreenHeader />}
+            customHeader={
+                <FirmwareInstallationScreenHeader handleExitButtonPress={handleExitButtonPress} />
+            }
             onCancelAction={handleExitButtonPress}
             onFirmwareInstallationSuccess={navigateToNextScreenAfterFirmwareInstallation}
             isTemporaryRememeberAllowed={false}

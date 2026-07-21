@@ -1,7 +1,5 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { networkSymbolCollection } from '@suite-common/wallet-config';
@@ -11,6 +9,7 @@ import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import { useNavigationRemoveActionInterceptor } from '@suite-native/navigation';
 
 import {
     type CoinEnablingFormValues,
@@ -26,7 +25,6 @@ type CoinEnablingFormProps = {
 
 export const CoinEnablingForm = ({ searchQuery }: CoinEnablingFormProps) => {
     const dispatch = useDispatch();
-    const navigation = useNavigation();
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
 
@@ -74,13 +72,10 @@ export const CoinEnablingForm = ({ searchQuery }: CoinEnablingFormProps) => {
         });
     });
 
-    useEffect(
-        () =>
-            navigation.addListener('beforeRemove', () => {
-                handleSubmit();
-            }),
-        [navigation, handleSubmit],
-    );
+    useNavigationRemoveActionInterceptor({
+        actionTypesToIntercept: [],
+        onPassThroughAction: () => handleSubmit(),
+    });
 
     return (
         <Form form={form}>

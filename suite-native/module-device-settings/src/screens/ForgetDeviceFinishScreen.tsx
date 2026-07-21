@@ -1,31 +1,30 @@
-import { useEffect } from 'react';
-
-import { useNavigation } from '@react-navigation/native';
-
 import { CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { Screen, ScreenHeader, useInterceptNativeNavigation } from '@suite-native/navigation';
+import {
+    Screen,
+    ScreenHeader,
+    useInterceptNativeNavigation,
+    useNavigationRemoveActionInterceptor,
+} from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 
 import { DisconnectTrezorSvg } from '../components/DisconnectTrezorSvg';
 
 export const ForgetDeviceFinishScreen = () => {
-    const navigation = useNavigation();
     const { showToast } = useToast();
 
     useInterceptNativeNavigation();
 
-    useEffect(
-        () =>
-            navigation.addListener('beforeRemove', () => {
-                showToast({
-                    icon: 'check',
-                    intent: 'neutral',
-                    message: <Translation id="moduleDeviceSettings.forgetDevice.successToast" />,
-                });
-            }),
-        [navigation, showToast],
-    );
+    useNavigationRemoveActionInterceptor({
+        actionTypesToIntercept: [],
+        onPassThroughAction: () => {
+            showToast({
+                icon: 'check',
+                intent: 'neutral',
+                message: <Translation id="moduleDeviceSettings.forgetDevice.successToast" />,
+            });
+        },
+    });
 
     return (
         <Screen header={<ScreenHeader leftIcon={null} />} isScrollable={false}>

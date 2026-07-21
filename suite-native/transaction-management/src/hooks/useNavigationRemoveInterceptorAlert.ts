@@ -37,6 +37,6 @@ export const useNavigationRemoveInterceptorAlert = ({
     useNavigationRemoveActionInterceptor({
         isEnabled: shouldPrevent,
         onInterceptedAction: onPreventedRemove,
-        onAllowedAction: onAllowedRemove,
+        onPassThroughAction: onAllowedRemove,
     });
 };

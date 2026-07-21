@@ -1,8 +1,6 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNavigation, usePreventRemove } from '@react-navigation/native';
-
 import { useServices } from '@suite-common/dependency-injection';
 import {
     type AccountsRootState,
@@ -20,6 +18,7 @@ import {
     type StackProps,
     type TransactionDetailStackParamList,
     type TransactionDetailStackRoutes,
+    useNavigationRemoveActionInterceptor,
 } from '@suite-native/navigation';
 import { useTransactionDetails } from '@suite-native/transaction-management';
 import {
@@ -37,7 +36,6 @@ export const TransactionDetailScreen = ({
     route,
 }: StackProps<TransactionDetailStackParamList, TransactionDetailStackRoutes.TransactionDetail>) => {
     const { askForRating } = useInAppRating();
-    const navigation = useNavigation();
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const { txid, accountKey, tokenContract, closeActionType = 'back', source } = route.params;
 
@@ -47,9 +45,10 @@ export const TransactionDetailScreen = ({
         tokenContract,
     });
 
-    usePreventRemove(source === 'send', ({ data }) => {
-        navigation.dispatch(data.action);
-        askForRating();
+    useNavigationRemoveActionInterceptor({
+        isEnabled: source === 'send',
+        actionTypesToIntercept: [],
+        onPassThroughAction: askForRating,
     });
 
     useFetchMissingTransactionFiatRates({ accountKey, isEnabled: !!transaction });
