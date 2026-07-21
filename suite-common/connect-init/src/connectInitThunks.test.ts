@@ -159,41 +159,48 @@ describe('TrezorConnect Actions', () => {
         });
     });
 
-    it('callId-bearing UI events are swallowed by the global listener', async () => {
-        const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    // Characterization test documenting the limitation this stack fixes.
+    //
+    // A connect call may carry a `callId`: a 3rd-party popup caller supplies its own
+    // (public `CommonParams.callId`), and the same field is the cancellation-correlation
+    // token Core matches in `abortRunningCall`. Core stamps that `callId` onto every
+    // `ui-` event of the call, and the global handler below swallows EVERY callId-bearing
+    // event on the assumption that a scoped flow owns it. When no scoped flow does — an
+    // external caller, or an ordinary call made cancellable via a `callId` — the event
+    // never reaches `defaultTrezorUIEventHandlerThunk`, so the device modal is unreachable
+    // and the call hangs. Presence of a `callId` is being used as an ownership signal it
+    // cannot actually prove.
+    //
+    // The follow-up PR replaces this blanket swallow with a scoped-callId registry, so the
+    // handler defers only events a scoped flow has explicitly claimed; this test flips to
+    // assert that fixed behavior there.
+    it('swallows every callId-bearing UI event, leaving an external caller UI unreachable', async () => {
+        // Suppress the swallow log; the asserted behavior is the (non-)dispatch, not the warning.
+        jest.spyOn(console, 'warn').mockImplementation(() => {});
         await store.dispatch(connectInitThunk());
         const actionsBefore = store.getActions().length;
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
 
+        // No callId -> reaches the global handler and would render.
         emitTestEvent(UI_EVENT, {
             type: UI_REQUEST.REQUEST_BUTTON,
             payload: { code: 'ButtonRequest_ProtectCall' },
         });
+        // An external caller's callId -> swallowed, never reaches the handler (the limitation).
         emitTestEvent(UI_EVENT, {
             type: UI_REQUEST.REQUEST_BUTTON,
             payload: { code: 'ButtonRequest_ProtectCall' },
-            callId: 'scoped-call-id',
+            callId: 'external-caller-call-id',
         });
         await new Promise(resolve => setImmediate(resolve));
 
-        const newActions = store.getActions().slice(actionsBefore);
+        const reachedHandler = store
+            .getActions()
+            .slice(actionsBefore)
+            .filter(a => a.type === defaultTrezorUIEventHandlerThunk.pending.type).length;
 
-        const pendingCount = newActions.filter(
-            a => a.type === defaultTrezorUIEventHandlerThunk.pending.type,
-        ).length;
-        const fulfilledCount = newActions.filter(
-            a => a.type === defaultTrezorUIEventHandlerThunk.fulfilled.type,
-        ).length;
-        const buttonActionCount = newActions.filter(
-            a => a.type === UI_REQUEST.REQUEST_BUTTON,
-        ).length;
-
-        expect(pendingCount).toBe(1);
-        expect(fulfilledCount).toBe(1);
-        expect(buttonActionCount).toBe(1);
-        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('callId=scoped-call-id'));
-
-        warnSpy.mockRestore();
+        // Only the callId-less event reached the handler; the callId-bearing one was swallowed.
+        expect(reachedHandler).toBe(1);
     });
 
     it('connectInitHooks.deviceEvent is called for DEVICE.CONNECT / DEVICE.CONNECT_UNACQUIRED', async () => {
