@@ -85,8 +85,7 @@ export const encodePayload = (name: string, data: Record<string, unknown>, thpSt
     return Buffer.alloc(0);
 };
 
-// TODO: link-to-public-docs
-// https://www.notion.so/satoshilabs/THP-Specification-2-0-18fdc5260606806ab573d0a7cba1897a
+// https://github.com/trezor/trezor-firmware/blob/41692dc2cdb937564abe7fecd4bfc3e508adc8d4/docs/common/thp/specification.md#allocation-layer
 // example: 40ffff000c639ba57ff4e0c2348189a406
 // [magic | channel | len*  | nonce            | crc     ]
 // [40    | ffff    | 000c  | 639ba57ff4e0c234 | 8189a406]
@@ -127,8 +126,7 @@ const handshakeCompletionRequest = (data: Buffer, channel: Buffer, sendBit: numb
 
 const getPreviousAckBit = (thpState: ThpState) => (thpState.recvAckBit ? 0 : 1);
 
-// TODO: link-to-public-docs
-// https://www.notion.so/satoshilabs/THP-Specification-2-0-18fdc5260606806ab573d0a7cba1897a
+// https://github.com/trezor/trezor-firmware/blob/41692dc2cdb937564abe7fecd4bfc3e508adc8d4/docs/common/thp/specification.md#ack-message-structure
 // example: 2012340004d9fcce58
 // [magic | channel | len  | crc     ]
 // [20    | 1234    | 0004 | d9fcce58]
@@ -176,8 +174,6 @@ const encodeThpMessage = (
     throw new Error(`Unknown Thp message type ${messageType}`);
 };
 
-// TODO: link-to-public-docs
-// https://www.notion.so/satoshilabs/THP-Specification-2-0-18fdc5260606806ab573d0a7cba1897a
 export const encodeProtobufMessage = (
     messageType: number,
     data: Buffer,
