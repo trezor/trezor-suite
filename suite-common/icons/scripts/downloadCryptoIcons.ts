@@ -10,7 +10,12 @@ import {
     RUN_LIMIT_SECONDS,
     UPDATED_ICONS_LIST_FILE,
 } from './constants';
-import { COIN_IMAGE_SIZES, createCoinImageName } from '../src/coinImages';
+import {
+    COIN_IMAGE_SIZES,
+    IMAGE_EXTENSION,
+    IMAGE_SIZE_SEPARATOR,
+    createCoinImageName,
+} from '../src/coinImages';
 import {
     fetchCoinList,
     fetchUpdatedIconsList,
@@ -50,21 +55,24 @@ function isValidUrl(url: string): boolean {
 // Returns true only if the icon was written successfully, so the caller can persist the
 // image-url fingerprint (and thereby skip this coin next run) exclusively on success.
 const updateIcon = async (
+    logPrefix: string,
     coinId: string,
     imageUrl: string,
     coinPlatforms: Record<string, string>,
 ): Promise<boolean> => {
     try {
         if (!isValidUrl(imageUrl)) {
-            console.error(`Invalid url (${coinId}):`, imageUrl);
+            console.error(logPrefix, `Invalid url:`, imageUrl);
 
             return false;
         }
 
+        console.log(logPrefix, `⏳ Fetching`, imageUrl);
         const originImage = await fetch(imageUrl);
         if (!originImage.ok) {
             console.error(
-                `Invalid image (${coinId}):`,
+                logPrefix,
+                `Invalid image:`,
                 imageUrl,
                 originImage.status,
                 originImage.statusText,
@@ -75,24 +83,37 @@ const updateIcon = async (
 
         const originImageBuffer = await originImage.arrayBuffer();
         const platforms = Object.entries(coinPlatforms);
+        const iconNames = new Set<string>();
 
         for (const size of COIN_IMAGE_SIZES) {
             const finalImageBuffer = await resizeImage(originImageBuffer, size);
 
             for (const [coingeckoId, contractAddress] of platforms) {
                 const fileName = createCoinImageName({ coingeckoId, contractAddress, size });
-                console.log(`Writing image (${coinId}):`, fileName);
                 await writeImage(fileName, finalImageBuffer);
+                iconNames.add(fileName.split(IMAGE_SIZE_SEPARATOR)[0]!);
             }
 
             const fileName = createCoinImageName({ coingeckoId: coinId, size });
-            console.log(`Writing image (${coinId}):`, fileName);
             await writeImage(fileName, finalImageBuffer);
+            iconNames.add(fileName.split(IMAGE_SIZE_SEPARATOR)[0]!);
         }
+
+        console.log(
+            logPrefix,
+            `🟢 Saved:\n`,
+            JSON.stringify(
+                Array.from(iconNames).map(iconName =>
+                    `${iconName}${IMAGE_SIZE_SEPARATOR}{${COIN_IMAGE_SIZES.join(',')}}${IMAGE_EXTENSION}`.trim(),
+                ),
+                null,
+                2,
+            ),
+        );
 
         return true;
     } catch (error) {
-        console.error(`Error (${coinId}):`, error);
+        console.error(logPrefix, `🔴 Error:`, error);
 
         return false;
     }
@@ -114,13 +135,13 @@ async function ensureDirectoryExists(path: string) {
     if (coins.length === 0) {
         throw new Error('No coins found');
     } else {
-        console.log('Total coins in coin list:', coins.length);
+        console.log(new Date().toISOString(), 'Total coins in coin list:', coins.length);
     }
 
     // Image urls in bulk (~250 coins/request) instead of one /coins/{id} request per coin.
     // Only coins with market data are covered here; the rest fall back to getCoinData below.
     const marketImageUrls = await getCoinMarketImageUrls();
-    console.log('Total market image urls fetched:', marketImageUrls.size);
+    console.log(new Date().toISOString(), 'Total market image urls fetched:', marketImageUrls.size);
 
     // process missing icons and icons updated the longest time ago first
     coins.sort(
@@ -136,8 +157,10 @@ async function ensureDirectoryExists(path: string) {
     await ensureDirectoryExists(FILES_CRYPTOICONS_PATH);
 
     for (let i = 0; i < coins.length; i++) {
+        const logPrefix = `${i + 1}/${coins.length} ${coins[i]?.id}:`;
+
         if (Date.now() - startedAt > RUN_LIMIT_SECONDS * 1000) {
-            console.log(`${i + 1}/${coins.length}: Run limit reached`);
+            console.log(logPrefix, `Run limit reached`);
             break;
         }
 
@@ -146,14 +169,13 @@ async function ensureDirectoryExists(path: string) {
             continue;
         }
 
-        console.log(`${i + 1}/${coins.length}: Start icon updating for ${coin.id}`);
-
         let imageUrl = marketImageUrls.get(coin.id);
         let platforms = coin.platforms ?? {};
 
         // Tail coins (no market data) are absent from /coins/markets — fall back to the
         // per-coin endpoint. This is the only remaining rate-limited call in the loop.
         if (!imageUrl) {
+            console.log(logPrefix, `No market image url, falling back to /coins/{id} endpoint`);
             const apiCallDelay = Math.ceil((60 / RATE_LIMIT_PER_MINUTE) * 1000);
 
             await sleep(apiCallDelay);
@@ -164,22 +186,22 @@ async function ensureDirectoryExists(path: string) {
                     platforms = coinData.platforms;
                 }
             } catch (error) {
-                console.error(`Failed to fetch coin data (${coin.id}):`, error);
+                console.error(logPrefix, `Failed to fetch coin data (${coin.id}):`, error);
             }
         }
 
         if (!imageUrl) {
-            console.error(`No image url for: ${coin.id}`);
+            console.error(logPrefix, `No image url.`);
             continue;
         }
 
         // Skip coins whose source image is unchanged since the last successful run.
         if (updatedIcons[coin.id]?.imageUrl === imageUrl) {
-            console.log(`${i + 1}/${coins.length}: Skipping unchanged icon for ${coin.id}`);
+            console.log(logPrefix, `Skipping unchanged icon.`);
             continue;
         }
 
-        const success = await updateIcon(coin.id, imageUrl, platforms);
+        const success = await updateIcon(logPrefix, coin.id, imageUrl, platforms);
 
         updatedIcons[coin.id] = {
             updatedAt: Math.floor(Date.now() / 1000),
@@ -188,5 +210,6 @@ async function ensureDirectoryExists(path: string) {
         };
     }
 
+    console.log('All icons processed, writing updated icons list');
     await fs.writeFile(UPDATED_ICONS_LIST_FILE, JSON.stringify(updatedIcons, null, 2));
 })();
