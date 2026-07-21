@@ -22,7 +22,7 @@ export const isInteger = (value: string) =>
 
 export const isHexValid = (value: string, prefix?: string) => {
     // ethereum data/signedTx may start with prefix
-    if (prefix && value.indexOf(prefix) === 0) {
+    if (prefix && value.startsWith(prefix)) {
         const hex = value.substring(prefix.length, value.length);
         // pad left even, is it necessary in ETH?
         // TODO: investigate

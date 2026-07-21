@@ -317,7 +317,7 @@ class BIP32 implements BIP32Interface {
 
         return splitPath.reduce((prevHd, indexStr) => {
             let index;
-            if (indexStr.slice(-1) === `'`) {
+            if (indexStr.endsWith(`'`)) {
                 index = parseInt(indexStr.slice(0, -1), 10);
 
                 return prevHd.deriveHardened(index);
