@@ -43,7 +43,11 @@ export const TradingFormOfferSellActions = () => {
     const { quote, confirmButtonData, isBaseButtonDisabled } = useTradingFormOfferCommon<'sell'>();
 
     const isButtonDisabled =
-        isBaseButtonDisabled || amountTooHigh || isNetworkFeeMissing || state.isFormLoading;
+        !account ||
+        isBaseButtonDisabled ||
+        amountTooHigh ||
+        isNetworkFeeMissing ||
+        state.isFormLoading;
 
     const onSelectQuote = () => {
         if (!quote) return;

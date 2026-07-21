@@ -63,7 +63,9 @@ export const TradingRevokeModal = ({ cryptoId }: TradingRevokeModalProps) => {
     }, [analytics, getCryptoInfo]);
 
     const revokeParams = useMemo(() => {
-        if (!isTradingExchangeContext(context)) return null;
+        if (!isTradingExchangeContext(context)) {
+            return null;
+        }
 
         const providersInfo = getProvidersInfoProps(context);
         const exchange = context.selectedQuote?.exchange;
@@ -82,7 +84,9 @@ export const TradingRevokeModal = ({ cryptoId }: TradingRevokeModalProps) => {
     const { provider, spender, preapprovedAmount, approveAmount } =
         useModalLastValidParams(revokeParams, state.isRevokeModalOpen) ?? {};
 
-    if (!state.isRevokeModalOpen || !provider || !spender || !account) return null;
+    if (!state.isRevokeModalOpen || !provider || !spender || !account) {
+        return null;
+    }
 
     const providerLogo = provider.logo ? invityAPI.getProviderLogoUrl(provider.logo) : undefined;
 

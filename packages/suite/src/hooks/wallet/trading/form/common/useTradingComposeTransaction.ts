@@ -82,7 +82,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
 
             return;
         }
-        let cancelled = false;
+        let isMounted = true;
         deriveTronColdRecipient({
             account,
             network,
@@ -90,11 +90,11 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
             device: currentDevice,
             chunkify,
         }).then(recipient => {
-            if (!cancelled) setFeeEstimationRecipient(recipient);
+            if (isMounted) setFeeEstimationRecipient(recipient);
         });
 
         return () => {
-            cancelled = true;
+            isMounted = false;
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
@@ -142,18 +142,27 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     });
 
     useEffect(() => {
+        let isMounted = true;
+
         if (!account || !network) {
+            setState(initState);
+            setComposedLevels(undefined);
+
             return;
         }
 
         const setStateAsync = async () => {
-            const address = await getComposeAddressPlaceholder(
+            const address: string = await getComposeAddressPlaceholder(
                 account,
                 network,
                 device,
                 accounts,
                 chunkify,
             );
+
+            if (!isMounted) {
+                return;
+            }
 
             const currentOutput = getValues('outputs')?.[0];
 
@@ -180,6 +189,10 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         ) {
             setStateAsync();
         }
+
+        return () => {
+            isMounted = false;
+        };
         // call effect only when listed dependencies will change
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [

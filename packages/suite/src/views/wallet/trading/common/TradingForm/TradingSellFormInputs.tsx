@@ -107,6 +107,7 @@ export const TradingSellFormInputs = () => {
                                 name={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
                             />
                         }
+                        inputPlaceholder="TR_SELECT_TOKEN"
                         includedCryptoIds={sellSupportedCryptoIds}
                         onAssetSelect={handleSellAssetSelect}
                     />

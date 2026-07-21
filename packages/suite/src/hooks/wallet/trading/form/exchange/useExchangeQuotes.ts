@@ -105,9 +105,10 @@ export const useExchangeQuotes = ({
 
     const fetchQuotes = useCallback(async () => {
         if (!network) {
+            setIsScheduledQuotesRefresh(false);
+
             return;
         }
-
         const formValues = getValues();
 
         if (previousRequest.current) {

@@ -176,6 +176,7 @@ export const TradingFormApproval = () => {
     };
 
     const isCommonButtonBusy =
+        !account ||
         isFormLoading ||
         isFormInvalid ||
         areFeesLoading ||
