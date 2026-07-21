@@ -2,7 +2,7 @@ import { memo, useMemo } from 'react';
 
 import { type CryptoId } from 'invity-api';
 
-import { useModal } from 'src/components/suite/asset-picker/hooks';
+import { useTradingAssetPickerModal } from 'src/hooks/wallet/trading/form/common/useTradingAssetPickerModal';
 
 import { AssetOptionsProvider } from './AssetOptionsContext';
 import { AssetPickerInput, type AssetPickerInputProps } from '../TradingFormInputAssetPicker';
@@ -32,7 +32,7 @@ export const TradingFormInputBuyAsset = memo(function TradingFormInputBuyAssetIn
     excludedCryptoId,
     onAssetSelect,
 }: TradingFormInputBuyAssetProps) {
-    const modal = useModal();
+    const modal = useTradingAssetPickerModal();
     const includedCryptoIdsSet = useMemo(() => new Set(includedCryptoIds), [includedCryptoIds]);
     const excludedCryptoIdsSet = useMemo(
         () => (excludedCryptoId ? new Set([excludedCryptoId]) : new Set<CryptoId>()),

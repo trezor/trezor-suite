@@ -9,11 +9,8 @@ import {
     type TradingBuyFormProps,
     type TradingCountryOption,
 } from '@suite-common/trading';
-import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { useBuyQuotes } from '../useBuyQuotes';
-
-const ACCOUNT = mockWalletAccount({ symbol: 'btc' });
 
 const QUOTES: BuyTrade[] = [
     { paymentMethod: 'creditCard', paymentMethodName: 'Credit card', exchange: 'provider-1' },
@@ -94,7 +91,6 @@ const renderBuyQuotes = (
                 control: methods.control,
                 getValues: methods.getValues,
                 setValue: methods.setValue,
-                account: ACCOUNT,
             });
 
             return methods;

@@ -4,12 +4,12 @@ import { type FieldErrors, useFormContext, useWatch } from 'react-hook-form';
 import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import {
+    type SelectedTradingAsset,
     TRADING_FORM_FIAT_CURRENCY_SELECT,
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_CURRENCY,
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    type SelectedTradingAsset,
     type TradingBuyFormProps,
     getNetworkDecimalsWithFallback,
 } from '@suite-common/trading';
@@ -43,6 +43,7 @@ import {
 import { getFeeInUnits } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
 
+import { TradingFormInputAmountPlaceholder } from './TradingFormInputAmountPlaceholder';
 import { getFiatInputRules } from './tradingFormInputFiatCryptoRules';
 
 type TradingFormInputFiatContentProps = TradingFormInputFiatCryptoProps & {
@@ -128,7 +129,10 @@ const TradingFormInputFiatContent = ({
 
     const normalizedCryptoAmount =
         asset.symbol === 'btc' && areSatsDisplayed && cryptoAmount
-            ? convertAmountSubunitsToUnits(cryptoAmount, getNetworkDecimalsWithFallback(asset.symbol))
+            ? convertAmountSubunitsToUnits(
+                  cryptoAmount,
+                  getNetworkDecimalsWithFallback(asset.symbol),
+              )
             : cryptoAmount;
 
     let selectedCurrencyCode: BaseCurrencyCode | '' = '';
@@ -222,7 +226,13 @@ export const TradingFormInputFiat = (props: TradingFormInputFiatCryptoProps) => 
     const asset = useSelectedTradingAsset(type);
 
     if (!asset) {
-        return null;
+        return (
+            <TradingFormInputAmountPlaceholder
+                name={props.fiatInputName}
+                labelLeft={props.labelLeft}
+                labelRight={props.labelRight}
+            />
+        );
     }
 
     return <TradingFormInputFiatContent asset={asset} {...props} />;
