@@ -81,7 +81,12 @@ export const TradingFormOfferExchangeActions = () => {
         : state.isFormLoading || isLoadingQuote;
 
     const isButtonDisabled =
-        isBaseButtonDisabled || amountTooHigh || isNetworkFeeMissing || isComposing || isLoading;
+        !account ||
+        isBaseButtonDisabled ||
+        amountTooHigh ||
+        isNetworkFeeMissing ||
+        isComposing ||
+        isLoading;
 
     useEffect(() => {
         const initConfirmTrade = async () => {

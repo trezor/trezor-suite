@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { useDevice } from '@suite/device';
 import { openModal } from '@suite/modal';
-import { selectEnabledNetworks } from '@suite-common/wallet-core';
+import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
 
 import { setConnectionModal } from 'src/actions/device/deviceSlice';
 import { useModal } from 'src/components/suite/asset-picker/hooks';
@@ -12,7 +12,7 @@ export const useTradingAssetPickerModal = () => {
     const dispatch = useDispatch();
     const { device } = useDevice();
     const { open, openModal: openAssetPicker, closeModal, toggleModal } = useModal();
-    const hasEnabledNetworks = useSelector(state => selectEnabledNetworks(state).length > 0);
+    const hasEnabledNetworks = useSelector(selectIsAnyNetworkEnabled);
 
     const handleOpenModal = useCallback(() => {
         if (!hasEnabledNetworks) {

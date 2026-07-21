@@ -148,6 +148,7 @@ export const TradingExchangeFormInputs = () => {
                         }
                         includedCryptoIds={exchangeSellSupportedCryptoIds}
                         excludedCryptoId={receiveCryptoSelect?.id}
+                        inputPlaceholder="TR_SELECT_TOKEN"
                         onAssetSelect={handleSellAssetSelect}
                     />
                     <Column gap={8}>

@@ -58,15 +58,23 @@ export const useExchangeDexQuote = ({
         name: ['transactionData', TRADING_FORM_OUTPUT_ADDRESS, 'ethereumAdjustGasLimit'],
     });
 
+    const accountRef = useCurrentRef(account);
     const composeRequestRef = useCurrentRef(composeRequest);
     const fetchFeesAndCompose = useCallback(async () => {
         if (!account) {
             return;
         }
 
-        await dispatch(updateFeeInfoThunk({ networkSymbol: account.symbol })).unwrap();
+        const accountKey = account.key;
+
+        await dispatch(updateFeeInfoThunk({ networkSymbol: account.symbol }));
+
+        if (accountRef.current?.key !== accountKey) {
+            return;
+        }
+
         composeRequestRef.current();
-    }, [dispatch, account, composeRequestRef]);
+    }, [dispatch, account, accountRef, composeRequestRef]);
 
     useEffect(() => {
         if (!account) {

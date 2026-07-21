@@ -1,6 +1,10 @@
 import { createThunk } from '@suite-common/redux-utils';
 
-import { INVITY_API_RELOAD_DATA_AFTER_MS, TRADING_THUNK_PREFIX } from '../../constants';
+import {
+    INVITY_API_RELOAD_DATA_AFTER_MS,
+    TRADING_FALLBACK_API_KEY,
+    TRADING_THUNK_PREFIX,
+} from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
@@ -48,7 +52,7 @@ export const loadInitialDataThunk = createThunk(
 
         dispatch(tradingActions.setTradingActiveSection(activeSection));
 
-        if ((account || forcedApiKey) && !isLoading && (isDifferentAccount || areDataOutdated)) {
+        if (!isLoading && (isDifferentAccount || areDataOutdated)) {
             dispatch(tradingActions.setLoading({ isLoading: true }));
 
             const invityServerEnvironment = extra.selectors.selectTradingEnvironment(getState());
@@ -56,8 +60,7 @@ export const loadInitialDataThunk = createThunk(
                 invityAPI.setInvityServersEnvironment(invityServerEnvironment);
             }
 
-            // use account descriptor or forcedApiKey - one of these two must be provided to get here
-            const apiKey = account?.descriptor || forcedApiKey!;
+            const apiKey = account?.descriptor || forcedApiKey || TRADING_FALLBACK_API_KEY;
             invityAPI.createInvityAPIKey(apiKey);
 
             if (isDifferentAccount || !platforms || !coins) {

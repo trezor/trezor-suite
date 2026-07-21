@@ -141,7 +141,13 @@ export const TradingSelectedOfferSellTransaction = () => {
                 <Button
                     minWidth={200}
                     isLoading={isLoading || disabled}
-                    isDisabled={isLoading || !device?.connected || isDiscoveryRunning || disabled}
+                    isDisabled={
+                        isLoading ||
+                        !account ||
+                        !device?.connected ||
+                        isDiscoveryRunning ||
+                        disabled
+                    }
                     onClick={handleSendAndConfirmClick}
                     data-testid="@trading/offer/confirm-on-trezor-and-send"
                 >
