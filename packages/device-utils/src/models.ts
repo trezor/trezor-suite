@@ -51,11 +51,13 @@ export const models: Record<DeviceModelInternal, ModelConfig> = {
             '1': 'Charcoal Black',
             '2': 'Obsidian Green',
             '3': 'Bitcoin Orange',
+            '4': 'Limited Edition',
         },
         frontColors: {
             '1': '1',
             '2': '2',
             '3': '1',
+            '4': '1',
         },
     },
 };
