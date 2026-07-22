@@ -3,7 +3,7 @@ import { base58 } from '@scure/base';
 
 import { type AddressValidator, addressType } from '@trezor/network-module-suite-types';
 
-import type { TronSupportedCoin } from '../supportedCoins';
+import type { TronSupportedNetwork } from '../supportedNetworks';
 
 const TRON_ADDRESS_TYPE = 0x41;
 
@@ -39,7 +39,7 @@ function decodeBase58Address(base58Sting: unknown): number[] | false {
     return false;
 }
 
-export const isAddressValid = (mainAddress: string, _symbol: TronSupportedCoin): boolean => {
+export const isAddressValid = (mainAddress: string, _symbol: TronSupportedNetwork): boolean => {
     const address = decodeBase58Address(mainAddress);
 
     if (!address) {
@@ -53,7 +53,7 @@ export const isAddressValid = (mainAddress: string, _symbol: TronSupportedCoin):
     return TRON_ADDRESS_TYPE === address[0];
 };
 
-export const getAddressType = (address: string, symbol: TronSupportedCoin) => {
+export const getAddressType = (address: string, symbol: TronSupportedNetwork) => {
     if (isAddressValid(address, symbol)) {
         return addressType.ADDRESS;
     }
@@ -61,7 +61,7 @@ export const getAddressType = (address: string, symbol: TronSupportedCoin) => {
     return undefined;
 };
 
-export const tronValidator: AddressValidator<TronSupportedCoin> = {
+export const tronValidator: AddressValidator<TronSupportedNetwork> = {
     isAddressValid,
     getAddressType,
 };

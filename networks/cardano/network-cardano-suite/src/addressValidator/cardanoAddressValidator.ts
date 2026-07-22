@@ -4,7 +4,7 @@ import crc32 from 'crc/calculators/crc32';
 
 import { type AddressValidator, addressType } from '@trezor/network-module-suite-types';
 
-import type { CardanoSupportedCoin } from '../supportedCoins';
+import type { CardanoSupportedNetwork } from '../supportedNetworks';
 
 type NetworkEnvironment = 'prod' | 'testnet' | 'regtest' | 'stake';
 
@@ -78,13 +78,13 @@ function isValidBech32Address(address: string, network: NetworkEnvironment): boo
     return true;
 }
 
-export const isAddressValid = (address: string, _symbol: CardanoSupportedCoin): boolean => {
+export const isAddressValid = (address: string, _symbol: CardanoSupportedNetwork): boolean => {
     const resolvedNetwork = getNetworkEnvironment(address);
 
     return isValidLegacyAddress(address) || isValidBech32Address(address, resolvedNetwork);
 };
 
-export const getAddressType = (address: string, symbol: CardanoSupportedCoin) => {
+export const getAddressType = (address: string, symbol: CardanoSupportedNetwork) => {
     if (isAddressValid(address, symbol)) {
         return addressType.ADDRESS;
     }
@@ -92,7 +92,7 @@ export const getAddressType = (address: string, symbol: CardanoSupportedCoin) =>
     return undefined;
 };
 
-export const adaValidator: AddressValidator<CardanoSupportedCoin> = {
+export const adaValidator: AddressValidator<CardanoSupportedNetwork> = {
     isAddressValid,
     getAddressType,
 };

@@ -3,7 +3,7 @@ import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
 
 import { type AddressValidator, addressType } from '@trezor/network-module-suite-types';
 
-import type { EthereumSupportedCoin } from '../supportedCoins';
+import type { EthereumSupportedNetwork } from '../supportedNetworks';
 
 function verifyChecksum(address: string): boolean {
     const stripped = address.replace('0x', '');
@@ -25,7 +25,7 @@ function verifyChecksum(address: string): boolean {
     return true;
 }
 
-export const isAddressValid = (address: string, _symbol: EthereumSupportedCoin): boolean => {
+export const isAddressValid = (address: string, _symbol: EthereumSupportedNetwork): boolean => {
     if (!/^0x[0-9a-fA-F]{40}$/.test(address)) {
         // Check if it has the basic requirements of an address
         return false;
@@ -39,7 +39,7 @@ export const isAddressValid = (address: string, _symbol: EthereumSupportedCoin):
     return verifyChecksum(address);
 };
 
-export const getAddressType = (address: string, _symbol: EthereumSupportedCoin) => {
+export const getAddressType = (address: string, _symbol: EthereumSupportedNetwork) => {
     if (isAddressValid(address, _symbol)) {
         return addressType.ADDRESS;
     }
@@ -47,7 +47,7 @@ export const getAddressType = (address: string, _symbol: EthereumSupportedCoin) 
     return undefined;
 };
 
-export const ethereumValidator: AddressValidator<EthereumSupportedCoin> = {
+export const ethereumValidator: AddressValidator<EthereumSupportedNetwork> = {
     isAddressValid,
     getAddressType,
 };

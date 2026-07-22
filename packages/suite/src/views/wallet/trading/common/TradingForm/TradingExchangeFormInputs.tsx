@@ -131,12 +131,12 @@ export const TradingExchangeFormInputs = () => {
         [dispatch, setAmountLimitsRef, setValueRef, resetSelectedOfferRef],
     );
 
-    const supportedCoins = networkModuleRepository.getSupportedCoins();
+    const supportedNetworks = networkModuleRepository.getSupportedNetwork();
     const exchangeBuySupportedCryptoIds = useSelector(state =>
-        selectTradingExchangeBuyCryptoIds(state, supportedCoins),
+        selectTradingExchangeBuyCryptoIds(state, supportedNetworks),
     );
     const exchangeSellSupportedCryptoIds = useSelector(state =>
-        selectTradingExchangeSellCryptoIds(state, supportedCoins),
+        selectTradingExchangeSellCryptoIds(state, supportedNetworks),
     );
 
     return (

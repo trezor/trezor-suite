@@ -68,9 +68,9 @@ export const TradingBuyFormInputs = () => {
         [dispatch, setAmountLimitsRef, setValueRef],
     );
 
-    const supportedCoins = networkModuleRepository.getSupportedCoins();
+    const supportedNetworks = networkModuleRepository.getSupportedNetwork();
     const buySupportedCryptoIds = useSelector(state =>
-        selectTradingBuySupportedCryptoIds(state, supportedCoins),
+        selectTradingBuySupportedCryptoIds(state, supportedNetworks),
     );
 
     const countryRequiresSubdivision = isCountrySubdivisionRequired(countrySelect?.value);

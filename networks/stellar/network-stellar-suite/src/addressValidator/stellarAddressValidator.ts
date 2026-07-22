@@ -4,7 +4,7 @@ import crc16xmodem from 'crc/calculators/crc16xmodem';
 
 import { type AddressValidator, addressType } from '@trezor/network-module-suite-types';
 
-import type { StellarSupportedCoin } from '../supportedCoins';
+import type { StellarSupportedNetwork } from '../supportedNetworks';
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 
@@ -37,7 +37,7 @@ function verifyChecksum(address: string): boolean {
     return computedChecksum === checksum;
 }
 
-export const isAddressValid = (address: string, _symbol: StellarSupportedCoin): boolean => {
+export const isAddressValid = (address: string, _symbol: StellarSupportedNetwork): boolean => {
     if (regexp.test(address)) {
         return verifyChecksum(address);
     }
@@ -45,7 +45,7 @@ export const isAddressValid = (address: string, _symbol: StellarSupportedCoin): 
     return false;
 };
 
-export const getAddressType = (address: string, _symbol: StellarSupportedCoin) => {
+export const getAddressType = (address: string, _symbol: StellarSupportedNetwork) => {
     if (isAddressValid(address, _symbol)) {
         return addressType.ADDRESS;
     }
@@ -53,7 +53,7 @@ export const getAddressType = (address: string, _symbol: StellarSupportedCoin) =
     return undefined;
 };
 
-export const stellarValidator: AddressValidator<StellarSupportedCoin> = {
+export const stellarValidator: AddressValidator<StellarSupportedNetwork> = {
     isAddressValid,
     getAddressType,
 };

@@ -1,7 +1,7 @@
 import type { AddressValidator } from '@suite-common/address';
 import type { AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type Bip329 } from '@suite-common/bip329-types';
-import type { CoinSymbol, NetworkModuleRepository } from '@suite-common/networks';
+import type { NetworkModuleRepository, NetworkSymbol } from '@suite-common/networks';
 import {
     type EncryptableBranded,
     type EncryptedHex,
@@ -67,8 +67,8 @@ const networkModuleRepositoryMock: NetworkModuleRepository = {
     get: () => {
         throw new Error('Network module repository mock is not implemented.');
     },
-    getSupportedCoins: () => [],
-    isSupportedCoin: (_symbol: string): _symbol is CoinSymbol => false,
+    getSupportedNetwork: () => [],
+    isSupportedNetwork: (_symbol: string): _symbol is NetworkSymbol => false,
 };
 
 const connectInitSettings: ConnectInitSettings = {

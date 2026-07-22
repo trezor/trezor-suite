@@ -45,12 +45,12 @@ const renderItem = (
 export const MyAssetSheet = memo(
     ({ tradingType, isVisible, onClose, onAssetSelect, testID }: MyAssetSheetProps) => {
         const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
-        const supportedCoins = networkModuleRepository.getSupportedCoins();
+        const supportedNetworks = networkModuleRepository.getSupportedNetwork();
         const myAssets = useSelector((state: CombinedSelectorsRootState) =>
             selectAccountsWithTokensToSellSectionCondensedListByTradingType(
                 state,
                 tradingType,
-                supportedCoins,
+                supportedNetworks,
             ),
         );
 

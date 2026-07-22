@@ -16,8 +16,8 @@ export const deriveCardanoEnabledNetworks = (
         const key = coin.toLowerCase();
         if (!CARDANO_COINS.has(key) || seen.has(key)) continue;
         seen.add(key);
-        // Push the lowercased `key` (a canonical CoinSymbol, 'ada'/'tada') — the raw `coin` is the
-        // mixed-case shortcut (e.g. 'ADA') and is not a valid CoinSymbol.
+        // Push the lowercased `key` (a canonical NetworkSymbol, 'ada'/'tada') — the raw `coin` is the
+        // mixed-case shortcut (e.g. 'ADA') and is not a valid NetworkSymbol.
         networks.push({ coin: key } as EnabledNetwork);
     }
 

@@ -1,12 +1,16 @@
 import type { NetworkModule } from '@trezor/network-module-suite-types';
 
 import { tronValidator } from './addressValidator/tronAddressValidator';
-import { type TronSupportedCoin, getSupportedCoins, isSupportedCoin } from './supportedCoins';
+import {
+    type TronSupportedNetwork,
+    getSupportedNetwork,
+    isSupportedNetwork,
+} from './supportedNetworks';
 
-export type TronNetworkModule = NetworkModule<TronSupportedCoin>;
+export type TronNetworkModule = NetworkModule<TronSupportedNetwork>;
 
 export const createTronNetworkModule = (): TronNetworkModule => ({
     addressValidator: tronValidator,
-    getSupportedCoins,
-    isSupportedCoin,
+    getSupportedNetwork,
+    isSupportedNetwork,
 });

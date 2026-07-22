@@ -10,9 +10,9 @@ import { useTradeableAssetsFilteredData } from '../general/useTradeableAssetsFil
 
 export const useBuyTradeableAssetsFilteredData = () => {
     const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
-    const supportedCoins = networkModuleRepository.getSupportedCoins();
+    const supportedNetworks = networkModuleRepository.getSupportedNetwork();
     const assets = useSelector((state: TradingRootState & FeatureFlagsRootState) =>
-        selectBuyTradeableAssets(state, supportedCoins),
+        selectBuyTradeableAssets(state, supportedNetworks),
     );
 
     return useTradeableAssetsFilteredData({ assets });

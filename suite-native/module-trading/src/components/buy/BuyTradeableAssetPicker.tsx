@@ -27,9 +27,9 @@ export const BuyTradeableAssetPicker = () => {
         useSheetControls(form, 'asset');
     const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
-    const supportedCoins = networkModuleRepository.getSupportedCoins();
+    const supportedNetworks = networkModuleRepository.getSupportedNetwork();
     const assets = useSelector((state: TradingRootState & FeatureFlagsRootState) =>
-        selectBuyTradeableAssets(state, supportedCoins),
+        selectBuyTradeableAssets(state, supportedNetworks),
     );
 
     const btcAsset = useMemo(() => assets.find(asset => asset.cryptoId === 'bitcoin'), [assets]);

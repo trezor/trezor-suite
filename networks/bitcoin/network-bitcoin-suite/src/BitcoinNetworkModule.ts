@@ -1,12 +1,16 @@
 import type { NetworkModule } from '@trezor/network-module-suite-types';
 
 import { bitcoinValidator } from './addressValidator/bitcoinAddressValidator';
-import { type BitcoinSupportedCoin, getSupportedCoins, isSupportedCoin } from './supportedCoins';
+import {
+    type BitcoinSupportedNetwork,
+    getSupportedNetwork,
+    isSupportedNetwork,
+} from './supportedNetworks';
 
-export type BitcoinNetworkModule = NetworkModule<BitcoinSupportedCoin>;
+export type BitcoinNetworkModule = NetworkModule<BitcoinSupportedNetwork>;
 
 export const createBitcoinNetworkModule = (): BitcoinNetworkModule => ({
     addressValidator: bitcoinValidator,
-    getSupportedCoins,
-    isSupportedCoin,
+    getSupportedNetwork,
+    isSupportedNetwork,
 });

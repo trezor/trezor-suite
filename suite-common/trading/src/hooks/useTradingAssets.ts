@@ -239,7 +239,7 @@ export function useTradingAssets() {
     const getCoinsAndPlatforms = useCoinsAndPlatforms();
     const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
     const supportedAddressValidatorSymbols = useMemo(
-        () => new Set(networkModuleRepository.getSupportedCoins()),
+        () => new Set(networkModuleRepository.getSupportedNetwork()),
         [networkModuleRepository],
     );
 

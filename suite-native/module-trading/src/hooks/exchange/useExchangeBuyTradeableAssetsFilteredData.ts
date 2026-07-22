@@ -15,9 +15,9 @@ export const useExchangeBuyTradeableAssetsFilteredData = () => {
     const { networkModuleRepository } = useServices(selectNetworkModuleRepositoryDep);
     const { watch } = useExchangeFormContext();
     const sendAsset = watch('sendAsset');
-    const supportedCoins = networkModuleRepository.getSupportedCoins();
+    const supportedNetworks = networkModuleRepository.getSupportedNetwork();
     const assets = useSelector((state: TradingRootState & FeatureFlagsRootState) =>
-        selectExchangeBuyTradeableAssets(state, supportedCoins, sendAsset?.cryptoId),
+        selectExchangeBuyTradeableAssets(state, supportedNetworks, sendAsset?.cryptoId),
     );
 
     return useTradeableAssetsFilteredData({ assets });

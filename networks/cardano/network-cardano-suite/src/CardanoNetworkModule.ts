@@ -1,12 +1,16 @@
 import type { NetworkModule } from '@trezor/network-module-suite-types';
 
 import { adaValidator } from './addressValidator/cardanoAddressValidator';
-import { type CardanoSupportedCoin, getSupportedCoins, isSupportedCoin } from './supportedCoins';
+import {
+    type CardanoSupportedNetwork,
+    getSupportedNetwork,
+    isSupportedNetwork,
+} from './supportedNetworks';
 
-export type CardanoNetworkModule = NetworkModule<CardanoSupportedCoin>;
+export type CardanoNetworkModule = NetworkModule<CardanoSupportedNetwork>;
 
 export const createCardanoNetworkModule = (): CardanoNetworkModule => ({
     addressValidator: adaValidator,
-    getSupportedCoins,
-    isSupportedCoin,
+    getSupportedNetwork,
+    isSupportedNetwork,
 });

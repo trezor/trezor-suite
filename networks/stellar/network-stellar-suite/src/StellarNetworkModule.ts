@@ -1,12 +1,16 @@
 import type { NetworkModule } from '@trezor/network-module-suite-types';
 
 import { stellarValidator } from './addressValidator/stellarAddressValidator';
-import { type StellarSupportedCoin, getSupportedCoins, isSupportedCoin } from './supportedCoins';
+import {
+    type StellarSupportedNetwork,
+    getSupportedNetwork,
+    isSupportedNetwork,
+} from './supportedNetworks';
 
-export type StellarNetworkModule = NetworkModule<StellarSupportedCoin>;
+export type StellarNetworkModule = NetworkModule<StellarSupportedNetwork>;
 
 export const createStellarNetworkModule = (): StellarNetworkModule => ({
     addressValidator: stellarValidator,
-    getSupportedCoins,
-    isSupportedCoin,
+    getSupportedNetwork,
+    isSupportedNetwork,
 });

@@ -24,13 +24,13 @@ export type StaticNetworkModulesDep = {
     networkModules: NetworkModules;
 };
 
-// This is a tool, that extracts the union type of all supported CoinSymbols
+// This is a tool that extracts the union type of all supported network symbols
 // from the NetworkModules.
 //
-// With this, we are able to statically type the CoinSymbol, while
+// With this, we are able to statically type the NetworkSymbol, while
 // preserving the modular aspect.
 //
-type NetworkModuleCoinSymbol<TNetworkModule> =
+type NetworkModuleSymbol<TNetworkModule> =
     TNetworkModule extends NetworkModule<infer TSymbol> ? TSymbol : never;
 
-export type CoinSymbol = NetworkModuleCoinSymbol<NetworkModules[keyof NetworkModules]>;
+export type NetworkSymbol = NetworkModuleSymbol<NetworkModules[keyof NetworkModules]>;

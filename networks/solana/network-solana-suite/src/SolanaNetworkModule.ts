@@ -1,12 +1,16 @@
 import type { NetworkModule } from '@trezor/network-module-suite-types';
 
 import { solanaValidator } from './addressValidator/solanaAddressValidator';
-import { type SolanaSupportedCoin, getSupportedCoins, isSupportedCoin } from './supportedCoins';
+import {
+    type SolanaSupportedNetwork,
+    getSupportedNetwork,
+    isSupportedNetwork,
+} from './supportedNetworks';
 
-export type SolanaNetworkModule = NetworkModule<SolanaSupportedCoin>;
+export type SolanaNetworkModule = NetworkModule<SolanaSupportedNetwork>;
 
 export const createSolanaNetworkModule = (): SolanaNetworkModule => ({
     addressValidator: solanaValidator,
-    getSupportedCoins,
-    isSupportedCoin,
+    getSupportedNetwork,
+    isSupportedNetwork,
 });

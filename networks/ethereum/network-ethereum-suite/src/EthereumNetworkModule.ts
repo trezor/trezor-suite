@@ -1,12 +1,16 @@
 import type { NetworkModule } from '@trezor/network-module-suite-types';
 
 import { ethereumValidator } from './addressValidator/ethereumAddressValidator';
-import { type EthereumSupportedCoin, getSupportedCoins, isSupportedCoin } from './supportedCoins';
+import {
+    type EthereumSupportedNetwork,
+    getSupportedNetwork,
+    isSupportedNetwork,
+} from './supportedNetworks';
 
-export type EthereumNetworkModule = NetworkModule<EthereumSupportedCoin>;
+export type EthereumNetworkModule = NetworkModule<EthereumSupportedNetwork>;
 
 export const createEthereumNetworkModule = (): EthereumNetworkModule => ({
     addressValidator: ethereumValidator,
-    getSupportedCoins,
-    isSupportedCoin,
+    getSupportedNetwork,
+    isSupportedNetwork,
 });

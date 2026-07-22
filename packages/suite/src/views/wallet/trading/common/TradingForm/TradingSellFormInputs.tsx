@@ -91,9 +91,9 @@ export const TradingSellFormInputs = () => {
         [onCryptoCurrencyChangeRef],
     );
 
-    const supportedCoins = networkModuleRepository.getSupportedCoins();
+    const supportedNetworks = networkModuleRepository.getSupportedNetwork();
     const sellSupportedCryptoIds = useSelector(state =>
-        selectTradingSellSupportedCryptoIds(state, supportedCoins),
+        selectTradingSellSupportedCryptoIds(state, supportedNetworks),
     );
 
     const countryRequiresSubdivision = isCountrySubdivisionRequired(countrySelect?.value);

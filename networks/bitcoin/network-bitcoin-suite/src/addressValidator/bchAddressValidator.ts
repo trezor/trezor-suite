@@ -3,9 +3,9 @@
 
 import { type AddressValidator, addressType } from '@trezor/network-module-suite-types';
 
-import type { BitcoinSupportedCoin } from '../supportedCoins';
+import type { BitcoinSupportedNetwork } from '../supportedNetworks';
 
-type BitcoinCashSupportedCoin = Extract<BitcoinSupportedCoin, 'bch'>;
+type BitcoinCashSupportedNetwork = Extract<BitcoinSupportedNetwork, 'bch'>;
 
 const CASHADDR_REGEXP = /^[qQpP]{1}[0-9a-zA-Z]{41}$/;
 
@@ -99,10 +99,10 @@ function validateAddress(address: string): boolean {
     return verifyChecksum(CASHADDR_PREFIX, normalized);
 }
 
-export const isAddressValid = (address: string, _symbol: BitcoinCashSupportedCoin): boolean =>
+export const isAddressValid = (address: string, _symbol: BitcoinCashSupportedNetwork): boolean =>
     validateAddress(address);
 
-export const getAddressType = (address: string, symbol: BitcoinCashSupportedCoin) => {
+export const getAddressType = (address: string, symbol: BitcoinCashSupportedNetwork) => {
     if (isAddressValid(address, symbol)) {
         return addressType.ADDRESS;
     }
@@ -110,7 +110,7 @@ export const getAddressType = (address: string, symbol: BitcoinCashSupportedCoin
     return undefined;
 };
 
-export const bchValidator: AddressValidator<BitcoinCashSupportedCoin> = {
+export const bchValidator: AddressValidator<BitcoinCashSupportedNetwork> = {
     isAddressValid,
     getAddressType,
 };
