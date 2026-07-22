@@ -92,11 +92,11 @@ const walletsSection: ShortcutSection = {
         },
         {
             labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_DASHBOARD',
-            keys: ['ALT', 'KEY_0'],
+            keys: ['MOD', 'ALT', 'KEY_0'],
         },
         {
             labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SWITCH_ACCOUNT',
-            keys: ['ALT', 'KEY_1'],
+            keys: ['MOD', 'ALT', 'KEY_1'],
         },
         {
             labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_PREV_ACCOUNT',
