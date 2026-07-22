@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { isArrayMember } from '@trezor/utils';
 
 // Going over 180 will broke graph in mobile app

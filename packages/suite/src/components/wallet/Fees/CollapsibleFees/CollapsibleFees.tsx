@@ -2,7 +2,8 @@ import { useMemo } from 'react';
 import { useWatch } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkType } from '@suite-common/wallet-config';
 import { type FormState } from '@suite-common/wallet-types';
 import { type TronAccountExtraData } from '@trezor/blockchain-link-types';
 import { Button, Collapsible, Column, Row, TextButton } from '@trezor/components';

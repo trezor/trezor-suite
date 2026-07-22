@@ -1,4 +1,4 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { getRandomInt } from '@trezor/utils';
 
 import { expect, test } from '../../support/fixtures';

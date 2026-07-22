@@ -1,5 +1,6 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type EvmAssetDiff, type EvmAssetExposure } from '@suite-common/tx-simulation';
-import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/wallet-config';
 import { IconCircle } from '@trezor/components';
 import { CoinsIcon } from '@trezor/icons';
 import { TokenIcon, type TokenIconSize, isCoinSymbol } from '@trezor/product-components';

@@ -1,5 +1,5 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type WriteAccountLabel } from '@suite-common/suite-sync-types';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountDescriptor } from '@suite-common/wallet-types';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 import { type WalletDescriptor, parseStaticSessionId } from '@trezor/device-utils';

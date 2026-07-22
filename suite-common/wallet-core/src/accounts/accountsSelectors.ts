@@ -1,13 +1,9 @@
 import { A, F, G, pipe } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import {
-    type AccountType,
-    type Bip43Path,
-    type Network,
-    type NetworkSymbol,
-} from '@suite-common/wallet-config';
+import { type AccountType, type Bip43Path, type Network } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { isCardanoStakingActive, isTestnet, isUtxoBased } from '@suite-common/wallet-utils';
 import { type DeviceState, type StaticSessionId } from '@trezor/connect';

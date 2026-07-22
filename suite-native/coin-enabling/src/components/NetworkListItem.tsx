@@ -1,7 +1,8 @@
 import { type ReactNode } from 'react';
 import { type AccessibilityRole } from 'react-native';
 
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { getNetwork } from '@suite-common/wallet-config';
 import { Box, Card, PressableOpacity } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 

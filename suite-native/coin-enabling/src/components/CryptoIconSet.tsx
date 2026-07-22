@@ -1,8 +1,5 @@
-import {
-    type NetworkSymbol,
-    getNetwork,
-    getRepresentativeAssets,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { getNetwork, getRepresentativeAssets } from '@suite-common/wallet-config';
 import { Box, Text } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';

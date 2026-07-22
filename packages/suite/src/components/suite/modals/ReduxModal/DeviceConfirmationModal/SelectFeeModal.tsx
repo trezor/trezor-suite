@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl';
 import { Translation, messages } from '@suite/intl';
 import { onReceiveFee } from '@suite/modal';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { sortLevels } from '@suite-common/wallet-core';
 import { type Account, type FormState } from '@suite-common/wallet-types';
 import { Button, Column, Modal } from '@trezor/components';

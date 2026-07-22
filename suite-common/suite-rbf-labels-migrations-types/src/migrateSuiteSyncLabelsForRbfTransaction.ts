@@ -1,6 +1,6 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type SuiteSyncOutput, type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountDescriptor,
     type AccountKey,

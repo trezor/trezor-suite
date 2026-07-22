@@ -5,8 +5,8 @@ import { type PrimitiveAtom, useSetAtom } from 'jotai';
 
 import { selectIsDeviceAuthorized } from '@suite-common/device';
 import { type AccountItem, type FiatGraphPoint } from '@suite-common/graph';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BlockchainRootState,
     selectBaseCurrency,

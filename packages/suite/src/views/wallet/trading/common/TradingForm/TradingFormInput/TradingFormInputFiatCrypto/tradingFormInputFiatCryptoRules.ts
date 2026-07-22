@@ -2,7 +2,7 @@ import { type UseControllerProps } from 'react-hook-form';
 
 import { type TranslationFunction } from '@suite/intl';
 import { type Formatter } from '@suite-common/formatters';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type Account, type RatesByKey, type TokenAddress } from '@suite-common/wallet-types';
 import {
     buildCurrencyShortOption,

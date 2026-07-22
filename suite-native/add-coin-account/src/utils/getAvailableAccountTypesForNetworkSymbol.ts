@@ -1,8 +1,8 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import {
     type AccountType,
     NORMAL_ACCOUNT_TYPE,
     type NetworkConfig,
-    type NetworkSymbol,
     networks,
 } from '@suite-common/wallet-config';
 import { typedObjectKeys } from '@trezor/utils';

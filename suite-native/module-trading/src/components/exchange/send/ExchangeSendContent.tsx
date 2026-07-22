@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import { cryptoIdToSymbol } from '@suite-common/trading';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountFormattedBalance } from '@suite-common/wallet-core';
 import { HStack } from '@suite-native/atoms';
 import { useWatch } from '@suite-native/forms';

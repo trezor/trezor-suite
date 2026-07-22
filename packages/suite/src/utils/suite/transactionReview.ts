@@ -1,9 +1,6 @@
 import { type ExtendedMessageDescriptor } from '@suite/intl';
-import {
-    type NetworkSymbol,
-    getNetworkDisplaySymbol,
-    getWrappedNativeSymbol,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { getNetworkDisplaySymbol, getWrappedNativeSymbol } from '@suite-common/wallet-config';
 import { type FormState, type StakeFormState } from '@suite-common/wallet-types';
 import { getEvmTransactionPurpose } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';

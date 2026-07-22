@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
 
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 

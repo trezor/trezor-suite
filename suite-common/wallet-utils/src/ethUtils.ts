@@ -1,6 +1,6 @@
 import { Calldata } from '@suite-common/calldata';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { UINT256_MAX } from '@suite-common/suite-constants';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type EvmTransactionPurpose,
     type WalletAccountTransaction,

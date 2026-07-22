@@ -1,4 +1,5 @@
-import { type NetworkSymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type TextProps } from '@suite-native/atoms';
 
 import { type FormatterProps } from '../types';

@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { getNetwork } from '@suite-common/wallet-config';
 import { useTranslate } from '@suite-native/intl';
 import { type FilterItem, FilterTabs } from '@suite-native/trading-atoms';
 

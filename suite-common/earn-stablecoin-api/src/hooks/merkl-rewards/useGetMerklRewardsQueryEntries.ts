@@ -1,10 +1,7 @@
 import { useMemo } from 'react';
 
-import {
-    type NetworkSymbol,
-    getNetwork,
-    isEarnYieldClaimSupported,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { getNetwork, isEarnYieldClaimSupported } from '@suite-common/wallet-config';
 import { type Account, type AccountWithNetworkType } from '@suite-common/wallet-types';
 import { unique } from '@trezor/utils';
 

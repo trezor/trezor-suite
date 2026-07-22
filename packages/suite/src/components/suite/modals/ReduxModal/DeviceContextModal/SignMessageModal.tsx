@@ -3,12 +3,9 @@ import styled from 'styled-components';
 import { AccountLabel } from '@suite/account';
 import { Translation } from '@suite/intl';
 import type { DeviceRootState } from '@suite-common/device';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import {
-    type NetworkSymbol,
-    getNetwork,
-    getNetworkByEvmChainId,
-} from '@suite-common/wallet-config';
+import { getNetwork, getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAddressByNetworkAndPath,

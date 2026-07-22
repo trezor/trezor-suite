@@ -6,6 +6,7 @@ import {
     selectDeviceStaticSessionId,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/device';
+import { type NetworkSymbol } from '@suite-common/networks';
 import {
     createWeakMapSelector,
     returnStableArrayIfEmpty,
@@ -23,7 +24,7 @@ import {
     isTokenDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FiatRatesRootState,

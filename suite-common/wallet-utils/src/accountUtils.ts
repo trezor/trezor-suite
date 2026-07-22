@@ -1,3 +1,4 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type AccountType,
@@ -5,7 +6,6 @@ import {
     type Bip43PathTemplate,
     type NetworkAccount,
     type NetworkFeature,
-    type NetworkSymbol,
     type NetworkSymbolExtended,
     type NetworkType,
     type TrezorConnectBackendType,

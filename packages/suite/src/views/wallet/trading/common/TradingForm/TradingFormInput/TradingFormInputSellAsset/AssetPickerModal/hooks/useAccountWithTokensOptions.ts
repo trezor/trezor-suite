@@ -4,10 +4,11 @@ import { useThrottle } from 'react-use';
 import { type CryptoId } from 'invity-api';
 
 import { selectSelectedDevice } from '@suite-common/device';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { type EnhancedTokenInfo, selectTokenDefinitions } from '@suite-common/token-definitions';
 import { getCryptoId } from '@suite-common/trading';
-import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
+import { networkSymbolCollection } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
     selectCurrentFiatRates,

@@ -18,11 +18,11 @@ import type {
 } from 'invity-api';
 
 import { type CountryCode } from '@suite-common/geolocation';
+import { type NetworkSymbol } from '@suite-common/networks';
 import {
     type Network,
     type NetworkConfig,
     type NetworkDisplaySymbol,
-    type NetworkSymbol,
 } from '@suite-common/wallet-config';
 import {
     type Account,

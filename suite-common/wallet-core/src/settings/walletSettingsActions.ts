@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type AddressDisplayOptions } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type PROTO } from '@trezor/connect';

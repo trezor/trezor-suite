@@ -1,6 +1,6 @@
 import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { HStack, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';

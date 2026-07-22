@@ -1,12 +1,9 @@
 import { useCallback, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type TxSimulationEVMResult } from '@suite-common/tx-simulation';
-import {
-    type NetworkSymbol,
-    type NetworkType,
-    getNetworkDisplaySymbol,
-} from '@suite-common/wallet-config';
+import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { type EvmSelectedFee } from '@suite-common/wallet-types';

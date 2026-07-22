@@ -2,8 +2,8 @@ import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type TradingAmountLimitProps } from '@suite-common/trading';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type WalletSettingsRootState,
     selectIsNetworkReserveEnabled,

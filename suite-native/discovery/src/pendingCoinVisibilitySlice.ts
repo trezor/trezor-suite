@@ -1,7 +1,6 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import type { NetworkSymbol } from '@suite-common/wallet-config';
-
+import { type NetworkSymbol } from '@suite-common/networks';
 export type PendingCoinVisibilityState = {
     symbols: NetworkSymbol[];
 };

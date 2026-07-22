@@ -2,8 +2,6 @@ import { type TokenDtoV2 } from '@suite-common/earn-stablecoin-defs';
 import type { NetworkSymbol } from '@suite-common/networks';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 
-export type { NetworkSymbol };
-
 /**
  * Used for some edge cases where extension of NetworkSymbol is necessary.
  * Autocomplete is working as expected but can be passed any string.

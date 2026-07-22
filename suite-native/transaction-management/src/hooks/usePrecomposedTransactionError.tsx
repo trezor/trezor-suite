@@ -1,6 +1,7 @@
 import { type ReactNode, useMemo } from 'react';
 
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type PrecomposedTransactionError } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
 import { isArrayMember } from '@trezor/utils';

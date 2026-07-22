@@ -1,9 +1,6 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
-import {
-    type NetworkSymbol,
-    getNetwork,
-    getNetworkDisplaySymbol,
-} from '@suite-common/wallet-config';
+import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 
 import { makeFormatter } from '../makeFormatter';
 import { type FormatterConfig } from '../types';

@@ -1,6 +1,6 @@
 import { Calldata, type EvmAddress } from '@suite-common/calldata';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import { type AccountKey, type EvmSelectedFee } from '@suite-common/wallet-types';
 import {

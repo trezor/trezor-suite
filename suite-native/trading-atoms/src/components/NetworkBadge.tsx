@@ -1,4 +1,5 @@
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { getNetwork } from '@suite-common/wallet-config';
 import { Badge } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 

@@ -1,5 +1,6 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import { computeGasFeeInWei, useHasSufficientFundsForGas } from '@suite-common/tx-simulation';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type TxSimulationMethod } from '@suite-common/wallet-types';
 import { FullAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

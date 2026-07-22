@@ -1,8 +1,9 @@
 import { createReducer } from '@reduxjs/toolkit';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { formatDurationStrict } from '@suite-common/suite-utils';
-import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { getNetworkType } from '@suite-common/wallet-config';
 import {
     type FeeInfo,
     type FeeLevelLabel,

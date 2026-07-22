@@ -1,4 +1,5 @@
-import { type NetworkSymbol, getNetworkByEvmChainId } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import { safeParseUrl } from '@trezor/utils';
 
 /**

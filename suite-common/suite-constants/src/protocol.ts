@@ -1,5 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-
+import { type NetworkSymbol } from '@suite-common/networks';
 export type Protocol =
     | 'bitcoin'
     | 'btc'

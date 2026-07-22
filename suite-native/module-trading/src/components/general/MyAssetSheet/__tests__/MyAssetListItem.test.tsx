@@ -1,6 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import {
     type TokenAddress,
     type TokenSymbol,

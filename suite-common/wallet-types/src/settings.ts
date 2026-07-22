@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { PROTO } from '@trezor/connect';
 

@@ -1,6 +1,6 @@
 import { type RouteProp } from '@react-navigation/native';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type Account } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
 import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';

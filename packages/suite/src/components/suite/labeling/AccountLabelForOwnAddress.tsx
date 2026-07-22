@@ -1,5 +1,5 @@
 import { Address } from '@suite/address';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { findAccountsByAddress } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';

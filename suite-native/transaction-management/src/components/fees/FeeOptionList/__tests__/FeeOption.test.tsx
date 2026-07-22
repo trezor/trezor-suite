@@ -1,5 +1,5 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import { yup } from '@suite-common/validators';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Form, useForm } from '@suite-native/forms';
 import {
     type TestStore,

@@ -1,11 +1,8 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-    type NetworkSymbol,
-    type NetworkSymbolExtended,
-    getNetwork,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbolExtended, getNetwork } from '@suite-common/wallet-config';
 import { selectAreSatsAmountUnit } from '@suite-common/wallet-core';
 import { satoshiAmountToBtc } from '@suite-common/wallet-utils';
 

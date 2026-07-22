@@ -1,5 +1,6 @@
 import { A, D, pipe } from '@mobily/ts-belt';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
@@ -7,7 +8,6 @@ import {
     isPhishingTransaction,
     selectNetworkTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import type {
     Account,
     AccountKey,

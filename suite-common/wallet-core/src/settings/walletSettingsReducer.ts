@@ -1,16 +1,13 @@
 import { A } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectHasBitcoinOnlyFirmware } from '@suite-common/device';
+import { type NetworkSymbol } from '@suite-common/networks';
 import {
     createReducerWithExtraDeps,
     createWeakMapSelector,
     returnStableArrayIfEmpty,
 } from '@suite-common/redux-utils';
-import {
-    type NetworkSymbol,
-    getNetwork,
-    networkSymbolCollection,
-} from '@suite-common/wallet-config';
+import { getNetwork, networkSymbolCollection } from '@suite-common/wallet-config';
 import { AddressDisplayOptions, type WalletSettings } from '@suite-common/wallet-types';
 import { isBaseCurrencyWithSats } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';

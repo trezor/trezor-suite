@@ -5,8 +5,9 @@ import { useSelector } from 'react-redux';
 import { N } from '@mobily/ts-belt';
 
 import { type GroupedBalanceMovementEventPayload } from '@suite-common/graph';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type SignValue } from '@suite-common/suite-types';
-import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { getNetworkType } from '@suite-common/wallet-config';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Box, Card, Text } from '@suite-native/atoms';
 import {

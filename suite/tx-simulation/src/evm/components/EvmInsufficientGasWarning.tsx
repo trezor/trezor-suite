@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type PrecomposedTransaction } from '@suite-common/wallet-types';
 import { Banner } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';

@@ -3,6 +3,7 @@ import { type Resolver, useForm } from 'react-hook-form';
 import { act, waitFor } from '@testing-library/react';
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     TRADING_EXCHANGE_FORM_CEX,
@@ -11,7 +12,7 @@ import {
     type TradingAssetSellOption,
     type TradingExchangeFormProps,
 } from '@suite-common/trading';
-import { type Network, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type Network, getNetwork } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { useExchangeQuotes } from './useExchangeQuotes';

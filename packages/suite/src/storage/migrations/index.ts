@@ -1,9 +1,5 @@
-import {
-    type NetworkSymbol,
-    getNetwork,
-    isNetworkSymbol,
-    networkSymbolCollection,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { getNetwork, isNetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import {
     type AccountKey,
     type BackendSettings,

@@ -1,5 +1,5 @@
 import { useFormatters } from '@suite-common/formatters';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { type AmountUnit, BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';

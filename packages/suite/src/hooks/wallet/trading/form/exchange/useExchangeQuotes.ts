@@ -4,6 +4,7 @@ import { type UseFormReturn, useWatch } from 'react-hook-form';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectAddressValidatorDep } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
+import { type NetworkSymbol } from '@suite-common/networks';
 import {
     TRADING_EXCHANGE_FORM,
     TRADING_EXCHANGE_FORM_CEX,
@@ -19,7 +20,7 @@ import {
     tradingActions,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';

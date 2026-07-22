@@ -1,5 +1,6 @@
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type CryptoBaseCurrencyPair,
     type RatesByTimestamps,

@@ -1,6 +1,7 @@
 import { type ExtendedMessageDescriptor } from '@suite/intl';
+import { type NetworkSymbol } from '@suite-common/networks';
 import type { TradingType } from '@suite-common/trading';
-import { type Network, type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { type Network, getNetworkType } from '@suite-common/wallet-config';
 import {
     type Output,
     type PrecomposedLevels,

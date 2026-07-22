@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { type AccountKey, type FormState, type TokenAddress } from '@suite-common/wallet-types';
 import { type TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';

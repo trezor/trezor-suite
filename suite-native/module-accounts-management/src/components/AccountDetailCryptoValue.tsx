@@ -1,6 +1,7 @@
 import { memo } from 'react';
 
-import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { getDisplaySymbol } from '@suite-common/wallet-config';
 import type { TokenSymbol } from '@suite-common/wallet-types';
 import { HStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, TokenAmountFormatter } from '@suite-native/formatters';

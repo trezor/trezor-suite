@@ -1,8 +1,7 @@
 import { memo } from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-
+import { type NetworkSymbol } from '@suite-common/networks';
 type AssetItemTitleProps = {
     symbol: NetworkSymbol;
 };

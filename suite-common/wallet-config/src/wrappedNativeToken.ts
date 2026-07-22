@@ -1,5 +1,6 @@
+import { type NetworkSymbol } from '@suite-common/networks';
+
 import { type NetworkConfig } from './networksConfig';
-import { type NetworkSymbol } from './types';
 
 type WrappedNativeToken = {
     address: `0x${string}`;

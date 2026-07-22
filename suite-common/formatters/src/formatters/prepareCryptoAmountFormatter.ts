@@ -1,13 +1,9 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import { redactNumericalSubstring } from '@suite-common/discreet-mode';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { LANGUAGES, type Locale } from '@suite-common/suite-types';
-import {
-    type NetworkSymbol,
-    getNetworkOptional,
-    isNetworkSymbol,
-    networks,
-} from '@suite-common/wallet-config';
+import { getNetworkOptional, isNetworkSymbol, networks } from '@suite-common/wallet-config';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,

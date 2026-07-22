@@ -13,6 +13,7 @@ import type { DiscreetModeState } from '@suite-common/discreet-mode';
 import { type FeatureFeedbackState } from '@suite-common/feedback';
 import type { MessageState } from '@suite-common/message-system';
 import type { MetadataState } from '@suite-common/metadata-types';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type EncryptedHex } from '@suite-common/platform-encryption';
 import type { ReceiveAccountState } from '@suite-common/receive';
 import type { SuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
@@ -25,7 +26,7 @@ import type {
 } from '@suite-common/suite-types';
 import { type SimpleTokenStructure } from '@suite-common/token-definitions';
 import type { TradingTransaction } from '@suite-common/trading';
-import { type Explorer, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Explorer } from '@suite-common/wallet-config';
 import { type PhishingState } from '@suite-common/wallet-core';
 import type {
     AccountKey,

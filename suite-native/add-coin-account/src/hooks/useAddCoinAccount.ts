@@ -9,12 +9,8 @@ import {
     selectIsDeviceInViewOnlyMode,
     selectSelectedDevice,
 } from '@suite-common/device';
-import {
-    type AccountType,
-    NORMAL_ACCOUNT_TYPE,
-    type NetworkSymbol,
-    networks,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { type AccountType, NORMAL_ACCOUNT_TYPE, networks } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     accountsActions,

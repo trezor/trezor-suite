@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     FOCUS_ANIMATION_DURATION,

@@ -1,9 +1,5 @@
-import {
-    type NetworkSymbol,
-    type NetworkType,
-    getNetworkFeatures,
-    getNetworkType,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkType, getNetworkFeatures, getNetworkType } from '@suite-common/wallet-config';
 import { type RatesByTimestamps, type WalletAccountTransaction } from '@suite-common/wallet-types';
 
 import { type TokenDefinitions } from '../tokenDefinitionsTypes';

@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type StakeFormState, type StakeType } from '@suite-common/wallet-types';
 
 export type EthNetwork = 'hoodi' | 'mainnet';

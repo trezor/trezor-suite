@@ -2,7 +2,8 @@ import { keccak_256 } from '@noble/hashes/sha3.js';
 import { bytesToHex } from '@noble/hashes/utils.js';
 import { base58 } from '@scure/base';
 
-import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import type { BackendType } from '@suite-common/wallet-config';
 import { BlockbookProxyMock, PASSTHROUGH, SolanaRpcServerMock } from '@trezor/e2e-utils';
 
 import {

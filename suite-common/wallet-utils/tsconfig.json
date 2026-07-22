@@ -7,6 +7,7 @@
         { "path": "../calldata" },
         { "path": "../earn-staking-api" },
         { "path": "../fiat-services" },
+        { "path": "../networks" },
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },

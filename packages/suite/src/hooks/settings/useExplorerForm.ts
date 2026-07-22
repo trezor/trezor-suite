@@ -2,7 +2,8 @@ import { useCallback, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
-import { type Explorer, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { type Explorer } from '@suite-common/wallet-config';
 import { explorerActions } from '@suite-common/wallet-core';
 import { isUrl, typedObjectKeys } from '@trezor/utils';
 

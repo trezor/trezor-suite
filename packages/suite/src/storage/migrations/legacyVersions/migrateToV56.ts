@@ -1,7 +1,8 @@
 import { type CryptoId } from 'invity-api';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type TradingTransaction, cryptoIdToNetwork, toTokenCryptoId } from '@suite-common/trading';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
 import {
     findAccountsByAddress,

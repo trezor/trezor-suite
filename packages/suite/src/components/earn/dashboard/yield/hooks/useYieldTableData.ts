@@ -1,11 +1,8 @@
 import { useMemo } from 'react';
 
 import { type TokenDtoV2, type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import {
-    type NetworkSymbol,
-    getNetworkByYieldXyzId,
-    getNetworkDisplaySymbol,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { getNetworkByYieldXyzId, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     doTokensMatch,
     getConvertedOutputTokenBalanceToInputTokenAmount,

@@ -1,4 +1,4 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { DEVICE_RENDERED_EVM_INDENT } from '../../support/common';

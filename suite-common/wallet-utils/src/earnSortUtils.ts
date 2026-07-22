@@ -1,9 +1,5 @@
-import {
-    type AccountType,
-    type NetworkSymbol,
-    networkSymbolCollection,
-    networks,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { type AccountType, networkSymbolCollection, networks } from '@suite-common/wallet-config';
 import { BigNumber, type BigNumberValue, typedObjectKeys } from '@trezor/utils';
 
 // Canonical position of a network in the coin list (networkSymbolCollection order).

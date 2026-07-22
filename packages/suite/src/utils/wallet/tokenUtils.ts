@@ -1,6 +1,7 @@
 import { type TranslationId } from '@suite/intl';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type TokenDefinitionsState } from '@suite-common/token-definitions';
-import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
+import { type NetworkType } from '@suite-common/wallet-config';
 import { type GetTokensOutputType, getTokens } from '@suite-common/wallet-core';
 import {
     type Account,

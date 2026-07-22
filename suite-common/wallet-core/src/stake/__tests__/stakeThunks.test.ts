@@ -3,8 +3,8 @@ import {
     type StakingBatchErrorsItem,
     getStakingBatch,
 } from '@suite-common/earn-staking-api';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { configureMockStore } from '@suite-common/test-utils';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { stakeDataActions, stakeDataInitialState } from '../stakeDataSlice';
 import { stakeInitialState } from '../stakeReducer';

@@ -1,5 +1,6 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import { yup } from '@suite-common/validators';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import {
     getSolanaUnstakeAmountBounds,

@@ -3,8 +3,8 @@ import { useIntl } from 'react-intl';
 
 import type { FormatNumberOptions } from '@formatjs/intl';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import type { SignValue } from '@suite-common/suite-types';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { BaseCurrencyAmount } from '@suite-common/wallet-types';
 
 import { AddressFormatter, type AddressFormatterDataContext } from './formatters/AddressFormatter';

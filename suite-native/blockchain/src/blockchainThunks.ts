@@ -1,9 +1,6 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
-import {
-    type NetworkSymbol,
-    getNetworkOptional,
-    isNetworkSymbol,
-} from '@suite-common/wallet-config';
+import { getNetworkOptional, isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     blockchainActions,
     fetchAndUpdateAccountThunk,

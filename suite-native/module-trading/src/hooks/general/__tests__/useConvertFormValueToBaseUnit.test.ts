@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { PROTO } from '@trezor/connect';
 

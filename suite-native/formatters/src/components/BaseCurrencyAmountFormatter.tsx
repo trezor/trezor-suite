@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { type TextProps } from '@suite-native/atoms';

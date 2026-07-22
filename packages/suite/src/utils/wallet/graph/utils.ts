@@ -1,13 +1,9 @@
 import { differenceInMonths, fromUnixTime, isWithinInterval } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { resetTime } from '@suite-common/suite-utils';
-import {
-    type BackendType,
-    type NetworkSymbol,
-    getNetwork,
-    getNetworkFeatures,
-} from '@suite-common/wallet-config';
+import { type BackendType, getNetwork, getNetworkFeatures } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';

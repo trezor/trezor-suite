@@ -1,4 +1,4 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import type { Rate, Timestamp, WalletSettings } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';

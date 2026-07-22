@@ -1,7 +1,8 @@
 import { Page } from '@playwright/test';
 import type { ExchangeTrade } from 'invity-api';
 
-import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import type { BackendType } from '@suite-common/wallet-config';
 
 import { TradingChainBackend, createTradingChainBackend } from './tradingChainBackend';
 import { invityEndpoint } from '../../../fixtures/invity';

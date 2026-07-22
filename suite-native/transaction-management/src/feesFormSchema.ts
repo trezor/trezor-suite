@@ -1,5 +1,6 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import { yup } from '@suite-common/validators';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { type FeeInfo, type FeeLevelLabel } from '@suite-common/wallet-types';
 import { isDecimalsValid } from '@suite-common/wallet-utils';
 import type { UseFormReturn } from '@suite-native/forms';

@@ -1,4 +1,5 @@
-import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkType } from '@suite-common/wallet-config';
 import TrezorConnect, { type PROTO } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type DeviceIdentity } from '@trezor/connect-common/src/types/params';

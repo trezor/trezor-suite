@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { getNetwork } from '@suite-common/wallet-config';
 
 import { type CommonIconSetProps, IconSetBase, IconWrapper } from '../IconSet/IconSetBase';
 import { TokenIcon } from '../TokenIcon/TokenIcon';

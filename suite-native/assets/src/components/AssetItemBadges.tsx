@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { Box } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 

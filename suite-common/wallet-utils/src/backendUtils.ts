@@ -1,6 +1,6 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import {
     type BackendType,
-    type NetworkSymbol,
     TREZOR_CONNECT_BACKENDS,
     getNetworkType,
     networkSymbolCollection,

@@ -1,9 +1,10 @@
 import { type NavigatorScreenParams } from '@react-navigation/native';
 import { type RequireAllOrNone } from 'type-fest';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type BackupType, type Locale } from '@suite-common/suite-types';
 import { type TradingType } from '@suite-common/trading';
-import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountType } from '@suite-common/wallet-config';
 import {
     type Account,
     type AccountKey,

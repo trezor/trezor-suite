@@ -1,7 +1,8 @@
 import { bech32 } from '@scure/base';
 
 import { type AdaPools } from '@suite-common/earn-staking-api';
-import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { getNetworkFeatures } from '@suite-common/wallet-config';
 import {
     CARDANO_EVERSTAKE_STAKING_POOL,
     CARDANO_POOL_SATURATION_SAFE_THRESHOLD,

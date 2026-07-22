@@ -1,6 +1,6 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import {
     type Explorer,
-    type NetworkSymbol,
     type NetworkSymbolExtended,
     type NetworkType,
     getExplorerUrl,

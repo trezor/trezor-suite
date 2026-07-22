@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { selectIsActivateAssetsBannerClosed, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { preserveModal, removePreserveModal } from '@suite/modal';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import {
     changeCoinVisibility,
     selectEnabledNetworks,

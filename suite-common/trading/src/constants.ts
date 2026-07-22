@@ -1,6 +1,7 @@
 import { type SellFiatFlowType } from 'invity-api';
 
-import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkType } from '@suite-common/wallet-config';
 
 import { getRandomAccountDescriptor } from './utils/apiKeyUtils';
 

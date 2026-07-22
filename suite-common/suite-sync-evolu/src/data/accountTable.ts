@@ -11,6 +11,7 @@ import {
     object,
 } from '@evolu/common';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import {
     type AccountTable,
     type EntityListener,
@@ -18,7 +19,6 @@ import {
     createSuiteSyncAccountId,
     createSuiteSyncUpdateError,
 } from '@suite-common/suite-sync-storage';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 

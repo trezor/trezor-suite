@@ -1,6 +1,6 @@
 import { Text } from 'react-native';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { getTranslation } from '@suite-native/intl';
 import { renderHookWithBasicProvider, renderWithBasicProvider } from '@suite-native/test-utils';
 

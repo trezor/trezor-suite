@@ -1,6 +1,6 @@
 import { memo, useCallback } from 'react';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { Switch } from '@suite-native/atoms';
 import { useFormContext, useWatch } from '@suite-native/forms';
 

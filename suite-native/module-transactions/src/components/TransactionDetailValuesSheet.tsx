@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { pipe } from '@mobily/ts-belt';
 
 import { convertCryptoToFiatAmount } from '@suite-common/formatters';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import {
     type FiatRatesRootState,
     selectBaseCurrency,

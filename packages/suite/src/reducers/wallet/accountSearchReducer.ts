@@ -1,7 +1,7 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { deviceActions } from '@suite-common/device';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { changeNetworks } from '@suite-common/wallet-core';
 
 import { type AppState } from 'src/types/suite';

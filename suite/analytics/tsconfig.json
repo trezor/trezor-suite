@@ -8,11 +8,9 @@
         {
             "path": "../../suite-common/metadata-types"
         },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/suite-types"
-        },
-        {
-            "path": "../../suite-common/wallet-config"
         },
         { "path": "../router-config" },
         {

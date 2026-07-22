@@ -2,9 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/wallet-config"
-        },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/wallet-core"
         },

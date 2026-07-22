@@ -1,11 +1,8 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import { createReducerWithExtraDeps, createWeakMapSelector } from '@suite-common/redux-utils';
-import {
-    type NetworkSymbol,
-    getNetworkOptional,
-    networksCollection,
-} from '@suite-common/wallet-config';
+import { getNetworkOptional, networksCollection } from '@suite-common/wallet-config';
 import { type Blockchain, type BlockchainNetworks } from '@suite-common/wallet-types';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import {

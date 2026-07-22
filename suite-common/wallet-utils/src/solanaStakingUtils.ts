@@ -1,4 +1,5 @@
-import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { getNetworkFeatures } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { type SolanaStakingAccount } from '@trezor/blockchain-link-types';
 import {

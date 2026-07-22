@@ -1,6 +1,6 @@
 import { createMockDeps, mock } from '@suite-common/dependency-injection';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type UpdateOutputLabelParams } from '@suite-common/suite-sync-types';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor, asTxTargetId } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';

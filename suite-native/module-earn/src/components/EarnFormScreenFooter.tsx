@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 import { useFormatters } from '@suite-common/formatters';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { calculateRewards } from '@suite-common/wallet-utils';
 import { Box, Button, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';

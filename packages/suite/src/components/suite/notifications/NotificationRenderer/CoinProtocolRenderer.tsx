@@ -3,13 +3,10 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { goto, selectRouteName } from '@suite/router';
 import { isBech32AddressUppercase } from '@suite-common/address';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import {
-    type NetworkSymbol,
-    getNetworkDisplaySymbol,
-    getNetworkDisplaySymbolName,
-} from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { selectDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
 import { Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';

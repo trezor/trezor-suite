@@ -1,8 +1,5 @@
-import {
-    type NetworkSymbol,
-    getCoingeckoId,
-    getNetworkFeatures,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { getCoingeckoId, getNetworkFeatures } from '@suite-common/wallet-config';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/connect';
 import { isCodesignBuild } from '@trezor/env-utils';

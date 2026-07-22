@@ -1,6 +1,7 @@
 import { A, F } from '@mobily/ts-belt';
 
-import { type NetworkSymbol, type StakingNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { type StakingNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BaseCurrencyAmount,
     type CryptoBaseCurrencyPair,

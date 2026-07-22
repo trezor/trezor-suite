@@ -1,6 +1,6 @@
 import { Pressable, useWindowDimensions } from 'react-native';
 
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/networks';
 import { type AccountDescriptor, type TokenAddress } from '@suite-common/wallet-types';
 import { AddressLabelEditable } from '@suite-native/address';
 import { Card, VStack } from '@suite-native/atoms';

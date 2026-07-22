@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { reconnectBlockchainThunk } from '@suite-common/wallet-core';
 
 import { useDispatch } from 'src/hooks/suite';

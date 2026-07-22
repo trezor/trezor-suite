@@ -4,6 +4,7 @@
     "references": [
         { "path": "../calldata" },
         { "path": "../earn-stablecoin-api" },
+        { "path": "../networks" },
         { "path": "../schemas" },
         { "path": "../wallet-config" },
         { "path": "../wallet-types" },

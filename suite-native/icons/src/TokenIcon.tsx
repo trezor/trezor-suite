@@ -4,9 +4,9 @@ import { Text, View } from 'react-native';
 import { Image } from 'expo-image';
 
 import { type CryptoIconName, cryptoIcons, genericTokenIcon } from '@suite-common/icons';
+import { type NetworkSymbol } from '@suite-common/networks';
 import {
     type NetworkDisplaySymbol,
-    type NetworkSymbol,
     getCoingeckoId,
     getNetworkDisplaySymbol,
     isNetworkSymbol,

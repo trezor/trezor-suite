@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { type NetworkSymbol, getNetwork, getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { getNetwork, getNetworkType } from '@suite-common/wallet-config';
 import {
     AnimatedVStack,
     HStack,

@@ -1,7 +1,7 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 
 import { changeNetworks, setBitcoinAmountUnits } from './walletSettingsActions';

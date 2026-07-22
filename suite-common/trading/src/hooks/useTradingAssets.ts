@@ -9,11 +9,10 @@ import {
 } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectNetworkModuleRepositoryDep } from '@suite-common/networks';
+import { type NetworkSymbol, selectNetworkModuleRepositoryDep } from '@suite-common/networks';
 import {
     type Network,
     type NetworkConfigWithoutTestnets,
-    type NetworkSymbol,
     getDisplaySymbol,
     getMainnets,
     getNetwork,

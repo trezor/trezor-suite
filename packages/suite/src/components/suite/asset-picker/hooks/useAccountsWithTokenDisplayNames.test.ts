@@ -1,12 +1,12 @@
 import { renderHook } from '@testing-library/react';
 import { type CryptoId } from 'invity-api';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import {
     type TradingAssetOption,
     type TradingAssetOptionWithContractAddress,
 } from '@suite-common/trading';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { BigNumber } from '@trezor/utils';
 
 import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';

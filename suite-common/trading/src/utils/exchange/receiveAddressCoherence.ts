@@ -1,7 +1,7 @@
 import { type CryptoId } from 'invity-api';
 
 import { type AddressValidator } from '@suite-common/address';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 
 import { cryptoIdToSymbol } from '../../utils';
 

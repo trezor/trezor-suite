@@ -1,8 +1,5 @@
-import {
-    type NetworkDisplaySymbol,
-    type NetworkSymbol,
-    getNetworkDisplaySymbol,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkDisplaySymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type StakeType,
     type TokenAddress,
