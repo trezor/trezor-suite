@@ -259,6 +259,16 @@ export class SettingsPage {
         await this.page.getByTestId('@settings/testnet-networks-switch').click();
     }
 
+    /**
+     * Enables and disables specified networks, then conditionally activates coins and waits for discovery.
+     * @example
+     * // Enable eth and btc with a custom backend (opens advanced settings and sets it)
+     * await settingsPage.changeNetworks({
+     *     enableNetworks: ['eth', { symbol: 'btc', backend: { type: 'blockbook', url: 'http://localhost:19121' } }],
+     * });
+     * // Enable by symbol
+     * await settingsPage.changeNetworks({ enableNetworks: ['btc', 'eth'] });
+     */
     @step()
     async changeNetworks(options: {
         enableNetworks: NetworkToEnable[];
