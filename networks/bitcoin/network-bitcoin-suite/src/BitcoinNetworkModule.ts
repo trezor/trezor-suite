@@ -1,4 +1,4 @@
-import type { NetworkModule } from '@network-module/suite-types';
+import type { NetworkModule } from '@trezor/network-module-suite-types';
 
 import { bitcoinValidator } from './addressValidator/bitcoinAddressValidator';
 import { type BitcoinSupportedCoin, getSupportedCoins, isSupportedCoin } from './supportedCoins';

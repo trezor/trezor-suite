@@ -1,4 +1,4 @@
-import type { NetworkModule } from '@network-module/suite-types';
+import type { NetworkModule } from '@trezor/network-module-suite-types';
 
 import { tronValidator } from './addressValidator/tronAddressValidator';
 import { type TronSupportedCoin, getSupportedCoins, isSupportedCoin } from './supportedCoins';

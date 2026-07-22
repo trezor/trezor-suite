@@ -1,5 +1,5 @@
 {
-    "name": "@network-module/suite-types",
+    "name": "@trezor/network-module-suite-types",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",

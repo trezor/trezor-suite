@@ -11,14 +11,14 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@network-module/bitcoin-suite": "workspace:*",
-        "@network-module/cardano-suite": "workspace:*",
-        "@network-module/ethereum-suite": "workspace:*",
-        "@network-module/ripple-suite": "workspace:*",
-        "@network-module/solana-suite": "workspace:*",
-        "@network-module/stellar-suite": "workspace:*",
-        "@network-module/suite-types": "workspace:*",
-        "@network-module/tron-suite": "workspace:*",
+        "@trezor/network-bitcoin-suite": "workspace:*",
+        "@trezor/network-cardano-suite": "workspace:*",
+        "@trezor/network-ethereum-suite": "workspace:*",
+        "@trezor/network-module-suite-types": "workspace:*",
+        "@trezor/network-ripple-suite": "workspace:*",
+        "@trezor/network-solana-suite": "workspace:*",
+        "@trezor/network-stellar-suite": "workspace:*",
+        "@trezor/network-tron-suite": "workspace:*",
         "@trezor/utils": "workspace:*"
     }
 }

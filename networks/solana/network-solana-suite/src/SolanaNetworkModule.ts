@@ -1,4 +1,4 @@
-import type { NetworkModule } from '@network-module/suite-types';
+import type { NetworkModule } from '@trezor/network-module-suite-types';
 
 import { solanaValidator } from './addressValidator/solanaAddressValidator';
 import { type SolanaSupportedCoin, getSupportedCoins, isSupportedCoin } from './supportedCoins';

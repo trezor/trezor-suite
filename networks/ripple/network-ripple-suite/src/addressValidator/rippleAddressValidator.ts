@@ -1,7 +1,8 @@
-import { type AddressValidator, addressType } from '@network-module/suite-types';
 import { sha256 } from '@noble/hashes/sha2.js';
 import { bytesToHex } from '@noble/hashes/utils.js';
 import { base58xrp } from '@scure/base';
+
+import { type AddressValidator, addressType } from '@trezor/network-module-suite-types';
 
 import type { RippleSupportedCoin } from '../supportedCoins';
 

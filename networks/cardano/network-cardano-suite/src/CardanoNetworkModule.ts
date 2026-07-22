@@ -1,4 +1,4 @@
-import type { NetworkModule } from '@network-module/suite-types';
+import type { NetworkModule } from '@trezor/network-module-suite-types';
 
 import { adaValidator } from './addressValidator/cardanoAddressValidator';
 import { type CardanoSupportedCoin, getSupportedCoins, isSupportedCoin } from './supportedCoins';

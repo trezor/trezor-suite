@@ -1,4 +1,3 @@
-import { type AddressValidator, addressType } from '@network-module/suite-types';
 import { blake256 } from '@noble/hashes/blake1.js';
 import { blake2b } from '@noble/hashes/blake2.js';
 import { sha256 } from '@noble/hashes/sha2.js';
@@ -6,6 +5,7 @@ import { keccak_256 } from '@noble/hashes/sha3.js';
 import { bytesToHex, hexToBytes } from '@noble/hashes/utils.js';
 import { base58 } from '@scure/base';
 
+import { type AddressValidator, addressType } from '@trezor/network-module-suite-types';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { bchValidator } from './bchAddressValidator';

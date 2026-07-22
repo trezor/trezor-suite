@@ -1,5 +1,5 @@
 {
-    "name": "@network-module/stellar-suite",
+    "name": "@trezor/network-stellar-suite",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -12,9 +12,9 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@network-module/suite-types": "workspace:*",
         "@noble/hashes": "^2.0.1",
         "@scure/base": "^2.0.0",
+        "@trezor/network-module-suite-types": "workspace:*",
         "@trezor/utils": "workspace:*",
         "crc": "^4.3.2"
     }

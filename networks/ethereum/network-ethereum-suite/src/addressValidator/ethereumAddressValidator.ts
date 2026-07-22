@@ -1,6 +1,7 @@
-import { type AddressValidator, addressType } from '@network-module/suite-types';
 import { keccak_256 } from '@noble/hashes/sha3.js';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
+
+import { type AddressValidator, addressType } from '@trezor/network-module-suite-types';
 
 import type { EthereumSupportedCoin } from '../supportedCoins';
 

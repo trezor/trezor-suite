@@ -1,5 +1,4 @@
-import type { NetworkModule } from '@network-module/suite-types';
-
+import type { NetworkModule } from '@trezor/network-module-suite-types';
 import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
 import type { CoinSymbol, StaticNetworkModulesDep } from './NetworkModules';

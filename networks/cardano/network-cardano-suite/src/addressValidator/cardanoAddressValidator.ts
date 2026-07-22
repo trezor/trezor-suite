@@ -1,7 +1,8 @@
-import { type AddressValidator, addressType } from '@network-module/suite-types';
 import { base58, bech32 } from '@scure/base';
 import * as cbor from 'cbor';
 import crc32 from 'crc/calculators/crc32';
+
+import { type AddressValidator, addressType } from '@trezor/network-module-suite-types';
 
 import type { CardanoSupportedCoin } from '../supportedCoins';
 
@@ -24,7 +25,7 @@ function getDecoded(address: string): any {
     try {
         const decoded = base58.decode(address);
 
-        return cbor.decode(new Uint8Array(decoded).buffer as ArrayBuffer);
+        return cbor.decode(new Uint8Array(decoded).buffer);
     } catch {
         return null;
     }

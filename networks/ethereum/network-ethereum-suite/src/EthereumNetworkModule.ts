@@ -1,4 +1,4 @@
-import type { NetworkModule } from '@network-module/suite-types';
+import type { NetworkModule } from '@trezor/network-module-suite-types';
 
 import { ethereumValidator } from './addressValidator/ethereumAddressValidator';
 import { type EthereumSupportedCoin, getSupportedCoins, isSupportedCoin } from './supportedCoins';

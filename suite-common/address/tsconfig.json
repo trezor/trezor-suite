@@ -3,7 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../coins/network-module/suite-types"
+            "path": "../../networks/network-module/network-module-suite-types"
         },
         { "path": "../networks" },
         { "path": "../wallet-config" },

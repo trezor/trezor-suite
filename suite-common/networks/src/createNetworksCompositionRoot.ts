@@ -1,10 +1,10 @@
-import { createBitcoinNetworkModule } from '@network-module/bitcoin-suite';
-import { createCardanoNetworkModule } from '@network-module/cardano-suite';
-import { createEthereumNetworkModule } from '@network-module/ethereum-suite';
-import { createRippleNetworkModule } from '@network-module/ripple-suite';
-import { createSolanaNetworkModule } from '@network-module/solana-suite';
-import { createStellarNetworkModule } from '@network-module/stellar-suite';
-import { createTronNetworkModule } from '@network-module/tron-suite';
+import { createBitcoinNetworkModule } from '@trezor/network-bitcoin-suite';
+import { createCardanoNetworkModule } from '@trezor/network-cardano-suite';
+import { createEthereumNetworkModule } from '@trezor/network-ethereum-suite';
+import { createRippleNetworkModule } from '@trezor/network-ripple-suite';
+import { createSolanaNetworkModule } from '@trezor/network-solana-suite';
+import { createStellarNetworkModule } from '@trezor/network-stellar-suite';
+import { createTronNetworkModule } from '@trezor/network-tron-suite';
 
 import { type NetworkModules } from './NetworkModules';
 

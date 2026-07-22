@@ -1,6 +1,7 @@
-import { type AddressValidator, addressType } from '@network-module/suite-types';
 import { sha256 } from '@noble/hashes/sha2.js';
 import { base58 } from '@scure/base';
+
+import { type AddressValidator, addressType } from '@trezor/network-module-suite-types';
 
 import type { TronSupportedCoin } from '../supportedCoins';
 

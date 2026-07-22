@@ -1,4 +1,4 @@
-import type { NetworkModule } from '@network-module/suite-types';
+import type { NetworkModule } from '@trezor/network-module-suite-types';
 
 import { rippleValidator } from './addressValidator/rippleAddressValidator';
 import { type RippleSupportedCoin, getSupportedCoins, isSupportedCoin } from './supportedCoins';
