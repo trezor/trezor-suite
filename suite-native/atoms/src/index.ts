@@ -85,6 +85,7 @@ export * from './Pressable';
 export * from './useTapGesture';
 export * from './SegmentedControl';
 export * from './ProgressBar';
+export * from './SubTabs';
 
 export { useDebugView } from './DebugView';
 export { TouchableSwitchRow, TouchableSwitchRowDescription } from './TouchableSwitchRow';
