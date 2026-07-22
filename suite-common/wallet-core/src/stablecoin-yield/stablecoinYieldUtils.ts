@@ -11,7 +11,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { YIELD_FLOW_STEP_SEQUENCES } from './stablecoinYieldConstants';
+import { YIELD_FLOW_AVAILABLE_STEPS } from './stablecoinYieldConstants';
 import type {
     YieldFlowDisplayToken,
     YieldFlowResolvedData,
@@ -111,6 +111,35 @@ export const getStablecoinYieldFlowKey = ({
 export const isYieldWithdrawFlow = (flowType: YieldFlowType): flowType is YieldWithdrawFlowType =>
     flowType === 'withdraw' || flowType === 'redeem';
 
+type GetYieldFlowStepSequenceParams<TFlowType extends YieldFlowType> = {
+    flowType: TFlowType;
+    isWrappedNativeVault?: boolean;
+};
+
+type YieldFlowStepOf<TFlowType extends YieldFlowType> =
+    (typeof YIELD_FLOW_AVAILABLE_STEPS)[TFlowType][number];
+
+type YieldFlowStepSequence<TFlowType extends YieldFlowType> = readonly [
+    YieldFlowStepOf<TFlowType>,
+    ...YieldFlowStepOf<TFlowType>[],
+];
+
+export const getYieldFlowStepSequence = <TFlowType extends YieldFlowType>({
+    flowType,
+    isWrappedNativeVault = false,
+}: GetYieldFlowStepSequenceParams<TFlowType>): YieldFlowStepSequence<TFlowType> => {
+    const availableSteps: readonly YieldFlowStepOf<TFlowType>[] =
+        YIELD_FLOW_AVAILABLE_STEPS[flowType];
+
+    const sequence: readonly YieldFlowStepOf<TFlowType>[] = availableSteps.filter(step =>
+        step === 'wrap' || step === 'unwrap' ? isWrappedNativeVault : true,
+    );
+
+    // Every flow keeps its unconditional 'action' and 'complete' steps, so the
+    // filtered sequence is never empty.
+    return sequence as YieldFlowStepSequence<TFlowType>;
+};
+
 /**
  * Returns the step that follows `step` in the flow's step sequence. Stays on `step`
  * when it is the last one or not part of the flow at all.
@@ -119,8 +148,7 @@ export const getNextYieldFlowStep = (
     flowType: YieldFlowType,
     step: YieldFlowStepId,
 ): YieldFlowStepId => {
-    // Widened so indexOf accepts any step id across the per-flow tuples.
-    const sequence: readonly YieldFlowStepId[] = YIELD_FLOW_STEP_SEQUENCES[flowType];
+    const sequence = getYieldFlowStepSequence({ flowType });
     const stepIndex = sequence.indexOf(step);
 
     if (stepIndex === -1) {

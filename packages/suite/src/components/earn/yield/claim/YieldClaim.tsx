@@ -11,6 +11,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { type YieldAccountRewards } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
 import {
+    YIELD_FLOW_AVAILABLE_STEPS,
     isStablecoinYieldSupported,
     selectStablecoinYieldSession,
     selectStablecoinYieldTxReview,
@@ -176,7 +177,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                     <YieldDisabledBanner type="claim" content={content} variant={variant} />
                 ) : (
                     <YieldFlowStepList
-                        flowType="claim"
+                        sequence={YIELD_FLOW_AVAILABLE_STEPS.claim}
                         currentStep={currentStep}
                         steps={{
                             action: {
