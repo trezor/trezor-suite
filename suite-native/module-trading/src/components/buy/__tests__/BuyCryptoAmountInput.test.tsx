@@ -106,6 +106,20 @@ describe('BuyCryptoAmountInput', () => {
         ).toHaveDisplayValue('1.123');
     });
 
+    it('should preserve a leading-zero decimal while typing', async () => {
+        const form = renderUseTradingBuyForm();
+        act(() => {
+            form.setValue('asset', btcAsset);
+        });
+        const { getByLabelText } = renderCryptoAmountInput({}, form);
+        const input = getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel'));
+
+        await userEvent.type(input, '0.0001');
+
+        expect(form.getValues('cryptoValue')).toEqual('0.0001');
+        expect(input).toHaveDisplayValue('0.0001');
+    });
+
     it('should format input value to be integer when BTC asset is selected and value should be displayed in sats', async () => {
         const preloadedState = {
             wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },

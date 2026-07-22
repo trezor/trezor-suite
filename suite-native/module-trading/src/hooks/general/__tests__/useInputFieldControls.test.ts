@@ -90,4 +90,20 @@ describe('useInputFieldControls', () => {
 
         expect(result.current.hasError).toBe(true);
     });
+
+    it('should keep focus callbacks stable when the value changes', () => {
+        const mockSetValue = jest.fn();
+        const { result, rerender } = renderHook(
+            ({ value }: { value: string }) =>
+                useInputFieldControls('testField', value, mockSetValue),
+            { initialProps: { value: '1' } },
+        );
+        const initialOnFocus = result.current.onFocus;
+        const initialOnBlur = result.current.onBlur;
+
+        rerender({ value: '2' });
+
+        expect(result.current.onFocus).toBe(initialOnFocus);
+        expect(result.current.onBlur).toBe(initialOnBlur);
+    });
 });

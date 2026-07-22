@@ -1,4 +1,4 @@
-import { type RefObject, useCallback, useEffect, useRef } from 'react';
+import { type RefObject, useCallback, useEffect, useEffectEvent, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
@@ -19,7 +19,7 @@ import {
     events,
     selectNativeAnalyticsDep,
 } from '@suite-native/analytics';
-import { useFormState } from '@suite-native/forms';
+import { useFormState, useWatch } from '@suite-native/forms';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { exchangeActions, selectExchangeQuotes } from '@suite-native/trading-state';
 import { type AbortablePromise, type ExchangeFormType } from '@suite-native/trading-types';
@@ -31,7 +31,8 @@ import { tradingExchangeFormToTradingExchangeFormProps } from '../../utils/excha
 import { getReceiveAccountAddressText } from '../../utils/general/receiveAccountUtils';
 import { useQuotesInvalidator } from '../general/useQuotesInvalidator';
 
-type ShouldFetchExchangeQuotesRef = {
+type ExchangeQuoteRequestState = {
+    isFetchAllowed: boolean;
     sendAsset: string | undefined;
     receiveAsset: string | undefined;
     sendCryptoAmount: string | undefined;
@@ -39,67 +40,31 @@ type ShouldFetchExchangeQuotesRef = {
     receiveAccountAddress: string | undefined;
 };
 
-const defaultState = {
-    sendAsset: undefined,
-    receiveAsset: undefined,
-    sendCryptoAmount: undefined,
-    sendAccountDescriptor: undefined,
-    receiveAccountAddress: undefined,
-} as const;
-
-const useShouldFetchExchangeQuotes = (
-    watch: ExchangeFormType['watch'],
+const useExchangeQuoteRequestState = (
     control: ExchangeFormType['control'],
-): { isFetchAllowed: boolean; shouldFetchQuotes: boolean } => {
-    const prevState = useRef<ShouldFetchExchangeQuotesRef>(defaultState);
-
+): ExchangeQuoteRequestState => {
+    const [sendAsset, receiveAsset, sendCryptoAmount, sendAccount, receiveAccount] = useWatch({
+        control,
+        name: ['sendAsset', 'receiveAsset', 'sendCryptoAmount', 'sendAccount', 'receiveAccount'],
+    });
     const { isValid } = useFormState({ control });
-    if (!isValid) {
-        prevState.current = defaultState;
-
-        return {
-            isFetchAllowed: false,
-            shouldFetchQuotes: false,
-        };
-    }
-
-    const [sendAsset, receiveAsset, sendCryptoAmount, sendAccount, receiveAccount] = watch([
-        'sendAsset',
-        'receiveAsset',
-        'sendCryptoAmount',
-        'sendAccount',
-        'receiveAccount',
-    ]);
 
     const isFetchAllowed =
-        !!sendAsset && !!receiveAsset && !!sendCryptoAmount && parseFloat(sendCryptoAmount) > 0;
+        isValid &&
+        !!sendAsset &&
+        !!receiveAsset &&
+        !!sendCryptoAmount &&
+        parseFloat(sendCryptoAmount) > 0;
 
     const receiveAccountAddress = getReceiveAccountAddressText(receiveAccount);
 
-    if (
-        sendAsset?.cryptoId === prevState.current.sendAsset &&
-        receiveAsset?.cryptoId === prevState.current.receiveAsset &&
-        sendCryptoAmount === prevState.current.sendCryptoAmount &&
-        sendAccount?.descriptor === prevState.current.sendAccountDescriptor &&
-        receiveAccountAddress === prevState.current.receiveAccountAddress
-    ) {
-        return {
-            isFetchAllowed,
-            shouldFetchQuotes: false,
-        };
-    }
-
-    prevState.current = {
+    return {
+        isFetchAllowed,
         sendAsset: sendAsset?.cryptoId,
         receiveAsset: receiveAsset?.cryptoId,
         sendCryptoAmount,
         sendAccountDescriptor: sendAccount?.descriptor,
         receiveAccountAddress,
-    };
-
-    return {
-        isFetchAllowed,
-        shouldFetchQuotes: true,
     };
 };
 
@@ -124,8 +89,7 @@ const waitForPromiseAndReport = async (
 
 const useExchangeQuotesThunk = (
     getValues: ExchangeFormType['getValues'],
-    isFetchAllowed: boolean,
-    shouldFetchQuotes: boolean,
+    requestState: ExchangeQuoteRequestState,
     quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
@@ -136,6 +100,14 @@ const useExchangeQuotesThunk = (
     const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>
         selectIsAmountInSats(state, symbol),
     );
+    const {
+        isFetchAllowed,
+        sendAsset,
+        receiveAsset,
+        sendCryptoAmount,
+        sendAccountDescriptor,
+        receiveAccountAddress,
+    } = requestState;
 
     const fetchQuotes = useCallback(async () => {
         const selectedAsset = getValues('sendAsset');
@@ -154,15 +126,28 @@ const useExchangeQuotesThunk = (
         await waitForPromiseAndReport(quotesPromiseRef.current, analytics);
     }, [getValues, shouldSendInSats, quotesPromiseRef, dispatch, analytics]);
 
-    useEffect(() => {
-        if (!isFetchAllowed || !shouldFetchQuotes) return;
-
+    const requestQuotes = useEffectEvent(() => {
         if (quotesPromiseRef.current?.abort) {
             quotesPromiseRef.current.abort('Request was replaced by another one.');
         }
 
         debounce(fetchQuotes);
-    }, [isFetchAllowed, shouldFetchQuotes, quotesPromiseRef, debounce, fetchQuotes]);
+    });
+
+    useEffect(() => {
+        if (!isFetchAllowed) {
+            return;
+        }
+
+        requestQuotes();
+    }, [
+        isFetchAllowed,
+        sendAsset,
+        receiveAsset,
+        sendCryptoAmount,
+        sendAccountDescriptor,
+        receiveAccountAddress,
+    ]);
 
     useTradingRefetchScheduler({
         onRefetch: () => {
@@ -191,12 +176,12 @@ const useExchangeQuotesInvalidator = (
     });
 };
 
-export const useExchangeQuotes = ({ watch, getValues, control }: ExchangeFormType) => {
+export const useExchangeQuotes = ({ getValues, control }: ExchangeFormType) => {
     const debounce = useDebounce();
     const promiseRef = useRef<AbortablePromise | undefined>(undefined);
 
-    const { isFetchAllowed, shouldFetchQuotes } = useShouldFetchExchangeQuotes(watch, control);
+    const requestState = useExchangeQuoteRequestState(control);
 
-    useExchangeQuotesInvalidator(isFetchAllowed, promiseRef, debounce);
-    useExchangeQuotesThunk(getValues, isFetchAllowed, shouldFetchQuotes, promiseRef, debounce);
+    useExchangeQuotesInvalidator(requestState.isFetchAllowed, promiseRef, debounce);
+    useExchangeQuotesThunk(getValues, requestState, promiseRef, debounce);
 };

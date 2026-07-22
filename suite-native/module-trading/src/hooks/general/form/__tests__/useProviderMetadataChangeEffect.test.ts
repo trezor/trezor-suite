@@ -1,4 +1,6 @@
 import { selectTradingProviderMetadata } from '@suite-common/trading';
+import { yup } from '@suite-common/validators';
+import { useForm } from '@suite-native/forms';
 import { type TestStore } from '@suite-native/test-utils-store';
 import { buyMercuryo } from '@suite-native/trading-fixtures';
 
@@ -6,10 +8,13 @@ import {
     createTradingLightStore,
     renderHookWithTradingProvider,
 } from '../../../../__tests__/tradingTestUtils';
-import {
-    type QuoteProviderFormWatch,
-    useProviderMetadataChangeEffect,
-} from '../useProviderMetadataChangeEffect';
+import { useProviderMetadataChangeEffect } from '../useProviderMetadataChangeEffect';
+
+type ProviderFormValues = {
+    quote: {
+        exchange: string | undefined;
+    };
+};
 
 let mockIsFocused = true;
 
@@ -25,11 +30,18 @@ jest.mock('@react-navigation/native', () => {
 describe('useProviderMetadataChangeEffect', () => {
     let store: TestStore;
 
-    const renderUseProviderMetadataChangeEffect = (watch: QuoteProviderFormWatch) =>
-        renderHookWithTradingProvider(() => useProviderMetadataChangeEffect(watch, 'buy'), {
-            store,
-            tradeType: 'buy',
-        });
+    const renderUseProviderMetadataChangeEffect = (exchange: string | undefined) =>
+        renderHookWithTradingProvider(
+            () => {
+                const form = useForm<ProviderFormValues>({
+                    defaultValues: { quote: { exchange } },
+                    validation: yup.object({}),
+                });
+
+                return useProviderMetadataChangeEffect(form.control, 'buy');
+            },
+            { store, tradeType: 'buy' },
+        );
 
     beforeEach(() => {
         store = createTradingLightStore({ tradeType: 'buy' });
@@ -37,14 +49,14 @@ describe('useProviderMetadataChangeEffect', () => {
     });
 
     it('should set currentProviderMetadata when quote is set', () => {
-        const { result } = renderUseProviderMetadataChangeEffect(_ => 'mercuryo');
+        const { result } = renderUseProviderMetadataChangeEffect('mercuryo');
 
         expect(selectTradingProviderMetadata(store.getState())).toEqual(buyMercuryo);
         expect(result.current).toEqual(buyMercuryo);
     });
 
     it('should clear currentProviderMetadata on unmount', () => {
-        const { unmount } = renderUseProviderMetadataChangeEffect(_ => 'mercuryo');
+        const { unmount } = renderUseProviderMetadataChangeEffect('mercuryo');
 
         unmount();
 
@@ -53,7 +65,7 @@ describe('useProviderMetadataChangeEffect', () => {
 
     it('should not change provider metadata when screen is not focused', () => {
         mockIsFocused = false;
-        renderUseProviderMetadataChangeEffect(_ => 'mercuryo');
+        renderUseProviderMetadataChangeEffect('mercuryo');
 
         expect(selectTradingProviderMetadata(store.getState())).toBeUndefined();
     });

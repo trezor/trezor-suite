@@ -2,13 +2,9 @@ import type { SellFiatTrade } from 'invity-api';
 
 import { tradingSellActions } from '@suite-common/trading';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
-import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import { Form, useField } from '@suite-native/forms';
 import {
     type TestStore,
     act,
-    renderHook,
     renderHookWithStoreProvider,
     screen,
     waitFor,
@@ -23,17 +19,12 @@ import {
     sellQuotes,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
-import { selectTradingResidenceCountry, sellActions } from '@suite-native/trading-state';
+import { selectTradingResidenceCountry } from '@suite-native/trading-state';
 import { type SellFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useSellForm } from '../useSellForm';
-
-const mockReport = jest.fn();
-const services: NativeAnalyticsDep = {
-    analytics: mockNativeAnalytics(mockReport),
-};
 
 const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
 const eth1Account = getEthAccount({ descriptor: asAccountDescriptor('eth1normal') });
@@ -41,8 +32,7 @@ const eth1Account = getEthAccount({ descriptor: asAccountDescriptor('eth1normal'
 describe('useSellForm', () => {
     let store: TestStore;
 
-    const renderUseSellForm = () =>
-        renderHookWithStoreProvider(() => useSellForm(), { services, store });
+    const renderUseSellForm = () => renderHookWithStoreProvider(() => useSellForm(), { store });
 
     const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) =>
         createTradingLightStore({
@@ -75,180 +65,6 @@ describe('useSellForm', () => {
             });
 
             expect(result.current.getValues('sendAccount')).toEqual(btc1Account);
-        });
-    });
-
-    describe('sendAsset', () => {
-        it('should clear crypto amount on change', () => {
-            const { result } = renderUseSellForm();
-            act(() => {
-                result.current.setValue('sendAsset', btcAsset);
-                result.current.setValue('cryptoStringAmount', '100');
-            });
-
-            act(() => {
-                result.current.setValue('sendAsset', usdcAsset);
-            });
-
-            expect(result.current.getValues('cryptoStringAmount')).toBeUndefined();
-        });
-
-        it('should report change to analytics', () => {
-            const { result } = renderUseSellForm();
-
-            act(() => {
-                result.current.setValue('sendAsset', btcAsset);
-            });
-
-            expect(mockReport).toHaveBeenCalledWith({
-                type: events.tradingParameterChangedEvent.name,
-                payload: {
-                    type: 'sell',
-                    parameter: 'cryptoFrom',
-                },
-            });
-        });
-
-        it('should dispatch sendAssetChanged action', () => {
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = renderUseSellForm();
-
-            act(() => {
-                result.current.setValue('sendAsset', btcAsset);
-            });
-
-            expect(dispatchSpy).toHaveBeenCalledWith(sellActions.sendAssetChanged());
-        });
-    });
-
-    describe('fiatCurrency', () => {
-        it('should clear fiat amount on change', () => {
-            const { result } = renderUseSellForm();
-            act(() => {
-                result.current.setValue('fiatCurrency', 'czk');
-                result.current.setValue('fiatStringAmount', '100');
-            });
-
-            act(() => {
-                result.current.setValue('fiatCurrency', 'pln');
-            });
-
-            expect(result.current.getValues('fiatStringAmount')).toBeUndefined();
-        });
-
-        it('should report change to analytics', () => {
-            const { result } = renderUseSellForm();
-
-            act(() => {
-                result.current.setValue('fiatCurrency', 'pln');
-            });
-
-            expect(mockReport).toHaveBeenCalledWith({
-                type: events.tradingParameterChangedEvent.name,
-                payload: {
-                    type: 'sell',
-                    parameter: 'fiat',
-                },
-            });
-        });
-
-        it('should dispatch fiatCurrencyChanged action', () => {
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = renderUseSellForm();
-
-            act(() => {
-                result.current.setValue('fiatCurrency', 'pln');
-            });
-
-            expect(dispatchSpy).toHaveBeenCalledWith(sellActions.fiatCurrencyChanged());
-        });
-    });
-
-    describe('cryptoStringAmount', () => {
-        const renderUseCryptoStringAmountField = (form: SellFormType) => {
-            const { result: fieldResult, unmount: fieldUnmount } = renderHook(
-                () => useField({ name: 'cryptoStringAmount' }),
-                {
-                    wrapper: ({ children }) => <Form form={form}>{children}</Form>,
-                },
-            );
-
-            return { fieldResult, fieldUnmount };
-        };
-
-        it('should set amountInCrypto to true when user edits cryptoStringAmount', () => {
-            const { result } = renderUseSellForm();
-            const { fieldResult, fieldUnmount } = renderUseCryptoStringAmountField(result.current);
-
-            act(() => {
-                result.current.setValue('amountInCrypto', false);
-                result.current.setValue('focusedValue', 'cryptoStringAmount');
-                fieldResult.current.onChange('50');
-            });
-
-            expect(result.current.getValues('amountInCrypto')).toBe(true);
-
-            fieldUnmount();
-        });
-
-        it('should clear fiatStringAmount when user edits cryptoStringAmount', () => {
-            const { result } = renderUseSellForm();
-            const { fieldResult, fieldUnmount } = renderUseCryptoStringAmountField(result.current);
-
-            act(() => {
-                result.current.setValue('fiatStringAmount', '100');
-                result.current.setValue('focusedValue', 'cryptoStringAmount');
-                fieldResult.current.onChange('50');
-            });
-
-            expect(result.current.getValues('fiatStringAmount')).toBeUndefined();
-            expect(result.current.getValues('cryptoStringAmount')).toBe('50');
-
-            fieldUnmount();
-        });
-    });
-
-    describe('fiatStringAmount', () => {
-        const renderUseFiatStringAmountField = (form: SellFormType) => {
-            const { result: fieldResult, unmount: fieldUnmount } = renderHook(
-                () => useField({ name: 'fiatStringAmount' }),
-                {
-                    wrapper: ({ children }) => <Form form={form}>{children}</Form>,
-                },
-            );
-
-            return { fieldResult, fieldUnmount };
-        };
-
-        it('should set amountInCrypto to false when user edits fiatStringAmount', () => {
-            const { result } = renderUseSellForm();
-            const { fieldResult, fieldUnmount } = renderUseFiatStringAmountField(result.current);
-
-            act(() => {
-                result.current.setValue('amountInCrypto', true);
-                result.current.setValue('focusedValue', 'fiatStringAmount');
-                fieldResult.current.onChange('50');
-            });
-
-            expect(result.current.getValues('amountInCrypto')).toBe(false);
-
-            fieldUnmount();
-        });
-
-        it('should clear cryptoStringAmount when user edits fiatStringAmount', () => {
-            const { result } = renderUseSellForm();
-            const { fieldResult, fieldUnmount } = renderUseFiatStringAmountField(result.current);
-
-            act(() => {
-                result.current.setValue('cryptoStringAmount', '100');
-                result.current.setValue('focusedValue', 'fiatStringAmount');
-                fieldResult.current.onChange('50');
-            });
-
-            expect(result.current.getValues('cryptoStringAmount')).toBeUndefined();
-            expect(result.current.getValues('fiatStringAmount')).toBe('50');
-
-            fieldUnmount();
         });
     });
 

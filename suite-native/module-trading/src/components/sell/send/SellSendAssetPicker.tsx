@@ -2,9 +2,12 @@ import { useCallback, useRef, useState } from 'react';
 import { type TextInput } from 'react-native';
 import { useDispatch } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { tradingSellActions } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { HStack } from '@suite-native/atoms';
+import { sellActions } from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
 import { SellSendAmountInput } from './SellSendAmountInput';
@@ -18,6 +21,7 @@ const ASSET_SHEET_TEST_ID = '@trading/sell/send-asset-sheet';
 
 export const SellSendAssetPicker = () => {
     const dispatch = useDispatch();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const inputRef = useRef<TextInput>(null);
     const form = useSellFormContext();
     const [shouldFocusInput, setShouldFocusInput] = useState<boolean>(false);
@@ -26,8 +30,21 @@ export const SellSendAssetPicker = () => {
 
     const onAssetSelect = useCallback(
         (asset: TradeableAsset, account: Account) => {
-            setSelectedValue(asset);
             dispatch(tradingSellActions.setTradingAccountKey(account.key));
+
+            if (asset.cryptoId !== selectedValue?.cryptoId) {
+                setSelectedValue(asset);
+                form.setValue('cryptoStringAmount', undefined, { shouldValidate: true });
+                dispatch(sellActions.sendAssetChanged());
+                analytics.report({
+                    type: events.tradingParameterChangedEvent.name,
+                    payload: {
+                        type: 'sell',
+                        parameter: 'cryptoFrom',
+                    },
+                });
+            }
+
             if (shouldFocusInput) {
                 setShouldFocusInput(false);
                 // CryptoAmountInput is rendered disabled allow changes to propagate.
@@ -36,7 +53,7 @@ export const SellSendAssetPicker = () => {
                 }, 0);
             }
         },
-        [shouldFocusInput, setSelectedValue, dispatch],
+        [analytics, dispatch, form, selectedValue?.cryptoId, setSelectedValue, shouldFocusInput],
     );
 
     const showAssetsSheet = useCallback(() => {

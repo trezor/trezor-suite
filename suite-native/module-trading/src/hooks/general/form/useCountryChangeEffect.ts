@@ -1,20 +1,26 @@
 import { useEffect, useRef } from 'react';
+import { type Control, type FieldValues, type Path } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 
 import {
     type TradingCountryOption,
     type TradingCountrySubdivisionOption,
 } from '@suite-common/trading';
+import { useWatch } from '@suite-native/forms';
 import { residenceActions } from '@suite-native/trading-state';
 
-export type CountrySubdivisionFormWatch = (
-    keys: ['country', 'countrySubdivision'],
-) => [TradingCountryOption | undefined, TradingCountrySubdivisionOption | undefined];
-
-export const useCountryChangeEffect = (watch: CountrySubdivisionFormWatch) => {
+export const useCountryChangeEffect = <TFieldValues extends FieldValues>(
+    control: Control<TFieldValues>,
+) => {
     const dispatch = useDispatch();
 
-    const [countryOption, countrySubdivisionOption] = watch(['country', 'countrySubdivision']);
+    const [countryOption, countrySubdivisionOption] = useWatch({
+        control,
+        name: ['country', 'countrySubdivision'] as Path<TFieldValues>[],
+    }) as unknown as [
+        TradingCountryOption | undefined,
+        TradingCountrySubdivisionOption | undefined,
+    ];
     const country = countryOption?.value;
     const countrySubdivision = countrySubdivisionOption?.value;
 

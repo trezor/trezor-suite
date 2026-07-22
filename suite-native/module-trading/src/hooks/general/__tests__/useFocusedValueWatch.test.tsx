@@ -3,7 +3,6 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { deviceInitialState } from '@suite-common/device';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
-import { Form } from '@suite-native/forms';
 import { localeReducer } from '@suite-native/intl';
 import {
     type TestStore,
@@ -48,10 +47,9 @@ describe('useFocusedValueWatch', () => {
         });
 
     const renderUseFocusedValueWatch = () =>
-        renderHookWithStoreProvider(({ watch }) => useFocusedValueWatch(watch), {
-            initialProps: { watch: form.watch },
+        renderHookWithStoreProvider(({ control }) => useFocusedValueWatch(control), {
+            initialProps: { control: form.control },
             store,
-            wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
     beforeEach(() => {
@@ -69,11 +67,10 @@ describe('useFocusedValueWatch', () => {
     });
 
     it('should be false right after input is focused', async () => {
-        const { result, rerender } = renderUseFocusedValueWatch();
+        const { result } = renderUseFocusedValueWatch();
 
         act(() => {
             form.setValue('focusedValue', 'fiatValue');
-            rerender({ watch: form.watch });
         });
 
         // make sure state is updated
@@ -84,12 +81,11 @@ describe('useFocusedValueWatch', () => {
     });
 
     it('should be true after 300ms of input focus', async () => {
-        const { result, rerender } = renderUseFocusedValueWatch();
+        const { result } = renderUseFocusedValueWatch();
 
         await act(() => {
             form.setValue('focusedValue', 'fiatValue');
         });
-        rerender({ watch: form.watch });
         await act(async () => {
             // temporary: find the proper async timer handling
             // https://github.com/trezor/trezor-suite/issues/19553
@@ -101,11 +97,10 @@ describe('useFocusedValueWatch', () => {
     });
 
     it('should set isAmountInputActive to false on unmount', async () => {
-        const { rerender, unmount } = renderUseFocusedValueWatch();
+        const { unmount } = renderUseFocusedValueWatch();
         await act(() => {
             form.setValue('focusedValue', 'fiatValue');
         });
-        rerender({ watch: form.watch });
         await act(async () => {
             // temporary: find the proper async timer handling
             // https://github.com/trezor/trezor-suite/issues/19553

@@ -1,7 +1,10 @@
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils';
 import { type TestStore, fireEvent, screen } from '@suite-native/test-utils-store';
+import { buyActions } from '@suite-native/trading-state';
 import { type BuyFormType } from '@suite-native/trading-types';
 import { FirmwareType } from '@trezor/connect';
 
@@ -12,6 +15,11 @@ import {
 } from '../../../__tests__/tradingTestUtils';
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyTradeableAssetPicker } from '../BuyTradeableAssetPicker';
+
+const reportMock = jest.fn();
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(reportMock),
+};
 
 describe('BuyTradeableAssetPicker', () => {
     let store: TestStore;
@@ -27,6 +35,7 @@ describe('BuyTradeableAssetPicker', () => {
 
     const renderFormHook = () => {
         const { result } = renderHookWithTradingProvider(() => useBuyForm(), {
+            services,
             store,
         });
 
@@ -38,7 +47,7 @@ describe('BuyTradeableAssetPicker', () => {
             <Form form={form}>
                 <BuyTradeableAssetPicker />
             </Form>,
-            { store },
+            { services, store },
         );
         await act(async () => {
             await act(() => Promise.resolve());
@@ -53,6 +62,7 @@ describe('BuyTradeableAssetPicker', () => {
 
     describe('with regular firmware', () => {
         beforeEach(() => {
+            reportMock.mockClear();
             store = initPreloadedStore(FirmwareType.Universal);
             form = renderFormHook();
         });
@@ -73,10 +83,29 @@ describe('BuyTradeableAssetPicker', () => {
             expect(getByLabelText('Bitcoin')).toBeTruthy();
             expect(getByLabelText('USDC')).toBeTruthy();
         });
+
+        it('should apply buy asset change effects on item press', () => {
+            form.setValue('cryptoValue', '0.1');
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const { getByLabelText } = renderTradeableAssetPicker();
+
+            fireEvent.press(getByLabelText('Bitcoin'));
+
+            expect(form.getValues('cryptoValue')).toBeUndefined();
+            expect(dispatchSpy).toHaveBeenCalledWith(buyActions.assetChanged());
+            expect(reportMock).toHaveBeenCalledWith({
+                type: events.tradingParameterChangedEvent.name,
+                payload: {
+                    type: 'buy',
+                    parameter: 'cryptoTo',
+                },
+            });
+        });
     });
 
     describe('with BTC-only firmware', () => {
         beforeEach(() => {
+            reportMock.mockClear();
             store = initPreloadedStore(FirmwareType.BitcoinOnly);
             form = renderFormHook();
         });

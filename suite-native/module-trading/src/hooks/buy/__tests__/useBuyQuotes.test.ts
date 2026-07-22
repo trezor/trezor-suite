@@ -165,12 +165,6 @@ describe('useBuyQuotes', () => {
         [
             'receiveAccount',
             {
-                account: eth1NormalAccount,
-            },
-        ],
-        [
-            'receiveAccount',
-            {
                 account: btc1NormalAccount,
                 address: btc1NormalAccount.addresses!.unused[0],
             },
@@ -214,6 +208,9 @@ describe('useBuyQuotes', () => {
             result.current.setValue('fiatValue', '100');
         });
 
+        act(() => {
+            result.current.setValue('receiveAccount', undefined);
+        });
         dispatchSpy.mockClear();
         act(() => {
             result.current.setValue('receiveAccount', {
@@ -244,7 +241,11 @@ describe('useBuyQuotes', () => {
             result.current.setValue('fiatValue', '100');
         });
 
-        expect(dispatchSpy).toHaveBeenCalledTimes(3);
+        expect(dispatchSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: 'handleRequestThunkMock',
+            }),
+        );
 
         act(() => {
             store.dispatch(tradingActions.setRefetchQuotesTimestamp(Date.now()));

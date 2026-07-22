@@ -1,15 +1,18 @@
 import { useEffect } from 'react';
+import { type Control, type FieldValues, type Path } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 
+import { useWatch } from '@suite-native/forms';
 import { tradingActions } from '@suite-native/trading-state';
 import { useDebouncedValue } from '@trezor/react-utils';
 
-export const useFocusedValueWatch = <T extends string | undefined>(
-    watch: (field: 'focusedValue') => T,
+export const useFocusedValueWatch = <TFieldValues extends FieldValues>(
+    control: Control<TFieldValues>,
 ) => {
     const dispatch = useDispatch();
 
-    const isAmountInputActive = !!watch('focusedValue');
+    const focusedValue = useWatch({ control, name: 'focusedValue' as Path<TFieldValues> });
+    const isAmountInputActive = !!focusedValue;
     const isAmountInputActiveDebounced = useDebouncedValue(isAmountInputActive);
 
     useEffect(() => {

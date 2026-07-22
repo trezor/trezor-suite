@@ -10,9 +10,10 @@ import {
 import { ExchangeUsdcPresetButton } from '../ExchangeUsdcPresetButton';
 
 const mockSetValue = jest.fn();
+const mockGetValues = jest.fn();
 
 jest.mock('../../../hooks/exchange/useExchangeFormContext', () => ({
-    useExchangeFormContext: () => ({ setValue: mockSetValue }),
+    useExchangeFormContext: () => ({ getValues: mockGetValues, setValue: mockSetValue }),
 }));
 
 const ethAccountWithUsdc = mockWalletAccount({
@@ -34,6 +35,7 @@ const ethAccountWithUsdc = mockWalletAccount({
 
 describe('ExchangeUsdcPresetButton', () => {
     beforeEach(() => {
+        mockGetValues.mockReset();
         mockSetValue.mockClear();
     });
 

@@ -79,7 +79,7 @@ const SellFormMemoized = memo(
 
 export const SellForm = ({ shouldAnimateEntering }: SellFormProps) => {
     const sellForm = useSellFormContext();
-    const isAmountInputActiveDebounced = useFocusedValueWatch(sellForm.watch);
+    const isAmountInputActiveDebounced = useFocusedValueWatch(sellForm.control);
     const reportToAnalytics = useSellAnalyticReportCallback();
 
     useSellQuotes(sellForm);
