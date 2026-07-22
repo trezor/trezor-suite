@@ -138,6 +138,19 @@ describe(useFormattedGraphHeaderValues.name, () => {
         });
     });
 
+    it('returns a referentially stable result across rerenders with unchanged inputs', () => {
+        setNewStoreMockup({
+            locale: { appLocaleCode: 'en-US' },
+            wallet: { settings: { localCurrency: 'usd' } },
+        });
+        const { result, rerender } = renderUseFormattedGraphHeaderValues('1234.56');
+        const firstResult = result.current;
+
+        rerender(undefined);
+
+        expect(result.current).toBe(firstResult);
+    });
+
     it('parses satoshis value correctly - spanish locale', () => {
         setNewStoreMockup({
             locale: { appLocaleCode: 'es-ES' as SupportedLocaleCode },
