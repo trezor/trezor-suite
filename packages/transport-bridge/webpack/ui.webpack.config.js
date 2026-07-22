@@ -1,11 +1,11 @@
-import HtmlInlineScriptPlugin from 'html-inline-script-webpack-plugin';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
-import path from 'path';
-import webpack from 'webpack';
+const HtmlInlineScriptPlugin = require('html-inline-script-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
 
 const DIST = path.resolve(__dirname, '../dist/ui');
 
-const config: webpack.Configuration = {
+/** @type {import('webpack').Configuration} */
+const config = {
     mode: 'production',
     entry: {
         index: path.resolve(__dirname, '../src/ui/index.tsx'),
@@ -24,14 +24,8 @@ const config: webpack.Configuration = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        cacheDirectory: true,
                         presets: [
-                            [
-                                '@babel/preset-react',
-                                {
-                                    runtime: 'automatic',
-                                },
-                            ],
+                            ['@babel/preset-react', { runtime: 'automatic' }],
                             '@babel/preset-typescript',
                         ],
                         plugins: [
@@ -69,5 +63,4 @@ const config: webpack.Configuration = {
     ],
 };
 
-// eslint-disable-next-line import/no-default-export
-export default config;
+module.exports = config;
