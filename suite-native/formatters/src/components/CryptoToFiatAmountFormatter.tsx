@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TextProps } from '@suite-native/atoms';
 
@@ -16,29 +18,31 @@ type CryptoToFiatAmountFormatterProps = FormatterProps<string | number | null> &
         isLoading?: boolean;
     };
 
-export const CryptoToFiatAmountFormatter = ({
-    value,
-    symbol,
-    historicRate,
-    useHistoricRate,
-    isBalance = false,
-    isLoading = false,
-    ...otherProps
-}: CryptoToFiatAmountFormatterProps) => {
-    const fiatValue = useFiatFromCryptoValue({
+export const CryptoToFiatAmountFormatter = memo(
+    ({
+        value,
         symbol,
         historicRate,
         useHistoricRate,
-        isBalance,
-        cryptoValue: value ? value.toString() : null,
-    });
+        isBalance = false,
+        isLoading = false,
+        ...otherProps
+    }: CryptoToFiatAmountFormatterProps) => {
+        const fiatValue = useFiatFromCryptoValue({
+            symbol,
+            historicRate,
+            useHistoricRate,
+            isBalance,
+            cryptoValue: value ? value.toString() : null,
+        });
 
-    return (
-        <BaseCurrencyAmountFormatter
-            symbol={symbol}
-            value={fiatValue}
-            isLoading={isLoading}
-            {...otherProps}
-        />
-    );
-};
+        return (
+            <BaseCurrencyAmountFormatter
+                symbol={symbol}
+                value={fiatValue}
+                isLoading={isLoading}
+                {...otherProps}
+            />
+        );
+    },
+);

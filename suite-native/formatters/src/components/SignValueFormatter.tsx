@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import { isSignValuePositive, useFormatters } from '@suite-common/formatters';
 import { type SignValue } from '@suite-common/suite-types';
 import { Text, type TextProps } from '@suite-native/atoms';
@@ -6,7 +8,7 @@ import { type FormatterProps } from '../types';
 
 type SignValueFormatterProps = FormatterProps<SignValue | undefined> & TextProps;
 
-export const SignValueFormatter = ({ value, ...textProps }: SignValueFormatterProps) => {
+export const SignValueFormatter = memo(({ value, ...textProps }: SignValueFormatterProps) => {
     const { SignValueFormatter: Formatter } = useFormatters();
 
     if (!value) return null;
@@ -19,4 +21,4 @@ export const SignValueFormatter = ({ value, ...textProps }: SignValueFormatterPr
             <Formatter value={value} />{' '}
         </Text>
     );
-};
+});

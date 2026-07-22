@@ -15,18 +15,20 @@ type AmountTextProps = {
 export const AmountText = ({
     value,
     isDiscreetText = true,
-    style = {},
+    style,
     ...otherProps
 }: AmountTextProps) => {
     const { applyStyle } = useNativeStyles();
 
     const TextComponent = isDiscreetText ? DiscreetText : Text;
 
+    const letterSpacingStyle = applyStyle(resetLetterSpacingOnAndroidStyle);
+    const mergedStyle = style
+        ? mergeNativeStyleObjects([style, letterSpacingStyle])
+        : letterSpacingStyle;
+
     return (
-        <TextComponent
-            style={mergeNativeStyleObjects([style, applyStyle(resetLetterSpacingOnAndroidStyle)])}
-            {...otherProps}
-        >
+        <TextComponent style={mergedStyle} {...otherProps}>
             {value}
         </TextComponent>
     );

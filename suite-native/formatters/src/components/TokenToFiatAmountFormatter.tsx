@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 import { useFormatters } from '@suite-common/formatters';
 import { type SignValue } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -22,57 +24,59 @@ type TokenToFiatAmountFormatterProps = {
 } & FormatterProps<number | string> &
     TextProps;
 
-export const TokenToFiatAmountFormatter = ({
-    symbol,
-    value,
-    contract,
-    isDiscreetText = true,
-    decimals = 0,
-    signValue,
-    ellipsizeMode,
-    numberOfLines,
-    historicRate,
-    useHistoricRate,
-    isForcedDiscreetMode,
-    ...rest
-}: TokenToFiatAmountFormatterProps) => {
-    const { BaseCurrencyAmountFormatter } = useFormatters();
-    const fiatValue = useFiatFromCryptoValue({
-        cryptoValue: String(value),
+export const TokenToFiatAmountFormatter = memo(
+    ({
         symbol,
-        tokenAddress: contract,
-        tokenDecimals: decimals,
+        value,
+        contract,
+        isDiscreetText = true,
+        decimals = 0,
+        signValue,
+        ellipsizeMode,
+        numberOfLines,
         historicRate,
         useHistoricRate,
-    });
+        isForcedDiscreetMode,
+        ...rest
+    }: TokenToFiatAmountFormatterProps) => {
+        const { BaseCurrencyAmountFormatter } = useFormatters();
+        const fiatValue = useFiatFromCryptoValue({
+            cryptoValue: String(value),
+            symbol,
+            tokenAddress: contract,
+            tokenDecimals: decimals,
+            historicRate,
+            useHistoricRate,
+        });
 
-    if (fiatValue === null && !isForcedDiscreetMode) {
-        return <EmptyAmountSkeleton />;
-    }
+        if (fiatValue === null && !isForcedDiscreetMode) {
+            return <EmptyAmountSkeleton />;
+        }
 
-    const formattedFiatValue = isForcedDiscreetMode
-        ? '$0.00' // in case of isForceDiscreetMode the value is blurred, so the real value does not matter
-        : BaseCurrencyAmountFormatter.format(fiatValue!);
+        const formattedFiatValue = isForcedDiscreetMode
+            ? '$0.00' // in case of isForceDiscreetMode the value is blurred, so the real value does not matter
+            : BaseCurrencyAmountFormatter.format(fiatValue!);
 
-    const amountText = (
-        <AmountText
-            value={formattedFiatValue}
-            isDiscreetText={isDiscreetText}
-            ellipsizeMode={ellipsizeMode}
-            numberOfLines={numberOfLines}
-            isForcedDiscreetMode={isForcedDiscreetMode}
-            {...rest}
-        />
-    );
+        const amountText = (
+            <AmountText
+                value={formattedFiatValue}
+                isDiscreetText={isDiscreetText}
+                ellipsizeMode={ellipsizeMode}
+                numberOfLines={numberOfLines}
+                isForcedDiscreetMode={isForcedDiscreetMode}
+                {...rest}
+            />
+        );
 
-    if (!signValue) {
-        return amountText;
-    }
+        if (!signValue) {
+            return amountText;
+        }
 
-    return (
-        <Box flexDirection="row">
-            {!isForcedDiscreetMode && <SignValueFormatter value={signValue} />}
-            {amountText}
-        </Box>
-    );
-};
+        return (
+            <Box flexDirection="row">
+                {!isForcedDiscreetMode && <SignValueFormatter value={signValue} />}
+                {amountText}
+            </Box>
+        );
+    },
+);

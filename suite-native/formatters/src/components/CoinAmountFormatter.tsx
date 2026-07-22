@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
@@ -19,35 +20,31 @@ type CoinAmountFormatterProps = FormatterProps<string | null | number> &
         decimals?: number;
     };
 
-export const CoinAmountFormatter = ({
-    value,
-    accountKey,
-    tokenContract,
-    decimals,
-    ...restProps
-}: CoinAmountFormatterProps) => {
-    const symbol = useSelector((state: AccountsRootState) =>
-        selectAccountNetworkSymbol(state, accountKey),
-    );
-
-    const tokenInfo = useSelector((state: TokensRootState) =>
-        selectAccountTokenInfo(state, accountKey, tokenContract),
-    );
-
-    if (!symbol) {
-        return null;
-    }
-
-    if (tokenInfo && value) {
-        return (
-            <TokenAmountFormatter
-                decimals={decimals ?? tokenInfo.decimals}
-                value={value}
-                tokenSymbol={tokenInfo.symbol}
-                {...restProps}
-            />
+export const CoinAmountFormatter = memo(
+    ({ value, accountKey, tokenContract, decimals, ...restProps }: CoinAmountFormatterProps) => {
+        const symbol = useSelector((state: AccountsRootState) =>
+            selectAccountNetworkSymbol(state, accountKey),
         );
-    }
 
-    return <CryptoAmountFormatter value={value} symbol={symbol} {...restProps} />;
-};
+        const tokenInfo = useSelector((state: TokensRootState) =>
+            selectAccountTokenInfo(state, accountKey, tokenContract),
+        );
+
+        if (!symbol) {
+            return null;
+        }
+
+        if (tokenInfo && value) {
+            return (
+                <TokenAmountFormatter
+                    decimals={decimals ?? tokenInfo.decimals}
+                    value={value}
+                    tokenSymbol={tokenInfo.symbol}
+                    {...restProps}
+                />
+            );
+        }
+
+        return <CryptoAmountFormatter value={value} symbol={symbol} {...restProps} />;
+    },
+);

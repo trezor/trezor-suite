@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
@@ -19,36 +20,38 @@ type CoinToFiatAmountFormatterProps = FormatterProps<string | null | number> &
         decimals?: number;
     };
 
-export const CoinToFiatAmountFormatter = ({
-    value,
-    accountKey,
-    tokenContract,
-    decimals,
-    ...restProps
-}: CoinToFiatAmountFormatterProps) => {
-    const symbol = useSelector((state: AccountsRootState) =>
-        selectAccountNetworkSymbol(state, accountKey),
-    );
-
-    const tokenInfo = useSelector((state: TokensRootState) =>
-        selectAccountTokenInfo(state, accountKey, tokenContract),
-    );
-
-    if (!symbol) {
-        return null;
-    }
-
-    if (tokenInfo && value) {
-        return (
-            <TokenToFiatAmountFormatter
-                value={value}
-                contract={tokenInfo.contract}
-                symbol={symbol}
-                decimals={decimals ?? tokenInfo.decimals}
-                {...restProps}
-            />
+export const CoinToFiatAmountFormatter = memo(
+    ({
+        value,
+        accountKey,
+        tokenContract,
+        decimals,
+        ...restProps
+    }: CoinToFiatAmountFormatterProps) => {
+        const symbol = useSelector((state: AccountsRootState) =>
+            selectAccountNetworkSymbol(state, accountKey),
         );
-    }
 
-    return <CryptoToFiatAmountFormatter value={value} symbol={symbol} {...restProps} />;
-};
+        const tokenInfo = useSelector((state: TokensRootState) =>
+            selectAccountTokenInfo(state, accountKey, tokenContract),
+        );
+
+        if (!symbol) {
+            return null;
+        }
+
+        if (tokenInfo && value) {
+            return (
+                <TokenToFiatAmountFormatter
+                    value={value}
+                    contract={tokenInfo.contract}
+                    symbol={symbol}
+                    decimals={decimals ?? tokenInfo.decimals}
+                    {...restProps}
+                />
+            );
+        }
+
+        return <CryptoToFiatAmountFormatter value={value} symbol={symbol} {...restProps} />;
+    },
+);
