@@ -2,9 +2,9 @@ import { base58 } from '@scure/base';
 
 import { type AddressValidator, addressType } from '@trezor/network-module-suite-types';
 
-import type { SolanaSupportedNetwork } from '../supportedNetworks';
+import type { SolanaNetworkSymbol } from '../supportedNetworks';
 
-export const isAddressValid = (address: string, _symbol: SolanaSupportedNetwork): boolean => {
+export const isAddressValid = (address: string, _symbol: SolanaNetworkSymbol): boolean => {
     try {
         const decoded = base58.decode(address);
 
@@ -14,7 +14,7 @@ export const isAddressValid = (address: string, _symbol: SolanaSupportedNetwork)
     }
 };
 
-export const getAddressType = (address: string, _symbol: SolanaSupportedNetwork) => {
+export const getAddressType = (address: string, _symbol: SolanaNetworkSymbol) => {
     if (isAddressValid(address, _symbol)) {
         return addressType.ADDRESS;
     }
@@ -22,7 +22,7 @@ export const getAddressType = (address: string, _symbol: SolanaSupportedNetwork)
     return undefined;
 };
 
-export const solanaValidator: AddressValidator<SolanaSupportedNetwork> = {
+export const solanaValidator: AddressValidator<SolanaNetworkSymbol> = {
     isAddressValid,
     getAddressType,
 };

@@ -1,17 +1,17 @@
 import { type AddressType, addressType } from '@trezor/network-module-suite-types';
 
-import type { BitcoinSupportedNetwork } from '../../supportedNetworks';
+import type { BitcoinNetworkSymbol } from '../../supportedNetworks';
 import { bitcoinValidator } from '../bitcoinAddressValidator';
 
 type BitcoinIsAddressValidCase = {
     address: string;
-    symbol: BitcoinSupportedNetwork;
+    symbol: BitcoinNetworkSymbol;
     expected: boolean;
 };
 
 type BitcoinAddressTypeCase = {
     address: string;
-    symbol: BitcoinSupportedNetwork;
+    symbol: BitcoinNetworkSymbol;
     expectedAddressType: AddressType | undefined;
 };
 

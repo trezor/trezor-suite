@@ -1,17 +1,17 @@
 import { type AddressType, addressType } from '@trezor/network-module-suite-types';
 
-import type { RippleSupportedNetwork } from '../../supportedNetworks';
+import type { RippleNetworkSymbol } from '../../supportedNetworks';
 import { rippleValidator } from '../rippleAddressValidator';
 
 type RippleIsAddressValidCase = {
     address: string;
-    symbol: RippleSupportedNetwork;
+    symbol: RippleNetworkSymbol;
     expected: boolean;
 };
 
 type RippleAddressTypeCase = {
     address: string;
-    symbol: RippleSupportedNetwork;
+    symbol: RippleNetworkSymbol;
     expectedAddressType: AddressType | undefined;
 };
 

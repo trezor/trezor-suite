@@ -1,17 +1,17 @@
 import { type AddressType, addressType } from '@trezor/network-module-suite-types';
 
-import type { EthereumSupportedNetwork } from '../../supportedNetworks';
+import type { EthereumNetworkSymbol } from '../../supportedNetworks';
 import { ethereumValidator } from '../ethereumAddressValidator';
 
 type EthereumIsAddressValidCase = {
     address: string;
-    symbol: EthereumSupportedNetwork;
+    symbol: EthereumNetworkSymbol;
     expected: boolean;
 };
 
 type EthereumAddressTypeCase = {
     address: string;
-    symbol: EthereumSupportedNetwork;
+    symbol: EthereumNetworkSymbol;
     expectedAddressType: AddressType | undefined;
 };
 

@@ -2,9 +2,9 @@ import { isArrayMember } from '@trezor/utils';
 
 export const supportedNetworks = ['trx', 'ttrx'] as const;
 
-export type TronSupportedNetwork = (typeof supportedNetworks)[number];
+export type TronNetworkSymbol = (typeof supportedNetworks)[number];
 
-export const getSupportedNetwork = (): readonly TronSupportedNetwork[] => supportedNetworks;
+export const getSupportedNetwork = (): readonly TronNetworkSymbol[] => supportedNetworks;
 
-export const isSupportedNetwork = (symbol: string): symbol is TronSupportedNetwork =>
+export const isSupportedNetwork = (symbol: string): symbol is TronNetworkSymbol =>
     isArrayMember(symbol, supportedNetworks);

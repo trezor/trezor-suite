@@ -2,12 +2,12 @@ import type { NetworkModule } from '@trezor/network-module-suite-types';
 
 import { adaValidator } from './addressValidator/cardanoAddressValidator';
 import {
-    type CardanoSupportedNetwork,
+    type CardanoNetworkSymbol,
     getSupportedNetwork,
     isSupportedNetwork,
 } from './supportedNetworks';
 
-export type CardanoNetworkModule = NetworkModule<CardanoSupportedNetwork>;
+export type CardanoNetworkModule = NetworkModule<CardanoNetworkSymbol>;
 
 export const createCardanoNetworkModule = (): CardanoNetworkModule => ({
     addressValidator: adaValidator,

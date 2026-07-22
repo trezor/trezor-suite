@@ -2,9 +2,9 @@ import { isArrayMember } from '@trezor/utils';
 
 export const supportedNetworks = ['xlm', 'txlm'] as const;
 
-export type StellarSupportedNetwork = (typeof supportedNetworks)[number];
+export type StellarNetworkSymbol = (typeof supportedNetworks)[number];
 
-export const getSupportedNetwork = (): readonly StellarSupportedNetwork[] => supportedNetworks;
+export const getSupportedNetwork = (): readonly StellarNetworkSymbol[] => supportedNetworks;
 
-export const isSupportedNetwork = (symbol: string): symbol is StellarSupportedNetwork =>
+export const isSupportedNetwork = (symbol: string): symbol is StellarNetworkSymbol =>
     isArrayMember(symbol, supportedNetworks);
