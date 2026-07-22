@@ -35,8 +35,8 @@ export class CoinsTab {
     }
 
     @step()
-    async openNetworkAdvanceSettings(symbol: NetworkSymbol) {
-        if (!(await this.isNetworkEnabled(symbol))) {
+    async openNetworkAdvanceSettings(symbol: NetworkSymbol, { autoEnable = true } = {}) {
+        if (autoEnable && !(await this.isNetworkEnabled(symbol))) {
             await this.enableNetwork(symbol);
         }
         await this.networkButton(symbol).hover();
