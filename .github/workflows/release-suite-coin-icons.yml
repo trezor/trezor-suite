@@ -43,6 +43,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production_icons
           aws-region: ${{ env.AWS_REGION }}
+          role-duration-seconds: 900 # The default 1h, 15min is enough for our use case
 
       - name: Upload crypto icons
         # The local folder contains only files produced by this run (fresh checkout, the script
