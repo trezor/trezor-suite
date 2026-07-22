@@ -55,14 +55,13 @@ const checkNodeForAvoidStyledComponent = (node, context, nodeRef, importedCompon
 
 /**
  * Returns the suggested import path for a deep import, or null if the import is allowed.
- * Handles configured entry points and the mocks convention. Imports below an entry point
- * suggest that entry point instead of the package root.
+ * Imports below a configured entry point suggest that entry point instead of the package root.
  */
 const getSuggestedImportPath = (
     sourcePath: string,
     packageScopes: string[],
     ignoredPackages: string[],
-    allowedEntryPoints: string[],
+    allowedEntryPointPatterns: RegExp[],
 ): string | null => {
     const sourcePathParts = sourcePath.split('/');
 
@@ -84,21 +83,17 @@ const getSuggestedImportPath = (
         return null;
     }
 
-    const allowedEntryPoint = allowedEntryPoints.find(
-        entryPoint => sourcePath === entryPoint || sourcePath.startsWith(`${entryPoint}/`),
-    );
+    const allowedEntryPoint = sourcePathParts
+        .slice(2)
+        .map((_, index) => sourcePathParts.slice(0, index + 3).join('/'))
+        .find(entryPoint =>
+            allowedEntryPointPatterns.some(
+                entryPointPattern => entryPoint.match(entryPointPattern) !== null,
+            ),
+        );
 
     if (allowedEntryPoint !== undefined) {
         return sourcePath === allowedEntryPoint ? null : allowedEntryPoint;
-    }
-
-    // Allow @scope/pkg/mocks as a valid entry point
-    if (sourcePathParts[2] === 'mocks') {
-        if (sourcePathParts.length === 3) {
-            return null;
-        }
-
-        return `${packageImportPath}/mocks`;
     }
 
     return packageImportPath;
@@ -223,9 +218,9 @@ export const rules = {
                             type: 'array',
                             items: { type: 'string' },
                         },
-                        allowedEntryPoints: {
+                        allowedEntryPointPatterns: {
                             type: 'array',
-                            items: { type: 'string' },
+                            items: { type: 'object' },
                         },
                     },
                     additionalProperties: false,
@@ -240,7 +235,7 @@ export const rules = {
                 '@trezor',
             ];
             const ignoredPackages = context.options[0]?.ignoredPackages ?? [];
-            const allowedEntryPoints = context.options[0]?.allowedEntryPoints ?? [];
+            const allowedEntryPointPatterns = context.options[0]?.allowedEntryPointPatterns ?? [];
 
             const checkNode = (node: Rule.Node) => {
                 const sourcePath = getNodeSourcePath(node);
@@ -253,7 +248,7 @@ export const rules = {
                     sourcePath,
                     packageScopes,
                     ignoredPackages,
-                    allowedEntryPoints,
+                    allowedEntryPointPatterns,
                 );
 
                 if (packageImportPath === null) {

@@ -70,7 +70,12 @@ export const localRulesConfig = [
                         ...publishableTrezorPackages,
                         ...packagesWithSectionEntryPoints,
                     ],
-                    allowedEntryPoints: ['@suite-common/test-utils/globalOverrides'],
+                    allowedEntryPointPatterns: [
+                        // Packages expose reusable test mocks through dedicated public entry points.
+                        /^@(?:suite-native|suite|suite-common|trezor)\/[^/]+\/mocks$/,
+                        // Suite test setup imports global polyfills through this side-effect-only entry point.
+                        /^@suite-common\/test-utils\/globalOverrides$/,
+                    ],
                 },
             ],
             'local-rules/analytics-event-name': 'error',
