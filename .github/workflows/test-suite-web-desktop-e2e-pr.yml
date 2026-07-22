@@ -164,6 +164,7 @@ jobs:
       - determine-strategy
     if: github.repository == 'trezor/trezor-suite' && needs.determine-strategy.outputs.strategy == 'analyze'
     runs-on: ubuntu-latest
+    continue-on-error: true
     timeout-minutes: 15
     outputs:
       spec-list: ${{ steps.llm-select.outputs.spec-list }}
@@ -187,7 +188,6 @@ jobs:
       - name: Run LLM test selector
         id: llm-select
         if: steps.check-size.outputs.is_small_pr == 'true'
-        continue-on-error: true
         uses: ./.github/actions/llm-test-selector
         with:
           claude-api-key: ${{ secrets.E2E_SELECTOR_CLAUDE_API_KEY }}

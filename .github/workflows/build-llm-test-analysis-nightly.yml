@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     # Only run in the canonical repository, not forks.
     if: github.repository == 'trezor/trezor-suite'
+    continue-on-error: true
     timeout-minutes: 60
     permissions:
       id-token: write
@@ -70,7 +71,6 @@ jobs:
           aws s3 cp s3://dev.suite.sldev.cz/coverage/e2e/llm-analysis.json packages/e2e-utils/coverage-map/llm-analysis.json || true
 
       - name: Build LLM test analysis cache
-        continue-on-error: true
         env:
           CLAUDE_API_KEY: ${{ secrets.E2E_COVERAGE_ANALYSIS_CLAUDE_API_KEY }}
         run: |
