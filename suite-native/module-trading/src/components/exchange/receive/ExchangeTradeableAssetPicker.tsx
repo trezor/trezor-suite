@@ -27,10 +27,15 @@ export const ExchangeTradeableAssetPicker = () => {
             return;
         }
 
+        if (asset.cryptoId === form.getValues('sendAsset')?.cryptoId) {
+            form.setValue('sendAsset', undefined);
+        }
+
         const previousSymbol = cryptoIdToSymbol(selectedValue?.cryptoId);
         const symbol = cryptoIdToSymbol(asset.cryptoId);
 
         setSelectedValue(asset);
+
         dispatch(
             previousSymbol === symbol
                 ? exchangeActions.receiveTokenChanged()

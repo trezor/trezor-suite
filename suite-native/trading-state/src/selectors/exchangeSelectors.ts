@@ -57,23 +57,15 @@ export const selectExchangeBuyTradeableAssets = createTradingWithFeatureFlagsMem
             state: TradingRootState,
         ) => ReturnType<typeof selectTradingExchangeBuyCryptoIds>,
         ({ wallet }) => wallet.trading.info.coins,
-        (_state: TradingRootState, forbiddenCryptoId?: string) => forbiddenCryptoId,
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreExperimentalOnlyNetworksEnabled),
     ],
-    (
-        cryptoIds,
-        coins,
-        forbiddenCryptoId,
-        areDebugOnlyNetworksEnabled,
-        areExperimentalOnlyNetworksEnabled,
-    ) => {
+    (cryptoIds, coins, areDebugOnlyNetworksEnabled, areExperimentalOnlyNetworksEnabled) => {
         if (!coins || !cryptoIds) {
             return [];
         }
 
         return cryptoIds
-            .filter(cryptoId => cryptoId !== forbiddenCryptoId)
             .flatMap(cryptoId => {
                 const coinInfo = coins[cryptoId];
                 if (!coinInfo) return [];
