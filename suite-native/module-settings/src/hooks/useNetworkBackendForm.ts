@@ -30,7 +30,7 @@ type FormValues = {
     serverAddress: string;
 };
 
-export const useBackendServersForm = ({ symbol, backendOptions }: Network) => {
+export const useNetworkBackendForm = ({ symbol, backendOptions }: Network) => {
     const dispatch = useDispatch();
     const { translate } = useTranslate();
     const { analytics } = useServices(selectNativeAnalyticsDep);
@@ -43,7 +43,7 @@ export const useBackendServersForm = ({ symbol, backendOptions }: Network) => {
     const serverTypes = useMemo(() => {
         const defaultItem: SelectItemType<ServerType> = {
             value: 'default',
-            label: translate('moduleSettings.networkBackends.servers.serverType.defaultLabel'),
+            label: translate('moduleSettings.networkBackends.server.serverType.defaultLabel'),
         };
         const supportedItems: SelectItemType<BackendType>[] = [
             { value: 'blockbook', label: 'Blockbook' },
@@ -79,7 +79,7 @@ export const useBackendServersForm = ({ symbol, backendOptions }: Network) => {
                 .string()
                 .test(
                     'format',
-                    translate('moduleSettings.networkBackends.servers.invalidFormat'),
+                    translate('moduleSettings.networkBackends.server.invalidFormat'),
                     (value, context) => {
                         const serverType = context.resolve(yup.ref<ServerType>('serverType'));
                         if (serverType === 'default') {
@@ -93,6 +93,7 @@ export const useBackendServersForm = ({ symbol, backendOptions }: Network) => {
         defaultValues,
         mode: 'onSubmit',
     });
+    const { isDirty } = form.formState;
 
     const setServerType = (value: ServerType) => {
         form.clearErrors();
@@ -146,8 +147,8 @@ export const useBackendServersForm = ({ symbol, backendOptions }: Network) => {
                 form.setError('serverAddress', {
                     message: translate(
                         isOnionAddress
-                            ? 'moduleSettings.networkBackends.servers.unableToConnect.tor'
-                            : 'moduleSettings.networkBackends.servers.unableToConnect.clearnet',
+                            ? 'moduleSettings.networkBackends.server.unableToConnect.tor'
+                            : 'moduleSettings.networkBackends.server.unableToConnect.clearnet',
                     ),
                 });
                 setIsConnecting(false);
@@ -171,7 +172,8 @@ export const useBackendServersForm = ({ symbol, backendOptions }: Network) => {
     );
 
     return {
-        form,
+        hookForm: form,
+        isDirty,
         serverTypes,
         selectedServerType,
         setServerType,
@@ -182,3 +184,5 @@ export const useBackendServersForm = ({ symbol, backendOptions }: Network) => {
         discard,
     };
 };
+
+export type NetworkBackendForm = ReturnType<typeof useNetworkBackendForm>;
