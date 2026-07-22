@@ -36,6 +36,7 @@ export * from './hooks/useTradingDetail';
 export type * from './types/tradingDetail';
 export type * from './types';
 export * from './utils';
+export * from './utils/apiKeyUtils';
 export * from './utils/tradingAccountUtils';
 export * from './utils/buy/buyUtils';
 export * from './utils/receiveAccountUtils';

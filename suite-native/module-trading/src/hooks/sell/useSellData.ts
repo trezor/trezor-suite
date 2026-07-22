@@ -1,8 +1,11 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectTradingSellLoadingTimestampAndStatus, tradingThunks } from '@suite-common/trading';
-import { getRandomAccountDescriptor } from '@suite-native/trading-quote-utils';
+import {
+    getRandomAccountDescriptor,
+    selectTradingSellLoadingTimestampAndStatus,
+    tradingThunks,
+} from '@suite-common/trading';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
 
 export const useSellData = (reloadRequestOrdinal: number) => {
