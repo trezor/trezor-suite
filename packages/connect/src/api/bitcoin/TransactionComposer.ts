@@ -38,8 +38,6 @@ export class TransactionComposer {
 
     coinInfo: BitcoinNetworkInfo;
 
-    blockHeight = 0;
-
     baseFee: number;
 
     sortingStrategy: TransactionInputOutputSortingStrategy;
@@ -52,7 +50,6 @@ export class TransactionComposer {
         this.account = options.account;
         this.outputs = options.outputs;
         this.coinInfo = options.coinInfo;
-        this.blockHeight = 0;
         this.baseFee = options.baseFee || 0;
         this.sortingStrategy = options.sortingStrategy;
         this.feeLevels = getOrInitBitcoinFeeLevels(options.coinInfo);
@@ -78,9 +75,6 @@ export class TransactionComposer {
     }
 
     async init(blockchain: Blockchain) {
-        const { blockHeight } = await blockchain.getNetworkInfo();
-        this.blockHeight = blockHeight;
-
         if (!this.feeLevels.wasFetchedSuccessfully) {
             await this.feeLevels.load(blockchain);
         }
