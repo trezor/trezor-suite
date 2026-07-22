@@ -6,6 +6,7 @@ import { type Network } from '@suite-common/wallet-config';
 import {
     type PendingEvmNonceStatus,
     fromWei,
+    getEffectiveGasPrice,
     getFeeRate,
     isEip1559,
     isPending,
@@ -242,7 +243,9 @@ export const BasicTxDetails = ({
                         <Item label={<Translation id="TR_GAS_PRICE" />} icon={GasPumpIcon}>
                             {isConfirmed || !isEip1559(tx.ethereumSpecific) ? (
                                 <FeeRate
-                                    feeRate={fromWei(tx.ethereumSpecific?.gasPrice || '0').toGwei()}
+                                    feeRate={fromWei(
+                                        getEffectiveGasPrice(tx.ethereumSpecific),
+                                    ).toGwei()}
                                     networkType="ethereum"
                                     preserveDecimals
                                 />

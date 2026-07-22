@@ -16,6 +16,7 @@ import {
     convertAmountSubunitsToUnits,
     formatNetworkAmount,
     fromWei,
+    getEffectiveGasPrice,
     getFiatRateKey,
     getNftTokenId,
     isNftTokenTransfer,
@@ -113,7 +114,7 @@ const formatAmounts =
         ethereumSpecific: tx.ethereumSpecific
             ? {
                   ...tx.ethereumSpecific,
-                  gasPrice: fromWei(tx.ethereumSpecific?.gasPrice ?? '0').toGwei(),
+                  gasPrice: fromWei(getEffectiveGasPrice(tx.ethereumSpecific)).toGwei(),
               }
             : undefined,
         cardanoSpecific: tx.cardanoSpecific

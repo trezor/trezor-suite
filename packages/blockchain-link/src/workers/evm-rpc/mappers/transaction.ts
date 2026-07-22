@@ -35,8 +35,11 @@ export const mapGetTransactionResponse = ({
     userAddress,
 }: MapTransactionParams): Responses.GetTransaction => {
     const { value, gasPrice } = tx;
-    const { gasUsed } = receipt;
-    const fee = (gasUsed * (gasPrice ?? 0n)).toString(10);
+    const { gasUsed, effectiveGasPrice } = receipt;
+    // effectiveGasPrice is the price actually charged and differs from the gasPrice bid on L2s;
+    // use it when positive, otherwise fall back to the gasPrice bid (mirrors blockbook).
+    const feeGasPrice = effectiveGasPrice > 0n ? effectiveGasPrice : (gasPrice ?? 0n);
+    const fee = (gasUsed * feeGasPrice).toString(10);
 
     const blockTime = block ? Number(block.timestamp) : 0;
     const blockHash = tx.blockHash || '';
@@ -103,6 +106,8 @@ export const mapGetTransactionResponse = ({
                 gasLimit: Number(tx.gas),
                 gasUsed: Number(receipt.gasUsed),
                 gasPrice: gasPrice?.toString(),
+                effectiveGasPrice:
+                    effectiveGasPrice > 0n ? effectiveGasPrice.toString() : undefined,
                 data: tx.input,
             },
         },

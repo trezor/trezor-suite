@@ -127,8 +127,10 @@ export interface EthereumSpecific {
     gasLimit?: number;
     /** Actual gas consumed by the transaction execution. */
     gasUsed?: number;
-    /** Price (in Wei or base units) per gas unit. */
+    /** Price (in Wei or base units) per gas unit bid by the sender. */
     gasPrice?: string;
+    /** Actual gas price paid per gas unit; on L2 networks this differs from gasPrice and is used for the fee. */
+    effectiveGasPrice?: string;
     maxPriorityFeePerGas?: string;
     maxFeePerGas?: string;
     baseFeePerGas?: string;

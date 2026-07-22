@@ -5,6 +5,7 @@ import { BigNumber } from '@trezor/utils';
 
 import {
     buildApprovalTransactionData,
+    getEffectiveGasPrice,
     getEvmTransactionPurpose,
     getEvmTransactionTextSignature,
     getNativeWrapTxKind,
@@ -38,6 +39,29 @@ describe('eth utils', () => {
         expect(strip('0x')).toBe('');
         expect(strip('0x2540be3ff')).toBe('02540be3ff');
         expect(strip('2540be3ff')).toBe('02540be3ff');
+    });
+
+    describe('getEffectiveGasPrice', () => {
+        it('returns effectiveGasPrice when present and greater than zero', () => {
+            expect(
+                getEffectiveGasPrice({ effectiveGasPrice: '150000000', gasPrice: '1000000000' }),
+            ).toBe('150000000');
+        });
+
+        it('falls back to gasPrice when effectiveGasPrice is zero', () => {
+            expect(getEffectiveGasPrice({ effectiveGasPrice: '0', gasPrice: '1000000000' })).toBe(
+                '1000000000',
+            );
+        });
+
+        it('falls back to gasPrice when effectiveGasPrice is undefined', () => {
+            expect(getEffectiveGasPrice({ gasPrice: '1000000000' })).toBe('1000000000');
+        });
+
+        it('returns "0" when neither value is defined', () => {
+            expect(getEffectiveGasPrice({})).toBe('0');
+            expect(getEffectiveGasPrice(undefined)).toBe('0');
+        });
     });
 
     describe('getEvmTransactionTextSignature', () => {
