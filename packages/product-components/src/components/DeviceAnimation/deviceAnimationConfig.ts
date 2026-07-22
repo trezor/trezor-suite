@@ -10,7 +10,7 @@ export const DEVICE_ANIMATION_CONFIG = {
             [DeviceModelInternal.T2B1]: { colors: [1, 2, 3, 4, 5] },
             [DeviceModelInternal.T3B1]: { colors: [1, 2, 3, 4, 5] },
             [DeviceModelInternal.T3T1]: { colors: [1, 2, 3, 4, 5] },
-            [DeviceModelInternal.T3W1]: { colors: [1, 2, 3] },
+            [DeviceModelInternal.T3W1]: { colors: [1, 2, 3, 4] },
         },
         hasSize: true,
     },
