@@ -44,6 +44,7 @@ import { signTxLegacy } from './bitcoin/signtxLegacy';
 import { deriveOutputScript, verifyTx } from './bitcoin/signtxVerify';
 import { Discovery } from './common/Discovery';
 import { validateParams } from './common/paramsValidator';
+import { getOrInitBitcoinFeeLevels } from '../backend/fees';
 
 type Params = {
     outputs: ComposeOutput[];
@@ -158,6 +159,15 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
     ): Promise<PrecomposedResult[]> {
         const { coinInfo, outputs, baseFee, sortingStrategy } = this.params;
         const address_n = pathUtils.validatePath(account.path);
+
+        // This is mandatory, @trezor/utxo-lib/compose expects current block height
+        // TODO: make it possible without it (offline composing)
+        const blockchain = await this.getBlockchain(sendCoreMessage);
+        const bitcoinFeeLevels = getOrInitBitcoinFeeLevels(coinInfo);
+        if (!bitcoinFeeLevels.wasFetchedSuccessfully) {
+            await bitcoinFeeLevels.load(blockchain);
+        }
+
         const composer = new TransactionComposer({
             account: {
                 type: pathUtils.getAccountType(address_n),
@@ -170,13 +180,9 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             coinInfo,
             outputs,
             baseFee,
+            feeLevels: bitcoinFeeLevels,
             sortingStrategy: sortingStrategy ?? DEFAULT_SORTING_STRATEGY,
         });
-
-        // This is mandatory, @trezor/utxo-lib/compose expects current block height
-        // TODO: make it possible without it (offline composing)
-        const blockchain = await this.getBlockchain(sendCoreMessage);
-        await composer.init(blockchain);
 
         return feeLevels.map(level => {
             composer.composeCustomFee(level.feePerUnit);
@@ -394,14 +400,18 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
         // get backend instance (it should be initialized before)
         const blockchain = await this.getBlockchain(context.sendCoreMessage);
+        const feeLevels = getOrInitBitcoinFeeLevels(coinInfo);
+        if (!feeLevels.wasFetchedSuccessfully) {
+            await feeLevels.load(blockchain);
+        }
         const composer = new TransactionComposer({
             account,
             utxos,
             coinInfo,
             outputs,
+            feeLevels,
             sortingStrategy: sortingStrategy ?? DEFAULT_SORTING_STRATEGY,
         });
-        await composer.init(blockchain);
 
         // try to compose multiple transactions with different fee levels
         // check if any of composed transactions is valid
