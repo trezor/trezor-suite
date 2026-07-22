@@ -68,6 +68,12 @@ export type CreateTransports = (transports: TransportName[]) => ConnectSettings[
 
 export type TransportsDep = { createTransports: CreateTransports };
 
+/**
+ * Base URL for firmware binaries on non-desktop hosts (web/native serve them remotely).
+ * Left undefined on desktop, where the local bin dir is resolved from state instead.
+ */
+export type BinFilesBaseUrlDep = { binFilesBaseUrl?: string };
+
 export type CommonServices = SuiteSyncDep &
     Bip329Dep &
     EnsureDelegatedIdentityKeyDep &
@@ -81,7 +87,8 @@ export type CommonServices = SuiteSyncDep &
     MigrateSuiteSyncLabelsForRbfTransactionDep &
     CreateLoggerDep &
     ThpHostNameDep &
-    TransportsDep;
+    TransportsDep &
+    BinFilesBaseUrlDep;
 
 export type ExtraDependenciesStatic = {
     /** @deprecated Do not add any thunks here, this is antipattern. */

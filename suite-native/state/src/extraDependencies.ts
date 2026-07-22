@@ -27,6 +27,7 @@ import type { EnsureEncryptionKeyDep, MMKVStorageDep } from '@suite-native/stora
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native/suite-sync';
 import { selectTradedAccountKeys, selectTradingEnvironment } from '@suite-native/trading-state';
 import TrezorConnect, { type ConnectSettings, initLog } from '@trezor/connect';
+import { resolveConnectPath } from '@trezor/env-utils';
 import { BridgeTransport } from '@trezor/transport-common';
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
@@ -124,6 +125,9 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
                         return new NativeBluetoothTransport({ id: 'native-bluetooth', logger });
                 }
             }),
+        // Native updates firmware with ignoreBaseUrl, so this is effectively unused; kept for parity
+        // with web (non-desktop hosts serve firmware bins remotely) instead of the desktop bin dir.
+        binFilesBaseUrl: resolveConnectPath('data'),
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
                 dispatch: deps.dispatch,

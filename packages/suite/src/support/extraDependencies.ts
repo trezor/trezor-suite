@@ -34,6 +34,7 @@ import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authentic
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { type ReceiveState } from '@suite-common/receive';
 import {
+    type BinFilesBaseUrlDep,
     type CommonServices,
     type ConnectInitSettings,
     type CreateTransports,
@@ -103,7 +104,8 @@ export type SuiteAppDeps = StoreAPIDep &
     CreateLoggerDep &
     ReloadAppDep &
     ThpHostNameDep &
-    GetTransportsFactoriesDep;
+    GetTransportsFactoriesDep &
+    BinFilesBaseUrlDep;
 
 export type SuiteServices = CommonServices &
     DesktopAnalyticsDep &
@@ -196,6 +198,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         createLogger: deps.createLogger,
         thpHostName: deps.thpHostName,
         createTransports,
+        binFilesBaseUrl: deps.binFilesBaseUrl,
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
                 dispatch: deps.dispatch,

@@ -2,6 +2,7 @@ import { createBrowserHistory } from 'history';
 
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
 import type { CreateLogger } from '@trezor/connect-common';
+import { resolveConnectPath } from '@trezor/env-utils';
 import { BridgeTransport } from '@trezor/transport-common';
 import { WebUsbTransport } from '@trezor/transport-web';
 
@@ -44,6 +45,7 @@ export const createSuiteWebCompositionRoot = (preloadStoreAction?: PreloadStoreA
             reloadApp,
             thpHostName: getWebThpHostName(),
             getTransportsFactories,
+            binFilesBaseUrl: resolveConnectPath('data'),
         },
         preloadStoreAction,
     );

@@ -32,6 +32,8 @@ export const createSuiteDesktopCompositionRoot = (
             reloadApp,
             thpHostName: undefined,
             getTransportsFactories,
+            // desktop resolves the local bin dir from the handshake state (see getBinFilesBaseUrlThunk)
+            binFilesBaseUrl: undefined,
         },
         preloadStoreAction,
         { statePatch },

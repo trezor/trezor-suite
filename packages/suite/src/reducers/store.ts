@@ -24,6 +24,7 @@ import { addLog } from '@suite-common/logger';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { type ReceiveState, prepareReceiveReducer } from '@suite-common/receive';
 import {
+    type BinFilesBaseUrlDep,
     type ExtraDependencies,
     type ExtraDependenciesStatic,
     type GetTransportsFactoriesDep,
@@ -174,7 +175,8 @@ export type SuiteStoreDeps = HistoryDep &
     CreateConnectLoggerFactoryDep &
     ReloadAppDep &
     ThpHostNameDep &
-    GetTransportsFactoriesDep;
+    GetTransportsFactoriesDep &
+    BinFilesBaseUrlDep;
 
 type SuiteExtra = ExtraDependenciesStatic & { services: SuiteServices };
 
@@ -215,6 +217,7 @@ export const initStore = (
             createLogger: deps.createConnectLoggerFactory?.({ getState: api.getState }),
             thpHostName: deps.thpHostName,
             getTransportsFactories: deps.getTransportsFactories,
+            binFilesBaseUrl: deps.binFilesBaseUrl,
         }),
     });
 
