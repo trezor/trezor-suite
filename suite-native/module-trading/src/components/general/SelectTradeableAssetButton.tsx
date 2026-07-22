@@ -4,7 +4,7 @@ import { type TradeableAsset } from '@suite-native/trading-types';
 
 import { TradeableAssetButton } from './TradeableAssetButton';
 
-export type SelectAssetButtonProps = {
+export type SelectTradeableAssetButtonProps = {
     onPress: () => void;
     selectedAsset: TradeableAsset | undefined;
     caret?: boolean;
@@ -21,7 +21,7 @@ export const SelectTradeableAssetButton = ({
         priority: 'primary',
     },
     testID,
-}: SelectAssetButtonProps) => {
+}: SelectTradeableAssetButtonProps) => {
     const { translate } = useTranslate();
 
     if (selectedAsset) {

@@ -1,4 +1,5 @@
 import { getTranslation } from '@suite-native/intl';
+import { act } from '@suite-native/test-utils';
 import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 
 import { renderWithTradingProvider } from '../../../../../__tests__/tradingTestUtils';
@@ -9,12 +10,12 @@ const mockOnApprovalTypeSelect = jest.fn();
 
 const testQuote = mercuryoFixedWorstQuote;
 
-const renderSheet = (
+const renderSheet = async (
     isVisible = true,
     quote = testQuote,
     selectedApprovalType: 'INFINITE' | 'MINIMAL' = 'INFINITE',
-) =>
-    renderWithTradingProvider(
+) => {
+    const res = renderWithTradingProvider(
         <ExchangeApprovalLimitSheet
             isVisible={isVisible}
             onDismiss={mockOnDismiss}
@@ -29,14 +30,20 @@ const renderSheet = (
             },
         },
     );
+    await act(async () => {
+        await act(() => Promise.resolve());
+    });
+
+    return res;
+};
 
 describe('ExchangeApprovalLimitSheet', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should render the sheet when visible', () => {
-        const { getByText } = renderSheet();
+    it('should render the sheet when visible', async () => {
+        const { getByText } = await renderSheet();
 
         expect(
             getByText(getTranslation('moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel')),
@@ -44,8 +51,8 @@ describe('ExchangeApprovalLimitSheet', () => {
         expect(getByText('100 USDC')).toBeTruthy();
     });
 
-    it('should render unlimited approval option with correct details', () => {
-        const { getByText } = renderSheet();
+    it('should render unlimited approval option with correct details', async () => {
+        const { getByText } = await renderSheet();
 
         expect(
             getByText(getTranslation('moduleTrading.tradingExchangeApprovalScreen.unlimitedLabel')),
@@ -64,8 +71,8 @@ describe('ExchangeApprovalLimitSheet', () => {
         ).toBeTruthy();
     });
 
-    it('should render limited approval option with correct amount', () => {
-        const { getByText } = renderSheet();
+    it('should render limited approval option with correct amount', async () => {
+        const { getByText } = await renderSheet();
 
         expect(getByText('100 USDC')).toBeTruthy();
         expect(
@@ -73,31 +80,31 @@ describe('ExchangeApprovalLimitSheet', () => {
         ).toBeTruthy();
     });
 
-    it('should render crypto icons for both cards', () => {
-        const { getAllByLabelText } = renderSheet();
+    it('should render crypto icons for both cards', async () => {
+        const { getAllByLabelText } = await renderSheet();
 
         const cryptoIcons = getAllByLabelText('eth:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
         expect(cryptoIcons).toHaveLength(2);
     });
 
-    it('should display quote sendStringAmount in limited approval option', () => {
+    it('should display quote sendStringAmount in limited approval option', async () => {
         const customQuote = {
             ...testQuote,
             sendStringAmount: '250',
         };
-        const { getByText } = renderSheet(true, customQuote);
+        const { getByText } = await renderSheet(true, customQuote);
 
         expect(getByText('250 USDC')).toBeTruthy();
     });
 
-    it('should pass correct props when INFINITE is selected', () => {
-        renderSheet(true, testQuote, 'INFINITE');
+    it('should pass correct props when INFINITE is selected', async () => {
+        await renderSheet(true, testQuote, 'INFINITE');
 
         expect(mockOnApprovalTypeSelect).toBeDefined();
     });
 
-    it('should pass correct props when MINIMAL is selected', () => {
-        renderSheet(true, testQuote, 'MINIMAL');
+    it('should pass correct props when MINIMAL is selected', async () => {
+        await renderSheet(true, testQuote, 'MINIMAL');
 
         expect(mockOnApprovalTypeSelect).toBeDefined();
     });
