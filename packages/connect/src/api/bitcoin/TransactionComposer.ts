@@ -16,8 +16,6 @@ import type {
 } from '@trezor/utxo-lib';
 import { composeTx, networks } from '@trezor/utxo-lib';
 
-import type { Blockchain } from '../../backend/BlockchainLink';
-import { getOrInitBitcoinFeeLevels } from '../../backend/fees';
 import type { BitcoinFeeLevels } from '../../backend/fees/BitcoinFeeLevels';
 import { DEFAULT_BITCOIN_LONGTERM_FEE_RATE } from '../../data/defaultFeeLevels';
 
@@ -27,6 +25,7 @@ type Options = {
     outputs: ComposeOutput[];
     coinInfo: BitcoinNetworkInfo;
     baseFee?: number;
+    feeLevels: BitcoinFeeLevels;
     sortingStrategy: TransactionInputOutputSortingStrategy;
 };
 
@@ -63,7 +62,7 @@ export class TransactionComposer {
         this.coinInfo = options.coinInfo;
         this.baseFee = options.baseFee || 0;
         this.sortingStrategy = options.sortingStrategy;
-        this.feeLevels = getOrInitBitcoinFeeLevels(options.coinInfo);
+        this.feeLevels = options.feeLevels;
 
         // map to @trezor/utxo-lib/compose format
         const { addresses } = options.account;
@@ -83,12 +82,6 @@ export class TransactionComposer {
                 own: allAddresses.includes(u.address), // decide if it can be spent immediately (own) or after 6 conf (not own)
             };
         });
-    }
-
-    async init(blockchain: Blockchain) {
-        if (!this.feeLevels.wasFetchedSuccessfully) {
-            await this.feeLevels.load(blockchain);
-        }
     }
 
     // Composing fee levels for SelectFee view in popup
