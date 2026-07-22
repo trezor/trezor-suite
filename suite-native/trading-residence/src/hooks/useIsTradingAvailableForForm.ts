@@ -1,13 +1,16 @@
 import { isCountrySubdivisionEmpty } from '@suite-common/trading';
-import { useFormContext } from '@suite-native/forms';
+import { useFormContext, useWatch } from '@suite-native/forms';
 import { tradingCountriesWhitelistSet } from '@suite-native/trading-consts';
 
 import { type TradingLocationFormValues } from '../types/tradingLocationForm';
 
 export const useIsTradingAvailableForForm = () => {
-    const { watch } = useFormContext<TradingLocationFormValues>();
-    const countryCode = watch('country')?.value;
-    const countrySubdivision = watch('countrySubdivision');
+    const { control } = useFormContext<TradingLocationFormValues>();
+    const [country, countrySubdivision] = useWatch({
+        control,
+        name: ['country', 'countrySubdivision'],
+    });
+    const countryCode = country?.value;
 
     return (
         tradingCountriesWhitelistSet.has(countryCode) &&

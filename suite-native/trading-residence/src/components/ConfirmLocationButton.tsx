@@ -2,7 +2,7 @@ import { useDispatch } from 'react-redux';
 
 import { isCountrySubdivisionRequired } from '@suite-common/trading';
 import { Button } from '@suite-native/atoms';
-import { useFormContext } from '@suite-native/forms';
+import { useFormContext, useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { residenceActions } from '@suite-native/trading-state';
 
@@ -19,8 +19,8 @@ export type ConfirmLocationButtonProps = {
 
 export const ConfirmLocationButton = ({ afterConfirm, testId }: ConfirmLocationButtonProps) => {
     const countryCode = useFormCountryCode();
-    const { watch } = useFormContext<TradingLocationFormValues>();
-    const countrySubdivision = watch('countrySubdivision');
+    const { control } = useFormContext<TradingLocationFormValues>();
+    const countrySubdivision = useWatch({ control, name: 'countrySubdivision' });
     const { showSheet: showCountrySubdivisionPicker } = useCountrySubdivisionPickerControls();
     const dispatch = useDispatch();
     const analyticsReport = useCountrySelectionAnalyticsReport();

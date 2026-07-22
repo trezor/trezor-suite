@@ -1,6 +1,7 @@
 import { type AnimatedProps, FadeIn, FadeOutDown } from 'react-native-reanimated';
 
 import { AnimatedBox, Button } from '@suite-native/atoms';
+import { useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
 import { useBuyFlow } from '../../hooks/buy/useBuyFlow';
@@ -28,7 +29,10 @@ const ContinueButton = ({ selectQuote }: ContinueButtonProps) => (
 export const BuyConfirmation = ({ enteringAnimation }: ConfirmationProps) => {
     const form = useBuyFormContext();
     const { canProceed, selectQuote } = useBuyFlow(form);
-    const [receiveCryptoId, quote] = form.watch(['asset.cryptoId', 'quote']);
+    const [receiveCryptoId, quote] = useWatch({
+        control: form.control,
+        name: ['asset.cryptoId', 'quote'],
+    });
 
     const { isReceivingInactiveStellarToken, activateButtonElement } =
         useTradingStellarActivateToken({

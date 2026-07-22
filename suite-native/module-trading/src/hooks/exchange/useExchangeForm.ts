@@ -89,8 +89,11 @@ const useExchangeQuotesChangeEffect = ({ getValues, setValue }: ExchangeFormType
     }, [providers, quoteGroups, setValue, getValues]);
 };
 
-const useExchangeQuoteChangeEffect = ({ watch, setValue }: ExchangeFormType) => {
-    const [selectedQuote, receiveAsset] = watch(['quote', 'receiveAsset']);
+const useExchangeQuoteChangeEffect = ({ control, setValue }: ExchangeFormType) => {
+    const [selectedQuote, receiveAsset] = useWatch({
+        control,
+        name: ['quote', 'receiveAsset'],
+    });
     const symbol = getSymbolFromTradeableAsset(receiveAsset);
 
     const isAmountInSats = useSelector((state: WalletSettingsRootState) =>
@@ -172,10 +175,14 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, watch }: ExchangeFor
     }, [setValue, watch, dispatch, analytics]);
 };
 
-const useDexQuoteApprovalInfoChangeEffect = ({ getValues, setValue, watch }: ExchangeFormType) => {
+const useDexQuoteApprovalInfoChangeEffect = ({
+    control,
+    getValues,
+    setValue,
+}: ExchangeFormType) => {
     const dispatch = useDispatch();
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
-    const [quote] = watch(['quote']);
+    const quote = useWatch({ control, name: 'quote' });
 
     const lastProcessedQuoteId = useRef<string | undefined>(undefined);
     const pendingPrefetchQuoteIds = useRef(new Set<string>());

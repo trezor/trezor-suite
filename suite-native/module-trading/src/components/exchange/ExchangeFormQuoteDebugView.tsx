@@ -1,14 +1,15 @@
 import { cryptoIdToNetworkAndContractAddress, getApprovalStatus } from '@suite-common/trading';
 import { findToken, isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { HStack, Text } from '@suite-native/atoms';
+import { useWatch } from '@suite-native/forms';
 import { DebugModeView } from '@suite-native/trading-debug';
 
 import { ExchangeUsdcPresetButton } from './ExchangeUsdcPresetButton';
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
 
 export const ExchangeFormQuoteDebugView = () => {
-    const { watch } = useExchangeFormContext();
-    const [quote, sendAccount] = watch(['quote', 'sendAccount']);
+    const { control } = useExchangeFormContext();
+    const [quote, sendAccount] = useWatch({ control, name: ['quote', 'sendAccount'] });
 
     const approvalStatus = getApprovalStatus(quote);
     const { contractAddress } = cryptoIdToNetworkAndContractAddress(quote?.send);

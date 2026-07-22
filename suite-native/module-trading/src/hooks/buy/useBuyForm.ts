@@ -166,8 +166,8 @@ const useBuyQuotesChangeEffect = ({ getValues, setValue }: BuyFormType) => {
     }, [quotes, getValues, setValue]);
 };
 
-const useBuyQuoteChangeEffect = ({ getValues, setValue, watch }: BuyFormType) => {
-    const [asset, quote] = watch(['asset', 'quote']);
+const useBuyQuoteChangeEffect = ({ control, getValues, setValue }: BuyFormType) => {
+    const [asset, quote] = useWatch({ control, name: ['asset', 'quote'] });
     const symbol = getSymbolFromTradeableAsset(asset);
 
     const isAmountInSats = useSelector((state: WalletSettingsRootState) =>

@@ -17,6 +17,7 @@ import {
 } from '@suite-common/trading';
 import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { useWatch } from '@suite-native/forms';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { buyActions, selectValidTradingBuyQuotesNative } from '@suite-native/trading-state';
 import { type AbortablePromise, type BuyFormType } from '@suite-native/trading-types';
@@ -61,16 +62,19 @@ const useShouldFetchBuyQuotes = (form: BuyFormType): ShouldFetchBuyQuotes => {
         country,
         countrySubdivision,
         receiveAccount,
-    ] = form.watch([
-        'asset',
-        'fiatCurrency',
-        'fiatValue',
-        'cryptoValue',
-        'amountInCrypto',
-        'country',
-        'countrySubdivision',
-        'receiveAccount',
-    ]);
+    ] = useWatch({
+        control: form.control,
+        name: [
+            'asset',
+            'fiatCurrency',
+            'fiatValue',
+            'cryptoValue',
+            'amountInCrypto',
+            'country',
+            'countrySubdivision',
+            'receiveAccount',
+        ],
+    });
 
     const amount = amountInCrypto ? cryptoValue : fiatValue;
     const isFetchAllowed = !!(asset && fiatCurrency && amount && parseFloat(amount) > 0);
@@ -135,7 +139,7 @@ const useBuyQuotesThunk = (
 ) => {
     const dispatch = useDispatch();
     const { analytics } = useServices(selectNativeAnalyticsDep);
-    const asset = form.watch('asset');
+    const asset = useWatch({ control: form.control, name: 'asset' });
     const symbol = getSymbolFromTradeableAsset(asset);
     const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>
         selectIsAmountInSats(state, symbol),

@@ -3,6 +3,7 @@ import { type TextInput } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectTradingBuyIsLoading } from '@suite-common/trading';
+import { useWatch } from '@suite-native/forms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
@@ -21,8 +22,11 @@ const CRYPTO_AMOUNT_TEST_ID = '@trading/buy/crypto-amount-input';
 export const BuyCryptoAmountInput = forwardRef<TextInput, CryptoAmountInputProps>(
     ({ showAssetsSheet }, ref) => {
         const { translate } = useTranslate();
-        const { watch } = useBuyFormContext();
-        const [amountInCrypto, asset] = watch(['amountInCrypto', 'asset']);
+        const { control } = useBuyFormContext();
+        const [amountInCrypto, asset] = useWatch({
+            control,
+            name: ['amountInCrypto', 'asset'],
+        });
         const symbol = getSymbolFromTradeableAsset(asset);
         const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
         const isLoading = useSelector(selectTradingBuyIsLoading);

@@ -1,8 +1,10 @@
 import { useSelector } from 'react-redux';
 
 import { cryptoIdToSymbol } from '@suite-common/trading';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountFormattedBalance } from '@suite-common/wallet-core';
 import { HStack } from '@suite-native/atoms';
+import { useWatch } from '@suite-native/forms';
 import {
     NetworkReserveBanner,
     useIsNetworkReserveBannerVisible,
@@ -13,13 +15,18 @@ import { ExchangeSendAssetPicker } from './ExchangeSendAssetPicker';
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
 import { TradeableAssetNetworkInfo } from '../../general/TradeableAssetNetworkInfo';
 
-export const ExchangeSendContent = () => {
-    const { watch } = useExchangeFormContext();
-
-    const asset = watch('sendAsset');
-    const sendCryptoAmount = watch('sendCryptoAmount');
-    const sendAccount = watch('sendAccount');
-    const symbol = asset ? cryptoIdToSymbol(asset.cryptoId) : undefined;
+const ExchangeNetworkReserveBanner = ({
+    symbol,
+    contractAddress,
+}: {
+    symbol: NetworkSymbol;
+    contractAddress?: string;
+}) => {
+    const { control } = useExchangeFormContext();
+    const [sendCryptoAmount, sendAccount] = useWatch({
+        name: ['sendCryptoAmount', 'sendAccount'],
+        control,
+    });
 
     const formattedBalance = useSelector((state: AccountsRootState) =>
         selectAccountFormattedBalance(state, sendAccount?.key),
@@ -27,10 +34,23 @@ export const ExchangeSendContent = () => {
 
     const shouldShowBanner = useIsNetworkReserveBannerVisible({
         symbol,
-        contractAddress: asset?.contractAddress,
+        contractAddress,
         amount: sendCryptoAmount,
         balance: formattedBalance,
     });
+
+    if (!shouldShowBanner) {
+        return null;
+    }
+
+    return <NetworkReserveBanner symbol={symbol} contractAddress={contractAddress} />;
+};
+
+export const ExchangeSendContent = () => {
+    const { control } = useExchangeFormContext();
+
+    const asset = useWatch({ name: 'sendAsset', control });
+    const symbol = cryptoIdToSymbol(asset?.cryptoId);
 
     return (
         <>
@@ -39,8 +59,11 @@ export const ExchangeSendContent = () => {
                 <TradeableAssetNetworkInfo asset={asset} />
                 <ExchangeSendAccountCryptoBalance />
             </HStack>
-            {symbol && shouldShowBanner && (
-                <NetworkReserveBanner symbol={symbol} contractAddress={asset?.contractAddress} />
+            {symbol && (
+                <ExchangeNetworkReserveBanner
+                    symbol={symbol}
+                    contractAddress={asset?.contractAddress}
+                />
             )}
         </>
     );

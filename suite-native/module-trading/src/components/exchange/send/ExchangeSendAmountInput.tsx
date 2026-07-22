@@ -1,6 +1,7 @@
 import { forwardRef } from 'react';
 import { type TextInput } from 'react-native';
 
+import { useWatch } from '@suite-native/forms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
@@ -19,8 +20,11 @@ const EXCHANGE_SEND_INPUT_TEST_ID = '@trading/exchange/send-amount-input';
 export const ExchangeSendAmountInput = forwardRef<TextInput, ExchangeSendAmountInputProps>(
     ({ showAssetsSheet }, ref) => {
         const { translate } = useTranslate();
-        const { watch, setValue } = useExchangeFormContext();
-        const [asset, amount, account] = watch(['sendAsset', 'sendCryptoAmount', 'sendAccount']);
+        const { control, setValue } = useExchangeFormContext();
+        const [asset, amount, account] = useWatch({
+            control,
+            name: ['sendAsset', 'sendCryptoAmount', 'sendAccount'],
+        });
         const symbol = getSymbolFromTradeableAsset(asset);
         const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
         const inputControls = useInputFieldControls('sendCryptoAmount', amount, setValue);
