@@ -1,4 +1,11 @@
+import { useDispatch } from 'react-redux';
+
+import type { FiatCurrencyCode } from 'invity-api';
+
+import { useServices } from '@suite-common/dependency-injection';
+import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { HStack } from '@suite-native/atoms';
+import { buyActions } from '@suite-native/trading-state';
 
 import { BuyFiatAmountInput } from './BuyFiatAmountInput';
 import { BuyFiatCurrencySheet } from './BuyFiatCurrencySheet';
@@ -9,9 +16,29 @@ import { FiatCurrencyButton } from '../general/FiatCurrencyButton';
 const FIAT_CURRENCY_PICKER_TEST_ID = '@trading/buy/fiat-button';
 
 export const BuyFiatCurrencyPicker = () => {
+    const dispatch = useDispatch();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const form = useBuyFormContext();
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
         useSheetControls(form, 'fiatCurrency');
+
+    const handleFiatSelect = (fiatCurrency: FiatCurrencyCode) => {
+        if (fiatCurrency === selectedValue) {
+            return;
+        }
+
+        setSelectedValue(fiatCurrency);
+        form.setValue('fiatValue', undefined, { shouldValidate: true });
+        form.setValue('cryptoValue', undefined, { shouldValidate: true });
+        dispatch(buyActions.fiatCurrencyChanged());
+        analytics.report({
+            type: events.tradingParameterChangedEvent.name,
+            payload: {
+                type: 'buy',
+                parameter: 'fiat',
+            },
+        });
+    };
 
     return (
         <>
@@ -26,7 +53,7 @@ export const BuyFiatCurrencyPicker = () => {
             <BuyFiatCurrencySheet
                 isVisible={isSheetVisible}
                 onClose={hideSheet}
-                onFiatSelect={setSelectedValue}
+                onFiatSelect={handleFiatSelect}
                 searchInputTestId="@trading/buy/fiat-search-input"
             />
         </>

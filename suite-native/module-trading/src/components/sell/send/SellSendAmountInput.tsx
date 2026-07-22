@@ -9,8 +9,8 @@ import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 
 import { useAmountInputDecimals } from '../../../hooks/general/useAmountInputDecimals';
-import { useInputFieldControls } from '../../../hooks/general/useInputFieldControls';
 import { useSellFormContext } from '../../../hooks/sell/useSellFormContext';
+import { useSellInputFormControls } from '../../../hooks/sell/useSellInputFormControls';
 import { AmountInput } from '../../general/Input/AmountInput';
 
 export type SellSendAmountInputProps = {
@@ -22,15 +22,16 @@ const SELL_SEND_INPUT_TEST_ID = '@trading/sell/send-amount-input';
 export const SellSendAmountInput = forwardRef<TextInput, SellSendAmountInputProps>(
     ({ showAssetsSheet }, ref) => {
         const { translate } = useTranslate();
-        const { control, setValue } = useSellFormContext();
-        const [asset, amount, account, amountInCrypto] = useWatch({
+        const { control } = useSellFormContext();
+        const [asset, account, amountInCrypto] = useWatch({
             control,
-            name: ['sendAsset', 'cryptoStringAmount', 'sendAccount', 'amountInCrypto'],
+            name: ['sendAsset', 'sendAccount', 'amountInCrypto'],
         });
         const symbol = getSymbolFromTradeableAsset(asset);
         const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
-        const inputControls = useInputFieldControls('cryptoStringAmount', amount, setValue);
+        const inputControls = useSellInputFormControls('cryptoStringAmount');
         const decimals = useAmountInputDecimals(account, asset?.contractAddress);
+
         const isLoading = useSelector(selectTradingSellIsLoading);
 
         const isAssetSelected = !!asset;

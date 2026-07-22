@@ -1,6 +1,8 @@
 import type { CryptoId } from 'invity-api';
 
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
 import {
     type TestStore,
@@ -13,7 +15,10 @@ import {
     getEthAccount,
     getInitializedTradingState,
 } from '@suite-native/trading-fixtures';
-import { selectAccountsWithTokensToSellSectionCondensedListByTradingType } from '@suite-native/trading-state';
+import {
+    selectAccountsWithTokensToSellSectionCondensedListByTradingType,
+    sellActions,
+} from '@suite-native/trading-state';
 import { type MyAssetTradeable, type SellFormType } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -27,6 +32,10 @@ jest.mock('@suite-native/trading-state', () => ({
 }));
 const mockedSelectAccountsWithTokensToSellSectionListByTradingType =
     selectAccountsWithTokensToSellSectionCondensedListByTradingType as unknown as jest.Mock;
+const reportMock = jest.fn();
+const services: NativeAnalyticsDep = {
+    analytics: mockNativeAnalytics(reportMock),
+};
 
 describe('SellSendAssetPicker', () => {
     let form: SellFormType;
@@ -59,15 +68,18 @@ describe('SellSendAssetPicker', () => {
         },
     ];
 
-    const renderSellForm = () => renderHookWithStoreProvider(() => useSellForm(), { store });
+    const renderSellForm = () =>
+        renderHookWithStoreProvider(() => useSellForm(), { services, store });
 
     const renderSellSendAssetPicker = () =>
         renderWithStoreProvider(<SellSendAssetPicker />, {
+            services,
             store,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
     beforeEach(() => {
+        reportMock.mockClear();
         store = createTradingLightStore({
             tradeType: 'sell',
             overrides: {
@@ -106,5 +118,23 @@ describe('SellSendAssetPicker', () => {
 
         const accountKeyStore = store.getState().wallet.trading.sell.tradingAccountKey;
         expect(accountKeyStore).toBe(btcAccount.key);
+    });
+
+    it('should apply sell asset change effects on item press', async () => {
+        form.setValue('cryptoStringAmount', '1');
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { getByText } = renderSellSendAssetPicker();
+
+        await userEvent.press(getByText('BTC'));
+
+        expect(form.getValues('cryptoStringAmount')).toBeUndefined();
+        expect(dispatchSpy).toHaveBeenCalledWith(sellActions.sendAssetChanged());
+        expect(reportMock).toHaveBeenCalledWith({
+            type: events.tradingParameterChangedEvent.name,
+            payload: {
+                type: 'sell',
+                parameter: 'cryptoFrom',
+            },
+        });
     });
 });

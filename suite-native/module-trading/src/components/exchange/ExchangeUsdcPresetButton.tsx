@@ -1,9 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { tradingExchangeActions } from '@suite-common/trading';
+import { cryptoIdToSymbol, tradingExchangeActions } from '@suite-common/trading';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { Text, TextButton } from '@suite-native/atoms';
+import { exchangeActions } from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
@@ -27,7 +28,7 @@ const USDT_ETH: TradeableAsset = {
 };
 
 export const ExchangeUsdcPresetButton = () => {
-    const { setValue } = useExchangeFormContext();
+    const { getValues, setValue } = useExchangeFormContext();
     const dispatch = useDispatch();
     const debugAccount = useSelector((state: AccountsRootState) =>
         selectAccounts(state).find(
@@ -46,11 +47,20 @@ export const ExchangeUsdcPresetButton = () => {
     }
 
     const handlePress = () => {
+        const previousReceiveSymbol = cryptoIdToSymbol(getValues('receiveAsset')?.cryptoId);
+        const receiveSymbol = cryptoIdToSymbol(USDT_ETH.cryptoId);
+
         setValue('sendAsset', USDC_ETH);
         setValue('sendAccount', debugAccount);
         dispatch(tradingExchangeActions.setTradingAccountKey(debugAccount.key));
         setValue('sendCryptoAmount', '1');
         setValue('receiveAsset', USDT_ETH);
+        dispatch(exchangeActions.sendAssetChanged());
+        dispatch(
+            previousReceiveSymbol === receiveSymbol
+                ? exchangeActions.receiveTokenChanged()
+                : exchangeActions.receiveAssetChanged(),
+        );
     };
 
     return (

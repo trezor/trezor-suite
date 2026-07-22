@@ -1,16 +1,15 @@
+import { yup } from '@suite-common/validators';
 import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { useForm } from '@suite-native/forms';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { btcAsset, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
-import {
-    type ExchangeFormType,
-    type SellFormType,
-    type TradeableAsset,
-} from '@suite-native/trading-types';
+import { type SellFormValues, type TradeableAsset } from '@suite-native/trading-types';
 
 import { useSendAccountAssetBalance } from '../useSendAccountAssetBalance';
 
 type HookProps = {
-    form: ExchangeFormType | SellFormType;
+    sendAccount: Account | undefined;
+    sendAsset: TradeableAsset | undefined;
     setBalance: (balance: string | undefined) => unknown;
     setSendSymbol: (currency: string | undefined) => unknown;
     setContractAddress: (contractAddress: TokenAddress | undefined) => unknown;
@@ -19,24 +18,31 @@ type HookProps = {
 describe('useSendAccountAssetBalance', () => {
     const renderUseSendAccountAssetBalance = (initialProps: HookProps) =>
         renderHookWithStoreProvider(
-            ({ form, setBalance, setSendSymbol, setContractAddress, setAccountKey }) =>
-                useSendAccountAssetBalance(
-                    form,
+            ({
+                sendAccount,
+                sendAsset,
+                setBalance,
+                setSendSymbol,
+                setContractAddress,
+                setAccountKey,
+            }) => {
+                const form = useForm<SellFormValues>({
+                    defaultValues: { sendAccount, sendAsset },
+                    validation: yup.object({}),
+                });
+                useSendAccountAssetBalance({
+                    control: form.control,
                     setBalance,
                     setSendSymbol,
                     setContractAddress,
                     setAccountKey,
-                ),
+                });
+            },
             {
                 preloadedState: { wallet: getWalletState({ tradeType: 'sell' }) },
                 initialProps,
             },
         );
-
-    const getFormMock = (sendAccount: Account | undefined, sendAsset: TradeableAsset | undefined) =>
-        ({
-            watch: () => [sendAccount, sendAsset],
-        }) as unknown as SellFormType;
 
     it('should watch for balance and asset symbol', () => {
         const setBalance = jest.fn();
@@ -44,7 +50,8 @@ describe('useSendAccountAssetBalance', () => {
         const setContractAddress = jest.fn();
         const setAccountKey = jest.fn();
         renderUseSendAccountAssetBalance({
-            form: getFormMock(getBtcAccount(), btcAsset),
+            sendAccount: getBtcAccount(),
+            sendAsset: btcAsset,
             setBalance,
             setSendSymbol,
             setContractAddress,
@@ -62,7 +69,8 @@ describe('useSendAccountAssetBalance', () => {
         const setAccountKey = jest.fn();
 
         renderUseSendAccountAssetBalance({
-            form: getFormMock(undefined, btcAsset),
+            sendAccount: undefined,
+            sendAsset: btcAsset,
             setBalance,
             setSendSymbol,
             setContractAddress,
@@ -79,7 +87,8 @@ describe('useSendAccountAssetBalance', () => {
         const setAccountKey = jest.fn();
 
         renderUseSendAccountAssetBalance({
-            form: getFormMock(getBtcAccount(), undefined),
+            sendAccount: getBtcAccount(),
+            sendAsset: undefined,
             setBalance,
             setSendSymbol,
             setContractAddress,

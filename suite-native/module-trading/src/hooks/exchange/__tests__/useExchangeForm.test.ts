@@ -5,8 +5,6 @@ import {
     selectTradingProviderMetadata,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
-import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import {
     type TestStore,
     act,
@@ -19,26 +17,19 @@ import {
     btcAsset,
     cexdirectFloatingQuote,
     eth1NormalAccount,
-    eth2legacyAccount,
     exchangeCexdirect,
     exchangeQuotes,
     invityDexQuote,
     mercuryoFixedBestQuote,
     mercuryoFixedWorstQuote,
     usdcAsset,
-    usdtAsset,
 } from '@suite-native/trading-fixtures';
-import { exchangeActions } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { clearExchangeFormQuoteData, useExchangeForm } from '../useExchangeForm';
 
-const mockReport = jest.fn();
-const services: NativeAnalyticsDep = {
-    analytics: mockNativeAnalytics(mockReport),
-};
 type PrefetchDexQuoteApprovalThunk = typeof exchangeThunks.prefetchDexQuoteApprovalThunk;
 
 jest.mock('@suite-native/transaction-management', () => ({
@@ -81,14 +72,13 @@ const createPrefetchDexQuoteApprovalThunkMock = (
 
 const btc1AccountKey = btc1NormalAccount.key;
 const eth1AccountKey = eth1NormalAccount.key;
-const eth2AccountKey = eth2legacyAccount.key;
 const accountDeviceState = btc1NormalAccount.deviceState;
 
 describe('useExchangeForm', () => {
     let store: TestStore;
 
     const renderUseExchangeForm = () =>
-        renderHookWithStoreProvider(() => useExchangeForm(), { services, store });
+        renderHookWithStoreProvider(() => useExchangeForm(), { store });
 
     const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) =>
         createTradingLightStore({
@@ -378,60 +368,6 @@ describe('useExchangeForm', () => {
         });
     });
 
-    describe('sendAsset', () => {
-        it('should clear crypto amount on change', () => {
-            const { result } = renderUseExchangeForm();
-            act(() => {
-                result.current.setValue('sendAsset', btcAsset);
-                result.current.setValue('sendCryptoAmount', '100');
-            });
-
-            act(() => {
-                result.current.setValue('sendAsset', usdcAsset);
-            });
-
-            expect(result.current.getValues('sendCryptoAmount')).toBeUndefined();
-        });
-
-        it('should report change to analytics', () => {
-            const { result } = renderUseExchangeForm();
-
-            act(() => {
-                result.current.setValue('sendAsset', btcAsset);
-            });
-
-            expect(mockReport).toHaveBeenCalledWith({
-                type: events.tradingParameterChangedEvent.name,
-                payload: {
-                    type: 'exchange',
-                    parameter: 'cryptoFrom',
-                },
-            });
-        });
-
-        it('should dispatch sendAssetChanged action', () => {
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = renderUseExchangeForm();
-
-            act(() => {
-                result.current.setValue('sendAsset', btcAsset);
-            });
-
-            expect(dispatchSpy).toHaveBeenCalledWith(exchangeActions.sendAssetChanged());
-        });
-
-        it('should clear receiveAsset when sendAsset has same cryptoId as receiveAsset', () => {
-            const { result } = renderUseExchangeForm();
-
-            act(() => {
-                result.current.setValue('receiveAsset', btcAsset);
-                result.current.setValue('sendAsset', btcAsset);
-            });
-
-            expect(result.current.getValues('receiveAsset')).toBeUndefined();
-        });
-    });
-
     describe('receiveAccount', () => {
         it('should be undefined by default', () => {
             const { result } = renderUseExchangeForm();
@@ -467,121 +403,6 @@ describe('useExchangeForm', () => {
                     }),
                 );
             });
-        });
-
-        it('should preselect receiveAccount for the new receiveAsset after receiveAsset changes', async () => {
-            const { result } = renderUseExchangeForm();
-
-            act(() => {
-                result.current.setValue('receiveAsset', btcAsset);
-            });
-
-            await waitFor(() => {
-                expect(result.current.getValues('receiveAccount')).toEqual(
-                    expect.objectContaining({
-                        account: btc1NormalAccount,
-                    }),
-                );
-            });
-
-            act(() => {
-                result.current.setValue('receiveAsset', usdcAsset);
-            });
-
-            await waitFor(() => {
-                expect(result.current.getValues('receiveAccount')).toEqual(
-                    expect.objectContaining({
-                        account: eth1NormalAccount,
-                    }),
-                );
-            });
-        });
-
-        it('should keep selected receiveAccount when receiveAsset changes within the same network', async () => {
-            const { result } = renderUseExchangeForm();
-
-            act(() => {
-                result.current.setValue('receiveAsset', usdcAsset);
-            });
-
-            await waitFor(() => {
-                expect(result.current.getValues('receiveAccount')).toEqual(
-                    expect.objectContaining({
-                        account: eth1NormalAccount,
-                    }),
-                );
-            });
-
-            act(() => {
-                store.dispatch(tradingExchangeActions.setReceiveAccountKey(eth2AccountKey));
-            });
-
-            await waitFor(() => {
-                expect(result.current.getValues('receiveAccount')).toEqual(
-                    expect.objectContaining({
-                        account: eth2legacyAccount,
-                    }),
-                );
-            });
-
-            act(() => {
-                result.current.setValue('receiveAsset', usdtAsset);
-            });
-
-            await waitFor(() => {
-                expect(result.current.getValues('receiveAccount')).toEqual(
-                    expect.objectContaining({
-                        account: eth2legacyAccount,
-                    }),
-                );
-            });
-        });
-    });
-
-    describe('receiveAsset', () => {
-        it('should report change to analytics', () => {
-            const { result } = renderUseExchangeForm();
-
-            act(() => {
-                result.current.setValue('receiveAsset', btcAsset);
-            });
-
-            expect(mockReport).toHaveBeenCalledWith({
-                type: events.tradingParameterChangedEvent.name,
-                payload: {
-                    type: 'exchange',
-                    parameter: 'cryptoTo',
-                },
-            });
-        });
-
-        it('should dispatch receiveAssetChanged action', () => {
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = renderUseExchangeForm();
-
-            act(() => {
-                result.current.setValue('receiveAsset', btcAsset);
-            });
-
-            expect(dispatchSpy).toHaveBeenCalledWith(exchangeActions.receiveAssetChanged());
-        });
-
-        it('should dispatch receiveTokenChanged action when receiveAsset changes within the same network', () => {
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = renderUseExchangeForm();
-
-            act(() => {
-                result.current.setValue('receiveAsset', usdcAsset);
-            });
-
-            dispatchSpy.mockClear();
-
-            act(() => {
-                result.current.setValue('receiveAsset', usdtAsset);
-            });
-
-            expect(dispatchSpy).toHaveBeenCalledWith(exchangeActions.receiveTokenChanged());
-            expect(dispatchSpy).not.toHaveBeenCalledWith(exchangeActions.receiveAssetChanged());
         });
     });
 

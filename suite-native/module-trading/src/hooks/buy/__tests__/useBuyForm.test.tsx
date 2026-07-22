@@ -4,11 +4,9 @@ import { type EnhancedStore } from '@reduxjs/toolkit';
 import type { BuyTrade, CryptoId } from 'invity-api';
 
 import { selectTradingProviderMetadata, tradingBuyActions } from '@suite-common/trading';
-import { Form, useField } from '@suite-native/forms';
 import {
     type TestStore,
     act,
-    renderHook,
     renderHookWithStoreProvider,
     waitFor,
 } from '@suite-native/test-utils-store';
@@ -24,10 +22,8 @@ import {
     getInitializedTradingState,
     mercuryoApplePayBuyQuote,
     mercuryoCreditCardBuyQuote,
-    usdcAsset,
-    usdtAsset,
 } from '@suite-native/trading-fixtures';
-import { buyActions, selectTradingResidenceCountry } from '@suite-native/trading-state';
+import { selectTradingResidenceCountry } from '@suite-native/trading-state';
 import { type BuyFormType, type TradeableAsset } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
@@ -45,8 +41,6 @@ jest.mock('@trezor/react-utils', () => {
 
 const btc1AccountKey = btc1NormalAccount.key;
 const btc2AccountKey = btc2legacyAccount.key;
-const eth1AccountKey = eth1NormalAccount.key;
-const eth2AccountKey = eth2legacyAccount.key;
 const accountDeviceState = btc1NormalAccount.deviceState;
 
 describe('useBuyForm', () => {
@@ -135,73 +129,6 @@ describe('useBuyForm', () => {
         });
     });
 
-    it('should dispatch tradingBuy/assetChanged on asset change', () => {
-        const store = getInitializedStore();
-        const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = renderUseTradingBuyForm(store);
-
-        dispatchSpy.mockClear();
-        act(() => {
-            result.current.setValue('asset', usdcAsset);
-        });
-        expect(dispatchSpy).toHaveBeenCalledWith(buyActions.assetChanged());
-    });
-
-    it('should dispatch tradingBuy/assetTokenChanged when asset changes within the same network', () => {
-        const store = getInitializedStore();
-        const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = renderUseTradingBuyForm(store);
-
-        act(() => {
-            result.current.setValue('asset', usdcAsset);
-        });
-
-        dispatchSpy.mockClear();
-
-        act(() => {
-            result.current.setValue('asset', usdtAsset);
-        });
-
-        expect(dispatchSpy).toHaveBeenCalledWith(buyActions.assetTokenChanged());
-        expect(dispatchSpy).not.toHaveBeenCalledWith(buyActions.assetChanged());
-    });
-
-    it('should keep selected receiveAccount when asset changes within the same network', async () => {
-        const store = getInitializedStore();
-        const { result } = renderUseTradingBuyForm(store);
-
-        act(() => {
-            result.current.setValue('asset', usdcAsset);
-        });
-
-        await waitFor(() => {
-            expect(result.current.getValues('receiveAccount')).toEqual({
-                account: expect.objectContaining({ key: eth1AccountKey }),
-            });
-        });
-
-        act(() => {
-            store.dispatch(tradingBuyActions.setTradingAccountKey(eth2AccountKey));
-            store.dispatch(tradingBuyActions.setReceiveAccountKey(eth2AccountKey));
-        });
-
-        await waitFor(() => {
-            expect(result.current.getValues('receiveAccount')).toEqual({
-                account: expect.objectContaining({ key: eth2AccountKey }),
-            });
-        });
-
-        act(() => {
-            result.current.setValue('asset', usdtAsset);
-        });
-
-        await waitFor(() => {
-            expect(result.current.getValues('receiveAccount')).toEqual({
-                account: expect.objectContaining({ key: eth2AccountKey }),
-            });
-        });
-    });
-
     it('should not clear selected account when asset is set to undefined', () => {
         const store = getInitializedStore();
         const { result } = renderUseTradingBuyForm(store);
@@ -214,146 +141,6 @@ describe('useBuyForm', () => {
         expect(result.current.getValues('receiveAccount')).toEqual({
             account: expect.objectContaining({ key: btc1AccountKey }),
         });
-    });
-
-    it('should clear crypto amount on coin change', () => {
-        const store = getInitializedStore();
-        const { result } = renderUseTradingBuyForm(store);
-
-        act(() => {
-            result.current.setValue('asset', btcAsset);
-            result.current.setValue('cryptoValue', '10');
-            result.current.setValue('asset', usdcAsset);
-        });
-
-        expect(result.current.getValues('cryptoValue')).toBeUndefined();
-    });
-
-    it('should clear crypto amount on fiat currency change', () => {
-        const store = getInitializedStore();
-        const { result } = renderUseTradingBuyForm(store);
-
-        act(() => {
-            result.current.setValue('cryptoValue', '10');
-            result.current.setValue('fiatCurrency', 'eur');
-        });
-
-        expect(result.current.getValues('cryptoValue')).toBeUndefined();
-    });
-
-    it('should clear fiat amount on fiat currency change', () => {
-        const store = getInitializedStore();
-        const { result } = renderUseTradingBuyForm(store);
-
-        act(() => {
-            result.current.setValue('fiatValue', '10');
-            result.current.setValue('fiatCurrency', 'eur');
-        });
-
-        expect(result.current.getValues('fiatValue')).toBeUndefined();
-    });
-
-    it('should dispatch fiatCurrencyChanged action on fiat currency change', () => {
-        const store = getInitializedStore();
-        const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = renderUseTradingBuyForm(store);
-
-        dispatchSpy.mockClear();
-        act(() => {
-            result.current.setValue('fiatCurrency', 'eur');
-        });
-
-        expect(dispatchSpy).toHaveBeenCalledTimes(1);
-        expect(dispatchSpy).toHaveBeenCalledWith(buyActions.fiatCurrencyChanged());
-    });
-
-    it('should clear cryptoValue when user edits fiatValue', () => {
-        const store = getInitializedStore();
-        const { result, unmount } = renderUseTradingBuyForm(store);
-        const { result: fieldResult, unmount: unmountField } = renderHook(
-            () => useField({ name: 'fiatValue' }),
-            {
-                wrapper: ({ children }) => <Form form={result.current}>{children}</Form>,
-            },
-        );
-
-        act(() => {
-            result.current.setValue('cryptoValue', '10');
-            result.current.setValue('focusedValue', 'fiatValue');
-            fieldResult.current.onChange('10');
-        });
-
-        expect(result.current.getValues('cryptoValue')).toBeUndefined();
-        expect(result.current.getValues('fiatValue')).toEqual('10');
-
-        unmountField();
-        unmount();
-    });
-
-    it('should clear fiatValue when user edits cryptoValue', () => {
-        const store = getInitializedStore();
-        const { result, unmount } = renderUseTradingBuyForm(store);
-        const { result: fieldResult, unmount: unmountField } = renderHook(
-            () => useField({ name: 'cryptoValue' }),
-            {
-                wrapper: ({ children }) => <Form form={result.current}>{children}</Form>,
-            },
-        );
-
-        act(() => {
-            result.current.setValue('fiatValue', '10');
-            result.current.setValue('focusedValue', 'cryptoValue');
-            fieldResult.current.onChange('10');
-        });
-
-        expect(result.current.getValues('fiatValue')).toBeUndefined();
-        expect(result.current.getValues('cryptoValue')).toEqual('10');
-
-        unmountField();
-        unmount();
-    });
-
-    it('should set amountInCrypto to true when user edits cryptoValue', () => {
-        const store = getInitializedStore();
-        const { result, unmount } = renderUseTradingBuyForm(store);
-        const { result: fieldResult, unmount: unmountField } = renderHook(
-            () => useField({ name: 'cryptoValue' }),
-            {
-                wrapper: ({ children }) => <Form form={result.current}>{children}</Form>,
-            },
-        );
-
-        act(() => {
-            result.current.setValue('focusedValue', 'cryptoValue');
-            fieldResult.current.onChange('10');
-        });
-
-        expect(result.current.getValues('amountInCrypto')).toBe(true);
-
-        unmountField();
-        unmount();
-    });
-
-    it('should set amountInCrypto to false when user edits fiatValue', () => {
-        const store = getInitializedStore();
-        const { result, unmount } = renderUseTradingBuyForm(store);
-        const { result: fieldResult, unmount: unmountField } = renderHook(
-            () => useField({ name: 'fiatValue' }),
-            {
-                wrapper: ({ children }) => <Form form={result.current}>{children}</Form>,
-            },
-        );
-
-        act(() => {
-            result.current.setValue('amountInCrypto', true);
-            result.current.setValue('focusedValue', 'fiatValue');
-            fieldResult.current.onChange('10');
-        });
-
-        expect(result.current.getValues('amountInCrypto')).toBe(false);
-
-        unmountField();
-        unmount();
     });
 
     describe('on quotes change', () => {

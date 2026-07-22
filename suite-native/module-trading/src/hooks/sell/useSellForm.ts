@@ -1,9 +1,8 @@
-import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
-import type { CryptoId, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
+import type { SellFiatTrade } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingAmountLimitProps,
     selectTradingSellQuotesRequest,
@@ -12,7 +11,6 @@ import {
 import { getNetwork } from '@suite-common/wallet-config';
 import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { useForm, useWatch } from '@suite-native/forms';
 import { truncateDecimals } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
@@ -22,7 +20,6 @@ import {
     selectSellAmountLimits,
     selectSellFormDefaultValues,
     selectSellSelectedSendAccount,
-    sellActions,
 } from '@suite-native/trading-state';
 import { type SellFormType, type SellFormValues } from '@suite-native/trading-types';
 
@@ -32,75 +29,6 @@ import { useCountryChangeEffect } from '../general/form/useCountryChangeEffect';
 import { useProviderMetadataChangeEffect } from '../general/form/useProviderMetadataChangeEffect';
 import { useSendAccountAssetBalance } from '../general/form/useSendAccountAssetBalance';
 import { useSendAccountChangeEffect } from '../general/form/useSendAccountChangeEffect';
-
-const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: SellFormType) => {
-    const dispatch = useDispatch();
-    const prevCryptoId = useRef<CryptoId | undefined>(undefined);
-    const prevFiatCurrency = useRef<FiatCurrencyCode | undefined>(getValues('fiatCurrency'));
-    const { analytics } = useServices(selectNativeAnalyticsDep);
-
-    useEffect(() => {
-        const { unsubscribe } = watch(
-            ({ fiatCurrency, sendAsset, amountInCrypto, focusedValue }, { name, type }) => {
-                switch (name) {
-                    case 'fiatStringAmount':
-                        if (type === 'change' && focusedValue === 'fiatStringAmount') {
-                            setValue('cryptoStringAmount', undefined, { shouldValidate: true });
-                            if (amountInCrypto) {
-                                setValue('amountInCrypto', false);
-                            }
-                        }
-                        break;
-
-                    case 'cryptoStringAmount':
-                        if (type === 'change' && focusedValue === 'cryptoStringAmount') {
-                            setValue('fiatStringAmount', undefined, { shouldValidate: true });
-                            if (!amountInCrypto) {
-                                setValue('amountInCrypto', true);
-                            }
-                        }
-                        break;
-
-                    case 'sendAsset':
-                        if (sendAsset?.cryptoId !== prevCryptoId.current) {
-                            analytics.report({
-                                type: events.tradingParameterChangedEvent.name,
-                                payload: {
-                                    type: 'sell',
-                                    parameter: 'cryptoFrom',
-                                },
-                            });
-                            prevCryptoId.current = sendAsset?.cryptoId;
-                            setValue('cryptoStringAmount', undefined, { shouldValidate: true });
-                            dispatch(sellActions.sendAssetChanged());
-                        }
-                        break;
-
-                    case 'fiatCurrency':
-                        if (fiatCurrency !== prevFiatCurrency.current) {
-                            analytics.report({
-                                type: events.tradingParameterChangedEvent.name,
-                                payload: {
-                                    type: 'sell',
-                                    parameter: 'fiat',
-                                },
-                            });
-                            prevFiatCurrency.current = fiatCurrency;
-                            setValue('fiatStringAmount', undefined, { shouldValidate: true });
-                            dispatch(sellActions.fiatCurrencyChanged());
-                        }
-                        break;
-
-                    default:
-                        // do nothing
-                        break;
-                }
-            },
-        );
-
-        return unsubscribe;
-    }, [setValue, watch, dispatch, analytics]);
-};
 
 const useSellQuotesChangeEffect = ({ getValues, setValue }: SellFormType) => {
     const quotes = useSelector(selectValidTradingSellQuotes);
@@ -215,16 +143,21 @@ export const useSellForm = (): SellFormType => {
         context,
     });
 
-    const { watch } = form;
+    const { control } = form;
 
     useSendAccountChangeEffect(form.setValue, selectSellSelectedSendAccount);
-    useAmountAndCurrencyFieldsChangeEffect(form);
-    useSendAccountAssetBalance(form, setBalance, setSendSymbol, setContractAddress, setAccountKey);
+    useSendAccountAssetBalance({
+        control,
+        setBalance,
+        setSendSymbol,
+        setContractAddress,
+        setAccountKey,
+    });
     useSellQuotesChangeEffect(form);
     useSellQuoteChangeEffect(form);
     useValidations(form, limits);
-    useCountryChangeEffect(watch);
-    useProviderMetadataChangeEffect(watch, 'sell');
+    useCountryChangeEffect(control);
+    useProviderMetadataChangeEffect(control, 'sell');
 
     return form;
 };
