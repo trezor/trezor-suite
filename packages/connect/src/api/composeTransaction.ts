@@ -201,11 +201,15 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         return Promise.resolve(levels);
     }
 
-    async run(context: MethodContext): Promise<SignedTransaction | PrecomposedResult[]> {
+    run(context: MethodContext) {
         if (this.params.account && this.params.feeLevels) {
             return this.precompose(this.params.account, this.params.feeLevels);
+        } else {
+            return this.interactiveFlow(context);
         }
+    }
 
+    private async interactiveFlow(context: MethodContext): Promise<SignedTransaction> {
         // discover accounts and wait for user action
         const { account, utxo } = await this.selectAccount(context);
 
@@ -221,7 +225,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
 
         if (typeof response === 'string') {
             // back to account selection
-            return this.run(context);
+            return this.interactiveFlow(context);
         }
 
         return response;
