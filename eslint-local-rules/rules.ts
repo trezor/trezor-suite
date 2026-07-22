@@ -83,14 +83,13 @@ const getSuggestedImportPath = (
         return null;
     }
 
-    const allowedEntryPoint = sourcePathParts
-        .slice(2)
-        .map((_, index) => sourcePathParts.slice(0, index + 3).join('/'))
-        .find(entryPoint =>
-            allowedEntryPointPatterns.some(
-                entryPointPattern => entryPoint.match(entryPointPattern) !== null,
-            ),
-        );
+    // Check the full import path and each of its parent paths against the allowed entry points.
+    const sourcePathPrefixes = sourcePathParts.map((_, index) =>
+        sourcePathParts.slice(0, index + 1).join('/'),
+    );
+    const allowedEntryPoint = sourcePathPrefixes.find(entryPoint =>
+        allowedEntryPointPatterns.some(entryPointPattern => entryPointPattern.test(entryPoint)),
+    );
 
     if (allowedEntryPoint !== undefined) {
         return sourcePath === allowedEntryPoint ? null : allowedEntryPoint;
