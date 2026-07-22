@@ -179,7 +179,6 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
                         <Translation id="TR_STAKING_BANNER_DETAIL_EXPLORE_STAKING" />
                     </Banner.Button>
                     <Banner.IconButton
-                        intent="neutral"
                         priority="secondary"
                         icon={XIcon}
                         onClick={closeBanner}
