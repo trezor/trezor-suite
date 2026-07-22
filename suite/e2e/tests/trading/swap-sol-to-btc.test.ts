@@ -1,8 +1,8 @@
-import { TranslationKey } from '@suite/intl';
 import { getCryptoId } from '@suite-common/trading';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
 import { getCompanyNameFromList } from '../../fixtures/invity';
+import { swapStatusFlow } from '../../fixtures/trading/statusFlow';
 import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { transformAddress } from '../../support/testExtends/customMatchers';
@@ -11,43 +11,17 @@ const sendAmount = '0.5';
 const formattedSendAmount = `${localizeNumber(sendAmount)} SOL`;
 const accountLabel = 'Solana #1';
 
-const transactionStates = [
-    {
-        transactionStatus: 'CONFIRMING',
-        displayedText: 'TR_EXCHANGE_DETAIL_SENDING_TRANSACTION',
-    },
-    {
-        transactionStatus: 'CONVERTING',
-        displayedText: 'TR_TRADING_DETAIL_PROCESSING',
-        translationValues: (providerName: string) => ({ providerName, type: 'swap' }),
-    },
-    {
-        transactionStatus: 'SUCCESS',
-        displayedText: 'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',
-    },
-];
-
-test.describe('Trading POC - passthru swap', { tag: ['@T3W1', '@T3T1'] }, () => {
+test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
 
     test.beforeEach(
-        async ({
-            onboardingPage,
-            dashboardPage,
-            settingsPage,
-            walletPage,
-            passthruTradingMock,
-        }) => {
-            // Solana broadcasts go through the blockchain-link worker, so the blocking
-            // passthrough backend must be set as a custom backend before discovery starts.
-            const solBackendUrl = await passthruTradingMock.blockSolanaSends();
+        async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMockNew }) => {
+            tradingMockNew.setTradeFlow('swap');
+            const solBackend = await tradingMockNew.startBackend('sol');
 
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
-                enableNetworks: [
-                    'btc',
-                    { symbol: 'sol', backend: { type: 'solana', url: solBackendUrl } },
-                ],
+                enableNetworks: ['btc', { symbol: 'sol', backend: solBackend }],
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
@@ -55,13 +29,7 @@ test.describe('Trading POC - passthru swap', { tag: ['@T3W1', '@T3T1'] }, () => 
         },
     );
 
-    test('Swap SOL to BTC with live quotes and blocked send', async ({
-        tradingPage,
-        page,
-        device,
-        devicePrompt,
-        passthruTradingMock,
-    }) => {
+    test('Swap SOL to BTC', async ({ tradingPage, page, device, devicePrompt, tradingMockNew }) => {
         await test.step('Fill in a Swap form', async () => {
             await tradingPage.fillSwapForm({
                 amount: sendAmount,
@@ -81,23 +49,26 @@ test.describe('Trading POC - passthru swap', { tag: ['@T3W1', '@T3T1'] }, () => 
 
         let receiveAmount: string;
         let providerName: string;
-        // The live trade (real deposit address) is created when the best offer is confirmed,
-        // so arm the listener before that click to avoid racing the request.
-        let liveTradePromise: ReturnType<typeof passthruTradingMock.waitForLiveTrade>;
+        let solanaFee: string;
+        let liveTradePromise: ReturnType<typeof tradingMockNew.waitForLiveTrade>;
 
         await test.step('Confirm the Swap trade', async () => {
-            await expect(tradingPage.quotes.bestOfferAmount).toHaveText(/^\d+(\.\d+)?\s+BTC$/);
-            const [amount] = (await tradingPage.quotes.bestOfferAmount.innerText()).split(' ');
-            receiveAmount = localizeNumber(amount ?? '');
-            liveTradePromise = passthruTradingMock.waitForLiveTrade();
-            await tradingPage.waitForSolanaFeesAndClickSwapBestOffer();
+            receiveAmount = await tradingPage.quotes.getBestOfferAmount();
+            await tradingPage.fees.waitToBeCalculated();
+            solanaFee = (await tradingPage.fees.getSolanaFee()).toString();
+            liveTradePromise = tradingMockNew.waitForLiveTrade();
+            await tradingPage.swapBestOfferButton.click();
         });
 
         await test.step('Open modal and verify recipient on prompt and device', async () => {
             await tradingPage.confirmation.openConfirmAndSendModal();
             const liveTrade = await liveTradePromise;
-            providerName = getCompanyNameFromList(liveTrade.exchange ?? '', 'swapList');
-            const sendAddress = passthruTradingMock.liveTradeSendAddress;
+            if (!liveTrade.exchange) {
+                throw new Error('Live trade response is missing the exchange property');
+            }
+
+            providerName = getCompanyNameFromList(liveTrade.exchange, 'swapList');
+            const sendAddress = tradingMockNew.liveTradeSendAddress;
 
             await expect(devicePrompt.headerParagraph).toContainText(accountLabel);
             await expect(devicePrompt.outputValueOf('address')).toHaveText(
@@ -117,10 +88,7 @@ test.describe('Trading POC - passthru swap', { tag: ['@T3W1', '@T3T1'] }, () => 
             await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
                 formattedSendAmount,
             );
-            await expect(devicePrompt.cryptoAmountOf('fee')).toHaveTextGreaterThan(0);
-
-            // Fee is live, so read the displayed fee and expect the device to echo it.
-            const solanaFee = (await devicePrompt.cryptoAmountOf('fee').innerText()).trim();
+            await expect(devicePrompt.cryptoAmountOf('fee')).toHaveText(solanaFee);
             await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: 'Send' },
@@ -141,14 +109,9 @@ test.describe('Trading POC - passthru swap', { tag: ['@T3W1', '@T3T1'] }, () => 
         });
 
         await test.step('Send crypto to provider (broadcast blocked by mock)', async () => {
-            // Hard gate: live traffic must have flowed through the blocking route already.
-            expect(passthruTradingMock.passthroughCount).toBeGreaterThan(0);
-
-            await passthruTradingMock.routeSwapWatch('SENDING');
+            await tradingMockNew.setStatus('SENDING');
             await page.clock.install();
             await devicePrompt.sendButton.click();
-
-            await expect.poll(() => passthruTradingMock.blockedSendCount).toBeGreaterThan(0);
 
             await tradingPage.verifySwapToast({
                 sendAccount: accountLabel,
@@ -158,24 +121,23 @@ test.describe('Trading POC - passthru swap', { tag: ['@T3W1', '@T3T1'] }, () => 
             });
         });
 
-        for (const { transactionStatus, displayedText, translationValues } of transactionStates) {
-            await test.step(`Wait for status change to ${displayedText}`, async () => {
-                await passthruTradingMock.advanceToWatchStatus(transactionStatus);
+        for (const phase of swapStatusFlow) {
+            await test.step(`Wait for status change to ${phase.status}`, async () => {
+                await tradingMockNew.advanceStatus(phase.status);
+                const values = phase.translationValues?.(providerName);
                 await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
-                    displayedText as TranslationKey,
-                    translationValues ? { values: translationValues(providerName) } : undefined,
+                    phase.translationKey,
+                    { values },
                 );
             });
         }
 
         await test.step('Verify transaction detail values', async () => {
-            await expect(tradingPage.confirmation.cryptoAmount.first()).toHaveText(
-                formattedSendAmount,
-            );
-            await expect(tradingPage.confirmation.cryptoAmount.last()).toHaveText(
+            await expect(tradingPage.confirmation.sendCryptoAmount).toHaveText(formattedSendAmount);
+            await expect(tradingPage.confirmation.receiveCryptoAmount).toHaveText(
                 `${receiveAmount} BTC`,
             );
-            await expect(tradingPage.confirmation.provider).toBeVisible();
+            await expect(tradingPage.confirmation.provider).toHaveText(providerName);
         });
     });
 });

@@ -245,4 +245,9 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
             maxPriorityFeePerGasRounded,
         };
     }
+
+    @step()
+    async waitToBeCalculated() {
+        await expect(this.maximumFeeAmountToBeCalculated).toBeHidden();
+    }
 }

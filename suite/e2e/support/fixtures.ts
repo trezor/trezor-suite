@@ -6,8 +6,8 @@ import { EvoluClient } from './helpers/evoluClient';
 import { IndexedDbFixture } from './indexedDb';
 import { BlockbookMock } from './mocks/blockBookMock';
 import { MetadataMock } from './mocks/metadataMock';
-import { PassthruTradingMock } from './mocks/passthruTradingMock';
 import { SolanaStakingMock } from './mocks/solanaStakingMock';
+import { TradingMockNew } from './mocks/trading/tradingMockNew';
 import { TradingMock } from './mocks/tradingMock';
 import { YieldMock } from './mocks/yieldMock';
 import { AnalyticsSection } from './pageObjects/analyticsSection';
@@ -57,7 +57,7 @@ type Fixtures = {
     blockbookMock: BlockbookMock;
     solanaStakingMock: SolanaStakingMock;
     tradingMock: TradingMock;
-    passthruTradingMock: PassthruTradingMock;
+    tradingMockNew: TradingMockNew;
     connectPermissionsModal: ConnectPermissionsModal;
     connectSelectAccountModal: ConnectSelectAccountModal;
     stakingSection: StakingSection;
@@ -142,10 +142,10 @@ const test = suiteBaseTest.extend<Fixtures>({
     tradingMock: async ({ page }, use) => {
         await use(new TradingMock(page));
     },
-    passthruTradingMock: async ({ page }, use) => {
-        const passthruTradingMock = new PassthruTradingMock(page);
-        await use(passthruTradingMock);
-        await passthruTradingMock.stop();
+    tradingMockNew: async ({ page }, use) => {
+        const tradingMockNew = new TradingMockNew(page);
+        await use(tradingMockNew);
+        await tradingMockNew.stop();
     },
     connectSelectAccountModal: async ({ page }, use) => {
         await use(new ConnectSelectAccountModal(page));

@@ -20,7 +20,6 @@ export class BlockbookProxyMock {
     private readonly handlers = new Map<string, BlockbookWsHandler>();
     private server?: WebSocketServer;
     private port?: number;
-    private proxiedFrames = 0;
 
     constructor(private readonly upstreamUrl: string) {}
 
@@ -30,11 +29,6 @@ export class BlockbookProxyMock {
         }
 
         return `ws://localhost:${this.port}`;
-    }
-
-    // Number of frames forwarded to the live upstream through this proxy.
-    get passthroughCount() {
-        return this.proxiedFrames;
     }
 
     setHandler(method: string, handler: BlockbookWsHandler) {
@@ -98,7 +92,6 @@ export class BlockbookProxyMock {
                 }
             }
 
-            this.proxiedFrames += 1;
             if (upstream.readyState === WebSocket.OPEN) {
                 upstream.send(frame);
             } else {
