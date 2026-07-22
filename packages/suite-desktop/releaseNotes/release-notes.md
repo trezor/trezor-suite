@@ -24,4 +24,5 @@
 - Unification of Bitcoin Cash address prefix throughout Suite
 - Fixed incorrect network fees shown for 1inch Fusion swaps
 - Visual / UX improvements throughout the application
+- Resolved a keyboard shortcut conflict affecting account switching and dashboard navigation
 - Minor bugs have been resolved, along with general usability enhancements for a more reliable and seamless experience
