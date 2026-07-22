@@ -36,16 +36,7 @@ runs:
       env:
         CLAUDE_API_KEY: ${{ inputs.claude-api-key }}
       run: |
-        if ! yarn workspace @trezor/e2e-utils select-tests-llm --head-ref pr-head > llm-selection.json 2>llm-error.log; then
-          if grep -q "credit balance is too low\|rate_limit\|overloaded_error\|authentication_error" llm-error.log; then
-            echo "::warning::LLM test selector skipped due to API error: $(cat llm-error.log)"
-            echo '{"recommendations":[]}' > llm-selection.json
-          else
-            echo "LLM test selector failed with unexpected error:"
-            cat llm-error.log
-            exit 1
-          fi
-        fi
+        yarn workspace @trezor/e2e-utils select-tests-llm --head-ref pr-head > llm-selection.json
         echo "LLM test selector output:"
         cat llm-selection.json
 
