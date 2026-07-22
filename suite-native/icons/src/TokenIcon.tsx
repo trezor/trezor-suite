@@ -65,15 +65,23 @@ const tokenIconPlaceholderTextStyle = prepareNativeStyle(utils => ({
 interface TokenIconPlaceholderProps {
     placeholder: string;
     containerStyle: NativeStyleObject;
+    accessibilityLabel: string;
 }
 
-const TokenIconPlaceholder = ({ placeholder, containerStyle }: TokenIconPlaceholderProps) => {
+const TokenIconPlaceholder = ({
+    placeholder,
+    accessibilityLabel,
+    containerStyle,
+}: TokenIconPlaceholderProps) => {
     const { applyStyle } = useNativeStyles();
     const firstChar = placeholder[0] || 'T';
 
     // due to circular deps issues we need to use Text and View comp from 'react-native' instead of 'atoms'
     return (
-        <View style={[containerStyle, applyStyle(tokenIconPlaceholderIconStyle)]}>
+        <View
+            style={[containerStyle, applyStyle(tokenIconPlaceholderIconStyle)]}
+            accessibilityLabel={accessibilityLabel}
+        >
             <Text
                 style={applyStyle(tokenIconPlaceholderTextStyle)}
                 maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
@@ -161,6 +169,7 @@ const TokenIconComponent = ({ symbol, contractAddress, size = 'small' }: TokenIc
         return (
             <TokenIconPlaceholder
                 placeholder={symbol.toUpperCase()}
+                accessibilityLabel={key}
                 containerStyle={iconContainerStyle}
             />
         );
