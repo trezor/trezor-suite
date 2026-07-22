@@ -54,7 +54,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                     icon: HouseIcon,
                     goToRoute: startRoute,
                     routes: [startRoute],
-                    shortcut: ['ALT', 'KEY_0'],
+                    shortcut: ['MOD', 'ALT', 'KEY_0'],
                 },
                 ...(!isBtcOnly
                     ? [
