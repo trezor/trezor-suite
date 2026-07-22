@@ -3468,6 +3468,11 @@ export const messages = {
                     description:
                         "This swap was flagged as unsafe. The provider's contract interaction may put your funds at risk. Choose another provider.",
                 },
+                slippageTooLow: {
+                    title: 'Slippage is too low',
+                    description:
+                        'This swap might fail with your current slippage. Your funds are safe, but the network fee won’t be refunded. Increase slippage or choose another provider.',
+                },
             },
         },
         tradingExchangePreviewScreen: {

@@ -10,6 +10,10 @@ export type ExchangeIssueSeverity = 'warning' | 'critical';
 
 export type ExchangeIssue =
     | {
+          type: 'slippage-too-low';
+          severity: ExchangeIssueSeverity;
+      }
+    | {
           type: 'high-risk';
           severity: ExchangeIssueSeverity;
           validation: TxSimulationValidationSummary;
@@ -35,7 +39,16 @@ export const getExchangeIssue = ({
     simulationResult,
     fiatDeviation,
 }: GetExchangeIssueParams): ExchangeIssue | null => {
-    const { validationRisk } = getTxSimulationRiskSummary(simulationResult?.payload);
+    const { validationRisk, simulationFailure } = getTxSimulationRiskSummary(
+        simulationResult?.payload,
+    );
+
+    if (simulationFailure) {
+        return {
+            type: 'slippage-too-low',
+            severity: 'warning',
+        };
+    }
 
     if (validationRisk && fiatDeviation?.exceedsThreshold) {
         return {
