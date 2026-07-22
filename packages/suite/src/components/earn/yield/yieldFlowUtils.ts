@@ -1,8 +1,4 @@
-import {
-    YIELD_FLOW_STEP_SEQUENCES,
-    type YieldFlowStepId,
-    type YieldFlowType,
-} from '@suite-common/wallet-core';
+import { type YieldFlowStepId } from '@suite-common/wallet-core';
 import type { StepListItemState } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
@@ -45,13 +41,11 @@ export type YieldFlowStepView = {
 
 /** `listSteps` are the steps rendered as list items; they default to the flow's sequence without 'complete'. */
 export const getYieldFlowSteps = (
-    flowType: YieldFlowType,
+    sequence: readonly YieldFlowStepId[],
     currentStep: YieldFlowStepId,
     listSteps?: readonly YieldFlowStepId[],
 ): Record<YieldFlowStepId, YieldFlowStepView> => {
-    // Both annotations widen the per-flow tuples (and the filter's inferred type predicate)
-    // so indexOf below accepts any step id.
-    const sequence: readonly YieldFlowStepId[] = YIELD_FLOW_STEP_SEQUENCES[flowType];
+    // The annotation widens the filter's inferred type predicate so indexOf below accepts any step id.
     const effectiveListSteps: readonly YieldFlowStepId[] =
         listSteps ?? sequence.filter(stepId => stepId !== 'complete');
     const currentStepIndex = sequence.indexOf(currentStep);
@@ -82,8 +76,10 @@ export const getYieldFlowSteps = (
     });
 
     return {
+        wrap: getStepView('wrap'),
         approve: getStepView('approve'),
         action: getStepView('action'),
+        unwrap: getStepView('unwrap'),
         complete: getStepView('complete'),
     };
 };

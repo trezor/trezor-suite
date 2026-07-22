@@ -1,22 +1,16 @@
 import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
-import {
-    YIELD_FLOW_STEP_SEQUENCES,
-    type YieldFlowStepId,
-    type YieldFlowType,
-} from '@suite-common/wallet-core';
+import { type YieldFlowStepId } from '@suite-common/wallet-core';
 import { Column, Row, StepList, Text } from '@trezor/components';
 
 import { type YieldFlowStepView, getYieldFlowSteps } from '../yieldFlowUtils';
 
-/** Steps of a given flow derived from its sequence — a new step in the sequence must be defined. */
-export type YieldFlowStepOf<TFlowType extends YieldFlowType> =
-    (typeof YIELD_FLOW_STEP_SEQUENCES)[TFlowType][number];
-
 export type YieldFlowStepDefinition = {
     /** Label on the title row next to the step number. */
     title?: ReactNode;
+    /** Supplementary text tight under the title; shown only while the step is active. */
+    description?: ReactNode;
     /** Right side of the title row (e.g. a modify action); receives the view for state-dependent actions. */
     rightContent?: (view: YieldFlowStepView) => ReactNode;
     /**
@@ -30,25 +24,25 @@ export type YieldFlowStepDefinition = {
     inactiveContent?: (view: YieldFlowStepView) => ReactNode;
 };
 
-type YieldFlowStepListProps<TFlowType extends YieldFlowType> = {
-    flowType: TFlowType;
+type YieldFlowStepListProps<TSequence extends readonly YieldFlowStepId[]> = {
+    /** Ordered steps of the flow — every step in the sequence must be defined in `steps`. */
+    sequence: TSequence;
     currentStep: YieldFlowStepId;
-    steps: Record<YieldFlowStepOf<TFlowType>, YieldFlowStepDefinition>;
+    steps: Record<TSequence[number], YieldFlowStepDefinition>;
     /** Renders the steps as an ordered StepList; without it only the current step's content shows. */
     hasStepList?: boolean;
 };
 
-export const YieldFlowStepList = <TFlowType extends YieldFlowType>({
-    flowType,
+export const YieldFlowStepList = <TSequence extends readonly YieldFlowStepId[]>({
+    sequence,
     currentStep,
     steps,
     hasStepList = false,
-}: YieldFlowStepListProps<TFlowType>) => {
+}: YieldFlowStepListProps<TSequence>) => {
     // Widened — the prop is keyed by the flow's own steps, but we index it with generic step ids.
     const stepDefinitions: Partial<Record<YieldFlowStepId, YieldFlowStepDefinition>> = steps;
-    const sequence: readonly YieldFlowStepId[] = YIELD_FLOW_STEP_SEQUENCES[flowType];
     const listSteps = sequence.filter(stepId => stepDefinitions[stepId]?.isListItem !== false);
-    const views = getYieldFlowSteps(flowType, currentStep, listSteps);
+    const views = getYieldFlowSteps(sequence, currentStep, listSteps);
 
     const renderStepContent = (stepId: YieldFlowStepId) => {
         const definition = stepDefinitions[stepId];
@@ -93,15 +87,27 @@ export const YieldFlowStepList = <TFlowType extends YieldFlowType>({
                                     <Translation id="TR_STEP_OF_TOTAL" values={view.indicator} />
                                 </Text>
 
-                                <Row
-                                    justifyContent="space-between"
-                                    alignItems="center"
-                                    width="100%"
-                                    gap={16}
-                                >
-                                    {definition?.title}
-                                    {definition?.rightContent?.(view)}
-                                </Row>
+                                <Column gap={4} width="100%">
+                                    <Row
+                                        justifyContent="space-between"
+                                        alignItems="center"
+                                        width="100%"
+                                        gap={16}
+                                    >
+                                        {definition?.title}
+                                        {definition?.rightContent?.(view)}
+                                    </Row>
+
+                                    {view.state === 'active' && definition?.description && (
+                                        <Text
+                                            typographyStyle="body-sm"
+                                            intent="neutral"
+                                            priority="secondary"
+                                        >
+                                            {definition.description}
+                                        </Text>
+                                    )}
+                                </Column>
                             </Column>
                         }
                     >

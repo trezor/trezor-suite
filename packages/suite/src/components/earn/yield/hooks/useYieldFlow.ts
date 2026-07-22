@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { type UseFormReturn, useForm, useWatch } from 'react-hook-form';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
@@ -28,6 +28,7 @@ import {
     submitYieldRevokeThunk,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { isWrappedNativeToken } from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
@@ -56,6 +57,7 @@ type UseYieldFlowProps = {
 
 type UseYieldFlowStepsResult = {
     currentStep: YieldFlowStepId;
+    isWrappedNativeVault: boolean;
 };
 
 export type UseYieldFlowResult = {
@@ -90,6 +92,8 @@ export type UseYieldFlowResult = {
     isSubmittingApprove: boolean;
     isSubmittingAction: boolean;
     setAmountInput: (amount: string) => void;
+    completeWrapStep: () => void;
+    completeUnwrapStep: () => void;
     submitApprovalAction: () => void;
     submitAction: () => void;
     revokeAllowance: () => void;
@@ -147,6 +151,12 @@ export const useYieldFlow = ({
     const session = useSelector(state => selectStablecoinYieldSession(state, flowType, flowKey));
     const sessionRef = useCurrentRef(session);
 
+    const isWrappedNativeVault = isWrappedNativeToken(account.symbol, vault.token.address);
+    const hasWrapStep = flowType === 'deposit' && isWrappedNativeVault;
+    const hasUnwrapStep = isYieldWithdrawFlow(flowType) && isWrappedNativeVault;
+    const [isWrapStepCompleted, setIsWrapStepCompleted] = useState(false);
+    const [isUnwrapStepResolved, setIsUnwrapStepResolved] = useState(false);
+
     const isSharesInput = flowType === 'redeem';
     const canToggleWithdrawUnit = isYieldWithdrawFlow(flowType) && !!token && !!receiptToken;
 
@@ -176,6 +186,8 @@ export const useYieldFlow = ({
         dispatch(stablecoinYieldActions.resetSession({ flowType, flowKey }));
 
         methodsRef.current.reset({ amountInput: '' });
+        setIsWrapStepCompleted(false);
+        setIsUnwrapStepResolved(false);
 
         return () => {
             dispatch(stablecoinYieldActions.disposeSession({ flowType, flowKey }));
@@ -280,7 +292,33 @@ export const useYieldFlow = ({
         prevStepRef.current = nextStep;
     }, [session.step, session.action.amount, methodsRef, maxAmount]);
 
-    const flow = useMemo(() => ({ currentStep: session.step }), [session.step]);
+    // TODO(#29864, #29866): dummy wrap/unwrap steps — they only advance the UI; the wrap
+    // and unwrap transactions themselves come with the shared wrap thunks.
+    const completeWrapStep = useCallback(() => {
+        setIsWrapStepCompleted(true);
+    }, []);
+
+    const completeUnwrapStep = useCallback(() => {
+        setIsUnwrapStepResolved(true);
+    }, []);
+
+    const getCurrentStep = (): YieldFlowStepId => {
+        if (hasWrapStep && !isWrapStepCompleted) {
+            return 'wrap';
+        }
+
+        // The unwrap step is chained after the action confirms, before the complete screen.
+        if (hasUnwrapStep && !isUnwrapStepResolved && session.step === 'complete') {
+            return 'unwrap';
+        }
+
+        return session.step;
+    };
+    const currentStep = getCurrentStep();
+    const flow = useMemo(
+        () => ({ currentStep, isWrappedNativeVault }),
+        [currentStep, isWrappedNativeVault],
+    );
 
     const openPendingTransaction = useCallback(
         (txid: string) => {
@@ -581,6 +619,8 @@ export const useYieldFlow = ({
             session.approval.modalState !== null,
         isSubmittingAction: session.action.isSubmitting,
         setAmountInput,
+        completeWrapStep,
+        completeUnwrapStep,
         submitApprovalAction,
         submitAction,
         revokeAllowance,

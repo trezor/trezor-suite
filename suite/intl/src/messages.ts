@@ -10063,6 +10063,48 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_DASHBOARD_DEPOSIT_NOW',
         defaultMessage: 'Deposit now',
     },
+    TR_EARN_YIELD_WRAP_TITLE: {
+        id: 'TR_EARN_YIELD_WRAP_TITLE',
+        defaultMessage: 'Wrap {nativeSymbol} to {tokenSymbol}',
+    },
+    TR_EARN_YIELD_WRAP_DESCRIPTION: {
+        id: 'TR_EARN_YIELD_WRAP_DESCRIPTION',
+        defaultMessage:
+            "Wrap the {nativeSymbol} you want to deposit — it's 1:1, and you can unwrap anytime.",
+    },
+    TR_EARN_YIELD_WRAP_AMOUNT: {
+        id: 'TR_EARN_YIELD_WRAP_AMOUNT',
+        defaultMessage: 'Amount to wrap',
+    },
+    TR_EARN_YIELD_WRAP_RECEIVING: {
+        id: 'TR_EARN_YIELD_WRAP_RECEIVING',
+        defaultMessage: 'Receiving',
+    },
+    TR_EARN_YIELD_WRAP_SUBMIT: {
+        id: 'TR_EARN_YIELD_WRAP_SUBMIT',
+        defaultMessage: 'Wrap {nativeSymbol}',
+    },
+    TR_EARN_YIELD_UNWRAP_TITLE: {
+        id: 'TR_EARN_YIELD_UNWRAP_TITLE',
+        defaultMessage: 'Unwrap {tokenSymbol} to {nativeSymbol}',
+    },
+    TR_EARN_YIELD_UNWRAP_DESCRIPTION: {
+        id: 'TR_EARN_YIELD_UNWRAP_DESCRIPTION',
+        defaultMessage:
+            'You can also unwrap {tokenSymbol} anytime from the {networkName} account screen.',
+    },
+    TR_EARN_YIELD_UNWRAP_AMOUNT: {
+        id: 'TR_EARN_YIELD_UNWRAP_AMOUNT',
+        defaultMessage: 'Amount to unwrap',
+    },
+    TR_EARN_YIELD_UNWRAP_SUBMIT: {
+        id: 'TR_EARN_YIELD_UNWRAP_SUBMIT',
+        defaultMessage: 'Unwrap {tokenSymbol}',
+    },
+    TR_EARN_YIELD_WITHDRAW_ASSETS: {
+        id: 'TR_EARN_YIELD_WITHDRAW_ASSETS',
+        defaultMessage: 'Withdraw assets',
+    },
     TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE: {
         id: 'TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE',
         defaultMessage: 'Select amount & approve',

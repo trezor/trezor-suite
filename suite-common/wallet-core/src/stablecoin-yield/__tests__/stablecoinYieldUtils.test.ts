@@ -7,6 +7,7 @@ import {
     buildYieldUnsignedTransaction,
     buildYieldWithdrawCalldata,
     getNextYieldFlowStep,
+    getYieldFlowStepSequence,
     splitYieldPendingTransaction,
 } from '../stablecoinYieldUtils';
 
@@ -108,6 +109,43 @@ describe('stablecoinYieldUtils', () => {
 
         it('stays on a step that is not part of the flow', () => {
             expect(getNextYieldFlowStep('withdraw', 'approve')).toBe('approve');
+        });
+    });
+
+    describe('getYieldFlowStepSequence', () => {
+        it('excludes optional steps by default', () => {
+            expect(getYieldFlowStepSequence({ flowType: 'deposit' })).toEqual([
+                'approve',
+                'action',
+                'complete',
+            ]);
+            expect(getYieldFlowStepSequence({ flowType: 'withdraw' })).toEqual([
+                'action',
+                'complete',
+            ]);
+        });
+
+        it('includes the wrap step for a wrapped-native vault deposit', () => {
+            expect(
+                getYieldFlowStepSequence({ flowType: 'deposit', isWrappedNativeVault: true }),
+            ).toEqual(['wrap', 'approve', 'action', 'complete']);
+        });
+
+        it.each(['withdraw', 'redeem'] as const)(
+            'includes the unwrap step in %s for a wrapped-native vault',
+            flowType => {
+                expect(getYieldFlowStepSequence({ flowType, isWrappedNativeVault: true })).toEqual([
+                    'action',
+                    'unwrap',
+                    'complete',
+                ]);
+            },
+        );
+
+        it('keeps flows without optional steps unchanged', () => {
+            expect(
+                getYieldFlowStepSequence({ flowType: 'claim', isWrappedNativeVault: true }),
+            ).toEqual(['action', 'complete']);
         });
     });
 
