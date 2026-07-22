@@ -7,6 +7,8 @@ module.exports = {
         args: {
             $0: 'jest',
             config: 'e2e/jest.config.js',
+            // Detox project runs can leave native communication handles open after Jest finishes.
+            forceExit: true,
         },
         jest: {
             setupTimeout: 120_000,
