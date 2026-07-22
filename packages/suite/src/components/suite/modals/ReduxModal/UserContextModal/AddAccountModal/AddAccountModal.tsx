@@ -362,6 +362,8 @@ export const AddAccountModal = ({
         account: NetworkAccount;
         accountTypes: NetworkAccount[];
     }) {
+        onCancel();
+
         const newAccount = await prepareNewAccountPayload({
             accountType: account.accountType,
             networkSymbol: network.symbol,
@@ -383,7 +385,6 @@ export const AddAccountModal = ({
             return;
         }
 
-        onCancel();
         dispatch(accountsActions.createAccount(newAccount));
         resetAccountSearch(newAccount.symbol);
         reportNewAccountAnalytics(newAccount);
@@ -540,7 +541,6 @@ export const AddAccountModal = ({
                               <>
                                   {showSupportedNetworks && (
                                       <SelectNetwork
-                                          heading={<Translation id="TR_COINS" />}
                                           networks={filteredSupportedNetworks}
                                           handleNetworkSelection={handleNetworkSelection}
                                           onSettings={setAdvancedSettingsSymbol}
