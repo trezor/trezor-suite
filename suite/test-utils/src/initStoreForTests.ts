@@ -7,7 +7,7 @@ import {
     type EncryptedHex,
     type PlatformEncryption,
 } from '@suite-common/platform-encryption';
-import { type PreloadedState, initStore } from '@trezor/suite';
+import { type PreloadedState, type SuiteStore, initStore } from '@trezor/suite';
 import { ok } from '@trezor/type-utils';
 
 const testPlatformEncryption: PlatformEncryption = {
@@ -20,7 +20,7 @@ const testPlatformEncryption: PlatformEncryption = {
     },
 };
 
-export type TestStore = ReturnType<typeof initStore>['store'];
+export type TestStore = SuiteStore['store'];
 
 export type InitStoreForTestsResult = {
     store: TestStore;
