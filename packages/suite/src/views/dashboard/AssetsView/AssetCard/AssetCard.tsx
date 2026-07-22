@@ -243,14 +243,12 @@ export const AssetCardSkeleton = (props: { animate?: boolean }) => {
                 <Row justifyContent="space-between">
                     <AssetCardInfoSkeleton animate={animate} />
                 </Row>
-                <Column>
-                    <Row>
-                        <Skeleton animate={animate} width={95} height={32} />
-                    </Row>
+                <Column gap={4}>
+                    <Skeleton animate={animate} width={95} height={32} />
                     <Skeleton animate={animate} width={50} height={16} />
                 </Column>
             </Column>
-            <Card>
+            <Card type="contrast">
                 <Skeleton animate={animate} width="100%" height={40} />
             </Card>
         </Card>
