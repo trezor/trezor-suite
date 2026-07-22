@@ -71,7 +71,17 @@ const getIssueContent = (
                 ),
             };
         }
-
+        case 'slippage-too-low': {
+            return {
+                type: issue.type,
+                title: (
+                    <Translation id="moduleTrading.transactionSimulation.issues.slippageTooLow.title" />
+                ),
+                description: (
+                    <Translation id="moduleTrading.transactionSimulation.issues.slippageTooLow.description" />
+                ),
+            };
+        }
         default:
             return exhaustive(issue);
     }
