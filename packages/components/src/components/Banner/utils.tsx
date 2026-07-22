@@ -6,11 +6,11 @@ import { type IconComponent } from '../Icon/Icon';
 
 export const mapIntentToBackgroundColor = (intent: BannerIntent): Color => {
     const colorMap: Record<BannerIntent, Color> = {
-        brand: 'elementFillBrandSofter',
-        info: 'elementFillInfoSofter',
-        warning: 'elementFillWarningSofter',
-        critical: 'elementFillCriticalSofter',
-        neutral: 'elementFillNeutralSofter',
+        brand: 'elementFillBrandSoft',
+        info: 'elementFillInfoSoft',
+        warning: 'elementFillWarningSoft',
+        critical: 'elementFillCriticalSoft',
+        neutral: 'elementFillNeutralSoft',
     };
 
     return colorMap[intent];

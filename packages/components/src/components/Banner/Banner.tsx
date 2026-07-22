@@ -128,7 +128,7 @@ export const Banner = ({
                         <Paragraph
                             typographyStyle="body-sm"
                             intent={intent}
-                            priority={title ? 'secondary' : 'primary'}
+                            priority="primary"
                             textWrap="pretty"
                         >
                             {description}
