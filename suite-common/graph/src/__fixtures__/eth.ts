@@ -2065,3 +2065,118 @@ export const ethTokenBalanceHistoryResult: Record<string, AccountHistoryMovement
         },
     ],
 };
+
+// L2 transactions exercising the effectiveGasPrice + l1Fee fee formula.
+export const l2AccountTransactions: WalletAccountTransaction[] = [
+    {
+        // L2 tx: effectiveGasPrice (actual, 0.15 Gwei) is far below gasPrice (bid, 1 Gwei),
+        // plus an L1 data fee. Fee = 150000000 * 21000 + 12345 = 3150000012345.
+        descriptor: asAccountDescriptor('0x1111111111111111111111111111111111111111'),
+        deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
+        symbol: 'op',
+        type: 'sent',
+        txid: '0xaaa1',
+        blockTime: 1720000000,
+        blockHeight: 100,
+        blockHash: '0xblock100',
+        amount: '0',
+        fee: '3150000012345',
+        targets: [],
+        tokens: [],
+        internalTransfers: [],
+        ethereumSpecific: {
+            status: 1,
+            nonce: 1,
+            gasLimit: 21000,
+            gasUsed: 21000,
+            gasPrice: '1000000000',
+            effectiveGasPrice: '150000000',
+            l1Fee: 12345,
+            data: '0x',
+        },
+        details: {
+            vin: [
+                {
+                    n: 0,
+                    addresses: ['0x1111111111111111111111111111111111111111'],
+                    isAddress: true,
+                },
+            ],
+            vout: [
+                {
+                    value: '0',
+                    n: 0,
+                    addresses: ['0x2222222222222222222222222222222222222222'],
+                    isAddress: true,
+                },
+            ],
+            size: 0,
+            totalInput: '0',
+            totalOutput: '0',
+        },
+    },
+    {
+        // Legacy tx: no effectiveGasPrice / l1Fee -> falls back to gasPrice.
+        // Fee = 2000000000 * 21000 = 42000000000000.
+        descriptor: asAccountDescriptor('0x1111111111111111111111111111111111111111'),
+        deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
+        symbol: 'op',
+        type: 'sent',
+        txid: '0xaaa2',
+        blockTime: 1720000100,
+        blockHeight: 101,
+        blockHash: '0xblock101',
+        amount: '0',
+        fee: '42000000000000',
+        targets: [],
+        tokens: [],
+        internalTransfers: [],
+        ethereumSpecific: {
+            status: 1,
+            nonce: 2,
+            gasLimit: 21000,
+            gasUsed: 21000,
+            gasPrice: '2000000000',
+            data: '0x',
+        },
+        details: {
+            vin: [
+                {
+                    n: 0,
+                    addresses: ['0x1111111111111111111111111111111111111111'],
+                    isAddress: true,
+                },
+            ],
+            vout: [
+                {
+                    value: '0',
+                    n: 0,
+                    addresses: ['0x2222222222222222222222222222222222222222'],
+                    isAddress: true,
+                },
+            ],
+            size: 0,
+            totalInput: '0',
+            totalOutput: '0',
+        },
+    },
+];
+
+export const l2AccountBalanceHistoryResult: AccountHistoryMovementItem[] = [
+    {
+        time: 1720000000,
+        txs: 1,
+        received: new BigNumber('0'),
+        // effectiveGasPrice (150000000) * gasUsed (21000) + l1Fee (12345)
+        sent: new BigNumber('3150000012345'),
+        sentToSelf: new BigNumber('0'),
+    },
+    {
+        time: 1720000100,
+        txs: 1,
+        received: new BigNumber('0'),
+        // fallback to gasPrice (2000000000) * gasUsed (21000)
+        sent: new BigNumber('42000000000000'),
+        sentToSelf: new BigNumber('0'),
+    },
+];

@@ -1,4 +1,5 @@
 import type { TokenAddress, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { getEffectiveGasPrice } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { type LocalBalanceHistoryCoin } from './constants';
@@ -224,8 +225,15 @@ const getAccountHistoryMovementItemETH = ({
                     }
 
                     let feesSat = new BigNumber(0);
-                    if (ethTxData.gasUsed !== undefined && ethTxData.gasPrice !== undefined) {
-                        feesSat = new BigNumber(ethTxData.gasPrice).times(ethTxData.gasUsed);
+                    if (ethTxData.gasUsed !== undefined) {
+                        // Use effectiveGasPrice (actual price paid on L2s) when present, else the
+                        // gasPrice bid, and add the L1 data fee. Mirrors blockbook's fee logic.
+                        feesSat = new BigNumber(getEffectiveGasPrice(ethTxData)).times(
+                            ethTxData.gasUsed,
+                        );
+                        if (ethTxData.l1Fee) {
+                            feesSat = feesSat.plus(ethTxData.l1Fee);
+                        }
                     }
                     bh.sent = bh.sent.plus(feesSat);
                 }

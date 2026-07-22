@@ -5,7 +5,7 @@ import {
     type EvmTransactionPurpose,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
-import { type TokenInfo } from '@trezor/blockchain-link-types';
+import { type EthereumSpecific, type TokenInfo } from '@trezor/blockchain-link-types';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -16,6 +16,15 @@ import { isWrappedNativeToken } from './tokenUtils';
 export const isEip1559 = (
     tx: Record<string, any> | null | undefined,
 ): tx is { maxFeePerGas: string } => !!tx && !!tx.maxFeePerGas;
+
+// Returns the per-gas price actually charged: effectiveGasPrice when present and > 0
+// (L2 networks), otherwise the gasPrice bid. Mirrors blockbook's L2 fee logic.
+export const getEffectiveGasPrice = (
+    ethereumSpecific: Pick<EthereumSpecific, 'effectiveGasPrice' | 'gasPrice'> | undefined,
+): string =>
+    ethereumSpecific?.effectiveGasPrice && new BigNumber(ethereumSpecific.effectiveGasPrice).gt(0)
+        ? ethereumSpecific.effectiveGasPrice
+        : (ethereumSpecific?.gasPrice ?? '0');
 
 export const hasEip1559MaxPriorityFee = (
     tx: Record<string, any> | null | undefined,
