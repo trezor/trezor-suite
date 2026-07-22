@@ -13,7 +13,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
-import { useForm } from '@suite-native/forms';
+import { useForm, useWatch } from '@suite-native/forms';
 import { truncateDecimals } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
@@ -143,8 +143,8 @@ const useSellQuotesChangeEffect = ({ getValues, setValue }: SellFormType) => {
     }, [quotes, getValues, setValue]);
 };
 
-const useSellQuoteChangeEffect = ({ getValues, setValue, watch }: SellFormType) => {
-    const [sendAsset, quote] = watch(['sendAsset', 'quote']);
+const useSellQuoteChangeEffect = ({ control, getValues, setValue }: SellFormType) => {
+    const [sendAsset, quote] = useWatch({ control, name: ['sendAsset', 'quote'] });
     const symbol = getSymbolFromTradeableAsset(sendAsset);
 
     const isAmountInSats = useSelector((state: WalletSettingsRootState) =>

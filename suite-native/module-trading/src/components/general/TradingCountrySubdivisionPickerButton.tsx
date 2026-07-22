@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { isCountrySubdivisionEmpty } from '@suite-common/trading';
 import { Button, Text, VStack } from '@suite-native/atoms';
-import { useFormContext } from '@suite-native/forms';
+import { useFormContext, useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { useCountrySubdivisionPickerControls } from '@suite-native/trading-residence';
 import { selectIsTradingResidenceCheckEnabled } from '@suite-native/trading-state';
@@ -17,10 +17,11 @@ export const TradingCountrySubdivisionPickerButton = ({
 }: TradingCountrySubdivisionPickerButtonProps) => {
     const isTradingResidenceCheckEnabled = useSelector(selectIsTradingResidenceCheckEnabled);
     const { showSheet } = useCountrySubdivisionPickerControls();
-    const { watch } = useFormContext<FormWithFiatCurrencyValues>();
-
-    const country = watch('country');
-    const countrySubdivision = watch('countrySubdivision');
+    const { control } = useFormContext<FormWithFiatCurrencyValues>();
+    const [country, countrySubdivision] = useWatch({
+        control,
+        name: ['country', 'countrySubdivision'],
+    });
 
     if (
         isTradingResidenceCheckEnabled ||

@@ -1,9 +1,10 @@
-import { useFormContext } from '@suite-native/forms';
+import { useFormContext, useWatch } from '@suite-native/forms';
 
 import { type TradingLocationFormValues } from '../types/tradingLocationForm';
 
 export const useFormCountryCode = () => {
-    const { watch } = useFormContext<TradingLocationFormValues>();
+    const { control } = useFormContext<TradingLocationFormValues>();
+    const country = useWatch({ control, name: 'country' });
 
-    return watch('country').value;
+    return country.value;
 };

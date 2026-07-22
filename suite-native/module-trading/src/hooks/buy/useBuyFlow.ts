@@ -12,6 +12,7 @@ import {
     tradingBuyActions,
 } from '@suite-common/trading';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { useWatch } from '@suite-native/forms';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -39,11 +40,10 @@ export const useBuyFlow = (form: BuyFormType) => {
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const dispatch = useDispatch();
     const isLoading = useSelector(selectTradingBuyIsLoading);
-    const [asset, candidateQuote, receiveAccount] = form.watch([
-        'asset',
-        'quote',
-        'receiveAccount',
-    ]);
+    const [asset, candidateQuote, receiveAccount] = useWatch({
+        control: form.control,
+        name: ['asset', 'quote', 'receiveAccount'],
+    });
 
     const navigation = useNavigation<NavigationProps>();
 

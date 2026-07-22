@@ -11,9 +11,14 @@ jest.mock('../../../hooks/buy/useBuyFlow', () => ({
     useBuyFlow: jest.fn(),
 }));
 
+jest.mock('@suite-native/forms', () => ({
+    ...jest.requireActual('@suite-native/forms'),
+    useWatch: () => [undefined, undefined],
+}));
+
 jest.mock('../../../hooks/buy/useBuyFormContext', () => ({
     useBuyFormContext: () => ({
-        watch: jest.fn().mockReturnValue([undefined, undefined]),
+        control: undefined,
     }),
 }));
 

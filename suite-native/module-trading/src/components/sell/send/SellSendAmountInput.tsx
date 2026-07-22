@@ -3,6 +3,7 @@ import { type TextInput } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectTradingSellIsLoading } from '@suite-common/trading';
+import { useWatch } from '@suite-native/forms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
@@ -21,13 +22,11 @@ const SELL_SEND_INPUT_TEST_ID = '@trading/sell/send-amount-input';
 export const SellSendAmountInput = forwardRef<TextInput, SellSendAmountInputProps>(
     ({ showAssetsSheet }, ref) => {
         const { translate } = useTranslate();
-        const { watch, setValue } = useSellFormContext();
-        const [asset, amount, account, amountInCrypto] = watch([
-            'sendAsset',
-            'cryptoStringAmount',
-            'sendAccount',
-            'amountInCrypto',
-        ]);
+        const { control, setValue } = useSellFormContext();
+        const [asset, amount, account, amountInCrypto] = useWatch({
+            control,
+            name: ['sendAsset', 'cryptoStringAmount', 'sendAccount', 'amountInCrypto'],
+        });
         const symbol = getSymbolFromTradeableAsset(asset);
         const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
         const inputControls = useInputFieldControls('cryptoStringAmount', amount, setValue);

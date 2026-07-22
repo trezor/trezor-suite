@@ -1,4 +1,5 @@
 import { Box, HStack } from '@suite-native/atoms';
+import { useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { CryptoToFiatValueBadge } from '@suite-native/trading-quote-utils';
 
@@ -19,9 +20,8 @@ type BuyCardProps = {
 const BUY_CARD_TEST_ID = '@trading/buyCard';
 
 export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardProps) => {
-    const { watch } = useBuyFormContext();
-
-    const [cryptoValue, asset] = watch(['cryptoValue', 'asset']);
+    const { control } = useBuyFormContext();
+    const [cryptoValue, asset] = useWatch({ control, name: ['cryptoValue', 'asset'] });
 
     return (
         <TradingCard

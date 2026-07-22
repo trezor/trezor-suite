@@ -1,3 +1,4 @@
+import { useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { CryptoToFiatValueBadge } from '@suite-native/trading-quote-utils';
 
@@ -15,8 +16,11 @@ type ExchangeCardProps = {
 const EXCHANGE_CARD_TEST_ID = '@trading/exchangeCard';
 
 export const ExchangeCard = ({ isAmountInputActive }: ExchangeCardProps) => {
-    const { watch } = useExchangeFormContext();
-    const [receiveAsset, receiveCryptoAmount] = watch(['receiveAsset', 'receiveCryptoAmount']);
+    const { control } = useExchangeFormContext();
+    const [receiveAsset, receiveCryptoAmount] = useWatch({
+        name: ['receiveAsset', 'receiveCryptoAmount'],
+        control,
+    });
 
     return (
         <TradingCard isAmountInputActive={isAmountInputActive}>

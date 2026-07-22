@@ -21,15 +21,14 @@ let mockSendAccount:
       }
     | undefined;
 
+jest.mock('@suite-native/forms', () => ({
+    ...jest.requireActual('@suite-native/forms'),
+    useWatch: () => [mockQuote, mockSendAccount],
+}));
+
 jest.mock('../../../hooks/exchange/useExchangeFormContext', () => ({
     useExchangeFormContext: () => ({
-        watch: (field: string | string[]) => {
-            if (Array.isArray(field)) {
-                return [mockQuote, mockSendAccount];
-            }
-
-            return mockQuote;
-        },
+        control: undefined,
     }),
 }));
 

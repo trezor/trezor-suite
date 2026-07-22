@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { useWatch } from '@suite-native/forms';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { selectBuySelectedReceiveAccount } from '@suite-native/trading-state';
 
@@ -9,10 +10,10 @@ import { ReceiveAccountPicker } from '../general/ReceiveAccount/ReceiveAccountPi
 const RECEIVE_ACCOUNT_PICKER_TEST_ID = '@trading/buy/receive-account';
 
 export const BuyReceiveAccountPicker = () => {
-    const { watch } = useBuyFormContext();
+    const { control } = useBuyFormContext();
     const selectedReceiveAccount = useSelector(selectBuySelectedReceiveAccount);
 
-    const asset = watch('asset');
+    const asset = useWatch({ control, name: 'asset' });
     const selectedSymbol = getSymbolFromTradeableAsset(asset);
 
     return (

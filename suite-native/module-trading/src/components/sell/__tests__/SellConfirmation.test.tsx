@@ -13,25 +13,14 @@ jest.mock('../../../hooks/sell/useSellSelectQuote', () => ({
     useSellSelectQuote: jest.fn(),
 }));
 
+jest.mock('@suite-native/forms', () => ({
+    ...jest.requireActual('@suite-native/forms'),
+    useWatch: () => ({ exchange: 'test-provider' }),
+}));
+
 jest.mock('../../../hooks/sell/useSellFormContext', () => ({
     useSellFormContext: () => ({
-        watch: (fields: any) => {
-            if (Array.isArray(fields)) {
-                return fields.map((field: string) => {
-                    if (field === 'quote') return { exchange: EXCHANGE_NAME };
-
-                    if (field === 'sendAsset') return { symbol: 'btc' };
-
-                    return null;
-                });
-            }
-
-            if (fields === 'quote') {
-                return { exchange: EXCHANGE_NAME };
-            }
-
-            return null;
-        },
+        control: undefined,
     }),
 }));
 

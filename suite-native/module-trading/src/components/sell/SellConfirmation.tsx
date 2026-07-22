@@ -6,6 +6,7 @@ import {
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
 import { AnimatedBox, Button } from '@suite-native/atoms';
+import { useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
 import { useSellFormContext } from '../../hooks/sell/useSellFormContext';
@@ -21,7 +22,7 @@ export const SellConfirmation = ({ enteringAnimation }: ConfirmationProps) => {
     const form = useSellFormContext();
     const { canProceed, selectQuote } = useSellSelectQuote(form);
 
-    const quote = form.watch('quote');
+    const quote = useWatch({ control: form.control, name: 'quote' });
     const providerInfo = useSelector((state: TradingRootState) =>
         selectTradingProviderByNameAndTradeType(state, quote?.exchange, 'sell'),
     );

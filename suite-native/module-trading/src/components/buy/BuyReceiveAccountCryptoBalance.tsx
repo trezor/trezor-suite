@@ -1,11 +1,16 @@
+import { useWatch } from '@suite-native/forms';
+
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { TradeableAssetAccountBalance } from '../general/TradeableAssetAccountBalance';
 
 export const RECEIVE_ACCOUNT_BALANCE_TEST_ID = '@trading/buy/receive-account-balance';
 
 export const BuyReceiveAccountCryptoBalance = () => {
-    const { watch } = useBuyFormContext();
-    const [asset, receiveAccount] = watch(['asset', 'receiveAccount']);
+    const { control } = useBuyFormContext();
+    const [asset, receiveAccount] = useWatch({
+        control,
+        name: ['asset', 'receiveAccount'],
+    });
 
     return (
         <TradeableAssetAccountBalance

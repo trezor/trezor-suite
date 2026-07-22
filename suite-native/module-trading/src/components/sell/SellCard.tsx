@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { cryptoIdToSymbol } from '@suite-common/trading';
 import { type AccountsRootState, selectAccountFormattedBalance } from '@suite-common/wallet-core';
 import { Box, HStack } from '@suite-native/atoms';
+import { useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
     NetworkReserveBanner,
@@ -26,11 +27,11 @@ type SellCardProps = {
 const SELL_CARD_TEST_ID = '@trading/sellCard';
 
 export const SellCard = ({ isAmountInputActive, shouldAnimateEntering }: SellCardProps) => {
-    const { watch } = useSellFormContext();
-
-    const asset = watch('sendAsset');
-    const cryptoStringAmount = watch('cryptoStringAmount');
-    const sendAccount = watch('sendAccount');
+    const { control } = useSellFormContext();
+    const [asset, cryptoStringAmount, sendAccount] = useWatch({
+        control,
+        name: ['sendAsset', 'cryptoStringAmount', 'sendAccount'],
+    });
     const symbol = asset ? cryptoIdToSymbol(asset.cryptoId) : undefined;
 
     const formattedBalance = useSelector((state: AccountsRootState) =>
