@@ -79,7 +79,7 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
                 networkSymbolOrTokenId: 'sol',
             });
             // Automation is too fast, we need to wait for Fees to be resolved
-            await expect(tradingPage.fees.maximumFeeAmountToBeCalculated).toBeHidden();
+            await tradingPage.fees.waitToBeCalculated();
             await expect(tradingPage.fees.maxFee).toBeVisible();
             await expect(tradingPage.fees.maxFeeFiat).toBeVisible();
             await expect(tradingPage.quotes.bestOfferAmount).toHaveText(fiatAmount);
@@ -147,7 +147,7 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
                 networkSymbolOrTokenId: 'sol',
             });
             // Automation is too fast, we need to wait for Fees to be resolved
-            await expect(tradingPage.fees.maximumFeeAmountToBeCalculated).toBeHidden();
+            await tradingPage.fees.waitToBeCalculated();
             await expect(tradingPage.fees.maxFee).toBeVisible();
             await expect(tradingPage.fees.maxFeeFiat).toBeVisible();
             await tradingPage.quotes.selectedProvider.click();

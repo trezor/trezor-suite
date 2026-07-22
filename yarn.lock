@@ -16949,10 +16949,12 @@ __metadata:
   dependencies:
     "@currents/playwright": "npm:^2.1.4"
     "@evolu/common": "npm:8.0.0-next.5"
+    "@noble/hashes": "npm:^2.0.1"
     "@playwright/browser-chromium": "npm:1.60.0"
     "@playwright/browser-firefox": "npm:1.60.0"
     "@playwright/browser-webkit": "npm:1.60.0"
     "@playwright/test": "npm:1.60.0"
+    "@scure/base": "npm:^2.0.0"
     "@suite-common/address": "workspace:*"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/device": "workspace:*"

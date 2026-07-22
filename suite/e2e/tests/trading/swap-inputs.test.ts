@@ -129,7 +129,7 @@ test.describe('Trading - Swap inputs', { tag: ['@webOnly', '@noDevice'] }, () =>
                 await expect(tradingPage.quotes.selectedProvider).toBeVisible();
                 await expect(tradingPage.quotes.selectedProviderName).not.toBeEmpty();
 
-                await expect(tradingPage.fees.maximumFeeAmountToBeCalculated).toBeHidden();
+                await tradingPage.fees.waitToBeCalculated();
                 await expect(tradingPage.fees.maxFee).toBeVisible();
                 await expect(tradingPage.fees.maxFee).not.toBeEmpty();
             });

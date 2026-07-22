@@ -32,6 +32,22 @@ export class TradingQuotesSection {
     }
 
     @step()
+    async getBestOfferAmount(): Promise<string> {
+        await expect(this.bestOfferAmount).toHaveText(/^(?=[\d,.]*[1-9])[\d,]+(\.\d+)?\s+\w+$/);
+        const rawText = await this.bestOfferAmount.textContent();
+        if (!rawText) {
+            throw new Error('Best offer amount did not have any text content');
+        }
+
+        const [amount] = rawText.trim().split(/\s+/);
+        if (!amount) {
+            throw new Error(`Best offer amount could not be parsed from "${rawText}"`);
+        }
+
+        return amount;
+    }
+
+    @step()
     async selectQuoteByProvider(provider: string) {
         await this.provider.filter({ hasText: provider }).click();
     }
