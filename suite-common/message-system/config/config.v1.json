@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-07-20T00:00:00+00:00",
-    "sequence": 149,
+    "timestamp": "2026-07-22T00:00:00+00:00",
+    "sequence": 150,
     "actions": [
         {
             "conditions": [
@@ -1113,43 +1113,6 @@
                     }
                 },
                 "context": { "domain": ["accounts.coinjoin", "accounts.btc.coinjoin"] }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "settings": [
-                        {
-                            "ada": true
-                        }
-                    ],
-                    "environment": {
-                        "desktop": "*",
-                        "mobile": "*",
-                        "web": "*"
-                    }
-                }
-            ],
-            "message": {
-                "id": "17152a45-0802-4c7f-8165-e551e230688d",
-                "priority": 92,
-                "dismissible": true,
-                "variant": "warning",
-                "category": ["banner"],
-                "content": {
-                    "en": "We’re having temporary syncing issues with the Cardano network, which may cause delays or errors. Your Cardano assets are completely safe. Thanks for your patience.",
-                    "es": "Estamos teniendo problemas temporales de sincronización con la red Cardano, lo que puede causar retrasos o errores. Tus activos de Cardano están completamente seguros. Gracias por tu paciencia.",
-                    "cs": "Máme dočasné problémy se synchronizací sítě Cardano, což může způsobit zpoždění nebo chyby. Vaše prostředky v Cardano jsou zcela v bezpečí. Děkujeme za trpělivost.",
-                    "ru": "У нас возникли временные проблемы с синхронизацией сети Cardano, что может вызвать задержки или ошибки. Ваши активы Cardano находятся в полной безопасности. Спасибо за терпение.",
-                    "ja": "Cardano ネットワークで一時的な同期の問題が発生しており、遅延やエラーが発生する可能性があります。お客様の Cardano 資産は完全に安全です。しばらくお待ちください。",
-                    "hu": "Átmeneti szinkronizálási problémáink vannak a(z) Cardano hálózattal, ami késéseket vagy hibákat okozhat. A(z) Cardano eszközei teljes biztonságban vannak. Köszönjük türelmét.",
-                    "it": "Stiamo riscontrando problemi temporanei di sincronizzazione con la rete Cardano, che potrebbero causare ritardi o errori. I tuoi asset Cardano sono completamente al sicuro. Grazie per la pazienza.",
-                    "fr": "Nous rencontrons des problèmes de synchronisation temporaires avec le réseau Cardano, ce qui peut entraîner des retards ou des erreurs. Vos actifs Cardano sont en parfaite sécurité. Merci de votre patience.",
-                    "de": "Wir haben vorübergehende Synchronisierungsprobleme mit dem Cardano-Netzwerk, was zu Verzögerungen oder Fehlern führen kann. Deine Cardano-Assets sind vollkommen sicher. Danke für deine Geduld.",
-                    "tr": "Cardano ağıyla ilgili geçici senkronizasyon sorunları yaşıyoruz, bu da gecikmelere veya hatalara neden olabilir. Cardano varlıklarınız tamamen güvendedir. Sabrınız için teşekkürler.",
-                    "pt": "Estamos enfrentando problemas temporários de sincronização com a rede Cardano, o que pode causar atrasos ou erros. Seus ativos Cardano estão totalmente seguros. Obrigado pela sua paciência.",
-                    "uk": "У нас виникли тимчасові проблеми з синхронізацією мережі Cardano, що може спричинити затримки або помилки. Ваші активи Cardano у цілковитій безпеці. Дякуємо за терпіння."
-                }
             }
         },
         {
