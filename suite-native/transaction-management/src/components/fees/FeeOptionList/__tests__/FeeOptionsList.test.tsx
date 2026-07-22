@@ -6,6 +6,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import { localeReducer } from '@suite-native/intl';
 import {
+    act,
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
@@ -101,10 +102,12 @@ describe('FeeOptionsList', () => {
         const store = createFeeOptionsStore(preloadedState);
         const form = renderUseFeesForm(store);
 
-        return renderWithStoreProvider(<FeeOptionsList {...finalProps} />, {
+        const view = renderWithStoreProvider(<FeeOptionsList {...finalProps} />, {
             store,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
+
+        return { ...view, form };
     };
 
     beforeEach(() => {
@@ -188,6 +191,32 @@ describe('FeeOptionsList', () => {
 
             await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-high'));
             expect(defaultProps.onSelectedFeeLevel).toHaveBeenCalledWith('high');
+        });
+
+        it('should update the visually selected fee option', async () => {
+            const { getByTestId, form } = renderFeeOptionsList({});
+            act(() => form.setValue('feeLevel', 'normal'));
+
+            expect(getByTestId('@transactionManagement/fees-level-radio-normal')).toHaveProp(
+                'accessibilityState',
+                expect.objectContaining({ checked: true }),
+            );
+            expect(getByTestId('@transactionManagement/fees-level-radio-high')).toHaveProp(
+                'accessibilityState',
+                expect.objectContaining({ checked: false }),
+            );
+
+            await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-high'));
+
+            expect(form.getValues('feeLevel')).toBe('high');
+            expect(getByTestId('@transactionManagement/fees-level-radio-normal')).toHaveProp(
+                'accessibilityState',
+                expect.objectContaining({ checked: false }),
+            );
+            expect(getByTestId('@transactionManagement/fees-level-radio-high')).toHaveProp(
+                'accessibilityState',
+                expect.objectContaining({ checked: true }),
+            );
         });
 
         it('should make options interactive when multiple options are available', () => {
