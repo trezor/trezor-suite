@@ -14,6 +14,7 @@
     "dependencies": {
         "@suite-common/earn-stablecoin-defs": "workspace:^",
         "@suite-common/http-client": "workspace:^",
+        "@suite-common/networks": "workspace:*",
         "@suite-common/react-query": "workspace:^",
         "@suite-common/schemas": "workspace:^",
         "@suite-common/wallet-config": "workspace:^",

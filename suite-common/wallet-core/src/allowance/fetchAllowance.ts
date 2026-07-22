@@ -1,5 +1,5 @@
 import { Calldata } from '@suite-common/calldata';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { asAmountSubunit } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';

@@ -13,6 +13,7 @@
     "references": [
         { "path": "../analytics-redux" },
         { "path": "../geolocation" },
+        { "path": "../networks" },
         { "path": "../redux-utils" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },

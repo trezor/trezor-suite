@@ -1,7 +1,7 @@
 import { type CryptoId } from 'invity-api';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type TradingAssetOption, getCryptoId } from '@suite-common/trading';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenInfo } from '@trezor/connect';
 
 export type TokenDisplayNameSource = {

@@ -3,9 +3,10 @@ import {
     selectHasOnlyPortfolioDevice,
     selectSelectedDevice,
 } from '@suite-common/device';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { type NetworkSymbol, networks, networksCollection } from '@suite-common/wallet-config';
+import { networks, networksCollection } from '@suite-common/wallet-config';
 import {
     type Account,
     type ReviewOutput,

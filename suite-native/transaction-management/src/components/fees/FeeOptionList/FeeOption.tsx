@@ -8,7 +8,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import {
     EVM_FEE_RATE_DECIMALS,
     type FeesRootState,

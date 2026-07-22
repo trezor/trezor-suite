@@ -1,7 +1,7 @@
 import { FormattedDate } from 'react-intl';
 
 import { useFormatters } from '@suite-common/formatters';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { parseTransactionDateKey } from '@suite-common/wallet-utils';

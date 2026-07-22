@@ -1,6 +1,6 @@
 import { selectSelectedDevice } from '@suite-common/device';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     isDiscoveryInProgress,
     selectAccountsByDeviceState,

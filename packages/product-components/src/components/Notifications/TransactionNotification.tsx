@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+
+import { type NetworkSymbol } from '@suite-common/networks';
 import { Column, Row, Text } from '@trezor/components';
 
 import { TransactionAmount } from './TransactionAmount';

@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { type NetworkSymbol, getNetwork, getNetworkFeatures } from '@suite-common/wallet-config';
+import { getNetwork, getNetworkFeatures } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { unique } from '@trezor/utils';

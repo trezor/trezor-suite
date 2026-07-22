@@ -1,5 +1,5 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
 
 export const useDefaultUrls = (symbol: NetworkSymbol) =>

@@ -12,7 +12,8 @@ import { openModal } from '@suite/modal';
 import { selectIsTestnetNetworksEnabled } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
-import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { type Network } from '@suite-common/wallet-config';
 import {
     changeCoinVisibility,
     selectDeviceSupportedNetworks,

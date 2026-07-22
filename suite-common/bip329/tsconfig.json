@@ -5,6 +5,7 @@
     "references": [
         { "path": "../bip329-types" },
         { "path": "../metadata-types" },
+        { "path": "../networks" },
         { "path": "../suite-sync-storage" },
         { "path": "../suite-sync-types" },
         { "path": "../wallet-config" },

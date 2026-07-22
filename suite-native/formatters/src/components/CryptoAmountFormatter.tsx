@@ -3,7 +3,8 @@ import React from 'react';
 import { G } from '@mobily/ts-belt';
 
 import { useFormatters } from '@suite-common/formatters';
-import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { isNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import { getAccountDecimals } from '@suite-common/wallet-utils';
 import { type TextProps } from '@suite-native/atoms';

@@ -1,6 +1,7 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type Bip43Path, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Bip43Path } from '@suite-common/wallet-config';
 import {
     selectDeviceAccountsByNetworkSymbol,
     selectDiscoveryForSelectedDevice,

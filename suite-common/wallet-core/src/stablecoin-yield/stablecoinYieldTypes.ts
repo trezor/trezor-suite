@@ -1,6 +1,6 @@
 import type { YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { type NetworkSymbol } from '@suite-common/networks';
 import type { EvmHexString } from '@suite-common/schemas/src/evm';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
 
 export const YIELD_FLOW_TYPES = ['deposit', 'withdraw', 'redeem', 'claim'] as const;

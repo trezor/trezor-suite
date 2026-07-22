@@ -3,9 +3,10 @@ import { isRejected } from '@reduxjs/toolkit';
 
 import { Calldata } from '@suite-common/calldata';
 import { selectSelectedDevice } from '@suite-common/device';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     type Account,
     type AccountKey,

@@ -1,4 +1,5 @@
 import { PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     getSupportedDefinitionTypes,
@@ -10,7 +11,6 @@ import {
 import {
     type AccountType,
     type Bip43Path,
-    type NetworkSymbol,
     getNetworkType,
 } from '@suite-common/wallet-config';
 import {

@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { isSendingEvmNativeToken } from '@suite-common/trading';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { DiscreetTextTrigger, HStack, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, TokenAmountFormatter } from '@suite-native/formatters';

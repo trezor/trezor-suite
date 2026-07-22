@@ -2,8 +2,9 @@ import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { isOnionUrl } from '@suite/tor';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type UserContextPayload } from '@suite-common/suite-types';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { blockchainActions, selectCustomBackends } from '@suite-common/wallet-core';
 import { Banner, Button, Card, Column, H3, Modal, Paragraph, Row } from '@trezor/components';
 import { GearIcon, TorBrowserIcon } from '@trezor/icons';

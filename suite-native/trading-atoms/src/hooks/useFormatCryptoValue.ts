@@ -3,8 +3,9 @@ import { useCallback } from 'react';
 import type { CryptoId } from 'invity-api';
 
 import { useFormatters } from '@suite-common/formatters';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { useTradingUtils } from '@suite-common/trading';
-import { type NetworkSymbol, getNetworkDecimals } from '@suite-common/wallet-config';
+import { getNetworkDecimals } from '@suite-common/wallet-config';
 
 const TOKEN_DECIMALS_LENGTH = 16;
 

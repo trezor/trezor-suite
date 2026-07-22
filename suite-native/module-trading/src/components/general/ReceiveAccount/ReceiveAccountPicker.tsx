@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type TradingType } from '@suite-common/trading';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccountLabel } from '@suite-native/accounts';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';

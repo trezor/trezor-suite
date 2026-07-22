@@ -1,6 +1,6 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { isTestnet } from '@suite-common/wallet-utils';
 
 import { step } from '../common';

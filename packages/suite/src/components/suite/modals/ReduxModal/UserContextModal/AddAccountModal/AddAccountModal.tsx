@@ -7,11 +7,11 @@ import { Translation } from '@suite/intl';
 import { goto, selectRouterApp } from '@suite/router';
 import { selectIsTestnetNetworksEnabled } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type Network,
     type NetworkAccount,
-    type NetworkSymbol,
     getNetwork,
     networks,
 } from '@suite-common/wallet-config';

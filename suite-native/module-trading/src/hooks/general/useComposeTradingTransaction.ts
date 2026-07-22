@@ -2,11 +2,12 @@ import { useCallback } from 'react';
 import { useDispatch, useStore } from 'react-redux';
 
 import { type MessageSystemRootState } from '@suite-common/message-system';
+import { type NetworkSymbol } from '@suite-common/networks';
 import {
     type TradingRootStateWithDeviceAndAccounts,
     selectTradingAccountKeyByTradeType,
 } from '@suite-common/trading';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     type FeesRootState,
     type FormDraftRootState,

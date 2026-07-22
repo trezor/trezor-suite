@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { type DeviceRootState } from '@suite-common/device';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { selectSendFormReviewButtonRequestsCount } from '@suite-common/wallet-core';
 
 export const useYieldReviewActiveStep = (networkSymbol: NetworkSymbol) => {

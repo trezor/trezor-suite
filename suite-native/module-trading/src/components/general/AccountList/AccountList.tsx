@@ -5,8 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
 import { selectIsDeviceInViewOnlyMode } from '@suite-common/device';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type TradingType, tradingBuyActions, tradingExchangeActions } from '@suite-common/trading';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type RootStackParamList,
     type RootStackRoutes,

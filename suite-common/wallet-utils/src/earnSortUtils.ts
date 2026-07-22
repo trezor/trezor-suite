@@ -1,6 +1,6 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import {
     type AccountType,
-    type NetworkSymbol,
     networkSymbolCollection,
     networks,
 } from '@suite-common/wallet-config';

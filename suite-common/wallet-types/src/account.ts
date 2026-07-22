@@ -1,9 +1,9 @@
 import type { AccountEntityKeys } from '@suite-common/metadata-types';
+import { type NetworkSymbol } from '@suite-common/networks';
 import type {
     AccountType,
     BackendType,
-    Bip43Path,
-    NetworkSymbol,
+    Bip43Path
 } from '@suite-common/wallet-config';
 import type {
     AddressAlias,

@@ -1,6 +1,6 @@
 import { type StateFromReducersMapObject, combineReducers } from '@reduxjs/toolkit';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';

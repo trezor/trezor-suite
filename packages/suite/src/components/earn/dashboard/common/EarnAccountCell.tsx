@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { type TokenDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Row } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';

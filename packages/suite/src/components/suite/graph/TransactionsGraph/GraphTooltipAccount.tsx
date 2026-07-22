@@ -1,8 +1,8 @@
 import { type TooltipProps } from 'recharts';
 
 import { type Formatters, useFormatters } from '@suite-common/formatters';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type SignOperator } from '@suite-common/suite-types';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';

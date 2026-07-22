@@ -8,9 +8,10 @@ import {
     type CoinjoinSymbol,
 } from '@suite/coinjoin';
 import { useServices } from '@suite-common/dependency-injection';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { selectReloadAppDep } from '@suite-common/suite-types';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { Button } from '@trezor/components';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';

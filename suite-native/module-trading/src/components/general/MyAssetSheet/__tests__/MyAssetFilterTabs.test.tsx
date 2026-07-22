@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 

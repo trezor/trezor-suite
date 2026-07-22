@@ -1,7 +1,7 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type TradingType } from '@suite-common/suite-types';
 import {
     type AccountType,
-    type NetworkSymbol,
     type StakingNetworkSymbol,
 } from '@suite-common/wallet-config';
 

@@ -1,6 +1,6 @@
 import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type ArrayElement } from '@trezor/type-utils';
 
 import { AccountLabelForOwnAddress } from 'src/components/suite/labeling/AccountLabelForOwnAddress';

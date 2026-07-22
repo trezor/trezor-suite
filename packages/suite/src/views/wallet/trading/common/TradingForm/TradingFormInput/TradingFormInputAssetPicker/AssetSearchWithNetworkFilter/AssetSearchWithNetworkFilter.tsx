@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
 import { type TranslationKey, useTranslation } from '@suite/intl';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { Box } from '@trezor/components';
 import { SearchAsset } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';

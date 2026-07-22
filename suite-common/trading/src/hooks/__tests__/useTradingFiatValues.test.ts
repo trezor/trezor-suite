@@ -1,6 +1,6 @@
 import { type CryptoId } from 'invity-api';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type Rate, type Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';

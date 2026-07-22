@@ -7,9 +7,9 @@ import {
     type Merge,
 } from 'react-hook-form';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import {
     type Network,
-    type NetworkSymbol,
     type NetworkType,
     getNetwork,
 } from '@suite-common/wallet-config';

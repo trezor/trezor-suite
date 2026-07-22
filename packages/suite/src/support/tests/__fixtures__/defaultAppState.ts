@@ -11,9 +11,9 @@ import { TorStatus } from '@suite/tor';
 import { type FirmwareUpdateState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type MetadataState } from '@suite-common/metadata-types';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { receiveInitialState } from '@suite-common/receive';
 import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager/src/quotaManagerReducer';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { initialDesktopBluetoothState } from 'src/actions/bluetooth/desktopBluetoothReducer';
 import { initialState } from 'src/actions/device/deviceSlice';

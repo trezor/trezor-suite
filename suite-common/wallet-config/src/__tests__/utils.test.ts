@@ -1,5 +1,6 @@
+import { type NetworkSymbol } from '@suite-common/networks';
+
 import { networks } from '../networksConfig';
-import { type NetworkSymbol } from '../types';
 import {
     filterNetworksByName,
     getMainnets,

@@ -1,5 +1,5 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { selectNetworkTokenDefinitions } from './tokenDefinitionsSelectors';
 import { getTokenDefinitionThunk } from './tokenDefinitionsThunks';

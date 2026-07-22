@@ -2,7 +2,8 @@ import Animated, { Layout } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { selectIsDeviceInViewOnlyMode, selectIsPortfolioTrackerDevice } from '@suite-common/device';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountDescriptor } from '@suite-common/wallet-types';
 import { AddressQRCode } from '@suite-native/address';
 import { Box, Card, type InlineAlertBoxProps } from '@suite-native/atoms';

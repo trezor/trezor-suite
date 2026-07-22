@@ -1,7 +1,7 @@
 import { type RefObject, useEffect, useMemo, useState } from 'react';
 
 import { goto, parseDashboardParams, selectRouterParams } from '@suite/router';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 

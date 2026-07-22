@@ -1,5 +1,6 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import { NETWORK_TO_PROTOCOLS, type Protocol } from '@suite-common/suite-constants';
-import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import { isNetworkSymbol } from '@suite-common/wallet-config';
 
 export const getNetworkSymbolForProtocol = (protocol: Protocol): NetworkSymbol | undefined => {
     for (const symbolKey in NETWORK_TO_PROTOCOLS) {

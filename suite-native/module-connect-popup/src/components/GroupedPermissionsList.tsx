@@ -9,7 +9,7 @@ import {
     permissionIcons,
 } from '@suite-common/connect-popup';
 import { isNetworkIconSymbol } from '@suite-common/icons';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { AccordionContent, AnimatedBox, Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon, NetworkIcon } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';

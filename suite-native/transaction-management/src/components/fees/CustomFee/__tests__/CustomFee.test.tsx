@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type AccountKey, type FormState } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';

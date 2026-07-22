@@ -2,9 +2,10 @@ import { format } from 'date-fns';
 import type PdfMake from 'pdfmake/build/pdfmake';
 import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import { trezorLogo } from '@suite-common/suite-constants';
 import { type TokenDefinitions, isPhishingTransaction } from '@suite-common/token-definitions';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type ExportFileType,
     type RatesByTimestamps,

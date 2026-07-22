@@ -18,6 +18,7 @@
         "@sentry/react-native": "8.16.0",
         "@suite-common/device": "workspace:*",
         "@suite-common/firmware-authenticity": "workspace:*",
+        "@suite-common/networks": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",

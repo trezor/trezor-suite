@@ -6,8 +6,8 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type AssetFiatBalance } from '@suite-common/assets';
 import { useServices } from '@suite-common/dependency-injection';
+import { type NetworkSymbol } from '@suite-common/networks';
 import {
-    type NetworkSymbol,
     getNetwork,
     getNetworkFeatures,
     isNetworkSymbol,

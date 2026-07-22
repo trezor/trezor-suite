@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     BottomSheetModal,
     Button,

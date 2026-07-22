@@ -1,6 +1,5 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type Protocol } from '@suite-common/suite-constants';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-
 type GetNetworkSymbolForProtocolFixture = {
     description: string;
     scheme: Protocol;

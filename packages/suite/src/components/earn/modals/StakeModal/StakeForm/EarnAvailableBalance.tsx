@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { InfoItem, Row, Text } from '@trezor/components';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';

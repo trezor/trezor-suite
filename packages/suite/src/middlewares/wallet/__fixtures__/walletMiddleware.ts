@@ -1,6 +1,6 @@
 import { type SelectedAccountState } from '@suite/account';
 import { type RouterState } from '@suite/router';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import {
     WALLET_SETTINGS,
     accountsActions,

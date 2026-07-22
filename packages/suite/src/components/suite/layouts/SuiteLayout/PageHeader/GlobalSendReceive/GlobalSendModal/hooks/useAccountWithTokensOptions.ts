@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { useThrottle } from 'react-use';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
     selectCurrentFiatRates,

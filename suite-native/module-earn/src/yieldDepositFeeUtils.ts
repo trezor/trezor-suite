@@ -1,6 +1,6 @@
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin/src/signing';
 import { parseUnsignedEvmTransactionForSigning } from '@suite-common/earn-stablecoin-api';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { buildEvmFeeFields, buildEvmSelectedFee } from '@suite-common/wallet-core';
 import {
     type FeeInfo,

@@ -12,6 +12,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@suite-common/networks": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",

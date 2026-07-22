@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import { selectAllLabelsForAccount } from '@suite-common/suite-sync';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountDescriptor } from '@suite-common/wallet-types';
 import { selectAccountLabel } from '@suite-native/accounts';
 import { Button } from '@suite-native/atoms';

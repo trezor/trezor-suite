@@ -19,6 +19,7 @@
         "@rozenite/react-navigation-plugin": "^1.4.0",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/message-system": "workspace:*",
+        "@suite-common/networks": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",

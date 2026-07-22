@@ -1,6 +1,6 @@
 import { memo, useCallback } from 'react';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type BottomSheetFlashListHandleProps } from '@suite-native/atoms';
 import { BottomSheetSectionList, type ItemRenderConfig } from '@suite-native/trading-atoms';
 import { type TradeableAsset } from '@suite-native/trading-types';

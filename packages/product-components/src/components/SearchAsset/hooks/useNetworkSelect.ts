@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+
+import { type NetworkSymbol } from '@suite-common/networks';
+import { getNetwork } from '@suite-common/wallet-config';
 import { isNotNull } from '@trezor/utils';
 
 export interface SearchAssetSelectConfig {

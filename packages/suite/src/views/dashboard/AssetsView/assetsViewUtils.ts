@@ -1,5 +1,5 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type TokenDefinition } from '@suite-common/token-definitions';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type RatesByKey } from '@suite-common/wallet-types';
 import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';

@@ -1,7 +1,7 @@
 import { type ReactNode, useRef } from 'react';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 
 import {

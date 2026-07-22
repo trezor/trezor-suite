@@ -4,6 +4,7 @@
     "references": [
         { "path": "../earn-stablecoin-defs" },
         { "path": "../http-client" },
+        { "path": "../networks" },
         { "path": "../react-query" },
         { "path": "../schemas" },
         { "path": "../wallet-config" },

@@ -3,7 +3,7 @@ import { type TextInputProps } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { Input, type InputType, Text } from '@suite-native/atoms';

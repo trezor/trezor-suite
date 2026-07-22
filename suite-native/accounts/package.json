@@ -20,6 +20,7 @@
         "@suite-common/device": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/message-system": "workspace:*",
+        "@suite-common/networks": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-sync-storage": "workspace:*",

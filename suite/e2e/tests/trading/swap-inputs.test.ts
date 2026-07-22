@@ -1,5 +1,5 @@
+import { type NetworkSymbol } from '@suite-common/networks';
 import { getCryptoId } from '@suite-common/trading';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 import dump from '../../fixtures/remembered-wallet-db-lite.json';
 import { expect, test } from '../../support/fixtures';

@@ -1,6 +1,6 @@
 import { useFormatters } from '@suite-common/formatters';
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type yup } from '@suite-common/validators';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';

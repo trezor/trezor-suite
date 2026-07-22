@@ -1,5 +1,6 @@
 import { useFormatters } from '@suite-common/formatters';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { getNetwork } from '@suite-common/wallet-config';
 import { Badge, Box, HStack, PressableOpacity, RoundedIcon, Text } from '@suite-native/atoms';
 import { Icon, type IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';

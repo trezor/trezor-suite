@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import {
     type TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';

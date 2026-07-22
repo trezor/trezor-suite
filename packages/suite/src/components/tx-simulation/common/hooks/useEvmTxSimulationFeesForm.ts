@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
+import { type NetworkSymbol } from '@suite-common/networks';
 import { type TxSimulationEVMResult } from '@suite-common/tx-simulation';
 import {
-    type NetworkSymbol,
     type NetworkType,
     getNetworkDisplaySymbol,
 } from '@suite-common/wallet-config';

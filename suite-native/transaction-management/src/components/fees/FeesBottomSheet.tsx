@@ -1,6 +1,7 @@
 import { type MutableRefObject, type RefObject, useCallback, useState } from 'react';
 
-import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkType } from '@suite-common/wallet-config';
 import {
     type AccountKey,
     type FeeLevelLabel,
