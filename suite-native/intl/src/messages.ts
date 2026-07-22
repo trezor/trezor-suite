@@ -1277,7 +1277,7 @@ export const messages = {
         networkBackends: {
             title: '{networkName} backend',
             description: 'Connect to a custom backend server for enhanced privacy.',
-            servers: {
+            server: {
                 title: 'Backend server',
                 status: {
                     connected: 'Connected',
