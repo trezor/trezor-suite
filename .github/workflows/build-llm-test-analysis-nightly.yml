@@ -73,7 +73,15 @@ jobs:
         env:
           CLAUDE_API_KEY: ${{ secrets.E2E_COVERAGE_ANALYSIS_CLAUDE_API_KEY }}
         run: |
-          yarn workspace @trezor/e2e-utils analyze-tests ../../suite/e2e/tests --buildCache --exclude "manual/**" ${{ inputs.no_cache && '--force' || '' }}
+          if ! yarn workspace @trezor/e2e-utils analyze-tests ../../suite/e2e/tests --buildCache --exclude "manual/**" ${{ inputs.no_cache && '--force' || '' }} 2>llm-error.log; then
+            if grep -q "credit balance is too low\|rate_limit\|overloaded_error\|authentication_error" llm-error.log; then
+              echo "::warning::LLM test analysis skipped due to API error: $(cat llm-error.log)"
+            else
+              echo "LLM test analysis failed with unexpected error:"
+              cat llm-error.log
+              exit 1
+            fi
+          fi
 
       - name: Upload LLM analysis cache to S3
         if: always()
