@@ -1,6 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { act, renderHook } from '@suite-native/test-utils';

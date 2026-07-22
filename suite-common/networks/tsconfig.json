@@ -12,9 +12,6 @@
             "path": "../../networks/ethereum/network-ethereum-suite"
         },
         {
-            "path": "../../networks/network-module/network-module-suite-types"
-        },
-        {
             "path": "../../networks/ripple/network-ripple-suite"
         },
         {
@@ -22,6 +19,9 @@
         },
         {
             "path": "../../networks/stellar/network-stellar-suite"
+        },
+        {
+            "path": "../../networks/network-module/network-module-suite-types"
         },
         {
             "path": "../../networks/tron/network-tron-suite"

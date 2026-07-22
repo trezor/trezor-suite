@@ -1,5 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/networks';
-import { networkSymbolCollection } from '@suite-common/wallet-config';
+import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 
 export type EnabledCoins = Partial<Record<NetworkSymbol, boolean>>;
 

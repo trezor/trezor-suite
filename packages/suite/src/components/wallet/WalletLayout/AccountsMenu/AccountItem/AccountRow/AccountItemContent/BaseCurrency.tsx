@@ -3,7 +3,7 @@ import { type JSX } from 'react';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { selectIsDiscreteModeActive } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAreSatsAmountUnit,
     selectBaseCurrency,

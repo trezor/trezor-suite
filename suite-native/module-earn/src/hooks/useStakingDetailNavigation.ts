@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import type {
     RootStackParamList,

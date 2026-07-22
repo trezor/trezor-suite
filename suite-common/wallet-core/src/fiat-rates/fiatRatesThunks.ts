@@ -1,9 +1,9 @@
 import { fetchCurrentFiatRates, fetchLastWeekFiatRates } from '@suite-common/fiat-services';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import {
     type BackendType,
+    type NetworkSymbol,
     getNetworkFeatures,
 } from '@suite-common/wallet-config';
 import {

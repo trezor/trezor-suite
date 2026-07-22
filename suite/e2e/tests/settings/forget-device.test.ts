@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/networks';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';

@@ -1,6 +1,5 @@
-import { type NetworkSymbol } from '@suite-common/networks';
 import { getDaysToAddToPoolInitial } from '@suite-common/staking';
-import { getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccountByKey,

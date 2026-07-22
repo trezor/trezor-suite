@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Card, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';

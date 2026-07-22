@@ -5,14 +5,13 @@ import { selectSelectedAccount } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     DefinitionType,
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     activateStellarTokenThunk,
     deactivateStellarTokenThunk,

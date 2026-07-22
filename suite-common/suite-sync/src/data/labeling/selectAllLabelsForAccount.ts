@@ -1,6 +1,6 @@
-import { type NetworkSymbol } from '@suite-common/networks';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import type { SuiteSyncAddress, SuiteSyncOutput } from '@suite-common/suite-sync-storage';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { AccountDescriptor } from '@suite-common/wallet-types';
 import type { WalletDescriptor } from '@trezor/device-utils';
 

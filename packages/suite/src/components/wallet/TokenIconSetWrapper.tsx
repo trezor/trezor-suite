@@ -1,5 +1,5 @@
-import { type NetworkSymbol } from '@suite-common/networks';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { TokenIconSet } from '@trezor/product-components';

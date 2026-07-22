@@ -1,6 +1,6 @@
 import { type ExportBip329 } from '@suite-common/bip329-types';
-import { type NetworkSymbol } from '@suite-common/networks';
 import type { SuiteSyncAddress, SuiteSyncOutput } from '@suite-common/suite-sync-storage';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountDescriptor } from '@suite-common/wallet-types';
 import { type WalletDescriptor, parseStaticSessionId } from '@trezor/device-utils';
 

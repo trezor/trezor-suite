@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol } from '@suite-common/networks';
-import { getRepresentativeAssets } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getRepresentativeAssets } from '@suite-common/wallet-config';
 import { Row, Text, Tooltip } from '@trezor/components';
 import { TokenIconSet } from '@trezor/product-components';
 

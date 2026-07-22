@@ -11,7 +11,7 @@ import { type BottomSheetBackdropProps } from '@gorhom/bottom-sheet';
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
 import { useFormatters } from '@suite-common/formatters';
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import {
     Badge,

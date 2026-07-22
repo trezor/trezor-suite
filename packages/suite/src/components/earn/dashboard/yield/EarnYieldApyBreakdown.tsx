@@ -4,7 +4,7 @@ import {
     type TokenDtoV2,
     sortRewardsByUnderlyingToken,
 } from '@suite-common/earn-stablecoin-api';
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { getApyPercent } from '@suite-common/wallet-utils';
 import { Column, Icon, Row, Text } from '@trezor/components';
 import { ChartLineIcon } from '@trezor/icons';

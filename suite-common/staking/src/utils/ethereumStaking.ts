@@ -2,8 +2,7 @@ import { decodeFunctionResult } from 'viem';
 
 import { Calldata, EVM_ABI, Verifier, type VerifyIssue } from '@suite-common/calldata';
 import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
-import { type NetworkSymbol } from '@suite-common/networks';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     DAYS_TO_ADD_TO_POOL_DEFAULT,
     DEFAULT_PAYMENT,

@@ -1,6 +1,5 @@
 import { type modalAppParams, routes } from '@suite/router-config';
-import { type NetworkSymbol } from '@suite-common/networks';
-import { type AccountType } from '@suite-common/wallet-config';
+import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
 import { type ArrayElement } from '@trezor/type-utils';
 

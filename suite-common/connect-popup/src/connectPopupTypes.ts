@@ -1,5 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/networks';
-import { type AccountType, getNetwork } from '@suite-common/wallet-config';
+import { type AccountType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type AccountKey, type TxSimulationAction } from '@suite-common/wallet-types';
 import { type CallMethodKeys, type PermissionRequest } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';

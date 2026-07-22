@@ -2,8 +2,7 @@ import { memo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectIsDeviceConnected } from '@suite-common/device';
-import { type NetworkSymbol } from '@suite-common/networks';
-import { type Network, getNetwork } from '@suite-common/wallet-config';
+import { type Network, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Text, VStack } from '@suite-native/atoms';
 import { type DiscoveryRootState, selectDiscoveryNetworkGroups } from '@suite-native/discovery';
 import { useFormContext } from '@suite-native/forms';

@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box } from '@suite-native/atoms';
 import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';

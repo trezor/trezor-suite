@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { StakingBadge } from '@suite-native/accounts';
 import {
     type NativeStakingRootState,

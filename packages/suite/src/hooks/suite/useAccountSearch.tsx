@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo } from 'react';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import {

@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/networks';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { expect, test } from '../../support/fixtures';
 

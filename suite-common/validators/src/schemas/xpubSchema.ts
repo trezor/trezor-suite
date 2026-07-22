@@ -1,6 +1,5 @@
 import type { AddressValidator } from '@suite-common/address';
-import { type NetworkSymbol } from '@suite-common/networks';
-import { getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { isNotNullOrUndefined } from '@trezor/utils';
 

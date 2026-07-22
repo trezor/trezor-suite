@@ -1,6 +1,6 @@
 import { Address, selectAddressLabelsForAccount } from '@suite/address';
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol } from '@suite-common/networks';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { AccountKey } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
 import { type ArrayElement } from '@trezor/type-utils';

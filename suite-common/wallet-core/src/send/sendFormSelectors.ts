@@ -1,9 +1,8 @@
 import { G } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectDeviceButtonRequests } from '@suite-common/device';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountKey,
     type FormState,

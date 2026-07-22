@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountDescriptor } from '@suite-common/wallet-types';
 import { type Branded } from '@trezor/type-utils';
 

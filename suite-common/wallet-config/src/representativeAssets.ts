@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from './types';
 
 export type RepresentativeAsset = {
     symbol: string;

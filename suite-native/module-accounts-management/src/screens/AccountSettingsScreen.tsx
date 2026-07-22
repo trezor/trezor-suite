@@ -3,9 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { shouldDisplayExportImportBip329Labels } from '@suite-common/bip329';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
-import { networks } from '@suite-common/wallet-config';
+import { type NetworkSymbol, networks } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccountByKey,

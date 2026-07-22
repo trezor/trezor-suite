@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/networks';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
 import type { BlockchainEstimatedFee } from '@trezor/connect-common/src/types/api/blockchain/blockchainEstimateFee';
 import { type Result, err, ok } from '@trezor/type-utils';

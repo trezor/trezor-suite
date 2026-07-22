@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { isSupportedNativeStakingManagementSymbol } from '@suite-common/wallet-utils';
 import { RootStackRoutes } from '@suite-native/navigation';
 

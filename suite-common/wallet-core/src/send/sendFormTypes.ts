@@ -1,5 +1,5 @@
-import { type NetworkSymbol } from '@suite-common/networks';
 import { type TrezorDevice } from '@suite-common/suite-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type ComposeActionContext,

@@ -4,7 +4,6 @@
     "references": [
         { "path": "../analytics" },
         { "path": "../device" },
-        { "path": "../networks" },
         { "path": "../redux-utils" },
         { "path": "../toast-notifications" },
         { "path": "../wallet-config" },

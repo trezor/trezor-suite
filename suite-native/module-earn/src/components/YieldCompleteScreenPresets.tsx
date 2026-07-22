@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldFlowCompleteRewardItem } from '@suite-common/wallet-core';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon, TokenIcon } from '@suite-native/icons';

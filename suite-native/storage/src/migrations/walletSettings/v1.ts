@@ -1,8 +1,7 @@
 import { pipe } from '@mobily/ts-belt';
 import { type PersistedState, type getStoredState } from 'redux-persist';
 
-import { type NetworkSymbol } from '@suite-common/networks';
-import { isNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletSettings } from '@suite-common/wallet-types';
 import { type BaseCurrencyCode, isBaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';

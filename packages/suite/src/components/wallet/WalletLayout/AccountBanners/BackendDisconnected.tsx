@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol } from '@suite-common/networks';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
 

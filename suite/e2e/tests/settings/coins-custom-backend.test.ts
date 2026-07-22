@@ -1,5 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/networks';
-import type { BackendType } from '@suite-common/wallet-config';
+import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';

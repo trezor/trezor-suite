@@ -1,14 +1,13 @@
 import type { CryptoId } from 'invity-api';
 
 import { useFormatters } from '@suite-common/formatters';
-import { type NetworkSymbol } from '@suite-common/networks';
 import {
     type TradingTradeType,
     formatExchangeRate,
     getTradeOperationData,
     useTradingUtils,
 } from '@suite-common/trading';
-import { getNetworkDecimals } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkDecimals } from '@suite-common/wallet-config';
 import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 

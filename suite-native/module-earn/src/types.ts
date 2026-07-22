@@ -1,7 +1,6 @@
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type EarnDashboardType } from '@suite-common/message-system';
-import { type NetworkSymbol } from '@suite-common/networks';
-import { type StakingNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, type StakingNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type AccountDescriptor,

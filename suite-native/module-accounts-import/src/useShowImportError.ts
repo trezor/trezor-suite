@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 
-import { type NetworkSymbol } from '@suite-common/networks';
-import { getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { useAlert } from '@suite-native/alerts';
 import { type IconName } from '@suite-native/icons';
 import {

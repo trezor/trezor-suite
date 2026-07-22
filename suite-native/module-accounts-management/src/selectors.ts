@@ -1,11 +1,10 @@
 import { type AccountItem } from '@suite-common/graph';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
-import { getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FiatRatesRootState,

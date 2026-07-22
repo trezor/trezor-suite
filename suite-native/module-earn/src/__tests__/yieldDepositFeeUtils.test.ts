@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FeeInfo, type FormState } from '@suite-common/wallet-types';
 
 import {

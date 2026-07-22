@@ -1,6 +1,5 @@
 import { useTranslation } from '@suite/intl';
-import { type NetworkSymbol } from '@suite-common/networks';
-import { type NetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import { type TronFeeBreakdown, formatNetworkAmount } from '@suite-common/wallet-utils';

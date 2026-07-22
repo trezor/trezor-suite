@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { type ActiveView, BaseAmountInputs, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

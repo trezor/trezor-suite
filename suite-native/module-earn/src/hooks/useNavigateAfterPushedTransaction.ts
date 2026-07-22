@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { CommonActions, useNavigation } from '@react-navigation/native';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FeesRootState,

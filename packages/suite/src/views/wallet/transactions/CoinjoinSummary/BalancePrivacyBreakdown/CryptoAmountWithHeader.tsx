@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { typography } from '@trezor/theme';
 

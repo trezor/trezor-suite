@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldFlowCompleteValue } from '@suite-common/wallet-core';
 import { Divider, Row, Text } from '@trezor/components';
 

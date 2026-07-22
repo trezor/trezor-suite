@@ -3,14 +3,13 @@ import { useMemo } from 'react';
 import { type CryptoId } from 'invity-api';
 
 import { type TranslationKey } from '@suite/intl';
-import { type NetworkSymbol } from '@suite-common/networks';
 import {
     type TradingAssetOption,
     createAssetNativeTokenOption,
     createAssetTokenOption,
     getCryptoId,
 } from '@suite-common/trading';
-import { networkSymbolCollection } from '@suite-common/wallet-config';
+import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-utils';
 

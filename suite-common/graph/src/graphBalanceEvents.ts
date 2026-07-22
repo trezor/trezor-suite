@@ -3,7 +3,7 @@ import { type useDispatch } from 'react-redux';
 import { A, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
 import type { AccountKey, Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { type AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';

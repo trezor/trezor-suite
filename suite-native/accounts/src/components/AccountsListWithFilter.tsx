@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useNavigation } from '@react-navigation/native';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { type AddCoinFlowType, type CloseActionType } from '@suite-native/navigation';

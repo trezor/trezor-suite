@@ -1,9 +1,9 @@
 import { A } from '@mobily/ts-belt';
 
-import { type NetworkSymbol } from '@suite-common/networks';
 import { type AccountWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import {
     type AccountType,
+    type NetworkSymbol,
     getNetwork,
     networkSymbolCollection,
     networks,

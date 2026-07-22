@@ -1,7 +1,6 @@
 import { messages } from '@suite/intl';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { cryptoIdToSymbol } from '@suite-common/trading';
-import { getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
 import { invityEndpoint } from '../../fixtures/invity';

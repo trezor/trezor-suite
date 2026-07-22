@@ -10,10 +10,10 @@ import {
 } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState } from '@suite-common/device';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { parseTransferUri } from '@suite-common/transfer-uri';
 import { formInputsMaxLength } from '@suite-common/validators';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type TransactionsRootState,

@@ -3,8 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
-import { type NetworkSymbol } from '@suite-common/networks';
-import { getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     BottomSheetModal,
     Button,

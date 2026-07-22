@@ -1,5 +1,5 @@
-import { type NetworkSymbol } from '@suite-common/networks';
 import { yup } from '@suite-common/validators';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { type TradingFormContext } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';

@@ -1,6 +1,6 @@
 import { useFormatters } from '@suite-common/formatters';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { type SignValue } from '@suite-common/suite-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { Box, type TextProps } from '@suite-native/atoms';
 

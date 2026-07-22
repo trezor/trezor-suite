@@ -2,8 +2,7 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type DeviceRootState } from '@suite-common/device';
-import { type NetworkSymbol } from '@suite-common/networks';
-import { type AccountType } from '@suite-common/wallet-config';
+import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccountByKey,

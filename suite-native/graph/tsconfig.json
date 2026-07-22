@@ -13,7 +13,6 @@
             "path": "../../suite-common/formatters"
         },
         { "path": "../../suite-common/graph" },
-        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/redux-utils"
         },

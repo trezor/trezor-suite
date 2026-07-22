@@ -3,7 +3,6 @@ import { selectSuiteSettings } from '@suite/settings';
 import { selectKnownDevices } from '@suite-common/bluetooth';
 import { deviceActions, selectDevices, selectPersistentDeviceData } from '@suite-common/device';
 import { type MetadataState } from '@suite-common/metadata-types';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { type EncryptedHex } from '@suite-common/platform-encryption';
 import { createThunk } from '@suite-common/redux-utils/';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
@@ -12,7 +11,7 @@ import { selectThp } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type DefinitionType, type TokenManagementAction } from '@suite-common/token-definitions';
 import type { TradingTransaction } from '@suite-common/trading';
-import type { Explorer } from '@suite-common/wallet-config';
+import type { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 import { type PhishingState } from '@suite-common/wallet-core';
 import type {

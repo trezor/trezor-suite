@@ -1,6 +1,6 @@
 import { parseUnsignedEvmTransactionForSigning } from '@suite-common/earn-stablecoin-api';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { flattenEvmFees, parseEvmFeeHex } from '@suite-common/schemas/src/evm';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type EvmSelectedFee,
     type FormState,

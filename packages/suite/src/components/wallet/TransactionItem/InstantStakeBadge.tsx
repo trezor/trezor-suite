@@ -3,9 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { getInstantStakeType } from '@suite-common/staking';
-import { isNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { type StakeType } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Badge, Row } from '@trezor/components';

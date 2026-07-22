@@ -6,7 +6,6 @@
     },
     "references": [
         { "path": "../../suite-common/device" },
-        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/wallet-config"
         },

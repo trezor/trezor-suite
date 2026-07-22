@@ -1,7 +1,6 @@
 import * as semver from 'semver';
 
 import type { CountryCode } from '@suite-common/geolocation';
-import { type NetworkSymbol } from '@suite-common/networks';
 import {
     type Action,
     type Category,
@@ -20,6 +19,7 @@ import {
     type Version,
 } from '@suite-common/suite-types';
 import { getBrowserName, getBrowserVersion } from '@suite-common/suite-utils';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { TransportInfo } from '@trezor/connect';
 import {
     getBootloaderVersion,

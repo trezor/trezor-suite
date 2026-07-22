@@ -4,7 +4,7 @@ import {
     type AssetFiatBalanceWithPercentage,
     calculateAssetsPercentage,
 } from '@suite-common/assets';
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { localizePercentage } from '@suite-common/wallet-utils';
 import { Row, Skeleton, Tooltip } from '@trezor/components';
 import { AssetShareIndicator } from '@trezor/product-components';

@@ -11,9 +11,9 @@ import {
     type SellTradeFinalStatus,
 } from 'invity-api';
 
-import { type NetworkSymbol } from '@suite-common/networks';
 import {
     type Network,
+    type NetworkSymbol,
     getCoingeckoId,
     getNetwork,
     getNetworkByCoingeckoId,

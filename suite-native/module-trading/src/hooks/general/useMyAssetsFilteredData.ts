@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 
-import { type NetworkSymbol } from '@suite-common/networks';
 import { normalizeForSearch } from '@suite-common/suite-utils';
 import { useSectionDataFilter } from '@suite-common/trading';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { type SectionListData } from '@suite-native/trading-atoms';
 import { type MyAssetRow, type MyAssetTradeable } from '@suite-native/trading-types';

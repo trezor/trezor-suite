@@ -1,5 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/networks';
-import { networks } from '@suite-common/wallet-config';
+import { type NetworkSymbol, networks } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';

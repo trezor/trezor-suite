@@ -2,12 +2,12 @@ import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { openModal } from '@suite/modal';
 import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { type NetworkSymbol } from '@suite-common/networks';
 import {
     EarnFlow,
     type EarnModalAction,
     type EarnYieldContext,
 } from '@suite-common/suite-types/src/staking';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     DEFAULT_VOTING_OPTION,
     selectVotingDelegationOption,

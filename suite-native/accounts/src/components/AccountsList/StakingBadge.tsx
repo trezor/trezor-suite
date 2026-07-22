@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import type { DeviceRootState } from '@suite-common/device';
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';

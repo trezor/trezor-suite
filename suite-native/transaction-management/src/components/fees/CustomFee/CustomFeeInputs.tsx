@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol } from '@suite-common/networks';
-import { getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type FeesRootState,
     selectConvertedNetworkFeeInfo,

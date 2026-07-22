@@ -1,7 +1,7 @@
 import { Address } from '@suite/address';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type FormState } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import {

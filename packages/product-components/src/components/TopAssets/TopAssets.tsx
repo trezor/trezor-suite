@@ -1,5 +1,4 @@
-
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Card, Column, GhostContainer, Row, Text } from '@trezor/components';
 
 import { TokenIcon } from '../TokenIcon/TokenIcon';

@@ -1,8 +1,8 @@
 import { selectDevices } from '@suite-common/device';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
+    type NetworkSymbol,
     getNetworkOptional,
     isNetworkSymbol,
     isNetworkUsingExternalBackend,

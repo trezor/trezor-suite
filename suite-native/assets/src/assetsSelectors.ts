@@ -5,9 +5,8 @@ import {
     calculateAssetsPercentage,
 } from '@suite-common/assets';
 import { selectIsDeviceAuthorized } from '@suite-common/device';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { networkSymbolCollection } from '@suite-common/wallet-config';
+import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
     selectCurrentFiatRates,

@@ -1,10 +1,10 @@
-import { type NetworkSymbol } from '@suite-common/networks';
 import {
     type EnhancedTokenInfo,
     type TokenDefinition,
     isTokenDefinitionKnown,
 } from '@suite-common/token-definitions';
 import {
+    type NetworkSymbol,
     getNetworkDisplaySymbol,
     getNetworkFeatures,
 } from '@suite-common/wallet-config';

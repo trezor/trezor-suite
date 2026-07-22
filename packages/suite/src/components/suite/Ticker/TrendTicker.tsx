@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { selectLanguage } from '@suite/settings';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, localizePercentage } from '@suite-common/wallet-utils';

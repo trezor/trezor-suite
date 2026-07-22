@@ -1,7 +1,6 @@
 import { type SellFiatFlowType } from 'invity-api';
 
-import { type NetworkSymbol } from '@suite-common/networks';
-import { type NetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 
 export const TRADING_PREFIX = '@trading';
 export const TRADING_EXTENDED_PREFIX = `${TRADING_PREFIX}-extended`;

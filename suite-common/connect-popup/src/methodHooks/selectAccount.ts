@@ -1,5 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/networks';
-import { type AccountType, getNetwork } from '@suite-common/wallet-config';
+import { type AccountType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { getAvailableAccountTypes } from '@suite-common/wallet-utils';
 import { type CallMethodKeys } from '@trezor/connect';
 import { type SelectionType } from '@trezor/connect-common/src/types/api/selectAccount';

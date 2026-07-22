@@ -1,5 +1,5 @@
-import { type NetworkSymbol } from '@suite-common/networks';
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/connect';
 

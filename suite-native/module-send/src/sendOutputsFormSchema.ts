@@ -4,9 +4,8 @@ import {
     isBech32AddressUppercase,
     isTaprootAddress,
 } from '@suite-common/address';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { formInputsMaxLength, yup } from '@suite-common/validators';
-import { getDisplaySymbol, getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getDisplaySymbol, getNetworkType } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
 import { type FeeInfo, type Output } from '@suite-common/wallet-types';
 import {

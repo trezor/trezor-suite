@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/networks';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { CoinjoinBackendSettings, CoinjoinClientSettings } from '@trezor/coinjoin';
 import {
     COORDINATOR_FEE_RATE_FALLBACK,

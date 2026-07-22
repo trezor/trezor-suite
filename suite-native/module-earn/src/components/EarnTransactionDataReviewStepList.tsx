@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
     asAmountUnit,

@@ -4,7 +4,6 @@ import {
     selectLabelingDataForAccount,
 } from '@suite/metadata';
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type SuiteSyncDataRootState,
@@ -12,6 +11,7 @@ import {
     selectIsSuiteSyncEnabled,
     selectSuiteSyncAccountLabel,
 } from '@suite-common/suite-sync';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import type { AccountDescriptor, AccountKey } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';

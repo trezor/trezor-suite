@@ -3,7 +3,7 @@ import { type MouseEvent, type ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { mediaQueries } from '@trezor/styles';
 

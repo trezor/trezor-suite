@@ -1,6 +1,5 @@
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol } from '@suite-common/networks';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
 import { PuzzlePieceIcon } from '@trezor/icons';

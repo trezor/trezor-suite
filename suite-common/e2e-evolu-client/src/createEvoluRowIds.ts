@@ -1,6 +1,5 @@
 import { createIdFromString, getOrThrow } from '@evolu/common';
 
-import { type NetworkSymbol } from '@suite-common/networks';
 import {
     AccountEvoluId,
     AddressEvoluId,
@@ -14,6 +13,7 @@ import {
     createSuiteSyncOutputId,
 } from '@suite-common/suite-sync-storage';
 import type { SuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import type { AccountDescriptor, TxTargetId } from '@suite-common/wallet-types';
 import type { WalletDescriptor } from '@trezor/device-utils';
 

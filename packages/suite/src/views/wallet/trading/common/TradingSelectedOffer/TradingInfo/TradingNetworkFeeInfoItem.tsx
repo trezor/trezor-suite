@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { InfoItem, Text } from '@trezor/components';
 
 import { BaseCurrencyValue } from 'src/components/suite';

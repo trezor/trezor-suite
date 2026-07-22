@@ -19,7 +19,6 @@
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/message-system": "workspace:*",
-        "@suite-common/networks": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync-quota-manager": "workspace:*",

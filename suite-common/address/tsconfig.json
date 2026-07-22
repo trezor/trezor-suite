@@ -2,12 +2,11 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../networks" },
-        { "path": "../wallet-config" },
-        { "path": "../wallet-types" },
         {
             "path": "../../networks/network-module/network-module-suite-types"
         },
-        { "path": "../../packages/utils" }
+        { "path": "../networks" },
+        { "path": "../wallet-config" },
+        { "path": "../wallet-types" }
     ]
 }

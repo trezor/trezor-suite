@@ -2,9 +2,8 @@ import { type ReactNode } from 'react';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { getCoinUnavailabilityMessage } from '@suite-common/suite-utils';
-import { type Network } from '@suite-common/wallet-config';
+import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBlockchainState } from '@suite-common/wallet-core';
 import { Column, Tooltip } from '@trezor/components';
 import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-utils';

@@ -4,10 +4,9 @@ import { selectIsDeviceLocked } from '@suite/locks';
 import { openModal } from '@suite/modal';
 import { goto, selectRouteName } from '@suite/router';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import type { Network, NetworkAccount } from '@suite-common/wallet-config';
+import type { Network, NetworkAccount, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     accountsActions,
     selectAccountByKey,

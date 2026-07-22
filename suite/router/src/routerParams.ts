@@ -1,7 +1,7 @@
-import { type NetworkSymbol } from '@suite-common/networks';
 import { yup } from '@suite-common/validators';
 import {
     type AccountType,
+    type NetworkSymbol,
     getNetworkOptional,
     isAccountOfNetwork,
 } from '@suite-common/wallet-config';

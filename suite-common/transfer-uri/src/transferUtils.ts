@@ -1,5 +1,5 @@
-import { type NetworkSymbol } from '@suite-common/networks';
 import { type Protocol } from '@suite-common/suite-constants';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Result } from '@trezor/type-utils';
 
 type BaseTransferUriInfo = {

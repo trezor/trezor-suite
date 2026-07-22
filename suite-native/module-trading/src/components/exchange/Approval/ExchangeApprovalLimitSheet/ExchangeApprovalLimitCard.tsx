@@ -1,7 +1,7 @@
 import { type PropsWithChildren, type ReactNode, memo } from 'react';
 import { Pressable } from 'react-native';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Card, HStack, Radio, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 

@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
 import { getNetworkReserve } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';

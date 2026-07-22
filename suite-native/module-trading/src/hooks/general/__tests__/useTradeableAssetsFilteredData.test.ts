@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { act, renderHook } from '@suite-native/test-utils';
 import {
     btcAsset,

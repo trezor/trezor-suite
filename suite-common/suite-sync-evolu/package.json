@@ -13,7 +13,6 @@
     },
     "dependencies": {
         "@evolu/common": "8.0.0-next.5",
-        "@suite-common/networks": "workspace:*",
         "@suite-common/suite-sync-storage": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",

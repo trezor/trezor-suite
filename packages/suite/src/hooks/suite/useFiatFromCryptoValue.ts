@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { type RateTypeWithoutHistoric, type TokenAddress } from '@suite-common/wallet-types';
 import { type AmountUnit, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';

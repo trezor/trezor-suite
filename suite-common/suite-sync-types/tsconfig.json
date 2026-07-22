@@ -5,7 +5,6 @@
         {
             "path": "../delegated-identity-key-types"
         },
-        { "path": "../networks" },
         { "path": "../suite-sync-storage" },
         { "path": "../suite-types" },
         { "path": "../wallet-config" },

@@ -1,5 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/networks';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type ComposeActionContext,
     type ExternalOutput,

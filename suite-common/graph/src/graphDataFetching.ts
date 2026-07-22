@@ -4,8 +4,7 @@ import { A, D, F, G, O, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { type NetworkSymbol } from '@suite-common/networks';
-import { getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
 import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';

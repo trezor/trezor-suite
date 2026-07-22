@@ -1,5 +1,4 @@
 import { type TokenDtoV2 } from '@suite-common/earn-stablecoin-defs';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { exhaustive } from '@trezor/type-utils';
 
 import { networks } from './networksConfig';
@@ -7,6 +6,7 @@ import {
     type AccountType,
     type Network,
     type NetworkFeature,
+    type NetworkSymbol,
     type NetworkSymbolExtended,
 } from './types';
 

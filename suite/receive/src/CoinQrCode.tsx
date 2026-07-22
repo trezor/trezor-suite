@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { QrCode, TokenIcon } from '@trezor/product-components';
 
 // Coin logo size that keeps the badge within the QR's safe center-coverage budget (see QrCode).

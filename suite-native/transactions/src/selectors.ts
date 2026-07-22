@@ -1,6 +1,5 @@
 import { A, G, pipe } from '@mobily/ts-belt';
 
-import { type NetworkSymbol } from '@suite-common/networks';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
@@ -8,7 +7,7 @@ import {
     isTokenDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type FiatRatesRootState,
     type TransactionsRootState,

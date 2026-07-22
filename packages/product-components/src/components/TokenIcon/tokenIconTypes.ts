@@ -1,5 +1,4 @@
-
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FrameProps, type FramePropsKeys } from '@trezor/components';
 
 export const allowedTokenIconSizes = [16, 20, 24, 32, 40, 48, 64] as const;

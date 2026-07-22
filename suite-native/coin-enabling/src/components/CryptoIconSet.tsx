@@ -1,5 +1,5 @@
-import { type NetworkSymbol } from '@suite-common/networks';
 import {
+    type NetworkSymbol,
     getNetwork,
     getRepresentativeAssets,
 } from '@suite-common/wallet-config';

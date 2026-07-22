@@ -1,9 +1,9 @@
 import { A } from '@mobily/ts-belt';
 
-import { type NetworkSymbol } from '@suite-common/networks';
 import {
     type AccountType,
     type Network,
+    type NetworkSymbol,
     type NetworkType,
     networkSymbolCollection,
 } from '@suite-common/wallet-config';

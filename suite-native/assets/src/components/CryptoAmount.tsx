@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { CryptoAmountFormatter } from '@suite-native/formatters';
 
 import { selectAssetCryptoValue } from '../assetsSelectors';

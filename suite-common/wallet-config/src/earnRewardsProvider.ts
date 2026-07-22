@@ -1,5 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/networks';
-
+import { type NetworkSymbol } from './types';
 import { getNetworkFeatures } from './utils';
 
 export const EARN_YIELD_CLAIM_PROVIDER = 'Merkl.xyz';

@@ -1,5 +1,5 @@
-import { type NetworkSymbol } from '@suite-common/networks';
 import { type RequestEnableTorResponse } from '@suite-common/suite-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type AccountKey,

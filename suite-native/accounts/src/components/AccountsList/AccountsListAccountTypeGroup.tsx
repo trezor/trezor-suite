@@ -3,8 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
 
-import { type NetworkSymbol } from '@suite-common/networks';
-import { type AccountType } from '@suite-common/wallet-config';
+import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
 import { Card } from '@suite-native/atoms';
 
 import { AccountsListItem } from './AccountsListItem';

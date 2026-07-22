@@ -3,7 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/device" },
-        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/redux-utils"
         },

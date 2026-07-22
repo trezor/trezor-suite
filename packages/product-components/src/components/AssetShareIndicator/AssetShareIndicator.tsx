@@ -3,8 +3,7 @@ import { type SVGProps } from 'react';
 import { type SVGMotionProps, type Transition, motion } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
 
-
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { motionEasing } from '@trezor/components';
 import { coinsColors } from '@trezor/theme';
 

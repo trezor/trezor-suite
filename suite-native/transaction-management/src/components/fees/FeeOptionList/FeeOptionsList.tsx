@@ -1,7 +1,6 @@
 import { D, pipe } from '@mobily/ts-belt';
 
-import { type NetworkSymbol } from '@suite-common/networks';
-import { getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { type GeneralPrecomposedLevels } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 

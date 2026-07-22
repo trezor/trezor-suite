@@ -1,6 +1,5 @@
 import { selectDeviceUnavailableCapabilities } from '@suite-common/device';
-import { type NetworkSymbol } from '@suite-common/networks';
-import { getNetworkOptional } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
 import { setBitcoinAmountUnits, toggleBitcoinAmountUnits } from '@suite-common/wallet-core';
 import { PROTO } from '@trezor/connect';
 

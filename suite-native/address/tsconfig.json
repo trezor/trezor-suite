@@ -5,7 +5,6 @@
         {
             "path": "../../suite-common/dependency-injection"
         },
-        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/suite-sync"
         },

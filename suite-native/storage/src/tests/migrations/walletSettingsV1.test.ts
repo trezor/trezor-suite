@@ -1,6 +1,6 @@
 import { type getStoredState } from 'redux-persist';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { PROTO } from '@trezor/connect';
 
 import { initialMigrateAppSettingsAndDiscoveryConfig } from '../../migrations/walletSettings/v1';

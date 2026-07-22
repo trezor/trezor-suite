@@ -17,7 +17,7 @@ import {
     isTestnetNetworkIconSymbol,
     networkIcons,
 } from '@suite-common/icons';
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type CSSColor } from '@trezor/theme';

@@ -1,5 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/networks';
-import { type Bip43Path, getNetwork } from '@suite-common/wallet-config';
+import { type Bip43Path, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     accountsActions,
     selectAccountForNetworkSymbolAndPath,

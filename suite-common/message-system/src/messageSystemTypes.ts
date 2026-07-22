@@ -1,4 +1,3 @@
-import { type NetworkSymbol } from '@suite-common/networks';
 import type {
     Category,
     ExperimentsItem,
@@ -6,7 +5,7 @@ import type {
     TradingType,
     YieldFlowType,
 } from '@suite-common/suite-types';
-import type { AccountType, StakingNetworkSymbol } from '@suite-common/wallet-config';
+import type { AccountType, NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
 
 export type EarnDashboardType = 'staking' | 'yield';
 

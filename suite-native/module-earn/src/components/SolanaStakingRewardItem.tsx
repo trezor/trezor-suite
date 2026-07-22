@@ -1,6 +1,6 @@
 import { type SolRewardsHistoryRewardsItem } from '@suite-common/earn-staking-api';
 import { useFormatters } from '@suite-common/formatters';
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Card, HStack, RoundedIcon, Text, VStack } from '@suite-native/atoms';
 import {
     CryptoAmountFormatter,

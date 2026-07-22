@@ -2,13 +2,13 @@ import { A } from '@mobily/ts-belt';
 
 import type { DeviceRootState } from '@suite-common/device';
 import { type AccountItem, isIgnoredBalanceHistoryCoin } from '@suite-common/graph';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
     filterKnownTokens,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type DiscoveryRootState,

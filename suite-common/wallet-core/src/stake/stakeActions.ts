@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type PrecomposedTransactionFinal, type StakeFormState } from '@suite-common/wallet-types';
 
 export const STAKE_MODULE_PREFIX = '@common/wallet-core/stake';

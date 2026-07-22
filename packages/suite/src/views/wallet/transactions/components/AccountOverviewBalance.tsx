@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive, selectBaseCurrency } from '@suite-common/wallet-core';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { Column, Icon, Paragraph, Row, Skeleton, Text } from '@trezor/components';

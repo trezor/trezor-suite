@@ -1,7 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { type NetworkSymbol } from '@suite-common/networks';
-import { getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { Card, Column, Paragraph, Row, Table } from '@trezor/components';
 
 import { EarnAccountCell } from './EarnAccountCell';

@@ -6,7 +6,7 @@ import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Tooltip } from '@trezor/components';
 
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';

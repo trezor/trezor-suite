@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { type NetworkSymbol } from '@suite-common/networks';
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { isUtxoBased } from '@suite-common/wallet-utils';
 

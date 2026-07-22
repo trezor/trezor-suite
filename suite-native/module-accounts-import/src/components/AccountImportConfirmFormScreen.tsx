@@ -6,12 +6,11 @@ import { FlashList } from '@shopify/flash-list';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { PORTFOLIO_TRACKER_DEVICE_STATE } from '@suite-common/device';
-import { type NetworkSymbol } from '@suite-common/networks';
 import {
     type TokenDefinitionsRootState,
     selectFilterKnownTokens,
 } from '@suite-common/token-definitions';
-import { getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectAccountsByNetworkAndDeviceState,

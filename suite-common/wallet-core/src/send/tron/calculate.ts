@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type ExternalOutput, type PrecomposedTransaction } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/connect';
 

@@ -1,10 +1,10 @@
 import { differenceInMonths, fromUnixTime, isWithinInterval } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { resetTime } from '@suite-common/suite-utils';
 import {
     type BackendType,
+    type NetworkSymbol,
     getNetwork,
     getNetworkFeatures,
 } from '@suite-common/wallet-config';

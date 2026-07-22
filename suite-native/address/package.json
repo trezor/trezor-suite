@@ -13,7 +13,6 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
         "@suite-common/dependency-injection": "workspace:*",
-        "@suite-common/networks": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",

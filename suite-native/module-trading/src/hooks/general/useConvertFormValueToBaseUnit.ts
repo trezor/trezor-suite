@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol } from '@suite-common/networks';
 import {
+    type NetworkSymbol,
     type NetworkSymbolExtended,
     getNetwork,
 } from '@suite-common/wallet-config';

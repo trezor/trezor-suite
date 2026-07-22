@@ -1,5 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/networks';
-import { getNetworkDisplaySymbol, networks } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkDisplaySymbol, networks } from '@suite-common/wallet-config';
 import type { TokenTransfer } from '@trezor/connect';
 import { BigNumber, type BigNumberValue } from '@trezor/utils';
 

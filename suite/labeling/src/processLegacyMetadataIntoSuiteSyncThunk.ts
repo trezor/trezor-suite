@@ -1,9 +1,9 @@
 import { featureUsed } from '@suite/feature-feedback';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
 import { type Result, type Without, exhaustive } from '@trezor/type-utils';

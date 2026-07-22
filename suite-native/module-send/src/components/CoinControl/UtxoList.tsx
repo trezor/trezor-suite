@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { FlashList } from '@shopify/flash-list';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isSameUtxo } from '@suite-common/wallet-utils';
 import { Box } from '@suite-native/atoms';

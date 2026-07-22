@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { getNetworkDecimalsWithFallback } from '@suite-common/trading';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';

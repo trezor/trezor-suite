@@ -1,7 +1,6 @@
 import { type ReactNode } from 'react';
 
-
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import {
     type TransactionNotificationToken,

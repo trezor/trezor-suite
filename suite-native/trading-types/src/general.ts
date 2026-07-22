@@ -1,14 +1,13 @@
 import type { CoinInfo, CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import type { Formatters } from '@suite-common/formatters';
-import { type NetworkSymbol } from '@suite-common/networks';
 import type {
     TradingAmountLimitProps,
     TradingCountryOption,
     TradingCountrySubdivisionOption,
     TradingTradeType,
 } from '@suite-common/trading';
-import type { NetworkSymbolExtended } from '@suite-common/wallet-config';
+import type { NetworkSymbol, NetworkSymbolExtended } from '@suite-common/wallet-config';
 import type {
     Account,
     BaseCurrencyAmount,

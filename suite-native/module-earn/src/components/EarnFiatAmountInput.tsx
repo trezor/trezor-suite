@@ -2,8 +2,7 @@ import { type RefObject } from 'react';
 import { type TextInputProps } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { type NetworkSymbol } from '@suite-common/networks';
-import { getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Input, type InputType, Text } from '@suite-native/atoms';

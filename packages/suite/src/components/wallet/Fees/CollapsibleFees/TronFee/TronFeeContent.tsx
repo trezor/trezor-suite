@@ -1,5 +1,5 @@
 import { Translation, useTranslation } from '@suite/intl';
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import { type TronFeeBreakdown } from '@suite-common/wallet-utils';
 import { Column, Text } from '@trezor/components';

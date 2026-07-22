@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 
-import { type NetworkSymbol } from '@suite-common/networks';
-import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, type NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { type PrecomposedLevels, type PrecomposedLevelsCardano } from '@suite-common/wallet-types';
 import { type AmountUnit, asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { type FeeLevel } from '@trezor/connect';

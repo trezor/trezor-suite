@@ -1,9 +1,9 @@
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol } from '@suite-common/networks';
 import {
     type AccountType,
     type Bip43PathTemplate,
+    type NetworkSymbol,
     type NetworkType,
     getNetwork,
 } from '@suite-common/wallet-config';

@@ -5,8 +5,8 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useTranslation } from '@suite/intl';
 import { isOnionUrl } from '@suite/tor';
 import { useServices } from '@suite-common/dependency-injection';
-import { type NetworkSymbol } from '@suite-common/networks';
 import {
+    type NetworkSymbol,
     type ServerType,
     getNetwork,
     getServerAddressExample,

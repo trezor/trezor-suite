@@ -16,7 +16,6 @@
         { "path": "../../suite-common/feedback" },
         { "path": "../../suite-common/icons" },
         { "path": "../../suite-common/jsonl" },
-        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/suite-constants"
         },

@@ -1,9 +1,9 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import type { DeviceRootState } from '@suite-common/device';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type TransactionsRootState,

@@ -1,9 +1,9 @@
 import { memo } from 'react';
 
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol } from '@suite-common/networks';
 import {
     type NetworkAccount,
+    type NetworkSymbol,
     type NetworkType,
 } from '@suite-common/wallet-config';
 import { getAccountTypeName, getAccountTypeTech } from '@suite-common/wallet-utils';

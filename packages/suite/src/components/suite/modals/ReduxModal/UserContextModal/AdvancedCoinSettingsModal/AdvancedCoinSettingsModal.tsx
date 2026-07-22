@@ -4,8 +4,7 @@ import { Translation } from '@suite/intl';
 import { selectModalType } from '@suite/modal';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { selectTorState } from '@suite/tor';
-import { type NetworkSymbol } from '@suite-common/networks';
-import { getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     Badge,
     Banner,

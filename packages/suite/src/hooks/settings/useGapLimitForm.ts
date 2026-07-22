@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
 
 import { useDispatch, useSelector } from '../suite';

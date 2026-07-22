@@ -1,8 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
 
-import { type NetworkSymbol } from '@suite-common/networks';
-import { type NetworkType, getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import { type AccountKey, type FormState } from '@suite-common/wallet-types';
 import { Box, Button, useBottomSheetModal } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';

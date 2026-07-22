@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { type SuiteSyncDataRootState, selectSuiteSyncOutputLabel } from '@suite-common/suite-sync';
 import { selectUpdateOutputLabelDep } from '@suite-common/suite-sync-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { isTokenTargetId } from '@suite-common/wallet-core';
 import { type AccountDescriptor, type TxTargetId } from '@suite-common/wallet-types';
 import { featureUsed } from '@suite-native/feature-feedback';

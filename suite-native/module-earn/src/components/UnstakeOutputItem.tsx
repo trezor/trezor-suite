@@ -1,7 +1,6 @@
 import { type LayoutChangeEvent, View } from 'react-native';
 
-import { type NetworkSymbol } from '@suite-common/networks';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type ReviewOutputState } from '@suite-common/wallet-types';
 import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-utils';
 import { Text } from '@suite-native/atoms';

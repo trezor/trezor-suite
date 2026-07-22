@@ -1,6 +1,5 @@
-import { type NetworkSymbol } from '@suite-common/networks';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { type Network, getNetwork } from '@suite-common/wallet-config';
+import { type Network, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { isEip1559 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import { type BlockchainEstimatedFeeLevel } from '@trezor/connect-common/src/types/api/blockchain/blockchainEstimateFee';

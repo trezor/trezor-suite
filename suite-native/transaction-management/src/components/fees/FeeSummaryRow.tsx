@@ -1,7 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { type NetworkSymbol } from '@suite-common/networks';
-import { type NetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';

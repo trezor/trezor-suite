@@ -5,7 +5,7 @@ import {
     type TokenDtoV2,
     sortRewardsByUnderlyingToken,
 } from '@suite-common/earn-stablecoin-api';
-import { type NetworkSymbol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { getApyPercent } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon, TokenIcon, tokenIconSizes } from '@suite-native/icons';

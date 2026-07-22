@@ -1,6 +1,6 @@
 import { createMockDeps, mock } from '@suite-common/dependency-injection';
-import { type NetworkSymbol } from '@suite-common/networks';
 import { type OutputTable, type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor, asTxTargetId } from '@suite-common/wallet-types';
 import { ok } from '@trezor/type-utils';
 
