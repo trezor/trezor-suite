@@ -1,7 +1,8 @@
 import { type SellFiatFlowType } from 'invity-api';
 
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
-import { getWeakRandomId } from '@trezor/utils';
+
+import { getRandomAccountDescriptor } from './utils/apiKeyUtils';
 
 export const TRADING_PREFIX = '@trading';
 export const TRADING_EXTENDED_PREFIX = `${TRADING_PREFIX}-extended`;
@@ -74,7 +75,7 @@ export const SLIPPAGE_MIN = '0.01';
 export const SLIPPAGE_MAX = '50';
 export const SLIPPAGE_PRESETS = ['0.1', '0.5', '1', '3'];
 export const INVITY_API_RELOAD_DATA_AFTER_MS = 10 * 60 * 1000; // 10 minutes
-export const TRADING_FALLBACK_API_KEY = getWeakRandomId(20);
+export const TRADING_FALLBACK_API_KEY = getRandomAccountDescriptor();
 export const INVITY_API_RELOAD_QUOTES_AFTER_SECONDS = 30;
 
 export const CRYPTO_PLATFORM_SEPARATOR = '--';

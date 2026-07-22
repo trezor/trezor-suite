@@ -12,7 +12,6 @@ import {
 import type { FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import type { Translate } from '@suite-native/intl';
 import { exhaustive } from '@trezor/type-utils';
-import { getWeakRandomId } from '@trezor/utils';
 
 type UndefinedTradeOperation = {
     fromValue: undefined;
@@ -181,8 +180,6 @@ export const getTradeStatusStep = (trade: TradingTransaction | undefined) => {
 };
 
 export type TradeStatusStep = ReturnType<typeof getTradeStatusStep>;
-
-export const getRandomAccountDescriptor = () => getWeakRandomId(20);
 
 export const getTradeTitle = (trade: TradingTransaction, translate: Translate) => {
     const { tradeType } = trade;
