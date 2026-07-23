@@ -6,7 +6,7 @@ import * as path from 'node:path';
 
 import { unique } from '@trezor/utils';
 
-import { error, log, output } from '../logger';
+import { error, log, output, warn } from '../logger';
 import type { CoverageIndex } from '../testCoverage/types';
 
 // ---------------------------------------------------------------------------
@@ -567,6 +567,13 @@ const selectTestsViaApi = async (
 };
 
 // ---------------------------------------------------------------------------
+// Error classification
+// ---------------------------------------------------------------------------
+
+const isCreditBalanceError = (err: unknown): boolean =>
+    /credit balance is too low/i.test(err instanceof Error ? err.message : String(err));
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 
@@ -738,6 +745,27 @@ const main = async () => {
             ? await selectTestsViaApi(promptParts, apiKey)
             : await selectTestsViaCli(promptParts);
     } catch (err) {
+        // A depleted budget must not fail CI: emit an empty spec list so the workflow runs the full suite.
+        if (isCreditBalanceError(err)) {
+            const message = err instanceof Error ? err.message : String(err);
+            warn(
+                `Anthropic credit balance exhausted; skipping LLM test selection and running all e2e tests.\n${message}`,
+            );
+            output(
+                JSON.stringify(
+                    {
+                        changed_files: changedFiles,
+                        recommendations: [],
+                        summary:
+                            'LLM test selector skipped: Anthropic credit balance exhausted. Falling back to the full e2e suite.',
+                        uncovered_changes: [],
+                    } satisfies SelectionResult,
+                    null,
+                    2,
+                ),
+            );
+            process.exit(0);
+        }
         error(`Claude invocation failed: ${err instanceof Error ? err.message : err}`);
         process.exit(1);
     }
