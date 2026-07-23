@@ -122,8 +122,14 @@ export class OnboardingPage {
             await this.pairingInputAtIndex(i).fill(getIndexOrThrow(code, i));
         }
 
-        await expect(this.thpPairingModal).toBeHidden();
-        await expect(this.devicePrompt.acquireDeviceButton).toBeHidden();
+        await expect(
+            this.thpPairingModal,
+            'expected THP pairing modal to be hidden after entering the pairing code',
+        ).toBeHidden();
+        await expect(
+            this.devicePrompt.acquireDeviceButton,
+            'expected device prompt acquire button to be hidden',
+        ).toBeHidden();
     }
 
     @step()
