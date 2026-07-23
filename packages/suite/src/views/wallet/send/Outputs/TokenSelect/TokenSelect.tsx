@@ -120,9 +120,15 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                 placeholder={selectedToken?.symbol || account.symbol}
                                 placeholderWithTooltip={false}
                                 shouldTryToFetch={isTokenKnown}
+                                showNetworkIcon
                             />
                         ) : (
-                            <TokenIcon symbol={account.symbol} size={40} showNetworkIcon />
+                            <TokenIcon
+                                symbol={account.symbol}
+                                size={40}
+                                showNetworkIcon
+                                showNativeNetworkBadge
+                            />
                         )}
                         <Column alignItems="flex-start">
                             <Row justifyContent="flex-start">

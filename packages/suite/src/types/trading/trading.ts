@@ -74,7 +74,7 @@ export type TradingCoinLogoProps = {
     cryptoId: CryptoId;
     className?: string;
     size?: TokenIconProps['size'];
-} & Pick<TokenIconProps, 'showNetworkIcon' | 'margin'>;
+} & Pick<TokenIconProps, 'margin'>;
 
 export interface TradingGetAmountLabelsProps {
     type: TradingType;
