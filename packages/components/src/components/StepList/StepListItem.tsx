@@ -1,3 +1,5 @@
+import { type KeyboardEvent } from 'react';
+
 import styled, { css } from 'styled-components';
 
 import { CheckIcon } from '@trezor/icons';
@@ -21,17 +23,41 @@ import {
     mapStateToCounterColor,
     mapStateToTitleColor,
 } from './utils';
+import { commonFocusStyles } from '../../utils/utils';
 import { IconCircle } from '../IconCircle/IconCircle';
 import { Text } from '../typography/Text/Text';
 
-const Item = styled.li<{
+const Item = styled.li<{ $direction: StepListDirection }>`
+    ${({ $direction }) =>
+        $direction === 'horizontal' &&
+        css`
+            flex: 1;
+
+            &:last-child {
+                flex: 0;
+            }
+        `}
+`;
+
+const ItemLayout = styled.div<{
     $bulletGap: SpacingValue;
     $titleGap: SpacingValue;
     $size: BulletSize;
     $direction: StepListDirection;
+    $isClickable: boolean;
 }>`
     display: grid;
     grid-template-columns: ${mapSizeToDimension}px 1fr;
+
+    ${({ $isClickable }) =>
+        $isClickable &&
+        css`
+            cursor: pointer;
+
+            &:focus-visible {
+                ${commonFocusStyles}
+            }
+        `}
 
     ${({ $direction, $bulletGap, $titleGap }) =>
         $direction === 'vertical'
@@ -39,13 +65,25 @@ const Item = styled.li<{
                   column-gap: ${$bulletGap}px;
               `
             : css`
-                  flex: 1;
                   row-gap: ${$titleGap}px;
-
-                  &:last-child {
-                      flex: 0;
-                  }
               `}
+`;
+
+const ClickableDoneIndicator = styled.div`
+    > :last-child {
+        display: none;
+    }
+
+    ${ItemLayout}:hover &,
+    ${ItemLayout}:focus-visible & {
+        > :first-child {
+            display: none;
+        }
+
+        > :last-child {
+            display: flex;
+        }
+    }
 `;
 
 const StepIndicatorWrapper = styled.div<{ $direction: StepListDirection }>`
@@ -159,57 +197,88 @@ export type StepListItemProps = {
     children?: React.ReactNode;
     title: React.ReactNode;
     state?: StepListItemState;
+    onClick?: () => void;
     'data-testid'?: string;
 };
 
 export const StepListItem = ({
     state = 'default',
     title,
+    onClick,
     'data-testid': dataTestId,
     children,
 }: StepListItemProps) => {
     const { itemGap, bulletGap, titleGap, bulletSize, isOrdered, direction, lineWidth } =
         useStepList();
+    const isClickable = !!onClick;
+
+    const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            onClick?.();
+        }
+    };
+
+    const renderStepIndicator = () => {
+        if (state !== 'done') {
+            return <StepIndicator $state={state} $isOrdered={isOrdered} $size={bulletSize} />;
+        }
+
+        const doneIcon = (
+            <IconCircle
+                icon={CheckIcon}
+                size={mapSizeToDimension({ $size: bulletSize })}
+                intent="brand"
+            />
+        );
+
+        if (!isClickable) {
+            return doneIcon;
+        }
+
+        return (
+            <ClickableDoneIndicator>
+                {doneIcon}
+                <StepIndicator $state={state} $isOrdered={isOrdered} $size={bulletSize} />
+            </ClickableDoneIndicator>
+        );
+    };
 
     return (
-        <Item
-            $bulletGap={bulletGap}
-            $titleGap={titleGap}
-            $size={bulletSize}
-            $direction={direction}
-            data-testid={dataTestId}
-        >
-            <StepIndicatorWrapper $direction={direction}>
-                {state === 'done' ? (
-                    <IconCircle
-                        icon={CheckIcon}
-                        size={mapSizeToDimension({ $size: bulletSize })}
-                        intent="brand"
-                    />
-                ) : (
-                    <StepIndicator $state={state} $isOrdered={isOrdered} $size={bulletSize} />
+        <Item $direction={direction} data-testid={dataTestId}>
+            <ItemLayout
+                $bulletGap={bulletGap}
+                $titleGap={titleGap}
+                $size={bulletSize}
+                $direction={direction}
+                $isClickable={isClickable}
+                onClick={onClick}
+                {...(isClickable && { role: 'button', tabIndex: 0, onKeyDown: handleKeyDown })}
+            >
+                <StepIndicatorWrapper $direction={direction}>
+                    {renderStepIndicator()}
+                </StepIndicatorWrapper>
+                <Title $direction={direction}>
+                    <Text
+                        as="div"
+                        typographyStyle={mapPropsToTypographyStyle(direction, state)}
+                        color={mapStateToTitleColor(state)}
+                        ellipsisLineCount={direction === 'vertical' ? 2 : undefined}
+                    >
+                        {title}
+                    </Text>
+                </Title>
+                <Line $direction={direction} $bulletGap={bulletGap} $lineWidth={lineWidth} />
+                {direction === 'vertical' && (
+                    <Content $itemGap={itemGap} $titleGap={titleGap}>
+                        {children && (
+                            <Text as="div" typographyStyle="body-sm">
+                                {children}
+                            </Text>
+                        )}
+                    </Content>
                 )}
-            </StepIndicatorWrapper>
-            <Title $direction={direction}>
-                <Text
-                    as="div"
-                    typographyStyle={mapPropsToTypographyStyle(direction, state)}
-                    color={mapStateToTitleColor(state)}
-                    ellipsisLineCount={direction === 'vertical' ? 2 : undefined}
-                >
-                    {title}
-                </Text>
-            </Title>
-            <Line $direction={direction} $bulletGap={bulletGap} $lineWidth={lineWidth} />
-            {direction === 'vertical' && (
-                <Content $itemGap={itemGap} $titleGap={titleGap}>
-                    {children && (
-                        <Text as="div" typographyStyle="body-sm">
-                            {children}
-                        </Text>
-                    )}
-                </Content>
-            )}
+            </ItemLayout>
         </Item>
     );
 };

@@ -10263,10 +10263,6 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_MODIFY_APPROVAL',
         defaultMessage: 'Change approval',
     },
-    TR_MODIFY: {
-        id: 'TR_MODIFY',
-        defaultMessage: 'Change',
-    },
     TR_EARN_YIELD_INCREASE_APPROVAL: {
         id: 'TR_EARN_YIELD_INCREASE_APPROVAL',
         defaultMessage: 'Increase approval',

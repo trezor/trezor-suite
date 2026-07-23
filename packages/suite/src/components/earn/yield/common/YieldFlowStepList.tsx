@@ -1,18 +1,37 @@
 import { type ReactNode } from 'react';
 
+import styled from 'styled-components';
+
 import { Translation } from '@suite/intl';
 import { type YieldFlowStepId } from '@suite-common/wallet-core';
-import { Column, Row, StepList, Text } from '@trezor/components';
+import { Column, IconCircle, Row, StepList, Text } from '@trezor/components';
+import { CaretLeftIcon } from '@trezor/icons';
 
 import { type YieldFlowStepView, getYieldFlowSteps } from '../yieldFlowUtils';
+
+const EditableTitle = styled.span`
+    li > :hover &,
+    li > :focus-visible & {
+        color: ${({ theme }) => theme.contentPrimary};
+    }
+`;
+
+const EditIndicator = styled.div`
+    opacity: 0;
+
+    li > :hover &,
+    li > :focus-visible & {
+        opacity: 1;
+    }
+`;
 
 export type YieldFlowStepDefinition = {
     /** Label on the title row next to the step number. */
     title?: ReactNode;
     /** Supplementary text tight under the title; shown only while the step is active. */
     description?: ReactNode;
-    /** Right side of the title row (e.g. a modify action); receives the view for state-dependent actions. */
-    rightContent?: (view: YieldFlowStepView) => ReactNode;
+    /** Makes the finished step clickable — clicking anywhere on it returns to the step to edit it. */
+    onEdit?: () => void;
     /**
      * Renders the step as a StepList item and counts it into the step numbering. A non-list
      * step takes over the whole area while active (e.g. a final complete screen). Default true.
@@ -71,11 +90,13 @@ export const YieldFlowStepList = <TSequence extends readonly YieldFlowStepId[]>(
             {listSteps.map(stepId => {
                 const view = views[stepId];
                 const definition = stepDefinitions[stepId];
+                const onEdit = view.state === 'done' ? definition?.onEdit : undefined;
 
                 return (
                     <StepList.Item
                         key={stepId}
                         state={view.state}
+                        onClick={onEdit}
                         title={
                             <Column gap={8} width="100%">
                                 <Text
@@ -94,8 +115,20 @@ export const YieldFlowStepList = <TSequence extends readonly YieldFlowStepId[]>(
                                         width="100%"
                                         gap={16}
                                     >
-                                        {definition?.title}
-                                        {definition?.rightContent?.(view)}
+                                        {onEdit ? (
+                                            <EditableTitle>{definition?.title}</EditableTitle>
+                                        ) : (
+                                            definition?.title
+                                        )}
+                                        {onEdit && (
+                                            <EditIndicator>
+                                                <IconCircle
+                                                    icon={CaretLeftIcon}
+                                                    size={24}
+                                                    intent="brand"
+                                                />
+                                            </EditIndicator>
+                                        )}
                                     </Row>
 
                                     {view.state === 'active' && definition?.description && (
