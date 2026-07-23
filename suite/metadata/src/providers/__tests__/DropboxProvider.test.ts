@@ -136,4 +136,31 @@ describe(DropboxProvider.name, () => {
 
         expect(filesSearchSpy).toHaveBeenCalledTimes(2);
     });
+
+    it('caps exponential backoff at five minutes', async () => {
+        jest.useFakeTimers();
+        jest.spyOn(Math, 'random').mockReturnValue(0.5);
+
+        const provider = new DropboxProvider({ token: 'token', clientId: 'client-id' });
+        const request = jest
+            .fn()
+            .mockResolvedValueOnce(provider.error('RATE_LIMIT_ERROR', 'too many requests'))
+            .mockResolvedValueOnce(provider.ok());
+
+        const result = provider.scheduleApiRequest(request, {
+            retries: 1,
+            delay: 300_000,
+        });
+
+        await jest.advanceTimersByTimeAsync(0);
+        expect(request).toHaveBeenCalledTimes(1);
+
+        await jest.advanceTimersByTimeAsync(299_999);
+        expect(request).toHaveBeenCalledTimes(1);
+
+        await jest.advanceTimersByTimeAsync(1);
+        await result;
+
+        expect(request).toHaveBeenCalledTimes(2);
+    });
 });

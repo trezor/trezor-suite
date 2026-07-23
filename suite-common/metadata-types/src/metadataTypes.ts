@@ -1,5 +1,7 @@
 import type { WalletDescriptor } from '@trezor/device-utils';
 
+const MAX_RETRY_DELAY_MS = 5 * 60 * 1000;
+
 export interface LabelableEntityKeys {
     fileName: string; // file name in data provider
     aesKey: string; // symmetric key for file encryption
@@ -173,7 +175,7 @@ export abstract class AbstractMetadataProvider {
         const exponentialDelay = delay * 2 ** retry;
         const jitter = Math.floor(Math.random() * delay);
 
-        return exponentialDelay + jitter;
+        return Math.min(exponentialDelay + jitter, MAX_RETRY_DELAY_MS);
     }
 
     private async waitForApiRequestCooldown() {
