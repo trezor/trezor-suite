@@ -29,14 +29,13 @@ const firmwareBtcOnly = process.env.TESTS_FIRMWARE_BTC_ONLY === 'true';
  * TODO: this code might be refactored and moved into TrezorUserEnvLink class later
  */
 const getEmulatorOptions = (availableFirmwares: Firmwares) => {
-    const getLatestFirmware = (model: keyof Firmwares) =>
-        availableFirmwares[model].find(fw => {
-            const withoutArm = fw.replace('-arm', '');
-            const semverVersion = !withoutArm.includes('-'); // there are only 2-main-arm or 2.9.0-arm
-            const mainVersion = withoutArm.endsWith('-main');
+    const getLatestFirmware = (model: keyof Firmwares) => {
+        const firmwares = availableFirmwares[model].map(fw => fw.replace('-arm', ''));
+        const semver = firmwares.find(fw => !fw.includes('-'));
 
-            return semverVersion || mainVersion; // return named (semver) version, or 'main' version fallback - this happens when new model is created but it has no stable firmware release yet.
-        });
+        // Fallback to '-main' version only when no semver release exists yet (e.g. newly created model).
+        return semver ?? firmwares.find(fw => fw.endsWith('-main'));
+    };
 
     const model =
         firmwareModel && typedObjectKeys(availableFirmwares).includes(firmwareModel)
