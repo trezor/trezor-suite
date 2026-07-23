@@ -37,6 +37,8 @@ export * from './fees/feesReducer';
 export * from './fees/feesThunks';
 export * from './fees/feesUtils';
 export * from './fees/hooks/useRefetchFees';
+export * from './privatePending/privatePendingActions';
+export * from './privatePending/privatePendingReducer';
 export * from './fiat-rates/fiatRatesMiddleware';
 export * from './fiat-rates/fiatRatesReducer';
 export * from './fiat-rates/fiatRatesSelectors';

@@ -30,6 +30,8 @@ import {
 import { accountRefreshed } from './accountsRefreshTimeReducer';
 import { selectAccountByKey } from './accountsSelectors';
 import { selectBlockchainHeightBySymbol, selectGapLimit } from '../blockchain/blockchainReducer';
+import { privatePendingActions } from '../privatePending/privatePendingActions';
+import { selectAccountPrivatePendingHint } from '../privatePending/privatePendingReducer';
 import { selectBitcoinAmountUnit } from '../settings/walletSettingsReducer';
 import { transactionsActions } from '../transactions/transactionsActions';
 import { selectTransactions } from '../transactions/transactionsSelectors';
@@ -132,6 +134,19 @@ export const fetchAndUpdateAccountThunk = createThunk(
                 ? selectGapLimit(getState(), account.symbol)
                 : undefined;
 
+        // Declare the wallet's in-flight PRIVATE (relay) txs on the UNCONDITIONAL basic refresh so
+        // blockbook routes the pending nonce deterministically even for txs its node cannot see - and
+        // even after reconnecting to a different (load-balanced) instance, since this call fires on
+        // every connect / periodic sync / block. It rides the basic (not the gated details:'txs')
+        // call because a blockbook-invisible private tx does not make the account "outdated", so the
+        // txs call may be skipped. selectAccountPrivatePendingHint is undefined when nothing is in
+        // flight, so the hint (and the extra confirmedNonce round-trip below) are sent only when
+        // relevant - which is also the over-declaration guard. See trezor/blockbook#1639.
+        const privatePendingHint =
+            account.networkType === 'ethereum'
+                ? selectAccountPrivatePendingHint(getState(), account.key)
+                : undefined;
+
         const basic = await TrezorConnect.getAccountInfo({
             coin: account.symbol,
             identity: tryGetAccountIdentity(account),
@@ -141,9 +156,29 @@ export const fetchAndUpdateAccountThunk = createThunk(
             tokenAccountsPubKeys,
             protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
             gap,
+            // confirmedNonce is the trustworthy mined nonce used to prune settled private nonces
+            // below; request it only when a private tx is in flight, to avoid the extra backend call.
+            confirmedNonce: privatePendingHint ? true : undefined,
+            privatePending: privatePendingHint,
         });
 
         if (!basic.success) return;
+
+        // Prune the declared private nonces against the mined nonce on every basic refresh, BEFORE
+        // the not-outdated early-return below, so a settled or relay-dropped private nonce stops
+        // being declared. confirmedNonce is instance-agnostic, so this self-heals after reconnecting
+        // to a different blockbook instance.
+        if (privatePendingHint) {
+            const confirmedNonce = Number.parseInt(basic.payload.misc?.confirmedNonce ?? '', 10);
+            if (!Number.isNaN(confirmedNonce)) {
+                dispatch(
+                    privatePendingActions.privatePendingPruned({
+                        accountKey: account.key,
+                        confirmedNonce,
+                    }),
+                );
+            }
+        }
 
         const accountOutdated = isAccountOutdated(account, basic.payload);
         const accountTransactions = selectTransactions(getState());

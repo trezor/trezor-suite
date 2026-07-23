@@ -10,6 +10,7 @@ import {
     type FiatRatesState,
     type FormDraftState,
     type PhishingState,
+    type PrivatePendingState,
     type SendState,
     type StablecoinYieldState,
     type StakeState,
@@ -27,6 +28,7 @@ import {
     prepareStakeReducer,
     prepareTransactionsReducer,
     prepareWalletSettingsReducer,
+    privatePendingReducer,
     stablecoinYieldReducer,
     tronStakeReducer,
 } from '@suite-common/wallet-core';
@@ -67,6 +69,7 @@ export type WalletState = {
     accountsRefreshTime: AccountsRefreshTimeState;
     selectedAccount: SelectedAccountStatus;
     fees: FeesState;
+    privatePending: PrivatePendingState;
     blockchain: BlockchainNetworks;
     explorer: ExplorerConfig;
     trading: TradingState;
@@ -94,6 +97,7 @@ export const walletReducers: Reducer<
     accountsRefreshTime: accountsRefreshTimeReducer,
     selectedAccount: selectedAccountReducer,
     fees: feesReducer,
+    privatePending: privatePendingReducer,
     blockchain: blockchainReducer,
     explorer: explorerReducer,
     trading: tradingReducer,
