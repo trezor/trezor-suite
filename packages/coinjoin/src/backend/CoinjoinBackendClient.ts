@@ -56,8 +56,21 @@ export class CoinjoinBackendClient implements CoinjoinBackendClientShape {
 
     fetchBlock(height: number, options?: RequestOptions): Promise<BlockbookBlock> {
         const identity = this.identitiesBlockbook[height & 0x3]; // Works only when identities.length === 4
+        const pageSize = 1000;
 
-        return this.getBlockbookApi(api => api.getBlock(height), { identity, ...options });
+        return this.getBlockbookApi(
+            async api => {
+                const block = await api.getBlock(height, { pageSize });
+
+                for (let page = 2; page <= (block.totalPages ?? 1); ++page) {
+                    const { txs } = await api.getBlock(height, { page, pageSize });
+                    block.txs.push(...txs);
+                }
+
+                return block;
+            },
+            { identity, ...options },
+        );
     }
 
     fetchBlockHash(height: number, options?: RequestOptions): Promise<string> {
