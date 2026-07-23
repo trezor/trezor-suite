@@ -12,10 +12,11 @@ type Variables<S extends string> = SplitString<S, '/'>[number] extends `${infer 
         : never
     : never;
 
-export type GenerateRouteParams<
-    S extends string,
-    V extends Variables<S> = Variables<S>,
-> = V extends string ? { [key in V]: string } : never;
+export type GenerateRouteParams<S extends string, V extends Variables<S> = Variables<S>> = [
+    V,
+] extends [never]
+    ? never
+    : { [key in V]: string };
 
 export function composePathnameFromRoute(
     routePathname: string,

@@ -10416,6 +10416,7 @@ __metadata:
   dependencies:
     orval: "npm:8.19.0"
     prettier: "npm:^3.8.4"
+    typescript: "npm:6.0.3"
     zod: "npm:4.3.6"
   languageName: unknown
   linkType: soft

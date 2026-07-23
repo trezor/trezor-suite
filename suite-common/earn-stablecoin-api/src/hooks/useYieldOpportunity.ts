@@ -17,7 +17,7 @@ export function useYieldOpportunity<
         queryKey: commonQueryKeys.yieldOpportunity(vaultId),
         queryFn: ({ signal }) =>
             getYield({
-                routeParams: { vaultId: vaultId! },
+                routeParams: { yieldId: vaultId! },
                 signal,
             }),
         select,
