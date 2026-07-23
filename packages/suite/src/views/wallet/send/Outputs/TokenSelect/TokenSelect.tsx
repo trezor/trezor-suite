@@ -20,8 +20,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { Banner, Card, Column, IconButton, Link, Row, Text } from '@trezor/components';
 import { CaretDownIcon } from '@trezor/icons';
-import { AssetLogo, CoinLogo } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
+import { TokenIcon } from '@trezor/product-components';
 
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import { BaseCurrencyValue, FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
@@ -112,9 +111,9 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
 
             <Card type="raised" paddingType="normal" onClick={onOpenTokensModal}>
                 <Row justifyContent="space-between" height={64}>
-                    <Row justifyContent="flex-start" gap={spacings.sm}>
+                    <Row justifyContent="flex-start" gap={12}>
                         {selectedToken ? (
-                            <AssetLogo
+                            <TokenIcon
                                 symbol={account.symbol}
                                 contractAddress={selectedToken?.contract}
                                 size={24}
@@ -123,7 +122,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                 shouldTryToFetch={isTokenKnown}
                             />
                         ) : (
-                            <CoinLogo symbol={account.symbol} size={40} type="tokenWithNetwork" />
+                            <TokenIcon symbol={account.symbol} size={40} showNetworkIcon />
                         )}
                         <Column alignItems="flex-start">
                             <Row justifyContent="flex-start">
@@ -163,7 +162,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                         priority="secondary"
                                         typographyStyle="body-sm"
                                     >
-                                        <Row gap={spacings.xxs}>
+                                        <Row gap={4}>
                                             <Translation
                                                 id={getTokenAddressTranslationId(
                                                     account.networkType,

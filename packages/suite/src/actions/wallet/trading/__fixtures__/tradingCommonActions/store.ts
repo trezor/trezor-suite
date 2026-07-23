@@ -52,5 +52,4 @@ export const ACCOUNT: Account = {
     misc: undefined,
     marker: undefined,
     stellarCursor: undefined,
-    ts: 0,
 };

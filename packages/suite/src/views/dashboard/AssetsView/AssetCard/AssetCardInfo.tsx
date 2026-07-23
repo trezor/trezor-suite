@@ -3,7 +3,6 @@ import React from 'react';
 import { type AssetFiatBalance } from '@suite-common/assets';
 import { type Network } from '@suite-common/wallet-config';
 import { Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { AssetCoinLogo, AssetCoinLogoSkeleton } from '../AssetCoinLogo';
 import { AssetCoinName, AssetCoinNameSkeleton } from '../AssetCoinName';
@@ -15,7 +14,7 @@ type AssetInfoProps = {
 };
 
 export const AssetCardInfo = ({ network, assetsFiatBalances, index }: AssetInfoProps) => (
-    <Row gap={spacings.sm}>
+    <Row gap={12}>
         <AssetCoinLogo
             symbol={network.symbol}
             index={index}
@@ -30,7 +29,7 @@ type AssetInfoSkeletonProps = {
 };
 
 export const AssetCardInfoSkeleton = ({ animate }: AssetInfoSkeletonProps) => (
-    <Row>
+    <Row gap={12}>
         <AssetCoinLogoSkeleton animate={animate} />
         <AssetCoinNameSkeleton animate={animate} />
     </Row>

@@ -1,5 +1,4 @@
 import { List, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { type SecurityChecklistItem } from './types';
 
@@ -8,7 +7,7 @@ type SecurityChecklistProps = {
 };
 
 export const SecurityChecklist = ({ items }: SecurityChecklistProps) => (
-    <List gap={spacings.xl}>
+    <List gap={24}>
         {items.map((item, index) => (
             <List.Item bulletComponent={item.icon} key={index}>
                 <Paragraph intent="neutral" priority="secondary">

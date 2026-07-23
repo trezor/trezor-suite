@@ -14,7 +14,7 @@ on:
       # dependencies of packages/blockchain-link
       - "packages/utxo-lib/**"
       - "docker/docker-blockchain-link-test.sh"
-      - ".github/workflows/blockchain-link-test.yml"
+      - ".github/workflows/test-blockchain-link.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}

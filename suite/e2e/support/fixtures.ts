@@ -9,6 +9,7 @@ import { MetadataMock } from './mocks/metadataMock';
 import { PassthruTradingMock } from './mocks/passthruTradingMock';
 import { SolanaStakingMock } from './mocks/solanaStakingMock';
 import { TradingMock } from './mocks/tradingMock';
+import { YieldMock } from './mocks/yieldMock';
 import { AnalyticsSection } from './pageObjects/analyticsSection';
 import { AssetsSection } from './pageObjects/assetsSection';
 import { ConnectPermissionsModal } from './pageObjects/connectPermissionsModal';
@@ -25,7 +26,12 @@ import { StakingSection } from './pageObjects/staking/stakingSection';
 import { FeeSection } from './pageObjects/trading/feeSection';
 import { TradingPage } from './pageObjects/trading/tradingPage';
 import { TrezorInput } from './pageObjects/trezorInput';
+import { TxSimulationModal } from './pageObjects/txSimulationModal';
 import { WalletPage } from './pageObjects/walletPage';
+import { YieldConsentModal } from './pageObjects/yield/yieldConsentModal';
+import { YieldFlowSection } from './pageObjects/yield/yieldFlowSection';
+import { YieldNutshellModal } from './pageObjects/yield/yieldNutshellModal';
+import { YieldSection } from './pageObjects/yield/yieldSection';
 import { suiteBaseTest } from './testExtends/suiteBaseFixture';
 import { TradingStoreFixture } from './tradingStore';
 
@@ -55,6 +61,12 @@ type Fixtures = {
     connectPermissionsModal: ConnectPermissionsModal;
     connectSelectAccountModal: ConnectSelectAccountModal;
     stakingSection: StakingSection;
+    yieldSection: YieldSection;
+    yieldFlowSection: YieldFlowSection;
+    yieldNutshellModal: YieldNutshellModal;
+    yieldConsentModal: YieldConsentModal;
+    yieldMock: YieldMock;
+    txSimulationModal: TxSimulationModal;
     paginationControl: PaginationControl;
     evoluClient: EvoluClient;
 };
@@ -143,6 +155,26 @@ const test = suiteBaseTest.extend<Fixtures>({
     },
     stakingSection: async ({ page }, use) => {
         await use(new StakingSection(page));
+    },
+    yieldSection: async ({ page }, use) => {
+        await use(new YieldSection(page));
+    },
+    yieldFlowSection: async ({ page }, use) => {
+        await use(new YieldFlowSection(page));
+    },
+    yieldNutshellModal: async ({ page }, use) => {
+        await use(new YieldNutshellModal(page));
+    },
+    yieldConsentModal: async ({ page }, use) => {
+        await use(new YieldConsentModal(page));
+    },
+    yieldMock: async ({ page }, use) => {
+        const yieldMock = new YieldMock(page);
+        await use(yieldMock);
+        await yieldMock.stop();
+    },
+    txSimulationModal: async ({ page }, use) => {
+        await use(new TxSimulationModal(page));
     },
     paginationControl: async ({ page }, use) => {
         await use(new PaginationControl(page));

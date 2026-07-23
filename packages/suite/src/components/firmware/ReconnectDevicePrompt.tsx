@@ -14,7 +14,6 @@ import {
     type DeviceAnimationProps,
 } from '@trezor/product-components';
 import { usePreviousDefined } from '@trezor/react-utils';
-import { spacings } from '@trezor/theme';
 
 import { WebUsbButton } from 'src/components/suite';
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
@@ -194,7 +193,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                 }
             >
                 {!isRebootDone && (
-                    <Column margin={{ bottom: spacings.md }} alignItems="center">
+                    <Column margin={{ bottom: 16 }} alignItems="center">
                         <RebootDeviceGraphics
                             device={eventDevice}
                             isManualRebootRequired={isManualRebootRequired}
@@ -205,14 +204,14 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                     <Translation id={getHeading()} />
                 </H2>
                 {!isRebootDone && (
-                    <Column gap={spacings.lg}>
+                    <Column gap={20}>
                         {isManualRebootRequired ? (
                             <StepList
                                 isOrdered
-                                margin={{ top: spacings.md }}
-                                gap={spacings.xl}
-                                titleGap={spacings.xxxs}
-                                bulletGap={spacings.md}
+                                margin={{ top: 16 }}
+                                gap={24}
+                                titleGap={2}
+                                bulletGap={16}
                             >
                                 {/* First step asks for disconnecting a device */}
                                 <StepList.Item
@@ -234,7 +233,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                                 intent="neutral"
                                 priority="secondary"
                                 align="center"
-                                margin={{ top: spacings.xs }}
+                                margin={{ top: 8 }}
                             >
                                 <Translation
                                     id="TR_CONFIRM_ACTION_ON_YOUR"

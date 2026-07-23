@@ -28,6 +28,7 @@ import { pushYieldActionReviewThunk, signYieldActionReviewThunk } from '../yield
 import { useShowDeviceDisconnectedDuringEarnReviewAlert } from './useShowDeviceDisconnectedDuringEarnReviewAlert';
 import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
 import { useYieldActionReviewBackNavigation } from './useYieldActionReviewBackNavigation';
+import { useYieldReviewAnalytics } from './useYieldReviewAnalytics';
 
 type UseYieldDepositReviewParams = {
     flowData: YieldFlowResolvedData;
@@ -57,6 +58,13 @@ export const useYieldDepositReview = ({
     const { showPendingTransactionConflictAlert, showPushTransactionFailedAlert } =
         useShowPushTransactionFailedDuringReviewAlert('yield-deposit');
     const showDeviceDisconnectedAlert = useShowDeviceDisconnectedDuringEarnReviewAlert();
+
+    const { reportError: reportDepositError, reportCancel: reportDepositCancel } =
+        useYieldReviewAnalytics({
+            flow: 'deposit',
+            networkSymbol: flowData.account.symbol,
+            vaultId: flowData.vault.id,
+        });
     const [depositActionStatus, setDepositActionStatus] = useState<YieldReviewActionStatus>('idle');
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const txReview = useSelector((state: StablecoinYieldRootState) =>
@@ -114,6 +122,7 @@ export const useYieldDepositReview = ({
         setDepositActionStatus('idle');
 
         if (!deviceAccessResponse.success) {
+            reportDepositError('submit-failed');
             handleEarnReviewError({
                 payload: {
                     error: 'sign-transaction-failed',
@@ -132,10 +141,13 @@ export const useYieldDepositReview = ({
         const isSignRejected = isRejected(signResponse);
 
         if (isSignRejected && isUserCancelledSignError(signResponse.payload)) {
+            reportDepositCancel();
+
             return 'cancelled';
         }
 
         if (isSignRejected) {
+            reportDepositError('submit-failed');
             handleEarnReviewError({
                 payload: signResponse.payload,
                 navigation,
@@ -155,6 +167,8 @@ export const useYieldDepositReview = ({
         flowKey,
         isDeviceConnected,
         navigation,
+        reportDepositCancel,
+        reportDepositError,
         showDeviceDisconnectedAlert,
         showPendingTransactionConflictAlert,
         showPushTransactionFailedAlert,
@@ -179,6 +193,8 @@ export const useYieldDepositReview = ({
         const isPushRejected = isRejected(pushResponse);
 
         if (isPushRejected) {
+            reportDepositError('push-failed');
+
             if (pushResponse.payload?.error === 'push-transaction-pending-conflict') {
                 showPendingTransactionConflictAlert();
 
@@ -199,6 +215,7 @@ export const useYieldDepositReview = ({
         flowKey,
         markReviewNavigationSuccess,
         navigation,
+        reportDepositError,
         showPendingTransactionConflictAlert,
         showPushTransactionFailedAlert,
     ]);

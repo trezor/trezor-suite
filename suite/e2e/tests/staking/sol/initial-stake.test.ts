@@ -17,7 +17,11 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     test.beforeEach(async ({ onboardingPage, settingsPage, solanaStakingMock }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.enableNetworkWithCustomBackend('sol', 'solana', solanaStakingMock.url);
+        await settingsPage.changeNetworks({
+            enableNetworks: [
+                { symbol: 'sol', backend: { type: 'solana', url: solanaStakingMock.url } },
+            ],
+        });
     });
 
     test(
@@ -104,10 +108,11 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 solanaStakingMock.confirmTransaction();
                 solanaStakingMock.setStakeAccounts([solStakingAccountFirst.payload]);
                 await devicePrompt.sendButton.click();
-                await expect(stakingSection.stakedToastAccount).toContainText('Solana #1');
-                await expect(stakingSection.stakedToastAmount).toContainText(
-                    stakedAndRentFormatted,
-                );
+                await stakingSection.verifyStakingToast({
+                    type: 'staked',
+                    account: 'Solana #1',
+                    amount: stakedAndRentFormatted,
+                });
             });
 
             await test.step('Verify pending on dashboard', async () => {

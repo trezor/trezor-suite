@@ -37,6 +37,7 @@ import {
     type HomeStackRoutes,
     type OnboardingStackRoutes,
     type PassphraseStackRoutes,
+    type ReceiveAddressVerificationSource,
     type ReceiveStackRoutes,
     type RootStackRoutes,
     type SendStackRoutes,
@@ -171,7 +172,10 @@ export type SettingsStackParamList = {
 
 export type ReceiveStackParamList = {
     [ReceiveStackRoutes.ReceiveAccounts]: undefined;
-    [ReceiveStackRoutes.ReceiveAccount]: AccountDetailParams;
+    [ReceiveStackRoutes.ReceiveAddress]: AccountDetailParams;
+    [ReceiveStackRoutes.ReceiveAddressVerification]: {
+        source: ReceiveAddressVerificationSource;
+    };
 };
 
 export type SendStackParamList = {
@@ -451,7 +455,6 @@ export type RootStackParamList = {
     [RootStackRoutes.AccountDetail]: AccountDetailParams;
     [RootStackRoutes.StakingDetail]: { accountKey: AccountKey };
     [RootStackRoutes.StakingManagement]: { accountKey: AccountKey };
-    [RootStackRoutes.StakingInsufficientBalance]: { accountKey: AccountKey };
     [RootStackRoutes.HowStakeWorksScreen]: {
         accountKey?: AccountKey;
         symbol: NetworkSymbol;

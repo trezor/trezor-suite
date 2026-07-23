@@ -1,16 +1,275 @@
-type Country = {
-    code: string;
+type Country = Readonly<{
+    code: CountryCode;
     codeAlpha3: string;
     flag: string;
     name: string;
+}>;
+
+// Keep the catalogue keys explicit so additions and removals remain exhaustively type-checked
+// without TypeScript serializing every country implementation literal into public declarations.
+type CountryCatalogue = {
+    readonly AD: Country;
+    readonly AE: Country;
+    readonly AF: Country;
+    readonly AG: Country;
+    readonly AI: Country;
+    readonly AL: Country;
+    readonly AM: Country;
+    readonly AO: Country;
+    readonly AQ: Country;
+    readonly AR: Country;
+    readonly AS: Country;
+    readonly AT: Country;
+    readonly AU: Country;
+    readonly AW: Country;
+    readonly AX: Country;
+    readonly AZ: Country;
+    readonly BA: Country;
+    readonly BB: Country;
+    readonly BD: Country;
+    readonly BE: Country;
+    readonly BF: Country;
+    readonly BG: Country;
+    readonly BH: Country;
+    readonly BI: Country;
+    readonly BJ: Country;
+    readonly BL: Country;
+    readonly BM: Country;
+    readonly BN: Country;
+    readonly BO: Country;
+    readonly BQ: Country;
+    readonly BR: Country;
+    readonly BS: Country;
+    readonly BT: Country;
+    readonly BV: Country;
+    readonly BW: Country;
+    readonly BY: Country;
+    readonly BZ: Country;
+    readonly CA: Country;
+    readonly CC: Country;
+    readonly CD: Country;
+    readonly CF: Country;
+    readonly CG: Country;
+    readonly CH: Country;
+    readonly CI: Country;
+    readonly CK: Country;
+    readonly CL: Country;
+    readonly CM: Country;
+    readonly CN: Country;
+    readonly CO: Country;
+    readonly CR: Country;
+    readonly CU: Country;
+    readonly CV: Country;
+    readonly CW: Country;
+    readonly CX: Country;
+    readonly CY: Country;
+    readonly CZ: Country;
+    readonly DE: Country;
+    readonly DJ: Country;
+    readonly DK: Country;
+    readonly DM: Country;
+    readonly DO: Country;
+    readonly DZ: Country;
+    readonly EC: Country;
+    readonly EE: Country;
+    readonly EG: Country;
+    readonly EH: Country;
+    readonly ER: Country;
+    readonly ES: Country;
+    readonly ET: Country;
+    readonly FI: Country;
+    readonly FJ: Country;
+    readonly FK: Country;
+    readonly FM: Country;
+    readonly FO: Country;
+    readonly FR: Country;
+    readonly GA: Country;
+    readonly GB: Country;
+    readonly GD: Country;
+    readonly GE: Country;
+    readonly GF: Country;
+    readonly GG: Country;
+    readonly GH: Country;
+    readonly GI: Country;
+    readonly GL: Country;
+    readonly GM: Country;
+    readonly GN: Country;
+    readonly GP: Country;
+    readonly GQ: Country;
+    readonly GR: Country;
+    readonly GS: Country;
+    readonly GT: Country;
+    readonly GU: Country;
+    readonly GW: Country;
+    readonly GY: Country;
+    readonly HK: Country;
+    readonly HM: Country;
+    readonly HN: Country;
+    readonly HR: Country;
+    readonly HT: Country;
+    readonly HU: Country;
+    readonly ID: Country;
+    readonly IE: Country;
+    readonly IL: Country;
+    readonly IM: Country;
+    readonly IN: Country;
+    readonly IO: Country;
+    readonly IQ: Country;
+    readonly IR: Country;
+    readonly IS: Country;
+    readonly IT: Country;
+    readonly JE: Country;
+    readonly JM: Country;
+    readonly JO: Country;
+    readonly JP: Country;
+    readonly KE: Country;
+    readonly KG: Country;
+    readonly KH: Country;
+    readonly KI: Country;
+    readonly KM: Country;
+    readonly KN: Country;
+    readonly KP: Country;
+    readonly KR: Country;
+    readonly KW: Country;
+    readonly KY: Country;
+    readonly KZ: Country;
+    readonly LA: Country;
+    readonly LB: Country;
+    readonly LC: Country;
+    readonly LI: Country;
+    readonly LK: Country;
+    readonly LR: Country;
+    readonly LS: Country;
+    readonly LT: Country;
+    readonly LU: Country;
+    readonly LV: Country;
+    readonly LY: Country;
+    readonly MA: Country;
+    readonly MC: Country;
+    readonly MD: Country;
+    readonly ME: Country;
+    readonly MF: Country;
+    readonly MG: Country;
+    readonly MH: Country;
+    readonly MK: Country;
+    readonly ML: Country;
+    readonly MM: Country;
+    readonly MN: Country;
+    readonly MO: Country;
+    readonly MP: Country;
+    readonly MQ: Country;
+    readonly MR: Country;
+    readonly MS: Country;
+    readonly MT: Country;
+    readonly MU: Country;
+    readonly MV: Country;
+    readonly MW: Country;
+    readonly MX: Country;
+    readonly MY: Country;
+    readonly MZ: Country;
+    readonly NA: Country;
+    readonly NC: Country;
+    readonly NE: Country;
+    readonly NF: Country;
+    readonly NG: Country;
+    readonly NI: Country;
+    readonly NL: Country;
+    readonly NO: Country;
+    readonly NP: Country;
+    readonly NR: Country;
+    readonly NU: Country;
+    readonly NZ: Country;
+    readonly OM: Country;
+    readonly PA: Country;
+    readonly PE: Country;
+    readonly PF: Country;
+    readonly PG: Country;
+    readonly PH: Country;
+    readonly PK: Country;
+    readonly PL: Country;
+    readonly PM: Country;
+    readonly PN: Country;
+    readonly PR: Country;
+    readonly PS: Country;
+    readonly PT: Country;
+    readonly PW: Country;
+    readonly PY: Country;
+    readonly QA: Country;
+    readonly RE: Country;
+    readonly RO: Country;
+    readonly RS: Country;
+    readonly RU: Country;
+    readonly RW: Country;
+    readonly SA: Country;
+    readonly SB: Country;
+    readonly SC: Country;
+    readonly SD: Country;
+    readonly SE: Country;
+    readonly SG: Country;
+    readonly SH: Country;
+    readonly SI: Country;
+    readonly SJ: Country;
+    readonly SK: Country;
+    readonly SL: Country;
+    readonly SM: Country;
+    readonly SN: Country;
+    readonly SO: Country;
+    readonly SR: Country;
+    readonly SS: Country;
+    readonly ST: Country;
+    readonly SV: Country;
+    readonly SX: Country;
+    readonly SY: Country;
+    readonly SZ: Country;
+    readonly TC: Country;
+    readonly TD: Country;
+    readonly TF: Country;
+    readonly TG: Country;
+    readonly TH: Country;
+    readonly TJ: Country;
+    readonly TK: Country;
+    readonly TL: Country;
+    readonly TM: Country;
+    readonly TN: Country;
+    readonly TO: Country;
+    readonly TR: Country;
+    readonly TT: Country;
+    readonly TV: Country;
+    readonly TW: Country;
+    readonly TZ: Country;
+    readonly UA: Country;
+    readonly UG: Country;
+    readonly UM: Country;
+    readonly US: Country;
+    readonly UY: Country;
+    readonly UZ: Country;
+    readonly VA: Country;
+    readonly VC: Country;
+    readonly VE: Country;
+    readonly VG: Country;
+    readonly VI: Country;
+    readonly VN: Country;
+    readonly VU: Country;
+    readonly WF: Country;
+    readonly WS: Country;
+    readonly XK: Country;
+    readonly YE: Country;
+    readonly YT: Country;
+    readonly ZA: Country;
+    readonly ZM: Country;
+    readonly ZW: Country;
 };
+
+// Add Cloudflare-specific codes "XX" (no country data) and "T1" (Tor network).
+// See: https://developers.cloudflare.com/fundamentals/reference/http-headers/#cf-ipcountry
+export type CountryCode = keyof CountryCatalogue | 'XX' | 'T1';
 
 export type CountrySubdivision = {
     code: string;
     name: string;
 };
 
-export const countries = {
+export const countries: CountryCatalogue = {
     AD: { code: 'AD', codeAlpha3: 'AND', flag: '🇦🇩', name: 'Andorra' },
     AE: { code: 'AE', codeAlpha3: 'ARE', flag: '🇦🇪', name: 'United Arab Emirates' },
     AF: { code: 'AF', codeAlpha3: 'AFG', flag: '🇦🇫', name: 'Afghanistan' },
@@ -276,7 +535,7 @@ export const countries = {
     ZA: { code: 'ZA', codeAlpha3: 'ZAF', flag: '🇿🇦', name: 'South Africa' },
     ZM: { code: 'ZM', codeAlpha3: 'ZMB', flag: '🇿🇲', name: 'Zambia' },
     ZW: { code: 'ZW', codeAlpha3: 'ZWE', flag: '🇿🇼', name: 'Zimbabwe' },
-} as const satisfies Record<`${Uppercase<string>}`, Country>;
+};
 
 export const usSubdivisions = [
     { code: 'AK', name: 'Alaska' },
@@ -407,7 +666,3 @@ export const OfacSanctionedCountryCodes: Readonly<string[]> = [
     'VE', // Venezuela
     'YE', // Yemen
 ];
-
-// Add Cloudflare-specific codes "XX" (no country data) and "T1" (Tor network).
-// See: https://developers.cloudflare.com/fundamentals/reference/http-headers/#cf-ipcountry
-export type CountryCode = keyof typeof countries | 'XX' | 'T1';

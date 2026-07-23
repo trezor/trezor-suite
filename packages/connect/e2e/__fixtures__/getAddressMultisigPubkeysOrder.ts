@@ -49,7 +49,7 @@ const addressUnsorted1 = '3DKeup4KhFpvJPpqnPRdZMte73YZC3v8dS';
 const addressUnsorted2 = '3DpiomhFpTzGJZNksqn67pW5AUV1xHBMG1';
 
 // trezorctl btc get-address -n m/45h/0/0/0 -m 2 -x xpub1 -x xpub2 --multisig-sort-pubkeys
-export default {
+const getAddressMultisigPubkeysOrder: TestCase = {
     method: 'getAddress',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -116,4 +116,6 @@ export default {
             ],
         },
     ],
-} satisfies TestCase;
+};
+
+export default getAddressMultisigPubkeysOrder;

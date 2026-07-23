@@ -219,6 +219,16 @@ export const selectAccountNetworkSymbol = createMemoizedSelector(
     account => account?.symbol ?? null,
 );
 
+export const selectAccountDescriptor = createMemoizedSelector(
+    [selectAccountByKey],
+    account => account?.descriptor ?? null,
+);
+
+export const selectAccountDeviceState = createMemoizedSelector(
+    [selectAccountByKey],
+    account => account?.deviceState ?? null,
+);
+
 export const selectAccountNetworkType = createMemoizedSelector(
     [selectAccountByKey],
     account => account?.networkType ?? null,

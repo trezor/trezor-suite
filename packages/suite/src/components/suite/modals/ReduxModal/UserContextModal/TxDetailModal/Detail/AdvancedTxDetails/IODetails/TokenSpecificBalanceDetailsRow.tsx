@@ -3,7 +3,6 @@ import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits, isNftTokenTransfer } from '@suite-common/wallet-utils';
 import { type TokenTransfer } from '@trezor/blockchain-link-types';
 import { Column, H4 } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
 
@@ -43,7 +42,7 @@ export const TokenSpecificBalanceDetailsRow = ({
     return (
         <>
             {tx.internalTransfers?.length ? (
-                <Column gap={spacings.xs}>
+                <Column gap={8}>
                     <H4>
                         <Translation id="TR_INTERNAL_TRANSACTIONS" />
                     </H4>
@@ -71,7 +70,7 @@ export const TokenSpecificBalanceDetailsRow = ({
                 };
 
                 return (
-                    <Column key={key} gap={spacings.xs}>
+                    <Column key={key} gap={8}>
                         <H4>
                             <Translation
                                 id="TR_TOKEN_TRANSFERS"

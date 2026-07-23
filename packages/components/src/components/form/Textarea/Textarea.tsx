@@ -2,8 +2,6 @@ import { type ReactNode, type Ref, type TextareaHTMLAttributes } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { spacingsPx } from '@trezor/theme';
-
 import { CharacterCount, type CharacterCountProps } from './CharacterCount';
 import { type FrameProps, type FramePropsKeys } from '../../../utils/frameProps';
 import { Box } from '../../Box/Box';
@@ -27,14 +25,14 @@ const StyledTextarea = styled.textarea<{ $hasLabel?: boolean }>`
     ${({ $hasLabel }) =>
         $hasLabel &&
         css`
-            margin-top: ${spacingsPx.xl};
+            margin-top: 24px;
             padding-top: 0;
         `}
 `;
 
 // TODO: Just not use FloatingLabel in Textarea, but placeholder instead?
 const StyledFloatingLabel = styled(FloatingLabel)`
-    top: ${spacingsPx.xl};
+    top: 24px;
 `;
 
 type TextareaHTMLProps = TextareaHTMLAttributes<HTMLTextAreaElement>;

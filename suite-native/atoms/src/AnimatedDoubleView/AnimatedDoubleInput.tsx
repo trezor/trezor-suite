@@ -20,6 +20,7 @@ export type AnimatedDoubleInputProps = {
     renderSecondary: (props: RenderInputProps) => ReactNode;
     onInputSwitch?: (activeView: ActiveView) => void;
     switchLabel?: string;
+    activeView?: ActiveView;
 };
 
 export const AnimatedDoubleInput = ({
@@ -27,6 +28,7 @@ export const AnimatedDoubleInput = ({
     renderSecondary,
     onInputSwitch = noop,
     switchLabel,
+    activeView,
 }: AnimatedDoubleInputProps) => {
     const primaryInputRef = useRef<InputType | null>(null);
     const secondaryInputRef = useRef<InputType | null>(null);
@@ -50,9 +52,9 @@ export const AnimatedDoubleInput = ({
     );
 
     const focusInput = useCallback(
-        (activeView: ActiveView) => {
-            setActiveInputRef(activeView === 'primary' ? primaryInputRef : secondaryInputRef);
-            onInputSwitch(activeView);
+        (nextActiveView: ActiveView) => {
+            setActiveInputRef(nextActiveView === 'primary' ? primaryInputRef : secondaryInputRef);
+            onInputSwitch(nextActiveView);
         },
         [onInputSwitch],
     );
@@ -73,6 +75,7 @@ export const AnimatedDoubleInput = ({
             }
             onViewSwitch={focusInput}
             switchLabel={switchLabel}
+            activeView={activeView}
         />
     );
 };

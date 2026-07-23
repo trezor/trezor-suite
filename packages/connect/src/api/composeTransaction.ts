@@ -126,6 +126,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
     }
 
     discovery?: Discovery;
+    private disposed = false;
 
     get requiredPermissions(): PermissionRequest[] {
         const permissions: PermissionRequest[] = [this.coinPerm('sign', this.params.coinInfo)];
@@ -216,7 +217,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         // wait for fee selection
         const response = await this.selectFee(account, utxo, context);
         // check for interruption
-        if (!this.discovery) {
+        if (this.disposed) {
             throw ERRORS.TypedError(
                 'Runtime',
                 'ComposeTransaction: selectFee response received after dispose',
@@ -531,6 +532,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
     }
 
     dispose() {
+        this.disposed = true;
         const { discovery } = this;
         if (discovery) {
             discovery.stop();

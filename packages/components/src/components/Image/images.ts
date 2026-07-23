@@ -59,6 +59,7 @@ export const IMAGES = {
     TREZOR_T3W1_BACKCOLOR_1: 't3w1/t3w1-backcolor-1.webp',
     TREZOR_T3W1_BACKCOLOR_2: 't3w1/t3w1-backcolor-2.webp',
     TREZOR_T3W1_BACKCOLOR_3: 't3w1/t3w1-backcolor-3.webp',
+    TREZOR_T3W1_BACKCOLOR_4: 't3w1/t3w1-backcolor-4.webp',
     TREZOR_T3W1_FRONTCOLOR_2_LARGE: 't3w1/t3w1-frontcolor-2-large.webp',
     TREZOR_T3W1_FRONTCOLOR_2_LARGE_2x: 't3w1/t3w1-frontcolor-2-large@2x.webp',
     TREZOR_T3W1_HOLOGRAM: 't3w1/t3w1-hologram.webp',

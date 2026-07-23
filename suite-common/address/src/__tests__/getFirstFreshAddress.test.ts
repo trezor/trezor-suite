@@ -49,7 +49,6 @@ describe(getFirstFreshAddress.name, () => {
                     {
                         path: "m/84'/1'/0'/0/1",
                         address: 'tb1q-first',
-                        isVerified: true,
                     },
                 ],
                 ['tb1q-third'],
@@ -104,7 +103,6 @@ describe(getFirstFreshAddress.name, () => {
                     {
                         path: "m/84'/1'/0'/0/1",
                         address: 'tb1q-first',
-                        isVerified: true,
                     },
                 ],
                 ['tb1q-first'],
@@ -165,7 +163,6 @@ describe(getFirstFreshAddress.name, () => {
                     {
                         path: "m/84'/1'/0'/0/140",
                         address: 'tb1q-labeled',
-                        isVerified: false,
                     },
                 ],
                 [],
@@ -226,7 +223,6 @@ describe(getFirstFreshAddress.name, () => {
                     {
                         path: "m/84'/1'/0'/0/1",
                         address: 'tb1q-first',
-                        isVerified: true,
                     },
                 ],
                 ['tb1q-first'],

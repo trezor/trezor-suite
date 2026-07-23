@@ -2,7 +2,7 @@
 // @ts-ignore
 import commonFixtures from '../../../../submodules/trezor-common/tests/fixtures/ethereum/verifymessage.json';
 
-export default {
+const ethereumVerifyMessage: TestCase = {
     method: 'ethereumVerifyMessage',
     setup: {
         mnemonic: commonFixtures.setup.mnemonic,
@@ -18,4 +18,6 @@ export default {
             message: 'Message verified',
         },
     })),
-} satisfies TestCase;
+};
+
+export default ethereumVerifyMessage;

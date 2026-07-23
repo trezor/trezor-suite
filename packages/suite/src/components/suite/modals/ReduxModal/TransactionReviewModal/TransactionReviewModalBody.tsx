@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { selectAccountIncludingChosenInTrading } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { preserveModalOnTxTimeout } from '@suite/modal';
+import { closeModal, preserveModalOnTxTimeout } from '@suite/modal';
 import { selectRouterUrl } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -24,6 +24,7 @@ import { redactRouterUrl } from 'src/utils/suite/analytics';
 import { TransactionReviewModalBodyInner } from './TransactionReviewModalBodyInner';
 import { type TxInfoState, isStakeState } from './utils';
 import { ConfirmActionModal } from '../DeviceContextModal/ConfirmActionModal';
+import { ExpiredTxValidityModal } from '../UserContextModal/TxDetailModal/ExpiredTxValidityModal';
 
 export type TransactionReviewModalBodyProps = {
     decision: Deferred<boolean, string | number | undefined> | undefined;
@@ -134,6 +135,13 @@ export const TransactionReviewModalBody = ({
         [dispatch, isSending, serializedTx, tryAgainSignTx, url, analytics],
     );
 
+    const onCancel = () => {
+        dispatch(closeModal());
+
+        cancelSignTx();
+        decision?.resolve(false);
+    };
+
     if (!device) return null;
     if (
         !account ||
@@ -143,6 +151,10 @@ export const TransactionReviewModalBody = ({
     ) {
         // TODO: special case for Connect Popup
         return <ConfirmActionModal device={device} />;
+    }
+
+    if (shouldCheckTxTimeValidity && hasTxReviewExpired && !isSending) {
+        return <ExpiredTxValidityModal onTryAgain={handleTryAgain} onCancel={onCancel} />;
     }
 
     return (

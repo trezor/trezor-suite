@@ -11,6 +11,7 @@ import { IMAGE_PROXY_API_AUTH_BEARER, IMAGE_PROXY_API_URL } from '@trezor/urls';
  */
 export const useProxyImage = (src?: string) => {
     const abortControllersRef = useRef(new Map<string, AbortController>());
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is src; abortControllersRef is a mutable ref used only for abort bookkeeping and must not be part of the key
     const proxyImageQuery = useQuery({
         enabled: Boolean(src),
         queryKey: desktopQueryKeys.proxyImage(src),

@@ -4,7 +4,7 @@ import { BASE_CURRENCY_ZERO, toFiatCurrency } from '@suite-common/wallet-utils';
 import type { FiatRatesBySymbol, StaticSessionId } from '@trezor/connect';
 import { BigNumber, typedObjectFromEntries, typedObjectKeys } from '@trezor/utils';
 
-import type { State as GraphState } from 'src/reducers/wallet/graphReducer';
+import type { GraphState } from 'src/reducers/wallet/graphReducer';
 import {
     type AggregatedAccountHistory,
     type AggregatedDashboardHistory,

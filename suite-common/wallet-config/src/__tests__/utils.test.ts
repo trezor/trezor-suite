@@ -1,6 +1,7 @@
 import { networks } from '../networksConfig';
 import { type NetworkSymbol } from '../types';
 import {
+    filterNetworksByName,
     getMainnets,
     getNetworksWithMevProtection,
     getNetworksWithNativeTokenReserve,
@@ -13,6 +14,26 @@ import {
 const { btc: bitcoin, eth: ethereum, test: testnet, regtest } = networks;
 
 const mockNetworks = [bitcoin, ethereum, testnet, regtest];
+
+describe('Robinhood Chain network', () => {
+    it('uses the expected mainnet identity and production configuration', () => {
+        expect(networks.rhc).toMatchObject({
+            symbol: 'rhc',
+            settlementLayer: 'eth',
+            chainId: 4663,
+            caipId: 'eip155:4663',
+            coingeckoId: 'robinhood',
+            tradeCryptoId: 'robinhood--0x0000000000000000000000000000000000000000',
+            displaySymbolName: 'Robinhood Ethereum',
+            nativeTokenReserve: '0.0002',
+            backendOptions: [{ type: 'blockbook', isExternalBackend: true }, { type: 'evm-rpc' }],
+        });
+        expect(networks.rhc.explorer.base).toBe('https://robinscan.io');
+        expect(networks.rhc.features).not.toContain('eip1559');
+        expect(networks.rhc).not.toHaveProperty('isDebugOnlyNetwork');
+        expect(getMainnets({ allNetworks: [networks.rhc] })).toEqual([networks.rhc]);
+    });
+});
 
 describe(getMainnets.name, () => {
     it('returns non-testnet, non-debug-only networks when debug is false', () => {
@@ -46,6 +67,20 @@ describe(getTestnets.name, () => {
             allNetworks: mockNetworks,
         });
         expect(result).toEqual([]);
+    });
+});
+
+describe(filterNetworksByName.name, () => {
+    it.each(['', ' ', '\t'])('returns all networks for search query "%s"', searchQuery => {
+        expect(filterNetworksByName(mockNetworks, searchQuery)).toEqual(mockNetworks);
+    });
+
+    it('returns networks with name containing the search query', () => {
+        expect(filterNetworksByName(mockNetworks, 'bit')).toEqual([bitcoin, testnet, regtest]);
+    });
+
+    it('returns networks with symbol containing the search query', () => {
+        expect(filterNetworksByName(mockNetworks, 'BTC')).toEqual([bitcoin]);
     });
 });
 
@@ -83,7 +118,7 @@ describe('isAccountBasedNetwork', () => {
 });
 
 describe(isNetworkUsingExternalBackend.name, () => {
-    it.each<NetworkSymbol>(['bsc', 'pol', 'op', 'arb', 'base', 'avax', 'sol', 'dsol'])(
+    it.each<NetworkSymbol>(['bsc', 'pol', 'op', 'arb', 'base', 'rhc', 'avax', 'sol', 'dsol'])(
         'returns true for %s',
         symbol => {
             expect(isNetworkUsingExternalBackend(symbol)).toBe(true);
@@ -108,6 +143,8 @@ describe(getNetworksWithMevProtection.name, () => {
 
 describe(getNetworksWithNativeTokenReserve.name, () => {
     it('returns string with all networks with native token reserve', () => {
-        expect(getNetworksWithNativeTokenReserve()).toEqual('Base, Optimism, Solana');
+        expect(getNetworksWithNativeTokenReserve()).toEqual(
+            'Base, Optimism, Robinhood Chain, Solana',
+        );
     });
 });

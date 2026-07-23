@@ -24,14 +24,14 @@ else
   echo "$STAGED_FILES"
   echo ""
 
+  # Staged files may be ignored by package-specific ESLint configuration.
   # No quotes to pass as separate arguments (files)
   # shellcheck disable=SC2086
-  if ! yarn g:eslint --fix $STAGED_FILES; then
+  if ! yarn g:eslint --fix --no-warn-ignored $STAGED_FILES; then
     echo "Eslint failed! Please fix the errors and try again. You can also use --no-verify to skip pre-commit checks."
     exit 1
   fi
 
   git update-index --again
 fi
-
 

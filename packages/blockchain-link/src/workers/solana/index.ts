@@ -10,7 +10,11 @@ import type {
 import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
 import { getSuiteVersion } from '@trezor/env-utils';
-import { tokenProgramsInfo } from '@trezor/network-solana/constants';
+import {
+    SOLANA_DECIMALS,
+    SOLANA_MAINNET_GENESIS_HASH,
+    tokenProgramsInfo,
+} from '@trezor/network-solana/constants';
 import solana from '@trezor/network-solana/runtime';
 import type {
     AccountInfoBase,
@@ -389,7 +393,7 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>, isTestnet: boolea
         url: api.clusterUrl,
         name: 'Solana',
         version: '1', // saving request api.rpc.getVersion().send(), version is not used anyways
-        decimals: 9,
+        decimals: SOLANA_DECIMALS,
     };
 
     return {
@@ -705,10 +709,7 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
         const { getApi } = await solana();
         const api = getApi(url, `Trezor Suite ${getSuiteVersion()}`);
 
-        // genesisHash is reliable identifier of the network, for mainnet the genesis hash is 5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d
-        this.isTestnet =
-            (await api.rpc.getGenesisHash().send()) !==
-            '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d';
+        this.isTestnet = (await api.rpc.getGenesisHash().send()) !== SOLANA_MAINNET_GENESIS_HASH;
 
         this.post({ id: -1, type: RESPONSES.CONNECTED });
 

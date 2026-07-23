@@ -17,7 +17,6 @@ import {
 import { createAccountKey } from '@suite-common/wallet-types';
 import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
 import { Banner, Button, Column, Modal, Tooltip } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -118,7 +117,7 @@ export const TxDetailModalBase = ({
             // Disable shadow bottom to make `Fees` component fully visible
             shadowBottom={false}
         >
-            <Column gap={spacings.md}>
+            <Column gap={16}>
                 <BasicTxDetails
                     explorerUrl={getExplorerUrl(explorer, 'tx')!}
                     explorerUrlQueryString={explorer.queryString}

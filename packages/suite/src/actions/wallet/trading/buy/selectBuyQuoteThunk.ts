@@ -27,7 +27,9 @@ export const selectBuyQuoteThunk = createThunk(
 
         const provider = buyInfo && quote.exchange ? buyInfo.providerInfos[quote.exchange] : null;
 
-        if (!quotesRequest || !provider || !receiveAddress) return;
+        if (!quotesRequest || !provider || !receiveAddress || !account) {
+            return;
+        }
 
         const returnUrl = await createQuoteLink(
             { ...quotesRequest, paymentMethod: quote.paymentMethod },

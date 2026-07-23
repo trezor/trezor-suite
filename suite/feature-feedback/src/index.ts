@@ -1,9 +1,9 @@
 export {
-    featureFeedbackSlice,
     featureFeedbackReducer,
     featureUsed,
     feedbackRequested,
     feedbackDismissed,
+    featureFeedbackActions,
 } from './featureFeedbackSlice';
 
 export {

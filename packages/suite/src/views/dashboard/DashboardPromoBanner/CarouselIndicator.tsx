@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components';
 
 import { Row, commonFocusStyles } from '@trezor/components';
-import { borders } from '@trezor/theme';
 
 const Pill = styled.button<{ $isActive: boolean }>`
     width: 30px;
@@ -12,14 +11,14 @@ const Pill = styled.button<{ $isActive: boolean }>`
     cursor: pointer;
     display: flex;
     align-items: center;
-    border-radius: ${borders.radii.full};
+    border-radius: calc(infinity * 1px);
 
     &::before {
         content: '';
         display: block;
         width: 100%;
         height: 4px;
-        border-radius: ${borders.radii.full};
+        border-radius: calc(infinity * 1px);
         background: ${({ theme }) => theme.elementBorderField};
         transition:
             background-color 0.2s ease,

@@ -8,16 +8,20 @@ type AssertNever<T extends never> = T;
 
 type PublicApiKeys = keyof TrezorConnectPublicAPI<Record<string, any>>;
 
-export type PublicApiHasNoManagementMethods = AssertNever<
+declare const publicApiHasNoManagementMethods: AssertNever<
     Extract<PublicApiKeys, keyof TrezorConnectManagement>
 >;
-export type PublicApiHasNoInternalMembers = AssertNever<
+declare const publicApiHasNoInternalMembers: AssertNever<
     Extract<PublicApiKeys, keyof TrezorConnectInternal>
 >;
 
 // The privileged tier keeps both groups.
-export const privileged = (api: TrezorConnectPrivilegedAPI) => {
+const privileged = (api: TrezorConnectPrivilegedAPI) => {
     const { on, off, removeAllListeners, uiResponse, updateConnectSettings, wipeDevice } = api;
 
     return { on, off, removeAllListeners, uiResponse, updateConnectSettings, wipeDevice };
 };
+
+void publicApiHasNoManagementMethods;
+void publicApiHasNoInternalMembers;
+void privileged;

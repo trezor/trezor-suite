@@ -26,7 +26,28 @@ export const ETH_MOCKED_ACCOUNT = {
         },
     ],
     nonce: '1',
-    tokens: [],
+    tokens: [
+        {
+            type: 'ERC20',
+            standard: 'ERC20',
+            name: 'Tether USD',
+            contract: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+            symbol: 'USDT',
+            decimals: 6,
+            balance: '1000000000',
+            transfers: 1,
+        },
+        {
+            type: 'ERC20',
+            standard: 'ERC20',
+            name: 'USD Coin',
+            contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            symbol: 'USDC',
+            decimals: 6,
+            balance: '1000000000',
+            transfers: 1,
+        },
+    ],
     addressAliases: {},
 };
 
@@ -67,14 +88,29 @@ export const fixtures = [
     {
         method: 'estimateFee',
         default: true,
-        response: {
-            data: [
-                {
-                    feePerTx: '25293986739000',
-                    feePerUnit: '1204475559',
-                    feeLimit: '21000',
-                },
-            ],
+        response: ({ params }: any) => {
+            // deposit(assets, receiver) === 0x6e553f65
+            if (params?.specific?.data?.startsWith('0x6e553f65')) {
+                return {
+                    data: [
+                        {
+                            feePerTx: '108402800310000',
+                            feePerUnit: '1204475559',
+                            feeLimit: '90000',
+                        },
+                    ],
+                };
+            }
+
+            return {
+                data: [
+                    {
+                        feePerTx: '25293986739000',
+                        feePerUnit: '1204475559',
+                        feeLimit: '21000',
+                    },
+                ],
+            };
         },
     },
     {
@@ -82,6 +118,16 @@ export const fixtures = [
         default: true,
         response: {
             data: { result: '0x1b4e7dfff573a40ae04daafa67798ee5984345a2bde5e5387d77493a6029690c' },
+        },
+    },
+    {
+        method: 'rpcCall',
+        default: true,
+        response: {
+            data: {
+                // ABI-encoded uint256(0) — allowance = 0
+                data: '0x0000000000000000000000000000000000000000000000000000000000000000',
+            },
         },
     },
     {
@@ -103,7 +149,7 @@ export const fixtures = [
             data: {
                 ts: 1752167345,
                 rates: {
-                    usd: 0.5,
+                    usd: 1,
                 },
             },
         },

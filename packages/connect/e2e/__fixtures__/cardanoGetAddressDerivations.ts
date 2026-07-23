@@ -14,7 +14,7 @@ const legacyResults = {
     },
 };
 
-export default {
+const cardanoGetAddressDerivations: TestCase = {
     method: 'cardanoGetAddress',
     enabledCoins: ['ada'] as const,
     setup: {
@@ -39,4 +39,6 @@ export default {
         },
         legacyResults: [legacyResults.minConnectVersion],
     })),
-} satisfies TestCase;
+};
+
+export default cardanoGetAddressDerivations;

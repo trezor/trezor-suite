@@ -7,21 +7,18 @@ test.describe('LTC send form with mocked blockbook', { tag: ['@T3W1', '@T3T1'] }
         },
     });
 
-    test.beforeEach(
-        async ({ page, dashboardPage, onboardingPage, settingsPage, blockbookMock }) => {
-            await onboardingPage.completeOnboarding();
+    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock }) => {
+        await onboardingPage.completeOnboarding();
 
-            await settingsPage.navigateTo('coins');
-            await blockbookMock.start('ltc');
+        await settingsPage.navigateTo('coins');
+        await blockbookMock.start('ltc');
 
-            await settingsPage.coinsTab.enableNetwork('ltc');
-            await settingsPage.coinsTab.openNetworkAdvanceSettings('ltc');
-            await settingsPage.coinsTab.changeBackend('blockbook', blockbookMock.url);
-
-            await dashboardPage.dashboardMenuButton.click();
-            await page.discoveryShouldFinish();
-        },
-    );
+        await settingsPage.changeNetworks({
+            enableNetworks: [
+                { symbol: 'ltc', backend: { type: 'blockbook', url: blockbookMock.url } },
+            ],
+        });
+    });
 
     test('spend output originating from mimble-wimble peg out tx', async ({
         page,

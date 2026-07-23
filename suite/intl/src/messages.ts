@@ -77,13 +77,13 @@ export const messages = defineMessages({
         defaultMessage: "Token doesn't exist",
         id: 'TR_EARN_YIELD_TOKEN_NOT_EXIST',
     },
-    TR_EARN_YIELD_NETWORK_NOT_SUPPORTED: {
-        defaultMessage: "This account's network doesn't support stablecoin yield.",
-        id: 'TR_EARN_YIELD_NETWORK_NOT_SUPPORTED',
+    TR_EARN_DEFI_YIELD_NETWORK_NOT_SUPPORTED: {
+        defaultMessage: "This account's network doesn't support DeFi Yield.",
+        id: 'TR_EARN_DEFI_YIELD_NETWORK_NOT_SUPPORTED',
     },
-    TR_EARN_YIELD_OPPORTUNITIES_ERROR: {
-        defaultMessage: 'Unable to load stablecoin yield opportunities.',
-        id: 'TR_EARN_YIELD_OPPORTUNITIES_ERROR',
+    TR_EARN_DEFI_YIELD_OPPORTUNITIES_ERROR: {
+        defaultMessage: 'Unable to load DeFi Yield opportunities.',
+        id: 'TR_EARN_DEFI_YIELD_OPPORTUNITIES_ERROR',
     },
     TR_EARN_YIELD_VAULT: {
         defaultMessage: 'Vault',
@@ -278,6 +278,15 @@ export const messages = defineMessages({
     TR_TRADING_HEADER_DESCRIPTION: {
         defaultMessage: 'View and track your {type} in trade history.',
         id: 'TR_TRADING_HEADER_DESCRIPTION',
+    },
+    TR_TRADING_HEADER_PROCESSING_TITLE: {
+        defaultMessage: 'Your {type} is being processed',
+        id: 'TR_TRADING_HEADER_PROCESSING_TITLE',
+    },
+    TR_TRADING_HEADER_PROCESSING_DESCRIPTION: {
+        defaultMessage:
+            'You can leave this screen. View your {type} status anytime in trade history.',
+        id: 'TR_TRADING_HEADER_PROCESSING_DESCRIPTION',
     },
     TR_TRADING_CONCIERGE_TITLE: {
         defaultMessage: 'Large trades, made simple',
@@ -558,10 +567,6 @@ export const messages = defineMessages({
     TR_EXCHANGE_DETAIL_TRANSACTION_SENT: {
         defaultMessage: 'Transaction sent',
         id: 'TR_EXCHANGE_DETAIL_TRANSACTION_SENT',
-    },
-    TR_EXCHANGE_HEADER_TITLE: {
-        defaultMessage: 'Your swap',
-        id: 'TR_EXCHANGE_HEADER_TITLE',
     },
     TR_EXCHANGE_COMPLETE: {
         defaultMessage: 'Swap complete',
@@ -1200,6 +1205,15 @@ export const messages = defineMessages({
     TR_TRADING_NETWORK_FEE: {
         defaultMessage: 'Network fee',
         id: 'TR_TRADING_NETWORK_FEE',
+    },
+    TR_TRADING_TREZOR_FEE: {
+        defaultMessage: 'Trezor fee (incl.)',
+        id: 'TR_TRADING_TREZOR_FEE',
+    },
+    TR_TRADING_TREZOR_FEE_TOOLTIP: {
+        defaultMessage:
+            "This is Trezor's fee to facilitate your trade—already included in your offer.",
+        id: 'TR_TRADING_TREZOR_FEE_TOOLTIP',
     },
     TR_TRADING_TRADE_HISTORY_COUNTER: {
         defaultMessage:
@@ -10021,9 +10035,9 @@ export const messages = defineMessages({
         defaultMessage:
             'Grow your crypto by locking it to help secure the network—and earn rewards in return.',
     },
-    TR_EARN_YIELD_DASHBOARD_TEXT: {
-        id: 'TR_EARN_YIELD_DASHBOARD_TEXT',
-        defaultMessage: 'Put your stablecoins to work and earn rewards.',
+    TR_EARN_DEFI_YIELD_DASHBOARD_TEXT: {
+        id: 'TR_EARN_DEFI_YIELD_DASHBOARD_TEXT',
+        defaultMessage: 'Put your assets to work and earn rewards.',
     },
     TR_EARN_YIELD_DASHBOARD_DEPOSIT_MORE: {
         id: 'TR_EARN_YIELD_DASHBOARD_DEPOSIT_MORE',
@@ -10048,6 +10062,48 @@ export const messages = defineMessages({
     TR_EARN_YIELD_DASHBOARD_DEPOSIT_NOW: {
         id: 'TR_EARN_YIELD_DASHBOARD_DEPOSIT_NOW',
         defaultMessage: 'Deposit now',
+    },
+    TR_EARN_YIELD_WRAP_TITLE: {
+        id: 'TR_EARN_YIELD_WRAP_TITLE',
+        defaultMessage: 'Wrap {nativeSymbol} to {tokenSymbol}',
+    },
+    TR_EARN_YIELD_WRAP_DESCRIPTION: {
+        id: 'TR_EARN_YIELD_WRAP_DESCRIPTION',
+        defaultMessage:
+            "Wrap the {nativeSymbol} you want to deposit — it's 1:1, and you can unwrap anytime.",
+    },
+    TR_EARN_YIELD_WRAP_AMOUNT: {
+        id: 'TR_EARN_YIELD_WRAP_AMOUNT',
+        defaultMessage: 'Amount to wrap',
+    },
+    TR_EARN_YIELD_WRAP_RECEIVING: {
+        id: 'TR_EARN_YIELD_WRAP_RECEIVING',
+        defaultMessage: 'Receiving',
+    },
+    TR_EARN_YIELD_WRAP_SUBMIT: {
+        id: 'TR_EARN_YIELD_WRAP_SUBMIT',
+        defaultMessage: 'Wrap {nativeSymbol}',
+    },
+    TR_EARN_YIELD_UNWRAP_TITLE: {
+        id: 'TR_EARN_YIELD_UNWRAP_TITLE',
+        defaultMessage: 'Unwrap {tokenSymbol} to {nativeSymbol}',
+    },
+    TR_EARN_YIELD_UNWRAP_DESCRIPTION: {
+        id: 'TR_EARN_YIELD_UNWRAP_DESCRIPTION',
+        defaultMessage:
+            'You can also unwrap {tokenSymbol} anytime from the {networkName} account screen.',
+    },
+    TR_EARN_YIELD_UNWRAP_AMOUNT: {
+        id: 'TR_EARN_YIELD_UNWRAP_AMOUNT',
+        defaultMessage: 'Amount to unwrap',
+    },
+    TR_EARN_YIELD_UNWRAP_SUBMIT: {
+        id: 'TR_EARN_YIELD_UNWRAP_SUBMIT',
+        defaultMessage: 'Unwrap {tokenSymbol}',
+    },
+    TR_EARN_YIELD_WITHDRAW_ASSETS: {
+        id: 'TR_EARN_YIELD_WITHDRAW_ASSETS',
+        defaultMessage: 'Withdraw assets',
     },
     TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE: {
         id: 'TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE',
@@ -10153,13 +10209,18 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_WITHDRAW_DISABLED',
         defaultMessage: 'Withdrawal is currently disabled.',
     },
+    TR_EARN_YIELD_MAX_WITHDRAW_INFO: {
+        id: 'TR_EARN_YIELD_MAX_WITHDRAW_INFO',
+        defaultMessage:
+            'Amount switched to {receiptTokenSymbol} to withdraw your entire balance, including yield earned up to the moment the transaction is processed.',
+    },
     TR_EARN_YIELD_CLAIM_DISABLED: {
         id: 'TR_EARN_YIELD_CLAIM_DISABLED',
         defaultMessage: 'Claim is currently disabled.',
     },
-    TR_EARN_STABLECOIN_YIELD_TITLE: {
-        id: 'TR_EARN_STABLECOIN_YIELD_TITLE',
-        defaultMessage: 'Stablecoin yield',
+    TR_EARN_DEFI_YIELD_TITLE: {
+        id: 'TR_EARN_DEFI_YIELD_TITLE',
+        defaultMessage: 'DeFi Yield',
     },
     TR_EARN_YIELD_PENDING_DEPOSIT: {
         id: 'TR_EARN_YIELD_PENDING_DEPOSIT',
@@ -10232,6 +10293,11 @@ export const messages = defineMessages({
     TR_EARN_YIELD_ERROR_TRANSACTION_FAILED: {
         id: 'TR_EARN_YIELD_ERROR_TRANSACTION_FAILED',
         defaultMessage: 'Transaction failed',
+    },
+    TR_EARN_YIELD_ERROR_CLAIM_REVIEW_MISMATCH: {
+        id: 'TR_EARN_YIELD_ERROR_CLAIM_REVIEW_MISMATCH',
+        defaultMessage:
+            "The rewards to claim didn't match the transaction details, so nothing was signed. Try again.",
     },
     TR_EARN_YIELD_REVIEW_DEPOSIT_TITLE: {
         id: 'TR_EARN_YIELD_REVIEW_DEPOSIT_TITLE',
@@ -10958,9 +11024,9 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_APR',
         defaultMessage: 'APR {apr}%',
     },
-    TR_EARN_DEPOSITING_IN_A_NUTSHELL: {
-        id: 'TR_EARN_DEPOSITING_IN_A_NUTSHELL',
-        defaultMessage: 'How stablecoin yield works',
+    TR_EARN_DEFI_YIELD_IN_A_NUTSHELL: {
+        id: 'TR_EARN_DEFI_YIELD_IN_A_NUTSHELL',
+        defaultMessage: 'How DeFi Yield works',
     },
     TR_EARN_YIELD_NUTSHELL_DEPOSITED_AMOUNT: {
         id: 'TR_EARN_YIELD_NUTSHELL_DEPOSITED_AMOUNT',
@@ -11561,14 +11627,17 @@ export const messages = defineMessages({
         id: 'TR_EARN_CONSENT_TO_STAKING_WITH_PROVIDER',
         defaultMessage: 'I acknowledge and consent to stake with {providerName}.',
     },
-    TR_TX_SEND_FAILED_TITLE: {
-        id: 'TR_TX_SEND_FAILED_TITLE',
+    TR_TX_SEND_FAILED: {
+        id: 'TR_TX_SEND_FAILED',
         defaultMessage: 'Send transaction failed',
     },
-    TR_TX_SEND_FAILED_DESCRIPTION: {
-        id: 'TR_TX_SEND_FAILED_DESCRIPTION',
-        defaultMessage:
-            "The signing time for your {networkName} transaction has expired. The transaction is no longer valid and can't be submitted.",
+    TR_TX_EXPIRED_MODAL_TITLE: {
+        id: 'TR_TX_EXPIRED_MODAL_TITLE',
+        defaultMessage: 'Transaction confirmation expired',
+    },
+    TR_TX_EXPIRED_MODAL_DESCRIPTION: {
+        id: 'TR_TX_EXPIRED_MODAL_DESCRIPTION',
+        defaultMessage: 'Your funds are safe. Try again to continue.',
     },
     TR_TX_CONFIRMATION_TIMER: {
         id: 'TR_TX_CONFIRMATION_TIMER',

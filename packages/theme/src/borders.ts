@@ -1,31 +1,11 @@
-import { type SpacingValuesNew, type SpacingValuesPxNew } from './spacings';
+export const borderRadiusValues = [0, 4, 6, 8, 10, 12, 16, 20, 24, 32, 'full'] as const;
+export type BorderRadius = (typeof borderRadiusValues)[number];
 
-export const borders = {
-    widths: {
-        small: '1px',
-        medium: '1.5px',
-        large: '2px',
-    },
-    radii: {
-        xxxs: '2px',
-        xxs: '4px',
-        xs: '8px',
-        sm: '12px',
-        md: '16px',
-        lg: '20px',
-        full: '100px',
-    },
-} as const;
+export const getBorderRadiusCssValue = (borderRadius: BorderRadius) =>
+    borderRadius === 'full' ? 'calc(infinity * 1px)' : `${borderRadius}px`;
 
-export type Borders = typeof borders;
-export type BorderRadii =
-    | (typeof borders.radii)[keyof typeof borders.radii]
-    | SpacingValuesPxNew
-    | SpacingValuesNew;
-export type BorderWidths =
-    | (typeof borders.widths)[keyof typeof borders.widths]
-    | SpacingValuesPxNew
-    | SpacingValuesNew;
+export const borderWidthValues = [1, 2, 4] as const;
+export type BorderWidth = (typeof borderWidthValues)[number];
 
 type NativeRadiusValue = 4 | 6 | 8 | 12 | 16 | 20 | 24;
 

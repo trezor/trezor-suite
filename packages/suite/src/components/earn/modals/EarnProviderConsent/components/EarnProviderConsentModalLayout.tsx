@@ -43,6 +43,7 @@ export const EarnProviderConsentModalLayout = ({
 
     return (
         <Modal
+            data-testid="@modal/earn-provider-consent"
             heading={heading}
             description={description}
             onCancel={onCancel}

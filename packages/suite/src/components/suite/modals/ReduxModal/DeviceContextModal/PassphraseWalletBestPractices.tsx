@@ -3,7 +3,6 @@ import { Translation } from '@suite/intl';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { Banner, Button, Column, H3, Icon, List, Paragraph, Text } from '@trezor/components';
 import { CopyIcon, EyeSlashIcon, NewspaperIcon, WarningCircleIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
@@ -23,12 +22,12 @@ type PassphraseWalletBestPracticesContentProps = {
 const PassphraseWalletBestPracticesContent = ({
     onNext,
 }: PassphraseWalletBestPracticesContentProps) => (
-    <Column gap={spacings.sm}>
-        <Column gap={spacings.md} padding={{ horizontal: spacings.xs }}>
+    <Column gap={12}>
+        <Column gap={16} padding={{ horizontal: 8 }}>
             <H3>
                 <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_TITLE" />
             </H3>
-            <List gap={spacings.sm} bulletGap={spacings.md} typographyStyle="body-sm">
+            <List gap={12} bulletGap={16} typographyStyle="body-sm">
                 <List.Item
                     bulletComponent={<Icon intent="info" as={WarningCircleIcon} size={16} />}
                 >
@@ -63,7 +62,7 @@ const PassphraseWalletBestPracticesContent = ({
             </List>
         </Column>
         <Banner
-            margin={{ top: spacings.sm }}
+            margin={{ top: 12 }}
             description={
                 <Text intent="warning" typographyStyle="body-sm-strong">
                     <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_WARNING" />

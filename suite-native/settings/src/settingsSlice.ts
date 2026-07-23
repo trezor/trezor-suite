@@ -47,7 +47,7 @@ export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
     'earnYieldWorkerBaseUrl',
 ];
 
-export const appSettingsSlice = createSlice({
+const appSettingsSlice = createSlice({
     name: 'appSettings',
     initialState: appSettingsInitialState,
     reducers: {

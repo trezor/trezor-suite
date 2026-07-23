@@ -7,7 +7,7 @@ import type {
 } from '@suite-common/suite-types';
 import type { AccountType, NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
 
-type EarnDashboardType = 'staking' | 'yield';
+export type EarnDashboardType = 'staking' | 'yield';
 
 export type MessageState = { [key in Category]: boolean };
 
@@ -40,16 +40,25 @@ export const Feature = {
         eth: 'eth.staking.stake',
         sol: 'sol.staking.stake',
         ada: 'ada.staking.stake',
+        trx: 'trx.staking.stake',
     },
     unstake: {
         eth: 'eth.staking.unstake',
         sol: 'sol.staking.unstake',
         ada: 'ada.staking.unstake',
+        trx: 'trx.staking.unstake',
     },
     claim: {
         eth: 'eth.staking.claim',
         sol: 'sol.staking.claim',
         ada: 'ada.staking.claim',
+        trx: 'trx.staking.claim',
+    },
+    vote: {
+        trx: 'trx.staking.vote',
+    },
+    withdraw: {
+        trx: 'trx.staking.withdraw',
     },
 
     banners: {
@@ -187,6 +196,7 @@ export type ContextDomain = FunctionContextReturnValues;
 export enum ExperimentId {
     tradingFeedbackForm = '092db279-98dc-418e-bbfa-ef70716fb211',
     tradingFiatValues = 'b73df44d-37ed-4b66-aba1-5c4164493bae',
+    tradingShowTradeFee = 'eef0ff6f-95da-4a7e-aae6-ccd589c32998',
 }
 
 export type ExperimentsItemType = Omit<ExperimentsItem, 'id'> & { id: ExperimentId };

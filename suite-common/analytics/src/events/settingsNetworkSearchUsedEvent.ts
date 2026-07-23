@@ -1,7 +1,7 @@
 import { EventType } from '../constants';
 import type { AnalyticsPlatform, AttributeDef, EventDef } from '../eventDefinition';
 
-type NetworkSettingsSearchOrigin = 'network-settings' | 'add-account';
+type NetworkSettingsSearchOrigin = 'network-settings' | 'add-networks' | 'add-account';
 
 type Attributes = {
     platform: AttributeDef<AnalyticsPlatform>;
@@ -23,8 +23,12 @@ export const settingsNetworkSearchUsedEvent: EventDef<
             changelog: [{ version: '26.7.0', notes: 'added' }],
         },
         origin: {
-            description: 'Where the search was used (`network-settings` or `add-account`)',
-            changelog: [{ version: '26.7.0', notes: 'added' }],
+            description:
+                'Where the search was used (`network-settings`, `add-networks` or `add-account`)',
+            changelog: [
+                { version: '26.7.0', notes: 'added' },
+                { version: '26.8.0', notes: 'added `add-networks` value' },
+            ],
         },
     },
 };

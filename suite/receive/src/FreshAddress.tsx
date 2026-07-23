@@ -7,6 +7,12 @@ import { ReadMoreLink } from '@suite/external-links';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import { getFirstFreshAddress } from '@suite-common/address';
+import {
+    type ReceiveRootState,
+    receiveActions,
+    selectCurrentFreshAddress,
+    selectTouchedAddresses,
+} from '@suite-common/receive';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -21,14 +27,7 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
-import {
-    type ReceiveRootState,
-    receiveActions,
-    selectCurrentFreshAddress,
-    selectReceiveRevealedAddresses,
-} from './receiveReducer';
 import { showAddressThunk } from './showAddressThunk';
 import { useReceiveDisabled } from './useReceiveDisabled';
 
@@ -95,8 +94,8 @@ export const FreshAddress = ({
     const isAccountUtxoBased = useSelector((state: AccountsRootState) =>
         selectIsAccountUtxoBased(state, account.key),
     );
-    const revealedAddresses = useSelector((state: ReceiveRootState) =>
-        selectReceiveRevealedAddresses(state, account.key),
+    const touchedAddresses = useSelector((state: ReceiveRootState) =>
+        selectTouchedAddresses(state, account.key),
     );
     const currentFreshAddress = useSelector((state: ReceiveRootState) =>
         selectCurrentFreshAddress(state, account.key),
@@ -111,7 +110,7 @@ export const FreshAddress = ({
 
     useEffect(() => {
         const alreadyUsedAddressesExceptCurrentFresh = labeledAddresses
-            .concat(revealedAddresses)
+            .concat(touchedAddresses)
             .filter(address => address.path !== currentFreshAddress?.path);
 
         const firstFreshAddress = getFirstFreshAddress(
@@ -137,7 +136,7 @@ export const FreshAddress = ({
         );
     }, [
         account,
-        revealedAddresses,
+        touchedAddresses,
         currentFreshAddress,
         dispatch,
         isAccountUtxoBased,
@@ -202,7 +201,7 @@ export const FreshAddress = ({
 
     return (
         <Card>
-            <Row gap={spacings.lg} flexWrap="wrap">
+            <Row gap={20} flexWrap="wrap">
                 <InfoItem
                     label={
                         <TooltipLabel
@@ -253,7 +252,7 @@ export const FreshAddress = ({
                 <Banner
                     icon
                     intent="info"
-                    margin={{ top: spacings.xxl }}
+                    margin={{ top: 32 }}
                     title={
                         <Translation
                             id="TR_EVM_EXPLANATION_TITLE"

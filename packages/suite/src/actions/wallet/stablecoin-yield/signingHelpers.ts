@@ -172,6 +172,8 @@ export const sendYieldTransaction = async ({
                 precomposedTransaction,
                 precomposedForm: formState,
                 txid: pushResponse.payload.txid,
+                // transactionForSigning.nonce is hex; the fake pending tx expects a decimal string.
+                ethereumNonce: parseInt(transactionForSigning.nonce, 16).toString(),
             }),
         );
 

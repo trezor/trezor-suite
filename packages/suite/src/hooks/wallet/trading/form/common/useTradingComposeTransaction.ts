@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { type UseFormReturn } from 'react-hook-form';
+import { type UseFormReturn, useWatch } from 'react-hook-form';
 
 import { isTranslationKey, useTranslation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -37,7 +37,6 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     type,
     account,
     network,
-    values,
     methods,
     setShowReserveBanner,
     shouldSuppressComposeErrors,
@@ -48,22 +47,22 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     const addressDisplayType = useSelector(selectAddressDisplayType);
     const { translationString } = useTranslation();
 
-    const { getValues, setValue, setError, clearErrors } = methods as unknown as UseFormReturn<
-        TradingSellFormProps | TradingExchangeFormProps
-    >;
+    const { getValues, setValue, setError, clearErrors, control } =
+        methods as unknown as UseFormReturn<TradingSellFormProps | TradingExchangeFormProps>;
     const chunkify = addressDisplayType === AddressDisplayOptions.CHUNKED;
-    const { symbol, networkType } = account;
+    const symbol = account?.symbol;
+    const networkType = account?.networkType;
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, symbol));
     const feeInfo = useMemo(
         () =>
             getConvertedOrDefaultFeeInfo({
-                networkType,
+                networkType: networkType ?? 'bitcoin',
                 feeInfo: rawFeeInfo,
             }),
         [networkType, rawFeeInfo],
     );
     const initState = useMemo(() => ({ account, network, feeInfo }), [account, network, feeInfo]);
-    const outputAddress = values?.outputs?.[0]?.address;
+    const outputAddress = useWatch({ control, name: TRADING_FORM_OUTPUT_ADDRESS });
     const [state, setState] = useState<TradingUseComposeTransactionStateProps>(initState);
 
     // Tron: derive a cold recipient for the offers fee estimate, passed via compose context.
@@ -78,12 +77,12 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
 
     useEffect(() => {
         const currentDevice = deviceRef.current;
-        if (networkType !== 'tron' || !currentDevice) {
+        if (networkType !== 'tron' || !currentDevice || !account || !network) {
             setFeeEstimationRecipient(undefined);
 
             return;
         }
-        let cancelled = false;
+        let isMounted = true;
         deriveTronColdRecipient({
             account,
             network,
@@ -91,27 +90,35 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
             device: currentDevice,
             chunkify,
         }).then(recipient => {
-            if (!cancelled) setFeeEstimationRecipient(recipient);
+            if (isMounted) setFeeEstimationRecipient(recipient);
         });
 
         return () => {
-            cancelled = true;
+            isMounted = false;
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
-        account.descriptor,
-        account.symbol,
-        account.accountType,
+        account?.descriptor,
+        account?.symbol,
+        account?.accountType,
         networkType,
         device?.state,
         network,
         chunkify,
     ]);
 
-    const composeContext = useMemo(
-        () => ({ ...state, feeEstimationRecipient }),
-        [state, feeEstimationRecipient],
-    );
+    const composeContext = useMemo(() => {
+        if (!state.account || !state.network) {
+            return undefined;
+        }
+
+        return {
+            account: state.account,
+            network: state.network,
+            feeInfo: state.feeInfo,
+            feeEstimationRecipient,
+        };
+    }, [state, feeEstimationRecipient]);
 
     // sub-hook, Composing transaction
     const {
@@ -135,8 +142,17 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     });
 
     useEffect(() => {
+        let isMounted = true;
+
+        if (!account || !network) {
+            setState(initState);
+            setComposedLevels(undefined);
+
+            return;
+        }
+
         const setStateAsync = async () => {
-            const address = await getComposeAddressPlaceholder(
+            const address: string = await getComposeAddressPlaceholder(
                 account,
                 network,
                 device,
@@ -144,16 +160,22 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
                 chunkify,
             );
 
-            if (values?.outputs?.[0] && typeof address === 'string') {
-                if (!values.outputs[0].address) {
+            if (!isMounted) {
+                return;
+            }
+
+            const currentOutput = getValues('outputs')?.[0];
+
+            if (currentOutput && typeof address === 'string') {
+                if (!currentOutput.address) {
                     setValue(TRADING_FORM_OUTPUT_ADDRESS, address);
                 }
                 setState(initState);
             }
         };
         const hasAccountChanged = !(
-            state.account.descriptor === initState.account.descriptor &&
-            state.account.symbol === initState.account.symbol
+            state.account?.descriptor === initState.account?.descriptor &&
+            state.account?.symbol === initState.account?.symbol
         );
 
         // update fee info only if the block height has increased.
@@ -167,18 +189,22 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         ) {
             setStateAsync();
         }
+
+        return () => {
+            isMounted = false;
+        };
         // call effect only when listed dependencies will change
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
-        account.symbol,
-        account.descriptor,
+        account?.symbol,
+        account?.descriptor,
         chunkify,
         device,
         network,
-        state.account.descriptor,
-        state.account.symbol,
-        initState.account.descriptor,
-        initState.account.symbol,
+        state.account?.descriptor,
+        state.account?.symbol,
+        initState.account?.descriptor,
+        initState.account?.symbol,
         initState.feeInfo,
         outputAddress,
         type,
@@ -236,7 +262,7 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
-        account.symbol,
+        account?.symbol,
         composedLevels,
         selectedFee,
         clearErrors,

@@ -18,7 +18,6 @@ import { selectBannerMessage } from '@suite-common/message-system';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { isWeb } from '@trezor/env-utils';
-import { spacingsPx } from '@trezor/theme';
 
 import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
@@ -36,10 +35,10 @@ import { SafetyChecksBanner } from './SafetyChecksBanner';
 const Container = styled.div<{ $fill?: boolean }>`
     width: 100%;
     max-width: ${({ $fill }) => ($fill ? 'none' : MAX_CONTENT_WIDTH)};
-    padding: ${spacingsPx.sm} ${spacingsPx.md};
+    padding: 12px 16px;
     display: flex;
     flex-direction: column;
-    gap: ${spacingsPx.xs};
+    gap: 8px;
     position: relative; /* because it must be on the top of the draggable area on Mac */
 `;
 

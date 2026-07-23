@@ -1,7 +1,6 @@
 import { Address } from '@suite/address';
 import { type ReceiveInfo } from '@suite-common/wallet-types';
 import { Box, Row, Select, type SelectProps, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import {
     type AddressItem,
@@ -13,7 +12,7 @@ const optionToAddress = (option: AddressItem | null) =>
     option ? { address: option.label, path: option.value } : null;
 
 const formatOptionLabel = (option: AddressItem) => (
-    <Row gap={spacings.xxs}>
+    <Row gap={4}>
         <Box minWidth={36}>
             <Text isDisabled>/{option.value.split('/').pop()}</Text>
         </Box>
@@ -23,17 +22,17 @@ const formatOptionLabel = (option: AddressItem) => (
 
 type SignAddressInputProps = {
     account?: Account;
-    revealedAddresses: ReceiveInfo[];
+    touchedAddresses: ReceiveInfo[];
 } & SelectProps;
 
 export const SignAddressInput = ({
     account,
-    revealedAddresses,
+    touchedAddresses,
     value,
     onChange,
     ...selectProps
 }: SignAddressInputProps) => {
-    const { getValue, groupedOptions } = useSignAddressOptions(account, revealedAddresses);
+    const { getValue, groupedOptions } = useSignAddressOptions(account, touchedAddresses);
 
     return (
         <Select

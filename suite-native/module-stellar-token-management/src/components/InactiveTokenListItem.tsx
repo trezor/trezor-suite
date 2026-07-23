@@ -1,6 +1,6 @@
 import { type StellarTokenInfo } from '@suite-common/wallet-types';
 import { Box, PressableOpacity, Text } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type InactiveTokenListItemProps = {
@@ -32,7 +32,7 @@ export const InactiveTokenListItem = ({ token, onPress }: InactiveTokenListItemP
         <PressableOpacity onPress={onPress}>
             <Box style={applyStyle(containerStyle)}>
                 <Box style={applyStyle(iconContainerStyle)}>
-                    <CryptoIcon symbol="xlm" contractAddress={token.contract} size="small" />
+                    <TokenIcon symbol="xlm" contractAddress={token.contract} size="small" />
                 </Box>
                 <Box flex={1}>
                     <Text variant="body-md">{token.name || token.symbol}</Text>

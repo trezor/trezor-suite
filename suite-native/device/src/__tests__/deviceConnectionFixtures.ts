@@ -16,7 +16,7 @@ import {
     RootStackRoutes,
 } from '@suite-native/navigation';
 import type { RootStackParamList } from '@suite-native/navigation';
-import { appSettingsSlice } from '@suite-native/settings';
+import { type AppSettingsState, appSettingsReducer } from '@suite-native/settings';
 import { FirmwareType, UI_REQUEST } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -32,7 +32,7 @@ type InitialStateConfig = {
     device?: Partial<ReturnType<typeof deviceReducer>>;
     deviceOnboarding?: Partial<typeof deviceOnboardingSlice.reducer>;
     walletSettings?: Partial<ReturnType<typeof walletSettingsReducer>>;
-    appSettings?: Partial<typeof appSettingsSlice.reducer>;
+    appSettings?: Partial<AppSettingsState>;
     featureFlags?: Partial<typeof featureFlagsSlice.reducer>;
     thp?: Partial<ReturnType<typeof thpReducer>>;
 };
@@ -45,7 +45,7 @@ type RootState = {
         settings: ReturnType<typeof walletSettingsReducer>;
     };
     messageSystem: ReturnType<typeof messageSystemReducer>;
-    appSettings: ReturnType<typeof appSettingsSlice.reducer>;
+    appSettings: AppSettingsState;
     featureFlags: ReturnType<typeof featureFlagsSlice.reducer>;
     thp: ReturnType<typeof thpReducer>;
 };
@@ -124,7 +124,7 @@ const buildInitialState = ({
         },
     },
     appSettings: {
-        ...appSettingsSlice.reducer(undefined, INIT_ACTION),
+        ...appSettingsReducer(undefined, INIT_ACTION),
         ...appSettings,
     },
     messageSystem: { ...messageSystemReducer(undefined, INIT_ACTION) },

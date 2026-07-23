@@ -11,7 +11,7 @@ import {
     seedQuotaManagerData,
     wipeAndRestartEvoluRelayServer,
 } from '@suite-common/e2e-evolu-client';
-import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { Model } from '@trezor/trezor-user-env-link';
 import { scheduleAction } from '@trezor/utils';
 
 import { btcDiscoveryFinishedStateT3T1 } from '../fixtures/btcDiscoveryFinishedStateT3T1';
@@ -128,8 +128,6 @@ describe.skip('Suite Sync - Labelling [@androidOnly @T3T1]', () => {
 
         // Change address label
         await onAccountDetail.openReceive();
-        await onAccountReceive.tapShowAddressButton();
-        await TrezorUserEnvLink.pressYes();
 
         const receiveAddressLabel = element(by.id('@receive/address-label/button'));
         await waitForVisible(receiveAddressLabel);
@@ -189,8 +187,6 @@ describe.skip('Suite Sync - Labelling [@androidOnly @T3T1]', () => {
         // Verify address label synced
         await onMyAssets.openAccountDetail({ accountName: immuneFixtures.accountSeed.label });
         await onAccountDetail.openReceive();
-        await onAccountReceive.tapShowAddressButton();
-        await TrezorUserEnvLink.pressYes();
         await onAccountReceive.verifyReceiveAddressLabel(
             immuneFixtures.createAddressSeed(FIRST_BTC_RECEIVE_ADDRESS).label ?? '',
         );

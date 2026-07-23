@@ -1,9 +1,77 @@
 import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import {
+    type CoinjoinClientEvents,
+    type CoinjoinRequestOwnershipEvent,
+    type CoinjoinRequestSignatureEvent,
+    type CoinjoinResponseOwnershipEvent,
+    type CoinjoinResponseSignatureEvent,
+    type SerializedCoinjoinRound,
+} from '@trezor/coinjoin';
+import type TrezorConnect from '@trezor/connect';
+import { type DeepPartial } from '@trezor/type-utils';
 
 import * as COINJOIN from '../coinjoinConstants';
+import { type CoinjoinState } from '../coinjoinTypes';
 
-export const DEVICE = mockSuiteDevice({
+/** Partial state passed directly to the test store initializer. */
+type FixtureState = unknown;
+
+/** Opaque mock responses passed directly to setTrezorConnectFixtures. */
+type ConnectFixtures = unknown;
+
+type OnCoinjoinRoundChangedFixture = {
+    description: string;
+    connect?: ConnectFixtures;
+    state: FixtureState;
+    params: DeepPartial<SerializedCoinjoinRound> | Array<DeepPartial<SerializedCoinjoinRound>>;
+    result: {
+        actions: string[];
+        trezorConnectCalledTimes: number;
+        trezorConnectCallsWith?: DeepPartial<Parameters<typeof TrezorConnect.setBusy>[0]>;
+    };
+};
+
+type GetOwnershipProofFixture = {
+    description: string;
+    connect?: ConnectFixtures;
+    state: FixtureState;
+    params: Array<DeepPartial<CoinjoinRequestOwnershipEvent>>;
+    result: {
+        response: Array<DeepPartial<CoinjoinResponseOwnershipEvent>>;
+        trezorConnectCalledTimes: number;
+    };
+};
+
+type SignCoinjoinTxFixture = {
+    description: string;
+    connect?: ConnectFixtures;
+    state: FixtureState;
+    params: DeepPartial<CoinjoinRequestSignatureEvent>;
+    result: {
+        actions: string[];
+        response: DeepPartial<CoinjoinResponseSignatureEvent>;
+        trezorConnectCalledTimes: number;
+        trezorConnectCalledWith: Array<
+            DeepPartial<Parameters<typeof TrezorConnect.signTransaction>[0]>
+        >;
+    };
+};
+
+type TestedClientEvent = 'status' | 'prison' | 'round' | 'session-phase';
+
+type ClientEventFixture = {
+    [Event in TestedClientEvent]: {
+        description: string;
+        event: Event;
+        state: FixtureState;
+        params: DeepPartial<CoinjoinClientEvents[Event]>;
+        result: DeepPartial<CoinjoinState>;
+    };
+}[TestedClientEvent];
+
+export const DEVICE: TrezorDevice = mockSuiteDevice({
     state: { staticSessionId: '1stTestnetAddress@device_id:0' },
     connected: true,
     available: true,
@@ -12,7 +80,7 @@ export const DEVICE = mockSuiteDevice({
 
 const SESSION = { signedRounds: [] as string[], sessionPhaseQueue: [], maxRounds: 10 };
 
-export const onCoinjoinRoundChanged = [
+export const onCoinjoinRoundChanged: OnCoinjoinRoundChangedFixture[] = [
     {
         description: 'Phase 0. No associated coinjoin accounts',
         connect: undefined,
@@ -327,7 +395,7 @@ export const onCoinjoinRoundChanged = [
     },
 ];
 
-export const getOwnershipProof = [
+export const getOwnershipProof: GetOwnershipProofFixture[] = [
     {
         description: 'getOwnershipProof success with 3 accounts, 2 passphrases, 2 physical devices',
         connect: [
@@ -540,7 +608,7 @@ export const getOwnershipProof = [
     },
 ];
 
-export const signCoinjoinTx = [
+export const signCoinjoinTx: SignCoinjoinTxFixture[] = [
     {
         description: 'signCoinjoinTx success with 3 accounts, 2 passphrases, 2 physical devices',
         connect: [
@@ -1039,7 +1107,7 @@ export const signCoinjoinTx = [
     },
 ];
 
-export const clientEvents = [
+export const clientEvents: ClientEventFixture[] = [
     {
         description: 'StatusEvent updates client values',
         event: 'status',

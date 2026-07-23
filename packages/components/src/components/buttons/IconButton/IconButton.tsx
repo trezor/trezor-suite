@@ -46,7 +46,7 @@ type ButtonContainerProps = TransientProps<AllowedIconButtonFrameProps> & {
 const Container = styled.button<ButtonContainerProps>`
     ${commonButtonStyles}
 
-    border-radius: ${({ $size }) => mapSizeToBorderRadius($size)};
+    border-radius: ${({ $size }) => mapSizeToBorderRadius($size)}px;
 
     ${({ $intent, $priority, disabled, $isInverse, $isFloating, theme }) =>
         mapPropsToCSS($intent, $priority, disabled, $isInverse, theme, $isFloating)}

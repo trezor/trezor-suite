@@ -1,8 +1,6 @@
 import { variables } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
-
 export const TradingWrapper = `
-    gap: ${spacingsPx.md};
+    gap: 16px;
     display: grid;
     grid-template-columns: minmax(0, 1fr) 420px;
 

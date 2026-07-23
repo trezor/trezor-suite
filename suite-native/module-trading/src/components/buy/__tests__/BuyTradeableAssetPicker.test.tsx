@@ -1,5 +1,6 @@
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
+import { act } from '@suite-native/test-utils';
 import { type TestStore, fireEvent, screen } from '@suite-native/test-utils-store';
 import { type BuyFormType } from '@suite-native/trading-types';
 import { FirmwareType } from '@trezor/connect';
@@ -32,13 +33,19 @@ describe('BuyTradeableAssetPicker', () => {
         return result.current;
     };
 
-    const renderTradeableAssetPicker = () =>
-        renderWithTradingProvider(
+    const renderTradeableAssetPicker = async () => {
+        const res = renderWithTradingProvider(
             <Form form={form}>
                 <BuyTradeableAssetPicker />
             </Form>,
             { store },
         );
+        await act(async () => {
+            await act(() => Promise.resolve());
+        });
+
+        return res;
+    };
 
     afterEach(() => {
         screen.unmount();
@@ -50,8 +57,8 @@ describe('BuyTradeableAssetPicker', () => {
             form = renderFormHook();
         });
 
-        it('should render "Select asset" button with caret', () => {
-            const { getByLabelText } = renderTradeableAssetPicker();
+        it('should render "Select asset" button with caret', async () => {
+            const { getByLabelText } = await renderTradeableAssetPicker();
 
             expect(
                 getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
@@ -60,8 +67,8 @@ describe('BuyTradeableAssetPicker', () => {
             );
         });
 
-        it('should render bottom sheet with all assets', () => {
-            const { getByLabelText } = renderTradeableAssetPicker();
+        it('should render bottom sheet with all assets', async () => {
+            const { getByLabelText } = await renderTradeableAssetPicker();
 
             expect(getByLabelText('Bitcoin')).toBeTruthy();
             expect(getByLabelText('USDC')).toBeTruthy();
@@ -74,22 +81,22 @@ describe('BuyTradeableAssetPicker', () => {
             form = renderFormHook();
         });
 
-        it('should preselect BTC and do not render caret', () => {
-            const { getByLabelText } = renderTradeableAssetPicker();
+        it('should preselect BTC and do not render caret', async () => {
+            const { getByLabelText } = await renderTradeableAssetPicker();
 
             expect(
                 getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
             ).toHaveTextContent('BTC');
         });
 
-        it('should not render bottom sheet at all', () => {
-            const { queryByLabelText } = renderTradeableAssetPicker();
+        it('should not render bottom sheet at all', async () => {
+            const { queryByLabelText } = await renderTradeableAssetPicker();
 
             expect(queryByLabelText('Bitcoin')).toBeNull();
         });
 
-        it('should do nothing on button or input press', () => {
-            const { getByLabelText } = renderTradeableAssetPicker();
+        it('should do nothing on button or input press', async () => {
+            const { getByLabelText } = await renderTradeableAssetPicker();
 
             // no need to act as there should be no action
             fireEvent.press(getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')));

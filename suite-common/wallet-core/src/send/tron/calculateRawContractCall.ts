@@ -1,6 +1,7 @@
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type ExternalOutput, type PrecomposedTransaction } from '@suite-common/wallet-types';
-import { TRON_MEMO_FEE_SUN, calculateTotal } from '@suite-common/wallet-utils';
+import { calculateTotal } from '@suite-common/wallet-utils';
+import { TRON_MEMO_FEE_SUN } from '@trezor/network-tron/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { type EstimateFeeLevel } from './types';

@@ -25,7 +25,7 @@ import {
     useInsertGroupLabelsAndSpaces,
 } from 'src/components/suite/asset-picker/hooks';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
+import { globalSendReceiveFiltersSelectors } from 'src/slices/wallet/globalSendReceiveFilters';
 
 import { AssetSearchWithNetworkFilter } from '../AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';
 import { useAccountWithTokensOptions } from './hooks/useAccountWithTokensOptions';
@@ -40,8 +40,8 @@ const LIST_HEIGHT = 480;
 export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
     const dispatch = useDispatch();
 
-    const networkSymbolFilter = useSelector(globalSendReceiveFilters.selectors.selectNetworkSymbol);
-    const searchFilter = useSelector(globalSendReceiveFilters.selectors.selectSearch);
+    const networkSymbolFilter = useSelector(globalSendReceiveFiltersSelectors.selectNetworkSymbol);
+    const searchFilter = useSelector(globalSendReceiveFiltersSelectors.selectSearch);
     const { expandedAccountTokensGroups, updateExpandableAccountGroups } =
         useExpandableAccountGroups();
     const device = useSelector(selectSelectedDevice);
@@ -60,7 +60,7 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
 
     const submitRef = useCurrentRef(onSubmit);
     const listRef = useRef<HTMLDivElement>(null);
-    const filledSearch = useSelector(globalSendReceiveFilters.selectors.filledSearch);
+    const filledSearch = useSelector(globalSendReceiveFiltersSelectors.filledSearch);
 
     const handleAccountClick = useCallback(
         (account: Account) => {

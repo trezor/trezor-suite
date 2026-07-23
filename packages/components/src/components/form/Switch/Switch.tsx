@@ -2,8 +2,6 @@ import { type ReactNode, useId } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { borders, spacings } from '@trezor/theme';
-
 import { type SwitchLabelPosition, type SwitchSize } from './types';
 import { mapSizeToHandleSize, mapSizeToLabelContainerGap, mapSizeToLabelTypography } from './utils';
 import { type FrameProps, type FramePropsKeys } from '../../../utils/frameProps';
@@ -31,7 +29,7 @@ const Container = styled.div<{
 }>`
     position: relative;
     flex-shrink: 0;
-    border-radius: ${borders.radii.full};
+    border-radius: calc(infinity * 1px);
     transition:
         background 0.2s ease 0s,
         ${focusStyleTransition};
@@ -67,7 +65,7 @@ const Handle = styled.button<{ $isChecked: boolean }>`
     height: 100%;
     aspect-ratio: 1;
     border: none;
-    border-radius: ${borders.radii.full};
+    border-radius: calc(infinity * 1px);
     background: ${({ theme }) => theme.contentPrimaryInverse};
     transform: ${({ $isChecked }) => $isChecked && `translateX(100%)`};
     transition: transform 0.25s ease 0s;
@@ -79,6 +77,7 @@ const CheckboxInput = styled.input`
     border: 0;
     clip-path: inset(50%);
     height: 1px;
+    /* stylelint-disable-next-line trezor/dimension-token-values -- Visually hidden input convention. */
     margin: -1px;
     overflow: hidden;
     padding: 0;
@@ -129,7 +128,7 @@ export const Switch = ({
                 <Box
                     height={mapSizeToHandleSize(size)}
                     aspectRatio="2 / 1"
-                    margin={spacings.xxxs}
+                    margin={2}
                     opacity={isDisabled ? 0.74 : 1}
                 >
                     <Handle tabIndex={-1} $isChecked={isChecked} type="button" />

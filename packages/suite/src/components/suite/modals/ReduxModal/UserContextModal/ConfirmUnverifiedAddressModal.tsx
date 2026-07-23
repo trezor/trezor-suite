@@ -20,12 +20,12 @@ export const ConfirmUnverifiedAddressModal = ({
         () => showAddressThunk({ path: addressPath, address: value }),
         [addressPath, value],
     );
-    const showUnverifiedAddress = () => openAddressModal({ accountKey, addressPath, value });
+    const showAddress = () => openAddressModal({ accountKey, addressPath, value });
 
     return (
         <ConfirmUnverifiedModal
             action={{
-                event: showUnverifiedAddress,
+                event: showAddress,
                 title: 'TR_SHOW_UNVERIFIED_ADDRESS',
             }}
             verifyProcess={verifyProcess}

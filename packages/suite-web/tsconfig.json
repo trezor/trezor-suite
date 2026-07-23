@@ -20,7 +20,7 @@
         { "path": "../connect" },
         { "path": "../connect-common" },
         { "path": "../suite" },
-        { "path": "../transport" },
+        { "path": "../transport-common" },
         { "path": "../transport-web" },
         { "path": "../utils" },
         { "path": "../../suite/sentry" },

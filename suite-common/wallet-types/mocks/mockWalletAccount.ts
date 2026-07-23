@@ -114,6 +114,7 @@ const networkTypeMap: Record<NetworkSymbol, NetworkSpecificDefault> = {
     arb: networkSpecificDefaultBitcoin,
     base: networkSpecificDefaultBitcoin,
     op: networkSpecificDefaultBitcoin,
+    rhc: networkSpecificDefaultEthereum,
     avax: networkSpecificDefaultBitcoin,
     trx: networkSpecificDefaultTron,
     ttrx: networkSpecificDefaultTron,
@@ -153,7 +154,6 @@ export const mockWalletAccount = (
         utxo: undefined,
         addresses: undefined,
         metadata: { key: 'xpub' },
-        ts: 0,
         ...account,
 
         // This is mandatory to pass to enforce consistency

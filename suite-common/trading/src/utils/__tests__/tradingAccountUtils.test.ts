@@ -1,9 +1,8 @@
 import { type CryptoId } from 'invity-api';
 
-import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { isAccountEligibleForTrade, pickFallbackAccount } from '../tradingAccountUtils';
+import { isAccountEligibleForTrade } from '../tradingAccountUtils';
 
 const TOKEN_CRYPTO_ID = 'ethereum--0xTokenContract' as CryptoId;
 
@@ -25,23 +24,5 @@ describe('isAccountEligibleForTrade', () => {
 
     it('is not eligible for a token cryptoId when the account holds no matching token', () => {
         expect(isAccountEligibleForTrade(zeroBalance, 'sell', {}, TOKEN_CRYPTO_ID)).toBe(false);
-    });
-});
-
-describe('pickFallbackAccount', () => {
-    it('returns the first eligible account', () => {
-        const accounts: Account[] = [zeroBalance, withBalance];
-
-        expect(pickFallbackAccount(accounts, 'sell', {}).key).toBe(withBalance.key);
-    });
-
-    it('returns the first account as a last resort when none are eligible', () => {
-        const accounts: Account[] = [zeroBalance];
-
-        expect(pickFallbackAccount(accounts, 'sell', {}).key).toBe(zeroBalance.key);
-    });
-
-    it('returns undefined when there are no accounts at all', () => {
-        expect(pickFallbackAccount([], 'sell', {})).toBeUndefined();
     });
 });

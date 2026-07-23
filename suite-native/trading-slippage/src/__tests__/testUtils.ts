@@ -7,6 +7,8 @@ import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { localeInitialState, localeReducer } from '@suite-native/intl';
 import {
+    type RenderHookResult,
+    type RenderResult,
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
@@ -49,7 +51,7 @@ export const createSlippageTestStore = (quote: ExchangeTrade | undefined = mercu
 export const renderWithSlippageTestProvider = (
     element: ReactElement,
     { store, quote }: SlippageTestOptions = {},
-) => {
+): RenderResult => {
     const preloadedState = store ? undefined : getSlippageTestPreloadedState(quote);
 
     return renderWithStoreProvider(element, { preloadedState, store });
@@ -58,7 +60,7 @@ export const renderWithSlippageTestProvider = (
 export const renderHookWithSlippageTestProvider = <Result>(
     callback: () => Result,
     { store, quote }: SlippageTestOptions = {},
-) => {
+): RenderHookResult<Result, unknown> => {
     const preloadedState = store ? undefined : getSlippageTestPreloadedState(quote);
 
     return renderHookWithStoreProvider(callback, { preloadedState, store });

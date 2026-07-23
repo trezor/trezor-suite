@@ -2,6 +2,8 @@ import { Hint } from '@suite-native/atoms';
 import { useField } from '@suite-native/forms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { SOLANA_UNSTAKE_AMOUNT_BOUNDS_ERROR } from '../unstakeFormSchema';
+
 const errorStyle = prepareNativeStyle<{ isFiatDisplayed: boolean }>(
     (utils, { isFiatDisplayed }) => ({
         marginHorizontal: 0,
@@ -16,9 +18,9 @@ const errorStyle = prepareNativeStyle<{ isFiatDisplayed: boolean }>(
 
 export const EarnAmountErrorMessage = ({ isFiatDisplayed }: { isFiatDisplayed: boolean }) => {
     const { applyStyle } = useNativeStyles();
-    const { errorMessage } = useField({ name: 'amount' });
+    const { errorMessage, errorType } = useField({ name: 'amount' });
 
-    if (!errorMessage) return null;
+    if (!errorMessage || errorType === SOLANA_UNSTAKE_AMOUNT_BOUNDS_ERROR) return null;
 
     return (
         <Hint variant="error" style={applyStyle(errorStyle, { isFiatDisplayed })}>

@@ -23,7 +23,7 @@ export const EarnPromoListHeader = React.memo(({ item }: EarnPromoListHeaderProp
     const { applyStyle } = useNativeStyles();
 
     const sectionIcon: IconName = item === 'staking' ? 'piggyBank' : 'coins';
-    const sectionTitleTranslationId = item === 'staking' ? 'earn.staking' : 'earn.stablecoinYield';
+    const sectionTitleTranslationId = item === 'staking' ? 'earn.staking' : 'earn.defiYield';
 
     return (
         <Card borderColor="borderNeutral" noPadding noShadow style={applyStyle(cardStyle)}>

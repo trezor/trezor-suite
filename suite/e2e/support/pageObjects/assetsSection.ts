@@ -12,8 +12,13 @@ export class AssetsSection {
         this.page.getByTestId(`@dashboard/asset/${symbol}/buy-button`);
     readonly enableMoreCoins: Locator;
     readonly activateAssetsModalSaveButton: Locator;
+    readonly activateAssetsModalNoteGotItButton: Locator;
     readonly activateAssetsModalNetworkButton = (symbol: NetworkSymbol) =>
         this.page.getByTestId(`@settings/wallet/network/${symbol}`);
+    readonly assetName = (symbol: NetworkSymbol) =>
+        this.page
+            .getByTestId(`@dashboard/asset-item/${symbol}`)
+            .getByTestId('@dashboard/asset/name');
     readonly assetCard = (symbol: NetworkSymbol) =>
         this.page.getByTestId(`@dashboard/asset-card/${symbol}`);
     readonly assetRow = (symbol: NetworkSymbol) =>
@@ -30,6 +35,9 @@ export class AssetsSection {
         this.gridIcon = this.page.getByTestId('@dashboard/assets/grid-icon');
         this.enableMoreCoins = this.page.getByTestId('@dashboard/assets/enable-more-coins');
         this.activateAssetsModalSaveButton = this.page.getByTestId('@modal/activate-assets/save');
+        this.activateAssetsModalNoteGotItButton = this.page.getByTestId(
+            '@modal/activate-assets/got-it',
+        );
         this.bottomInfo = this.page.getByTestId('@dashboard/asset/bottom-info');
         this.assetExchangeRate = this.page.getByTestId('@dashboard/asset/exchange-rate');
         this.assetWeekChange = this.page.getByTestId('@dashboard/asset/week-change');

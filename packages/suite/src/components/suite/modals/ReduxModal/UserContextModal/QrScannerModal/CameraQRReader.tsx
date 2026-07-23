@@ -7,7 +7,6 @@ import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Card, Column, Icon, Paragraph, Row } from '@trezor/components';
 import { QrCodeIcon } from '@trezor/icons';
-import { borders, spacings } from '@trezor/theme';
 import { HELP_CENTER_QR_CODE_URL } from '@trezor/urls';
 
 const ContentWrapper = styled.div`
@@ -23,7 +22,7 @@ const StyledVideo = styled.video`
     width: 100%;
     height: 100%;
     position: relative;
-    border-radius: ${borders.radii.md};
+    border-radius: 16px;
 
     @media (min-width: 768px) {
         transform: scaleX(-1);
@@ -83,12 +82,7 @@ export const CameraQRReader = ({ onResult }: CameraQRReaderProps) => {
                 )}
                 {!isReaderLoaded && !error && (
                     <Card height="100%">
-                        <Column
-                            height="100%"
-                            justifyContent="center"
-                            gap={spacings.xxxl}
-                            alignItems="center"
-                        >
+                        <Column height="100%" justifyContent="center" gap={40} alignItems="center">
                             <Icon as={QrCodeIcon} size={100} />
                             <Translation id="TR_PLEASE_ALLOW_YOUR_CAMERA" />
                         </Column>
@@ -106,7 +100,7 @@ export const CameraQRReader = ({ onResult }: CameraQRReaderProps) => {
                     </ReaderWrapper>
                 )}
             </ContentWrapper>
-            <Row gap={spacings.xs} justifyContent="center">
+            <Row gap={8} justifyContent="center">
                 <Paragraph intent="neutral" priority="secondary">
                     <Translation id="TR_FOR_EASIER_AND_SAFER_INPUT" />
                 </Paragraph>

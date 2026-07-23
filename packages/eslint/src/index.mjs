@@ -8,6 +8,7 @@ import { javascriptNodejsConfig } from './javascriptNodejsConfig.mjs';
 import { jestConfig } from './jestConfig.mjs';
 import { localRulesConfig } from './localRulesConfig.mjs';
 import { reactConfig } from './reactConfig.mjs';
+import { reactQueryConfig } from './reactQueryConfig.mjs';
 import { restrictedImportsPatterns, typescriptConfig } from './typescriptConfig.mjs';
 /**
  * @typedef {import('eslint').Linter.Config} Config
@@ -51,6 +52,7 @@ export const eslint = [
     },
 
     ...reactConfig,
+    ...reactQueryConfig,
     ...javascriptConfig,
     ...javascriptNodejsConfig,
     ...typescriptConfig,

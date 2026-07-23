@@ -7,9 +7,6 @@
         },
         { "path": "../../suite-common/device" },
         {
-            "path": "../../suite-common/formatters"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -27,24 +24,22 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../clipboard" },
-        { "path": "../confirm-on-trezor" },
         { "path": "../device" },
         { "path": "../device-mutex" },
-        { "path": "../icons" },
-        { "path": "../in-app-rating" },
+        { "path": "../formatters" },
         { "path": "../intl" },
         { "path": "../link" },
-        { "path": "../module-device-onboarding" },
         { "path": "../navigation" },
+        { "path": "../qr-code" },
         { "path": "../toasts" },
         { "path": "../tokens" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
         {
             "path": "../../packages/styles-native"
         },
-        { "path": "../../packages/theme" },
-        { "path": "../../packages/urls" }
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/urls" },
+        { "path": "../test-utils" }
     ]
 }

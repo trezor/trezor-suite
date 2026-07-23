@@ -42,11 +42,14 @@ const ensureWallet = (
     return state.wallets[walletDescriptor];
 };
 
-export const suiteSyncDataSlice = createSlice({
+const suiteSyncDataSlice = createSlice({
     name: 'suiteSyncData',
     initialState: initialSuiteSyncDataState,
     reducers: {
-        upsertManyWallets: (state, action: PayloadAction<SuiteSyncWallet[]>) => {
+        upsertManyWallets: (
+            state: SuiteSyncDataState,
+            action: PayloadAction<SuiteSyncWallet[]>,
+        ) => {
             action.payload.forEach(wallet => {
                 const existing = state.wallets[wallet.walletDescriptor];
 
@@ -60,7 +63,7 @@ export const suiteSyncDataSlice = createSlice({
         },
 
         upsertManyAccounts: (
-            state,
+            state: SuiteSyncDataState,
             action: PayloadAction<{
                 walletDescriptor: WalletDescriptor;
                 accounts: SuiteSyncAccount[];
@@ -74,7 +77,7 @@ export const suiteSyncDataSlice = createSlice({
         },
 
         upsertManyAddresses: (
-            state,
+            state: SuiteSyncDataState,
             action: PayloadAction<{
                 walletDescriptor: WalletDescriptor;
                 addresses: SuiteSyncAddress[];
@@ -88,7 +91,7 @@ export const suiteSyncDataSlice = createSlice({
         },
 
         upsertManyOutputs: (
-            state,
+            state: SuiteSyncDataState,
             action: PayloadAction<{
                 walletDescriptor: WalletDescriptor;
                 outputs: SuiteSyncOutput[];
@@ -101,7 +104,10 @@ export const suiteSyncDataSlice = createSlice({
             });
         },
 
-        clearDataForWallet: (state, action: PayloadAction<WalletDescriptor>) => {
+        clearDataForWallet: (
+            state: SuiteSyncDataState,
+            action: PayloadAction<WalletDescriptor>,
+        ) => {
             delete state.wallets[action.payload];
         },
 
@@ -109,6 +115,7 @@ export const suiteSyncDataSlice = createSlice({
     },
 });
 
+export const suiteSyncDataActions = suiteSyncDataSlice.actions;
 export const {
     upsertManyWallets,
     upsertManyAccounts,
@@ -116,7 +123,7 @@ export const {
     upsertManyOutputs,
     clearDataForWallet,
     clearAll,
-} = suiteSyncDataSlice.actions;
+} = suiteSyncDataActions;
 
 export const suiteSyncDataReducer = suiteSyncDataSlice.reducer;
 

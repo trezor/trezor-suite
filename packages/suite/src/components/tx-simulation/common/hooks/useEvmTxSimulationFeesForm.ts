@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 import { type TxSimulationEVMResult } from '@suite-common/tx-simulation';
 import {
@@ -56,11 +56,10 @@ export function useEvmTxSimulationFeesForm({
         feeInfo,
     });
 
-    const { watch } = form;
-    const selectedFee = watch('selectedFee');
-    const feePerUnit = watch('feePerUnit');
-    const maxFeePerGas = watch('maxFeePerGas');
-    const feeLimit = watch('feeLimit');
+    const [selectedFee, feePerUnit, maxFeePerGas, feeLimit] = useWatch({
+        control: form.control,
+        name: ['selectedFee', 'feePerUnit', 'maxFeePerGas', 'feeLimit'],
+    });
 
     // calculate levels with total max fee
     const feeTotalCalculation = useCallback(

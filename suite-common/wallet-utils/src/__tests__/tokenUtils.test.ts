@@ -1,7 +1,11 @@
+import type { TokenInfo } from '@trezor/blockchain-link-types';
+
 import { getContractAddressForNetworkSymbolFixtures } from '../__fixtures__/tokenUtils';
 import {
     getAssetLogoContractAddresses,
     getContractAddressForNetworkSymbol,
+    getErc4626Contracts,
+    isWrappedNativeToken,
     sortTokensByName,
 } from '../tokenUtils';
 
@@ -14,6 +18,30 @@ describe('getContractAddressForNetworkSymbol', () => {
             });
         },
     );
+});
+
+describe('isWrappedNativeToken', () => {
+    const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+
+    it('matches the wrapped native token regardless of case', () => {
+        expect(isWrappedNativeToken('eth', WETH)).toBe(true);
+        expect(isWrappedNativeToken('eth', WETH.toLowerCase())).toBe(true);
+    });
+
+    it('does not match a different token', () => {
+        expect(isWrappedNativeToken('eth', '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48')).toBe(
+            false,
+        );
+    });
+
+    it('does not match on a network without a wrapped native token', () => {
+        expect(isWrappedNativeToken('btc', WETH)).toBe(false);
+    });
+
+    it('returns false for a missing address', () => {
+        expect(isWrappedNativeToken('eth', null)).toBe(false);
+        expect(isWrappedNativeToken('eth', undefined)).toBe(false);
+    });
 });
 
 describe('getAssetLogoContractAddresses', () => {
@@ -40,6 +68,29 @@ describe('getAssetLogoContractAddresses', () => {
         await expect(getAssetLogoContractAddresses('eth', contract)).resolves.toEqual([
             contract.toLowerCase(),
         ]);
+    });
+});
+
+describe('getErc4626Contracts', () => {
+    const vaultToken: TokenInfo = {
+        standard: 'ERC20',
+        contract: '0xVault',
+        decimals: 6,
+        protocols: ['erc4626'],
+    };
+
+    const plainToken: TokenInfo = {
+        standard: 'ERC20',
+        contract: '0xPlain',
+        decimals: 6,
+    };
+
+    it('returns normalized contracts of ERC4626 tokens', () => {
+        expect(getErc4626Contracts([plainToken, vaultToken])).toEqual(new Set(['0xvault']));
+    });
+
+    it('returns an empty set when tokens are undefined', () => {
+        expect(getErc4626Contracts(undefined)).toEqual(new Set());
     });
 });
 

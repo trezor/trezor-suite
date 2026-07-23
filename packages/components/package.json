@@ -39,7 +39,7 @@
         "react-markdown": "^10.1.0",
         "react-select": "^5.10.2",
         "react-svg": "16.4.2",
-        "react-use": "^17.6.0",
+        "react-use": "^17.6.1",
         "styled-components": "^6.3.9"
     },
     "devDependencies": {

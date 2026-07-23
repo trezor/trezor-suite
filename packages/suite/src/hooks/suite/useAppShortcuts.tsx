@@ -52,6 +52,7 @@ export const useAppShortcuts = () => {
         const cmdOrCtrl = metaKey || ctrlKey;
         // Most shortcuts use ALT alone; exclude the other modifiers to avoid clashes.
         const altOnly = altKey && !shiftKey && !cmdOrCtrl;
+        const cmdOrCtrlAndAlt = cmdOrCtrl && altKey && !shiftKey;
 
         const gotoAccount = (account: ListedAccount | undefined) =>
             dispatch(
@@ -198,8 +199,8 @@ export const useAppShortcuts = () => {
                 ?.click();
         }
 
-        // press ALT + 0 to open the Dashboard, ALT + 1-9 to quick-switch between accounts
-        if (altOnly && isDeviceSelected) {
+        // press CMD/CTRL + ALT + 0 to open the Dashboard, CMD/CTRL + ALT + 1-9 to quick-switch between accounts
+        if (cmdOrCtrlAndAlt && isDeviceSelected) {
             if (e.code === KEYBOARD_CODE.DIGIT_ZERO) {
                 e.preventDefault();
                 dispatch(goto({ routeName: 'suite-index' }));

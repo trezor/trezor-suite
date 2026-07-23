@@ -13,7 +13,7 @@ export type AddressItem = {
 
 export const useSignAddressOptions = (
     account: Account | undefined,
-    revealedAddresses: ReceiveInfo[],
+    touchedAddresses: ReceiveInfo[],
 ) => {
     const reduceAddresses = (
         addresses: { address: string; path: string }[],
@@ -36,8 +36,8 @@ export const useSignAddressOptions = (
             case 'bitcoin':
                 return {
                     ...reduceAddresses(
-                        revealedAddresses.length
-                            ? revealedAddresses
+                        touchedAddresses.length
+                            ? touchedAddresses
                             : (account.addresses?.unused || []).slice(0, 1),
                         'TR_ADDRESSES_FRESH',
                     ),
@@ -64,8 +64,8 @@ export const useSignAddressOptions = (
                         'TR_STAKING_STAKE_ADDRESS',
                     ),
                     ...reduceAddresses(
-                        revealedAddresses.length
-                            ? revealedAddresses
+                        touchedAddresses.length
+                            ? touchedAddresses
                             : (account.addresses?.unused || []).slice(0, 1),
                         'TR_ADDRESSES_FRESH',
                     ),
@@ -90,7 +90,7 @@ export const useSignAddressOptions = (
             default:
                 return {};
         }
-    }, [account, revealedAddresses]);
+    }, [account, touchedAddresses]);
 
     const { translationString } = useTranslation();
 

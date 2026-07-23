@@ -1,4 +1,8 @@
-import { selectIsTradingNetworkFeeMissing, tradingSellActions } from '@suite-common/trading';
+import {
+    selectIsTradingNetworkFeeMissing,
+    selectTradingSendAccount,
+    tradingSellActions,
+} from '@suite-common/trading';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 
 import { selectSellQuoteThunk } from 'src/actions/wallet/trading/sell/selectSellQuoteThunk';
@@ -14,12 +18,12 @@ export const TradingFormOfferSellActions = () => {
     const dispatch = useDispatch();
     const context = useTradingFormContext<'sell'>();
     const {
-        account,
         watch,
         shouldSendInSats,
         sellInfo,
         form: { state, helpers },
     } = context;
+    const account = useSelector(reduxState => selectTradingSendAccount(reduxState, 'sell'));
 
     const isNetworkFeeMissing = useSelector(selectIsTradingNetworkFeeMissing);
 
@@ -27,17 +31,23 @@ export const TradingFormOfferSellActions = () => {
     const { amount, tokenAddress } = getTradingFirstOutput(outputs);
     const areSatsUsed = !!shouldSendInSats;
 
-    const amountTooHigh = isAmountTooHigh({
-        amount,
-        contractAddress: tokenAddress,
-        account,
-        areSatsUsed,
-    });
+    const amountTooHigh = account
+        ? isAmountTooHigh({
+              amount,
+              contractAddress: tokenAddress,
+              account,
+              areSatsUsed,
+          })
+        : false;
 
     const { quote, confirmButtonData, isBaseButtonDisabled } = useTradingFormOfferCommon<'sell'>();
 
     const isButtonDisabled =
-        isBaseButtonDisabled || amountTooHigh || isNetworkFeeMissing || state.isFormLoading;
+        !account ||
+        isBaseButtonDisabled ||
+        amountTooHigh ||
+        isNetworkFeeMissing ||
+        state.isFormLoading;
 
     const onSelectQuote = () => {
         if (!quote) return;

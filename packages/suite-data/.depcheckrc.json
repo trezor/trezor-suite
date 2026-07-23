@@ -1,6 +1,8 @@
 {
     "ignore-patterns": ["libDev", "lib"],
     "ignores": [
+        "@babel/preset-env",
+        "@babel/preset-typescript",
         "babel-loader",
         "webpack-cli",
         "css-loader",

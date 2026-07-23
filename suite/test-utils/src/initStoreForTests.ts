@@ -1,13 +1,13 @@
-import { createMemoryHistory } from 'history';
+import { type MemoryHistory, createMemoryHistory } from 'history';
 
-import { createSuiteRouterHistory } from '@suite/router';
+import { type SuiteRouterHistory, createSuiteRouterHistory } from '@suite/router';
 import { asEncryptedHex } from '@suite-common/platform-encryption';
 import {
     type EncryptableBranded,
     type EncryptedHex,
     type PlatformEncryption,
 } from '@suite-common/platform-encryption';
-import { type PreloadedState, type Store, initStore } from '@trezor/suite';
+import { type PreloadedState, type SuiteStore, initStore } from '@trezor/suite';
 import { ok } from '@trezor/type-utils';
 
 const testPlatformEncryption: PlatformEncryption = {
@@ -20,11 +20,20 @@ const testPlatformEncryption: PlatformEncryption = {
     },
 };
 
+export type TestStore = SuiteStore['store'];
+
+export type InitStoreForTestsResult = {
+    store: TestStore;
+    suiteRouterHistory: SuiteRouterHistory;
+    memoryHistory: MemoryHistory;
+    platformEncryption: PlatformEncryption;
+};
+
 /**
  * Test-friendly wrapper for initStore that provides necessary dependencies like history.
  * Returns both the store and history for test assertions.
  */
-export const initStoreForTests = (preloadedState: PreloadedState = {}) => {
+export const initStoreForTests = (preloadedState: PreloadedState = {}): InitStoreForTestsResult => {
     const memoryHistory = createMemoryHistory();
     const suiteRouterHistory = createSuiteRouterHistory({ history: memoryHistory });
 
@@ -46,5 +55,3 @@ export const initStoreForTests = (preloadedState: PreloadedState = {}) => {
         platformEncryption: testPlatformEncryption,
     };
 };
-
-export type TestStore = Store;

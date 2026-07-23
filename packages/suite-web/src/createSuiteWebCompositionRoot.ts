@@ -2,9 +2,7 @@ import { createBrowserHistory } from 'history';
 
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
 import type { CreateLogger } from '@trezor/connect-common';
-// Deep import bypasses the `@trezor/transport` barrel so the web bundle never resolves
-// node-only sibling modules (`UdpTransport`/`dgram`, `NodeUsbTransport`/`usb`).
-import { BridgeTransport } from '@trezor/transport/src/transports/bridge';
+import { BridgeTransport } from '@trezor/transport-common';
 import { WebUsbTransport } from '@trezor/transport-web';
 
 import { initStore } from 'src/reducers/store';

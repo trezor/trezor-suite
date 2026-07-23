@@ -9,7 +9,6 @@ import {
 } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, InfoItem, Paragraph, Row } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -32,14 +31,14 @@ export const DebugOnlyCardanoStakingCard = ({ account }: DebugOnlyCardanoStaking
 
     return (
         <Card paddingType="small" flex="1">
-            <Column alignItems="flex-start" flex="1" gap={spacings.lg}>
-                <Row columnGap={spacings.xxs}>
+            <Column alignItems="flex-start" flex="1" gap={20}>
+                <Row columnGap={4}>
                     <Icon as={InfoIcon} intent="neutral" priority="secondary" />
 
                     <DebugOnlyBadge />
                 </Row>
 
-                <Column rowGap={spacings.xs}>
+                <Column rowGap={8}>
                     <InfoItem
                         label="Provider"
                         direction="row"

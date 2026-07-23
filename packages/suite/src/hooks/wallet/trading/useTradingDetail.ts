@@ -1,5 +1,6 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useEffect } from 'react';
 
+import { useDevice } from '@suite/device';
 import {
     type TradingType,
     type TradingUseDetailOutputProps,
@@ -8,6 +9,8 @@ import {
 } from '@suite-common/trading';
 import { throwError } from '@trezor/utils';
 
+import { setConnectionModal } from 'src/actions/device/deviceSlice';
+import { useDispatch } from 'src/hooks/suite';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import type { TradingDetailContextValues } from 'src/types/trading/tradingDetail';
@@ -23,8 +26,14 @@ export const useTradingDetail = <T extends TradingType>(
 ): TradingUseDetailOutputProps<T> => {
     const { tradeType } = props;
     const { account } = useTradingFormAccount(tradeType);
+    const { device } = useDevice();
+    const dispatch = useDispatch();
 
     const result = useTradingDetailCommon<T>({ tradeType });
+
+    useEffect(() => {
+        dispatch(setConnectionModal(!device?.connected));
+    }, [device?.connected, dispatch]);
 
     // Setup server environment from suite settings
     useServerEnvironment();

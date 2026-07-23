@@ -1,3 +1,5 @@
+import { captureException } from '@sentry/react-native';
+
 import { type FiatGraphPoint } from '@suite-common/graph';
 
 /**
@@ -95,4 +97,15 @@ export const omitErrorMessageSensitiveData = (string: string) => {
     });
 
     return msg;
+};
+
+export const checkAndReportGraphError = (error: Error | null) => {
+    if (error) {
+        // A new Error object has to be created, to not override the original data.
+        const errorCopy = new Error(omitErrorMessageSensitiveData(error.message));
+        errorCopy.stack = omitErrorMessageSensitiveData(error.stack ?? '');
+        errorCopy.name = error.name;
+
+        captureException(errorCopy);
+    }
 };

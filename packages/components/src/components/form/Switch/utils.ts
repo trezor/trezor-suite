@@ -1,4 +1,4 @@
-import { type SpacingValues, type TypographyStyle, spacings } from '@trezor/theme';
+import { type SpacingValue, type TypographyStyle } from '@trezor/theme';
 
 import { type SwitchSize } from './types';
 
@@ -20,10 +20,10 @@ export const mapSizeToLabelTypography = (size: SwitchSize): TypographyStyle => {
     return sizesMap[size];
 };
 
-export const mapSizeToLabelContainerGap = (size: SwitchSize): SpacingValues => {
-    const sizesMap: Record<SwitchSize, SpacingValues> = {
-        small: spacings.sm,
-        medium: spacings.md,
+export const mapSizeToLabelContainerGap = (size: SwitchSize): SpacingValue => {
+    const sizesMap: Record<SwitchSize, SpacingValue> = {
+        small: 12,
+        medium: 16,
     };
 
     return sizesMap[size];

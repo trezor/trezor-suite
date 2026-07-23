@@ -1,6 +1,14 @@
+import { type TranslationKey } from '@suite/intl';
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { type FeeInfo } from '@suite-common/wallet-types';
+
+export type DetailHeaderMessages = { title: TranslationKey; description: TranslationKey };
+
+export const processingHeaderMessages: DetailHeaderMessages = {
+    title: 'TR_TRADING_HEADER_PROCESSING_TITLE',
+    description: 'TR_TRADING_HEADER_PROCESSING_DESCRIPTION',
+};
 
 export const getTxEstimatedTimeSeconds = (
     networkType: NetworkType | undefined,

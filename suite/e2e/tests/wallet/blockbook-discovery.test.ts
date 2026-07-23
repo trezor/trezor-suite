@@ -21,10 +21,12 @@ test.describe('Custom-blockbook-discovery', { tag: ['@T3W1', '@T3T1'] }, () => {
         },
         async ({ page, settingsPage, dashboardPage }) => {
             const btcBlockbook = 'https://btc.trezor.io';
-            await settingsPage.navigateTo('coins');
-            await settingsPage.coinsTab.enableNetwork('btc');
-            await settingsPage.coinsTab.openNetworkAdvanceSettings('btc');
-            await settingsPage.coinsTab.changeBackend('blockbook', btcBlockbook);
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    { symbol: 'btc', backend: { type: 'blockbook', url: btcBlockbook } },
+                ],
+                skipActivation: true,
+            });
             await dashboardPage.navigateTo();
             await page.discoveryShouldFinish();
             await expect(dashboardPage.graph).toBeVisible();
@@ -32,14 +34,12 @@ test.describe('Custom-blockbook-discovery', { tag: ['@T3W1', '@T3T1'] }, () => {
         },
     );
 
-    test('LTC blockbook discovery', async ({ page, settingsPage, dashboardPage }) => {
+    test('LTC blockbook discovery', async ({ settingsPage, dashboardPage }) => {
         const ltcBlockbook = 'https://ltc.trezor.io';
-        await settingsPage.navigateTo('coins');
-        await settingsPage.coinsTab.enableNetwork('ltc');
-        await settingsPage.coinsTab.openNetworkAdvanceSettings('ltc');
-        await settingsPage.coinsTab.changeBackend('blockbook', ltcBlockbook);
+        await settingsPage.changeNetworks({
+            enableNetworks: [{ symbol: 'ltc', backend: { type: 'blockbook', url: ltcBlockbook } }],
+        });
         await dashboardPage.navigateTo();
-        await page.discoveryShouldFinish();
         await expect(dashboardPage.graph).toBeVisible();
         //TODO: Improve verification
     });

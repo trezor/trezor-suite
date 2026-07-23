@@ -25,7 +25,7 @@ type TradingOffersModalItemProps = {
 const ProviderWrapper = styled.div`
     display: grid;
     grid-template-columns: minmax(10rem, auto) auto;
-    gap: 1rem;
+    gap: 16px;
     justify-content: center;
 `;
 

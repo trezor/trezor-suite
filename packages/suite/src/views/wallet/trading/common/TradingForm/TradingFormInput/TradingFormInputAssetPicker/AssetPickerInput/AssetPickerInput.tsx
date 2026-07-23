@@ -12,6 +12,7 @@ import {
     type TradingSellFormProps,
     selectTradingLoadingAndTimestamp,
 } from '@suite-common/trading';
+import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { type InputProps, Spinner, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
@@ -46,7 +47,9 @@ export const AssetPickerInput = memo(function AssetPickerInputInner({
     const value = watch(name);
     const { translationString } = useTranslation();
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
-    const disabled = isDisabled || isLoading;
+    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
+    const isBusy = isLoading || isDiscoveryRunning;
+    const disabled = isDisabled || isBusy;
 
     const leftContent = useMemo(() => {
         if (value) {
@@ -54,18 +57,18 @@ export const AssetPickerInput = memo(function AssetPickerInputInner({
             return <AssetPickerInputContent name={name} value={value} />;
         }
 
-        if (isLoading) {
+        if (isBusy) {
             return <Spinner size={20} />;
         }
 
         return undefined;
-    }, [value, isLoading, name]);
+    }, [value, isBusy, name]);
 
     return (
         <FakeSelect
             name={name}
             placeholder={
-                !value && !isLoading && placeholder ? translationString(placeholder) : undefined
+                !value && !isBusy && placeholder ? translationString(placeholder) : undefined
             }
             isDisabled={disabled}
             onClick={onClick}

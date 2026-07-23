@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation, usePreventRemove } from '@react-navigation/native';
@@ -11,7 +11,7 @@ import {
 } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
-import { CryptoIconWithNetwork } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 import { useInAppRating } from '@suite-native/in-app-rating';
 import { Translation } from '@suite-native/intl';
 import {
@@ -99,9 +99,10 @@ export const TransactionDetailScreen = ({
                                 />
                             ) : (
                                 <>
-                                    <CryptoIconWithNetwork
+                                    <TokenIcon
                                         symbol={transaction.symbol}
                                         contractAddress={tokenTransfer?.contract}
+                                        showNetworkIcon
                                     />
                                     <Text variant="body-md-strong">
                                         <Translation

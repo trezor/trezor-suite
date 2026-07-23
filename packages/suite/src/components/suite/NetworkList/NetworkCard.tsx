@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Card, Column, IconButton, Row, Text } from '@trezor/components';
 import { SlidersIcon } from '@trezor/icons';
-import { CoinLogo } from '@trezor/product-components';
+import { NetworkIcon } from '@trezor/product-components';
 
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
@@ -50,7 +50,7 @@ export const NetworkCard = ({
                 onClick={isCardClickable && onClick ? () => onClick(symbol, !isEnabled) : undefined}
             >
                 <Row padding={{ vertical: 12, horizontal: 14 }} gap={12} maxWidth="100%">
-                    <CoinLogo size={24} symbol={symbol} type="network" />
+                    <NetworkIcon size={24} networkSymbol={symbol} />
                     <Column flex="1" minWidth={0} minHeight={32} justifyContent="center">
                         <Text typographyStyle="body-sm-strong" ellipsisLineCount={1}>
                             {name}

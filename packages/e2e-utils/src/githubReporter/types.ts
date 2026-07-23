@@ -77,6 +77,32 @@ export interface AddDraftIssueResponse {
     };
 }
 
+export interface ProjectItemFieldValue {
+    name?: string;
+    text?: string;
+    field?: { name: string };
+}
+
+export interface ProjectItem {
+    id: string;
+    content: { title?: string } | null;
+    fieldValues: { nodes: ProjectItemFieldValue[] };
+}
+
+export interface ProjectItemsResponse {
+    node: {
+        items: {
+            nodes: ProjectItem[];
+        };
+    };
+}
+
+export interface DeleteProjectItemResponse {
+    deleteProjectV2Item: {
+        deletedItemId: string;
+    };
+}
+
 export type ValueOrOptionId = string | { optionId: string };
 
 export interface TestDetailsAnnotation {

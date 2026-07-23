@@ -86,7 +86,7 @@
         "@trezor/websocket-client": "workspace:*",
         "@types/web": "^0.0.345",
         "socks-proxy-agent": "8.0.5",
-        "viem": "^2.52.2"
+        "viem": "^2.54.1"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

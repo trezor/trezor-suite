@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { type SpacingValues, spacings, spacingsPx } from '@trezor/theme';
+import { type SpacingValue } from '@trezor/theme';
 
 import { ListContext } from './ListContext';
 import { ListItem } from './ListItem';
@@ -36,14 +36,14 @@ export const allowedListTextProps = [
 export type AllowedTextProps = Pick<TextPropsCommon, (typeof allowedListTextProps)[number]>;
 
 type ContainerProps = TransientProps<AllowedFrameProps & AllowedTextProps> & {
-    $gap: SpacingValues;
+    $gap: SpacingValue;
     $listStyleType?: ListStyleType;
 };
 
 const Container = styled.ul<ContainerProps>`
     display: flex;
     list-style-type: ${({ $listStyleType }) => $listStyleType || 'none'};
-    padding-left: ${({ $listStyleType }) => $listStyleType && spacingsPx.md};
+    padding-left: ${({ $listStyleType }) => $listStyleType && '16px'};
     flex-direction: column;
     align-items: stretch;
     gap: ${({ $gap }) => $gap}px;
@@ -54,10 +54,10 @@ const Container = styled.ul<ContainerProps>`
 
 export type ListProps = AllowedFrameProps &
     AllowedTextProps & {
-        gap?: SpacingValues;
+        gap?: SpacingValue;
         children: ReactNode;
         bulletComponent?: ReactNode;
-        bulletGap?: SpacingValues;
+        bulletGap?: SpacingValue;
         bulletAlignment?: BulletVerticalAlignment;
         intent?: ListIntent;
         priority?: TextProps['priority'];
@@ -66,8 +66,8 @@ export type ListProps = AllowedFrameProps &
     };
 
 export const List = ({
-    gap = spacings.xs,
-    bulletGap = spacings.md,
+    gap = 8,
+    bulletGap = 16,
     bulletAlignment = 'center',
     bulletComponent,
     listStyleType,

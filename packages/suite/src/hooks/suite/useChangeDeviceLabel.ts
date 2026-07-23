@@ -1,4 +1,4 @@
-import { type UseFormReturn, useForm } from 'react-hook-form';
+import { type UseFormReturn, useForm, useWatch } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -56,8 +56,8 @@ export const useChangeDeviceLabel = (): {
         reValidateMode: 'onChange',
     });
 
-    const { watch } = form;
-    const currentLabel = watch('deviceLabel');
+    const { control } = form;
+    const currentLabel = useWatch({ control, name: 'deviceLabel' });
 
     const onSubmit = form.handleSubmit(({ deviceLabel }) => {
         dispatch(applySettings({ label: deviceLabel }));

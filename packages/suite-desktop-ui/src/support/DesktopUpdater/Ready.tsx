@@ -2,7 +2,6 @@ import { installUpdateThunk } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { DownloadIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -34,7 +33,7 @@ export const Ready = ({ hideWindow }: ReadyProps) => {
                 </>
             }
         >
-            <Column gap={spacings.xxs}>
+            <Column gap={4}>
                 <H3>
                     <Translation id="TR_UPDATE_MODAL_UPDATE_DOWNLOADED" />
                 </H3>

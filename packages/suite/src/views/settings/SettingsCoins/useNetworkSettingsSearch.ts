@@ -3,17 +3,7 @@ import { useCallback, useRef, useState } from 'react';
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { type Network } from '@suite-common/wallet-config';
-
-export const filterNetworksByName = (networks: Network[], searchQuery: string) => {
-    const normalizedQuery = searchQuery.trim().toLowerCase();
-
-    if (!normalizedQuery) {
-        return networks;
-    }
-
-    return networks.filter(({ name }) => name.toLowerCase().includes(normalizedQuery));
-};
+import { type Network, filterNetworksByName } from '@suite-common/wallet-config';
 
 type NetworkSettingsSearchOrigin = 'network-settings' | 'add-account';
 

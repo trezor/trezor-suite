@@ -34,6 +34,5 @@ export { VotingDelegationsOptions } from './modals/shared/VotingDelegations/Voti
 
 export { PoweredByBadge } from './providers/PoweredByBadge';
 
-export { getStakingHelpCenterLink } from './utils/getStakingHelpCenterLink';
 export { getEarnProviderName } from './utils/getEarnProviderName';
 export { getApyRate } from './utils/earnApyUtils';

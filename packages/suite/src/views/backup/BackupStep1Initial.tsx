@@ -8,7 +8,6 @@ import { Translation } from '@suite/intl';
 import { selectIsDeviceLocked } from '@suite/locks';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Badge, Column, Modal, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { PreBackupCheckboxes } from 'src/components/backup';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -78,7 +77,7 @@ export const BackupStep1Initial = ({
                 intent="neutral"
                 priority="secondary"
                 typographyStyle="body-sm"
-                margin={{ bottom: spacings.xl }}
+                margin={{ bottom: 24 }}
             >
                 <Translation id="TR_BACKUP_SUBHEADING_1" />
             </Paragraph>

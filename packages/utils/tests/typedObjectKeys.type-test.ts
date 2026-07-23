@@ -11,5 +11,4 @@ _assertExpectedType = test1;
 const test2 = typedObjectKeys({ a: 'A', b: 'B' } satisfies AB);
 _assertExpectedType = test2;
 
-// eslint-disable-next-line no-self-assign
-_assertExpectedType = _assertExpectedType;
+void _assertExpectedType;

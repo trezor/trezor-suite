@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import {
     type StablecoinYieldRootState,
@@ -11,6 +13,7 @@ import {
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
 import { toTokenSymbol } from '@suite-common/wallet-types';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import {
     type StackNavigationProps,
@@ -41,14 +44,34 @@ export const YieldWithdrawCompleteScreen = () => {
         selectStablecoinYieldSessionByFlowKey(state, flowType, flowKey),
     );
     const isSharesInput = flowType === 'redeem';
+    const { analytics } = useServices(selectNativeAnalyticsDep);
 
     const handleExit = useCallback(() => {
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: 'withdraw-form',
+                to: 'earn-dashboard',
+                networkSymbol: account?.symbol,
+                vaultId: vault?.id,
+            },
+        });
+
         if (flowKey) {
             dispatch(stablecoinYieldActions.disposeSession({ flowType, flowKey }));
         }
 
         navigateToInitialScreen();
-    }, [dispatch, flowKey, flowType, navigateToInitialScreen]);
+    }, [
+        account?.symbol,
+        analytics,
+        dispatch,
+        flowKey,
+        flowType,
+        navigateToInitialScreen,
+        vault?.id,
+    ]);
 
     useEffect(() => {
         if (resolutionStatus !== 'resolved') {

@@ -3,7 +3,6 @@ import { type ReactNode } from 'react';
 import { Translation } from '@suite/intl';
 import { Banner, type BannerProps, Column, type Margin, Text } from '@trezor/components';
 import { ShareNetworkIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme/src';
 
 interface Props {
     onClose: () => void;
@@ -32,7 +31,7 @@ export const CloseableBanner = ({
         icon={hasIcon ? ShareNetworkIcon : undefined}
         margin={margin}
         description={
-            <Column gap={spacings.xxs} flex="1" alignItems="flex-start" justifyContent="stretch">
+            <Column gap={4} flex="1" alignItems="flex-start" justifyContent="stretch">
                 <Text typographyStyle="body-md-strong" intent="info">
                     {title}
                 </Text>

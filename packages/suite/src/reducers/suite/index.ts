@@ -1,32 +1,43 @@
-import { prepareDebugReducer } from '@suite/debug';
-import { desktopUpdateReducer } from '@suite/desktop-update';
+import { type ReducersMapObject, type UnknownAction } from '@reduxjs/toolkit';
+
+import { type DebugState, prepareDebugReducer } from '@suite/debug';
+import { type DesktopUpdateState, desktopUpdateReducer } from '@suite/desktop-update';
+import { type FeedbackFeatureName } from '@suite/experimental';
 import { featureFeedbackReducer } from '@suite/feature-feedback';
-import { prepareFlagsReducer } from '@suite/flags';
+import { type FlagsState, prepareFlagsReducer } from '@suite/flags';
 import { type TranslationKey } from '@suite/intl';
-import { locksReducer } from '@suite/locks';
+import { type LocksState, locksReducer } from '@suite/locks';
 import { metadataReducer } from '@suite/metadata';
-import { modalReducer as modal } from '@suite/modal';
-import { routerReducer } from '@suite/router';
-import { prepareSuiteSettingsReducer } from '@suite/settings';
-import { torReducer } from '@suite/tor';
-import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
-import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
-import { discreetModeReducer } from '@suite-common/discreet-mode';
-import { logsSlice } from '@suite-common/logger';
-import { prepareMessageSystemReducer } from '@suite-common/message-system';
-import { createNotificationsReducer } from '@suite-common/toast-notifications';
-import { prepareWalletConnectReducer } from '@suite-common/walletconnect';
+import { type State as ModalState, modalReducer as modal } from '@suite/modal';
+import { type RouterState, routerReducer } from '@suite/router';
+import { type SuiteSettingsState, prepareSuiteSettingsReducer } from '@suite/settings';
+import { type TorState, torReducer } from '@suite/tor';
+import { type AnalyticsState, prepareAnalyticsReducer } from '@suite-common/analytics-redux';
+import { type ConnectPopupState, prepareConnectPopupReducer } from '@suite-common/connect-popup';
+import { type DiscreetModeState, discreetModeReducer } from '@suite-common/discreet-mode';
+import { type FeatureFeedbackState } from '@suite-common/feedback';
+import { type LogsSliceState, logsSlice } from '@suite-common/logger';
+import { type MessageSystemState, prepareMessageSystemReducer } from '@suite-common/message-system';
+import { type MetadataState } from '@suite-common/metadata-types';
+import {
+    type NotificationsState,
+    createNotificationsReducer,
+} from '@suite-common/toast-notifications';
+import { type WalletConnectState, prepareWalletConnectReducer } from '@suite-common/walletconnect';
 
-import { prepareDesktopDeviceReducer } from 'src/actions/device/deviceSlice';
+import {
+    type DesktopDeviceState,
+    prepareDesktopDeviceReducer,
+} from 'src/actions/device/deviceSlice';
 import { extraDependencies } from 'src/support/extraDependencies';
+import { type Action } from 'src/types/suite';
 
-import guide from './guideReducer';
-import protocol from './protocolReducer';
-import suite from './suiteReducer';
-import window from './windowReducer';
+import guide, { type GuideState } from './guideReducer';
+import protocol, { type ProtocolState } from './protocolReducer';
+import suite, { type SuiteState } from './suiteReducer';
+import window, { type WindowState } from './windowReducer';
 
 const analytics = prepareAnalyticsReducer(extraDependencies);
-// Type annotation as a workaround for type-check error "The inferred type of 'default' cannot be named..."
 const messageSystem = prepareMessageSystemReducer(extraDependencies);
 const device = prepareDesktopDeviceReducer(extraDependencies);
 const flags = prepareFlagsReducer(extraDependencies);
@@ -35,7 +46,32 @@ const debug = prepareDebugReducer(extraDependencies);
 const connectPopupReducer = prepareConnectPopupReducer(extraDependencies);
 const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
 
-export default {
+export type SuiteReducersState = {
+    suite: SuiteState;
+    discreetMode: DiscreetModeState;
+    tor: TorState;
+    suiteSettings: SuiteSettingsState;
+    debug: DebugState;
+    flags: FlagsState;
+    locks: LocksState;
+    router: RouterState;
+    modal: ModalState;
+    device: DesktopDeviceState;
+    logs: LogsSliceState;
+    notifications: NotificationsState<TranslationKey>;
+    window: WindowState;
+    analytics: AnalyticsState;
+    metadata: MetadataState;
+    desktopUpdate: DesktopUpdateState;
+    messageSystem: MessageSystemState;
+    guide: GuideState;
+    protocol: ProtocolState;
+    featureFeedback: FeatureFeedbackState<FeedbackFeatureName>;
+    connectPopup: ConnectPopupState;
+    walletConnect: WalletConnectState;
+};
+
+export const suiteReducers: ReducersMapObject<SuiteReducersState, Action & UnknownAction> = {
     suite,
     discreetMode: discreetModeReducer,
     tor: torReducer,

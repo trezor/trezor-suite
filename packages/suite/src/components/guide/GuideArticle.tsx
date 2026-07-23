@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { spacingsPx } from '@trezor/theme';
 
 import { openNode, setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideMarkdown, GuideViewWrapper } from 'src/components/guide';
@@ -11,7 +10,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { findAncestorNodes, getNodeTitle } from 'src/utils/suite/guide';
 
 const ArticleWrapper = styled.div`
-    padding-bottom: ${spacingsPx.xxl};
+    padding-bottom: 32px;
 `;
 
 export const GuideArticle = () => {

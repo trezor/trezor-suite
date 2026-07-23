@@ -1,4 +1,4 @@
-export default {
+const verifyMessageSegwit: TestCase = {
     method: 'verifyMessage',
     setup: {
         mnemonic: 'mnemonic_12',
@@ -76,4 +76,6 @@ export default {
             },
         },
     ],
-} satisfies TestCase;
+};
+
+export default verifyMessageSegwit;

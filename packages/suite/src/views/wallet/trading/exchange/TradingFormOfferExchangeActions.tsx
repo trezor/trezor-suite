@@ -6,6 +6,7 @@ import { Translation } from '@suite/intl';
 import {
     requiresTokenApproval,
     selectIsTradingNetworkFeeMissing,
+    selectTradingSendAccount,
     tradingExchangeActions,
 } from '@suite-common/trading';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
@@ -27,7 +28,6 @@ export const TradingFormOfferExchangeActions = () => {
     const dispatch = useDispatch();
     const context = useTradingFormContext<'exchange'>();
     const {
-        account,
         watch,
         shouldSendInSats,
         tradingReceiveAddress,
@@ -37,6 +37,7 @@ export const TradingFormOfferExchangeActions = () => {
         isComposing,
         form: { state, helpers },
     } = context;
+    const account = useSelector(reduxState => selectTradingSendAccount(reduxState, 'exchange'));
 
     const modalControls = useReceiveAddressModalControls();
 
@@ -66,19 +67,26 @@ export const TradingFormOfferExchangeActions = () => {
     const shouldShowApprovalStep = quote !== undefined && requiresTokenApproval(quote);
     const isQuoteOutdated = quote?.send !== sendCryptoSelect?.id;
     const isQuoteForSelectedReceive = quote?.receive === receiveCryptoSelect?.id;
-    const amountTooHigh = isAmountTooHigh({
-        amount,
-        contractAddress: tokenAddress,
-        account,
-        areSatsUsed,
-    });
+    const amountTooHigh = account
+        ? isAmountTooHigh({
+              amount,
+              contractAddress: tokenAddress,
+              account,
+              areSatsUsed,
+          })
+        : false;
 
     const isLoading = shouldShowApprovalStep
         ? state.isFormLoading || isLoadingQuote || isQuoteOutdated
         : state.isFormLoading || isLoadingQuote;
 
     const isButtonDisabled =
-        isBaseButtonDisabled || amountTooHigh || isNetworkFeeMissing || isComposing || isLoading;
+        !account ||
+        isBaseButtonDisabled ||
+        amountTooHigh ||
+        isNetworkFeeMissing ||
+        isComposing ||
+        isLoading;
 
     useEffect(() => {
         const initConfirmTrade = async () => {

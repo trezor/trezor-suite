@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { type SpacingValues, spacings } from '@trezor/theme';
+import { type SpacingValue } from '@trezor/theme';
 
 import { type InfoItemVerticalAlignment } from './types';
 import {
@@ -57,7 +57,7 @@ export type InfoItemProps = AllowedFrameProps &
         isDisabled?: boolean;
         labelWidth?: string | number;
         verticalAlignment?: InfoItemVerticalAlignment;
-        gap?: SpacingValues;
+        gap?: SpacingValue;
         'data-testid'?: string;
     };
 
@@ -85,7 +85,7 @@ export const InfoItem = ({
             <Flex
                 direction={direction}
                 alignItems={isRow ? mapVerticalAlignmentToAlignItems(verticalAlignment) : 'normal'}
-                gap={gap ?? (isRow ? spacings.md : mapTypographyStyleToLabelGap(typographyStyle))}
+                gap={gap ?? (isRow ? 16 : mapTypographyStyleToLabelGap(typographyStyle))}
             >
                 <Row
                     gap={mapTypographyStyleToIconGap(typographyStyle)}

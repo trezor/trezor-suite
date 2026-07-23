@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { type FieldError } from 'react-hook-form';
 
+import { selectFullSelectedAccount, selectSelectedAccountKey } from '@suite/account';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import { selectReceiveRevealedAddresses } from '@suite/receive';
+import { type ReceiveRootState, selectTouchedAddresses } from '@suite-common/receive';
 import {
     Box,
     Button,
@@ -20,7 +21,6 @@ import {
 } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { CheckIcon, CopyIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { isVerifySupported, sign, verify } from 'src/actions/wallet/signVerifyActions';
 import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
@@ -40,9 +40,10 @@ const SignVerify = () => {
     const [page, setPage] = useState<'sign' | 'verify'>('sign');
     const [isCompleted, setIsCompleted] = useState(false);
 
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const revealedAddresses = useSelector(state =>
-        selectReceiveRevealedAddresses(state, selectedAccount.account?.key),
+    const selectedAccount = useSelector(selectFullSelectedAccount);
+    const selectedAccountKey = useSelector(selectSelectedAccountKey);
+    const touchedAddresses = useSelector((state: ReceiveRootState) =>
+        selectTouchedAddresses(state, selectedAccountKey),
     );
     const dispatch = useDispatch();
 
@@ -154,7 +155,7 @@ const SignVerify = () => {
             {!isDeviceConnected && <ConnectDeviceGenericPromo />}
 
             <Card>
-                <Tabs activeItemId={page} size="large" margin={{ bottom: spacings.lg }}>
+                <Tabs activeItemId={page} size="large" margin={{ bottom: 20 }}>
                     <Tabs.Item
                         id="sign"
                         onClick={() => setPage('sign')}
@@ -173,7 +174,7 @@ const SignVerify = () => {
                     )}
                 </Tabs>
                 <form onSubmit={formSubmit(onSubmit)}>
-                    <Column gap={spacings.md} margin={{ bottom: spacings.xxl }}>
+                    <Column gap={16} margin={{ bottom: 32 }}>
                         <Textarea
                             labelLeft={<Translation id="TR_MESSAGE" />}
                             labelRight={
@@ -197,13 +198,13 @@ const SignVerify = () => {
                         />
                         {isSignPage ? (
                             <>
-                                <Row gap={spacings.xxxl} alignItems="flex-start">
+                                <Row gap={40} alignItems="flex-start">
                                     <Box flex="1" minWidth={0}>
                                         <SignAddressInput
                                             name="path"
                                             label={<Translation id="TR_ADDRESS" />}
                                             account={selectedAccount.account}
-                                            revealedAddresses={revealedAddresses}
+                                            touchedAddresses={touchedAddresses}
                                             hasError={!!formErrors.path}
                                             bottomText={pathError || null}
                                             data-testid="@sign-verify/sign-address"

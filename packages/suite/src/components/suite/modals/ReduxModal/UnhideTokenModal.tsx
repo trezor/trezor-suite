@@ -10,7 +10,6 @@ import {
 } from '@suite-common/token-definitions';
 import { Card, Checkbox, H2, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
@@ -62,10 +61,10 @@ export const UnhideTokenModal = ({ address, onCancel }: UnhideTokenModalProps) =
             <H2>
                 <Translation id="TR_UNHIDE_TOKEN_TITLE" />
             </H2>
-            <Paragraph intent="neutral" priority="secondary" margin={{ top: spacings.xs }}>
+            <Paragraph intent="neutral" priority="secondary" margin={{ top: 8 }}>
                 <Translation id="TR_UNHIDE_TOKEN_TEXT" />
             </Paragraph>
-            <Card margin={{ top: spacings.xl }}>
+            <Card margin={{ top: 24 }}>
                 <Checkbox isChecked={checked} onChange={() => setChecked(!checked)}>
                     <Translation id="TR_DO_NOT_SHOW_AGAIN" />
                 </Checkbox>

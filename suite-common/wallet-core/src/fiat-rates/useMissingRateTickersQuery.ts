@@ -17,6 +17,7 @@ export const useMissingRateTickersQuery = ({
 }: UseMissingRateTickersQueryProps) => {
     const dispatch = useDispatch();
 
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- dispatch from useDispatch() is referentially stable and is not part of the query identity (missingRateTickers + baseCurrencyCode)
     return useQuery({
         queryKey: commonQueryKeys.missingRateTickers(missingRateTickers, baseCurrencyCode),
         queryFn: () =>

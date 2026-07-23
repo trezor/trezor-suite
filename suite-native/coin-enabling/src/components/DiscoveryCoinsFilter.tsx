@@ -4,9 +4,10 @@ import { useSelector } from 'react-redux';
 import { selectIsDeviceConnected } from '@suite-common/device';
 import { type Network, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Text, VStack } from '@suite-native/atoms';
-import { selectDiscoveryNetworkGroups } from '@suite-native/discovery';
+import { type DiscoveryRootState, selectDiscoveryNetworkGroups } from '@suite-native/discovery';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import { SearchNoResults } from '@suite-native/search';
 import { useToast } from '@suite-native/toasts';
 
 import {
@@ -24,6 +25,7 @@ type NetworkGroupProps = {
 };
 
 type DiscoveryCoinsFilterProps = {
+    searchQuery: string;
     onDisablingLastCoin?: () => void;
 };
 
@@ -49,9 +51,20 @@ const NetworkGroup = ({ networks, handleToggle, showTestnetsLabel }: NetworkGrou
 
 const MemoizedNetworkGroup = memo(NetworkGroup);
 
-export const DiscoveryCoinsFilter = ({ onDisablingLastCoin }: DiscoveryCoinsFilterProps) => {
+export const DiscoveryCoinsFilter = ({
+    searchQuery,
+    onDisablingLastCoin,
+}: DiscoveryCoinsFilterProps) => {
     const { supportedMainnets, supportedTestnets, unsupportedMainnets, unsupportedTestnets } =
-        useSelector(selectDiscoveryNetworkGroups);
+        useSelector((state: DiscoveryRootState) =>
+            selectDiscoveryNetworkGroups(state, searchQuery),
+        );
+    const isAnyNetworkVisible =
+        supportedMainnets.length > 0 ||
+        supportedTestnets.length > 0 ||
+        unsupportedMainnets.length > 0 ||
+        unsupportedTestnets.length > 0;
+
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const { showToast } = useToast();
 
@@ -99,6 +112,10 @@ export const DiscoveryCoinsFilter = ({ onDisablingLastCoin }: DiscoveryCoinsFilt
         },
         [getValues, isDeviceConnected, onDisablingLastCoin, setValue, showToast],
     );
+
+    if (!isAnyNetworkVisible) {
+        return <SearchNoResults />;
+    }
 
     return (
         <VStack spacing="sp32">

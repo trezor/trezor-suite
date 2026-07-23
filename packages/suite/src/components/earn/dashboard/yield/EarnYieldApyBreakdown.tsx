@@ -8,7 +8,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { getApyPercent } from '@suite-common/wallet-utils';
 import { Column, Icon, Row, Text } from '@trezor/components';
 import { ChartLineIcon } from '@trezor/icons';
-import { AssetLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 
 type EarnYieldApyBreakdownProps = {
     rewards: RewardDtoV2[];
@@ -87,7 +87,7 @@ export const EarnYieldApyBreakdown = ({
 
                 return (
                     <Row key={index} gap={8} alignItems="center">
-                        <AssetLogo
+                        <TokenIcon
                             placeholder={reward.token.symbol || reward.token.name || 'token'}
                             symbol={networkSymbol}
                             contractAddress={reward.token.address}
@@ -96,12 +96,19 @@ export const EarnYieldApyBreakdown = ({
                             isBordered={false}
                         />
                         <Column flex="1">
-                            <Text typographyStyle="body-sm">{reward.token.symbol}</Text>
+                            <Text
+                                data-testid="@earn/dashboard/apy-breakdown/symbol"
+                                typographyStyle="body-sm"
+                            >
+                                {reward.token.symbol}
+                            </Text>
                             {descriptionId && (
                                 <Text
                                     typographyStyle="body-sm"
                                     intent="neutral"
                                     priority="secondary"
+                                    isInverse
+                                    data-testid="@earn/dashboard/apy-breakdown/description"
                                 >
                                     <Translation id={descriptionId} />
                                 </Text>
@@ -111,6 +118,8 @@ export const EarnYieldApyBreakdown = ({
                             typographyStyle="body-sm"
                             intent={hasRatePercent ? 'brand' : 'neutral'}
                             priority={hasRatePercent ? 'primary' : 'secondary'}
+                            isInverse
+                            data-testid="@earn/dashboard/apy-breakdown/rate-percent"
                         >
                             {rateNode}
                         </Text>
@@ -118,8 +127,20 @@ export const EarnYieldApyBreakdown = ({
                 );
             })}
             <Row gap={4} alignItems="center" margin={{ top: 4 }}>
-                <Icon as={ChartLineIcon} size={14} intent="neutral" priority="secondary" />
-                <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                <Icon
+                    as={ChartLineIcon}
+                    size={14}
+                    intent="neutral"
+                    priority="secondary"
+                    isInverse
+                />
+                <Text
+                    data-testid="@earn/dashboard/apy-breakdown/footer"
+                    typographyStyle="body-sm"
+                    intent="neutral"
+                    priority="secondary"
+                    isInverse
+                >
                     <Translation id={footerId} />
                 </Text>
             </Row>

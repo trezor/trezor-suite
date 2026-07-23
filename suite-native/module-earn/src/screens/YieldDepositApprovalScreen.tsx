@@ -3,12 +3,21 @@ import { useDispatch } from 'react-redux';
 
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
+import { Context } from '@suite-common/message-system';
 import { getNetwork } from '@suite-common/wallet-config';
-import { getYieldApprovalAction, stablecoinYieldActions } from '@suite-common/wallet-core';
+import {
+    getYieldApprovalAction,
+    getYieldVaultContractAddress,
+    stablecoinYieldActions,
+} from '@suite-common/wallet-core';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Box, FullAlertBox, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import { ContextMessage } from '@suite-native/message-system';
 import {
     Screen,
     type StackNavigationProps,
@@ -25,7 +34,9 @@ import { YieldDepositFlowFooter } from '../components/YieldDepositFlowFooter';
 import { YieldDepositFlowScreenHeader } from '../components/YieldDepositFlowScreenHeader';
 import { YieldDepositInfoBottomSheet } from '../components/YieldDepositInfoBottomSheet';
 import { YieldDepositStepCard } from '../components/YieldDepositStepCard';
+import { YieldDisabledAlert } from '../components/YieldDisabledAlert';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
+import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
 import { useRefreshYieldDepositAllowanceOnIdle } from '../hooks/useRefreshYieldDepositAllowanceOnIdle';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
 import { useShowYieldTransactionFailureAlert } from '../hooks/useShowYieldTransactionFailureAlert';
@@ -37,6 +48,7 @@ import { useYieldDepositForm } from '../hooks/useYieldDepositForm';
 import { useYieldPendingTransaction } from '../hooks/useYieldPendingTransaction';
 import { useYieldPendingTransactionTracking } from '../hooks/useYieldPendingTransactionTracking';
 import { useYieldSession } from '../hooks/useYieldSession';
+import { getYieldApprovalAnalyticsType } from '../utils/yieldAnalyticsUtils';
 import { isYieldApprovalAllowanceUnlimited } from '../yieldApprovalUtils';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositApproval>;
@@ -51,6 +63,7 @@ export const YieldDepositApprovalScreen = () => {
     const dispatch = useDispatch();
     const isFocused = useIsFocused();
     const navigateToInitialScreen = useNavigateToInitialScreen();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
     const {
         bottomSheetRef: infoBottomSheetRef,
         closeModal: closeInfoBottomSheet,
@@ -70,10 +83,18 @@ export const YieldDepositApprovalScreen = () => {
         flowKey,
         token,
         tokenSymbol,
+        vault,
         vaultTokenSymbol,
         vaultTokenName,
         resolutionStatus,
     } = resolvedFlowData;
+
+    const vaultContractAddress = vault ? getYieldVaultContractAddress(vault) : undefined;
+    const {
+        isDisabled: isDepositDisabled,
+        content: depositDisabledContent,
+        variant: depositDisabledVariant,
+    } = useMessageSystemYield('deposit', { vaultContractAddress });
     const session = useYieldSession({
         flowKey,
         flowType: 'deposit',
@@ -152,7 +173,7 @@ export const YieldDepositApprovalScreen = () => {
         isApprovalSessionReady &&
         !isApprovalPending &&
         !isCheckingApproval;
-    const isSubmitDisabled = !canSubmitApproval;
+    const isSubmitDisabled = !canSubmitApproval || isDepositDisabled;
 
     useShowYieldTransactionFailureAlert({
         error: session?.error,
@@ -186,6 +207,16 @@ export const YieldDepositApprovalScreen = () => {
             return;
         }
 
+        analytics.report({
+            type: events.yieldDepositEvent.name,
+            payload: {
+                action: 'continue',
+                type: 'revoke',
+                networkSymbol: account?.symbol,
+                vaultId: resolvedFlowData.vault?.id,
+            },
+        });
+
         const amount =
             amountValue !== undefined && isPositiveBalance(amountValue) ? amountValue : undefined;
 
@@ -203,7 +234,17 @@ export const YieldDepositApprovalScreen = () => {
             ...route.params,
             amount,
         });
-    }, [amountValue, dispatch, flowKey, isApprovalPending, navigation, route.params]);
+    }, [
+        account?.symbol,
+        amountValue,
+        analytics,
+        dispatch,
+        flowKey,
+        isApprovalPending,
+        navigation,
+        resolvedFlowData.vault?.id,
+        route.params,
+    ]);
 
     useYieldPendingTransactionTracking({
         account,
@@ -212,6 +253,7 @@ export const YieldDepositApprovalScreen = () => {
         isScreenFocused: isFocused,
         onApprovalConfirmed: handleApprovalConfirmed,
         pendingTransaction: approvalPendingTransaction,
+        vault: resolvedFlowData.vault,
     });
 
     const handleCloseInfoBottomSheet = useCallback(() => {
@@ -220,12 +262,36 @@ export const YieldDepositApprovalScreen = () => {
     }, [closeInfoBottomSheet, reopenPendingBottomSheet]);
 
     const handleSubmit = form.handleSubmit(async ({ amount }) => {
-        if (!canSubmitApproval) {
+        if (isSubmitDisabled) {
             return;
         }
 
+        analytics.report({
+            type: events.yieldDepositEvent.name,
+            payload: {
+                action: 'continue',
+                type: footerApprovalAction === 'revoke' ? 'revoke' : 'approve',
+                networkSymbol: account?.symbol,
+                vaultId: resolvedFlowData.vault?.id,
+                approvalType: getYieldApprovalAnalyticsType(approvalLimitType),
+            },
+        });
+
         await handleSubmitApproval(amount);
     });
+
+    const handleOpenInfoBottomSheet = useCallback(() => {
+        analytics.report({
+            type: events.yieldInteractionEvent.name,
+            payload: {
+                element: 'in-a-nutshell-process-tab',
+                value: 'deposit',
+                networkSymbol: account?.symbol,
+                vaultId: resolvedFlowData.vault?.id,
+            },
+        });
+        openInfoBottomSheet();
+    }, [account?.symbol, analytics, openInfoBottomSheet, resolvedFlowData.vault?.id]);
 
     if (resolutionStatus !== 'resolved') {
         return null;
@@ -248,7 +314,7 @@ export const YieldDepositApprovalScreen = () => {
                 <YieldDepositFlowScreenHeader
                     account={account}
                     closeAction={handleCloseApproval}
-                    onInfoPress={openInfoBottomSheet}
+                    onInfoPress={handleOpenInfoBottomSheet}
                     tokenContract={route.params.tokenContract}
                     vaultName={vaultTokenName}
                 />
@@ -268,6 +334,19 @@ export const YieldDepositApprovalScreen = () => {
             <Box pointerEvents={isApprovalPending ? 'none' : 'auto'}>
                 <Form form={form}>
                     <VStack spacing="sp16">
+                        <ContextMessage
+                            context={Context.getEarnYield('deposit')}
+                            marginHorizontal="sp16"
+                        />
+                        {isDepositDisabled && (
+                            <Box paddingHorizontal="sp16">
+                                <YieldDisabledAlert
+                                    type="deposit"
+                                    content={depositDisabledContent}
+                                    variant={depositDisabledVariant}
+                                />
+                            </Box>
+                        )}
                         <YieldDepositStepCard currentStepIndex={0} />
 
                         {shouldShowApprovedAmountCard && (

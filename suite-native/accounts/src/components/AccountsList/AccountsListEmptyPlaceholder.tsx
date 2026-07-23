@@ -28,7 +28,7 @@ export const AccountsListEmptyPlaceholder = ({
 
     const isReceiveRoute =
         route.name === ReceiveStackRoutes.ReceiveAccounts ||
-        route.name === ReceiveStackRoutes.ReceiveAccount;
+        route.name === ReceiveStackRoutes.ReceiveAddress;
 
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
@@ -36,7 +36,7 @@ export const AccountsListEmptyPlaceholder = ({
         if (!isFilterEmpty) {
             return {
                 icon: 'magnifyingGlass',
-                title: <Translation id="moduleAccounts.emptyState.searchTitle" />,
+                title: <Translation id="search.noResults" />,
             };
         }
         if (isReceiveRoute) {

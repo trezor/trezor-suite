@@ -22,7 +22,6 @@ import {
     RecoverySeedIcon,
     TimerIcon,
 } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 import { ESHOP_KEEP_METAL_MULTI_SHARE_URL, HELP_CENTER_SEED_CARD_URL } from '@trezor/urls';
 
 import type { Steps } from './steps';
@@ -35,7 +34,7 @@ type InstructionItemProps = {
 
 const InstructionItem = ({ direction = 'row', icon, children }: InstructionItemProps) => (
     <Card paddingType="normal">
-        <Flex direction={direction} alignItems="center" gap={spacings.xs} height="100%">
+        <Flex direction={direction} alignItems="center" gap={8} height="100%">
             <Icon size={32} as={icon} />
             <Paragraph
                 typographyStyle="body-sm"
@@ -59,7 +58,7 @@ type StepProps = {
 const Step = ({ title, time, children, state }: StepProps) => (
     <StepList.Item
         title={
-            <Row gap={spacings.sm}>
+            <Row gap={12}>
                 <Translation id={title} />
                 {state !== 'done' && (
                     <Note icon={TimerIcon}>
@@ -79,7 +78,7 @@ type MultiShareBackupStep2to4Props = {
 };
 
 export const MultiShareBackupStep2to4 = ({ step }: MultiShareBackupStep2to4Props) => (
-    <StepList isOrdered margin={{ top: spacings.md }}>
+    <StepList isOrdered margin={{ top: 16 }}>
         <Step
             time={2}
             title="TR_VERIFY_TREZOR_OWNERSHIP"
@@ -88,7 +87,7 @@ export const MultiShareBackupStep2to4 = ({ step }: MultiShareBackupStep2to4Props
             <Paragraph intent="neutral" priority="secondary">
                 <Translation id="TR_VERIFY_TREZOR_OWNERSHIP_EXPLANATION" />
             </Paragraph>
-            <Grid margin={{ top: spacings.md }} columns={2} gap={spacings.sm}>
+            <Grid margin={{ top: 16 }} columns={2} gap={12}>
                 <InstructionItem icon={RecoverySeedIcon}>
                     <Translation id="TR_VERIFY_TREZOR_OWNERSHIP_CARD_1" />
                 </InstructionItem>
@@ -106,7 +105,7 @@ export const MultiShareBackupStep2to4 = ({ step }: MultiShareBackupStep2to4Props
                 <Translation id="TR_CREATE_SHARES_EXPLANATION" />{' '}
                 <Translation id="TR_CREATE_SHARES_EXAMPLE" />
             </Paragraph>
-            <Grid margin={{ top: spacings.lg }} columns={3} gap={spacings.sm}>
+            <Grid margin={{ top: 20 }} columns={3} gap={12}>
                 <InstructionItem direction="column" icon={PencilIcon}>
                     <Translation
                         id="TR_CREATE_SHARES_CARD_1"

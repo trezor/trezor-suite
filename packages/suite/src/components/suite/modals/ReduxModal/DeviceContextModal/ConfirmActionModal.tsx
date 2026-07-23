@@ -7,7 +7,6 @@ import { Column, H2, Modal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { getDeviceColorVariant } from '@trezor/device-utils';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
@@ -51,10 +50,7 @@ export const ConfirmActionModal = ({
             <Modal.ModalBase width={400}>
                 <Column alignItems="center" gap={16}>
                     <DeviceConfirmImage device={device} />
-                    <H2
-                        align="center"
-                        margin={{ left: spacings.md, right: spacings.md, bottom: spacings.md }}
-                    >
+                    <H2 align="center" margin={{ left: 16, right: 16, bottom: 16 }}>
                         <Translation id={title ?? 'TR_CONFIRM_ACTION_ON_YOUR'} />
                     </H2>
                 </Column>

@@ -19,7 +19,6 @@ import {
     Row,
 } from '@trezor/components';
 import { PlusIcon, RepeatIcon, WarningIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { useDispatch } from 'src/hooks/suite';
@@ -48,9 +47,9 @@ const Container = ({ title, description, cta, dataTestBase, image }: ContainerPr
     const actions = Array.isArray(cta) ? cta : [cta];
 
     return (
-        <Column gap={spacings.xxs} data-testid={`@exception/${dataTestBase}`} alignItems="center">
+        <Column gap={4} data-testid={`@exception/${dataTestBase}`} alignItems="center">
             {image ? image : <IconCircle icon={WarningIcon} size={96} intent="warning" />}
-            <H3 data-testid={`@exception/${dataTestBase}/header`} margin={{ top: spacings.md }}>
+            <H3 data-testid={`@exception/${dataTestBase}/header`} margin={{ top: 16 }}>
                 <Translation id={title} />
             </H3>
             {description && (
@@ -69,7 +68,7 @@ const Container = ({ title, description, cta, dataTestBase, image }: ContainerPr
                     )}
                 </Paragraph>
             )}
-            <Row gap={spacings.sm} margin={{ top: spacings.md }}>
+            <Row gap={12} margin={{ top: 16 }}>
                 {actions.map(a => (
                     <Button
                         key={a.label || 'TR_RETRY'}

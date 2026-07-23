@@ -95,10 +95,10 @@
         "@trezor/network-cardano": "workspace:*",
         "@trezor/network-solana": "workspace:*",
         "@trezor/network-stellar": "workspace:*",
+        "@trezor/network-tron": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/protocol": "workspace:*",
         "@trezor/schema-utils": "workspace:*",
-        "@trezor/transport": "workspace:*",
         "@trezor/transport-common": "workspace:*",
         "@trezor/transport-web": "workspace:*",
         "@trezor/type-utils": "workspace:*",
@@ -106,7 +106,7 @@
         "@trezor/utxo-lib": "workspace:*",
         "cross-fetch": "^4.1.0",
         "jws": "^4.0.1",
-        "viem": "^2.52.2"
+        "viem": "^2.54.1"
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.29.7",

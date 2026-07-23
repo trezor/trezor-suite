@@ -22,7 +22,6 @@ import {
     Text,
 } from '@trezor/components';
 import { CaretUpIcon, InfoIcon, ShieldCheckIcon, ShieldWarningIcon } from '@trezor/icons';
-import { spacings, spacingsPx } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { Pagination } from 'src/components/wallet';
@@ -37,8 +36,8 @@ import { UtxoSortingSelect } from './UtxoSortingSelect';
 
 const Empty = styled.div`
     border-bottom: 1px solid ${({ theme }) => theme.borderNeutral};
-    margin-bottom: ${spacingsPx.sm};
-    padding: ${spacingsPx.sm} 0;
+    margin-bottom: 12px;
+    padding: 12px 0;
 `;
 
 type CoinControlProps = {
@@ -170,7 +169,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
             <Column gap={16}>
                 <Row justifyContent="space-between">
                     <Translation id="TR_COIN_CONTROL" />
-                    <Row gap={spacings.md}>
+                    <Row gap={16}>
                         <Switch isChecked={!!isCoinControlEnabled} onChange={toggleCoinControl} />
                         <Icon size={24} as={CaretUpIcon} onClick={close} />
                     </Row>

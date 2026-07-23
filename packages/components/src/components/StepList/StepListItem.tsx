@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
 import { CheckIcon } from '@trezor/icons';
-import { type SpacingValuesNew, typography } from '@trezor/theme';
+import { type SpacingValue, typography } from '@trezor/theme';
 
 import { useStepList } from './StepListContext';
 import {
@@ -25,8 +25,8 @@ import { IconCircle } from '../IconCircle/IconCircle';
 import { Text } from '../typography/Text/Text';
 
 const Item = styled.li<{
-    $bulletGap: SpacingValuesNew;
-    $titleGap: SpacingValuesNew;
+    $bulletGap: SpacingValue;
+    $titleGap: SpacingValue;
     $size: BulletSize;
     $direction: StepListDirection;
 }>`
@@ -114,7 +114,7 @@ const Title = styled.div<{ $direction: StepListDirection }>`
 
 const Line = styled.div<{
     $direction: StepListDirection;
-    $bulletGap: SpacingValuesNew;
+    $bulletGap: SpacingValue;
     $lineWidth: StepLineWidth;
 }>`
     ${({ $direction, $bulletGap, $lineWidth }) =>
@@ -143,7 +143,7 @@ const Line = styled.div<{
               `}
 `;
 
-const Content = styled.div<{ $itemGap: SpacingValuesNew; $titleGap: SpacingValuesNew }>`
+const Content = styled.div<{ $itemGap: SpacingValue; $titleGap: SpacingValue }>`
     padding-bottom: ${({ $itemGap }) => `${$itemGap}px`};
 
     &:not(:empty) {

@@ -56,6 +56,21 @@ mock, keep it generic and non-opinionated.
 
 Simple test: change in shared mock SHALL NOT break existing tests (or make fixes trivial).
 
+## Type tests
+
+Keep type-test assertions module-local. Do not export test-only values or types, because exports
+pollute the generated declaration files. Use `void` statements to mark assertion values as used:
+
+```ts
+const valid: ExpectedType = value;
+
+// @ts-expect-error The value must not accept an incompatible type.
+const invalid: ExpectedType = incompatibleValue;
+
+void valid;
+void invalid;
+```
+
 ## Mocks (& Fixtures)
 
 ### Typing

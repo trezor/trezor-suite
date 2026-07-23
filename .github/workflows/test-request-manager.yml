@@ -20,7 +20,9 @@ jobs:
     if: github.repository == 'trezor/trezor-suite'
     timeout-minutes: 60
     env:
-      TEST_SCRIPT: ${{ github.event_name == 'workflow_dispatch' && 'test:e2e' || 'test:all' }}
+      # Run the (unflagged) real-Tor e2e suite on manual dispatch AND on the nightly schedule, so the
+      # flaky-gated circuit-isolation suites are exercised at least daily; PRs still run test:all.
+      TEST_SCRIPT: ${{ (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule') && 'test:e2e' || 'test:all' }}
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v6

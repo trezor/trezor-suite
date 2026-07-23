@@ -6,7 +6,7 @@ import { type TransportProtocolDecode } from '../types';
 import { crc32 } from './crypto/crc32';
 import { getHandshakeHash, getTrezorState } from './crypto/pairing';
 import { getIvFromNonce } from './crypto/tools';
-import { type ThpDeviceProperties, type ThpError, type ThpMessageResponse } from './messages';
+import { type ThpDeviceProperties, type ThpMessageResponse } from './messages';
 
 type ThpMessage = ReturnType<TransportProtocolDecode> & {
     thpState: ThpState;
@@ -31,8 +31,7 @@ const decipherMessage = (key: Buffer, recvNonce: number, payload: Buffer, tag: B
     return trezorMaskedStaticPubkey.subarray(1); // NOTE: remove session_id (first byte)
 };
 
-// TODO: link-to-public-docs
-// https://www.notion.so/satoshilabs/THP-Specification-2-0-18fdc5260606806ab573d0a7cba1897a
+// https://github.com/trezor/trezor-firmware/blob/41692dc2cdb937564abe7fecd4bfc3e508adc8d4/docs/common/thp/specification.md#allocation-layer
 // example: 41ffff0020639ba57ff4e0c2343c830a0454335731180220002802280328042801c0171551
 // [magic | channel | len* | nonce               | protobuf: messageType + message          | crc     ]
 // [41    | ffff    | 0020 | 639ba57ff4e0c234    | 3c830a0454335731180220002802280328042801 | c0171551]
@@ -114,13 +113,13 @@ const decodeReadAck = (): ThpMessageResponse => ({
     message: {},
 });
 
-// TODO: link-to-public-docs
-// https://www.notion.so/satoshilabs/THP-Specification-2-0-18fdc5260606806ab573d0a7cba1897a
+// transport error codes
+// https://github.com/trezor/trezor-firmware/blob/41692dc2cdb937564abe7fecd4bfc3e508adc8d4/docs/common/thp/specification.md#allocation-layer
 // example: 42122200050270303cfa
 // [magic | channel | len* | error | crc     ]
 // [42    | 1222    | 0005 | 02    | 70303cfa]
 // *len includes error+crc
-const decodeThpError = (payload: Buffer): ThpMessageResponse => {
+export const decodeThpError = (payload: Buffer): ThpMessageResponse<'ThpError'> => {
     const [errorType] = payload;
 
     const error = (() => {
@@ -138,14 +137,12 @@ const decodeThpError = (payload: Buffer): ThpMessageResponse => {
         }
     })();
 
-    const message: ThpError = {
-        code: error,
-        message: error ?? `Unknown ThpError ${errorType}`,
-    };
-
     return {
         type: 'ThpError',
-        message,
+        message: {
+            code: error,
+            message: error,
+        },
     };
 };
 

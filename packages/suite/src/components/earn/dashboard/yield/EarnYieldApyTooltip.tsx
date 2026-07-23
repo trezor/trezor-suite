@@ -2,7 +2,8 @@ import { type ReactNode, useEffect, useRef } from 'react';
 
 import styled from 'styled-components';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -86,7 +87,11 @@ export const EarnYieldApyTooltip = ({
             maxWidth={600}
             placement="top"
         >
-            <Abbr onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+            <Abbr
+                data-testid="@earn/dashboard/apy-percentage"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+            >
                 {children ?? <ApyValue apy={apyPercentage} />}
             </Abbr>
         </Tooltip>

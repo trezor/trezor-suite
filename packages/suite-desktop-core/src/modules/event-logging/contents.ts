@@ -37,7 +37,7 @@ export const init: ModuleInit = ({ mainWindowProxy }) => {
             if (unresponsiveStart !== 0) {
                 logger.warn(
                     SERVICE_NAME,
-                    `Responsive again after ${(+new Date() - unresponsiveStart / 1000).toFixed(1)}s`,
+                    `Responsive again after ${((+new Date() - unresponsiveStart) / 1000).toFixed(1)}s`,
                 );
                 unresponsiveStart = 0;
             }

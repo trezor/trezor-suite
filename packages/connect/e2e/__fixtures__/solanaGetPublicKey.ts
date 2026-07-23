@@ -13,7 +13,7 @@ const legacyResults = [
 const showOnTrezorDisplayablePublicKey = '4UR47Kp4FxGJiJZZGSPAzXqRgMmZ27oVfGhHoLmcHakE';
 const showOnTrezorDeviceScreen = showOnTrezorDisplayablePublicKey.slice(0, 34);
 
-export default {
+const solanaGetPublicKey: TestCase = {
     method: 'solanaGetPublicKey',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -71,4 +71,6 @@ export default {
             legacyResults,
         },
     ],
-} satisfies TestCase;
+};
+
+export default solanaGetPublicKey;

@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 
 import { type Meta, type StoryObj } from '@storybook/react';
 
-import { spacings } from '@trezor/theme';
-
 import { Tabs as TabsComponent, type TabsProps } from './Tabs';
 import { tabsSizes } from './types';
 import { Column } from '../Flex/Flex';
@@ -79,7 +77,7 @@ const TabsApp = (props: Partial<TabsProps>) => {
     };
 
     return (
-        <Column gap={spacings.md}>
+        <Column gap={16}>
             <TabsComponent activeItemId={items[selectedTab]?.id ?? ''} {...props}>
                 {items.map(item => (
                     <TabsComponent.Item key={item.id} {...item}>

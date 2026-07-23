@@ -31,8 +31,7 @@ import {
 import { Icon, IconButton, Input, Link, Row, Text } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { CheckIcon, InfoIcon, QrCodeIcon, WarningCircleIcon, XIcon } from '@trezor/icons';
-import { CoinLogo } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
+import { TokenIcon } from '@trezor/product-components';
 import { type TimerId } from '@trezor/type-utils';
 import {
     ALL_URLS,
@@ -49,7 +48,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { captureSentryMessage } from 'src/utils/suite/sentry';
 
-import { DevSelfAddress } from './DevSelfAddress';
+import { DevAddressBook } from './DevAddressBook';
 
 const autocorrectTranslationKeys: Record<NonNullable<AddressCorrection>['type'], TranslationKey> = {
     lowercase: 'TR_CONVERTED_TO_LOWERCASE',
@@ -483,7 +482,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         }
 
         if (isAddressWithLabel) {
-            return <CoinLogo symbol={symbol} size={16} />;
+            return <TokenIcon symbol={symbol} size={16} />;
         }
 
         return undefined;
@@ -501,8 +500,8 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 />
             }
             labelRight={
-                <Row gap={spacings.md}>
-                    {isDebug && <DevSelfAddress outputId={outputId} account={account} />}
+                <Row gap={16}>
+                    {isDebug && <DevAddressBook outputId={outputId} account={account} />}
                     {shouldShowLabelAction && broadcastEnabled && (
                         <Text typographyStyle="body-sm" as="div">
                             <Labeling

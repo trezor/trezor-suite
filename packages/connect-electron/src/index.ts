@@ -18,8 +18,12 @@ const initIpcProxy = async () => {
     proxy = await createIpcProxy<TrezorConnectPrivilegedAPI>('TrezorConnect');
 };
 
+type TrezorConnectElectronAPI = TrezorConnectPrivilegedAPI & {
+    initIpcProxy: () => Promise<void>;
+};
+
 // Exported to enable using directly
-const TrezorConnect = factoryPrivileged({
+const TrezorConnect: TrezorConnectElectronAPI = factoryPrivileged({
     on: getProxy('on'),
     off: getProxy('off'),
     removeAllListeners: getProxy('removeAllListeners'),

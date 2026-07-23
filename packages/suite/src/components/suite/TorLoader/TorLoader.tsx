@@ -15,7 +15,6 @@ import {
     Text,
 } from '@trezor/components';
 import { ClockClockwiseIcon, RepeatIcon, TorBrowserIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { toggleTor, updateTorStatus } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -131,12 +130,12 @@ export const TorLoader = ({ callback }: TorLoadingScreenProps) => {
                 </>
             }
         >
-            <Column gap={spacings.md}>
+            <Column gap={16}>
                 <H3>
                     <Translation id={getMessageId()} />
                 </H3>
                 <Card type="contrast">
-                    <Row gap={spacings.md}>
+                    <Row gap={16}>
                         <ProgressBar value={isTorError ? 100 : progress} />
                         <Paragraph
                             intent="neutral"

@@ -6,6 +6,10 @@ import { type ExtraDependenciesForReducer } from './extraDependenciesType';
 // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 type NotFunction<T> = T extends Function ? never : T;
 
+type EnhancedStoreState<TStore extends EnhancedStore<any, any>> = ReturnType<TStore['getState']>;
+type EnhancedStoreAction<TStore extends EnhancedStore<any, any>> =
+    TStore extends EnhancedStore<any, infer TAction> ? TAction : never;
+
 export const createReducerWithExtraDeps =
     <S extends NotFunction<any>>(
         initialState: S | (() => S),
@@ -23,15 +27,15 @@ export const createReducerWithExtraDeps =
             }),
         );
 
-// NOTE: adds the proper thunk dispatch type to the store
-export const castExtraStore = <E, S extends EnhancedStore<any, any>>(
-    store: S,
-    extra: E | null,
+// Adds the thunk dispatch type that configureStore cannot infer through the extra middleware factory.
+export const castExtraStore = <TExtra, TStore extends EnhancedStore<any, any>>(
+    store: TStore,
+    extra: TExtra | null,
 ): {
-    store: S & {
-        dispatch: ThunkDispatch<S, E, any>;
+    store: TStore & {
+        dispatch: ThunkDispatch<EnhancedStoreState<TStore>, TExtra, EnhancedStoreAction<TStore>>;
     };
-    extra: NonNullable<E>;
+    extra: NonNullable<TExtra>;
 } => {
     if (!extra) {
         throw new Error('castExtraStore: Extra dependencies not initialized');

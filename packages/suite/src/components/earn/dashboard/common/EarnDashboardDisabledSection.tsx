@@ -19,7 +19,7 @@ const SECTION_CONFIG: Record<EarnDashboardType, { anchor: string; titleId: Trans
     },
     yield: {
         anchor: EarnAnchor.Yield,
-        titleId: 'TR_EARN_STABLECOIN_YIELD_TITLE',
+        titleId: 'TR_EARN_DEFI_YIELD_TITLE',
     },
 };
 

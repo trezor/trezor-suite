@@ -2,10 +2,15 @@ import { useCallback } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import {
     Box,
     Card,
+    HStack,
+    InlineAlertBox,
     ListItemSkeleton,
     Text,
     VStack,
@@ -59,7 +64,15 @@ export const EarnDepositsCard = ({
 }: EarnDepositsCardProps) => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProp>();
-    const { stakingRow, stablecoinYieldRow, totalDepositedFiatAmount } = useEarnDepositsCardData({
+    const {
+        stakingRow,
+        stablecoinYieldRow,
+        totalDepositedFiatAmount,
+        isFiatRatesLoading,
+        isFiatTotalIncomplete,
+        isFiatTotalUnavailable,
+        retryMissingFiatRates,
+    } = useEarnDepositsCardData({
         stakingActiveItems,
         stablecoinYieldActiveItems,
     });
@@ -84,14 +97,25 @@ export const EarnDepositsCard = ({
         openModal: openStablecoinYieldClaimRewardsSheet,
     } = useBottomSheetModal();
 
+    const { analytics } = useServices(selectNativeAnalyticsDep);
+
     const handleStablecoinYieldClaimRewardPress = useCallback(
-        ({ accountKey }: StablecoinYieldClaimSummary) => {
+        ({ accountKey, networkSymbol }: StablecoinYieldClaimSummary) => {
+            analytics.report({
+                type: events.yieldNavigateEvent.name,
+                payload: {
+                    action: 'continue',
+                    from: 'earn-dashboard',
+                    to: 'claim-form',
+                    networkSymbol,
+                },
+            });
             navigation.navigate(RootStackRoutes.YieldNavigator, {
                 screen: YieldStackRoutes.YieldClaim,
                 params: { accountKey },
             });
         },
-        [navigation],
+        [analytics, navigation],
     );
 
     const handleStablecoinYieldClaimRewardsPress = useCallback(() => {
@@ -130,12 +154,37 @@ export const EarnDepositsCard = ({
                                 <Text variant="body-md" color="contentSecondary">
                                     <Translation id="earn.earnScreen.depositsCard.title" />
                                 </Text>
-                                <BaseCurrencyAmountFormatter
-                                    value={totalDepositedFiatAmount}
-                                    variant="headline-md"
-                                    isDiscreetText={false}
-                                />
+                                {isFiatTotalUnavailable ? (
+                                    <Text variant="headline-md">
+                                        <Translation id="earn.notAvailableShort" />
+                                    </Text>
+                                ) : (
+                                    <HStack spacing="sp4" alignItems="center">
+                                        {isFiatTotalIncomplete && (
+                                            <Text variant="headline-md">~</Text>
+                                        )}
+                                        <BaseCurrencyAmountFormatter
+                                            value={totalDepositedFiatAmount}
+                                            variant="headline-md"
+                                            isDiscreetText={false}
+                                            isLoading={isFiatRatesLoading}
+                                        />
+                                    </HStack>
+                                )}
                             </VStack>
+
+                            {isFiatTotalIncomplete && (
+                                <InlineAlertBox
+                                    testID="@earn/deposits-card/incomplete-fiat-total"
+                                    intent="warning"
+                                    title={
+                                        <Translation id="earn.earnScreen.depositsCard.incompleteFiatTotal" />
+                                    }
+                                    buttonLabel={<Translation id="generic.buttons.retry" />}
+                                    buttonProps={{ priority: 'secondary' }}
+                                    onButtonPress={() => void retryMissingFiatRates()}
+                                />
+                            )}
 
                             <StablecoinYieldClaimRewardsCardSection
                                 claimRewards={stablecoinYieldClaimSummaries}

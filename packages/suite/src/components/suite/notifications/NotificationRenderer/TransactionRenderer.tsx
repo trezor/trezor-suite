@@ -103,6 +103,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
             messageValues={{
                 content: (
                     <TransactionNotification
+                        data-testid={toastTestIdPrefix}
                         message={
                             <Translation
                                 id={props.message}

@@ -1,7 +1,12 @@
 import type z from 'zod';
 
 import { type GetYieldsQueryParams } from '@suite-common/earn-stablecoin-defs';
-import { commonQueryKeys, useInfiniteQuery } from '@suite-common/react-query';
+import {
+    type InfiniteData,
+    type UseInfiniteQueryResult,
+    commonQueryKeys,
+    useInfiniteQuery,
+} from '@suite-common/react-query';
 
 import { YIELD_OPPORTUNITIES_DEFAULT_LIMIT, queriesStaleTime } from '../config';
 import { getYields } from '../services';
@@ -19,7 +24,10 @@ export function useGetYieldOpportunities({
     limit = YIELD_OPPORTUNITIES_DEFAULT_LIMIT,
     sort = 'statusEnterDesc',
     enabled = true,
-}: UseGetYieldOpportunitiesProps = {}) {
+}: UseGetYieldOpportunitiesProps = {}): UseInfiniteQueryResult<
+    InfiniteData<Awaited<ReturnType<typeof getYields>>>,
+    Error
+> {
     return useInfiniteQuery({
         queryKey: commonQueryKeys.yieldOpportunitiesPages({ limit, sort }),
         queryFn: ({ pageParam, signal }) =>

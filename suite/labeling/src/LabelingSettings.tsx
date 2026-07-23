@@ -27,9 +27,7 @@ import {
     selectTurnOffSuiteSyncDep,
     selectTurnOnSuiteSyncDep,
 } from '@suite-common/suite-sync-types';
-import { Box, Column, LoadingContent, Tooltip } from '@trezor/components';
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { Option as SelectOption } from '@trezor/components/src/components/form/Select/customComponents';
+import { Box, Column, LoadingContent, SelectOption, Tooltip } from '@trezor/components';
 import {
     ActionColumn,
     ActionSelect,

@@ -11,6 +11,7 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.39.4",
+        "@tanstack/eslint-plugin-query": "5.101.0",
         "eslint": "^9.39.4",
         "eslint-plugin-import": "^2.32.0",
         "eslint-plugin-jest": "^29.15.3",

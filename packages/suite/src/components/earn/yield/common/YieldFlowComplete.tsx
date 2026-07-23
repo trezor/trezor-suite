@@ -1,8 +1,9 @@
 import { type ReactNode } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { goto } from '@suite/router';
+import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@trezor/components';
@@ -77,7 +78,9 @@ export const YieldFlowComplete = ({
             <IconCircle icon={CheckIcon} intent="brand" size={isBelowMobile ? 64 : 96} />
 
             <Column gap={4}>
-                <Text typographyStyle="headline-md">{heading}</Text>
+                <Text typographyStyle="headline-md" data-testid="@yield/flow-complete/heading">
+                    {heading}
+                </Text>
 
                 <Text intent="neutral" priority="secondary">
                     {description}
@@ -96,7 +99,11 @@ export const YieldFlowComplete = ({
                         </Text>
                         <Row alignItems="center" gap={8}>
                             <Icon as={CheckCircleFilledIcon} intent="brand" />
-                            <Text typographyStyle="body-md" intent="brand">
+                            <Text
+                                data-testid="@yield/flow-complete/status"
+                                typographyStyle="body-md"
+                                intent="brand"
+                            >
                                 <Translation id="TR_EARN_YIELD_COMPLETED" />
                             </Text>
                         </Row>
@@ -116,7 +123,7 @@ export const YieldFlowComplete = ({
                         <Translation
                             id="TR_FEATURE_FEEDBACK_CARD_HEADING"
                             values={{
-                                feature: translationString('TR_EARN_STABLECOIN_YIELD_TITLE'),
+                                feature: translationString('TR_EARN_DEFI_YIELD_TITLE'),
                             }}
                         />
                     }

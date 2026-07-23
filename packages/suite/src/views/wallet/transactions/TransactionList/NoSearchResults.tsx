@@ -2,7 +2,6 @@ import { useRef } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Card, Column, H4, Paragraph, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { getWeakRandomInt } from '@trezor/utils';
 
 const getTip = (num: number) => {
@@ -37,9 +36,9 @@ export const NoSearchResults = () => {
         <Card paddingType="none">
             <Column
                 alignItems="center"
-                gap={spacings.md}
+                gap={16}
                 margin={{ horizontal: 'auto' }}
-                padding={spacings.xxxl}
+                padding={40}
                 maxWidth={750}
             >
                 <H4 align="center">

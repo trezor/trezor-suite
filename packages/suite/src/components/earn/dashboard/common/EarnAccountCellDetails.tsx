@@ -53,10 +53,16 @@ export const EarnAccountCellDetails = ({
                 intent="neutral"
                 priority="primary"
                 typographyStyle="body-sm"
+                data-testid="@earn/dashboard/account-label"
             />
 
             {subtitle ? (
-                <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                <Text
+                    data-testid="@earn/dashboard/subtitle"
+                    typographyStyle="body-sm"
+                    intent="neutral"
+                    priority="secondary"
+                >
                     {subtitle}
                 </Text>
             ) : (

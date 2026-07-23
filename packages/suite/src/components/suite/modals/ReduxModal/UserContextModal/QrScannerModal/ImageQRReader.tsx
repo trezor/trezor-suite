@@ -4,7 +4,6 @@ import { Translation } from '@suite/intl';
 import { Card, Column, Icon, Paragraph, Row, ShortcutBadge, Spinner } from '@trezor/components';
 import { QrCodeIcon, WarningIcon } from '@trezor/icons';
 import { DropZone } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { decodeQRFromImage } from 'src/utils/suite/qrCode';
 
@@ -72,12 +71,7 @@ export const ImageQRReader = ({ onResult }: ImageQRReaderProps) => {
         <Column gap={16}>
             {isDecoding ? (
                 <Card height="100%">
-                    <Column
-                        height="100%"
-                        justifyContent="center"
-                        alignItems="center"
-                        gap={spacings.md}
-                    >
+                    <Column height="100%" justifyContent="center" alignItems="center" gap={16}>
                         <Spinner size={40} />
                         <Paragraph>
                             <Translation id="TR_QR_DECODING" />
@@ -96,7 +90,7 @@ export const ImageQRReader = ({ onResult }: ImageQRReaderProps) => {
                     />
                     {error && (
                         <Card>
-                            <Column alignItems="center" gap={spacings.xs}>
+                            <Column alignItems="center" gap={8}>
                                 <Icon as={WarningIcon} size={24} intent="critical" />
                                 <Paragraph intent="critical">
                                     <Translation id="TR_QR_NOT_FOUND" />

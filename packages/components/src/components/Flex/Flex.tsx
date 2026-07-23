@@ -2,7 +2,7 @@ import React, { type HTMLAttributes } from 'react';
 
 import styled, { type DefaultTheme, css } from 'styled-components';
 
-import { type Color, type SpacingValues, type SpacingValuesNew } from '@trezor/theme';
+import { type Color, type SpacingValue } from '@trezor/theme';
 
 import {
     type FlexAlignItems,
@@ -47,8 +47,8 @@ export const withDivider = ({
     $dividerColor,
 }: {
     theme: DefaultTheme;
-    $rowGap: SpacingValues | SpacingValuesNew;
-    $columnGap: SpacingValues | SpacingValuesNew;
+    $rowGap: SpacingValue;
+    $columnGap: SpacingValue;
     $direction: FlexDirection;
     $dividerColor?: Color;
 }) => css`
@@ -79,8 +79,8 @@ export const withDivider = ({
 `;
 
 type ContainerProps = TransientProps<AllowedFrameProps> & {
-    $rowGap: SpacingValues | SpacingValuesNew;
-    $columnGap: SpacingValues | SpacingValuesNew;
+    $rowGap: SpacingValue;
+    $columnGap: SpacingValue;
     $justifyContent: FlexJustifyContent;
     $alignItems: FlexAlignItems;
     $alignSelf: FlexAlignSelf;
@@ -115,9 +115,9 @@ const Container = styled.div<ContainerProps>`
 
 export type FlexProps = AllowedFrameProps &
     Pick<HTMLAttributes<HTMLElement>, 'onClick' | 'onMouseEnter' | 'onMouseLeave'> & {
-        gap?: SpacingValues | SpacingValuesNew;
-        rowGap?: SpacingValues | SpacingValuesNew;
-        columnGap?: SpacingValues | SpacingValuesNew;
+        gap?: SpacingValue;
+        rowGap?: SpacingValue;
+        columnGap?: SpacingValue;
         /**
          * Distributes space between and around content items along the **main** axis
          */

@@ -41,11 +41,12 @@ export const useInactiveStellarTokens = (accountKey?: AccountKey) => {
         }
     }, [tokenMetadata]);
 
+    const tokens = account?.tokens;
     const activatedTokenContracts = useMemo(() => {
-        if (!account?.tokens) return new Set<string>();
+        if (!tokens) return new Set<string>();
 
-        return new Set(account.tokens.map(token => token.contract));
-    }, [account?.tokens]);
+        return new Set(tokens.map(token => token.contract));
+    }, [tokens]);
 
     const inactiveTokens = useMemo(() => {
         const tokenAddresses = coinDefinitions?.data ?? [];

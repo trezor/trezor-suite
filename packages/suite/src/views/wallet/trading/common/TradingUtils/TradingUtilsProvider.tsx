@@ -14,7 +14,7 @@ interface TradingUtilsProviderProps {
 const Wrapper = styled.div`
     display: grid;
     grid-template-columns: 1.5rem auto;
-    gap: 0.75rem;
+    gap: 12px;
 `;
 
 const TradingIconWrapper = styled.div`

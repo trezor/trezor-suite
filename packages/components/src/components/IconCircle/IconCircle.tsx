@@ -1,6 +1,8 @@
+import styled from 'styled-components';
+
 import { type IconCircleIntent, type IconCircleSize } from './types';
 import {
-    mapIntentToBackground,
+    mapIntentToBackgroundColor,
     mapIntentToBorderColor,
     mapSizeToBorderWidth,
     mapSizeToIconSize,
@@ -9,13 +11,33 @@ import {
     type FrameProps,
     type FramePropsKeys,
     pickAndPrepareFrameProps,
+    withFrameProps,
 } from '../../utils/frameProps';
-import { Box } from '../Box/Box';
-import { Center } from '../Flex/Flex';
+import { type TransientProps } from '../../utils/transientProps';
 import { Icon, type IconComponent } from '../Icon/Icon';
 
 export const allowedIconCircleFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedIconCircleFrameProps)[number]>;
+
+type CircleProps = TransientProps<AllowedFrameProps> & {
+    $size: IconCircleSize;
+    $intent: IconCircleIntent;
+};
+
+const Circle = styled.div<CircleProps>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: ${({ $size }) => $size}px;
+    height: ${({ $size }) => $size}px;
+    border: ${({ $size, $intent, theme }) =>
+        `${mapSizeToBorderWidth($size)}px solid ${theme[mapIntentToBorderColor($intent)]}`};
+    border-radius: 50%;
+    background: ${({ $intent, $size, theme }) => theme[mapIntentToBackgroundColor($intent, $size)]};
+
+    ${withFrameProps}
+`;
 
 export type IconCircleProps = {
     icon: IconComponent;
@@ -24,28 +46,12 @@ export type IconCircleProps = {
 } & AllowedFrameProps;
 
 export const IconCircle = ({ icon, size = 40, intent = 'brand', ...rest }: IconCircleProps) => {
-    const frameProps = pickAndPrepareFrameProps(rest, allowedIconCircleFrameProps, false);
+    const frameProps = pickAndPrepareFrameProps(rest, allowedIconCircleFrameProps);
 
     return (
-        <Box
-            flex="none"
-            borderWidth={mapSizeToBorderWidth(size)}
-            borderColor={mapIntentToBorderColor(intent)}
-            backgroundColor={mapIntentToBackground(intent, size)}
-            borderRadius={80}
-            width={size}
-            height={size}
-            {...frameProps}
-        >
-            <Center>
-                <Icon
-                    as={icon}
-                    size={mapSizeToIconSize(size)}
-                    intent={intent}
-                    priority="secondary"
-                />
-            </Center>
-        </Box>
+        <Circle $size={size} $intent={intent} {...frameProps}>
+            <Icon as={icon} size={mapSizeToIconSize(size)} intent={intent} priority="secondary" />
+        </Circle>
     );
 };
 

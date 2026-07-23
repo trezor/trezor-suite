@@ -17,6 +17,7 @@ import {
     type Account,
     type AccountDescriptor,
     type AccountKey,
+    type AccountWithNetworkType,
     type BaseCurrencyAmount,
     type FailedAccount,
     type GeneralPrecomposedTransactionFinal,
@@ -51,7 +52,9 @@ import { getAccountTotalStakingBalance } from './stakingUtils';
 import { shouldUppercaseTokenSymbol } from './tokenUtils';
 import { isRbfBumpFeeTransaction } from './transactionUtils';
 
-export const isUtxoBased = (account: Account) =>
+export const isUtxoBased = (
+    account: Account,
+): account is AccountWithNetworkType<'bitcoin' | 'cardano'> =>
     account.networkType === 'bitcoin' || account.networkType === 'cardano';
 
 export const isAccountSuccessful = (account: Account): account is SuccessfulAccount =>
@@ -980,7 +983,7 @@ export const getPendingAccount = ({
     receivingAccount?: boolean;
     tx: GeneralPrecomposedTransactionFinal;
     txid: string;
-}) => {
+}): Account => {
     // calculate availableBalance
     let availableBalanceBig = new BigNumber(account.availableBalance);
 

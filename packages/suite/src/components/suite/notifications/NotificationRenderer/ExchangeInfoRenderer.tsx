@@ -33,6 +33,7 @@ export const ExchangeInfoRenderer = ({ render: View, ...props }: ExchangeInfoRen
             messageValues={{
                 content: (
                     <ExchangeInfoNotification
+                        data-testid="@toast/tx-exchange"
                         message={
                             <Translation
                                 id={props.message}

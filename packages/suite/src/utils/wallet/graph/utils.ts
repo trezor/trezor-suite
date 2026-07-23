@@ -15,7 +15,7 @@ import type { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/c
 import { BigNumber } from '@trezor/utils';
 
 import { type AppState } from 'src/reducers/store';
-import { type State as GraphState } from 'src/reducers/wallet/graphReducer';
+import { type GraphState } from 'src/reducers/wallet/graphReducer';
 import {
     type CommonAggregatedHistory,
     type GraphData,
@@ -177,7 +177,7 @@ export const getMinMaxValueFromData = <TType extends TypeName, TValue extends Bi
     return [minValue as TValue, maxValue as TValue];
 };
 
-export const sumFiatValueMap = (valueMap: FiatValueMap, obj: FiatValueMap) => {
+export const sumFiatValueMap = (valueMap: FiatValueMap, obj: FiatValueMap): FiatValueMap => {
     const newMap = { ...valueMap };
     sumFiatValueMapInPlace(newMap, obj);
 

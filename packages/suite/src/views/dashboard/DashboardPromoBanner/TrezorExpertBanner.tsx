@@ -4,7 +4,6 @@ import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Box, Button, Column, IMAGES, IMAGES_PATH, Row, Text } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
-import { borders, spacings, spacingsPx } from '@trezor/theme';
 import { DASHBOARD_BANNER_TEX_URL } from '@trezor/urls';
 
 import { useLayoutSize } from 'src/hooks/suite';
@@ -19,10 +18,10 @@ const mainImage = resolveStaticPath(`${IMAGES_PATH}/${IMAGES.DASHBOARD_PROMO_BAN
 const StyledImage = styled.img`
     flex: 1;
     height: 100%;
-    padding-top: ${spacingsPx.xs};
-    padding-bottom: ${spacingsPx.sm};
+    padding-top: 8px;
+    padding-bottom: 12px;
     object-fit: cover;
-    border-radius: ${borders.radii.md};
+    border-radius: 16px;
     max-width: 40%;
 `;
 
@@ -33,7 +32,7 @@ const UnderlinedBlock = styled.span`
     background-position: 0 100%;
     background-repeat: no-repeat;
     background-size: 100%;
-    padding-bottom: ${spacingsPx.xs};
+    padding-bottom: 8px;
 `;
 
 const Title = () => {
@@ -101,13 +100,13 @@ export const TrezorExpertBanner = ({ onClose, onCTAClick }: TrezorExpertBannerPr
         >
             <Row
                 height="100%"
-                margin={{ right: isBelowDesktop ? undefined : spacings.xxxxl }}
+                margin={{ right: isBelowDesktop ? undefined : 48 }}
                 justifyContent="space-between"
-                gap={spacings.xl}
+                gap={24}
                 alignItems="center"
             >
-                <Column gap={isBelowDesktop ? spacings.md : spacings.xl}>
-                    <Column gap={isBelowLaptop ? spacings.xxs : spacings.xs}>
+                <Column gap={isBelowDesktop ? 16 : 24}>
+                    <Column gap={isBelowLaptop ? 4 : 8}>
                         <Title />
                         <Description />
                     </Column>

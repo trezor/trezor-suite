@@ -204,8 +204,6 @@ export type AccountBase = {
      * IMPORTANT: This is relevant only for Mobile App.
      */
     accountLabel?: string;
-
-    ts: number;
 };
 
 export type Account = AccountBase &
@@ -228,7 +226,6 @@ export type WalletParams =
 export interface ReceiveInfo {
     path: string;
     address: string;
-    isVerified: boolean;
 }
 
 export interface StakingPoolExtended extends StakingPool {

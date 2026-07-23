@@ -12,7 +12,6 @@ import {
     Radio,
     Text,
 } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { useDispatch } from 'src/hooks/suite';
@@ -53,8 +52,8 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
             }
         >
             <Banner icon description={<Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL_WARNING" />} />
-            <Card margin={{ top: spacings.md }}>
-                <Column gap={spacings.xl} alignItems="flex-start">
+            <Card margin={{ top: 16 }}>
+                <Column gap={24} alignItems="flex-start">
                     <Radio
                         isChecked={level === 'Strict'}
                         onChange={() => setLevel('Strict')}

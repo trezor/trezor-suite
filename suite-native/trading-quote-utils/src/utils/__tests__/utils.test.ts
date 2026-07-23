@@ -9,7 +9,6 @@ import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/tradi
 import {
     getErrorStrFromThunkRejectedValue,
     getFormDraftKeyPrefixFromTradingType,
-    getRandomAccountDescriptor,
     getTradeOperationData,
     getTradeStatusStep,
     getTradeTitle,
@@ -111,16 +110,6 @@ describe('utils', () => {
         ])('should return correct step for sell trade with %s status', (status, expectedStep) => {
             const trade = getSellTrade({ status: status as SellTradeStatus });
             expect(getTradeStatusStep(trade)).toBe(expectedStep);
-        });
-    });
-
-    describe('getRandomAccountDescriptor', () => {
-        it('should return 20 characters', () => {
-            expect(getRandomAccountDescriptor().length).toBe(20);
-        });
-
-        it('should return different string on every call', () => {
-            expect(getRandomAccountDescriptor()).not.toBe(getRandomAccountDescriptor());
         });
     });
 

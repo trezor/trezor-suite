@@ -2,7 +2,7 @@ import { type HTMLProps, type ReactNode } from 'react';
 
 import styled, { type DefaultTheme, type RuleSet, css } from 'styled-components';
 
-import { type Color, borders, spacingsPx } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
 import { type TextIntent, type TextPriority, textIntents, textPriorities } from './types';
 import { mapIntentToCSS } from './utils';
@@ -134,8 +134,8 @@ const StyledText = styled.span<StyledTextProps>`
         $isHighlighted &&
         css`
             display: inline;
-            padding: 0 ${spacingsPx.xxs};
-            border-radius: ${borders.radii.xxs};
+            padding: 0 4px;
+            border-radius: 4px;
             background-color: ${({ theme }) => theme.elementFillNeutralSoft};
             box-decoration-break: clone;
         `}

@@ -1,3 +1,5 @@
+import { type PayloadAction } from '@reduxjs/toolkit';
+
 import {
     type BluetoothState,
     prepareBluetoothReducerCreator,
@@ -38,20 +40,32 @@ export type WithBluetoothRootState = {
     bluetooth: DesktopBluetoothState;
 };
 
-export const bluetoothSlice = createSliceWithExtraDeps({
+const bluetoothSlice = createSliceWithExtraDeps({
     name: 'bluetooth',
     initialState: initialDesktopBluetoothState,
     reducers: {
-        startConnectingBluetoothDevice: (state, { payload: { deviceId } }) => {
+        startConnectingBluetoothDevice: (
+            state: DesktopBluetoothState,
+            { payload: { deviceId } }: PayloadAction<{ deviceId: string }>,
+        ) => {
             state.connectingDeviceIds.push(deviceId);
         },
-        stopConnectingBluetoothDevice: (state, { payload: { deviceId } }) => {
+        stopConnectingBluetoothDevice: (
+            state: DesktopBluetoothState,
+            { payload: { deviceId } }: PayloadAction<{ deviceId: string }>,
+        ) => {
             state.connectingDeviceIds = state.connectingDeviceIds.filter(id => id !== deviceId);
         },
-        setIsUnpairingDevice: (state, { payload: { isUnpairing } }) => {
+        setIsUnpairingDevice: (
+            state: DesktopBluetoothState,
+            { payload: { isUnpairing } }: PayloadAction<{ isUnpairing: boolean }>,
+        ) => {
             state.isUnpairingDevice = isUnpairing;
         },
-        setBluetoothDeviceNeedsManualPairing: (state, { payload }) => {
+        setBluetoothDeviceNeedsManualPairing: (
+            state: DesktopBluetoothState,
+            { payload }: PayloadAction<boolean>,
+        ) => {
             state.isManualPairingRequired = payload;
         },
     },
@@ -78,9 +92,12 @@ export const bluetoothSlice = createSliceWithExtraDeps({
     },
 });
 
+export const desktopBluetoothActions = bluetoothSlice.actions;
 export const {
     startConnectingBluetoothDevice,
     stopConnectingBluetoothDevice,
     setIsUnpairingDevice,
     setBluetoothDeviceNeedsManualPairing,
-} = bluetoothSlice.actions;
+} = desktopBluetoothActions;
+
+export const prepareDesktopBluetoothReducer = bluetoothSlice.prepareReducer;

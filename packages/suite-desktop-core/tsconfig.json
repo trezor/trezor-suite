@@ -38,6 +38,7 @@
         { "path": "../transport" },
         { "path": "../transport-bluetooth" },
         { "path": "../transport-bridge" },
+        { "path": "../transport-common" },
         { "path": "../urls" },
         { "path": "../utils" },
         { "path": "../type-utils" }

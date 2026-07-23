@@ -4,6 +4,7 @@ import { type FieldErrors, useFormContext, useWatch } from 'react-hook-form';
 import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import {
+    type SelectedTradingAsset,
     TRADING_FORM_FIAT_CURRENCY_SELECT,
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_CURRENCY,
@@ -26,6 +27,7 @@ import { useDidUpdate } from '@trezor/react-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
+import { useSelectedTradingAsset } from 'src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import {
@@ -41,21 +43,27 @@ import {
 import { getFeeInUnits } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
 
+import { TradingFormInputAmountPlaceholder } from './TradingFormInputAmountPlaceholder';
 import { getFiatInputRules } from './tradingFormInputFiatCryptoRules';
 
-export const TradingFormInputFiat = ({
+type TradingFormInputFiatContentProps = TradingFormInputFiatCryptoProps & {
+    asset: SelectedTradingAsset;
+};
+
+const TradingFormInputFiatContent = ({
+    asset,
     cryptoInputName,
     fiatInputName,
     labelLeft,
     labelRight,
-}: TradingFormInputFiatCryptoProps) => {
+}: TradingFormInputFiatContentProps) => {
     const { translationString } = useTranslation();
     const locale = useSelector(selectLanguage);
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
     const rates = useSelector(selectCurrentFiatRates);
 
     const context = useTradingFormContext();
-    const { account, amountLimits } = context;
+    const { amountLimits } = context;
     const {
         control,
         formState: { errors },
@@ -70,7 +78,7 @@ export const TradingFormInputFiat = ({
     const outputCurrencySelect = useWatch({ control, name: TRADING_FORM_OUTPUT_CURRENCY });
     const fiatCurrencySelect = useWatch({ control, name: TRADING_FORM_FIAT_CURRENCY_SELECT });
     const cryptoAmount = useWatch({ control, name: cryptoInputName });
-    const { areSatsDisplayed } = useBitcoinAmountUnit(account.symbol);
+    const { areSatsDisplayed } = useBitcoinAmountUnit(asset.symbol);
 
     const isExchangeContext = isTradingExchangeContext(context);
     const isSellContext = isTradingSellContext(context);
@@ -85,16 +93,16 @@ export const TradingFormInputFiat = ({
         | TokenAddress
         | undefined;
     const balance = tokenAddress
-        ? findToken(account.tokens, tokenAddress)?.balance
-        : account.formattedBalance;
+        ? findToken(asset.tokens, tokenAddress)?.balance
+        : asset.formattedBalance;
     const networkReserve = getNetworkReserve({
-        symbol: account.symbol,
+        symbol: asset.symbol,
         contractAddress: tokenAddress,
         isEnabled: isNetworkReserveEnabled,
     });
     const feeInUnits = isExchangeOrSellContext
         ? getFeeInUnits({
-              symbol: account.symbol,
+              symbol: asset.symbol,
               composedLevels: context.composedLevels,
               selectedFee: context.composedTransactionInfo?.selectedFee,
           })
@@ -102,28 +110,28 @@ export const TradingFormInputFiat = ({
 
     const { fiatAmount } = useFiatFromCryptoValue({
         amount: balance || '',
-        symbol: account.symbol,
+        symbol: asset.symbol,
         tokenAddress,
         rateType: 'current',
     });
     const { fiatAmount: networkReserveFiatAmount } = useFiatFromCryptoValue({
         amount: networkReserve || '',
-        symbol: account.symbol,
+        symbol: asset.symbol,
         tokenAddress,
         rateType: 'current',
     });
     const { fiatAmount: feeFiatAmount } = useFiatFromCryptoValue({
         amount: feeInUnits?.toString() || '',
-        symbol: account.symbol,
+        symbol: asset.symbol,
         tokenAddress,
         rateType: 'current',
     });
 
     const normalizedCryptoAmount =
-        account.symbol === 'btc' && areSatsDisplayed && cryptoAmount
+        asset.symbol === 'btc' && areSatsDisplayed && cryptoAmount
             ? convertAmountSubunitsToUnits(
                   cryptoAmount,
-                  getNetworkDecimalsWithFallback(account.symbol),
+                  getNetworkDecimalsWithFallback(asset.symbol),
               )
             : cryptoAmount;
 
@@ -157,7 +165,7 @@ export const TradingFormInputFiat = ({
                 feeFiatAmount,
                 normalizedCryptoAmount,
                 amountLimits,
-                accountSymbol: account.symbol,
+                accountSymbol: asset.symbol,
                 selectedCurrencyCode,
                 tokenAddress,
                 rates,
@@ -172,7 +180,7 @@ export const TradingFormInputFiat = ({
             fiatAmount,
             feeFiatAmount,
             normalizedCryptoAmount,
-            account.symbol,
+            asset.symbol,
             selectedCurrencyCode,
             tokenAddress,
             rates,
@@ -211,4 +219,21 @@ export const TradingFormInputFiat = ({
             data-testid="@trading/form/fiat-input"
         />
     );
+};
+
+export const TradingFormInputFiat = (props: TradingFormInputFiatCryptoProps) => {
+    const { type } = useTradingFormContext();
+    const asset = useSelectedTradingAsset(type);
+
+    if (!asset) {
+        return (
+            <TradingFormInputAmountPlaceholder
+                name={props.fiatInputName}
+                labelLeft={props.labelLeft}
+                labelRight={props.labelRight}
+            />
+        );
+    }
+
+    return <TradingFormInputFiatContent asset={asset} {...props} />;
 };

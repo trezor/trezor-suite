@@ -45,7 +45,7 @@ export const AboutUsBanners = () => {
                             style={applyStyle(trezorDescriptionTextStyle)}
                         >
                             <Translation
-                                id="moduleSettings.aboutUs.body"
+                                id="moduleSettings.aboutUs.text"
                                 values={{
                                     coinLabel,
                                 }}

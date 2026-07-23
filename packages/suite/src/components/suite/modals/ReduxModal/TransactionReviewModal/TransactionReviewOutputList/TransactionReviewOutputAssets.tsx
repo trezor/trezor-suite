@@ -13,13 +13,7 @@ import {
 } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Card, Column, Divider, H4, InfoItem, Row, Text } from '@trezor/components';
-import {
-    AssetLogo,
-    CoinLogo,
-    isCoinSymbol,
-    shouldShowNetworkIcon,
-} from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
+import { TokenIcon, isCoinSymbol, shouldShowNetworkIcon } from '@trezor/product-components';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { TransactionReviewOutputStatus } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
@@ -63,7 +57,7 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
     const renderAssetLogo = () => {
         if (contractAddress) {
             return (
-                <AssetLogo
+                <TokenIcon
                     size={24}
                     symbol={symbol}
                     contractAddress={contractAddress}
@@ -74,7 +68,7 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
         }
 
         if (isCoinSymbol(symbol)) {
-            return <CoinLogo size={24} symbol={symbol} type="tokenWithNetwork" />;
+            return <TokenIcon size={24} symbol={symbol} showNetworkIcon />;
         }
 
         return null;
@@ -122,7 +116,7 @@ const TransactionReviewOutputAssetsTo = ({ receive }: TransactionReviewOutputAss
             <InfoItem
                 label={
                     <Text
-                        margin={{ left: spacings.xxl }}
+                        margin={{ left: 32 }}
                         intent="brand"
                         data-testid="@modal/assets/receive/label"
                     >

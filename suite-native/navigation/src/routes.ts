@@ -8,7 +8,6 @@ export enum RootStackRoutes {
     AccountDetail = 'AccountDetail',
     StakingDetail = 'StakingDetail',
     StakingManagement = 'StakingManagement',
-    StakingInsufficientBalance = 'StakingInsufficientBalance',
     HowStakeWorksScreen = 'HowStakeWorksScreen',
     YieldNavigator = 'YieldNavigator',
     YieldInsufficientBalance = 'YieldInsufficientBalance',
@@ -261,7 +260,13 @@ export enum YieldStackRoutes {
 
 export enum ReceiveStackRoutes {
     ReceiveAccounts = 'ReceiveAccounts',
-    ReceiveAccount = 'ReceiveAccount',
+    ReceiveAddress = 'ReceiveAddress',
+    ReceiveAddressVerification = 'ReceiveAddressVerification',
+}
+
+export enum ReceiveAddressVerificationSource {
+    Pasted = 'pasted',
+    Shared = 'shared',
 }
 
 export enum SendStackRoutes {

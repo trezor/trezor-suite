@@ -7,7 +7,7 @@ import { selectLanguage } from '@suite/settings';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Card, Column, H3, Icon, LottieAnimation, ProgressBar } from '@trezor/components';
 import { StarFourIcon } from '@trezor/icons';
-import { spacings, typography } from '@trezor/theme';
+import { typography } from '@trezor/theme';
 
 import { useCoinjoinAccountLoadingProgress } from 'src/hooks/coinjoin';
 import { useSelector } from 'src/hooks/suite';
@@ -30,7 +30,7 @@ const Subheader = styled.div`
 const DiscoveryProgressWrapper = styled.div`
     width: 100%;
     max-width: 440px;
-    margin: 18px 0 28px;
+    margin: 20px 0 28px;
 `;
 
 const FactHeading = styled.div`
@@ -63,8 +63,8 @@ export const CoinjoinAccountDiscoveryProgress = () => {
     );
 
     return (
-        <Card margin={{ bottom: spacings.xl }}>
-            <Column alignItems="center" margin={{ top: spacings.xl, bottom: spacings.xl }}>
+        <Card margin={{ bottom: 24 }}>
+            <Column alignItems="center" margin={{ top: 24, bottom: 24 }}>
                 <H3>
                     <Translation id="TR_LOADING_FUNDS" />
                 </H3>

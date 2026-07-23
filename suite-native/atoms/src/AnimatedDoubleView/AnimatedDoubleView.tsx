@@ -20,6 +20,7 @@ export type AnimatedDoubleViewProps = {
     renderSecondary: AnimatedViewWrapperProps['renderView'];
     onViewSwitch?: (activeView: ActiveView) => void;
     switchLabel?: string;
+    activeView?: ActiveView;
 };
 
 export const ANIMATED_DOUBLE_VIEW_SWITCH_ANIMATION_DURATION = ANIMATION_DURATION;
@@ -35,17 +36,22 @@ export const AnimatedDoubleView = ({
     renderSecondary,
     onViewSwitch = noop,
     switchLabel,
+    activeView: controlledActiveView,
 }: AnimatedDoubleViewProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const [activeView, setActiveView] = useState<ActiveView>('primary');
+    const [internalActiveView, setInternalActiveView] = useState<ActiveView>('primary');
+    const activeView = controlledActiveView ?? internalActiveView;
 
     const handleViewSwitch = useCallback(() => {
         const nextActiveView = activeView === 'primary' ? 'secondary' : 'primary';
 
-        setActiveView(nextActiveView);
+        if (controlledActiveView === undefined) {
+            setInternalActiveView(nextActiveView);
+        }
+
         onViewSwitch(nextActiveView);
-    }, [onViewSwitch, activeView]);
+    }, [activeView, controlledActiveView, onViewSwitch]);
 
     return (
         <Animated.View layout={LinearTransition} style={applyStyle(viewsWrapperStyle)}>

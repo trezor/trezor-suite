@@ -2,8 +2,6 @@ import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Card, Column, Modal, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-
 type ThpPairingConfirmStepProps = {
     modalHeading: ReactNode;
 };
@@ -16,7 +14,7 @@ export const ThpPairingConfirmStep = ({ modalHeading }: ThpPairingConfirmStepPro
         heading={modalHeading}
     >
         <Card>
-            <Column alignItems="start" gap={spacings.xxs}>
+            <Column alignItems="start" gap={4}>
                 <Text typographyStyle="body-md-strong">
                     <Translation id="TR_THP_CONFIRM_SECURE_CONNECTION" />
                 </Text>

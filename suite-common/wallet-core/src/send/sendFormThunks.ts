@@ -66,6 +66,7 @@ import {
 } from './sendFormRippleStellarThunks';
 import {
     selectPrecomposedSendForm,
+    selectResolvedEthereumNonce,
     selectSendFormDrafts,
     selectSendPrecomposedTx,
     selectSendSerializedTx,
@@ -259,11 +260,16 @@ export const synchronizeSentTransactionThunk = createThunk(
             precomposedTransaction,
             precomposedForm,
             txid,
+            ethereumNonce,
         }: {
             selectedAccount: Account;
             precomposedTransaction: GeneralPrecomposedTransactionFinal;
             precomposedForm?: FormState;
             txid: string;
+            // The nonce the EVM tx was actually signed with. Forwarded to the fake pending tx so it
+            // shows the true nonce instead of a value re-derived from the pending-inclusive
+            // account.misc.nonce (which reads one too high until the backend picks up the real tx).
+            ethereumNonce?: string;
         },
         { dispatch },
     ) => {
@@ -301,6 +307,7 @@ export const synchronizeSentTransactionThunk = createThunk(
                     precomposedForm,
                     txid,
                     account: selectedAccount,
+                    ethereumNonce,
                 }),
             );
             dispatch(accountsActions.updateAccount(selectedAccount));
@@ -351,6 +358,9 @@ export const pushSendFormTransactionThunk = createThunk<
         const serializedTx = selectSendSerializedTx(getState());
         const device = selectSelectedDevice(getState());
         const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
+        // Read the signed-with nonce before onModalCancel() so the fake pending tx (added in
+        // synchronizeSentTransactionThunk) shows the true nonce rather than a re-derived one.
+        const resolvedEthereumNonce = selectResolvedEthereumNonce(getState());
 
         if (!serializedTx || !precomposedTransaction)
             return rejectWithValue({
@@ -465,6 +475,7 @@ export const pushSendFormTransactionThunk = createThunk<
                     precomposedTransaction,
                     precomposedForm,
                     txid,
+                    ethereumNonce: resolvedEthereumNonce,
                 }),
             );
         } else {

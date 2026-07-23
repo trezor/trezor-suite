@@ -42,10 +42,6 @@ const serializeFilterPolicy = (policy?: BluetoothFilterPolicy) => {
     return value;
 };
 
-Object.keys(MODEL_BLE_CODE)
-    .map(k => Number(k))
-    .find(k => MODEL_BLE_CODE[k]);
-
 const serializeDeviceModel = (m: DeviceModelInternal) =>
     Object.keys(MODEL_BLE_CODE)
         .map(k => Number(k))

@@ -25,6 +25,7 @@ import { useShowAutoEjectAlert } from './useShowAutoEjectAlert';
 
 export const HomeScreen = () => {
     const { showSystemUnpairingAlert } = useBluetoothAlerts();
+    const portfolioGraphRef = useRef<PortfolioGraphRef>(null);
 
     const homeScreenState = useSelector(selectHomeScreenState);
     const isDiscoveredDeviceAccountless = useSelector(selectIsDiscoveredDeviceAccountless);
@@ -32,11 +33,9 @@ export const HomeScreen = () => {
         selectIsBluetoothDeviceOsUnpairingRequired,
     );
 
-    const portfolioContentRef = useRef<PortfolioGraphRef>(null);
-
     const refreshControl = useHomeRefreshControl({
         isDiscoveredDeviceAccountless,
-        portfolioContentRef,
+        portfolioGraphRef,
     });
 
     useFocusEffect(
@@ -62,7 +61,7 @@ export const HomeScreen = () => {
             case 'discoveryNotFinished':
                 return <DiscoveryNotFinished />;
             case 'portfolioContent':
-                return <PortfolioContent ref={portfolioContentRef} />;
+                return <PortfolioContent ref={portfolioGraphRef} />;
             default:
                 return exhaustive(homeScreenState);
         }

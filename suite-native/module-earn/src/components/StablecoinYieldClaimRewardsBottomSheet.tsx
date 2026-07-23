@@ -13,7 +13,7 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { AddressFormatter, BaseCurrencyAmountFormatter } from '@suite-native/formatters';
-import { CryptoIcon, Icon } from '@suite-native/icons';
+import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -66,7 +66,7 @@ const StablecoinYieldClaimRewardsItem = ({
         <Card borderColor="borderNeutral" noPadding style={applyStyle(itemCardStyle)}>
             <PressableOpacity onPress={handlePress} style={applyStyle(itemRowStyle)}>
                 <Box marginRight="sp12">
-                    <CryptoIcon symbol={claimReward.networkSymbol} size="small" />
+                    <TokenIcon symbol={claimReward.networkSymbol} size="small" />
                 </Box>
 
                 <VStack spacing="sp2" style={applyStyle(itemContentStyle)}>

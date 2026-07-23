@@ -137,6 +137,7 @@ export const signDataAndConfirmThunk = createThunk<
                 returnUrl,
                 receiveAddress: trade.receiveAddress,
                 account,
+                isTradeSubmitted: true,
                 triggerAnalyticsTradeConfirmation,
                 processResponseData,
                 nextStep,

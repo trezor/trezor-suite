@@ -17,39 +17,34 @@ const finalBalanceFormatted = toADA(finalBalance);
 test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic' } });
 
-    test.beforeEach(
-        async ({ page, onboardingPage, dashboardPage, settingsPage, blockbookMock }) => {
-            await test.step('Mock Cardano pool address', async () => {
-                await page.route(/\/staking\/v1\/\?networks=/, async route => {
-                    const response = await route.fetch();
-                    const body = await response.json();
-                    const adaData = body.data?.find(
-                        (item: { symbol: string }) => item.symbol === 'ada',
-                    );
-                    if (adaData) {
-                        adaData.pools = [
-                            { apy: 3.9, saturation: 50, id: EXPECTED_CARDANO_POOL_ID },
-                        ];
-                    }
-                    await route.fulfill({ body: JSON.stringify(body) });
-                });
+    test.beforeEach(async ({ page, onboardingPage, settingsPage, blockbookMock }) => {
+        await test.step('Mock Cardano pool address', async () => {
+            await page.route(/\/staking\/v1\/\?networks=/, async route => {
+                const response = await route.fetch();
+                const body = await response.json();
+                const adaData = body.data?.find(
+                    (item: { symbol: string }) => item.symbol === 'ada',
+                );
+                if (adaData) {
+                    adaData.pools = [{ apy: 3.9, saturation: 50, id: EXPECTED_CARDANO_POOL_ID }];
+                }
+                await route.fulfill({ body: JSON.stringify(body) });
             });
+        });
 
-            await onboardingPage.completeOnboarding();
+        await onboardingPage.completeOnboarding();
 
-            await test.step('Enable Cardano and set mocked backend', async () => {
-                await settingsPage.navigateTo('coins');
-                await blockbookMock.start('ada', 'blockfrost');
+        await test.step('Enable Cardano and set mocked backend', async () => {
+            await settingsPage.navigateTo('coins');
+            await blockbookMock.start('ada', 'blockfrost');
 
-                await settingsPage.coinsTab.enableNetwork('ada');
-                await settingsPage.coinsTab.openNetworkAdvanceSettings('ada');
-                await settingsPage.coinsTab.changeBackend('blockfrost', blockbookMock.url);
-
-                await dashboardPage.dashboardMenuButton.click();
-                await page.discoveryShouldFinish();
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    { symbol: 'ada', backend: { type: 'blockfrost', url: blockbookMock.url } },
+                ],
             });
-        },
-    );
+        });
+    });
 
     test(
         'Stake Cardano',
@@ -68,6 +63,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             walletPage,
             feeSection,
             stakingSection,
+            yieldNutshellModal,
             blockbookMock,
         }) => {
             const stakingAccountItemInLeftSection = walletPage.accountButton({
@@ -93,7 +89,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             await test.step('Initiate staking flow', async () => {
                 await stakingSection.startStakingButton.click();
                 await expect(page.modalHeader).toHaveTranslation('TR_EARN_STAKING_IN_A_NUTSHELL');
-                await expect(page.modal).toContainTranslation(
+                await expect(yieldNutshellModal.modalContainer).toContainTranslation(
                     'TR_EARN_YOUR_FUNDS_STAY_ACCESSIBLE',
                     {
                         values: { networkDisplaySymbol: 'ADA' },
@@ -249,8 +245,11 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     },
                 });
                 await devicePrompt.waitForPromptAndConfirm();
-                await expect(stakingSection.stakedToastAccount).toContainText('Cardano #1');
-                await expect(stakingSection.stakedToastAmount).toContainText(finalBalanceFormatted);
+                await stakingSection.verifyStakingToast({
+                    type: 'staked',
+                    account: 'Cardano #1',
+                    amount: finalBalanceFormatted,
+                });
             });
 
             await test.step('Verify account is staked', async () => {

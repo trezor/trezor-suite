@@ -13,7 +13,7 @@ import {
 import { selectChangeRelayUrlDep } from '@suite-common/suite-sync-types';
 import { Button, ButtonGroup, Code, Column, Input, Text } from '@trezor/components';
 import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/product-components';
-import { type BreakpointFlags, spacings } from '@trezor/theme';
+import { type BreakpointFlags } from '@trezor/theme';
 
 import { SuiteSyncSettingsDebug } from './SuiteSyncSettingsDebug';
 import { WipeSuiteSyncLabels, type WipeSuiteSyncLabelsOnError } from './WipeSuiteSyncLabels';
@@ -64,7 +64,7 @@ export const SuiteSyncSettings = ({ onError }: SuiteSyncSettingsProps) => {
             <SectionItem>
                 <TextColumn title="Relay URL" />
                 <ActionColumn>
-                    <Column gap={spacings.xxs}>
+                    <Column gap={4}>
                         <Input
                             data-testid="@settings/debug/suite-sync/relay-url-input"
                             isDisabled={isRelayUrlLoading}

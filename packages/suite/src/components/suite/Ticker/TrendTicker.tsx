@@ -8,7 +8,7 @@ import { type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, localizePercentage } from '@suite-common/wallet-utils';
 import { Icon, type IconComponent, Skeleton } from '@trezor/components';
 import { TrendDownIcon, TrendUpIcon } from '@trezor/icons';
-import { type Color, spacingsPx, typography } from '@trezor/theme';
+import { type Color, typography } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { useSelector } from 'src/hooks/suite';
@@ -17,7 +17,7 @@ import { NoRatesTooltip } from './NoRatesTooltip';
 
 const PercentageWrapper = styled.div<{ $color: Color }>`
     ${typography['body-sm-strong']}
-    gap: ${spacingsPx.xxs};
+    gap: 4px;
     display: flex;
     align-items: center;
     color: ${({ theme, $color }) => theme[$color]};

@@ -12,7 +12,7 @@ import {
 } from '@suite-native/accounts';
 import { HStack, IconButton, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
-import { CryptoIcon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 import {
     type AccountsStackParamList,
     type RootStackParamList,
@@ -44,7 +44,7 @@ const AccountAssetsScreenHeaderContent = ({ accountKey }: Omit<Props, 'flowType'
 
     return (
         <HStack alignItems="center" spacing="sp8">
-            <CryptoIcon symbol={account.symbol} size="small" />
+            <TokenIcon symbol={account.symbol} size="small" />
             <VStack spacing={0} alignItems="flex-start">
                 <AccountLabel
                     account={account}

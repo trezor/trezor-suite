@@ -6,7 +6,7 @@ const skip = ['1', '<2.9.3'];
 // id is the NIP-01 event id (sha256 of the serialized event). The BIP-340
 // signature is not asserted because it is not deterministic, so only the
 // deterministic fields are checked (matchObject ignores the extra signature).
-export default {
+const nostrSignEvent: TestCase = {
     method: 'nostrSignEvent',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -42,4 +42,6 @@ export default {
             skip,
         },
     ],
-} satisfies TestCase;
+};
+
+export default nostrSignEvent;

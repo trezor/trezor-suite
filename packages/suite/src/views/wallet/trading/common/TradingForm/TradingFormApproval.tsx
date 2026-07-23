@@ -8,6 +8,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingExchangeType,
     requiresTokenApproval,
+    selectTradingSendAccount,
     tokenSupportsIncreasingAllowance,
     useApprovalStep,
     useTradingUtils,
@@ -56,15 +57,15 @@ export const TradingFormApproval = () => {
             state: { isFormLoading, isFormInvalid },
             helpers,
         },
-        account,
     } = context;
+    const account = useSelector(reduxState => selectTradingSendAccount(reduxState, 'exchange'));
 
     const { exchangeType, rateType } = watch();
 
     const getCryptoInfo = useTradingExchangeCryptoAndProviderInfo();
 
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const areFeesLoading = useSelector(state => selectAreFeesLoading(state, account.symbol));
+    const areFeesLoading = useSelector(state => selectAreFeesLoading(state, account?.symbol));
 
     const { handleClick: handleApproveClick, disabled: isApproveButtonLoading } =
         useAsyncClickHandler();
@@ -175,6 +176,7 @@ export const TradingFormApproval = () => {
     };
 
     const isCommonButtonBusy =
+        !account ||
         isFormLoading ||
         isFormInvalid ||
         areFeesLoading ||
@@ -366,7 +368,7 @@ export const TradingFormApproval = () => {
                         )
                     }
                     onTxClick={
-                        tx.approvalTxid
+                        tx.approvalTxid && account
                             ? () =>
                                   dispatch(
                                       openModal({

@@ -487,7 +487,7 @@ export const restoreOrigOutputsOrder = (
     outputs: PROTO.TxOutputType[],
     origOutputs: RbfTransactionParams['outputs'],
     origTxid: string,
-) => {
+): PROTO.TxOutputType[] => {
     const usedIndex: number[] = []; // collect used indexes to avoid duplicates
 
     return outputs

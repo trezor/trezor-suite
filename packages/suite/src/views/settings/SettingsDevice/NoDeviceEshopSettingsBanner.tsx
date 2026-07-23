@@ -26,7 +26,7 @@ import {
     RocketLaunchFilledIcon,
     ShieldStarFilledIcon,
 } from '@trezor/icons';
-import { borders, breakpoints, paletteV2 } from '@trezor/theme';
+import { breakpoints, paletteV2 } from '@trezor/theme';
 import { ESHOP_STORE_URL, withGetTrezorCtaUtm } from '@trezor/urls';
 
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
@@ -43,7 +43,7 @@ const HeroContainer = styled.div`
     );
     min-height: 190px;
     padding: 10px 20px;
-    border-radius: ${borders.radii.sm};
+    border-radius: 12px;
 `;
 
 const bulletPointValues: Array<{ icon: IconComponent; textId: TranslationKey }> = [

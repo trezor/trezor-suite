@@ -9,7 +9,6 @@ import {
     useMessageSystemMessageForm,
 } from '@suite-common/message-system';
 import { Column, Modal, Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { MessageSystemJsonEditor } from './MessageSystemJsonEditor';
 import { MessageSystemManagerToolbar } from '../MessageSystemManager/MessageSystemManagerToolbar';
@@ -62,7 +61,7 @@ export const MessageSystemFormMessage = () => {
     }
 
     return (
-        <Column width="100%" gap={spacings.sm}>
+        <Column width="100%" gap={12}>
             <MessageSystemManagerToolbar
                 categories={CATEGORY_OPTIONS}
                 availableConditions={availableConditionOptions}
@@ -80,7 +79,7 @@ export const MessageSystemFormMessage = () => {
                 onFormat={formatJSON}
             />
 
-            <Row isReversed gap={spacings.xs}>
+            <Row isReversed gap={8}>
                 <Modal.Button
                     isDisabled={!isValid}
                     onClick={handleAddMessage}

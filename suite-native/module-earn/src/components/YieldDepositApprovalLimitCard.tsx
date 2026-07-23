@@ -3,7 +3,7 @@ import { Pressable } from 'react-native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Card, HStack, Radio, Text, VStack } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 
 type YieldDepositApprovalLimitCardProps = {
     contractAddress?: string;
@@ -28,7 +28,7 @@ export const YieldDepositApprovalLimitCard = ({
             <VStack>
                 <HStack alignItems="center" justifyContent="space-between">
                     <HStack alignItems="center">
-                        <CryptoIcon
+                        <TokenIcon
                             symbol={symbol}
                             contractAddress={contractAddress}
                             size="extraSmall"

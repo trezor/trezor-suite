@@ -3,6 +3,16 @@
     "suiteVersion": "26.8.0",
     "version": "1.0.0",
     "private": true,
+    "exports": {
+        ".": {
+            "types": "./libDev/index.d.ts",
+            "default": "./index.ts"
+        },
+        "./mocks": {
+            "types": "./libDev/mocks/index.d.ts",
+            "default": "./mocks/index.ts"
+        }
+    },
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint": "yarn lint:styles && yarn lint:js",
@@ -51,6 +61,7 @@
         "@suite-common/mev": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",
         "@suite-common/react-query": "workspace:*",
+        "@suite-common/receive": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/sentry": "workspace:*",
         "@suite-common/staking": "workspace:*",
@@ -119,7 +130,7 @@
         "@suite/tx-simulation": "workspace:^",
         "@suite/ui-animations": "workspace:*",
         "@suite/wallet": "workspace:*",
-        "@tanstack/react-query": "5.101.0",
+        "@tanstack/react-query": "5.101.2",
         "@testing-library/jest-dom": "6.9.1",
         "@trezor/address-validator": "workspace:*",
         "@trezor/analytics-uploader": "workspace:*",
@@ -154,7 +165,7 @@
         "framer-motion": "^12.33.0",
         "history": "^5.3.0",
         "idb": "^8.0.3",
-        "immer": "11.1.5",
+        "immer": "11.1.8",
         "lottie-react": "2.4.1",
         "pako": "^2.1.0",
         "pdfmake": "^0.3.7",
@@ -169,7 +180,7 @@
         "react-redux": "9.3.0",
         "react-select": "^5.10.2",
         "react-toastify": "^11.0.5",
-        "react-use": "^17.6.0",
+        "react-use": "^17.6.1",
         "react-zxing": "^2.1.0",
         "recharts": "^2.15.3",
         "redux": "^5.0.1",

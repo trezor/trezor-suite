@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import { type ConnectProcessInfo } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { Badge, Icon, Row, Text, Tooltip } from '@trezor/components';
 import { AppWindowIcon, WarningIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
-
 const AppIcon = styled.img`
     width: 24px;
     height: 24px;
@@ -31,7 +29,7 @@ export const ConnectProcessLabel = ({
 
     return (
         <Badge intent="neutral">
-            <Row gap={spacings.xs}>
+            <Row gap={8}>
                 {process.icon ? (
                     <AppIcon src={process.icon} alt="Process icon" />
                 ) : (

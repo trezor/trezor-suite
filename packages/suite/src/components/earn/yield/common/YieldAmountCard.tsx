@@ -93,6 +93,7 @@ export const YieldAmountCard = ({
                 </Row>
                 <NumberInput
                     name="amountInput"
+                    data-testid="@yield/form/amount-input"
                     locale={locale}
                     control={control}
                     rules={rules}

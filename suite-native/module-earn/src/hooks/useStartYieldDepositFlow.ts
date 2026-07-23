@@ -38,9 +38,9 @@ export const useStartYieldDepositFlow = ({
     const isStartingDepositFlowRef = useRef(false);
     const [isStartingDepositFlow, setIsStartingDepositFlow] = useState(false);
 
-    const handleStartYieldDepositFlow = useCallback(async () => {
+    const handleStartYieldDepositFlow = useCallback(async (): Promise<boolean> => {
         if (isStartingDepositFlowRef.current || !flowData || !flowKey) {
-            return;
+            return false;
         }
 
         const sessionParams = { flowType: 'deposit' as const, flowKey };
@@ -63,7 +63,7 @@ export const useStartYieldDepositFlow = ({
                     routeParams,
                 );
 
-                return;
+                return true;
             }
 
             dispatch(stablecoinYieldActions.resetSession(sessionParams));
@@ -78,7 +78,7 @@ export const useStartYieldDepositFlow = ({
             if (!isFulfilled(response)) {
                 navigation.navigate(YieldStackRoutes.YieldDepositApproval, routeParams);
 
-                return;
+                return true;
             }
 
             const session = selectStablecoinYieldSession(store.getState(), 'deposit', flowKey);
@@ -95,6 +95,8 @@ export const useStartYieldDepositFlow = ({
             isStartingDepositFlowRef.current = false;
             setIsStartingDepositFlow(false);
         }
+
+        return true;
     }, [dispatch, flowData, flowKey, navigation, routeParams, store]);
 
     return {

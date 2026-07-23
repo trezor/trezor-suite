@@ -1,7 +1,7 @@
 import type { SuiteSettingsState } from '@suite/settings';
-import { intermediaryTheme } from '@trezor/components/src/config/colors';
+import { type SuiteThemeColors, intermediaryTheme } from '@trezor/components/src/config/colors';
 
-export const getThemeColors = (theme: SuiteSettingsState['theme']) => {
+export const getThemeColors = (theme: SuiteSettingsState['theme']): SuiteThemeColors => {
     switch (theme?.variant) {
         case 'light':
             return intermediaryTheme.light;

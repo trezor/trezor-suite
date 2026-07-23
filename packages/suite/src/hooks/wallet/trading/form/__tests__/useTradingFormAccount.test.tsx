@@ -51,32 +51,31 @@ const renderForSell = (
 };
 
 describe('useTradingFormAccount – sell account across redirect', () => {
-    it('resolves a fallback account (not the trade account) when tradingAccountKey is lost', () => {
+    it('preselects the first eligible account when tradingAccountKey is lost and none is prefilled', () => {
         const result = renderForSell(undefined);
 
-        expect(result.current.account.key).toBe(FIRST_ELIGIBLE_ACCOUNT.key);
-        expect(result.current.account.key).not.toBe(TRADE_ACCOUNT.key);
+        expect(result.current.account?.key).toBe(FIRST_ELIGIBLE_ACCOUNT.key);
     });
 
     it('resolves the trade account when tradingAccountKey is rehydrated from the trade', () => {
         const result = renderForSell(TRADE_ACCOUNT.key);
 
-        expect(result.current.account.key).toBe(TRADE_ACCOUNT.key);
+        expect(result.current.account?.key).toBe(TRADE_ACCOUNT.key);
     });
 
-    it('discards the rehydrated tradingAccountKey when the trade account is not eligible', () => {
-        // Restoring tradingAccountKey from trade.sendAccountKey is not enough on its own:
-        // useTradingFormAccount runs the key through the eligibility resolver and drops it
-        // when the account has no balance/tokens, falling back to a different eligible
-        // account. This is why post-trade steps derive the account directly from
-        // trade.sendAccountKey (see useTradingSellForm / useTradingExchangeForm) instead of
-        // relying on this resolver.
+    it('falls back to a same-symbol eligible account when the rehydrated trade account is not eligible', () => {
         const result = renderForSell(INELIGIBLE_TRADE_ACCOUNT.key, [
             FIRST_ELIGIBLE_ACCOUNT,
             INELIGIBLE_TRADE_ACCOUNT,
         ]);
 
-        expect(result.current.account.key).not.toBe(INELIGIBLE_TRADE_ACCOUNT.key);
-        expect(result.current.account.key).toBe(FIRST_ELIGIBLE_ACCOUNT.key);
+        expect(result.current.account?.key).not.toBe(INELIGIBLE_TRADE_ACCOUNT.key);
+        expect(result.current.account?.key).toBe(FIRST_ELIGIBLE_ACCOUNT.key);
+    });
+
+    it('resolves no account when the preferred account is not eligible and no same-symbol account qualifies', () => {
+        const result = renderForSell(INELIGIBLE_TRADE_ACCOUNT.key, [INELIGIBLE_TRADE_ACCOUNT]);
+
+        expect(result.current.account).toBeUndefined();
     });
 });

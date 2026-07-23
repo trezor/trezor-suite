@@ -3,8 +3,7 @@ import { HEADER_SIZE, MESSAGE_LEN_SIZE, THP_CONTROL_BYTE } from './constants';
 import { getHeaders } from './encode';
 import { type TransportProtocolDecode } from '../types';
 
-// TODO: link-to-public-docs
-// https://github.com/trezor/trezor-firmware/blob/m1nd3r/thp-documentation/docs/common/thp/specification.md#transport-packet-structure
+// https://github.com/trezor/trezor-firmware/blob/41692dc2cdb937564abe7fecd4bfc3e508adc8d4/docs/common/thp/specification.md#transport-packet-structure
 export const decodeCtrlByte = (ctrlByte: number) => {
     // DATA message
     const dataType = ctrlByte & 0xe7;

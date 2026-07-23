@@ -69,8 +69,11 @@ export class BlockbookAPI extends BaseWebsocket<BlockbookEvents> {
         return this.send('getBlockHash', { height: block });
     }
 
-    getBlock(block: number | string) {
-        return this.send('getBlock', { id: `${block}` });
+    getBlock(
+        block: number | string,
+        { page, pageSize }: { page?: number; pageSize?: number } = {},
+    ) {
+        return this.send('getBlock', { id: `${block}`, page, pageSize });
     }
 
     getBlockFilter(blockHash: string, filterParams?: FilterRequestParams) {

@@ -7,8 +7,7 @@ import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { blockchainActions, selectCustomBackends } from '@suite-common/wallet-core';
 import { Banner, Button, Card, Column, H3, Modal, Paragraph, Row } from '@trezor/components';
 import { GearIcon, TorBrowserIcon } from '@trezor/icons';
-import { CoinLogo } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
+import { TokenIcon } from '@trezor/product-components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -71,7 +70,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
             }
         >
             {onionBackends.length ? (
-                <Column gap={spacings.md}>
+                <Column gap={16}>
                     <Banner
                         intent="warning"
                         icon={TorBrowserIcon}
@@ -83,10 +82,10 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                         }
                     />
                     <Card>
-                        <Column gap={spacings.xxl} hasDivider>
+                        <Column gap={32} hasDivider>
                             {onionBackends.map(({ symbol, urls }) => (
-                                <Row key={symbol} gap={spacings.md}>
-                                    <CoinLogo symbol={symbol} />
+                                <Row key={symbol} gap={16}>
+                                    <TokenIcon symbol={symbol} />
                                     <Column>
                                         <Paragraph>{getNetwork(symbol).name}</Paragraph>
                                         <Paragraph
@@ -114,7 +113,7 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
                     </Card>
                 </Column>
             ) : (
-                <Column gap={spacings.xxs}>
+                <Column gap={4}>
                     <H3>
                         <Translation id="TR_TOR_DISABLE_ONIONS_ONLY_NO_MORE_DESCRIPTION" />
                     </H3>

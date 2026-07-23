@@ -59,16 +59,14 @@ test.describe('Onboarding - create wallet', { tag: ['@firmware-ready', '@T1B1'] 
                 await page.getByTestId('@onboarding/continue-button').click();
             });
 
-            await test.step('Lets set PIN', async () => {
+            await test.step('Set PIN', async () => {
                 await page.waitForTimeout(2_000);
                 const pin = '12345';
 
                 await onboardingPage.pin.setPinButton.click();
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await device.pressYes();
-                // enter the PIN
                 await trezorInput.enterPinOnBlindMatrix(pin);
-                // re-enter the PIN
                 await trezorInput.enterPinOnBlindMatrix(pin);
             });
 

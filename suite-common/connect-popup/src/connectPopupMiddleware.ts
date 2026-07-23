@@ -96,7 +96,7 @@ export const prepareConnectPopupMiddleware = createMiddlewareWithExtraDeps(
         if (action.type === UI_REQUEST.REQUEST_DISCOVERY_ACCOUNTS) {
             const discovery = selectDiscoveryForSelectedDevice(getState());
 
-            if (discovery?.status !== 'complete') {
+            if (discovery && discovery.status !== 'complete') {
                 // Discovery hasn't completed — send null so Connect falls back
                 // to its own on-device discovery instead of using partial data.
                 TrezorConnect.uiResponse({

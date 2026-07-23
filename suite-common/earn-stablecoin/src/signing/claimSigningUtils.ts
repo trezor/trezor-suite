@@ -42,6 +42,11 @@ type UnsignedClaimTransactionFee =
 
 export type UnsignedClaimTransaction = UnsignedClaimTransactionBase & UnsignedClaimTransactionFee;
 
+type AssertRewardsMatchClaimCalldataParams = {
+    data: EvmHexString;
+    rewards: ClaimReviewReward[];
+};
+
 type BuildClaimCalldataParams = {
     senderAddress: string;
     rewards: ClaimReward[];
@@ -122,6 +127,28 @@ const getClaimFeeData = (fee: EvmFeeHex) => {
               }
             : {}) satisfies ClaimEip1559Fields,
     };
+};
+
+const assertRewardsMatchClaimCalldata = ({
+    data,
+    rewards,
+}: AssertRewardsMatchClaimCalldataParams) => {
+    const decodedClaim = Calldata.evm.distributor.claim.decode(data);
+
+    if (!decodedClaim) {
+        throw new Error('Failed to decode claim transaction data.');
+    }
+
+    const claimedTokens = decodedClaim.tokens;
+    const doRewardsMatchCalldata =
+        claimedTokens.length === rewards.length &&
+        rewards.every(
+            (reward, index) => reward.token.address.toLowerCase() === claimedTokens[index],
+        );
+
+    if (!doRewardsMatchCalldata) {
+        throw new Error('Claim rewards do not match the claim transaction data.');
+    }
 };
 
 export const buildClaimCalldata = ({ senderAddress, rewards }: BuildClaimCalldataParams) => {
@@ -269,6 +296,8 @@ export const buildClaimTransactionReview = ({
     if (!fee) {
         throw new Error('Fee information is missing for the transaction.');
     }
+
+    assertRewardsMatchClaimCalldata({ data: unsignedTransaction.data, rewards });
 
     return {
         ...buildClaimReviewState({

@@ -1,5 +1,4 @@
 import { Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { NotificationRenderer } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
 import type { AppState } from 'src/types/suite';
@@ -11,7 +10,7 @@ interface NotificationListProps {
 }
 
 export const NotificationList = ({ notifications }: NotificationListProps) => (
-    <Column flex="1" hasDivider gap={spacings.xl}>
+    <Column flex="1" hasDivider gap={24}>
         {notifications.map(n => (
             <NotificationRenderer key={n.id} notification={n} render={NotificationView} />
         ))}

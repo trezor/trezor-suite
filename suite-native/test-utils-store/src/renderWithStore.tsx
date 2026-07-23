@@ -2,7 +2,9 @@ import { type ReactElement } from 'react';
 
 import {
     type RenderHookOptions,
+    type RenderHookResult,
     type RenderOptions,
+    type RenderResult,
     render,
     renderHook,
 } from '@testing-library/react-native';
@@ -24,7 +26,7 @@ export type RenderHookOptionsExtended<Props> = RenderHookOptions<Props> & {
 export const renderWithStoreProvider = (
     element: ReactElement,
     { preloadedState, services, wrapper: Wrapper, store, ...options }: RenderOptionsExtended = {},
-) =>
+): RenderResult =>
     render(element, {
         wrapper: ({ children }) => (
             <StoreProviderForTests
@@ -47,7 +49,7 @@ export const renderHookWithStoreProvider = <Result = unknown, Props = unknown>(
         store,
         ...options
     }: RenderHookOptionsExtended<Props> = {},
-) =>
+): RenderHookResult<Result, Props> =>
     renderHook(callback, {
         wrapper: ({ children }) => (
             <StoreProviderForTests

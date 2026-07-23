@@ -10,7 +10,6 @@ import {
 import { selectSelectedDevice } from '@suite-common/device';
 import { Box, Icon, Row, Text } from '@trezor/components';
 import { CaretCircleDownIcon, PlugsIcon, WalletConnectIcon } from '@trezor/icons';
-import { borders, spacings } from '@trezor/theme';
 
 import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -49,17 +48,17 @@ export const ConnectAppBar = ({ canSwitchDevice }: ConnectAppBarProps) => {
             <Box
                 backgroundColor="surfaceFillPage"
                 padding={{
-                    horizontal: spacings.xl,
-                    vertical: spacings.md,
+                    horizontal: 24,
+                    vertical: 16,
                 }}
-                borderWidth={{ bottom: borders.widths.large }}
+                borderWidth={{ bottom: 2 }}
                 borderColor="elementBorderNeutralSofter"
             >
                 <TrafficLightOffset>
-                    <Row gap={spacings.sm} alignItems="center" justifyContent="space-between">
+                    <Row gap={12} alignItems="center" justifyContent="space-between">
                         {device?.features?.internal_model && (
                             <Row
-                                gap={spacings.lg}
+                                gap={20}
                                 alignItems="center"
                                 onClick={onSelectDevice}
                                 cursor={canSwitchDevice && !isWalletConnect ? 'pointer' : 'default'}
@@ -74,7 +73,7 @@ export const ConnectAppBar = ({ canSwitchDevice }: ConnectAppBarProps) => {
                             </Row>
                         )}
                         {connectPopupCall.state !== 'error' && (
-                            <Row gap={spacings.xs} alignItems="center">
+                            <Row gap={8} alignItems="center">
                                 <Icon
                                     as={isWalletConnect ? WalletConnectIcon : PlugsIcon}
                                     intent="neutral"

@@ -12,7 +12,6 @@ import {
     Paragraph,
     Row,
 } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 interface AccountExceptionLayoutProps {
     title: ReactNode;
@@ -31,7 +30,7 @@ export const AccountExceptionLayout = (props: AccountExceptionLayoutProps) => (
                     icon={props.icon}
                     intent={props.iconVariant}
                     size={96}
-                    margin={{ top: spacings.xxl, bottom: spacings.xl }}
+                    margin={{ top: 32, bottom: 24 }}
                 />
             )}
             <H2 align="center">{props.title}</H2>
@@ -39,14 +38,14 @@ export const AccountExceptionLayout = (props: AccountExceptionLayoutProps) => (
                 intent="neutral"
                 priority="secondary"
                 typographyStyle="body-md"
-                margin={{ top: spacings.xs }}
+                margin={{ top: 8 }}
                 align="center"
             >
                 {props.description}
             </Paragraph>
             {props.actions && (
                 <>
-                    <Row justifyContent="center" gap={spacings.md} margin={{ top: 16 }}>
+                    <Row justifyContent="center" gap={16} margin={{ top: 16 }}>
                         {props.actions?.map(action => (
                             <Button
                                 size="large"

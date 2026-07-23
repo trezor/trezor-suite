@@ -2,12 +2,11 @@ import styled from 'styled-components';
 
 import { type Rating, ratingOptions } from '@suite-common/feedback';
 import { Row } from '@trezor/components';
-import { borders } from '@trezor/theme';
 
 const Item = styled.button<{ $selected?: boolean }>`
     width: 40px;
     height: 40px;
-    border-radius: ${borders.radii.full};
+    border-radius: calc(infinity * 1px);
     display: flex;
     justify-content: center;
     align-items: center;

@@ -1,4 +1,4 @@
-import '@suite-common/test-utils/src/globalOverrides';
+import '@suite-common/test-utils/globalOverrides';
 
 import { Translation } from '@suite/intl';
 import { configureMockStore, screen } from '@suite-common/test-utils';

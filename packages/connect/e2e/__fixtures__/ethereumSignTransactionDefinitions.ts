@@ -1,4 +1,4 @@
-export default {
+const ethereumSignTransactionDefinitions: TestCase = {
     method: 'ethereumSignTransaction',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -27,4 +27,6 @@ export default {
             deviceScreenSkip: ['1', '<2.12.1'],
         },
     ],
-} satisfies TestCase;
+};
+
+export default ethereumSignTransactionDefinitions;

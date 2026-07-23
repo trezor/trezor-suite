@@ -1,13 +1,13 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { spacingsNew } from '@trezor/theme';
+import { spacingValues } from '@trezor/theme';
 
 import {
     NetworkIconSet as NetworkIconSetComponent,
     type NetworkIconSetProps,
 } from './NetworkIconSet';
-import { allowedAssetLogoSizes } from '../AssetLogo/AssetLogoWithId';
+import { allowedTokenIconSizes } from '../TokenIcon/tokenIconTypes';
 
 const NETWORK_1: NetworkSymbol = 'btc';
 const NETWORK_2: NetworkSymbol = 'eth';
@@ -50,13 +50,13 @@ export const NetworkIconSet: StoryObj<NetworkIconSetProps> = {
             },
         },
         size: {
-            options: allowedAssetLogoSizes,
+            options: allowedTokenIconSizes,
             control: {
                 type: 'select',
             },
         },
         gap: {
-            options: spacingsNew,
+            options: spacingValues,
             control: {
                 type: 'select',
             },

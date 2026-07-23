@@ -33,7 +33,7 @@ export const getCpuArch = async () => {
     return architecture ?? '';
 };
 export const getBrowserName = () => {
-    const browserName = getUserAgentParser().getBrowser().name?.replace(' ', '');
+    const browserName = getUserAgentParser().getBrowser().name?.replaceAll(' ', '');
 
     return browserName?.toLowerCase() || '';
 };

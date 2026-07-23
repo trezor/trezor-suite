@@ -1,5 +1,6 @@
-export * from './hooks';
 export * from './constants';
+export * from './fetchGraphData';
+export { getTimeFrameForHistoryHours } from './graphUtils';
 export type {
     FiatGraphPoint,
     FiatGraphPointWithCryptoBalance,

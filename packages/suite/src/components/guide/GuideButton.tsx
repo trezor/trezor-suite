@@ -13,7 +13,7 @@ import {
     Tooltip,
     commonFocusStyles,
 } from '@trezor/components';
-import { borders, zIndices } from '@trezor/theme';
+import { zIndices } from '@trezor/theme';
 
 import { useGuide } from 'src/hooks/guide';
 
@@ -29,7 +29,7 @@ const Wrapper = styled.div<{ $isGuideOpen: boolean }>`
     z-index: ${zIndices.guideButton};
     bottom: 16px;
     right: 16px;
-    border-radius: ${borders.radii.sm};
+    border-radius: 12px;
     backdrop-filter: blur(10px);
     transition: ${({ $isGuideOpen }) => ($isGuideOpen ? 'none' : 'all 0.3s ease 0.3s')};
     opacity: ${({ $isGuideOpen }) => ($isGuideOpen ? '0' : '1')};
@@ -43,7 +43,7 @@ const MascotButton = styled.button`
     height: 44px;
     padding: 0;
     border: 0;
-    border-radius: ${borders.radii.sm};
+    border-radius: 12px;
     cursor: pointer;
     overflow: hidden;
     -webkit-app-region: no-drag;

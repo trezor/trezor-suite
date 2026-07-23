@@ -4,7 +4,7 @@ import {
     getRepresentativeAssets,
 } from '@suite-common/wallet-config';
 import { Box, Text } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -65,7 +65,7 @@ export const CryptoIconSet = ({ symbol }: CryptoIconSetProps) => {
                         zIndex: assets.length - index,
                     })}
                 >
-                    <CryptoIcon
+                    <TokenIcon
                         symbol={asset.contract ? symbol : nativeCoinSymbol}
                         contractAddress={asset.contract}
                         size={ICON_SIZE}

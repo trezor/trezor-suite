@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { Card, Column, Modal, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { ThpPairingFailedForFirmwareInstallation } from '../connection/ThpPairingFailedForFirmwareInstallation';
 import { startThpSessionThunk } from '../startThpSessionThunk';
@@ -41,11 +40,11 @@ export const ThpCodeInvalidStep = ({ modalHeading }: ThpCodeInvalidStepProps) =>
             }
         >
             <Card>
-                <Column alignItems="start" gap={spacings.xxs}>
+                <Column alignItems="start" gap={4}>
                     <Text typographyStyle="body-md-strong">
                         <Translation id="TR_THP_ENTER_ONE_TIME_CODE" />
                     </Text>
-                    <Column alignItems="start" gap={spacings.xl}>
+                    <Column alignItems="start" gap={24}>
                         <Text intent="neutral" priority="secondary" typographyStyle="body-md">
                             <Translation id="TR_THP_CHECK_TREZOR_FOR_CODE" />
                         </Text>

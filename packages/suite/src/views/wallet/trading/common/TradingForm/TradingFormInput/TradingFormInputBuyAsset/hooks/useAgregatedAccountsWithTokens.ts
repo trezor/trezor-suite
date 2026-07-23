@@ -23,7 +23,6 @@ import {
 function getAccountLight({
     utxo,
     addresses,
-    ts,
     page,
     history,
     metadata,

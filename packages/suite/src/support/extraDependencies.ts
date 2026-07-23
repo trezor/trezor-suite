@@ -32,6 +32,7 @@ import { toGetter } from '@suite-common/dependency-injection';
 import { type DeviceReducerState, selectDeviceByStaticSessionId } from '@suite-common/device';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
+import { type ReceiveState } from '@suite-common/receive';
 import {
     type CommonServices,
     type ConnectInitSettings,
@@ -63,6 +64,7 @@ import {
     type SendState,
     type TransactionsState,
     type WalletSettingsState,
+    createAccountRefreshThrottle,
     selectAccountsByDeviceState,
 } from '@suite-common/wallet-core';
 import { createAccountKey } from '@suite-common/wallet-types';
@@ -192,6 +194,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         saveAs: (data: Blob, fileName: string) => saveAs(data, fileName),
         connectInitSettings,
         connectInitHooks,
+        accountRefreshThrottle: createAccountRefreshThrottle(deps.getState),
         createLogger: deps.createLogger,
         thpHostName: deps.thpHostName,
         createTransports,
@@ -414,6 +417,20 @@ export const extraDependencies: ExtraDependenciesStatic = {
                     ...loadedSettings.enabledSecurityChecks,
                 },
             };
+        },
+        storageLoadReceiveAccounts: (state: ReceiveState, { payload }: StorageLoadAction) => {
+            state.accounts =
+                payload.receive?.reduce<ReceiveState['accounts']>((accounts, { key, value }) => {
+                    accounts[key] = {
+                        touchedAddresses: value.touchedAddresses.map(({ path, address }) => ({
+                            path,
+                            address,
+                        })),
+                        currentFreshAddress: value.currentFreshAddress,
+                    };
+
+                    return accounts;
+                }, {}) ?? {};
         },
     },
 };

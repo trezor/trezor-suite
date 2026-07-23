@@ -2,7 +2,7 @@ import { type HTMLProps } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { type BorderWidths, type BoxShadow, type Color } from '@trezor/theme';
+import { type BorderWidth, type BoxShadow, type Color } from '@trezor/theme';
 
 import {
     type FrameProps,
@@ -41,7 +41,7 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedBoxFrameProps)[number]>
 
 const Container = styled.div<
     TransientProps<AllowedFrameProps> & {
-        $borderWidth?: BorderWidth;
+        $borderWidth?: BoxBorderWidth;
         $backgroundColor?: Color;
         $backgroundColorOnInteraction?: Color;
         $borderColor?: Color;
@@ -56,7 +56,7 @@ const Container = styled.div<
     transition: 0.2s ease-in-out;
 
     ${({ $borderWidth }) => {
-        if ($borderWidth == null || $borderWidth === 0) return null;
+        if ($borderWidth == null) return null;
         if (typeof $borderWidth === 'object') {
             return css`
                 border-width: ${getValueWithUnit($borderWidth.top ?? $borderWidth.vertical ?? 0)}
@@ -99,16 +99,16 @@ const Container = styled.div<
     ${withFrameProps};
 `;
 
-type BorderWidth =
+type BoxBorderWidth =
     | {
-          top?: BorderWidths;
-          bottom?: BorderWidths;
-          left?: BorderWidths;
-          right?: BorderWidths;
-          horizontal?: BorderWidths;
-          vertical?: BorderWidths;
+          top?: BorderWidth;
+          bottom?: BorderWidth;
+          left?: BorderWidth;
+          right?: BorderWidth;
+          horizontal?: BorderWidth;
+          vertical?: BorderWidth;
       }
-    | BorderWidths;
+    | BorderWidth;
 
 export type BoxProps = Pick<
     HTMLProps<HTMLElement>,
@@ -116,7 +116,7 @@ export type BoxProps = Pick<
 > &
     AllowedFrameProps & {
         children?: React.ReactNode;
-        borderWidth?: BorderWidth;
+        borderWidth?: BoxBorderWidth;
         backgroundColor?: Color;
         backgroundColorOnInteraction?: Color;
         borderColor?: Color;

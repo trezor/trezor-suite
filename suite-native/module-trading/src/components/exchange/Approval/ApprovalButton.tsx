@@ -28,6 +28,14 @@ export type ApprovalButtonProps = {
     flowType: Exclude<ExchangeFlowType, 'swap'>;
 };
 
+const getApprovalButtonTestID = (flowType: ApprovalButtonProps['flowType']) => {
+    if (flowType === 'approve') {
+        return '@trading/exchange-approval/continue-button';
+    }
+
+    return '@trading/exchange-revoke/continue-button';
+};
+
 export const ApprovalButton = ({ isReady, isDisabled, flowType }: ApprovalButtonProps) => {
     const navigation =
         useNavigation<
@@ -67,7 +75,12 @@ export const ApprovalButton = ({ isReady, isDisabled, flowType }: ApprovalButton
         <Animated.View entering={FadeInDown}>
             <ScreenFooterGradient />
             <Box style={applyStyle(footerStyle)}>
-                <Button onPress={handleContinue} isDisabled={isDisabled} isLoading={!isReady}>
+                <Button
+                    onPress={handleContinue}
+                    isDisabled={isDisabled}
+                    isLoading={!isReady}
+                    testID={getApprovalButtonTestID(flowType)}
+                >
                     <Translation id="generic.buttons.continue" />
                 </Button>
             </Box>

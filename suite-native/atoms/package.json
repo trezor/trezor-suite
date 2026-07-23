@@ -14,7 +14,6 @@
     "dependencies": {
         "@gorhom/bottom-sheet": "5.2.9",
         "@mobily/ts-belt": "^3.13.1",
-        "@reduxjs/toolkit": "2.12.0",
         "@shopify/flash-list": "2.3.0",
         "@shopify/react-native-skia": "2.5.1",
         "@storybook/react-native": "^10.2.1",
@@ -43,8 +42,6 @@
         "react-native-reanimated": "4.3.1",
         "react-native-safe-area-context": "5.6.2",
         "react-native-svg": "15.15.5",
-        "react-redux": "9.3.0",
-        "redux": "^5.0.1",
         "storybook": "^10.3.4",
         "type-fest": "5.5.0"
     },

@@ -28,6 +28,9 @@
         {
             "path": "../../networks/stellar/network-stellar"
         },
+        {
+            "path": "../../networks/tron/network-tron"
+        },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" }

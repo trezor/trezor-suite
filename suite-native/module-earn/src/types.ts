@@ -1,4 +1,5 @@
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { type EarnDashboardType } from '@suite-common/message-system';
 import { type NetworkSymbol, type StakingNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -109,13 +110,20 @@ export type EarnStakingProvidersInfoListItem = {
     id: string;
 };
 
+export type EarnDashboardDisabledListItem = {
+    type: 'dashboard-disabled';
+    id: string;
+    dashboardType: EarnDashboardType;
+};
+
 export type EarnPromoListDataItem =
     | EarnPromoItem
     | EarnPromoSectionType
     | SkeletonLoaderItem
     | StablecoinYieldLoadErrorListItem
     | EarnProviderListItem
-    | EarnStakingProvidersInfoListItem;
+    | EarnStakingProvidersInfoListItem
+    | EarnDashboardDisabledListItem;
 
 export type EarnDepositsCardActiveItem =
     | {

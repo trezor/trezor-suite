@@ -1,10 +1,4 @@
-import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import {
-    YIELD_FLOW_STEP_SEQUENCES,
-    type YieldFlowStepId,
-    type YieldFlowType,
-} from '@suite-common/wallet-core';
-import { getApyPercent } from '@suite-common/wallet-utils';
+import { type YieldFlowStepId } from '@suite-common/wallet-core';
 import type { StepListItemState } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
@@ -36,29 +30,6 @@ export const getYieldModifyAmountInput = ({
         : nextAmount;
 };
 
-/**
- * Encodes per-component APY contributions as a single comma-separated string:
- * `SYMBOL_A,APY_A,SYMBOL_B,APY_B,…` sorted alphabetically by symbol. Each
- * component is emitted as-is — symbols repeating across components are not
- * merged. Returns an empty string when there are no usable components.
- */
-export const getApyBreakdown = (
-    components: YieldDtoV2['rewardRate']['components'] | undefined,
-): string =>
-    (components ?? [])
-        .map(component => {
-            if (!Number.isFinite(component.rate)) return null;
-            const symbol = component.token?.symbol;
-            if (!symbol) return null;
-            const componentApy = getApyPercent(component.rate);
-
-            return componentApy != null ? ([symbol, componentApy] as const) : null;
-        })
-        .filter((pair): pair is readonly [string, number] => pair !== null)
-        .sort(([a], [b]) => a.localeCompare(b))
-        .flatMap(([symbol, componentApy]) => [symbol, String(componentApy)])
-        .join(',');
-
 export type YieldFlowStepView = {
     state: StepListItemState;
     /**
@@ -70,13 +41,11 @@ export type YieldFlowStepView = {
 
 /** `listSteps` are the steps rendered as list items; they default to the flow's sequence without 'complete'. */
 export const getYieldFlowSteps = (
-    flowType: YieldFlowType,
+    sequence: readonly YieldFlowStepId[],
     currentStep: YieldFlowStepId,
     listSteps?: readonly YieldFlowStepId[],
 ): Record<YieldFlowStepId, YieldFlowStepView> => {
-    // Both annotations widen the per-flow tuples (and the filter's inferred type predicate)
-    // so indexOf below accepts any step id.
-    const sequence: readonly YieldFlowStepId[] = YIELD_FLOW_STEP_SEQUENCES[flowType];
+    // The annotation widens the filter's inferred type predicate so indexOf below accepts any step id.
     const effectiveListSteps: readonly YieldFlowStepId[] =
         listSteps ?? sequence.filter(stepId => stepId !== 'complete');
     const currentStepIndex = sequence.indexOf(currentStep);
@@ -107,8 +76,10 @@ export const getYieldFlowSteps = (
     });
 
     return {
+        wrap: getStepView('wrap'),
         approve: getStepView('approve'),
         action: getStepView('action'),
+        unwrap: getStepView('unwrap'),
         complete: getStepView('complete'),
     };
 };

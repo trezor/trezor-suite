@@ -31,6 +31,7 @@ import {
 import { useAccountAlerts } from '@suite-native/accounts';
 import { useBottomSheetModal } from '@suite-native/atoms';
 import {
+    type DiscoveryRootState,
     selectDeviceEnabledDiscoveryNetworkSymbols,
     selectDiscoveryNetworkSymbols,
 } from '@suite-native/discovery';
@@ -90,13 +91,15 @@ export const accountTypeTranslationKeys: Record<
 
 const LIMIT = 10; // Maximum number of manually added accounts per non-EVM network type.
 
-export const useAddCoinAccount = () => {
+export const useAddCoinAccount = (networksSearchQuery?: string) => {
     const dispatch = useDispatch();
     const { translate } = useTranslate();
     const { name: routeName } = useRoute();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
-    const supportedNetworkSymbols = useSelector(selectDiscoveryNetworkSymbols);
+    const supportedNetworkSymbols = useSelector((state: DiscoveryRootState) =>
+        selectDiscoveryNetworkSymbols(state, networksSearchQuery),
+    );
     const deviceAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectDeviceAccounts(state),
     );
@@ -127,13 +130,21 @@ export const useAddCoinAccount = () => {
             const types = typedObjectKeys(networks[symbol].accountTypes).filter(
                 t => !['coinjoin', 'imported', 'ledger'].includes(t),
             );
-
             availableTypes.set(symbol, [
                 NORMAL_ACCOUNT_TYPE,
                 // For Cardano and EVMs allow only normal account type
-                ...(['ada', 'eth', 'pol', 'bsc', 'sol', 'op', 'base', 'arb', 'avax'].includes(
-                    symbol,
-                )
+                ...([
+                    'ada',
+                    'eth',
+                    'pol',
+                    'bsc',
+                    'sol',
+                    'op',
+                    'base',
+                    'arb',
+                    'rhc',
+                    'avax',
+                ].includes(symbol)
                     ? []
                     : types),
             ]);
@@ -205,7 +216,7 @@ export const useAddCoinAccount = () => {
                 break;
             case 'home':
                 navigation.replace(RootStackRoutes.ReceiveStack, {
-                    screen: ReceiveStackRoutes.ReceiveAccount,
+                    screen: ReceiveStackRoutes.ReceiveAddress,
                     params: {
                         networkSymbol: symbol,
                         accountType,
@@ -224,7 +235,7 @@ export const useAddCoinAccount = () => {
                 break;
             case 'receive':
                 navigation.navigate(RootStackRoutes.ReceiveStack, {
-                    screen: ReceiveStackRoutes.ReceiveAccount,
+                    screen: ReceiveStackRoutes.ReceiveAddress,
                     params: {
                         networkSymbol: symbol,
                         accountType,

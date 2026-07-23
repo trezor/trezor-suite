@@ -1,10 +1,21 @@
-import { combineReducers } from 'redux';
+import { type Reducer, type UnknownAction, combineReducers } from 'redux';
 
 import { selectedAccountReducer } from '@suite/account';
-import { coinjoinReducer } from '@suite/coinjoin';
-import { receiveReducer } from '@suite/receive';
-import { prepareTradingReducer } from '@suite-common/trading';
+import { type CoinjoinAction, type CoinjoinState, coinjoinReducer } from '@suite/coinjoin';
+import { type TradingState, prepareTradingReducer } from '@suite-common/trading';
 import {
+    type AccountsRefreshTimeState,
+    type AccountsState,
+    type ExplorerConfig,
+    type FiatRatesState,
+    type FormDraftState,
+    type PhishingState,
+    type SendState,
+    type StablecoinYieldState,
+    type StakeState,
+    type TransactionsState,
+    type TronStakeReducerState,
+    accountsRefreshTimeReducer,
     feesReducer,
     prepareAccountsReducer,
     prepareBlockchainReducer,
@@ -19,12 +30,20 @@ import {
     stablecoinYieldReducer,
     tronStakeReducer,
 } from '@suite-common/wallet-core';
+import {
+    type BlockchainNetworks,
+    type Discovery,
+    type FeesState,
+    type SelectedAccountStatus,
+    type WalletSettings,
+} from '@suite-common/wallet-types';
 
 import { extraDependencies } from 'src/support/extraDependencies';
+import { type Action } from 'src/types/suite';
 
-import accountSearchReducer from './accountSearchReducer';
+import accountSearchReducer, { type AccountSearchState } from './accountSearchReducer';
 import formDraftReducer from './formDraftReducer';
-import graphReducer from './graphReducer';
+import graphReducer, { type GraphState } from './graphReducer';
 
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 export const phishingReducer = preparePhishingReducer(extraDependencies);
@@ -38,15 +57,42 @@ export const sendFormReducer = prepareSendFormReducer(extraDependencies);
 export const tradingReducer = prepareTradingReducer(extraDependencies);
 export const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
 
-const WalletReducers = combineReducers({
+export type WalletState = {
+    fiat: FiatRatesState;
+    graph: GraphState;
+    transactions: TransactionsState;
+    phishing: PhishingState;
+    discovery: Discovery;
+    accounts: AccountsState;
+    accountsRefreshTime: AccountsRefreshTimeState;
+    selectedAccount: SelectedAccountStatus;
+    fees: FeesState;
+    blockchain: BlockchainNetworks;
+    explorer: ExplorerConfig;
+    trading: TradingState;
+    send: SendState;
+    accountSearch: AccountSearchState;
+    formDrafts: FormDraftState;
+    coinjoin: CoinjoinState;
+    stake: StakeState;
+    settings: WalletSettings;
+    stablecoinYield: StablecoinYieldState;
+    tronStake: TronStakeReducerState;
+};
+
+export const walletReducers: Reducer<
+    WalletState,
+    Action | UnknownAction | CoinjoinAction,
+    Partial<Omit<WalletState, 'graph' | 'coinjoin'>>
+> = combineReducers({
     fiat: fiatRatesReducer,
     graph: graphReducer,
     transactions: transactionsReducer,
     phishing: phishingReducer,
     discovery: discoveryReducer,
     accounts: accountsReducer,
+    accountsRefreshTime: accountsRefreshTimeReducer,
     selectedAccount: selectedAccountReducer,
-    receive: receiveReducer,
     fees: feesReducer,
     blockchain: blockchainReducer,
     explorer: explorerReducer,
@@ -60,5 +106,3 @@ const WalletReducers = combineReducers({
     stablecoinYield: stablecoinYieldReducer,
     tronStake: tronStakeReducer,
 });
-
-export default WalletReducers;

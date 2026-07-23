@@ -21,6 +21,7 @@ export type TransactionNotificationProps = {
     isInfiniteApproval?: boolean;
     unlimitedApprovalLabel?: ReactNode;
     renderAmount?: (amount: ReactNode) => ReactNode;
+    'data-testid'?: string;
 };
 
 export const TransactionNotification = ({
@@ -34,9 +35,12 @@ export const TransactionNotification = ({
     isInfiniteApproval,
     unlimitedApprovalLabel,
     renderAmount,
+    'data-testid': dataTestId,
 }: TransactionNotificationProps) => (
     <Column gap={4}>
-        <Text typographyStyle="body-md-strong">{message}</Text>
+        <Text typographyStyle="body-md-strong" data-testid={dataTestId && `${dataTestId}/message`}>
+            {message}
+        </Text>
         {amount && (
             <Row gap={8} alignItems="center">
                 <TransactionIcon

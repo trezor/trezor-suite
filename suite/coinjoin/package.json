@@ -36,7 +36,7 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0",
-        "immer": "11.1.5",
+        "immer": "11.1.8",
         "redux": "^5.0.1"
     },
     "devDependencies": {

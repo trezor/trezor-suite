@@ -36,6 +36,13 @@ export const allowedSelectFrameProps = allowedFormCellFrameProps;
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedSelectFrameProps)[number]>;
 
 export type { Option } from './types';
+export { Option as SelectOption } from './customComponents';
+
+// This intentionally exposes only the capability used by consumers instead of deriving it from
+// react-select's generic SelectInstance, which would leak that implementation type into our public API.
+export type SelectRef = {
+    clearValue: () => void;
+};
 
 export type SelectProps = AllowedFrameProps &
     Omit<FormCellProps, 'children'> &
@@ -46,7 +53,7 @@ export type SelectProps = AllowedFrameProps &
         isClean?: boolean;
         isMenuOpen?: boolean;
         isLoading?: boolean;
-        onChange?: (value: OptionType, ref?: SelectInstance<OptionType, boolean> | null) => void;
+        onChange?: (value: OptionType, ref?: SelectRef | null) => void;
         'data-testid'?: string;
         openMenuOnFocus?: boolean;
         /** When using menuPortalTarget (e.g. in modals), set this so the menu appears above the modal */

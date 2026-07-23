@@ -49,6 +49,7 @@
         { "path": "../intl" },
         { "path": "../labeling" },
         { "path": "../navigation" },
+        { "path": "../search" },
         { "path": "../staking" },
         { "path": "../tokens" },
         { "path": "../../packages/connect" },
@@ -57,7 +58,6 @@
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/theme" },
-        { "path": "../../packages/utils" },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" }
     ]

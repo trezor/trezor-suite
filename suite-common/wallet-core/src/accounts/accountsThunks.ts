@@ -27,6 +27,7 @@ import {
     getAccountInfoAnalyticsPayload,
     isAccountActiveForAnalytics,
 } from './accountsInfoAnalytics';
+import { accountRefreshed } from './accountsRefreshTimeReducer';
 import { selectAccountByKey } from './accountsSelectors';
 import { selectBlockchainHeightBySymbol, selectGapLimit } from '../blockchain/blockchainReducer';
 import { selectBitcoinAmountUnit } from '../settings/walletSettingsReducer';
@@ -151,7 +152,8 @@ export const fetchAndUpdateAccountThunk = createThunk(
         // stop here if account is not outdated and there are no pending transactions
 
         if (!accountOutdated && !accountTxs.some(isPending)) {
-            dispatch(accountsActions.updateAccountRefreshTimestamp(account));
+            // refreshed, nothing changed - restart the throttle window (old code bumped account.ts)
+            dispatch(accountRefreshed(accountKey));
 
             return;
         }
@@ -249,10 +251,13 @@ export const fetchAndUpdateAccountThunk = createThunk(
                 isAccountOutdated(account, payload) ||
                 customTokens.length > 0
             ) {
+                // updateAccount restarts the throttle window via the accountsRefreshTime slice
+                // (mirrors old account.ts)
                 dispatch(accountsActions.updateAccount(account, payload));
                 dispatch(reportAccountInfoThunk(account.key));
             } else {
-                dispatch(accountsActions.updateAccountRefreshTimestamp(account));
+                // refreshed, nothing changed - restart the throttle window directly
+                dispatch(accountRefreshed(accountKey));
             }
 
             dispatch(reportWalletBalanceThunk());

@@ -5,9 +5,13 @@ type TabOption<ParamList extends AppTabsParamList, RouteName extends keyof Param
     routeName: RouteName;
     iconName: IconName;
     focusedIconName: IconName;
-    label: string;
     params?: ParamList[RouteName];
 };
+
+type EnhancedTabOption<
+    ParamList extends AppTabsParamList,
+    RouteName extends keyof ParamList,
+> = Record<string, TabOption<ParamList, RouteName>>;
 
 export const enhanceTabOption = <
     ParamList extends AppTabsParamList,
@@ -17,7 +21,7 @@ export const enhanceTabOption = <
     iconName,
     focusedIconName,
     params,
-}: Omit<TabOption<ParamList, RouteName>, 'label'>) => ({
+}: TabOption<ParamList, RouteName>): EnhancedTabOption<ParamList, RouteName> => ({
     [routeName]: {
         routeName,
         iconName,

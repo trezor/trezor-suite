@@ -21,6 +21,7 @@ import {
 import { DiscreetTextTrigger, VStack } from '@suite-native/atoms';
 import {
     GraphBaseCurrencyBalance,
+    accountDetailGraphAtoms,
     selectIsHistoryEnabledAccountByAccountKey,
 } from '@suite-native/graph';
 import {
@@ -30,13 +31,6 @@ import {
 } from '@suite-native/tokens';
 
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
-import {
-    percentageChangeAtom,
-    referencePointAtom,
-    selectedPointAtom,
-    selectedPointFiatValueAtom,
-    selectedPointTimestampAtom,
-} from '../accountDetailGraphAtoms';
 
 type AccountBalanceProps = {
     accountKey: AccountKey;
@@ -53,7 +47,7 @@ const CryptoBalance = ({
     tokenSymbol?: TokenSymbol | null;
     totalCryptoBalance: string | null;
 }) => {
-    const selectedPoint = useAtomValue(selectedPointAtom);
+    const selectedPoint = useAtomValue(accountDetailGraphAtoms.selectedPointAtom);
     const value = selectedPoint?.cryptoBalance || totalCryptoBalance || '0';
 
     return (
@@ -106,10 +100,11 @@ export const AccountDetailHeader = ({
             )}
 
             <GraphBaseCurrencyBalance
-                selectedPointFiatValueAtom={selectedPointFiatValueAtom}
-                selectedPointTimestampAtom={selectedPointTimestampAtom}
-                referencePointAtom={referencePointAtom}
-                percentageChangeAtom={percentageChangeAtom}
+                selectedPointFiatValueAtom={accountDetailGraphAtoms.selectedPointFiatValueAtom}
+                selectedPointTimestampAtom={accountDetailGraphAtoms.selectedPointTimestampAtom}
+                referencePointAtom={accountDetailGraphAtoms.referencePointAtom}
+                percentageChangeAtom={accountDetailGraphAtoms.percentageChangeAtom}
+                isGestureActiveAtom={accountDetailGraphAtoms.isGestureActiveAtom}
                 showChange={isHistoryEnabledAccount}
                 totalBaseCurrencyBalance={totalFiatBalance}
                 isHistoryEnabledAccount={isHistoryEnabledAccount}

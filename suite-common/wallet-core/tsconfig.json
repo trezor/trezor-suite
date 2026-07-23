@@ -44,10 +44,16 @@
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
         {
+            "path": "../../networks/ripple/network-ripple"
+        },
+        {
             "path": "../../networks/solana/network-solana"
         },
         {
             "path": "../../networks/stellar/network-stellar"
+        },
+        {
+            "path": "../../networks/tron/network-tron"
         },
         { "path": "../../packages/protobuf" },
         { "path": "../../packages/type-utils" },

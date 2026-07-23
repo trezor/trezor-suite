@@ -28,7 +28,6 @@ import {
     isRbfCancelTransaction,
 } from '@suite-common/wallet-utils';
 import { Modal, Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { type Deferred } from '@trezor/utils';
 
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
@@ -265,7 +264,7 @@ export const TransactionReviewModalBodyInner = ({
                             stakeType={stakeType}
                             timer={
                                 showTxValidityTimer ? (
-                                    <Row gap={spacings.xs}>
+                                    <Row gap={8}>
                                         <TransactionReviewOutputTimer
                                             deadline={deadline}
                                             onTryAgain={handleTryAgain}

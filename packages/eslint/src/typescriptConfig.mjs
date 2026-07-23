@@ -120,7 +120,6 @@ export const typescriptConfig = [
         languageOptions: {
             parserOptions: {
                 projectService: true,
-                allowDefaultProject: true,
             },
         },
         rules: {

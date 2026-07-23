@@ -6,6 +6,9 @@ on:
   push:
     branches:
       - release-native/*
+  pull_request:
+    paths:
+      - .github/workflows/test-suite-native-e2e-ios.yml
   workflow_dispatch:
     inputs:
       publish_results_to_github:

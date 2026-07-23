@@ -44,9 +44,12 @@ test.describe('Trading POC - passthru swap ETH', { tag: ['@T3W1', '@T3T1'] }, ()
             const ethBackendUrl = await passthruTradingMock.blockEthSends();
 
             await onboardingPage.completeOnboarding();
-            await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
-            await settingsPage.enableNetworkWithCustomBackend('eth', 'blockbook', ethBackendUrl);
-            await dashboardPage.navigateTo();
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    'btc',
+                    { symbol: 'eth', backend: { type: 'blockbook', url: ethBackendUrl } },
+                ],
+            });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
             await walletPage.openSwapTrading({ symbol: 'eth' });
@@ -154,10 +157,12 @@ test.describe('Trading POC - passthru swap ETH', { tag: ['@T3W1', '@T3T1'] }, ()
 
             await expect.poll(() => passthruTradingMock.blockedSendCount).toBeGreaterThan(0);
 
-            await expect(tradingPage.swapToastSendAccount).toContainText(accountLabel);
-            await expect(tradingPage.swapToastReceiveAccount).toContainText('Bitcoin #1');
-            await expect(tradingPage.swapToastSendAmount).toContainText(sendAmount);
-            await expect(tradingPage.swapToastReceiveAmount).toContainText(receiveAmount);
+            await tradingPage.verifySwapToast({
+                sendAccount: accountLabel,
+                receiveAccount: 'Bitcoin #1',
+                sendAmount,
+                receiveAmount,
+            });
         });
 
         for (const { transactionStatus, displayedText, translationValues } of transactionStates) {

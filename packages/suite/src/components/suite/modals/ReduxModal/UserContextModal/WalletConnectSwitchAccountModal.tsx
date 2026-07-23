@@ -14,8 +14,7 @@ import {
     walletConnectActions,
 } from '@suite-common/walletconnect';
 import { Column, Modal, type Option, Row, Select } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
+import { TokenIcon } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -76,7 +75,7 @@ export const WalletConnectSwitchAccountModal = ({
             heading={<Translation id="TR_SWITCH_ACCOUNT" />}
             onCancel={handleCancel}
         >
-            <Column gap={spacings.xs}>
+            <Column gap={8}>
                 <Select
                     isSearchable={false}
                     isClearable={false}
@@ -84,10 +83,8 @@ export const WalletConnectSwitchAccountModal = ({
                     value={selectedDefaultAccount}
                     options={selectableAccounts}
                     formatOptionLabel={(account: Account) => (
-                        <Row gap={spacings.xs}>
-                            {account.symbol && (
-                                <CoinLogo type="token" symbol={account.symbol} size={24} />
-                            )}
+                        <Row gap={8}>
+                            {account.symbol && <TokenIcon symbol={account.symbol} size={24} />}
                             <AccountLabel account={account} key={account.descriptor} />
                             <AccountTypeBadge
                                 accountType={account.accountType}

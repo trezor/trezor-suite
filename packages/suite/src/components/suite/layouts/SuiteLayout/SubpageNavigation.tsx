@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { type Route, selectRouteName } from '@suite/router';
 import { Tabs } from '@trezor/components';
-import { spacingsPx, zIndices } from '@trezor/theme';
+import { zIndices } from '@trezor/theme';
 
 import { HEADER_HEIGHT } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
@@ -19,7 +19,7 @@ const Container = styled.div`
 `;
 
 const ScrollContainer = styled.div`
-    padding: ${spacingsPx.md} ${spacingsPx.md} 0;
+    padding: 16px 16px 0;
     overflow: auto hidden;
     width: 100%;
     height: 100%;

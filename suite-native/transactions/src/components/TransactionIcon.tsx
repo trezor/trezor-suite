@@ -15,7 +15,7 @@ import {
     type RoundedIconIntent,
     type RoundedIconSize,
 } from '@suite-native/atoms';
-import { CryptoIcon, type IconName } from '@suite-native/icons';
+import { type IconName, TokenIcon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TransactionIconProps = {
@@ -85,7 +85,7 @@ export const TransactionIcon = ({
             )}
             {iconSymbol && (
                 <Box style={applyStyle(cryptoIconStyle)}>
-                    <CryptoIcon symbol={iconSymbol} contractAddress={contractAddress} size="tiny" />
+                    <TokenIcon symbol={iconSymbol} contractAddress={contractAddress} size="tiny" />
                 </Box>
             )}
         </Box>

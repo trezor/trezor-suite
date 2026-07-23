@@ -46,12 +46,13 @@ export const AutoEjectSwitch = () => {
         } else {
             showAlert({
                 title: (
-                    <>
-                        <Translation id="moduleSettings.viewOnly.autoEject.switch.alert.titleNoConnectedTrezor" />
-                        {!isNoPhysicalDeviceConnected && (
-                            <Translation id="moduleSettings.viewOnly.autoEject.switch.alert.titleConnectedTrezor" />
-                        )}
-                    </>
+                    <Translation
+                        id={
+                            isNoPhysicalDeviceConnected
+                                ? 'moduleSettings.viewOnly.autoEject.switch.alert.disconnectedTrezorTitle'
+                                : 'moduleSettings.viewOnly.autoEject.switch.alert.connectedTrezorTitle'
+                        }
+                    />
                 ),
                 primaryButtonTitle: (
                     <Translation id="moduleSettings.viewOnly.autoEject.switch.alert.primaryButtonTitle" />

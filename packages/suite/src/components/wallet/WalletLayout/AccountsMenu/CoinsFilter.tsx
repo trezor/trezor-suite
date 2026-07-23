@@ -3,8 +3,7 @@ import styled from 'styled-components';
 
 import { getNetwork } from '@suite-common/wallet-config';
 import { TOOLTIP_DELAY_NORMAL, Tooltip, motionEasing } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
-import { borders, spacingsPx } from '@trezor/theme';
+import { NetworkIcon } from '@trezor/product-components';
 
 import { useAccountSearch } from 'src/hooks/suite';
 
@@ -12,7 +11,7 @@ import { useAvailableNetworkSymbols } from './useAvailableNetworkSymbols';
 
 const CoinLogoWrapper = styled.div<{ $isSelected?: boolean }>`
     display: block;
-    border-radius: ${borders.radii.xxs};
+    border-radius: 4px;
     opacity: ${({ $isSelected }) => ($isSelected ? 1 : 0.5)};
     transition: outline 0.2s;
     filter: ${({ $isSelected }) => !$isSelected && 'grayscale(100%)'};
@@ -28,8 +27,8 @@ const Container = styled.div`
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: ${spacingsPx.xxs};
-    margin: ${spacingsPx.xxs} ${spacingsPx.xs} ${spacingsPx.xs} 48px;
+    gap: 4px;
+    margin: 4px 8px 8px 48px;
     z-index: 2;
 
     &[data-empty-filter='true'] ${CoinLogoWrapper} {
@@ -93,10 +92,9 @@ export const CoinsFilter = () => {
                                         toggleCoinFilter(networkSymbol);
                                     }}
                                 >
-                                    <CoinLogo
+                                    <NetworkIcon
                                         data-testid={`@account-menu/filter/${networkSymbol}`}
-                                        symbol={networkSymbol}
-                                        type="network"
+                                        networkSymbol={networkSymbol}
                                         size={16}
                                     />
                                 </CoinLogoWrapper>

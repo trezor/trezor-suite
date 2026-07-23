@@ -43,9 +43,12 @@ test.describe('Trading POC - passthru swap', { tag: ['@T3W1', '@T3T1'] }, () => 
             const solBackendUrl = await passthruTradingMock.blockSolanaSends();
 
             await onboardingPage.completeOnboarding();
-            await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
-            await settingsPage.enableNetworkWithCustomBackend('sol', 'solana', solBackendUrl);
-            await dashboardPage.navigateTo();
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    'btc',
+                    { symbol: 'sol', backend: { type: 'solana', url: solBackendUrl } },
+                ],
+            });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
             await walletPage.openSwapTrading({ symbol: 'sol' });
@@ -147,10 +150,12 @@ test.describe('Trading POC - passthru swap', { tag: ['@T3W1', '@T3T1'] }, () => 
 
             await expect.poll(() => passthruTradingMock.blockedSendCount).toBeGreaterThan(0);
 
-            await expect(tradingPage.swapToastSendAccount).toContainText(accountLabel);
-            await expect(tradingPage.swapToastReceiveAccount).toContainText('Bitcoin #1');
-            await expect(tradingPage.swapToastSendAmount).toContainText(sendAmount);
-            await expect(tradingPage.swapToastReceiveAmount).toContainText(receiveAmount);
+            await tradingPage.verifySwapToast({
+                sendAccount: accountLabel,
+                receiveAccount: 'Bitcoin #1',
+                sendAmount,
+                receiveAmount,
+            });
         });
 
         for (const { transactionStatus, displayedText, translationValues } of transactionStates) {

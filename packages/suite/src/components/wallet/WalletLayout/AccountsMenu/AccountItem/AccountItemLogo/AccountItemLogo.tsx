@@ -1,6 +1,6 @@
 import { Column, Icon } from '@trezor/components';
 import { PiggyBankFilledIcon } from '@trezor/icons';
-import { CoinLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
@@ -16,7 +16,7 @@ export const AccountItemLogo = ({ type, account }: AccountItemLogoProps) => {
         case 'coin':
             return (
                 <Column alignItems="center">
-                    <CoinLogo size={24} symbol={account.symbol} />
+                    <TokenIcon size={24} symbol={account.symbol} />
                 </Column>
             );
 

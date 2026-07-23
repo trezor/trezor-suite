@@ -35,7 +35,6 @@ import {
     EarnTransactionDataReviewScreen,
     HowStakeWorksScreen,
     StakingDetailScreen,
-    StakingInsufficientBalanceScreen,
     StakingManagementScreen,
     UnstakeFlowScreen,
     UnstakeTransactionDataReviewScreen,
@@ -134,11 +133,6 @@ export const RootStackNavigator = () => {
                 options={{ title: RootStackRoutes.StakingManagement }}
                 name={RootStackRoutes.StakingManagement}
                 component={StakingManagementScreen}
-            />
-            <RootStack.Screen
-                options={{ title: RootStackRoutes.StakingInsufficientBalance }}
-                name={RootStackRoutes.StakingInsufficientBalance}
-                component={StakingInsufficientBalanceScreen}
             />
             <RootStack.Screen
                 options={{ title: RootStackRoutes.UnstakeFlow }}

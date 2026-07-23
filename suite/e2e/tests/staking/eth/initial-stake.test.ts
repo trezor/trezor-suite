@@ -13,41 +13,38 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
         },
     });
 
-    test.beforeEach(
-        async ({ page, dashboardPage, onboardingPage, settingsPage, blockbookMock }) => {
-            await onboardingPage.completeOnboarding();
-            await settingsPage.navigateTo('coins');
-            await blockbookMock.start('eth');
-            // Set initial empty state for ETH account
-            blockbookMock.updateAccountState({
-                txs: 0,
-                nonTokenTxs: 0,
-                internalTxs: 0,
-                transactions: [],
-                nonce: '0',
-                stakingPools: [
-                    {
-                        contract: '0x624087DD1904ab122A32878Ce9e933C7071F53B9',
-                        name: 'Everstake',
-                        pendingBalance: '0',
-                        pendingDepositedBalance: '0',
-                        depositedBalance: '0',
-                        withdrawTotalAmount: '0',
-                        claimableAmount: '0',
-                        restakedReward: '0',
-                        autocompoundBalance: '0',
-                    },
-                ],
-            });
+    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock }) => {
+        await onboardingPage.completeOnboarding();
+        await settingsPage.navigateTo('coins');
+        await blockbookMock.start('eth');
+        // Set initial empty state for ETH account
+        blockbookMock.updateAccountState({
+            txs: 0,
+            nonTokenTxs: 0,
+            internalTxs: 0,
+            transactions: [],
+            nonce: '0',
+            stakingPools: [
+                {
+                    contract: '0x624087DD1904ab122A32878Ce9e933C7071F53B9',
+                    name: 'Everstake',
+                    pendingBalance: '0',
+                    pendingDepositedBalance: '0',
+                    depositedBalance: '0',
+                    withdrawTotalAmount: '0',
+                    claimableAmount: '0',
+                    restakedReward: '0',
+                    autocompoundBalance: '0',
+                },
+            ],
+        });
 
-            await settingsPage.coinsTab.enableNetwork('eth');
-            await settingsPage.coinsTab.openNetworkAdvanceSettings('eth');
-            await settingsPage.coinsTab.changeBackend('blockbook', blockbookMock.url);
-
-            await dashboardPage.dashboardMenuButton.click();
-            await page.discoveryShouldFinish();
-        },
-    );
+        await settingsPage.changeNetworks({
+            enableNetworks: [
+                { symbol: 'eth', backend: { type: 'blockbook', url: blockbookMock.url } },
+            ],
+        });
+    });
 
     test(
         'first stake on ETH account',
@@ -145,10 +142,11 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                     nonce: '2',
                 });
                 await devicePrompt.sendButton.click();
-                await expect(stakingSection.stakedToastAccount).toContainText('Ethereum #1');
-                await expect(stakingSection.stakedToastAmount).toContainText(
-                    '0.100204158497493752 ETH',
-                );
+                await stakingSection.verifyStakingToast({
+                    type: 'staked',
+                    account: 'Ethereum #1',
+                    amount: '0.100204158497493752 ETH',
+                });
             });
 
             await test.step('Verify pending transaction', async () => {

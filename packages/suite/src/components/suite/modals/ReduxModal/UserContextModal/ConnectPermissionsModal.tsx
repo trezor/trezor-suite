@@ -9,7 +9,6 @@ import { CALL_SOURCE_WALLETCONNECT } from '@suite-common/connect-popup/src/conne
 import { useServices } from '@suite-common/dependency-injection';
 import { Card, Checkbox, Column, Modal, Row, Text, Tooltip } from '@trezor/components';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { spacings } from '@trezor/theme';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
@@ -86,16 +85,16 @@ export const ConnectPermissionsModal = () => {
                 heading={<Translation id="TR_GRANT_PERMISSIONS" />}
                 description={<Translation id="TR_GRANT_PERMISSIONS_DESCRIPTION" />}
             >
-                <Column gap={spacings.xs}>
+                <Column gap={8}>
                     <Text>
                         <Translation id="TR_APP" />
                     </Text>
 
                     <Card>
-                        <Row gap={spacings.md}>
+                        <Row gap={16}>
                             <ConnectAppIcon
                                 src={source.manifest?.appIcon}
-                                size={spacings.xxxxl}
+                                size={48}
                                 type={
                                     source.type === CALL_SOURCE_WALLETCONNECT
                                         ? 'walletConnect'
@@ -103,8 +102,8 @@ export const ConnectPermissionsModal = () => {
                                 }
                             />
 
-                            <Column gap={spacings.xxs}>
-                                <Row gap={spacings.sm}>
+                            <Column gap={4}>
+                                <Row gap={12}>
                                     {source.manifest?.appName ? (
                                         <>
                                             <Text data-testid="@connect-permissions-modal/app-name">
@@ -144,7 +143,7 @@ export const ConnectPermissionsModal = () => {
                             </Text>
 
                             <Card>
-                                <Column gap={spacings.sm}>
+                                <Column gap={12}>
                                     <Checkbox
                                         data-testid="@connect-permissions-modal/remember-checkbox"
                                         isChecked={isRemembered}

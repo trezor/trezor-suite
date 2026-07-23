@@ -44,6 +44,7 @@ export const useEvmNonceInfo = (
     );
     const isEnabled = enabled && account !== undefined;
 
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is symbol + descriptor + misc.nonce; tryGetAccountIdentity(account) only reads stable identity fields that don't widen the key
     const { data, isLoading } = useQuery({
         // account.misc.nonce is included so a delayed store update (e.g. fetchAndUpdateAccountThunk
         // dispatches the tx-list update, then updates account.misc.nonce only after an `await` a few

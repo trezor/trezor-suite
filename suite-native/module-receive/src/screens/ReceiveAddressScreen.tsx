@@ -1,190 +1,50 @@
-import { useCallback, useEffect } from 'react';
-import { FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { G } from '@mobily/ts-belt';
-import { useNavigation, usePreventRemove } from '@react-navigation/native';
+import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { selectIsDeviceBackupRequired } from '@suite-common/device';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { AccountDetailsCard } from '@suite-native/accounts';
+import { type DeviceRootState } from '@suite-common/device';
 import {
-    AnimatedBox,
-    ErrorMessage,
-    InlineAlertBox,
-    VStack,
-    useBottomSheetModal,
-} from '@suite-native/atoms';
-import {
-    ConfirmOnTrezorWrapper,
-    useConfirmOnTrezorController,
-} from '@suite-native/confirm-on-trezor';
-import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
-import { useInAppRating } from '@suite-native/in-app-rating';
-import { Translation } from '@suite-native/intl';
-import { Link } from '@suite-native/link';
-import { WalletBackupNotSetWarningBottomSheet } from '@suite-native/module-device-onboarding';
-import { type CloseActionType } from '@suite-native/navigation';
-import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
-import TrezorConnect from '@trezor/connect';
-import { HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL } from '@trezor/urls';
+    type AccountsRootState,
+    selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex,
+} from '@suite-common/wallet-core';
+import { type ReceiveStackParamList, type ReceiveStackRoutes } from '@suite-native/navigation';
 
-import { ReceiveBlockedDeviceCompromisedScreen } from './ReceiveBlockedDeviceCompromisedScreen';
-import { ReceiveAddressCard } from '../components/ReceiveAddressCard';
-import { ReceiveScreenHeader } from '../components/ReceiveScreenHeader';
-import { hasReceiveAddressButtonRequest } from '../hooks/receiveSelectors';
-import { useAccountReceiveAddress } from '../hooks/useAccountReceiveAddress';
+import { ReceiveAddressContent } from '../components/ReceiveAddressContent';
+import { ReceiveAddressLoader } from '../components/ReceiveAddressLoader';
 
-type ReceiveAddressScreenProps = {
-    accountKey: AccountKey;
-    tokenContract?: TokenAddress;
-    closeActionType: CloseActionType;
-};
+export const ReceiveAddressScreen = () => {
+    const {
+        params: {
+            accountKey: routeAccountKey,
+            tokenContract,
+            networkSymbol: routeNetworkSymbol,
+            accountType: routeAccountType,
+            accountIndex: routeAccountIndex,
+            closeActionType,
+        },
+    } = useRoute<RouteProp<ReceiveStackParamList, ReceiveStackRoutes.ReceiveAddress>>();
 
-export const ReceiveAddressScreen = ({
-    accountKey,
-    tokenContract,
-    closeActionType,
-}: ReceiveAddressScreenProps) => {
-    const { askForRating } = useInAppRating();
-    const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, accountKey),
+    const foundAccountKey = useSelector((state: AccountsRootState & DeviceRootState) =>
+        selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex(
+            state,
+            routeNetworkSymbol,
+            routeAccountType,
+            routeAccountIndex,
+        ),
     );
-    const tokenSymbol = useSelector((state: TokensRootState) =>
-        selectAccountTokenSymbol(state, accountKey, tokenContract),
-    );
-    const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
+    const accountKey = routeAccountKey ?? foundAccountKey;
 
-    const { revealConfirmOnTrezorSheet, confirmOnTrezorRef, closeSheet } =
-        useConfirmOnTrezorController();
-
-    const hasReceiveButtonRequest = useSelector(hasReceiveAddressButtonRequest);
-    const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
-
-    const navigation = useNavigation();
-
-    const { address, isReceiveApproved, isUnverifiedAddressRevealed, handleShowAddress } =
-        useAccountReceiveAddress(accountKey);
-
-    usePreventRemove(true, ({ data }) => {
-        TrezorConnect.cancel();
-        navigation.dispatch(data.action);
-        if (isReceiveApproved) {
-            askForRating();
-        }
-    });
-
-    const handleShowReceiveAddress = useCallback(() => {
-        handleShowAddress();
-
-        if (isDeviceBackupRequired) {
-            openModal();
-        }
-    }, [handleShowAddress, openModal, isDeviceBackupRequired]);
-
-    const isLoading =
-        !(isReceiveApproved || hasReceiveButtonRequest) && isUnverifiedAddressRevealed;
-    const isConfirmOnTrezorReady =
-        isUnverifiedAddressRevealed && !isReceiveApproved && hasReceiveButtonRequest;
-
-    useEffect(() => {
-        if (isConfirmOnTrezorReady) revealConfirmOnTrezorSheet();
-    }, [isConfirmOnTrezorReady, revealConfirmOnTrezorSheet]);
-
-    useEffect(() => {
-        if (isReceiveApproved) closeSheet();
-    }, [isReceiveApproved, closeSheet]);
-
-    const closeNoBackupBottomSheet = useCallback(() => {
-        closeModal();
-    }, [closeModal]);
-
-    const hasFirmwareAuthenticityCheckHardFailed = useSelector(
-        selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
-    );
-
-    if (hasFirmwareAuthenticityCheckHardFailed) return <ReceiveBlockedDeviceCompromisedScreen />;
-
-    const isAccountDetailVisible = !isUnverifiedAddressRevealed && !isReceiveApproved;
-
-    if (G.isNullable(account) || G.isNullable(address)) {
-        return <ErrorMessage errorMessage={<Translation id="generic.unknownError" />} />;
+    if (!accountKey) {
+        return (
+            <ReceiveAddressLoader tokenContract={tokenContract} closeActionType={closeActionType} />
+        );
     }
 
-    const onCancel = () => {
-        TrezorConnect.cancel();
-        navigation.goBack();
-    };
-
-    const showDestinationTagInfo =
-        account.networkType === 'ripple' || account.networkType === 'stellar';
-
     return (
-        <ConfirmOnTrezorWrapper
-            isManualControlEnabled
-            controlRef={confirmOnTrezorRef}
+        <ReceiveAddressContent
+            accountKey={accountKey}
+            tokenContract={tokenContract}
             closeActionType={closeActionType}
-            closeAction={onCancel}
-            defaultHeader={
-                <ReceiveScreenHeader
-                    accountKey={accountKey}
-                    tokenContract={tokenContract}
-                    closeActionType={isReceiveApproved ? 'close' : closeActionType}
-                />
-            }
-        >
-            <VStack marginTop="sp8" spacing="sp16" flex={1}>
-                {showDestinationTagInfo && (
-                    <InlineAlertBox
-                        intent="info"
-                        title={
-                            <Translation
-                                id="moduleReceive.destinationTag"
-                                values={{
-                                    link: chunk => (
-                                        <Link
-                                            label={chunk}
-                                            textVariant="body-xs"
-                                            href={
-                                                HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL
-                                            }
-                                            isUnderlined
-                                            textColor="contentPrimary"
-                                            textPressedColor="contentSecondary"
-                                        />
-                                    ),
-                                    coinSymbol: tokenSymbol ?? getDisplaySymbol(account.symbol),
-                                }}
-                            />
-                        }
-                    />
-                )}
-                {isAccountDetailVisible && (
-                    <AnimatedBox exiting={FadeOut}>
-                        <AccountDetailsCard accountKey={accountKey} tokenContract={tokenContract} />
-                    </AnimatedBox>
-                )}
-                <ReceiveAddressCard
-                    accountDescriptor={account.descriptor}
-                    symbol={account.symbol}
-                    address={address}
-                    isLoading={isLoading}
-                    deviceStaticSessionId={account.deviceState}
-                    isTokenAddress={!!tokenContract}
-                    isReceiveApproved={isReceiveApproved}
-                    isUnverifiedAddressRevealed={isUnverifiedAddressRevealed}
-                    onShowAddress={handleShowReceiveAddress}
-                />
-            </VStack>
-            {isDeviceBackupRequired && (
-                <WalletBackupNotSetWarningBottomSheet
-                    ref={bottomSheetRef}
-                    onConfirm={closeNoBackupBottomSheet}
-                    onClose={closeModal}
-                />
-            )}
-        </ConfirmOnTrezorWrapper>
+        />
     );
 };

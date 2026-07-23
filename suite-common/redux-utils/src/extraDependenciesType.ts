@@ -33,6 +33,7 @@ import {
     type ThpSettings,
 } from '@trezor/connect';
 import type { Transport } from '@trezor/transport-common';
+import { type KeyedThrottle } from '@trezor/utils';
 
 import { type ConnectInitHooks } from './connectInitHooksType';
 import { type ActionType, type SuiteCompatibleSelector, type SuiteCompatibleThunk } from './types';
@@ -56,15 +57,15 @@ export type TransportName =
 // Web/native yield a constructed Transport instance. The desktop renderer can't build node-only
 // transports (`usb`/`dgram`), so it yields the identifier string — the main process maps it to an
 // instance below the IPC boundary (see suite-desktop-core/src/modules/trezor-connect.ts).
-export type DebugTransportFactory = (logger?: CreateLogger) => Transport | TransportName;
+export type TransportFactory = (logger?: CreateLogger) => Transport | TransportName;
 
-export type GetTransportsFactories = () => Partial<Record<TransportName, DebugTransportFactory>>;
+export type GetTransportsFactories = () => Partial<Record<TransportName, TransportFactory>>;
 
 export type GetTransportsFactoriesDep = {
     getTransportsFactories: GetTransportsFactories;
 };
 
-export type CreateTransports = (debugTransports: TransportName[]) => ConnectSettings['transports'];
+export type CreateTransports = (transports: TransportName[]) => ConnectSettings['transports'];
 
 export type TransportsDep = { createTransports: CreateTransports };
 
@@ -76,6 +77,7 @@ export type CommonServices = SuiteSyncDep &
         saveAs: (data: Blob, fileName: string) => void;
         connectInitSettings: ConnectInitSettings;
         connectInitHooks: ConnectInitHooks;
+        accountRefreshThrottle: KeyedThrottle<Account['key']>;
     } & ReportSecurityCheckDep &
     ReloadAppDep &
     MigrateSuiteSyncLabelsForRbfTransactionDep &
@@ -152,6 +154,7 @@ export type ExtraDependenciesStatic = {
         storageLoadBioAuth: StorageLoadReducer;
         storageLoadFlags: StorageLoadReducer;
         storageLoadSuiteSettings: StorageLoadReducer;
+        storageLoadReceiveAccounts: StorageLoadReducer;
     };
 };
 

@@ -1,6 +1,6 @@
 import { type CoinjoinAccountAction, type CoinjoinClientAction } from '@suite/coinjoin';
-import { type receiveActions } from '@suite/receive';
 import { type connectPopupActions } from '@suite-common/connect-popup';
+import { type receiveActions } from '@suite-common/receive';
 import { type tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
 import {
     type tradingActions,

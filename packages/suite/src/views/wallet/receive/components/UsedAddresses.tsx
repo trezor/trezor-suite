@@ -3,14 +3,10 @@ import { useState } from 'react';
 import { Address, selectAddressLabelsForAccount } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
-import {
-    selectCurrentFreshAddress,
-    selectReceiveRevealedAddresses,
-    showAddressThunk,
-    useReceiveDisabled,
-} from '@suite/receive';
+import { showAddressThunk, useReceiveDisabled } from '@suite/receive';
 import { getUsedAddressesList } from '@suite-common/address';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
+import { selectCurrentFreshAddress, selectTouchedAddresses } from '@suite-common/receive';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -18,7 +14,6 @@ import { Button, Card, Column, Row, Table, Text } from '@trezor/components';
 import { type AccountAddress } from '@trezor/connect';
 import { getAddressPathIndex } from '@trezor/crypto-utils';
 import { CaretDownIcon, CaretUpIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -48,7 +43,7 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
         <Table.Row>
             <Table.Cell>
                 <Row
-                    gap={spacings.xxs}
+                    gap={4}
                     alignItems="center"
                     data-testid={`@wallet/receive/used-address/${index}`}
                 >
@@ -111,9 +106,7 @@ export const UsedAddresses = ({ account, pendingAddresses, locked }: UsedAddress
     const [limit, setLimit] = useState(DEFAULT_LIMIT);
     const dispatch = useDispatch();
     const currentFreshAddress = useSelector(state => selectCurrentFreshAddress(state, account.key));
-    const revealedAddresses = useSelector(state =>
-        selectReceiveRevealedAddresses(state, account.key),
-    );
+    const touchedAddresses = useSelector(state => selectTouchedAddresses(state, account.key));
 
     const accountAddresses = account.addresses
         ? account.addresses.used.concat(account.addresses.unused).map(({ address }) => address)
@@ -137,7 +130,7 @@ export const UsedAddresses = ({ account, pendingAddresses, locked }: UsedAddress
 
     const list = getUsedAddressesList({
         account,
-        revealedAddresses,
+        touchedAddresses,
         pendingAddresses,
         addressLabels,
         currentFreshAddress,
@@ -153,8 +146,8 @@ export const UsedAddresses = ({ account, pendingAddresses, locked }: UsedAddress
 
     return (
         <Card paddingType="none">
-            <Column gap={spacings.md}>
-                <Table margin={{ top: spacings.xs, bottom: spacings.xs }}>
+            <Column gap={16}>
+                <Table margin={{ top: 8, bottom: 8 }}>
                     <Table.Header>
                         <Table.Row>
                             <Table.Cell>
@@ -196,7 +189,7 @@ export const UsedAddresses = ({ account, pendingAddresses, locked }: UsedAddress
                 </Table>
 
                 {actionButtonsVisible && (
-                    <Row justifyContent="center" gap={spacings.md} margin={{ bottom: spacings.md }}>
+                    <Row justifyContent="center" gap={16} margin={{ bottom: 16 }}>
                         {actionShowVisible && (
                             <Button
                                 intent="neutral"

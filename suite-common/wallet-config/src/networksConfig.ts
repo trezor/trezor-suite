@@ -1,4 +1,8 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { CARDANO_DECIMALS } from '@trezor/network-cardano/constants';
+import { RIPPLE_DECIMALS } from '@trezor/network-ripple/constants';
+import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
+import { TRON_DECIMALS } from '@trezor/network-tron/constants';
 import { typedObjectEntries } from '@trezor/utils';
 
 import { getExplorerUrls } from './getExplorerUrls';
@@ -267,6 +271,34 @@ export const networks = {
         nativeTokenReserve: '0.0002',
         yieldXyzId: 'optimism',
     },
+    rhc: {
+        symbol: 'rhc',
+        settlementLayer: 'eth',
+        displaySymbol: 'ETH',
+        displaySymbolName: 'Robinhood Ethereum',
+        name: 'Robinhood Chain',
+        networkType: 'ethereum',
+        chainId: 4663,
+        bip43Path: "m/44'/60'/0'/0/i",
+        decimals: 18,
+        testnet: false,
+        explorer: getExplorerUrls('https://robinscan.io', 'ethereum'),
+        features: ['rbf', 'sign-verify', 'tokens', 'coin-definitions', 'graph'],
+        backendOptions: [{ type: 'blockbook', isExternalBackend: true }, { type: 'evm-rpc' }],
+        accountTypes: {
+            ledger: {
+                // ledger (live), #1 acc is same as Trezor, so it is skipped
+                accountType: 'ledger',
+                bip43Path: "m/44'/60'/i'/0/0",
+                isDebugOnlyAccountType: true,
+            },
+        },
+        coingeckoId: 'robinhood',
+        tradeCryptoId: 'robinhood--0x0000000000000000000000000000000000000000',
+        caipId: 'eip155:4663',
+        nativeTokenReserve: '0.0002',
+        yieldXyzId: null,
+    },
     avax: {
         symbol: 'avax',
         displaySymbol: 'AVAX',
@@ -340,7 +372,7 @@ export const networks = {
         name: 'Tron',
         networkType: 'tron',
         bip43Path: "m/44'/195'/0'/0/i",
-        decimals: 6,
+        decimals: TRON_DECIMALS,
         testnet: false,
         features: ['tokens', 'coin-definitions', 'graph', 'nfts', 'staking'],
         explorer: getExplorerUrls('https://tronscan.org/#', 'tron'),
@@ -372,7 +404,7 @@ export const networks = {
         name: 'Cardano',
         networkType: 'cardano',
         bip43Path: "m/1852'/1815'/i'",
-        decimals: 6,
+        decimals: CARDANO_DECIMALS,
         testnet: false,
         features: ['tokens', 'staking', 'coin-definitions', 'sign-verify'],
         explorer: getExplorerUrls('https://cexplorer.io', 'cardano'),
@@ -425,7 +457,7 @@ export const networks = {
         name: 'XRP Ledger',
         networkType: 'ripple',
         bip43Path: "m/44'/144'/i'/0/0",
-        decimals: 6,
+        decimals: RIPPLE_DECIMALS,
         testnet: false,
         explorer: getExplorerUrls('https://xrpscan.com', 'ripple'),
         features: [],
@@ -441,7 +473,7 @@ export const networks = {
         name: 'Stellar',
         networkType: 'stellar',
         bip43Path: "m/44'/148'/i'",
-        decimals: 7,
+        decimals: STELLAR_DECIMALS,
         testnet: false,
         explorer: getExplorerUrls('https://stellar.expert/explorer/public', 'stellar'),
         features: ['tokens', 'coin-definitions'],
@@ -678,7 +710,7 @@ export const networks = {
         name: 'XRP Testnet',
         networkType: 'ripple',
         bip43Path: "m/44'/144'/i'/0/0",
-        decimals: 6,
+        decimals: RIPPLE_DECIMALS,
         testnet: true,
         explorer: getExplorerUrls('https://test.bithomp.com', 'ripple'),
         features: ['tokens'],
@@ -694,7 +726,7 @@ export const networks = {
         name: 'Stellar Testnet',
         networkType: 'stellar',
         bip43Path: "m/44'/148'/i'",
-        decimals: 7,
+        decimals: STELLAR_DECIMALS,
         testnet: true,
         explorer: getExplorerUrls('https://stellar.expert/explorer/testnet', 'stellar'),
         features: ['tokens'],
@@ -711,7 +743,7 @@ export const networks = {
         name: 'Tron Nile',
         networkType: 'tron',
         bip43Path: "m/44'/195'/0'/0/i",
-        decimals: 6,
+        decimals: TRON_DECIMALS,
         testnet: true,
         features: ['tokens', 'graph', 'nfts'],
         explorer: getExplorerUrls('https://nile.tronscan.org/#', 'tron'),

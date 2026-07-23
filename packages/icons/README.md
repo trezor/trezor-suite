@@ -2,6 +2,10 @@
 
 Icon SVG source assets and generated tree-shakeable React components for web.
 
+The package exposes a compact generated type facade through `src/index.ts`. The runtime entry stays
+in `src/generated/icons/index.ts` so TypeScript consumers do not load every generated icon module
+into their project.
+
 > Not yet used on native (Expo/Metro tree-shaking issue), but the setup is ready for it in the future.
 
 ## How to add or update an icon

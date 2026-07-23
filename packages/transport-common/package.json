@@ -17,6 +17,9 @@
     "main": "./src/index.ts",
     "sideEffects": false,
     "type": "module",
+    "browser": {
+        "./src/pinger/ping": "./src/pinger/ping.browser.ts"
+    },
     "publishConfig": {
         "main": "./lib/index.js",
         "types": "./lib/index.d.ts",
@@ -34,6 +37,9 @@
                 "types": "./lib/types/index.d.ts",
                 "default": "./lib/types/index.js"
             }
+        },
+        "browser": {
+            "./lib/pinger/ping": "./lib/pinger/ping.browser.js"
         }
     },
     "files": [
@@ -58,7 +64,8 @@
         "@trezor/protobuf": "workspace:*",
         "@trezor/protocol": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "@trezor/utils": "workspace:*"
+        "@trezor/utils": "workspace:*",
+        "cross-fetch": "^4.1.0"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

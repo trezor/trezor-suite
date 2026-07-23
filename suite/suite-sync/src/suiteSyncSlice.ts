@@ -1,3 +1,5 @@
+import { type PayloadAction } from '@reduxjs/toolkit';
+
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { type AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
@@ -28,14 +30,17 @@ export type DesktopSuiteSyncRootState = {
     suiteSync: DesktopSuiteSyncState;
 };
 
-export const suiteSyncSlice = createSliceWithExtraDeps({
+const suiteSyncSlice = createSliceWithExtraDeps({
     name: 'suiteSync',
     initialState: initialSuiteSyncDesktopState,
     reducers: {
-        updateShowEnableSuiteSyncModal: (state, action) => {
+        updateShowEnableSuiteSyncModal: (
+            state: DesktopSuiteSyncState,
+            action: PayloadAction<{ deviceStaticSessionId: StaticSessionId | null }>,
+        ) => {
             state.showEnableSuiteSyncModal = action.payload.deviceStaticSessionId;
         },
-        dismissUnsupportedDeviceBanner: state => {
+        dismissUnsupportedDeviceBanner: (state: DesktopSuiteSyncState) => {
             state.isUnsupportedDeviceBannerDismissed = true;
         },
     },
@@ -130,5 +135,8 @@ export const selectDesktopSuiteSyncInteraction = (
     return interaction;
 };
 
+export const desktopSuiteSyncActions = suiteSyncSlice.actions;
 export const { dismissUnsupportedDeviceBanner, updateShowEnableSuiteSyncModal } =
-    suiteSyncSlice.actions;
+    desktopSuiteSyncActions;
+
+export const prepareSuiteSyncReducer = suiteSyncSlice.prepareReducer;

@@ -56,6 +56,7 @@ import { type ExchangeInfo, type TradingExchangeState } from '../reducers/exchan
 import { type SellInfo, type TradingSellState } from '../reducers/sellReducer';
 import type { TradingRootState, TradingState } from '../reducers/tradingCommonReducer';
 import {
+    type SelectedTradingAsset,
     type TradingBuyPaymentMethodProps,
     type TradingFiatCurrenciesProps,
     type TradingPaymentMethodListProps,
@@ -68,6 +69,7 @@ import {
 } from '../types';
 import {
     cryptoIdToNetwork,
+    cryptoIdToNetworkSymbolAndContractAddress,
     getTradingQuotesByPaymentMethod,
     isBuyTrade,
     isExchangeProvider,
@@ -81,7 +83,7 @@ import {
     getTradingPlatformsInfoByCryptoId,
     getTradingSymbolAndContractAddressByCryptoId,
 } from '../utils/infoUtils';
-import { isAccountEligibleForTrade, pickFallbackAccount } from '../utils/tradingAccountUtils';
+import { isAccountEligibleForTrade } from '../utils/tradingAccountUtils';
 
 export { EMPTY_GROUPED_TRADING_EXCHANGE_QUOTES, type GroupedTradingExchangeQuotes };
 
@@ -967,8 +969,8 @@ const selectPreferredTradingAccount = (
  * Selection priority:
  * 1) Preferred account (selected trading account key OR prefilled.key) if eligible.
  * 2) First account with the same symbol as the preferred account that is eligible.
- * 3) Fallback (pickFallbackAccount): first eligible account, otherwise the first
- *    available account as a last resort.
+ * 3) First eligible visible account (default preselect once discovery is done).
+ * 4) Otherwise undefined — no eligible account exists, the form renders empty.
  */
 export const selectTradingFormAccount = createMemoizedFormAccountSelector(
     [
@@ -978,7 +980,13 @@ export const selectTradingFormAccount = createMemoizedFormAccountSelector(
         selectPreferredTradingAccount,
         (_state: TradingFormAccountRootState, tradingType: TradingType) => tradingType,
     ],
-    (visibleDeviceAccounts, tokenDefinitions, prefilled, preferredAccount, tradingType) => {
+    (
+        visibleDeviceAccounts,
+        tokenDefinitions,
+        prefilled,
+        preferredAccount,
+        tradingType,
+    ): Account | undefined => {
         const eligibilityCryptoId = prefilled.key ? prefilled.cryptoId : undefined;
 
         const isEligible = (account: Account, cryptoId?: CryptoId) =>
@@ -998,13 +1006,17 @@ export const selectTradingFormAccount = createMemoizedFormAccountSelector(
             return sameSymbolAccount;
         }
 
-        return pickFallbackAccount(visibleDeviceAccounts, tradingType, tokenDefinitions);
+        return visibleDeviceAccounts.find(account => isEligible(account, eligibilityCryptoId));
     },
 );
 
 export const selectTradingFormCryptoId = createMemoizedFormAccountSelector(
     [selectTradingFormAccount, selectPreferredTradingAccount, selectTradingPrefilledFromAccount],
-    (account, preferredAccount, prefilled): CryptoId => {
+    (account, preferredAccount, prefilled): CryptoId | undefined => {
+        if (!account) {
+            return undefined;
+        }
+
         if (prefilled.cryptoId && account.key === preferredAccount?.key) {
             return prefilled.cryptoId;
         }
@@ -1035,6 +1047,25 @@ const selectTradingActiveTradeSendAccount = (
 export const selectTradingSendAccount = createMemoizedFormAccountSelector(
     [selectTradingActiveTradeSendAccount, selectTradingFormAccount],
     (tradeSendAccount, formAccount) => tradeSendAccount ?? formAccount,
+);
+
+export const selectSelectedTradingAsset = createMemoizedFormAccountSelector(
+    [selectTradingSendAccount, selectTradingFormCryptoId],
+    (account, cryptoId): SelectedTradingAsset | undefined => {
+        if (!account || !cryptoId) {
+            return undefined;
+        }
+
+        return {
+            symbol: account.symbol,
+            decimals: getNetwork(account.symbol).decimals,
+            balance: account.balance,
+            formattedBalance: account.formattedBalance,
+            tokens: account.tokens,
+            cryptoId,
+            isToken: !!cryptoIdToNetworkSymbolAndContractAddress(cryptoId).contractAddress,
+        };
+    },
 );
 
 export const selectTradingBuyTransactionId = (state: TradingRootState) =>

@@ -1,15 +1,17 @@
 import { useCallback, useEffect } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import { openModal } from '@suite/modal';
+import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldAccountRewards } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
 import {
+    YIELD_FLOW_AVAILABLE_STEPS,
     isStablecoinYieldSupported,
     selectStablecoinYieldSession,
     selectStablecoinYieldTxReview,
@@ -157,7 +159,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                 <FirmwareUpgradeNeededModal
                     onClose={closeFirmwareModal}
                     onUpdate={updateFirmware}
-                    featureName={translationString('TR_EARN_STABLECOIN_YIELD_TITLE')}
+                    featureName={translationString('TR_EARN_DEFI_YIELD_TITLE')}
                 />
             )}
             <Column gap={24} width="100%" maxWidth={500}>
@@ -175,7 +177,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                     <YieldDisabledBanner type="claim" content={content} variant={variant} />
                 ) : (
                     <YieldFlowStepList
-                        flowType="claim"
+                        sequence={YIELD_FLOW_AVAILABLE_STEPS.claim}
                         currentStep={currentStep}
                         steps={{
                             action: {

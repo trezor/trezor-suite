@@ -1,47 +1,54 @@
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
-import { shouldShowClaimFeeWarning } from '../yieldClaimFeeWarningUtils';
+import { getClaimFeeWarning } from '../yieldClaimFeeWarningUtils';
 
 const fiatAmount = (amount: string) => asBaseCurrencyAmount(new BigNumber(amount));
 
-describe('shouldShowClaimFeeWarning', () => {
-    it('shows warning only when fee fiat exceeds rewards fiat', () => {
+describe('getClaimFeeWarning', () => {
+    it('warns only when fee fiat exceeds rewards fiat', () => {
         expect(
-            shouldShowClaimFeeWarning({
+            getClaimFeeWarning({
                 feeFiatAmount: fiatAmount('4.76'),
                 totalFiatClaimableAmount: fiatAmount('3.75'),
             }),
-        ).toBe(true);
+        ).toBe('fee-exceeds-rewards');
 
         expect(
-            shouldShowClaimFeeWarning({
+            getClaimFeeWarning({
                 feeFiatAmount: fiatAmount('3.75'),
                 totalFiatClaimableAmount: fiatAmount('3.75'),
             }),
-        ).toBe(false);
+        ).toBeNull();
 
         expect(
-            shouldShowClaimFeeWarning({
+            getClaimFeeWarning({
                 feeFiatAmount: fiatAmount('1.25'),
                 totalFiatClaimableAmount: fiatAmount('3.75'),
             }),
-        ).toBe(false);
+        ).toBeNull();
     });
 
-    it('hides warning when fiat data is incomplete', () => {
+    it('reports an unverifiable rewards value when fiat data is incomplete', () => {
         expect(
-            shouldShowClaimFeeWarning({
+            getClaimFeeWarning({
                 feeFiatAmount: null,
                 totalFiatClaimableAmount: fiatAmount('3.75'),
             }),
-        ).toBe(false);
+        ).toBe('unverifiable-rewards-value');
 
         expect(
-            shouldShowClaimFeeWarning({
+            getClaimFeeWarning({
                 feeFiatAmount: fiatAmount('4.76'),
                 totalFiatClaimableAmount: null,
             }),
-        ).toBe(false);
+        ).toBe('unverifiable-rewards-value');
+
+        expect(
+            getClaimFeeWarning({
+                feeFiatAmount: null,
+                totalFiatClaimableAmount: null,
+            }),
+        ).toBe('unverifiable-rewards-value');
     });
 });

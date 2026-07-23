@@ -2,13 +2,16 @@ import type { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { type TranslationKey } from '@suite/intl';
 import { selectTorState } from '@suite/tor';
-import { type TradingType, selectTradingProviderCompanyName } from '@suite-common/trading';
+import {
+    type TradingType,
+    selectTradingProviderCompanyName,
+    selectTradingSendAccount,
+} from '@suite-common/trading';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { type IconComponent } from '@trezor/components';
 import { ArrowSquareOutIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';
-import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     getCryptoQuoteAmountProps,
@@ -30,21 +33,20 @@ type TradingQuoteByType = {
 export const useTradingFormOfferCommon = <T extends TradingType>() => {
     const context = useTradingFormContext();
     const {
-        account,
         isAmountEmpty,
         watch,
         form: { state },
         type,
     } = context;
+    const account = useSelector(reduxState => selectTradingSendAccount(reduxState, type));
 
     const { amountInCrypto } = watch();
 
     const { isTorEnabled } = useSelector(selectTorState);
     const areFeesLoading = useSelector(suiteState =>
-        selectAreFeesLoading(suiteState, account.symbol),
+        selectAreFeesLoading(suiteState, account?.symbol),
     );
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
     const quote = getSelectedQuote(context) as TradingQuoteByType[T] | undefined;
     const quoteAmounts = getCryptoQuoteAmountProps(quote, context);
@@ -92,11 +94,7 @@ export const useTradingFormOfferCommon = <T extends TradingType>() => {
     const amountLabels = tradingGetAmountLabels({ type, amountInCrypto: !!amountInCrypto });
 
     const isBaseButtonDisabled =
-        isDiscoveryRunning ||
-        tradingDeviceDisconnected ||
-        state.isLoadingOrInvalid ||
-        !quote ||
-        areFeesLoading;
+        isDiscoveryRunning || state.isLoadingOrInvalid || !quote || areFeesLoading;
 
     return {
         quote,

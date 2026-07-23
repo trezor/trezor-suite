@@ -6,8 +6,8 @@ import { getBtcAccount, getInitializedTradingState } from '@suite-native/trading
 import { createTradingLightStore } from '../../../__tests__/tradingTestUtils';
 import { useSellData } from '../useSellData';
 
-jest.mock('@suite-native/trading-quote-utils', () => ({
-    ...jest.requireActual('@suite-native/trading-quote-utils'),
+jest.mock('@suite-common/trading', () => ({
+    ...jest.requireActual('@suite-common/trading'),
     getRandomAccountDescriptor: () => 'random_string',
 }));
 

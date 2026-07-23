@@ -1,13 +1,18 @@
-import { ERRORS, type UpdateConnectSettings, factoryPrivileged } from '@trezor/connect-common';
-// Deep import bypasses the `@trezor/transport` barrel so browser bundlers
-// do not resolve sibling node-only modules (`UdpTransport`/`dgram`,
-// `NodeUsbTransport`/`usb`).
-import { BridgeTransport } from '@trezor/transport/src/transports/bridge';
-import { type AbstractTransportParams, TRANSPORT } from '@trezor/transport-common';
+import {
+    ERRORS,
+    type TrezorConnectPrivilegedAPI,
+    type UpdateConnectSettings,
+    factoryPrivileged,
+} from '@trezor/connect-common';
+import { type AbstractTransportParams, BridgeTransport, TRANSPORT } from '@trezor/transport-common';
 import { WebUsbTransport } from '@trezor/transport-web';
 
 import { config } from './data/config';
 import { CoreInModule } from './impl/core-in-module';
+
+type TrezorConnectBrowserAPI = TrezorConnectPrivilegedAPI & {
+    requestWebUSBDevice: () => Promise<void>;
+};
 
 class CoreInModuleWeb extends CoreInModule {
     protected defaultTransports(params: AbstractTransportParams) {
@@ -36,7 +41,7 @@ class CoreInModuleWeb extends CoreInModule {
 }
 
 // Exported to enable using directly
-const TrezorConnect = factoryPrivileged(new CoreInModuleWeb());
+const TrezorConnect: TrezorConnectBrowserAPI = factoryPrivileged(new CoreInModuleWeb());
 
 export default TrezorConnect;
 

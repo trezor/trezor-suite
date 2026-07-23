@@ -2,8 +2,6 @@ import { type Dispatch, type SetStateAction } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Card, Checkbox, Column, H4, Paragraph } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-
 type AdditionalBackupDisclaimerProps = {
     isChecked: boolean;
     setIsChecked: Dispatch<SetStateAction<boolean>>;
@@ -16,7 +14,7 @@ export const AdditionalBackupDisclaimer = ({
     const toggleCheckbox = () => setIsChecked(prev => !prev);
 
     return (
-        <Column gap={spacings.lg}>
+        <Column gap={20}>
             <Column>
                 <H4>
                     <Translation id="TR_CREATE_ADDITIONAL_BACKUP_HOW" />
@@ -33,7 +31,7 @@ export const AdditionalBackupDisclaimer = ({
                     <Translation id="TR_CREATE_ADDITIONAL_BACKUP_CURRENT_DESCRIPTION" />
                 </Paragraph>
             </Column>
-            <Card margin={{ top: spacings.xs }}>
+            <Card margin={{ top: 8 }}>
                 <Checkbox
                     isChecked={isChecked}
                     onChange={toggleCheckbox}

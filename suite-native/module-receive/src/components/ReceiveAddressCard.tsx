@@ -1,52 +1,47 @@
-import Animated, { Layout } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { selectIsDeviceInViewOnlyMode, selectIsPortfolioTrackerDevice } from '@suite-common/device';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { type AccountDescriptor } from '@suite-common/wallet-types';
-import { AddressQRCode } from '@suite-native/address';
-import { Box, Card, type InlineAlertBoxProps } from '@suite-native/atoms';
+import { getNetwork } from '@suite-common/wallet-config';
+import {
+    type AccountsRootState,
+    selectAccountDescriptor,
+    selectAccountDeviceState,
+    selectAccountNetworkSymbol,
+} from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { Box, InlineAlertBox, type InlineAlertBoxProps, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import type { StaticSessionId } from '@trezor/connect';
 
-import { UnverifiedAddress } from './UnverifiedAddress';
+import { ReceiveAddressDetails } from './ReceiveAddressDetails';
 
 type ReceiveAddressCardProps = {
+    accountKey: AccountKey;
     address: string;
-    deviceStaticSessionId: StaticSessionId;
-    isReceiveApproved: boolean;
-    accountDescriptor: AccountDescriptor;
-    isUnverifiedAddressRevealed: boolean;
-    symbol: NetworkSymbol;
-    onShowAddress: () => void;
     isTokenAddress?: boolean;
-    isLoading?: boolean;
 };
 
 export const ReceiveAddressCard = ({
-    accountDescriptor,
+    accountKey,
     address,
-    deviceStaticSessionId,
-    isUnverifiedAddressRevealed,
-    isReceiveApproved,
-    onShowAddress,
-    symbol,
-    isLoading,
     isTokenAddress = false,
 }: ReceiveAddressCardProps) => {
-    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
-    const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
+    const accountDescriptor = useSelector((state: AccountsRootState) =>
+        selectAccountDescriptor(state, accountKey),
+    );
+    const deviceStaticSessionId = useSelector((state: AccountsRootState) =>
+        selectAccountDeviceState(state, accountKey),
+    );
+    const symbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    );
 
-    const { networkType, name: networkName } = getNetwork(symbol);
+    if (!accountDescriptor || !deviceStaticSessionId || !symbol) {
+        return null;
+    }
+
+    const { name: networkName } = getNetwork(symbol);
 
     const getCardAlertProps = (): InlineAlertBoxProps | undefined => {
-        if (isReceiveApproved && !isPortfolioTrackerDevice && !isDeviceInViewOnlyMode) {
-            return {
-                title: <Translation id="moduleReceive.receiveAddressCard.alert.success" />,
-                intent: 'brand',
-            };
-        }
-        if (symbol === 'ada' && isUnverifiedAddressRevealed) {
+        if (symbol === 'ada') {
             return {
                 title: (
                     <Translation id="moduleReceive.receiveAddressCard.alert.longCardanoAddress" />
@@ -72,28 +67,19 @@ export const ReceiveAddressCard = ({
     const cardAlertProps = getCardAlertProps();
 
     return (
-        <Animated.View layout={Layout}>
-            <Card alertProps={cardAlertProps}>
-                <Box paddingVertical="sp8">
-                    {isReceiveApproved ? (
-                        <AddressQRCode
-                            accountDescriptor={accountDescriptor}
-                            address={address}
-                            deviceStaticSessionId={deviceStaticSessionId}
-                            networkSymbol={symbol}
-                            showLabelEdit={!isTokenAddress}
-                        />
-                    ) : (
-                        <UnverifiedAddress
-                            address={address}
-                            isLoading={isLoading}
-                            isAddressRevealed={isUnverifiedAddressRevealed && !isLoading}
-                            isCardanoAddress={networkType === 'cardano'}
-                            onShowAddress={onShowAddress}
-                        />
-                    )}
+        <VStack spacing="sp16" flex={1}>
+            <ReceiveAddressDetails
+                accountDescriptor={accountDescriptor}
+                address={address}
+                deviceStaticSessionId={deviceStaticSessionId}
+                networkSymbol={symbol}
+                showLabelEdit={!isTokenAddress}
+            />
+            {cardAlertProps && (
+                <Box marginBottom="sp4">
+                    <InlineAlertBox {...cardAlertProps} />
                 </Box>
-            </Card>
-        </Animated.View>
+            )}
+        </VStack>
     );
 };

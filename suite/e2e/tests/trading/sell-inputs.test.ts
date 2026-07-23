@@ -19,13 +19,12 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1'] }, () => {
         solanaStakingMock.setBalance(solanaBalanceAddress, 5_000_000_000);
 
         await test.step('Enable Bitcoin and Solana', async () => {
-            await settingsPage.navigateTo('coins');
-            await settingsPage.coinsTab.enableNetwork('btc');
-            await settingsPage.enableNetworkWithCustomBackend(
-                'sol',
-                'solana',
-                solanaStakingMock.url,
-            );
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    'btc',
+                    { symbol: 'sol', backend: { type: 'solana', url: solanaStakingMock.url } },
+                ],
+            });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
         });

@@ -6,7 +6,6 @@ import { Translation } from '@suite/intl';
 import { selectDeviceName, selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { Button, Input, Tooltip } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
-import { spacingsPx } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -14,7 +13,7 @@ const Container = styled.form<{ $isVertical?: boolean }>`
     display: flex;
     flex-direction: ${({ $isVertical }) => ($isVertical ? 'column' : 'row')};
     align-items: center;
-    gap: ${spacingsPx.sm};
+    gap: 12px;
     min-width: ${({ $isVertical }) => $isVertical && '200px'};
 
     ${SCREEN_QUERY.MOBILE} {

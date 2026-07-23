@@ -8,7 +8,7 @@ const legacyResults = [
     },
 ];
 
-export default {
+const signTransactionBgold: TestCase = {
     method: 'signTransaction',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -207,4 +207,6 @@ export default {
             legacyResults,
         },
     ],
-} satisfies TestCase;
+};
+
+export default signTransactionBgold;

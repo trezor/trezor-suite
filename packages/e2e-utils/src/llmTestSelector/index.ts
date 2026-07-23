@@ -6,9 +6,8 @@ import * as path from 'node:path';
 
 import { unique } from '@trezor/utils';
 
-import { error, log, output } from '../logger';
+import { error, log, output, warn } from '../logger';
 import type { CoverageIndex } from '../testCoverage/types';
-import { accumulateApiUsage, getAccumulatedUsage, reportTokenUsage } from '../tokenUsage';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -465,7 +464,7 @@ const selectTestsViaApi = async (
     const maxTokens = 16384;
 
     const response = await client.messages.create({
-        model: 'claude-opus-4-6',
+        model: 'claude-sonnet-5',
         max_tokens: maxTokens,
         tools: [
             {
@@ -540,8 +539,6 @@ const selectTestsViaApi = async (
         ],
     });
 
-    accumulateApiUsage(response);
-
     if (response.stop_reason === 'max_tokens') {
         throw new Error(
             `Anthropic response was truncated at max_tokens (${maxTokens}) — the recommendation set was too large to fit. Increase maxTokens or narrow the candidate tests.`,
@@ -568,6 +565,13 @@ const selectTestsViaApi = async (
 
     return input as Omit<SelectionResult, 'changed_files'>;
 };
+
+// ---------------------------------------------------------------------------
+// Error classification
+// ---------------------------------------------------------------------------
+
+const isCreditBalanceError = (err: unknown): boolean =>
+    /credit balance is too low/i.test(err instanceof Error ? err.message : String(err));
 
 // ---------------------------------------------------------------------------
 // Main
@@ -741,25 +745,32 @@ const main = async () => {
             ? await selectTestsViaApi(promptParts, apiKey)
             : await selectTestsViaCli(promptParts);
     } catch (err) {
+        // A depleted budget must not fail CI: emit an empty spec list so the workflow runs the full suite.
+        if (isCreditBalanceError(err)) {
+            const message = err instanceof Error ? err.message : String(err);
+            warn(
+                `Anthropic credit balance exhausted; skipping LLM test selection and running all e2e tests.\n${message}`,
+            );
+            output(
+                JSON.stringify(
+                    {
+                        changed_files: changedFiles,
+                        recommendations: [],
+                        summary:
+                            'LLM test selector skipped: Anthropic credit balance exhausted. Falling back to the full e2e suite.',
+                        uncovered_changes: [],
+                    } satisfies SelectionResult,
+                    null,
+                    2,
+                ),
+            );
+            process.exit(0);
+        }
         error(`Claude invocation failed: ${err instanceof Error ? err.message : err}`);
         process.exit(1);
     }
 
-    // 6. Report token usage
-    const { input_tokens, output_tokens } = getAccumulatedUsage();
-    reportTokenUsage({
-        timestamp: new Date().toISOString(),
-        run_id: process.env.GITHUB_RUN_ID ?? 'local',
-        script: 'llmTestSelector',
-        model: 'claude-opus-4-6',
-        input_tokens: apiKey ? input_tokens : null,
-        output_tokens: apiKey ? output_tokens : null,
-        source: apiKey ? 'api' : 'cli',
-        workflow: process.env.GITHUB_WORKFLOW ?? null,
-        pr_number: process.env.GITHUB_PR_NUMBER ?? null,
-    });
-
-    // 7. Emit result
+    // 6. Emit result
     const result: SelectionResult = {
         changed_files: changedFiles,
         ...claudeResult,

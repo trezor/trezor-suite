@@ -2,6 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/analytics"
+        },
         { "path": "../../suite-common/bip329" },
         {
             "path": "../../suite-common/dependency-injection"
@@ -11,6 +14,9 @@
             "path": "../../suite-common/fiat-services"
         },
         { "path": "../../suite-common/graph" },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
         {
             "path": "../../suite-common/suite-sync"
         },

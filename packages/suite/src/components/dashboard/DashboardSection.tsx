@@ -60,7 +60,12 @@ export const DashboardSection = forwardRef(
                                 >
                                     {heading && (
                                         <H3>
-                                            <Row as="span">{heading}</Row>
+                                            <Row
+                                                data-testid="@dashboard/dashboard-section/heading"
+                                                as="span"
+                                            >
+                                                {heading}
+                                            </Row>
                                         </H3>
                                     )}
 

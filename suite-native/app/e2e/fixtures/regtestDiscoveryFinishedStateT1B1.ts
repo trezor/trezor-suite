@@ -113,7 +113,6 @@ export const regtestDiscoveryFinishedStateT1B1: PreloadedState = {
                 metadata: {
                     key: 'tpubDCKpwiaxUvejaVwzGE9mjZQ5rHm2DwCTYDM3cYDYW5eG5V99uc34W4YZz1PYsWndPMD9PwcrBPV6C92zgP8Z1PHwrMEGFDeGp5YvFLxtP2P',
                 },
-                ts: 1758269690638,
                 networkType: 'bitcoin',
                 page: {
                     index: 1,

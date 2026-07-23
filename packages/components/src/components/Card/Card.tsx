@@ -2,8 +2,6 @@ import { type HTMLAttributes, type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { borders } from '@trezor/theme';
-
 import { type CardType, type PaddingType } from './types';
 import { mapCardTypeToCSS, mapPaddingTypeToPadding } from './utils';
 import { type AccessibilityProps, withAccessibilityProps } from '../../utils/accessibilityProps';
@@ -46,7 +44,7 @@ const Container = styled.section<ContainerProps & TransientAllowedFrameProps>`
     display: flex;
     flex-direction: column;
     width: 100%;
-    border-radius: ${borders.radii.md};
+    border-radius: 16px;
     overflow: hidden;
     cursor: ${({ $isClickable }) => ($isClickable ? 'pointer' : 'default')};
     transition: 0.2s ease-in-out;

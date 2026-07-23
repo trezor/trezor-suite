@@ -39,7 +39,7 @@ describe(getUsedAddressesList.name, () => {
 
         const list = getUsedAddressesList({
             account,
-            revealedAddresses: [],
+            touchedAddresses: [],
             pendingAddresses: [],
             addressLabels: {},
         });
@@ -64,7 +64,7 @@ describe(getUsedAddressesList.name, () => {
 
         const list = getUsedAddressesList({
             account,
-            revealedAddresses: [],
+            touchedAddresses: [],
             pendingAddresses: [],
             addressLabels: {
                 [labeled16.address]: 'label 16',
@@ -97,7 +97,7 @@ describe(getUsedAddressesList.name, () => {
 
         const list = getUsedAddressesList({
             account,
-            revealedAddresses: [],
+            touchedAddresses: [],
             pendingAddresses: [],
             addressLabels: {},
         });
@@ -124,7 +124,7 @@ describe(getUsedAddressesList.name, () => {
 
         const list = getUsedAddressesList({
             account,
-            revealedAddresses: [],
+            touchedAddresses: [],
             pendingAddresses: [],
             addressLabels: {},
         });
@@ -145,7 +145,7 @@ describe(getUsedAddressesList.name, () => {
 
         const listWithLabel = getUsedAddressesList({
             account,
-            revealedAddresses: [],
+            touchedAddresses: [],
             pendingAddresses: [],
             addressLabels: {
                 [address.address]: 'label',
@@ -156,7 +156,7 @@ describe(getUsedAddressesList.name, () => {
 
         const listWithoutLabel = getUsedAddressesList({
             account,
-            revealedAddresses: [],
+            touchedAddresses: [],
             pendingAddresses: [],
             addressLabels: {},
         });
@@ -164,26 +164,25 @@ describe(getUsedAddressesList.name, () => {
         expect(listWithoutLabel.map(({ path }) => path)).toEqual([]);
     });
 
-    it('includes revealed, pending, and labeled unused addresses', () => {
-        const revealed = createAddress(1);
+    it('includes touched, pending, and labeled unused addresses', () => {
+        const touched = createAddress(1);
         const pending = createAddress(2);
         const labeled = createAddress(3);
         const account = mockWalletAccount({
             symbol: 'btc',
             addresses: {
                 used: [],
-                unused: [revealed, pending, labeled],
+                unused: [touched, pending, labeled],
                 change: [],
             },
         });
 
         const list = getUsedAddressesList({
             account,
-            revealedAddresses: [
+            touchedAddresses: [
                 {
-                    address: revealed.address,
-                    path: revealed.path,
-                    isVerified: true,
+                    address: touched.address,
+                    path: touched.path,
                 },
             ],
             pendingAddresses: [pending.address],
@@ -192,7 +191,7 @@ describe(getUsedAddressesList.name, () => {
             },
         });
 
-        expect(list.map(({ path }) => path)).toEqual([labeled.path, pending.path, revealed.path]);
+        expect(list.map(({ path }) => path)).toEqual([labeled.path, pending.path, touched.path]);
     });
 
     it('does not include the current fresh address even when it otherwise matches', () => {
@@ -208,7 +207,7 @@ describe(getUsedAddressesList.name, () => {
 
         const list = getUsedAddressesList({
             account,
-            revealedAddresses: [],
+            touchedAddresses: [],
             pendingAddresses: [],
             addressLabels: {},
             currentFreshAddress: { path: address.path },

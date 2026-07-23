@@ -1,4 +1,4 @@
-export default {
+const loadDevice: TestCase = {
     method: 'loadDevice',
     setup: {
         wiped: true,
@@ -15,4 +15,6 @@ export default {
             },
         },
     ],
-} satisfies TestCase;
+};
+
+export default loadDevice;

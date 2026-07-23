@@ -20,7 +20,11 @@ import {
 import { coinEnablingFormValidationSchema } from '../coinEnablingSchema';
 import { DiscoveryCoinsFilter } from './DiscoveryCoinsFilter';
 
-export const CoinEnablingForm = () => {
+type CoinEnablingFormProps = {
+    searchQuery: string;
+};
+
+export const CoinEnablingForm = ({ searchQuery }: CoinEnablingFormProps) => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const { analytics } = useServices(selectNativeAnalyticsDep);
@@ -80,7 +84,10 @@ export const CoinEnablingForm = () => {
 
     return (
         <Form form={form}>
-            <DiscoveryCoinsFilter onDisablingLastCoin={showLastNetworkAlert} />
+            <DiscoveryCoinsFilter
+                searchQuery={searchQuery}
+                onDisablingLastCoin={showLastNetworkAlert}
+            />
         </Form>
     );
 };

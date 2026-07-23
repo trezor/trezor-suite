@@ -1,10 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import TrezorConnect from '@trezor/connect';
-// Deep import bypasses the `@trezor/transport` barrel so vitest's web project
-// (which mocks `usb` via `transport/mocks/usb.cjs`) doesn't evaluate
-// `NodeUsbTransport`'s `import { WebUSB } from 'usb'` — the cjs mock's named
-// export interop is unreliable through Vite's browser resolver.
-import { BridgeTransport } from '@trezor/transport/src/transports/bridge';
+import { BridgeTransport } from '@trezor/transport-common';
 
 import { getController, initTrezorConnect, setup } from '../../common.setup';
 

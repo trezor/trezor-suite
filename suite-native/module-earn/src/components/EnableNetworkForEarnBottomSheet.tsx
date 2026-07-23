@@ -6,7 +6,7 @@ import {
     Button,
     TitleHeader,
 } from '@suite-native/atoms';
-import { CryptoIcon } from '@suite-native/icons';
+import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -33,9 +33,9 @@ const translationIdByEarnType = {
         cta: 'earn.earnScreen.enableNetworkModal.cta',
     },
     'stablecoin-yield': {
-        title: 'earn.earnScreen.enableNetworkModal.stablecoinYield.title',
-        subtitle: 'earn.earnScreen.enableNetworkModal.stablecoinYield.subtitle',
-        cta: 'earn.earnScreen.enableNetworkModal.stablecoinYield.cta',
+        title: 'earn.earnScreen.enableNetworkModal.defiYield.title',
+        subtitle: 'earn.earnScreen.enableNetworkModal.defiYield.subtitle',
+        cta: 'earn.earnScreen.enableNetworkModal.defiYield.cta',
     },
 } as const;
 
@@ -56,7 +56,7 @@ export const EnableNetworkForEarnBottomSheet = ({
             {symbol ? (
                 <Box alignItems="center" paddingHorizontal="sp16">
                     <StakingPromoRingIcon symbol={symbol}>
-                        <CryptoIcon symbol={symbol} size="large" />
+                        <TokenIcon symbol={symbol} size="large" />
                     </StakingPromoRingIcon>
                     <TitleHeader
                         titleVariant="headline-sm"

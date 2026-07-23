@@ -18,7 +18,6 @@ import {
     useScrollShadow,
     variables,
 } from '@trezor/components';
-import { spacings, spacingsPx } from '@trezor/theme';
 
 import { useApplicationLogs } from 'src/utils/suite/logsUtils';
 
@@ -27,7 +26,7 @@ const ScrollContainer = styled.div`
 `;
 
 const LogWrapper = styled.pre`
-    padding: ${spacingsPx.md};
+    padding: 16px;
     height: 350px;
     width: 100%;
     text-align: left;
@@ -91,7 +90,7 @@ export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
                 </Modal.Button>
             }
         >
-            <Card paddingType="none" margin={{ top: spacings.sm }} overflow="hidden">
+            <Card paddingType="none" margin={{ top: 12 }} overflow="hidden">
                 <ShadowContainer>
                     <ShadowTop />
                     <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
@@ -103,8 +102,8 @@ export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
                 </ShadowContainer>
             </Card>
 
-            <Row margin={{ top: spacings.xl }} gap={spacings.xxxxl}>
-                <Column gap={spacings.xxs} alignItems="flex-start">
+            <Row margin={{ top: 24 }} gap={48}>
+                <Column gap={4} alignItems="flex-start">
                     <H4>
                         <Translation id="LOG_INCLUDE_BALANCE_TITLE" />
                     </H4>

@@ -1,6 +1,3 @@
-import rawSchema from '../schema/config.schema.v1.json';
-export const schema = rawSchema;
-
 export * from './messageSystemActions';
 export * from './messageSystemConstants';
 export * from './messageSystemReducer';
@@ -16,5 +13,7 @@ export * from './ExperimentWrapper';
 export * from './featureFlagUtils';
 export * from './useConditionControls';
 export * from './useExperiment';
+export * from './useMessageSystemEarnDashboard';
 export * from './useMessageSystemMessageForm';
 export * from './useMessageSystemStaking';
+export * from './useMessageSystemYield';

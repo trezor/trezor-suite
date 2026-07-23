@@ -20,7 +20,9 @@ import { appSettingsInitialState } from '@suite-native/settings';
 import {
     type PreloadedStatePartial,
     type RenderHookOptionsExtended,
+    type RenderHookResult,
     type RenderOptionsExtended,
+    type RenderResult,
     createStaticReducer,
     createStoreFromPreloadedState,
     mergePreloadedState,
@@ -55,6 +57,15 @@ const createBaseTradingPreloadedState = (tradeType: TradingTestTradeType) => ({
 
 export type TradingTestPreloadedState = ReturnType<typeof createBaseTradingPreloadedState>;
 
+type TradingLightStoreState = Omit<TradingTestPreloadedState, 'wallet'> & {
+    wallet: Omit<TradingTestPreloadedState['wallet'], 'formDrafts'> & {
+        formDrafts: ReturnType<typeof formDraftReducer>;
+        transactions: typeof transactionsInitialState;
+    };
+};
+
+type TradingLightStore = ReturnType<typeof configureMockStore<TradingLightStoreState>>;
+
 export const createTradingFeatureFlags = (
     overrides: Partial<typeof featureFlagsInitialState> = {},
 ) => ({
@@ -85,7 +96,7 @@ export const createTradingTestStore = (args?: {
 export const createTradingLightStore = (args?: {
     overrides?: PreloadedStatePartial<TradingTestPreloadedState>;
     tradeType?: TradingTestTradeType;
-}) => {
+}): TradingLightStore => {
     const preloadedState = createTradingPreloadedState(args);
 
     const reducer = {
@@ -139,7 +150,7 @@ type RenderHookWithTradingProviderOptions<Props> = TradingProviderOptions &
 export const renderWithTradingProvider = (
     element: ReactElement,
     { overrides, tradeType, ...options }: RenderWithTradingProviderOptions = {},
-) =>
+): RenderResult =>
     renderWithStoreProvider(element, {
         preloadedState: createTradingPreloadedState({ overrides, tradeType }),
         ...options,
@@ -148,7 +159,7 @@ export const renderWithTradingProvider = (
 export const renderHookWithTradingProvider = <Result, Props>(
     callback: (props: Props) => Result,
     { overrides, tradeType, ...options }: RenderHookWithTradingProviderOptions<Props> = {},
-) =>
+): RenderHookResult<Result, Props> =>
     renderHookWithStoreProvider<Result, Props>(callback, {
         preloadedState: createTradingPreloadedState({ overrides, tradeType }),
         ...options,

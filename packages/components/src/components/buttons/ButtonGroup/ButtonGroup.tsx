@@ -29,6 +29,7 @@ export type AllowedButtonGroupFrameProps = Pick<
 
 const Container = styled.div<TransientProps<AllowedButtonGroupFrameProps> & { $size: ButtonSize }>`
     display: flex;
+    /* stylelint-disable-next-line trezor/dimension-token-values */
     gap: 1px;
     align-items: stretch;
 
@@ -38,14 +39,14 @@ const Container = styled.div<TransientProps<AllowedButtonGroupFrameProps> & { $s
 
     > :is(button, a):first-child,
     > :first-child :is(button, a) {
-        border-top-left-radius: ${({ $size }) => mapSizeToBorderRadius($size)};
-        border-bottom-left-radius: ${({ $size }) => mapSizeToBorderRadius($size)};
+        border-top-left-radius: ${({ $size }) => mapSizeToBorderRadius($size)}px;
+        border-bottom-left-radius: ${({ $size }) => mapSizeToBorderRadius($size)}px;
     }
 
     > :is(button, a):last-child,
     > :last-child :is(button, a) {
-        border-top-right-radius: ${({ $size }) => mapSizeToBorderRadius($size)};
-        border-bottom-right-radius: ${({ $size }) => mapSizeToBorderRadius($size)};
+        border-top-right-radius: ${({ $size }) => mapSizeToBorderRadius($size)}px;
+        border-bottom-right-radius: ${({ $size }) => mapSizeToBorderRadius($size)}px;
     }
 
     ${withFrameProps}

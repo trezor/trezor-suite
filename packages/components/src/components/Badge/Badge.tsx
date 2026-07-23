@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { borders } from '@trezor/theme';
-
 import { type BadgeIntent, type BadgeSize } from './types';
 import {
     mapIntentToBackgroundColor,
@@ -53,7 +51,7 @@ export const Badge = ({
         <Box
             display="inline-flex"
             data-testid={dataTest}
-            borderRadius={borders.radii.full}
+            borderRadius="full"
             backgroundColor={mapIntentToBackgroundColor(intent)}
             {...frameProps}
         >

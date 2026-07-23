@@ -53,6 +53,9 @@ export type CreateAccountActionProps = Pick<
 } & AccountBackendSpecific &
     AccountFailureSpecific;
 
+type CoinjoinAccount = Extract<Account, { backendType: 'coinjoin' }>;
+type CoinjoinAccountStatus = CoinjoinAccount['status'];
+
 const createAccount = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/createAccount`,
     ({ accountInfo, ...account }: CreateAccountActionProps): { payload: Account } => {
@@ -92,7 +95,6 @@ const createAccount = createAction(
                 }),
                 utxo: enhanceUtxo(utxo, networkType, index),
                 metadata: { key: metadataKey },
-                ts: Date.now(),
                 ...getAccountSpecific(accountInfo, networkType),
             };
 
@@ -140,23 +142,15 @@ const updateAccount = createAction(
                     utxo: enhanceUtxo(accountInfo.utxo, account.networkType, account.index),
                     addresses: enhanceAddresses(accountInfo, account),
                     tokens: enhanceTokens(accountInfo.tokens),
-                    ts: Date.now(),
                     ...getAccountSpecific(accountInfo, account.networkType),
                 },
             };
         }
 
         return {
-            payload: { ...account, ts: Date.now() },
+            payload: account,
         };
     },
-);
-
-const updateAccountRefreshTimestamp = createAction(
-    `${ACCOUNTS_MODULE_PREFIX}/updateAccountRefreshTimestamp`,
-    (account: Account): { payload: Account } => ({
-        payload: { ...account, ts: Date.now() },
-    }),
 );
 
 const renameAccount = createAction(
@@ -171,7 +165,7 @@ const renameAccount = createAction(
 
 const startCoinjoinAccountSync = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/startCoinjoinAccountSync`,
-    (account: Extract<Account, { backendType: 'coinjoin' }>) => ({
+    (account: CoinjoinAccount) => ({
         payload: {
             accountKey: account.key,
         },
@@ -180,10 +174,7 @@ const startCoinjoinAccountSync = createAction(
 
 const endCoinjoinAccountSync = createAction(
     `${ACCOUNTS_MODULE_PREFIX}/endCoinjoinAccountSync`,
-    (
-        account: Extract<Account, { backendType: 'coinjoin' }>,
-        status: Extract<Account, { backendType: 'coinjoin' }>['status'],
-    ) => ({
+    (account: CoinjoinAccount, status: CoinjoinAccountStatus) => ({
         payload: {
             accountKey: account.key,
             status,
@@ -207,7 +198,6 @@ export const accountsActions = {
     createAccount,
     createAccountFromAccountInfo,
     updateAccount,
-    updateAccountRefreshTimestamp,
     renameAccount,
     updateSelectedAccount,
     changeAccountVisibility,

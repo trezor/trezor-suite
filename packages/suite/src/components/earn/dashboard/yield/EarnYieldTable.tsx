@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import { EarnAnchor, goto, useAnchor } from '@suite/router';
+import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import {
     type YieldAccountRewards,
@@ -76,7 +77,7 @@ export const EarnYieldTable = () => {
         toggleIsExpanded,
     } = useYieldAccountsVisibility({ yieldAccountOpportunities });
 
-    const { merklRewardsQuery } = useMerklRewards(yieldAccounts);
+    const { merklRewardsQuery, missingRateTickersQuery } = useMerklRewards(yieldAccounts);
     const { accountsRewards } = merklRewardsQuery.data;
     const isClaimDisabled =
         claimMessageSystem.isDisabled ||
@@ -87,7 +88,10 @@ export const EarnYieldTable = () => {
     const hasClaimBanner = accountsRewards.length > 0;
     const availableVaultCount = availableVaults?.length ?? 0;
     const isReadyToReport =
-        !isYieldOpportunitiesLoading && !isYieldOpportunitiesError && merklRewardsQuery.isSuccess;
+        !isYieldOpportunitiesLoading &&
+        !isYieldOpportunitiesError &&
+        merklRewardsQuery.isSuccess &&
+        !missingRateTickersQuery.isLoading;
 
     useEffect(() => {
         if (!isReadyToReport || hasFiredReadyEventRef.current) {
@@ -140,13 +144,13 @@ export const EarnYieldTable = () => {
     };
 
     return (
-        <Column gap={16}>
+        <Column data-testid="@earn/dashboard" gap={16}>
             <ContextMessage context={Context.getEarnDashboard('yield')} />
 
             <OutlineHighlight shouldHighlight={shouldHighlight}>
                 <DashboardSection
-                    heading={<Translation id="TR_EARN_STABLECOIN_YIELD_TITLE" />}
-                    subheading={<Translation id="TR_EARN_YIELD_DASHBOARD_TEXT" />}
+                    heading={<Translation id="TR_EARN_DEFI_YIELD_TITLE" />}
+                    subheading={<Translation id="TR_EARN_DEFI_YIELD_DASHBOARD_TEXT" />}
                     actions={<PoweredByBadge provider="morpho" />}
                     ref={anchorRef}
                 >

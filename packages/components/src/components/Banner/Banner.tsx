@@ -2,8 +2,6 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { spacingsPx } from '@trezor/theme';
-
 import { BannerButton } from './BannerButton';
 import { BannerContext } from './BannerContext';
 import { BannerIconButton } from './BannerIconButton';
@@ -39,7 +37,7 @@ const Layout = styled.div`
 const IconCell = styled.div`
     grid-column: 1;
     grid-row: 1;
-    margin-right: ${spacingsPx.sm};
+    margin-right: 12px;
 `;
 
 const TextCell = styled.div`
@@ -49,13 +47,13 @@ const TextCell = styled.div`
 const ActionsCell = styled.div<{ $isMultiline: boolean }>`
     grid-column: 3;
     grid-row: ${({ $isMultiline }) => ($isMultiline ? '1 / span 2' : '1')};
-    margin-left: ${spacingsPx.sm};
+    margin-left: 12px;
 
     @container (max-width: ${CONTAINER_BREAKPOINT}) {
         grid-column: 2;
         grid-row: auto;
         margin-left: 0;
-        margin-top: ${spacingsPx.sm};
+        margin-top: 12px;
     }
 `;
 
@@ -128,7 +126,7 @@ export const Banner = ({
                         <Paragraph
                             typographyStyle="body-sm"
                             intent={intent}
-                            priority={title ? 'secondary' : 'primary'}
+                            priority="primary"
                             textWrap="pretty"
                         >
                             {description}

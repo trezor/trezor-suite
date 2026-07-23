@@ -8,7 +8,6 @@ import type { Item, MenuItem, PageItem } from 'nextra/normalize-pages';
 import styled from 'styled-components';
 
 import { TrezorLogo } from '@trezor/product-components';
-import { borders, spacingsPx } from '@trezor/theme';
 
 import { Anchor } from './anchor';
 import { useMenu } from '../contexts/menu';
@@ -16,15 +15,15 @@ import { useConfig } from '../contexts/useConfig';
 import { renderComponent } from '../utils/render';
 
 const Container = styled.div`
-    border-radius: ${borders.radii.full};
-    margin: 0 -${spacingsPx.sm};
-    padding: ${spacingsPx.md} ${spacingsPx.xl};
+    border-radius: calc(infinity * 1px);
+    margin: 0 -12px;
+    padding: 16px 24px;
     background-color: ${({ theme }) => theme.surfaceFillRaised};
     box-shadow: ${({ theme }) => theme.elementShadowElevated};
     flex-direction: row;
     display: flex;
     flex: 1;
-    gap: ${spacingsPx.md};
+    gap: 16px;
 `;
 
 const classes = {

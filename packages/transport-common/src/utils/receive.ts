@@ -2,11 +2,24 @@ import { protobufManager } from '@trezor/protobuf';
 import { PROTOCOL_MALFORMED, type TransportProtocol } from '@trezor/protocol';
 
 import { error, success } from './result';
-import { type AbstractApi } from '../api/abstract';
+import { type AbstractApi, type AbstractApiReadError } from '../api/abstract';
+import { type AsyncResultWithTypedError, type MessageResponse } from '../types';
 
 type Receiver = () => ReturnType<AbstractApi['read']>;
 
-export async function receive<T extends Receiver>(receiver: T, protocol: TransportProtocol) {
+type ReceiveError = AbstractApiReadError | typeof PROTOCOL_MALFORMED;
+
+type ReceivePayload = {
+    messageType: number;
+    payload: Buffer;
+    header: Buffer;
+    length: number;
+};
+
+export async function receive<T extends Receiver>(
+    receiver: T,
+    protocol: TransportProtocol,
+): AsyncResultWithTypedError<ReceivePayload, ReceiveError> {
     const readResult = await receiver();
     if (!readResult.success) {
         return readResult;
@@ -57,7 +70,7 @@ export async function receive<T extends Receiver>(receiver: T, protocol: Transpo
 export async function receiveAndParse<T extends Receiver>(
     receiver: T,
     protocol: TransportProtocol,
-) {
+): AsyncResultWithTypedError<MessageResponse, ReceiveError> {
     const readResult = await receive(receiver, protocol);
     if (!readResult.success) return readResult;
 

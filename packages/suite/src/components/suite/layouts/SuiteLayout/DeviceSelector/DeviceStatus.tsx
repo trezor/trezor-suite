@@ -2,7 +2,6 @@ import { selectDeviceLabelOrNameById } from '@suite-common/device';
 import { Row, ShortcutBadge, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
 import { type DeviceModelInternal, getDeviceColorVariant } from '@trezor/device-utils';
 import { RotateDeviceImage } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { type TrezorDevice } from 'src/types/suite';
@@ -51,7 +50,7 @@ export const DeviceStatus = ({
     return (
         <>
             {isDeviceDetailVisible ? (
-                <Row justifyContent="space-between" gap={spacings.sm} overflow="hidden">
+                <Row justifyContent="space-between" gap={12} overflow="hidden">
                     {image}
                     {content}
                 </Row>

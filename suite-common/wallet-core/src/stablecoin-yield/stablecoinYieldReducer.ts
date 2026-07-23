@@ -9,7 +9,7 @@ import {
 } from '@suite-common/wallet-types';
 import { isSafeObjectKey } from '@trezor/utils';
 
-import { STABLECOIN_YIELD_PREFIX, YIELD_FLOW_STEP_SEQUENCES } from './stablecoinYieldConstants';
+import { STABLECOIN_YIELD_PREFIX } from './stablecoinYieldConstants';
 import {
     type StablecoinYieldClaimUnsignedTransaction,
     type YieldApproveModalState,
@@ -19,12 +19,13 @@ import {
     type YieldPendingTransactionState,
     type YieldPositionFlowType,
 } from './stablecoinYieldTypes';
-import { getNextYieldFlowStep } from './stablecoinYieldUtils';
+import { getNextYieldFlowStep, getYieldFlowStepSequence } from './stablecoinYieldUtils';
 import { transactionsActions } from '../transactions/transactionsActions';
 
 // Message ids must exist in the desktop `suite/intl` messages — the desktop app renders
 // `session.error` directly via `<Translation>`.
 export type StablecoinYieldTranslationKey =
+    | 'TR_EARN_YIELD_ERROR_CLAIM_REVIEW_MISMATCH'
     | 'TR_EARN_YIELD_ERROR_FEE_ESTIMATION'
     | 'TR_EARN_YIELD_ERROR_GENERIC'
     | 'TR_EARN_YIELD_ERROR_PASSPHRASE_INCORRECT'
@@ -163,7 +164,7 @@ const createInitialStablecoinYieldSessionState = (
     flowType: YieldFlowType,
 ): StablecoinYieldSessionState => ({
     ...initialStablecoinYieldSessionState,
-    step: YIELD_FLOW_STEP_SEQUENCES[flowType][0],
+    step: getYieldFlowStepSequence({ flowType })[0],
     approval: { ...initialStablecoinYieldSessionState.approval },
     action: { ...initialStablecoinYieldSessionState.action },
     result: {

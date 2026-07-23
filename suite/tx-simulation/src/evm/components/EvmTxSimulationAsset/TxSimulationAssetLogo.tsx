@@ -1,14 +1,14 @@
 import { type EvmAssetDiff, type EvmAssetExposure } from '@suite-common/tx-simulation';
-import { type Network } from '@suite-common/wallet-config';
+import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { IconCircle } from '@trezor/components';
 import { CoinsIcon } from '@trezor/icons';
-import { AssetLogo, type AssetLogoSize, CoinLogo, isCoinSymbol } from '@trezor/product-components';
+import { TokenIcon, type TokenIconSize, isCoinSymbol } from '@trezor/product-components';
 
 interface TxSimulationAssetLogoProps {
     asset?: EvmAssetDiff['asset'] | EvmAssetExposure['asset'];
     assetType?: EvmAssetDiff['asset_type'] | EvmAssetExposure['asset_type'];
     network: Network;
-    size?: AssetLogoSize;
+    size?: TokenIconSize;
 }
 
 export function TxSimulationAssetLogo({
@@ -21,12 +21,12 @@ export function TxSimulationAssetLogo({
     const iconCircleSize = size === 20 ? 24 : size;
 
     if (assetType === 'NATIVE' && coinSymbol && isCoinSymbol(coinSymbol)) {
-        return <CoinLogo symbol={coinSymbol} size={size} />;
+        return <TokenIcon symbol={coinSymbol as NetworkSymbol} size={size} />;
     }
 
     if (asset?.symbol && 'address' in asset) {
         return (
-            <AssetLogo
+            <TokenIcon
                 symbol={network.symbol}
                 contractAddress={asset.address}
                 size={size}

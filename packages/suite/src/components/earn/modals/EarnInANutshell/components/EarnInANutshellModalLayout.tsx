@@ -20,6 +20,7 @@ export const EarnInANutshellModalLayout = ({
     children,
 }: EarnInANutshellModalLayoutProps) => (
     <Modal
+        data-testid="@modal/earn-in-a-nutshell"
         heading={heading}
         width={400}
         onCancel={onCancel}

@@ -1,4 +1,4 @@
-import { tronUtils } from '@trezor/blockchain-link-utils';
+import * as tronUtils from '@trezor/network-tron/utils';
 
 import { type TronAddress } from '../../types/tron';
 import { type ContextWith } from '../../types/validation';

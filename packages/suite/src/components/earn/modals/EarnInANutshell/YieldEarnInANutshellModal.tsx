@@ -1,5 +1,6 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
 import {
@@ -64,6 +65,7 @@ export const YieldEarnInANutshellModal = ({
     const processes: EarnInANutshellProcess[] = [
         {
             processType: 'deposit',
+            'data-testid': '@modal/earn-in-a-nutshell/deposit-process',
             heading: <Translation id="TR_EARN_DEPOSITING_PROCESS" />,
             badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 2 }} />,
             content: (
@@ -78,6 +80,7 @@ export const YieldEarnInANutshellModal = ({
         },
         {
             processType: 'withdraw',
+            'data-testid': '@modal/earn-in-a-nutshell/withdraw-process',
             heading: <Translation id="TR_EARN_WITHDRAWING_PROCESS" />,
             badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 1 }} />,
             content: <YieldWithdrawingInfo depositSymbol={depositSymbol} />,
@@ -86,6 +89,7 @@ export const YieldEarnInANutshellModal = ({
             ? [
                   {
                       processType: 'claim' as const,
+                      'data-testid': '@modal/earn-in-a-nutshell/claim-process',
                       heading: <Translation id="TR_EARN_CLAIMING_PROCESS" />,
                       badge: <Translation id="TR_TX_FEE_COUNT" values={{ count: 1 }} />,
                       content: <YieldClaimingInfo rewardsSymbols={rewardsSymbols} />,
@@ -140,7 +144,7 @@ export const YieldEarnInANutshellModal = ({
 
     return (
         <EarnInANutshellModalLayout
-            heading={<Translation id="TR_EARN_DEPOSITING_IN_A_NUTSHELL" />}
+            heading={<Translation id="TR_EARN_DEFI_YIELD_IN_A_NUTSHELL" />}
             onCancel={handleOnCancel}
             actionType={actionType}
             onAction={handleOnAction}

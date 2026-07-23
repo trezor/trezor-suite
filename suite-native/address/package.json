@@ -18,17 +18,11 @@
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-native/atoms": "workspace:*",
-        "@suite-native/clipboard": "workspace:*",
         "@suite-native/feature-feedback": "workspace:*",
-        "@suite-native/formatters": "workspace:*",
-        "@suite-native/intl": "workspace:*",
         "@suite-native/labeling": "workspace:*",
-        "@suite-native/qr-code": "workspace:*",
         "@suite-native/suite-sync": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "@trezor/styles-native": "workspace:*",
         "react": "19.2.3",
-        "react-native": "0.85.3",
         "react-redux": "9.3.0"
     }
 }

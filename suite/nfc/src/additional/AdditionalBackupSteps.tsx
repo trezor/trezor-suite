@@ -1,7 +1,5 @@
 import { Translation } from '@suite/intl';
 import { Paragraph, StepList } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-
 type AdditionalBackupStep = 'verify-ownership' | 'backup';
 
 type AdditionalBackupStepsProps = {
@@ -9,7 +7,7 @@ type AdditionalBackupStepsProps = {
 };
 
 export const AdditionalBackupSteps = ({ step }: AdditionalBackupStepsProps) => (
-    <StepList isOrdered margin={{ top: spacings.md }}>
+    <StepList isOrdered margin={{ top: 16 }}>
         <StepList.Item
             title={<Translation id="TR_VERIFY_TREZOR_OWNERSHIP" />}
             state={step === 'backup' ? 'done' : 'active'}

@@ -4,6 +4,7 @@
     "references": [
         { "path": "../connect" },
         { "path": "../transport" },
-        { "path": "../transport-bluetooth" }
+        { "path": "../transport-bluetooth" },
+        { "path": "../transport-common" }
     ]
 }

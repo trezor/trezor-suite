@@ -40,7 +40,7 @@ export interface TradingUseDetailOutputProps<T extends TradingType> {
     transactionId: string | undefined;
     info: TradingTradeInfoMapProps[T] | undefined;
     trade: TradingTradeTransactionMapProps[T] | undefined;
-    account: Account;
+    account: Account | undefined;
 }
 
 export type TradingUseDetailOutputWithoutAccountProps<T extends TradingType> = Omit<

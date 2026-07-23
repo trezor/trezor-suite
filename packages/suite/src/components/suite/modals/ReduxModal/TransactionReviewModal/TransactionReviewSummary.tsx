@@ -14,8 +14,7 @@ import {
 import { asAmountUnit, getFee, unitsToSubunits } from '@suite-common/wallet-utils';
 import { Box, IconButton, Note, Row, Text } from '@trezor/components';
 import { BroadcastIcon, ClockIcon, ComputerTowerIcon, InfoIcon, ReceiptIcon } from '@trezor/icons';
-import { CoinLogo, FeeRate } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
+import { FeeRate, TokenIcon } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
@@ -82,9 +81,9 @@ export const TransactionReviewSummary = ({
     return (
         <>
             <Row justifyContent="space-between">
-                <Row columnGap={spacings.md} rowGap={spacings.xxs} flexWrap="wrap">
-                    <Row gap={spacings.xxs}>
-                        <CoinLogo size={16} symbol={symbol} />
+                <Row columnGap={16} rowGap={4} flexWrap="wrap">
+                    <Row gap={4}>
+                        <TokenIcon size={16} symbol={symbol} />
                         <AccountLabel
                             account={account}
                             showAccountTypeBadge
@@ -147,7 +146,7 @@ export const TransactionReviewSummary = ({
                 {timer}
             </Row>
             {networkType === 'solana' && isDebug && (
-                <Row margin={{ top: spacings.xs }} gap={spacings.xs}>
+                <Row margin={{ top: 8 }} gap={8}>
                     <DebugOnlyBadge />
                     <Note icon={ComputerTowerIcon}>
                         CU Limit

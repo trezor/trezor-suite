@@ -152,27 +152,6 @@ describe('selectDiscoverySupportedNetworks', () => {
         expect(networkSymbols).toContain('btc');
         expect(networkSymbols).toContain('eth');
     });
-
-    it('should respect forced testnet setting parameter', () => {
-        const store = createTestStore({
-            appSettings: { areTestnetsEnabled: false },
-        });
-
-        // Force testnets enabled even though app setting is false
-        const result = selectDiscoverySupportedNetworks(store.getState(), true);
-        const networkSymbols = result.map(n => n.symbol);
-
-        // Test networks should be included due to forced parameter
-        expect(networkSymbols).toContain('test');
-        expect(networkSymbols).toContain('tsep');
-        expect(networkSymbols).toContain('thod');
-        expect(networkSymbols).toContain('txrp');
-        expect(networkSymbols).toContain('txlm');
-        expect(networkSymbols).toContain('dsol');
-        // Mainnet networks should also be included
-        expect(networkSymbols).toContain('btc');
-        expect(networkSymbols).toContain('eth');
-    });
 });
 
 describe(selectDiscoveryNetworkGroups.name, () => {
@@ -237,5 +216,26 @@ describe(selectDiscoveryNetworkGroups.name, () => {
         expect(supportedTestnets).toContain(networks.test);
         expect(unsupportedMainnets).toContain(networks.eth);
         expect(unsupportedTestnets).toContain(networks.tsep);
+    });
+
+    it('returns both supported and unsupported networks filtered by searchQuery', () => {
+        const store = createTestStore({
+            appSettings: { areTestnetsEnabled: true },
+            featureFlags: { areDebugOnlyNetworksEnabled: true },
+            device: {
+                selectedDevice: {
+                    unavailableCapabilities: { eth: 'no-support', tsep: 'no-support' },
+                },
+            },
+        });
+
+        const { supportedMainnets, supportedTestnets, unsupportedMainnets, unsupportedTestnets } =
+            selectDiscoveryNetworkGroups(store.getState(), 'bitcoin');
+
+        expect(supportedMainnets).toContain(networks.btc);
+        expect(supportedTestnets).toContain(networks.test);
+        expect(supportedTestnets).toContain(networks.regtest);
+        expect(unsupportedMainnets).toEqual([]);
+        expect(unsupportedTestnets).toEqual([]);
     });
 });

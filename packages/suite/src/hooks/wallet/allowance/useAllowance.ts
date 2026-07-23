@@ -5,11 +5,11 @@ import { type AllowanceContextValue } from './useAllowanceContext';
 import { useAllowanceState } from './useAllowanceState';
 
 interface UseAllowanceParams {
-    account: Account;
+    account: Account | undefined;
 }
 
 export const useAllowance = ({ account }: UseAllowanceParams): AllowanceContextValue => {
-    const tx = useAllowanceTxTracking({ accountKey: account.key });
+    const tx = useAllowanceTxTracking({ accountKey: account?.key ?? null });
     const state = useAllowanceState();
 
     return {

@@ -26,6 +26,7 @@ import { BigNumber } from '@trezor/utils';
 import { BaseCurrencyValue, CountdownTimer, FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 interface TronVotingRewardsCardProps {
     account: Account;
@@ -44,11 +45,17 @@ export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) =
     const claimCooldownEndsAt = getTronRewardClaimCooldownEndsAt(account);
     const isClaimFirmwareOutdated = !isTronClaimSupported(device);
 
+    const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(account.symbol);
+
     if (new BigNumber(rewards).lte(0)) {
         return null;
     }
 
     const goToClaim = () => {
+        if (isClaimingDisabled) {
+            return;
+        }
+
         if (isClaimFirmwareOutdated) {
             openFirmwareModal();
 
@@ -75,6 +82,24 @@ export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) =
             },
         });
     };
+
+    const claimButtonTooltipProps = isClaimingDisabled
+        ? ({ content: claimingMessageContent } as const)
+        : ({
+              isActive: isClaimOnCooldown,
+              tooltipMaxWidth: 220,
+              content: claimCooldownEndsAt !== null && (
+                  <CountdownTimer
+                      deadline={claimCooldownEndsAt * 1000}
+                      message="TR_EARN_TRON_CLAIM_COOLDOWN"
+                      minUnit="minute"
+                      unitDisplay="narrow"
+                  />
+              ),
+              placement: 'top',
+              cursor: 'not-allowed',
+              delayShow: TOOLTIP_DELAY_NONE,
+          } as const);
 
     return (
         <>
@@ -111,28 +136,13 @@ export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) =
                                     />
                                 </Text>
                             </Column>
-                            <Tooltip
-                                isActive={isClaimOnCooldown}
-                                tooltipMaxWidth={220}
-                                content={
-                                    claimCooldownEndsAt !== null && (
-                                        <CountdownTimer
-                                            deadline={claimCooldownEndsAt * 1000}
-                                            message="TR_EARN_TRON_CLAIM_COOLDOWN"
-                                            minUnit="minute"
-                                            unitDisplay="narrow"
-                                        />
-                                    )
-                                }
-                                placement="top"
-                                cursor="not-allowed"
-                                delayShow={TOOLTIP_DELAY_NONE}
-                            >
+
+                            <Tooltip {...claimButtonTooltipProps}>
                                 <Button
                                     intent="neutral"
                                     priority="secondary"
                                     onClick={goToClaim}
-                                    isDisabled={isClaimOnCooldown}
+                                    isDisabled={isClaimOnCooldown || isClaimingDisabled}
                                 >
                                     <Translation id="TR_STAKE_CLAIM" />
                                 </Button>

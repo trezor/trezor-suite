@@ -41,7 +41,7 @@ const iconByEarnType: Record<EarnType, IconName> = {
 
 const earnTypeTranslationIdByType = {
     staking: 'earn.staking',
-    'stablecoin-yield': 'earn.stablecoinYield',
+    'stablecoin-yield': 'earn.defiYield',
 } as const;
 
 export const EarnItemInfoModal = ({ ref, type = 'staking' }: EarnItemInfoModalProps) => {

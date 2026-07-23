@@ -30,6 +30,7 @@ export const ProviderSheetHandle = ({
             >
                 {shouldShowFilters && (
                     <FilterTabs
+                        testID="@trading/provider-sheet/"
                         items={filterItems}
                         onChange={setSelectedFilter}
                         value={selectedFilter}

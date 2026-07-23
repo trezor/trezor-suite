@@ -34,6 +34,25 @@ describe('AnimatedDoubleView', () => {
         expect(onViewSwitch).toHaveBeenNthCalledWith(2, 'primary');
     });
 
+    it('should display the controlled active view', () => {
+        const { getByLabelText } = renderWithBasicProvider(
+            <AnimatedDoubleView
+                activeView="secondary"
+                renderPrimary={({ isDisabled }) => (
+                    <Box accessibilityLabel={isDisabled ? 'PRIMARY_DISABLED' : 'PRIMARY_ACTIVE'} />
+                )}
+                renderSecondary={({ isDisabled }) => (
+                    <Box
+                        accessibilityLabel={isDisabled ? 'SECONDARY_DISABLED' : 'SECONDARY_ACTIVE'}
+                    />
+                )}
+            />,
+        );
+
+        expect(getByLabelText('PRIMARY_DISABLED')).toBeOnTheScreen();
+        expect(getByLabelText('SECONDARY_ACTIVE')).toBeOnTheScreen();
+    });
+
     it('should propagate switch label', () => {
         const switchLabel = 'Custom Switch Label';
         const { getByLabelText, queryByLabelText } = renderAnimatedDoubleView({ switchLabel });

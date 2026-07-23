@@ -9,7 +9,6 @@ import {
 } from '@suite-common/message-system';
 import { Card, Column, H2, Paragraph } from '@trezor/components';
 import { ArrowSquareOutIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -41,8 +40,8 @@ export const TradingDetailSurvey = () => {
 
     return (
         <Card>
-            <Column gap={spacings.lg} padding={8}>
-                <Column gap={spacings.xs}>
+            <Column gap={20} padding={8}>
+                <Column gap={8}>
                     <H2 typographyStyle="headline-sm">{title}</H2>
                     <Paragraph typographyStyle="body-sm" color="contentSecondary">
                         {description}

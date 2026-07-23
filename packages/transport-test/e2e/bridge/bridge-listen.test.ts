@@ -1,4 +1,4 @@
-import { BridgeTransport } from '@trezor/transport';
+import { BridgeTransport } from '@trezor/transport-common';
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { controller as TrezorUserEnvLink } from './controller';

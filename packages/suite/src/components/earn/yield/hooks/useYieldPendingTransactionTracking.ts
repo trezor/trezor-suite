@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 
-import { type AnalyticsDesktopEvents, events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { type AnalyticsDesktopEvents, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
@@ -14,13 +15,11 @@ import {
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { isPending } from '@suite-common/wallet-utils';
+import { getApyBreakdown, isPending } from '@suite-common/wallet-utils';
 import { type Analytics } from '@trezor/analytics-uploader';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-
-import { getApyBreakdown } from '../yieldFlowUtils';
 
 const DEFAULT_PENDING_TX_POLL_INTERVAL_MS = 3_000;
 const MIN_PENDING_TX_POLL_INTERVAL_MS = 2_000;

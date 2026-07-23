@@ -24,8 +24,7 @@ const getPairingMethods = (
     });
 
 // State HH0
-// TODO: link-to-public-docs
-// https://www.notion.so/satoshilabs/THP-Specification-2-1-203dc5260606804192aecaa58fb961ca
+// https://github.com/trezor/trezor-firmware/blob/41692dc2cdb937564abe7fecd4bfc3e508adc8d4/docs/common/thp/specification.md#state-hh0
 export const createThpChannel = async (device: IDevice) => {
     const thpState = device.getThpState();
     if (!thpState) {
@@ -39,7 +38,7 @@ export const createThpChannel = async (device: IDevice) => {
 
     const { properties, ...resp } = createChannel.message;
 
-    // TODO: link-to-public-docs nonce validation is not mentioned by the docs
+    // NOTE: nonce validation is not mentioned by the docs
     if (nonce.compare(resp.nonce) !== 0) {
         throw new Error(
             'Nonce not meet' + nonce.toString('hex') + ' ' + resp.nonce.toString('hex'),
@@ -65,8 +64,7 @@ export const createThpChannel = async (device: IDevice) => {
 };
 
 // State HH1 and HH2
-// TODO: link-to-public-docs
-// https://www.notion.so/satoshilabs/THP-Specification-2-1-203dc5260606804192aecaa58fb961ca
+// https://github.com/trezor/trezor-firmware/blob/41692dc2cdb937564abe7fecd4bfc3e508adc8d4/docs/common/thp/specification.md#state-hh1
 export const thpHandshake = async (device: IDevice, unlockPin = false) => {
     const thpState = device.getThpState();
     if (!thpState?.handshakeCredentials) {

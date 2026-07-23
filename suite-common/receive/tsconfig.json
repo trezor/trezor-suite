@@ -1,0 +1,10 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../redux-utils" },
+        { "path": "../wallet-core" },
+        { "path": "../wallet-types" },
+        { "path": "../test-utils" }
+    ]
+}

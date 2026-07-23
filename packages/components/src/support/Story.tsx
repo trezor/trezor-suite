@@ -40,7 +40,7 @@ const Col = styled.div<StoryColumnProps>`
     flex: 1;
     border-radius: 10px;
     border: 1px dashed #f2ae7b;
-    margin: 5px;
+    margin: 4px;
     min-width: ${props => props.minWidth}px;
     max-width: ${props => props.maxWidth}px;
 

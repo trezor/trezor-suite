@@ -7,13 +7,13 @@ import { Translation } from '@suite/intl';
 import { Button, Modal } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
 import { XIcon } from '@trezor/icons';
-import { borders, zIndices } from '@trezor/theme';
+import { zIndices } from '@trezor/theme';
 
 const ThumbnailImage = styled.img`
     max-width: 100%;
     cursor: zoom-in;
     border: solid 2px ${({ theme }) => theme.elementBorderField};
-    border-radius: ${borders.radii.xxs};
+    border-radius: 4px;
     transition: all 0.2s ease;
     padding: 4px;
 
@@ -25,7 +25,7 @@ const ThumbnailImage = styled.img`
 const FullSizeImage = styled.img`
     max-width: 100%;
     max-height: 100%;
-    border-radius: ${borders.radii.xxs};
+    border-radius: 4px;
     cursor: zoom-out;
 `;
 
@@ -55,17 +55,28 @@ export const GuideImage = ({ src, alt }: GuideImageProps) => {
 
     return (
         <>
-            <ThumbnailImage src={resolvedSrc} alt={alt} onClick={() => setIsOpen(true)} />
+            <ThumbnailImage
+                src={resolvedSrc}
+                alt={alt}
+                onClick={() => setIsOpen(true)}
+                data-testid="@guide/article/image"
+            />
             {isOpen &&
                 createPortal(
                     <Modal.Backdrop onClick={close} zIndex={zIndices.modalGuide}>
-                        <FullSizeImage src={resolvedSrc} alt={alt} onClick={close} />
+                        <FullSizeImage
+                            src={resolvedSrc}
+                            alt={alt}
+                            onClick={close}
+                            data-testid="@guide/article/image-modal"
+                        />
                         <CloseButtonWrapper>
                             <Button
                                 iconLeft={XIcon}
                                 intent="neutral"
                                 priority="secondary"
                                 onClick={close}
+                                data-testid="@guide/article/image-close"
                             >
                                 <Translation id="TR_CLOSE" />
                             </Button>

@@ -13,7 +13,7 @@ const showOnTrezorDisplayablePublicKey =
     'd507c8f866691bd96e131334c355188b1a1d0b2fa0ab11545075aab332d77d9eb19657ad13ee581b56b0f8d744d66ca356b93d42fe176b3de007d53e9c4c4e7a';
 const showOnTrezorDeviceScreen = showOnTrezorDisplayablePublicKey.slice(0, 40);
 
-export default {
+const cardanoGetPublicKey: TestCase = {
     method: 'cardanoGetPublicKey',
     enabledCoins: ['ada'] as const,
     setup: {
@@ -96,4 +96,6 @@ export default {
             deviceScreenSkip: ['1', '<2.7.0'],
         },
     ].map(t => ({ ...t, legacyResults: [legacyResults.minConnectVersion] })),
-} satisfies TestCase;
+};
+
+export default cardanoGetPublicKey;

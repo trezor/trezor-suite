@@ -15,7 +15,7 @@ import {
     TOOLTIP_DELAY_LONG,
 } from '@trezor/components';
 import { ArrowDownIcon, ArrowUpIcon, MagnifyingGlassIcon, XIcon } from '@trezor/icons';
-import { borders, zIndices } from '@trezor/theme';
+import { zIndices } from '@trezor/theme';
 
 import { useFindBarShortcuts } from './useFindBarShortcuts';
 import { useFindInPage } from './useFindInPage';
@@ -27,7 +27,7 @@ const Wrapper = styled.div`
     right: 16px;
     background: ${({ theme }) => theme.surfaceFillRaised};
     border: 1px solid ${({ theme }) => theme.borderNeutral};
-    border-radius: ${borders.radii.sm};
+    border-radius: 12px;
     box-shadow: ${({ theme }) => theme.surfaceShadowFixed};
     z-index: ${zIndices.windowControls};
 `;

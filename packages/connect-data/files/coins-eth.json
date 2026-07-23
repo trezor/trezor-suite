@@ -135,6 +135,28 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
+                "url": ["https://rhc.trezor.io"]
+            },
+            "chain": "rhc",
+            "chain_id": 4663,
+            "blocktime_seconds": 0.1,
+            "coingecko_id": "robinhood",
+            "label": "ETH",
+            "name": "Robinhood Chain",
+            "shortcut": "RHC",
+            "slip44": 4663,
+            "support": {
+                "T1B1": "1.9.4",
+                "T2B1": "2.6.1",
+                "T2T1": "2.3.5",
+                "T3B1": "2.8.1",
+                "T3T1": "2.6.1",
+                "T3W1": "2.6.1"
+            }
+        },
+        {
+            "blockchain_link": {
+                "type": "blockbook",
                 "url": ["https://base.trezor.io"]
             },
             "chain": "base",

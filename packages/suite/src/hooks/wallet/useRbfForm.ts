@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { type UseFormReturn, useForm } from 'react-hook-form';
 
 import { selectCurrentTargetAnonymity } from '@suite/coinjoin';
-import { getNetwork } from '@suite-common/wallet-config';
+import { type Network, getNetwork } from '@suite-common/wallet-config';
 import {
     DEFAULT_OPRETURN,
     DEFAULT_PAYMENT,
@@ -16,6 +16,9 @@ import {
     type FeeInfo,
     type FormOptions,
     type FormState,
+    type Output,
+    type PrecomposedLevels,
+    type PrecomposedLevelsCardano,
     type RbfTransactionParams,
     type RbfTransactionParamsBitcoin,
     type RbfTransactionParamsEthereum,
@@ -25,6 +28,7 @@ import {
     getConvertedOrDefaultFeeInfo,
     isEip1559,
 } from '@suite-common/wallet-utils';
+import { type AccountUtxo, type FeeLevel } from '@trezor/connect';
 import { BigNumber, throwError } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -42,6 +46,34 @@ export type UseRbfProps = {
     rbfParams: RbfTransactionParams;
     chainedTxs?: ChainedTransactions;
 };
+
+type RbfState = {
+    account: Account;
+    network: Network;
+    feeInfo: FeeInfo;
+    coinjoinRegisteredUtxos: AccountUtxo[];
+    chainedTxs?: ChainedTransactions;
+    shouldSendInSats?: boolean;
+    formValues: Omit<FormState, 'outputs' | 'selectedUtxos'> & {
+        outputs: Array<Omit<Output, 'token'> & { token?: string | null }>;
+    };
+};
+
+type RbfFormMethods = Pick<
+    UseFormReturn<FormState>,
+    'control' | 'formState' | 'getValues' | 'register' | 'setValue' | 'trigger'
+>;
+
+export type RbfContextValues = RbfState &
+    RbfFormMethods & {
+        methods: UseFormReturn<FormState>;
+        isLoading: boolean;
+        showDecreasedOutputs: boolean;
+        composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
+        changeFeeLevel: (level: FeeLevel['label']) => void;
+        composeRequest: (field?: string) => Promise<void>;
+        signTransaction: () => Promise<boolean | undefined>;
+    };
 
 const getBitcoinFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParamsBitcoin) => {
     const { feeRate } = rbfParams;
@@ -140,7 +172,7 @@ const getRbfFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParams) => {
     return info;
 };
 
-const useRbfState = ({ account, rbfParams, chainedTxs }: UseRbfProps) => {
+const useRbfState = ({ account, rbfParams, chainedTxs }: UseRbfProps): RbfState => {
     const networkFees = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
     const coinjoinRegisteredUtxos = useCoinjoinRegisteredUtxos({ account });
@@ -244,7 +276,7 @@ const useRbfState = ({ account, rbfParams, chainedTxs }: UseRbfProps) => {
     ]);
 };
 
-export const useRbf = (props: UseRbfProps) => {
+export const useRbf = (props: UseRbfProps): RbfContextValues => {
     // local state
     const state = useRbfState(props);
     const { formValues, feeInfo, account } = state;
@@ -338,10 +370,6 @@ export const useRbf = (props: UseRbfProps) => {
         trigger,
     };
 };
-
-// context accepts only valid state (non-nullable account)
-export type RbfContextValues = ReturnType<typeof useRbf> &
-    NonNullable<ReturnType<typeof useRbfState>>;
 
 export const RbfContext = createContext<RbfContextValues | null>(null);
 RbfContext.displayName = 'RbfContext';

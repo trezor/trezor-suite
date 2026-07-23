@@ -5,9 +5,10 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { Button } from '@trezor/components';
+import { Button, Tooltip } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { useTronStakeContext } from '../TronStakeContext';
 
@@ -19,9 +20,17 @@ export const TronUnstakeSubmitButton = () => {
     const { isSubmitting, pendingTxid, submitAction } = actions;
     const { isValid } = useFormState({ control: form.methods.control });
 
+    const { isUnstakingDisabled, unstakingMessageContent } = useMessageSystemStaking(
+        account.symbol,
+    );
+
     const isDeviceLocked = !!device?.connected && !!device?.available && isLocked();
 
     const handleClick = () => {
+        if (isUnstakingDisabled) {
+            return;
+        }
+
         submitAction();
 
         if (!device?.connected || !device?.available) {
@@ -41,14 +50,22 @@ export const TronUnstakeSubmitButton = () => {
     };
 
     return (
-        <Button
-            size="large"
-            width="100%"
-            onClick={handleClick}
-            isDisabled={!isValid || isSubmitting || isDeviceLocked || !!pendingTxid}
-            isLoading={isSubmitting || isDiscoveryRunning}
-        >
-            <Translation id="TR_CONTINUE" />
-        </Button>
+        <Tooltip content={unstakingMessageContent}>
+            <Button
+                size="large"
+                width="100%"
+                onClick={handleClick}
+                isDisabled={
+                    isUnstakingDisabled ||
+                    !isValid ||
+                    isSubmitting ||
+                    isDeviceLocked ||
+                    !!pendingTxid
+                }
+                isLoading={isSubmitting || isDiscoveryRunning}
+            >
+                <Translation id="TR_CONTINUE" />
+            </Button>
+        </Tooltip>
     );
 };

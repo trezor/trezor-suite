@@ -86,8 +86,8 @@ export const saveAccountReceive = (accountKey: AccountKey) => (_: Dispatch, getS
 
     const state = getState();
 
-    return state.wallet.receive.accounts[accountKey]
-        ? db.addItem('receive', state.wallet.receive.accounts[accountKey], accountKey, true)
+    return state.receive.accounts[accountKey]
+        ? db.addItem('receive', state.receive.accounts[accountKey], accountKey, true)
         : undefined;
 };
 

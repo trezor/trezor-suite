@@ -1,6 +1,7 @@
 import { type ConnectSettingsTransport, type UiRequestThpPairing } from '@trezor/connect';
-import { BridgeTransport, NodeUsbTransport, UdpTransport } from '@trezor/transport';
+import { NodeUsbTransport, UdpTransport } from '@trezor/transport';
 import { BluetoothTransport, TrezorBluetooth } from '@trezor/transport-bluetooth';
+import { BridgeTransport } from '@trezor/transport-common';
 
 import { args } from './args';
 

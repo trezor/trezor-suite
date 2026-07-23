@@ -1,7 +1,6 @@
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Column, H3, Spinner } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
@@ -17,10 +16,10 @@ export const DiscoveryLoader = () => {
                 <Column
                     justifyContent="center"
                     alignItems="center"
-                    margin={{ top: spacings.xxxl, bottom: spacings.xl }}
+                    margin={{ top: 40, bottom: 24 }}
                 >
                     <Spinner size={48} />
-                    <H3 align="center" margin={{ top: spacings.xxxxl }}>
+                    <H3 align="center" margin={{ top: 48 }}>
                         <Translation id="TR_COIN_DISCOVERY_LOADER_DESCRIPTION" />
                     </H3>
                 </Column>

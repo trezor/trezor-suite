@@ -1,4 +1,4 @@
-import { checkAddressChecksum, toChecksumAddress } from '../evmChecksumUtils';
+import { areEvmAddressesEqual, checkAddressChecksum, toChecksumAddress } from '../evmChecksumUtils';
 
 // Test cases from https://eips.ethereum.org/EIPS/eip-55
 // [checksummed, lowercase, uppercase]
@@ -46,5 +46,25 @@ describe('evmChecksumUtils', () => {
 
     it.each(invalid)(`toChecksumAddress: '%s'`, addr => {
         expect(() => toChecksumAddress(addr)).toThrow();
+    });
+});
+
+describe('areEvmAddressesEqual', () => {
+    it.each(valid)(
+        `matches the same address regardless of case: '%s'`,
+        (checksum, lower, upper) => {
+            expect(areEvmAddressesEqual(checksum, lower)).toBe(true);
+            expect(areEvmAddressesEqual(lower, upper)).toBe(true);
+        },
+    );
+
+    it('does not match different addresses', () => {
+        expect(areEvmAddressesEqual(valid[0][0], valid[1][0])).toBe(false);
+    });
+
+    it('returns false for missing or invalid input', () => {
+        expect(areEvmAddressesEqual(undefined, valid[0][0])).toBe(false);
+        expect(areEvmAddressesEqual(valid[0][0], null)).toBe(false);
+        expect(areEvmAddressesEqual('0xabcd', '0xabcd')).toBe(false);
     });
 });

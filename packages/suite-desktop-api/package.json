@@ -13,6 +13,7 @@
     },
     "main": "./src/main.ts",
     "browser": "./src/renderer.ts",
+    "types": "./libDev/src/types.d.ts",
     "scripts": {
         "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build tsconfig.json",

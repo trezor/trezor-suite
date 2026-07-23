@@ -1,13 +1,13 @@
 import { createContext, useContext } from 'react';
 
-import { type SpacingValuesNew } from '@trezor/theme';
+import { type SpacingValue } from '@trezor/theme';
 
 import { type BulletSize, type StepLineWidth, type StepListDirection } from './types';
 
 type StepListContextValue = {
-    itemGap: SpacingValuesNew;
-    titleGap: SpacingValuesNew;
-    bulletGap: SpacingValuesNew;
+    itemGap: SpacingValue;
+    titleGap: SpacingValue;
+    bulletGap: SpacingValue;
     bulletSize: BulletSize;
     lineWidth: StepLineWidth;
     isOrdered: boolean;

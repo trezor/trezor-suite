@@ -17,6 +17,7 @@ const getBackColorImage = (model: DeviceModelInternal, color: string): ImageKey 
             '1': 'TREZOR_T3W1_BACKCOLOR_1',
             '2': 'TREZOR_T3W1_BACKCOLOR_2',
             '3': 'TREZOR_T3W1_BACKCOLOR_3',
+            '4': 'TREZOR_T3W1_BACKCOLOR_4',
         } as const satisfies Record<string, ImageKey>;
 
         return map[color as keyof typeof map] ?? 'TREZOR_T3W1_BACKCOLOR_1';

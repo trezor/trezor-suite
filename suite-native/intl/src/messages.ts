@@ -17,6 +17,7 @@ export const messages = {
             enable: 'Enable',
             gotIt: 'Got it',
             next: 'Next',
+            retry: 'Retry',
             tryAgain: 'Try again',
             edit: 'Edit',
             yes: 'Yes',
@@ -72,7 +73,7 @@ export const messages = {
     },
     icons: {
         networkIconHint: 'Network Icon',
-        cryptoIconHint: 'Crypto Icon',
+        tokenIconHint: 'Token Icon',
     },
     messageSystem: {
         killswitch: {
@@ -968,54 +969,37 @@ export const messages = {
             "When sending {coinSymbol} to Trezor, your online exchange may require a memo/destination tag, but Trezor doesn't. Enter any random number to proceed. <link>Learn more</link>",
         receiveAddressCard: {
             alert: {
-                success: 'The receive address has been confirmed on your Trezor.',
                 longCardanoAddress:
                     "This Cardano (ADA) address is too long to fit on your Trezor's screen. Scroll on both screens to view and confirm it.",
                 token: 'Your receive address is your {networkName} address',
             },
-            unverifiedWarning: {
-                portfolioTracker: {
-                    title: 'receive address',
-                    subtitle:
-                        'For added security, connect your Trezor to verify the receive address.',
-                },
-                viewOnly: {
-                    title: 'Verify the receive address on your Trezor',
-                    subtitle:
-                        'To prevent phishing attacks, verify the receive address on your Trezor.',
-                },
-            },
-            viewOnlyWarning: {
-                title: 'Receive address can’t be verified',
-                description: 'To confirm the receive address, connect your Trezor.',
-                primaryButton: 'Continue without verifying',
-                secondaryButton: 'Back',
-            },
-            deviceHint: {
-                description:
-                    'Verify that this receive address matches the address on your Trezor exactly.',
-            },
-            showAddress: {
-                button: 'Show full address',
-                buttonTracker: 'Show address',
-                learnMore: 'Learn more about verifying addresses',
-            },
-        },
-        bottomSheets: {
-            addressMismatch: {
-                title: "Address doesn't match?",
-                description:
-                    'The receive address shown on the app should match the one on your Trezor device.',
-                remember: 'Keep in mind:',
-                trustDevice:
-                    "Always trust your Trezor's screen, it never lies. Your mobile may be vulnerable to hacks and security breaches.",
-                contactSupport:
-                    'For any security concerns about your app or device, contact Trezor Support.',
-                reportIssueButton: 'Report security issue',
-            },
         },
         deviceCompromisedScreen: {
             title: 'Receiving is disabled',
+        },
+        addressActions: {
+            verify: 'Verify',
+        },
+        addressCopiedBottomSheet: {
+            title: 'Address copied.',
+            subtitle: 'Verify before you receive.',
+            steps: {
+                pasteAddress:
+                    'Paste the address into the exchange or app from where you will receive the funds.',
+                verifyAddress: 'Verify the pasted address against your Trezor for maximum safety.',
+            },
+            buttons: {
+                verifyOnTrezor: 'Verify on Trezor',
+                skipVerification: 'Skip verification',
+            },
+        },
+        addressSharedBottomSheet: {
+            title: 'Verify the shared address',
+            subtitle: 'Verify the address you just shared against your Trezor for maximum safety.',
+        },
+        addressVerificationScreen: {
+            pastedTitle: 'Compare the pasted address against your Trezor',
+            sharedTitle: 'Compare the shared address against your Trezor',
         },
     },
     moduleSettings: {
@@ -1269,9 +1253,9 @@ export const messages = {
         },
         aboutUs: {
             title: 'About Trezor Suite',
+            text: 'Manage your assets securely with Trezor Suite. Buy, sell, send, receive, and swap assets, or earn rewards through staking and DeFi yield. Track your balances anytime, even without your Trezor connected.',
             followUs: 'Follow us',
             lastCommitHash: 'Last commit hash: {lastCommitHash}',
-            body: 'Manage your assets securely with Trezor Suite. Buy, sell, send, receive, and swap assets, or earn rewards through staking and stablecoin yield. Track your balances anytime, even without your Trezor connected.',
         },
         privacyAndSecurity: {
             title: 'Privacy & security',
@@ -1364,8 +1348,9 @@ export const messages = {
                     title: 'Auto-eject wallets',
                     description: 'Automatically eject all wallets when you disconnect your Trezor.',
                     alert: {
-                        titleNoConnectedTrezor: 'Enable auto-eject to hide your balances',
-                        titleConnectedTrezor: 'when you disconnect your Trezor',
+                        disconnectedTrezorTitle: 'Enable auto-eject to hide your balances',
+                        connectedTrezorTitle:
+                            'Enable auto-eject to hide your balances when you disconnect your Trezor',
                         primaryButtonTitle: 'Enable auto-eject',
                     },
                 },
@@ -1950,7 +1935,8 @@ export const messages = {
         },
         accountDetail: {
             stablecoinYield: {
-                infoText: 'This token represents your deposit and all rewards in stablecoin yield.',
+                defiYieldInfoText:
+                    'This token represents your deposit and all rewards in DeFi Yield.',
                 vault: 'Vault',
                 apy: 'Annual Percentage Yield',
                 deposited: 'Deposited',
@@ -2503,7 +2489,7 @@ export const messages = {
     },
     earn: {
         staking: 'Staking',
-        stablecoinYield: 'Stablecoin yield',
+        defiYield: 'DeFi Yield',
         poweredBy: 'Powered by',
         feeEstimationFailed:
             "The network fee couldn't be estimated, so the transaction can't be prepared. Try again later.",
@@ -2579,11 +2565,6 @@ export const messages = {
                     'Withdrawal period (~{days, plural, one {# day} other {# days}})',
                 stepReadyToClaim: 'Ready to claim',
             },
-        },
-        stakingInsufficientBalance: {
-            title: "You don't have enough {displaySymbol}",
-            subtitle: 'Minimum amount to stake is {minAmount} {displaySymbol}.',
-            getButton: 'Get more {displaySymbol}',
         },
         yieldInsufficientBalance: {
             title: "You don't have enough {tokenSymbol}",
@@ -2669,6 +2650,9 @@ export const messages = {
             unstakeMaxButton: 'Unstake max',
             withdrawalFeesBanner:
                 "We've left {amount} {displaySymbol} in your account so you can pay withdrawal fees.",
+            insufficientBalanceBanner:
+                'Not enough {displaySymbol}. Staking requires at least {minAmount} {displaySymbol} plus network fees.',
+            insufficientBalanceBannerButton: 'Buy {displaySymbol}',
             estimatedRewardsLabel: 'Estimated yearly rewards',
             validation: {
                 amountIsZero: 'Amount must be greater than 0.',
@@ -2685,7 +2669,10 @@ export const messages = {
             validation: {
                 amountIsZero: 'Amount must be greater than 0.',
                 amountExceedsMax: 'The amount exceeds the maximum allowed value of {maxAmount}.',
-                amountBelowMin: 'The minimum amount to unstake is {minAmount} {networkSymbol}.',
+                invalidUnstakeAmount:
+                    "Due to recent Solana blockchain changes, this amount can't be unstaked.\n\nTry {higher}{higherFiat},\n\nor {lower}{lowerFiat}.",
+                invalidUnstakeAmountHigherOnly:
+                    "Due to recent Solana blockchain changes, this amount can't be unstaked.\n\nTry {higher}{higherFiat}.",
                 insufficientBalance: 'You don’t have enough staked balance to unstake this amount.',
                 tooManyDecimals: 'Too many decimals places.',
             },
@@ -2710,6 +2697,7 @@ export const messages = {
                 networkStaking: '{networkName} staking',
                 availableRewards: 'Available rewards',
                 claimRewardsButton: 'Claim rewards',
+                incompleteFiatTotal: 'Some fiat rates couldn’t load. Total may be incomplete.',
             },
             activeSheet: {
                 stakingTitle: 'Your stakes',
@@ -2740,10 +2728,10 @@ export const messages = {
                 subtitle:
                     'Grow your crypto by locking it to help secure the {networkName} network—and earn rewards in return.',
                 cta: 'Enable {networkName}',
-                stablecoinYield: {
-                    title: 'Enable {networkName} to use stablecoin yield',
+                defiYield: {
+                    title: 'Enable {networkName} to use DeFi Yield',
                     subtitle:
-                        'Add the {networkName} network to deposit eligible stablecoins and earn yield.',
+                        'Add the {networkName} network to deposit eligible assets and earn yield.',
                     cta: 'Enable {networkName}',
                 },
             },
@@ -2809,8 +2797,8 @@ export const messages = {
             },
         },
         howYieldWorksScreen: {
-            title: 'How stablecoin yield works',
-            subtitle: 'Put your stablecoins to work and earn rewards.',
+            defiYieldTitle: 'How DeFi Yield works',
+            defiYieldSubtitle: 'Put your assets to work and earn rewards.',
             benefits: {
                 first: {
                     title: 'The deposited amount of {tokenSymbol} is always available.',
@@ -2822,7 +2810,7 @@ export const messages = {
                         'Most rewards compound automatically—some must be claimed manually.',
                 },
                 third: {
-                    title: 'Deposit {tokenSymbol} to receive {vaultTokenName}',
+                    title: 'Deposit {tokenSymbol} to receive {vaultTokenSymbol}',
                     description: 'This is your vault position.',
                 },
                 fourth: {
@@ -2967,6 +2955,8 @@ export const messages = {
             amountExceedsDeposited: 'The amount exceeds your deposited balance.',
             networkFeeWarning:
                 'Network fees may exceed this amount. Your balance may decrease. Enter higher amount.',
+            maxWithdrawInfo:
+                'Amount switched to {vaultTokenSymbol} to withdraw your entire balance, including yield earned up to the moment the transaction is processed.',
             title: 'Withdraw',
             supplied: 'Supplied:',
             maximumFee: 'Maximum fee',
@@ -2985,6 +2975,18 @@ export const messages = {
             feeWarning: {
                 title: 'Network fees may exceed rewards.',
                 description: 'Consider waiting for your rewards to grow before claiming.',
+            },
+            unverifiableFeeWarning: {
+                title: "Rewards value can't be verified.",
+                description:
+                    "We couldn't determine the value of your rewards. Make sure the network fee doesn't exceed the rewards you're claiming.",
+            },
+            alerts: {
+                reviewMismatch: {
+                    title: "Claim couldn't be verified",
+                    description:
+                        "The rewards to claim didn't match the transaction details, so nothing was signed and no funds moved. Tap Continue to try again with refreshed data. If the issue persists, contact Trezor Support.",
+                },
             },
         },
         yieldDepositApprovalReviewScreen: {
@@ -3189,6 +3191,11 @@ export const messages = {
         apyPercentage: '~{apy}% APY',
         aprPercentage: '~{apy}% APR',
         notAvailableShort: 'N/A',
+        messageSystem: {
+            depositDisabled: 'Deposit is currently disabled.',
+            withdrawDisabled: 'Withdrawal is currently disabled.',
+            claimDisabled: 'Claim is currently disabled.',
+        },
         stakePendingCard: {
             totalStakePending: 'Total stake pending',
             addingToStakingPool: 'Adding to staking pool',
@@ -3431,6 +3438,10 @@ export const messages = {
             buyVia: 'Buy with {companyName}',
             youPay: 'You pay',
             youGet: 'You get',
+        },
+        transactionSimulation: {
+            title: 'Simulation powered by Blockaid',
+            simulating: 'Simulating transaction',
         },
         tradingExchangePreviewScreen: {
             title: 'Swap',
@@ -4137,9 +4148,12 @@ export const messages = {
     networks: {
         initialSetup: {
             title: 'Add your networks',
-            subtitle: 'You can buy or receive assets on any network you enable.',
+            subtitle: 'Enable networks to buy or receive assets. Change your selection anytime.',
             banner: 'Change your networks anytime in Settings.',
         },
     },
     biometricsButton: 'Unlock with biometrics',
+    search: {
+        noResults: 'No results',
+    },
 };

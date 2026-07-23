@@ -9,7 +9,7 @@ const [standardPathFixtures, nonstandardPathFixtures] = arrayPartition(
     ({ parameters }) => parameters.path.startsWith("m/44'/60'"),
 );
 
-export default {
+const ethereumSignMessage: TestCase = {
     method: 'ethereumSignMessage',
     setup: {
         mnemonic: commonFixtures.setup.mnemonic,
@@ -49,4 +49,6 @@ export default {
             ],
         })),
     ],
-} satisfies TestCase;
+};
+
+export default ethereumSignMessage;

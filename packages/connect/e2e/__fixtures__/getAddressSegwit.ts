@@ -1,4 +1,4 @@
-export default {
+const getAddressSegwit: TestCase = {
     method: 'getAddress',
     setup: {
         mnemonic: 'mnemonic_12',
@@ -49,4 +49,6 @@ export default {
             },
         },
     ],
-} satisfies TestCase;
+};
+
+export default getAddressSegwit;

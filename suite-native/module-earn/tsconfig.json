@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": [".", "**/*.json"],
     "references": [
+        {
+            "path": "../../suite-common/analytics"
+        },
         { "path": "../../suite-common/calldata" },
         {
             "path": "../../suite-common/dependency-injection"
@@ -79,6 +82,9 @@
         { "path": "../transaction-management" },
         { "path": "../transactions" },
         { "path": "../tx-simulation" },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         {

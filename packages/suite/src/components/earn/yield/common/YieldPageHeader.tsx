@@ -1,8 +1,9 @@
 import { AccountLabel } from '@suite/account';
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type EarnParams, goto } from '@suite/router';
+import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
@@ -13,7 +14,7 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { Box, Button, Column, IconButton, Row, Text } from '@trezor/components';
 import { CaretLeftIcon, InfoIcon } from '@trezor/icons';
-import { AssetLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useDispatch } from 'src/hooks/suite';
@@ -113,7 +114,7 @@ export const YieldPageHeader = ({
                 {!isInvalid && account && vaultName ? (
                     <Row alignItems="center" gap={12} overflow="hidden">
                         {networkSymbol && (
-                            <AssetLogo
+                            <TokenIcon
                                 placeholder={vault?.token?.symbol || vault?.token?.name || ''}
                                 symbol={networkSymbol}
                                 contractAddress={vault?.token?.address}
@@ -142,7 +143,7 @@ export const YieldPageHeader = ({
                 ) : (
                     <Row alignItems="center" gap={12}>
                         {routeParams?.symbol && (
-                            <AssetLogo symbol={routeParams.symbol} size={32} isBordered={false} />
+                            <TokenIcon symbol={routeParams.symbol} size={32} isBordered={false} />
                         )}
                         <Text typographyStyle="body-md-strong">
                             <Translation id={fallbackTitleId} />

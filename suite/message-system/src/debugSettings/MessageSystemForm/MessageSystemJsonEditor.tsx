@@ -4,8 +4,6 @@ import { type ValidateError } from '@suite-common/message-system';
 import { Button, Column, Icon, Row, Text, Textarea } from '@trezor/components';
 import { CheckCircleFilledIcon, XCircleFilledIcon } from '@trezor/icons';
 import { useTextareaCursorPosition } from '@trezor/react-utils';
-import { spacings } from '@trezor/theme';
-
 const ErrorContainer = styled.div`
     max-height: 16rem;
     overflow-y: scroll;
@@ -32,7 +30,7 @@ export const MessageSystemJsonEditor = ({
     const { textareaRef, position } = useTextareaCursorPosition();
 
     return (
-        <Row gap={spacings.md} alignItems="flex-start">
+        <Row gap={16} alignItems="flex-start">
             <Textarea
                 data-testid="@settings/debug/message-system/json-editor-textarea"
                 innerRef={textareaRef}
@@ -59,7 +57,7 @@ export const MessageSystemJsonEditor = ({
                 }
             />
             <Column width="50%">
-                <Row gap={spacings.xs} margin={{ bottom: spacings.xs }}>
+                <Row gap={8} margin={{ bottom: 8 }}>
                     {isValid ? (
                         <>
                             <Icon as={CheckCircleFilledIcon} intent="brand" size={32} />
@@ -75,7 +73,7 @@ export const MessageSystemJsonEditor = ({
 
                 <ErrorContainer>
                     {!isValid && (
-                        <Column gap={spacings.xxs}>
+                        <Column gap={4}>
                             {errors.map((error, index) => (
                                 <Text intent="critical" key={index}>
                                     <strong>{error.field}</strong> {error.message}

@@ -21,6 +21,7 @@ import { type SelectedAccountLoaded, asAccountDescriptor } from '@suite-common/w
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { err, ok } from '@trezor/type-utils';
+import { createKeyedThrottle } from '@trezor/utils';
 
 const suiteSyncMock: SuiteSync = {
     changeRelayUrl: () => Promise.resolve(),
@@ -89,6 +90,7 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         connectInitSettings,
         connectInitHooks: { deviceEvent: {}, uiEvent: {} },
         createTransports: () => [],
+        accountRefreshThrottle: createKeyedThrottle(10_000, () => undefined),
         migrateSuiteSyncLabelsForRbfTransaction: () => Promise.resolve([[], []]),
     },
     selectors: {
@@ -103,6 +105,7 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         }),
         selectDesktopBinDir: notImplementedSelector('selectDesktopBinDir', '/bin'),
         selectLanguage: notImplementedSelector('selectLanguage', 'en'),
+
         selectSelectedAccount: notImplementedSelector('selectSelectedAccount', {
             status: 'loaded',
             account: mockWalletAccount({
@@ -156,5 +159,6 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         storageLoadBioAuth: notImplementedReducer('storageLoadBioAuth'),
         storageLoadFlags: notImplementedReducer('storageLoadFlags'),
         storageLoadSuiteSettings: notImplementedReducer('storageLoadSuiteSettings'),
+        storageLoadReceiveAccounts: notImplementedReducer('storageLoadReceiveAccounts'),
     },
 };

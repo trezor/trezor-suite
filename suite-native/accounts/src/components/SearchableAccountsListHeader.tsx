@@ -10,9 +10,9 @@ import Animated, {
 
 import { Box, HStack, IconButton, Text } from '@suite-native/atoms';
 import { type AddCoinFlowType, type CloseActionType, GoBackIcon } from '@suite-native/navigation';
+import { SEARCH_INPUT_ANIMATION_DURATION, SearchForm } from '@suite-native/search';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { AccountsSearchForm, SEARCH_INPUT_ANIMATION_DURATION } from './AccountsSearchForm';
 import { AddAccountButton } from './AddAccountsButton';
 import { FilterCountBadge } from './FilterCountBadge';
 
@@ -78,7 +78,8 @@ export const SearchableAccountsListHeader = ({
     return (
         <Box style={applyStyle(searchFormContainerStyle)}>
             {isSearchActive ? (
-                <AccountsSearchForm
+                <SearchForm
+                    placeholder="accounts.searchForm.placeholder"
                     onPressCancel={handleHideFilter}
                     onInputChange={onSearchInputChange}
                 />

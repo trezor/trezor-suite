@@ -22,6 +22,8 @@ import {
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { useDexExchangeTxSimulation } from '../../../hooks/exchange/useDexExchangeTxSimulation';
+
 export type ExchangePreviewContinueButtonProps = {
     isDisabled: boolean;
     onSignTransactionNavigation: () => void;
@@ -51,6 +53,8 @@ export const ExchangePreviewContinueButton = memo(
         const isSignDataFlow = formStep === 'SIGN_DATA';
         const isTXFinalType = precomposedTransaction?.type === 'final';
         const isTradeFinalized = isFinalStatus('exchange', quote?.status);
+
+        const { isLoading } = useDexExchangeTxSimulation();
 
         const handleSignTransaction = () => {
             if (!quote || !fromAccount) {
@@ -90,7 +94,7 @@ export const ExchangePreviewContinueButton = memo(
                     <Button
                         onPress={handleSignTransaction}
                         isDisabled={isDisabled}
-                        isLoading={!isSignDataFlow && !isTXFinalType}
+                        isLoading={(!isSignDataFlow && !isTXFinalType) || isLoading}
                         testID={EXCHANGE_PREVIEW_CONTINUE_BUTTON_TEST_ID}
                     >
                         <Translation id="generic.buttons.continue" />

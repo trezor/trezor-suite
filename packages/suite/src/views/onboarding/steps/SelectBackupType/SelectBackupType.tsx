@@ -18,7 +18,6 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { selectDeviceDefaultBackupType } from '@suite-common/device';
 import { type BackupType } from '@suite-common/suite-types';
 import { Banner, Text } from '@trezor/components';
-import { borders, spacingsPx } from '@trezor/theme';
 
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 
@@ -35,12 +34,12 @@ const Wrapper = styled.div`
     display: flex;
     align-items: center;
     flex-direction: column;
-    gap: ${spacingsPx.xl};
+    gap: 24px;
 `;
 
 const SelectWrapper = styled.div`
     width: 700px;
-    border-radius: ${borders.radii.sm};
+    border-radius: 12px;
     border: 1px solid ${({ theme }) => theme.elementBorderNeutralSofterAlt};
     background: ${({ theme }) => theme.elementFillNeutralSofter};
     position: relative;

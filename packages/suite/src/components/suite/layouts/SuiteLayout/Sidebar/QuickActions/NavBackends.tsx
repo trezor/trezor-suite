@@ -1,10 +1,8 @@
-import React from 'react';
-
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type BlockchainState } from '@suite-common/wallet-core';
 import { Box, Column, DotIndicator, Note, Row, Text } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import type { CustomBackend } from 'src/types/wallet';
@@ -26,7 +24,7 @@ const BackendRow = ({
             width={260}
         >
             <Row gap={12}>
-                <CoinLogo symbol={symbol} />
+                <TokenIcon symbol={symbol} />
                 <Column flex="1" overflow="hidden">
                     <Text typographyStyle="body-sm" ellipsisLineCount={1}>
                         {chain?.url ?? <Translation id="TR_BACKEND_DISCONNECTED" />}

@@ -12,7 +12,7 @@ const Wrapper = styled.div`
 
 // Label container to avoid jumping when tooltip appears
 const FakeTooltipContainer = styled.div`
-    border-bottom: 1.5px solid transparent;
+    border-bottom: 2px solid transparent;
 `;
 
 interface QuestionTooltipProps {

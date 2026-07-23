@@ -7,7 +7,6 @@ import { deviceActions } from '@suite-common/device';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { Box, Button, H4, Paragraph, Row } from '@trezor/components';
 import { EjectIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { useDispatch } from 'src/hooks/suite';
 
@@ -38,11 +37,11 @@ export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirma
                 intent="neutral"
                 priority="secondary"
                 typographyStyle="body-sm"
-                margin={{ top: spacings.xxs }}
+                margin={{ top: 4 }}
             >
                 <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DESCRIPTION" />
             </Paragraph>
-            <Row gap={spacings.xs} margin={{ top: spacings.md }}>
+            <Row gap={8} margin={{ top: 16 }}>
                 <Button
                     size="small"
                     iconLeft={EjectIcon}

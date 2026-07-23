@@ -18,6 +18,7 @@ import { prepareThpReducer } from '@suite-common/thp';
 import { createNotificationsReducer } from '@suite-common/toast-notifications';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 import {
+    accountsRefreshTimeReducer,
     feesReducer,
     formDraftReducer,
     prepareAccountsReducer,
@@ -38,7 +39,7 @@ import {
 import { prepareWalletConnectReducer } from '@suite-common/walletconnect/src/walletConnectReducer';
 import { bannerFlagsPersistWhitelist, bannerFlagsReducer } from '@suite-native/banner-flags';
 import { biometricsPersistWhitelist, biometricsSlice } from '@suite-native/biometrics';
-import { bluetoothSlice } from '@suite-native/bluetooth';
+import { prepareBluetoothReducer } from '@suite-native/bluetooth';
 import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
 import { deviceOnboardingReducer } from '@suite-native/device-onboarding';
 import { pendingCoinVisibilitySlice } from '@suite-native/discovery';
@@ -97,7 +98,7 @@ const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const connectPopupReducer = prepareConnectPopupReducer(extraDependencies);
 const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
 const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
-const bluetoothReducer = bluetoothSlice.prepareReducer(extraDependencies);
+const bluetoothReducer = prepareBluetoothReducer(extraDependencies);
 const thpReducer = prepareThpReducer(extraDependencies);
 
 type PrepareRootReducersDeps = MMKVStorageDep;
@@ -221,6 +222,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const walletReducers = combineReducers({
         accounts: accountsReducer,
+        accountsRefreshTime: accountsRefreshTimeReducer,
         blockchain: blockchainPersistedReducer,
         explorer: explorerReducer,
         fiat: fiatRatesReducer,

@@ -1,4 +1,4 @@
-export default {
+const getAccountInfo: TestCase = {
     method: 'getAccountInfo',
     setup: {
         mnemonic: 'mnemonic_12',
@@ -159,4 +159,6 @@ export default {
             },
         },
     ],
-} satisfies TestCase;
+};
+
+export default getAccountInfo;

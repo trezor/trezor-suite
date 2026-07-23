@@ -7,8 +7,8 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { type DesktopBluetoothDevice } from '../DesktopBluetoothDevice';
 import {
-    bluetoothSlice,
     initialDesktopBluetoothState,
+    prepareDesktopBluetoothReducer,
     startConnectingBluetoothDevice,
     stopConnectingBluetoothDevice,
 } from '../desktopBluetoothReducer';
@@ -19,7 +19,7 @@ const manufacturerData: BluetoothManufacturerData = {
     filterPolicy: undefined,
 };
 
-const bluetoothReducer = bluetoothSlice.prepareReducer(extraDependenciesCommonMock);
+const bluetoothReducer = prepareDesktopBluetoothReducer(extraDependenciesCommonMock);
 
 const disconnectedDeviceB: DesktopBluetoothDevice = {
     id: asBluetoothDeviceId('B'),

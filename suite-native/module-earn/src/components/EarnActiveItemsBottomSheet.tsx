@@ -4,7 +4,10 @@ import { useStore } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { BottomSheetModal, type BottomSheetModalRef, Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -38,6 +41,7 @@ export const EarnActiveItemsBottomSheet = ({
     const navigation = useNavigation<NavigationProp>();
     const reportStakingNavigate = useStakingNavigateAnalytics();
     const store = useStore<AccountsRootState>();
+    const { analytics } = useServices(selectNativeAnalyticsDep);
 
     const title = useMemo(
         () =>
@@ -65,16 +69,27 @@ export const EarnActiveItemsBottomSheet = ({
                     });
                     break;
                 }
-                case 'stablecoin-yield':
+                case 'stablecoin-yield': {
+                    analytics.report({
+                        type: events.yieldNavigateEvent.name,
+                        payload: {
+                            from: 'earn-dashboard',
+                            to: 'account-detail',
+                            networkSymbol: item.networkSymbol,
+                            action: 'continue',
+                        },
+                    });
+
                     navigation.navigate(RootStackRoutes.AccountDetail, {
                         accountKey: item.accountKey,
                         tokenContract: item.contractAddress,
                         closeActionType: 'back',
                     });
                     break;
+                }
             }
         },
-        [navigateToStakingDetail, navigation, onClose, reportStakingNavigate, store],
+        [navigateToStakingDetail, analytics, navigation, onClose, reportStakingNavigate, store],
     );
 
     const handleClaimPress = useCallback(

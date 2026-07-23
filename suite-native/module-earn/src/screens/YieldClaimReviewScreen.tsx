@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
@@ -9,6 +9,7 @@ import {
     type StablecoinYieldRootState,
     selectAccountByKey,
     selectStablecoinYieldSessionByFlowKey,
+    stablecoinYieldActions,
 } from '@suite-common/wallet-core';
 import {
     type StackNavigationProps,
@@ -25,6 +26,7 @@ type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoute
 export const YieldClaimReviewScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
+    const dispatch = useDispatch();
     const { accountKey } = route.params;
     const device = useSelector(selectSelectedDevice);
     const account = useSelector((state: AccountsRootState) =>
@@ -54,9 +56,27 @@ export const YieldClaimReviewScreen = () => {
         }
 
         if (!review || session?.step !== 'action') {
-            navigation.navigate(YieldStackRoutes.YieldClaim, route.params);
+            navigation.popTo(YieldStackRoutes.YieldClaim, route.params);
+
+            return;
         }
-    }, [account, navigation, review, route.params, session?.step]);
+
+        if (!device || preview) {
+            return;
+        }
+
+        // The preview could not be built from the stored review data, so
+        // signing must not start; leave with the standard failure alert
+        // instead of an empty screen.
+        dispatch(
+            stablecoinYieldActions.setError({
+                flowKey: account.key,
+                flowType: 'claim',
+                error: 'TR_EARN_YIELD_ERROR_CLAIM_REVIEW_MISMATCH',
+            }),
+        );
+        navigation.popTo(YieldStackRoutes.YieldClaim, route.params);
+    }, [account, device, dispatch, navigation, preview, review, route.params, session?.step]);
 
     if (!account || !preview || !review) {
         return null;

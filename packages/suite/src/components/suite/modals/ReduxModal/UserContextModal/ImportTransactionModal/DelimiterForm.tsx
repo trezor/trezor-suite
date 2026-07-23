@@ -2,8 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Input, Row, SelectBar } from '@trezor/components';
-import { spacings } from '@trezor/theme';
-
 type DelimiterFormProps = {
     value?: string;
     onChange: (value?: string) => void;
@@ -23,7 +21,7 @@ export const DelimiterForm = ({ value, onChange }: DelimiterFormProps) => {
     }, [mode, onChange]);
 
     return (
-        <Row gap={spacings.md} justifyContent="space-between">
+        <Row gap={16} justifyContent="space-between">
             <SelectBar
                 label={<Translation id="TR_IMPORT_CSV_MODAL_DELIMITER" />}
                 options={[

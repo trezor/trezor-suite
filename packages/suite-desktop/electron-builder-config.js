@@ -94,6 +94,7 @@ module.exports = {
         ],
         icon: 'build/static/images/desktop/512x512.icns',
         artifactName: 'Trezor-Suite-${version}-mac-${arch}.${ext}',
+        identity: isCodesignBuild ? undefined : '-',
         hardenedRuntime: isCodesignBuild,
         gatekeeperAssess: false,
         darkModeSupport: true,

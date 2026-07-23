@@ -1,13 +1,13 @@
-import '@suite-common/test-utils/src/globalOverrides';
+import '@suite-common/test-utils/globalOverrides';
 
 import { coinjoinReducer } from '@suite/coinjoin';
 import { initialRunCompleted, prepareFlagsReducer } from '@suite/flags';
 import { initialMetadataState, metadataReducer } from '@suite/metadata';
-import { receiveReducer } from '@suite/receive';
 import { suiteSettingsInitialState } from '@suite/settings';
-import { suiteSyncSlice } from '@suite/suite-sync';
+import { prepareSuiteSyncReducer } from '@suite/suite-sync';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
 import { asEncryptedHex } from '@suite-common/platform-encryption';
+import { prepareReceiveReducer } from '@suite-common/receive';
 import { setSuiteSyncOwner } from '@suite-common/suite-sync';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -47,7 +47,8 @@ const flagsReducer = prepareFlagsReducer(extraDependencies);
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
 const walletSettingsReducer = discoveryActions.prepareWalletSettingsReducer(extraDependencies);
 const quotaManagerSliceReducer = suiteSyncQuotaManagerSlice.prepareReducer(extraDependencies);
-const suiteSyncReducer = suiteSyncSlice.prepareReducer(extraDependencies);
+const suiteSyncReducer = prepareSuiteSyncReducer(extraDependencies);
+const receiveReducer = prepareReceiveReducer(extraDependencies);
 
 // TODO: add method in suite-storage for deleting all stored data (done as a static method on SuiteDB), call it after each test
 // TODO: test deleting device instances on parent device forget
@@ -104,6 +105,7 @@ type PartialState = Pick<
     | 'suiteSyncQuotaManager'
     | 'flags'
     | 'metadata'
+    | 'receive'
 > & {
     wallet: Partial<
         Pick<
@@ -113,7 +115,6 @@ type PartialState = Pick<
             | 'settings'
             | 'discovery'
             | 'send'
-            | 'receive'
             | 'transactions'
             | 'graph'
             | 'fiat'
@@ -147,6 +148,7 @@ const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
         prevState ? prevState.device : undefined,
         action || ({ type: 'foo' } as any),
     ),
+    receive: receiveReducer(prevState?.receive, action || ({ type: 'foo' } as any)),
     wallet: {
         accounts: accountsReducer(prevState?.wallet?.accounts, action || ({ type: 'foo' } as any)),
         coinjoin: coinjoinReducer(prevState?.wallet?.coinjoin, action || ({ type: 'foo' } as any)),
@@ -159,7 +161,6 @@ const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
             action || ({ type: 'foo' } as any),
         ),
         send: sendFormReducer(prevState?.wallet?.send, action || ({ type: 'foo' } as any)),
-        receive: receiveReducer(prevState?.wallet?.receive, action || ({ type: 'foo' } as any)),
         transactions: transactionsReducer(
             prevState?.wallet?.transactions,
             action || ({ type: 'foo' } as any),

@@ -1,7 +1,5 @@
 import styled, { css } from 'styled-components';
 
-import { borders } from '@trezor/theme';
-
 type DashedLinePosition = 'middleToBottom' | 'topToBottom' | 'topToMiddle';
 
 const mapPositionToTop = (position: DashedLinePosition) => {
@@ -10,7 +8,7 @@ const mapPositionToTop = (position: DashedLinePosition) => {
             return '50%';
         case 'topToBottom':
         case 'topToMiddle':
-            return borders.widths.large;
+            return '2px';
     }
 };
 
@@ -37,7 +35,7 @@ export const AssetTableExtraRowsSection = styled.div<{
                 bottom: ${mapPositionToBottom($dashedLinePosition)};
                 left: 50%;
                 transform: translateX(-50%);
-                border-left: ${borders.widths.large} dotted ${({ theme }) => theme.borderNeutral};
+                border-left: 2px dotted ${({ theme }) => theme.borderNeutral};
                 z-index: -1;
             }
         `}

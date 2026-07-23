@@ -122,7 +122,7 @@ export const getStablecoinYieldAccountRewards = ({
 export const getStablecoinYieldClaimRewardsSnapshot = ({
     account,
     rewards,
-}: StablecoinYieldAccountRewards): YieldFlowCompleteRewardItem[] =>
+}: Pick<StablecoinYieldAccountRewards, 'account' | 'rewards'>): YieldFlowCompleteRewardItem[] =>
     rewards.map(reward => ({
         token: {
             networkSymbol: account.symbol,

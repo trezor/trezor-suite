@@ -399,7 +399,6 @@ export const accountSpendingCoins: Account = {
     marker: undefined,
     stellarCursor: undefined,
     page: { index: 1, size: 25, total: 1 },
-    ts: 0,
 };
 
 export const accountReceivingCoins: Account = {
@@ -816,7 +815,6 @@ export const accountReceivingCoins: Account = {
     marker: undefined,
     stellarCursor: undefined,
     page: { index: 1, size: 25, total: 1 },
-    ts: 0,
 };
 
 export const moveLabelsForRbfAccountsFixture: AccountsRootState['wallet']['accounts'] = [

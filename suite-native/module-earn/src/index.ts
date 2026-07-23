@@ -1,6 +1,7 @@
 export { FiveBinariesHomeBanner } from './components/FiveBinariesHomeBanner';
 export { StablecoinYieldApyBreakdown } from './components/StablecoinYieldApyBreakdown';
 export { useApyBreakdownAlert } from './hooks/useApyBreakdownAlert';
+export { useMessageSystemYield } from './hooks/useMessageSystemYield';
 export { useResolvedYieldFlowData } from './hooks/useResolvedYieldFlowData';
 export { useStablecoinYieldFirmwareUpdateAlert } from './hooks/useStablecoinYieldFirmwareUpdateAlert';
 export { useStakingDetailNavigation } from './hooks/useStakingDetailNavigation';
@@ -16,7 +17,6 @@ export { EarnTransactionDataReviewScreen } from './screens/EarnTransactionDataRe
 export { HowStakeWorksScreen } from './screens/HowStakeWorksScreen';
 export { HowYieldWorksScreen } from './screens/HowYieldWorksScreen';
 export { StakingDetailScreen } from './screens/StakingDetailScreen';
-export { StakingInsufficientBalanceScreen } from './screens/StakingInsufficientBalanceScreen';
 export { StakingManagementScreen } from './screens/StakingManagementScreen';
 export { UnstakeFlowScreen } from './screens/UnstakeFlowScreen';
 export { UnstakeTransactionDataReviewScreen } from './screens/UnstakeTransactionDataReviewScreen';

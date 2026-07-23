@@ -5,7 +5,7 @@ const legacyResults = [
     },
 ];
 
-export default {
+const tronGetAddress: TestCase = {
     method: 'tronGetAddress',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -32,4 +32,6 @@ export default {
             legacyResults,
         },
     ],
-} satisfies TestCase;
+};
+
+export default tronGetAddress;

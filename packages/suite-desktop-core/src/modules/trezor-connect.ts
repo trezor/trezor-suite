@@ -10,7 +10,8 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { initLog } from '@trezor/connect-common';
 import { type IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
-import { BridgeTransport, NodeUsbTransport, UdpTransport } from '@trezor/transport';
+import { NodeUsbTransport, UdpTransport } from '@trezor/transport';
+import { BridgeTransport } from '@trezor/transport-common';
 import { parseElectrumUrl } from '@trezor/utils';
 
 import { bluetoothModuleState } from './bluetooth';

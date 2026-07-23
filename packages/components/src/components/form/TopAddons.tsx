@@ -2,8 +2,6 @@ import React from 'react';
 
 import styled from 'styled-components';
 
-import { spacings } from '@trezor/theme';
-
 import { Row } from '../Flex/Flex';
 
 export const HoverAddonRight = styled.div<{ $isVisible?: boolean }>`
@@ -34,13 +32,13 @@ export const TopAddons = ({
 
     return (
         <Row
-            gap={spacings.xs}
+            gap={8}
             alignItems="flex-end"
             justifyContent={addonLeft ? 'space-between' : 'flex-end'}
         >
             {addonLeft && <Row>{addonLeft}</Row>}
             {isWithRightLabel && (
-                <Row gap={spacings.xxs}>
+                <Row gap={4}>
                     {hoverAddonRight && (
                         <HoverAddonRight $isVisible={isHovered}>{hoverAddonRight}</HoverAddonRight>
                     )}

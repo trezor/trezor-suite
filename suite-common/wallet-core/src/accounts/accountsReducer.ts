@@ -1,10 +1,11 @@
-import { isAnyOf } from '@reduxjs/toolkit';
+import { current, isAnyOf } from '@reduxjs/toolkit';
 
 import { deviceActions } from '@suite-common/device';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { networks } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { accountEqualTo, compareAccountsByCoin, enhanceHistory } from '@suite-common/wallet-utils';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { accountsActions } from './accountsActions';
 
@@ -23,11 +24,33 @@ const findCoinjoinAccount =
     (account: Account): account is Extract<Account, { backendType: 'coinjoin' }> =>
         account.key === key && account.backendType === 'coinjoin';
 
+const isHistoryUnchanged = (prev: Account['history'], next: Account['history']) => {
+    const keys = typedObjectKeys(prev);
+    if (keys.length !== Object.keys(next).length) return false;
+
+    return keys.every(key => prev[key] === next[key]);
+};
+
+// `history` is the only field we rebuild here (enhanceHistory), so it's always a fresh object even
+// when the values are unchanged - compare it by its own keys. Every other field keeps the caller's
+// reference, so a shallow (reference) compare is enough to detect a real change.
+const isUnchangedAccount = (prev: Account, next: Account) => {
+    const keys = typedObjectKeys(prev);
+    if (keys.length !== Object.keys(next).length) return false;
+
+    return keys.every(key =>
+        key === 'history'
+            ? isHistoryUnchanged(prev.history, next.history)
+            : prev[key] === next[key],
+    );
+};
+
 const update = (state: Account[], account: Account) => {
     const accountIndex = state.findIndex(accountEqualTo(account));
+    const prev = state[accountIndex];
 
-    if (accountIndex !== -1) {
-        state[accountIndex] = {
+    if (prev) {
+        const next: Account = {
             ...account,
             // remove "transactions" field, they are stored in "transactionReducer"
             history: enhanceHistory(account.history),
@@ -35,8 +58,15 @@ const update = (state: Account[], account: Account) => {
 
         if (!account.marker) {
             // immer.js doesn't update fields that are set to undefined, so instead we delete the field
-            delete state[accountIndex].marker;
+            delete next.marker;
         }
+
+        // Skip the write when nothing changed, so the entity reference (and the components subscribed
+        // to it) stay stable. current() unwraps the immer draft, otherwise reads of nested fields
+        // return proxies and the reference compare would never match.
+        if (isUnchangedAccount(current(prev), next)) return;
+
+        state[accountIndex] = next;
     } else {
         console.warn(
             // do not log the descriptor: it is confidential and would leak into Sentry breadcrumbs
@@ -98,9 +128,6 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
                 }
             })
             .addCase(accountsActions.updateAccount, (state, action) => {
-                update(state, action.payload);
-            })
-            .addCase(accountsActions.updateAccountRefreshTimestamp, (state, action) => {
                 update(state, action.payload);
             })
             .addCase(accountsActions.renameAccount, (state, action) => {

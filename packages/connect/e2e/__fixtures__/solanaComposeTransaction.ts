@@ -1,4 +1,4 @@
-export default {
+const solanaComposeTransaction: TestCase = {
     method: 'solanaComposeTransaction',
     setup: {
         mnemonic: undefined, // device is not used in this test case
@@ -90,4 +90,6 @@ export default {
             },
         },
     ],
-} satisfies TestCase;
+};
+
+export default solanaComposeTransaction;

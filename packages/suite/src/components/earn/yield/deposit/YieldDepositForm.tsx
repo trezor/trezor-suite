@@ -1,7 +1,10 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { splitYieldPendingTransaction } from '@suite-common/wallet-core';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getYieldFlowStepSequence, splitYieldPendingTransaction } from '@suite-common/wallet-core';
+import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { Banner, Button, Column, Text } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
@@ -14,7 +17,7 @@ import { YieldApproveStep } from '../common/YieldApproveStep';
 import { YieldApprovedAmountCard } from '../common/YieldApprovedAmountCard';
 import { YieldFlowCompleteDeposit } from '../common/YieldFlowCompleteDeposit';
 import { YieldFlowStepList } from '../common/YieldFlowStepList';
-import { getApyBreakdown } from '../yieldFlowUtils';
+import { YieldWrapStep } from '../common/YieldWrapStep';
 
 export const YieldDepositForm = () => {
     const { analytics } = useServices(selectDesktopAnalyticsDep);
@@ -42,6 +45,7 @@ export const YieldDepositForm = () => {
         isSubmittingApprove,
         isSubmittingAction,
         setAmountInput,
+        completeWrapStep,
         submitApprovalAction,
         submitAction,
         revokeAllowance,
@@ -55,6 +59,12 @@ export const YieldDepositForm = () => {
 
     const { approvalPendingTransaction, actionPendingTransaction: depositPendingTransaction } =
         splitYieldPendingTransaction(pendingTransaction, 'deposit');
+
+    const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
+    const sequence = getYieldFlowStepSequence({
+        flowType: 'deposit',
+        isWrappedNativeVault: flow.isWrappedNativeVault,
+    });
 
     const handleOnApprovalSubmit = () => {
         analytics.report({
@@ -175,10 +185,34 @@ export const YieldDepositForm = () => {
                     )}
 
                     <YieldFlowStepList
-                        flowType="deposit"
+                        sequence={sequence}
                         currentStep={flow.currentStep}
                         hasStepList
                         steps={{
+                            wrap: {
+                                title: (
+                                    <Translation
+                                        id="TR_EARN_YIELD_WRAP_TITLE"
+                                        values={{ nativeSymbol, tokenSymbol: token.symbol }}
+                                    />
+                                ),
+                                description: (
+                                    <Translation
+                                        id="TR_EARN_YIELD_WRAP_DESCRIPTION"
+                                        values={{ nativeSymbol }}
+                                    />
+                                ),
+                                content: () => (
+                                    <YieldWrapStep
+                                        token={token}
+                                        nativeSymbol={nativeSymbol}
+                                        nativeBalance={account.formattedBalance}
+                                        onMaxClick={() => setAmountInput(account.formattedBalance)}
+                                        onSubmit={completeWrapStep}
+                                        onSkip={completeWrapStep}
+                                    />
+                                ),
+                            },
                             approve: {
                                 title: <Translation id="TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE" />,
                                 rightContent: view =>
@@ -227,14 +261,15 @@ export const YieldDepositForm = () => {
                                         onPendingTxClick={openPendingTransaction}
                                     />
                                 ),
-                                inactiveContent: () => (
-                                    <YieldApprovedAmountCard
-                                        token={token}
-                                        amount={allowanceAmount || '0'}
-                                        isLoading={allowanceStatus === 'loading'}
-                                        hasError={allowanceStatus === 'error'}
-                                    />
-                                ),
+                                inactiveContent: view =>
+                                    view.state === 'done' && (
+                                        <YieldApprovedAmountCard
+                                            token={token}
+                                            amount={allowanceAmount}
+                                            isLoading={allowanceStatus === 'loading'}
+                                            hasError={allowanceStatus === 'error'}
+                                        />
+                                    ),
                             },
                             action: {
                                 title: <Translation id="TR_EARN_YIELD_DEPOSIT" />,

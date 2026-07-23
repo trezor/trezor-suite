@@ -1,7 +1,6 @@
 import { Translation, useTranslation } from '@suite/intl';
 import { getFeeUnits, isInteger } from '@suite-common/wallet-utils';
 import { Column, Row, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { CurrentFee } from './CurrentFee';
 import { CustomFeeEthereum } from './CustomFeeEthereum';
@@ -36,7 +35,7 @@ export const CustomFee = ({ showCurrentFee }: CustomFeeProps) => {
 
     return (
         <>
-            <Column gap={spacings.xs}>
+            <Column gap={8}>
                 <CustomFeeTooLowBanner />
                 {showCurrentFee && <CurrentFee />}
                 {networkType === 'ethereum' ? (

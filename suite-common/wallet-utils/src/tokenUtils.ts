@@ -1,3 +1,4 @@
+import { areEvmAddressesEqual } from '@suite-common/address';
 import {
     type Explorer,
     type NetworkSymbol,
@@ -5,6 +6,7 @@ import {
     type NetworkType,
     getExplorerUrl,
     getNetworkType,
+    getWrappedNativeAddress,
 } from '@suite-common/wallet-config';
 import {
     type EthereumSpecific,
@@ -33,6 +35,11 @@ export const getContractAddressForNetworkSymbol = (
             return contractAddress;
     }
 };
+
+export const isWrappedNativeToken = (
+    networkSymbol: NetworkSymbol,
+    contractAddress?: string | null,
+): boolean => areEvmAddressesEqual(getWrappedNativeAddress(networkSymbol), contractAddress);
 
 export const getAssetLogoContractAddresses = async (
     symbol: NetworkSymbolExtended | undefined,
@@ -136,6 +143,9 @@ export const shouldUppercaseTokenSymbol = (token: TokenInfo) =>
     token.standard ? !PRESERVE_TOKEN_SYMBOL_CASE_STANDARDS.has(token.standard) : true;
 
 export const isErc4626 = (token: TokenInfo) => !!token.protocols?.includes('erc4626');
+
+export const getErc4626Contracts = (tokens: TokenInfo[] | undefined) =>
+    new Set(tokens?.filter(isErc4626).map(token => token.contract.toLowerCase()));
 
 export const sortTokensByName = (a: Pick<TokenInfo, 'name'>, b: Pick<TokenInfo, 'name'>) =>
     (a.name ?? '').localeCompare(b.name ?? '');

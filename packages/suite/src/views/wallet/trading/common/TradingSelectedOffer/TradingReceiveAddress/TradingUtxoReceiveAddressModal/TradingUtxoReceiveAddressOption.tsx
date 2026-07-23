@@ -6,7 +6,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { type Address as BlockchainLinkAddress } from '@trezor/blockchain-link-types';
 import { Column, Row, Text } from '@trezor/components';
-import { CoinLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { CoinBalance } from 'src/components/suite';
@@ -57,7 +57,7 @@ export const TradingUtxoReceiveAddressOption = ({
         >
             <Row width="100%" gap={12} justifyContent="space-between">
                 <Row gap={12}>
-                    <CoinLogo size={24} symbol={account.symbol} />
+                    <TokenIcon size={24} symbol={account.symbol} />
                     <Column alignItems="flex-start">
                         <Address isTruncated value={address.address} />
                     </Column>

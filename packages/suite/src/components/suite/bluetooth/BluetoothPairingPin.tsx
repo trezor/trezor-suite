@@ -2,14 +2,13 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { Card, Modal, Row, Text } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
 
 import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
 
 const Pin = styled.span`
-    letter-spacing: ${spacingsPx.md};
+    letter-spacing: 16px;
 `;
 
 type BluetoothPairingPinProps = {

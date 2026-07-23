@@ -4,11 +4,12 @@ import { goto } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { type Account } from '@suite-common/wallet-types';
 import { getTronWithdrawableBalance } from '@suite-common/wallet-utils';
-import { Banner } from '@trezor/components';
+import { Banner, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 interface TronWithdrawReadyBannerProps {
     account: Account;
@@ -18,6 +19,10 @@ export const TronWithdrawReadyBanner = ({ account }: TronWithdrawReadyBannerProp
     const dispatch = useDispatch();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
     const withdrawableAmount = getTronWithdrawableBalance(account);
+
+    const { isWithdrawingDisabled, withdrawingMessageContent } = useMessageSystemStaking(
+        account.symbol,
+    );
 
     if (new BigNumber(withdrawableAmount).lte(0)) {
         return null;
@@ -50,9 +55,11 @@ export const TronWithdrawReadyBanner = ({ account }: TronWithdrawReadyBannerProp
             icon
             intent="info"
             rightContent={
-                <Banner.Button onClick={goToWithdraw}>
-                    <Translation id="TR_EARN_TRON_WITHDRAW_TITLE" />
-                </Banner.Button>
+                <Tooltip content={withdrawingMessageContent}>
+                    <Banner.Button onClick={goToWithdraw} isDisabled={isWithdrawingDisabled}>
+                        <Translation id="TR_EARN_TRON_WITHDRAW_TITLE" />
+                    </Banner.Button>
+                </Tooltip>
             }
             description={
                 <Translation

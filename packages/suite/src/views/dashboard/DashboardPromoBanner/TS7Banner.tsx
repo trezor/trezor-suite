@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Box, Button, Column, Image, Paragraph, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { DASHBOARD_BANNER_TS7_URL } from '@trezor/urls';
 
 import { useLayoutSize } from 'src/hooks/suite';
@@ -75,14 +74,14 @@ export const TS7Banner = ({ onClose, onCTAClick }: TS7BannerProps) => {
             <ContentFlex
                 height="100%"
                 margin={{
-                    right: isBelowDesktop ? undefined : spacings.xxxxl,
+                    right: isBelowDesktop ? undefined : 48,
                 }}
                 justifyContent="space-between"
-                gap={spacings.xl}
+                gap={24}
                 alignItems="center"
             >
-                <Column gap={isBelowDesktop ? spacings.md : spacings.xl}>
-                    <Column gap={isBelowLaptop ? spacings.xxs : spacings.xs}>
+                <Column gap={isBelowDesktop ? 16 : 24}>
+                    <Column gap={isBelowLaptop ? 4 : 8}>
                         <Title isVerticalLayout={isVerticalLayout} />
                         <Description />
                     </Column>

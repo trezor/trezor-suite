@@ -28,6 +28,7 @@ import { pushYieldClaimReviewThunk, signYieldClaimReviewThunk } from '../yieldCl
 import { useShowDeviceDisconnectedDuringEarnReviewAlert } from './useShowDeviceDisconnectedDuringEarnReviewAlert';
 import { useShowPushTransactionFailedDuringReviewAlert } from './useShowPushTransactionFailedDuringReviewAlert';
 import { useYieldActionReviewBackNavigation } from './useYieldActionReviewBackNavigation';
+import { useYieldReviewAnalytics } from './useYieldReviewAnalytics';
 
 type UseYieldClaimReviewParams = {
     account: Account;
@@ -54,6 +55,12 @@ export const useYieldClaimReview = ({
     const { showPendingTransactionConflictAlert, showPushTransactionFailedAlert } =
         useShowPushTransactionFailedDuringReviewAlert('yield-claim');
     const showDeviceDisconnectedAlert = useShowDeviceDisconnectedDuringEarnReviewAlert();
+
+    const { reportError: reportClaimError, reportCancel: reportClaimCancel } =
+        useYieldReviewAnalytics({
+            flow: 'claim',
+            networkSymbol: account.symbol,
+        });
     const [claimActionStatus, setClaimActionStatus] = useState<YieldReviewActionStatus>('idle');
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const txReview = useSelector((state: StablecoinYieldRootState) =>
@@ -110,6 +117,7 @@ export const useYieldClaimReview = ({
         setClaimActionStatus('idle');
 
         if (!deviceAccessResponse.success) {
+            reportClaimError('submit-failed');
             handleEarnReviewError({
                 payload: {
                     error: 'sign-transaction-failed',
@@ -128,10 +136,13 @@ export const useYieldClaimReview = ({
         const isSignRejected = isRejected(signResponse);
 
         if (isSignRejected && isUserCancelledSignError(signResponse.payload)) {
+            reportClaimCancel();
+
             return 'cancelled';
         }
 
         if (isSignRejected) {
+            reportClaimError('submit-failed');
             handleEarnReviewError({
                 payload: signResponse.payload,
                 navigation,
@@ -151,6 +162,8 @@ export const useYieldClaimReview = ({
         flowKey,
         isDeviceConnected,
         navigation,
+        reportClaimCancel,
+        reportClaimError,
         showDeviceDisconnectedAlert,
         showPendingTransactionConflictAlert,
         showPushTransactionFailedAlert,
@@ -174,6 +187,8 @@ export const useYieldClaimReview = ({
         const isPushRejected = isRejected(pushResponse);
 
         if (isPushRejected) {
+            reportClaimError('push-failed');
+
             if (pushResponse.payload?.error === 'push-transaction-pending-conflict') {
                 showPendingTransactionConflictAlert();
 
@@ -194,6 +209,7 @@ export const useYieldClaimReview = ({
         flowKey,
         markReviewNavigationSuccess,
         navigation,
+        reportClaimError,
         showPendingTransactionConflictAlert,
         showPushTransactionFailedAlert,
     ]);

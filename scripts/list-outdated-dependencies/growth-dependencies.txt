@@ -46,6 +46,7 @@ pdfmake
 polished
 postcss-loader
 postcss-styled-syntax
+postcss-value-parser
 qrcode.react
 react-fela
 react-date-range

@@ -18,7 +18,7 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { getDeviceColorVariant } from '@trezor/device-utils';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
-import { borders, zIndices } from '@trezor/theme';
+import { zIndices } from '@trezor/theme';
 
 import { OnboardingCardButton } from './OnboardingCardButton';
 import { OnboardingCardSecondaryButton } from './OnboardingCardSecondaryButton';
@@ -91,7 +91,7 @@ export const OnboardingCard = ({
                     paddingType="none"
                     data-testid={dataTestId}
                 >
-                    <Column gap={48} padding={60} margin={icon ? { top: 40 } : undefined}>
+                    <Column gap={48} padding={64} margin={icon ? { top: 40 } : undefined}>
                         {(heading || description) && (
                             <Column gap={16} alignItems="center" width="100%">
                                 {heading && <H2 align="center">{heading}</H2>}
@@ -117,7 +117,7 @@ export const OnboardingCard = ({
                         position={{ type: 'absolute', top: 0 }}
                         zIndex={isBackDropVisible ? zIndices.modal : undefined}
                         backgroundColor="surfaceFillPage"
-                        borderRadius={borders.radii.full}
+                        borderRadius="full"
                     >
                         <IconCircle icon={icon} size={96} intent={intent} />
                     </Box>

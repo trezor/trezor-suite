@@ -1,7 +1,7 @@
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 
 import { type ExchangeInfoAsset } from './notificationsTypes';
-import { AssetLogo } from '../AssetLogo/AssetLogo';
+import { TokenIcon } from '../TokenIcon/TokenIcon';
 
 type ExchangeAssetWithFallbackProps = {
     asset: ExchangeInfoAsset;
@@ -12,7 +12,7 @@ export const ExchangeAssetWithFallback = ({ asset }: ExchangeAssetWithFallbackPr
 
     return (
         asset.icon ?? (
-            <AssetLogo
+            <TokenIcon
                 size={20}
                 contractAddress={asset.contractAddress}
                 symbol={asset.symbol}

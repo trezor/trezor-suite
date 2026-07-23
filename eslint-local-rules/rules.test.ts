@@ -1,8 +1,15 @@
 import { RuleTester } from 'eslint';
+import { parser } from 'typescript-eslint';
 
 import { rules } from './rules';
 
 const ruleTester = new RuleTester();
+
+const allowedEntryPointPatterns = [
+    /^@suite-common\/bluetooth\/mocks$/,
+    /^@suite-common\/thp\/mocks$/,
+    /^@suite-common\/test-utils\/globalOverrides$/,
+];
 
 ruleTester.run('no-package-deep-imports', rules['no-package-deep-imports'], {
     valid: [
@@ -12,8 +19,14 @@ ruleTester.run('no-package-deep-imports', rules['no-package-deep-imports'], {
         { code: "import { foo } from '@trezor/utils';" },
         { code: "import { foo } from '@suite/components';" },
         // Mocks entry point is allowed
-        { code: "import { mock } from '@suite-common/bluetooth/mocks';" },
-        { code: "import { mock } from '@suite-common/thp/mocks';" },
+        {
+            code: "import { mock } from '@suite-common/bluetooth/mocks';",
+            options: [{ allowedEntryPointPatterns }],
+        },
+        {
+            code: "import { mock } from '@suite-common/thp/mocks';",
+            options: [{ allowedEntryPointPatterns }],
+        },
         // Non-restricted scopes are allowed regardless of depth
         { code: "import { debounce } from 'lodash/fp';" },
         { code: "import React from 'react';" },
@@ -30,6 +43,11 @@ ruleTester.run('no-package-deep-imports', rules['no-package-deep-imports'], {
         {
             code: "import { connectCallableMethods } from '@trezor/connect/src/factory';",
             options: [{ ignoredPackages: ['@trezor/connect'] }],
+        },
+        // Explicitly configured package entry points are allowed.
+        {
+            code: "import '@suite-common/test-utils/globalOverrides';",
+            options: [{ allowedEntryPointPatterns }],
         },
     ],
     invalid: [
@@ -75,12 +93,41 @@ ruleTester.run('no-package-deep-imports', rules['no-package-deep-imports'], {
         // Deep mocks imports should suggest the mocks entry point
         {
             code: "import { mock } from '@suite-common/bluetooth/mocks/createBluetoothDeviceCommon';",
+            options: [{ allowedEntryPointPatterns }],
             errors: [
                 {
                     messageId: 'doNotImportPackageDeepPath',
                     data: {
                         sourcePath: '@suite-common/bluetooth/mocks/createBluetoothDeviceCommon',
                         packageImportPath: '@suite-common/bluetooth/mocks',
+                    },
+                },
+            ],
+        },
+        // Similarly prefixed paths are not entry points.
+        {
+            code: "import { mock } from '@suite-common/bluetooth/mocksInternal';",
+            options: [{ allowedEntryPointPatterns }],
+            errors: [
+                {
+                    messageId: 'doNotImportPackageDeepPath',
+                    data: {
+                        sourcePath: '@suite-common/bluetooth/mocksInternal',
+                        packageImportPath: '@suite-common/bluetooth',
+                    },
+                },
+            ],
+        },
+        // Imports below a configured entry point should suggest the public entry point.
+        {
+            code: "import '@suite-common/test-utils/globalOverrides/internal';",
+            options: [{ allowedEntryPointPatterns }],
+            errors: [
+                {
+                    messageId: 'doNotImportPackageDeepPath',
+                    data: {
+                        sourcePath: '@suite-common/test-utils/globalOverrides/internal',
+                        packageImportPath: '@suite-common/test-utils/globalOverrides',
                     },
                 },
             ],
@@ -157,9 +204,14 @@ ruleTester.run('no-suite-imports-in-suite-common', rules['no-suite-imports-in-su
     ],
 });
 
-ruleTester.run('analytics-event-name', rules['analytics-event-name'], {
-    parser: require.resolve('typescript-eslint/parser'),
-    parserOptions: { ecmaVersion: 2020, sourceType: 'module' },
+const typescriptRuleTester = new RuleTester({
+    languageOptions: {
+        parser,
+        parserOptions: { ecmaVersion: 2020, sourceType: 'module' },
+    },
+});
+
+typescriptRuleTester.run('analytics-event-name', rules['analytics-event-name'], {
     valid: [
         { code: "export enum EventType { Foo = 'settings/app-log-exported' }" },
         { code: "export enum EventType { Bar = 'dashboard/send-modal' }" },
@@ -191,4 +243,4 @@ ruleTester.run('analytics-event-name', rules['analytics-event-name'], {
             ],
         },
     ],
-} as Parameters<typeof ruleTester.run>[2]);
+} as Parameters<typeof typescriptRuleTester.run>[2]);

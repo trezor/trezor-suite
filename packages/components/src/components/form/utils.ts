@@ -1,6 +1,6 @@
 import { css } from 'styled-components';
 
-import { type SpacingValuesNew, type TypographyStyle, borders } from '@trezor/theme';
+import { type SpacingValue, type TypographyStyle } from '@trezor/theme';
 
 import { type InputSize } from './types';
 import { commonFocusStyles } from '../../utils/utils';
@@ -12,12 +12,12 @@ const heightMap: Record<InputSize, number> = {
 
 export const mapSizeToHeight = (size: InputSize): number => heightMap[size];
 
-const paddingTopMap: Record<InputSize, SpacingValuesNew> = {
+const paddingTopMap: Record<InputSize, SpacingValue> = {
     small: 16,
     large: 20,
 };
 
-export const mapSizeToPaddingTop = (size: InputSize): SpacingValuesNew => paddingTopMap[size];
+export const mapSizeToPaddingTop = (size: InputSize): SpacingValue => paddingTopMap[size];
 
 const typographyStyleMap: Record<InputSize, TypographyStyle> = {
     small: 'body-sm',
@@ -48,7 +48,7 @@ export const commonInputStyles = css`
     }
 `;
 
-export const INPUT_PADDING: SpacingValuesNew = 16;
+export const INPUT_PADDING: SpacingValue = 16;
 
 export const commonCheckInputStyles = css`
     display: flex;
@@ -57,7 +57,7 @@ export const commonCheckInputStyles = css`
     justify-content: center;
     width: 24px;
     height: 24px;
-    border: ${borders.widths.large} solid;
+    border: 2px solid;
     transition: 0.1s ease-in-out;
 
     ${({ theme }) => css`

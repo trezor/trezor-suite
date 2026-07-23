@@ -12,7 +12,7 @@ import { AffectedTransactionItem } from './AffectedTransactions/AffectedTransact
 
 const Wrapper = styled.div`
     text-align: left;
-    margin-top: 25px;
+    margin-top: 24px;
 `;
 
 const Header = styled.div`

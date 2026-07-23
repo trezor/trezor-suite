@@ -2,7 +2,6 @@ import { Translation } from '@suite/intl';
 import { selectIsPhishingTransaction } from '@suite-common/wallet-core';
 import { type WalletAccountTransaction, createAccountKey } from '@suite-common/wallet-types';
 import { Column, Divider } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
 
@@ -68,7 +67,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
                         outputs={tx.details.vout?.filter(vout => vout.isAccountOwned)}
                         isPhishingTransaction={isPhishingTransaction}
                     />
-                    <Divider margin={{ top: spacings.xs, bottom: spacings.xxs }} />
+                    <Divider margin={{ top: 8, bottom: 4 }} />
                     <CollapsibleIOSection
                         heading={<Translation id="TR_OTHER_INPUTS_AND_OUTPUTS" />}
                         tx={tx}

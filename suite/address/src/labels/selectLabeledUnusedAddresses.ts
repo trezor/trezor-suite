@@ -65,7 +65,6 @@ export const selectLabeledUnusedAddresses = createMemoizedSelector(
                 ? result.concat({
                       path: candidate.path,
                       address: candidate.address,
-                      isVerified: false,
                   })
                 : result;
         }, []),

@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
@@ -12,7 +12,6 @@ import {
 import { isHexValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Button, Card, H3, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
-import { spacings } from '@trezor/theme';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -28,7 +27,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
     const {
         register,
         setValue,
-        watch,
+        control,
         formState: { errors },
     } = useForm({
         mode: 'onChange',
@@ -39,7 +38,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const { analytics } = useServices(selectDesktopAnalyticsDep);
-    const inputValue = watch(INPUT_NAME);
+    const inputValue = useWatch({ control, name: INPUT_NAME });
     const error = errors[INPUT_NAME];
     const hasError = !!error;
     const prefix = account.networkType === 'ethereum' ? '0x' : undefined;
@@ -81,7 +80,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
 
     return (
         <Card>
-            <Row justifyContent="space-between" margin={{ bottom: spacings.md }}>
+            <Row justifyContent="space-between" margin={{ bottom: 16 }}>
                 <H3>
                     <Tooltip
                         addon={
@@ -113,7 +112,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
                 {...inputField}
             />
 
-            <Button isDisabled={isSubmitDisabled} onClick={send} margin={{ top: spacings.lg }}>
+            <Button isDisabled={isSubmitDisabled} onClick={send} margin={{ top: 20 }}>
                 <Translation id="SEND_TRANSACTION" />
             </Button>
         </Card>

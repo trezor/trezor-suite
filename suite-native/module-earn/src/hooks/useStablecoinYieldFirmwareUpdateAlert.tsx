@@ -40,7 +40,7 @@ export const useStablecoinYieldFirmwareUpdateAlert = () => {
                 'moduleAccounts.accountDetail.stablecoinYield.firmwareUpdateAlert.description',
                 {
                     name: deviceLabel,
-                    featureName: translate('earn.stablecoinYield'),
+                    featureName: translate('earn.defiYield'),
                 },
             ),
             primaryButtonTitle: (

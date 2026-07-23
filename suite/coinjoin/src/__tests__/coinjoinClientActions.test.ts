@@ -12,7 +12,7 @@ import {
     testMocks,
 } from '@suite-common/test-utils';
 import { prepareAccountsReducer, prepareWalletSettingsReducer } from '@suite-common/wallet-core';
-import '@suite-common/test-utils/src/globalOverrides';
+import '@suite-common/test-utils/globalOverrides';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';

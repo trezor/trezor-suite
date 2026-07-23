@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { type TradingRootState, selectTradingCoinInfoByCryptoId } from '@suite-common/trading';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Text, VStack } from '@suite-native/atoms';
 import {
@@ -85,7 +86,7 @@ export const MyAssetListItem = ({ account, asset, onPress }: MyAssetListItemProp
     return (
         <AssetListItem
             name={name}
-            symbol={tokenSymbol ?? symbol}
+            symbol={tokenSymbol ?? getNetworkDisplaySymbol(symbol)}
             contractAddress={contract}
             networkSymbol={symbol}
             onPress={handlePress}

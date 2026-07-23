@@ -153,17 +153,17 @@ export const AddAccountModal = ({
     const enabledNetworks = availableNetworksSymbols.map(networkSymbol =>
         getNetwork(networkSymbol),
     );
-    const [enabledMainnetNetworks, enabledTestnetNetworks] = arrayPartition(
-        enabledNetworks,
-        network => !network?.testnet,
+    const [enabledMainnetNetworks, enabledTestnetNetworks] = useMemo(
+        () => arrayPartition(enabledNetworks, network => !network?.testnet),
+        [enabledNetworks],
     );
     const disabledNetworks = supportedNetworks.filter(
         network => !availableNetworksSymbols.includes(network.symbol),
     );
 
-    const [disabledMainnetNetworks, disabledTestnetNetworks] = arrayPartition(
-        disabledNetworks,
-        network => !network?.testnet,
+    const [disabledMainnetNetworks, disabledTestnetNetworks] = useMemo(
+        () => arrayPartition(disabledNetworks, network => !network?.testnet),
+        [disabledNetworks],
     );
     const testnetNetworks = useMemo(
         () => [...enabledTestnetNetworks, ...disabledTestnetNetworks],
@@ -276,7 +276,7 @@ export const AddAccountModal = ({
             const defaultAccount = networkScopedAccounts
                 .toSorted((a, b) => a.index - b.index)
                 .at(-1);
-            const unavailableCapability = device?.unavailableCapabilities?.[defaultAccountTypeName];
+            const unavailableCapability = device.unavailableCapabilities?.[defaultAccountTypeName];
 
             const disabledMessage = verifyAvailability({
                 emptyAccounts: networkScopedAccounts.filter(
@@ -291,7 +291,7 @@ export const AddAccountModal = ({
         [
             accounts,
             device.state?.staticSessionId,
-            device?.unavailableCapabilities,
+            device.unavailableCapabilities,
             enabledNetworkSymbols,
             getAccountTypesForNetwork,
         ],

@@ -122,7 +122,7 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
     ),
     'wallet-trading-buy-detail': lazy(() =>
         import(
-            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/buy/TradingBuyDetail'
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/buy/TradingBuyDetail/TradingBuyDetail'
         ).then(({ TradingBuyDetail }) => ({ default: TradingBuyDetail })),
     ),
     'wallet-trading-buy-confirm': lazy(() =>
@@ -137,7 +137,7 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
     ),
     'wallet-trading-sell-detail': lazy(() =>
         import(
-            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/sell/TradingSellDetail'
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/sell/TradingSellDetail/TradingSellDetail'
         ).then(({ TradingSellDetail }) => ({ default: TradingSellDetail })),
     ),
     'wallet-trading-sell-confirm': lazy(() =>
@@ -152,7 +152,7 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
     ),
     'wallet-trading-exchange-detail': lazy(() =>
         import(
-            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/exchange/TradingExchangeDetail'
+            /* webpackChunkName: "trading" */ 'src/views/wallet/trading/exchange/TradingExchangeDetail/TradingExchangeDetail'
         ).then(({ TradingExchangeDetail }) => ({ default: TradingExchangeDetail })),
     ),
     'wallet-trading-exchange-confirm': lazy(() =>

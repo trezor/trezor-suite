@@ -66,7 +66,6 @@ export const YieldApproveStep = ({
     onPendingTxClick,
 }: YieldApproveStepProps) => {
     const approveButtonId = getApproveButtonTranslationId(approvalAction);
-    const approvedAmountValue = approvedAmount ?? '0';
     const shouldEnableRevoke =
         canRevokeAllowance && !isApprovedAmountLoading && !hasApprovedAmountError && !isLoading;
     const onRevokeClick = shouldEnableRevoke ? onRevoke : undefined;
@@ -75,7 +74,7 @@ export const YieldApproveStep = ({
         <Column gap={16}>
             <YieldApprovedAmountCard
                 token={token}
-                amount={approvedAmountValue}
+                amount={approvedAmount}
                 isLoading={isApprovedAmountLoading}
                 hasError={hasApprovedAmountError}
                 onRevoke={onRevokeClick}
@@ -99,6 +98,7 @@ export const YieldApproveStep = ({
             <Button
                 size="large"
                 width="100%"
+                data-testid="@yield/form/approve-button"
                 onClick={onApprovalSubmit}
                 isDisabled={isDisabled || !!pendingApproveTransaction || !onApprovalSubmit}
                 isLoading={isLoading}

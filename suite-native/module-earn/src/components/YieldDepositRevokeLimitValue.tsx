@@ -1,6 +1,6 @@
 import { type Account, type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { HStack, Text } from '@suite-native/atoms';
-import { CryptoIcon, Icon } from '@suite-native/icons';
+import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -38,7 +38,7 @@ export const YieldDepositRevokeLimitValue = ({
             spacing="sp4"
             style={applyStyle(detailsRowValueStyle)}
         >
-            <CryptoIcon symbol={networkSymbol} contractAddress={tokenContract} size="extraSmall" />
+            <TokenIcon symbol={networkSymbol} contractAddress={tokenContract} size="extraSmall" />
             <Text
                 color="contentPrimary"
                 ellipsizeMode="tail"

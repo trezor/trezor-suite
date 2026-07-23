@@ -6,8 +6,9 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
-import { ReceiveAccountScreen } from '../screens/ReceiveAccountScreen';
 import { ReceiveAccountsScreen } from '../screens/ReceiveAccountsScreen';
+import { ReceiveAddressScreen } from '../screens/ReceiveAddressScreen';
+import { ReceiveAddressVerificationScreen } from '../screens/ReceiveAddressVerificationScreen';
 
 const ReceiveStack = createNativeStackNavigator<ReceiveStackParamList>();
 
@@ -21,8 +22,12 @@ export const ReceiveStackNavigator = () => (
             component={ReceiveAccountsScreen}
         />
         <ReceiveStack.Screen
-            name={ReceiveStackRoutes.ReceiveAccount}
-            component={ReceiveAccountScreen}
+            name={ReceiveStackRoutes.ReceiveAddress}
+            component={ReceiveAddressScreen}
+        />
+        <ReceiveStack.Screen
+            name={ReceiveStackRoutes.ReceiveAddressVerification}
+            component={ReceiveAddressVerificationScreen}
         />
     </ReceiveStack.Navigator>
 );

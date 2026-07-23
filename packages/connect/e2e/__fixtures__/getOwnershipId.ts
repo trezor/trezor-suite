@@ -10,7 +10,7 @@ const legacyResults = [
     },
 ];
 
-export default {
+const getOwnershipId: TestCase = {
     method: 'getOwnershipId',
     setup: {
         mnemonic: 'mnemonic_all',
@@ -69,4 +69,6 @@ export default {
             legacyResults,
         },
     ],
-} satisfies TestCase;
+};
+
+export default getOwnershipId;

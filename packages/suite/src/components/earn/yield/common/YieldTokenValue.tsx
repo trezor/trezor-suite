@@ -1,6 +1,6 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Row, Text } from '@trezor/components';
-import { AssetLogo } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
@@ -14,14 +14,19 @@ type YieldTokenValueToken = {
 type YieldTokenValueProps = {
     token: YieldTokenValueToken;
     amount: string;
+    'data-testid'?: string;
 };
 
-export const YieldTokenValue = ({ token, amount }: YieldTokenValueProps) => {
+export const YieldTokenValue = ({
+    token,
+    amount,
+    'data-testid': dataTestId,
+}: YieldTokenValueProps) => {
     const roundedAmount = new BigNumber(amount).decimalPlaces(2, BigNumber.ROUND_DOWN).toFixed();
 
     return (
         <Row alignItems="center" gap={8}>
-            <AssetLogo
+            <TokenIcon
                 size={24}
                 symbol={token.networkSymbol}
                 contractAddress={token.contractAddress}
@@ -30,7 +35,11 @@ export const YieldTokenValue = ({ token, amount }: YieldTokenValueProps) => {
                 isBordered={false}
             />
             <Text typographyStyle="body-md-strong">
-                <FormattedCryptoAmount value={roundedAmount} symbol={token.symbol} />
+                <FormattedCryptoAmount
+                    value={roundedAmount}
+                    symbol={token.symbol}
+                    data-testid={dataTestId}
+                />
             </Text>
         </Row>
     );

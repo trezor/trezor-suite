@@ -23,6 +23,24 @@ class OutputsReviewActions extends TradingActions {
         await TrezorUserEnvLink.pressYes();
     }
 
+    async expectAndConfirmTokenApproval() {
+        await waitForVisible(by.text('Token approval'));
+        await waitForVisible(by.text('Approve to'));
+        await TrezorUserEnvLink.pressYes();
+
+        await waitForVisible(by.text('Approve'));
+        await TrezorUserEnvLink.pressYes();
+    }
+
+    async expectAndConfirmTokenRevocation() {
+        await waitForVisible(by.text('Token revocation'));
+        await waitForVisible(by.text('Revoke approval from'));
+        await TrezorUserEnvLink.pressYes();
+
+        await waitForVisible(by.text('Revoke'));
+        await TrezorUserEnvLink.pressYes();
+    }
+
     async expectConnectTrezorInfo() {
         await waitForVisible(by.text('Connect & unlock\nyour Trezor'), {
             timeout: this.SHORT_TIMEOUT,
@@ -36,12 +54,22 @@ class OutputsReviewActions extends TradingActions {
         await TrezorUserEnvLink.pressYes();
     }
 
+    async expectAndConfirmApprovalTotalFee() {
+        await waitForVisible(by.text('Total including fee'));
+        await detoxExpect(element(by.text('Maximum fee'))).toBeVisible();
+        await TrezorUserEnvLink.pressYes();
+    }
+
     async signTransaction() {
         await TrezorUserEnvLink.pressYes();
     }
 
     async expectSendTransactionButton() {
         await waitForVisible(this.getElementById('footer/submit-button'));
+    }
+
+    async confirmTransaction() {
+        await this.getElementById('footer/submit-button').tap();
     }
 
     async cancelTransaction() {
