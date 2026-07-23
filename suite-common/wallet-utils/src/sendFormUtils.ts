@@ -682,6 +682,14 @@ export const getMevProtectedTxData = (
     return hex;
 };
 
+// Whether a send is genuinely private, i.e. exactly the case where getMevProtectedTxData drops
+// disableAlternativeRPC and the tx is broadcast through the alternative relay (MEV protection on AND
+// a relay-capable network). This is the condition under which the tx must be recorded and declared
+// to blockbook as privatePending. isMevProtectionEnabled is expected to already fold in the
+// message-system feature flag, as the send and walletconnect flows do.
+export const isMevPrivateSend = (symbol: NetworkSymbol, isMevProtectionEnabled: boolean): boolean =>
+    isMevProtectionEnabled && getNetwork(symbol).features.includes('mev-protection');
+
 export const isExchangeTradingForm = (
     form: FormStateTrading | undefined,
 ): form is FormStateTradingExchange => form?.activeSection === 'exchange';

@@ -35,6 +35,7 @@ import {
     isEvmApprovalTxByTextSignature,
     isEvmYieldTxByTextSignature,
     isExchangeTradingForm,
+    isMevPrivateSend,
     isRbfCancelTransaction,
     subunitsToUnits,
     tryGetAccountIdentity,
@@ -84,6 +85,7 @@ import {
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 import { syncAccountsWithBlockchainThunk } from '../blockchain/blockchainThunks';
+import { privatePendingActions } from '../privatePending/privatePendingActions';
 import {
     selectAreSatsAmountUnit,
     selectBitcoinAmountUnit,
@@ -478,6 +480,24 @@ export const pushSendFormTransactionThunk = createThunk<
                     ethereumNonce: resolvedEthereumNonce,
                 }),
             );
+
+            // Record a genuinely-private (MEV-protected / relay-routed) EVM send so the account's
+            // subsequent getAccountInfo / estimateFee requests declare it to blockbook as
+            // privatePending (trezor/blockbook#1639). Gated by isMevPrivateSend so public sends never
+            // declare; the entry is pruned once the nonce confirms (see privatePendingReducer).
+            if (
+                selectedAccount.networkType === 'ethereum' &&
+                resolvedEthereumNonce !== undefined &&
+                isMevPrivateSend(selectedAccount.symbol, isMevProtectionEnabled)
+            ) {
+                dispatch(
+                    privatePendingActions.privatePendingAdded({
+                        accountKey: selectedAccount.key,
+                        nonce: Number(resolvedEthereumNonce),
+                        txid,
+                    }),
+                );
+            }
         } else {
             dispatch(
                 notificationsActions.addToast({

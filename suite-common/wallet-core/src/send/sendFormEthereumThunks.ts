@@ -23,6 +23,7 @@ import {
 import {
     asAmountSubunit,
     asAmountUnit,
+    buildEvmEstimateSpecific,
     calculateMax,
     calculateTotal,
     calculateTotalGasCost,
@@ -57,6 +58,7 @@ import {
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
+import { selectAccountPrivatePendingNonces } from '../privatePending/privatePendingReducer';
 import { selectAddressDisplayType } from '../settings/walletSettingsReducer';
 import { selectAccountTransactions } from '../transactions/transactionsSelectors';
 
@@ -319,10 +321,15 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
             identity: getAccountIdentity(account),
             request: {
                 blocks: [2],
-                specific: {
-                    from: account.descriptor,
-                    ...ethereumEstimateFeeParams,
-                },
+                // Route the estimate to the relay's pending-private state when this account has
+                // in-flight private txs (presence-only; no-op otherwise). See trezor/blockbook#1639.
+                specific: buildEvmEstimateSpecific(
+                    {
+                        from: account.descriptor,
+                        ...ethereumEstimateFeeParams,
+                    },
+                    selectAccountPrivatePendingNonces(getState(), account.key),
+                ),
             },
         });
 

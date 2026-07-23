@@ -9,11 +9,17 @@ import { type Network, getNetwork, networksCollection } from '@suite-common/wall
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     ethereumGetCurrentNonceThunk,
+    privatePendingActions,
     selectAccounts,
     selectIsMevProtectionEnabled,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getAccountIdentity, getMevProtectedTxData, sanitizeHex } from '@suite-common/wallet-utils';
+import {
+    getAccountIdentity,
+    getMevProtectedTxData,
+    isMevPrivateSend,
+    sanitizeHex,
+} from '@suite-common/wallet-utils';
 import TrezorConnect, {
     type CallMethodResponse,
     type EthereumSignTypedData,
@@ -217,6 +223,25 @@ const ethereumRequestThunk = createThunk<
             if (!pushResponse.success) {
                 console.error('eth_sendTransaction push error', pushResponse);
                 throw new Error('eth_sendTransaction push error');
+            }
+
+            // Record a genuinely-private (MEV-protected / relay-routed) WalletConnect send so the
+            // account's subsequent read requests declare it to blockbook as privatePending
+            // (trezor/blockbook#1639); pruned once the nonce confirms. Uses the same combined MEV
+            // condition as the broadcast above.
+            if (
+                isMevPrivateSend(
+                    account.symbol,
+                    isMevProtectionEnabled && isMevProtectionFeatureEnabled,
+                )
+            ) {
+                dispatch(
+                    privatePendingActions.privatePendingAdded({
+                        accountKey: account.key,
+                        nonce: Number(nonce),
+                        txid: pushResponse.payload.txid,
+                    }),
+                );
             }
 
             return pushResponse.payload.txid;

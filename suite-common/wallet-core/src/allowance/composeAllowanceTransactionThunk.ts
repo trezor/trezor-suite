@@ -7,13 +7,18 @@ import {
     type FeeLevelLabel,
     type PrecomposedLevels,
 } from '@suite-common/wallet-types';
-import { findToken, getAccountIdentity } from '@suite-common/wallet-utils';
+import {
+    buildEvmEstimateSpecific,
+    findToken,
+    getAccountIdentity,
+} from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { BigNumber, typedObjectFromEntries } from '@trezor/utils';
 
 import { ALLOWANCE_MODULE_PREFIX } from './allowanceConstants';
 import { buildAllowanceTransaction } from './buildAllowanceTransaction';
 import { ETHEREUM_ADJUST_GAS_LIMIT } from '../fees/feesUtils';
+import { selectAccountPrivatePendingNonces } from '../privatePending/privatePendingReducer';
 import { type ComposeFeeLevelsError } from '../send/sendFormTypes';
 
 export interface ComposeAllowanceTransactionThunkParams {
@@ -36,7 +41,10 @@ export const composeAllowanceTransactionThunk = createThunk<
     { rejectValue: ComposeFeeLevelsError }
 >(
     `${ALLOWANCE_MODULE_PREFIX}/composeAllowanceTransactionThunk`,
-    async ({ feeInfo, account, contract, selectedFee, customFee, data }, { rejectWithValue }) => {
+    async (
+        { feeInfo, account, contract, selectedFee, customFee, data },
+        { rejectWithValue, getState },
+    ) => {
         const token = findToken(account.tokens, contract);
 
         if (!token) {
@@ -51,12 +59,17 @@ export const composeAllowanceTransactionThunk = createThunk<
             identity: getAccountIdentity(account),
             request: {
                 blocks: [2],
-                specific: {
-                    from: account.descriptor,
-                    to: contract,
-                    value: '0x0',
-                    data,
-                },
+                // Route the estimate to the relay's pending-private state when this account has
+                // in-flight private txs (presence-only; no-op otherwise). See trezor/blockbook#1639.
+                specific: buildEvmEstimateSpecific(
+                    {
+                        from: account.descriptor,
+                        to: contract,
+                        value: '0x0',
+                        data,
+                    },
+                    selectAccountPrivatePendingNonces(getState(), account.key),
+                ),
             },
         });
 
