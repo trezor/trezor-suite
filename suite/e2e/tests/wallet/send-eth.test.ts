@@ -40,7 +40,8 @@ test.describe('Send Eth', { tag: ['@T3W1', '@T3T1'] }, () => {
             await walletPage.openSendFormButton.click();
             // Race condition 1:5, if input is filled before form completely loads then
             // input will be cleared and test will fail. As a workaround we wait for fees to be loaded.
-            await tradingPage.fees.expectEthereumFeeCalculated();
+            // Seems to be resolved as fees do not load until form is filled
+            //await tradingPage.fees.expectEthereumFeeCalculated();
             await tradingPage.sendAddressInput.fill(sendAddress);
             await tradingPage.sendAmountInput.fill(sendAmount);
             await tradingPage.fees.setEthereumCustomFees({

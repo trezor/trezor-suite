@@ -17,7 +17,6 @@ export class FeeSection {
     readonly rateOnCard = (feeType: FeeTypes) => this.page.getByTestId(`@fee-card/${feeType}-rate`);
     readonly collapsibleFeesToggle: Locator;
     readonly collapsibleFees: Locator;
-    readonly maxFeeLoading: Locator;
     readonly customInput: Locator;
     readonly maxFee: Locator;
     readonly maxFeeWithSymbol: Locator;
@@ -33,7 +32,6 @@ export class FeeSection {
     constructor(private readonly page: Page) {
         this.collapsibleFeesToggle = this.page.getByTestId('@wallet/fees/collapsible-fees-toggle');
         this.collapsibleFees = this.page.getByTestId('@wallet/fees/collapsible-fees');
-        this.maxFeeLoading = this.page.getByTestId('@trading/quote/maximum-fee-amount-loading');
         this.customInput = this.page.getByTestId('feePerUnit');
         this.maxFee = this.page.getByTestId('@trading/quote/maximum-fee-amount');
         this.maxFeeWithSymbol = this.page.getByTestId(
@@ -59,8 +57,7 @@ export class FeeSection {
             return;
         }
 
-        // Wait for maximum fee to be calculated
-        await this.maxFeeLoading.waitFor({ state: 'hidden', timeout: 5000 });
+        await expect(this.maximumFeeAmountToBeCalculated).toBeHidden();
 
         const isDisabled = await this.collapsibleFeesToggle.getAttribute('aria-disabled');
 

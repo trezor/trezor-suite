@@ -8,11 +8,8 @@ export class YieldFlowSection {
     // Continue button of the shared allowance approve modal opened by the approve step
     readonly approveModalContinueButton: Locator;
     readonly pendingTransactionLabel: Locator;
-    readonly approvedToast: Locator;
-    readonly approvedToastAmount: Locator;
     // Deposit step
     readonly depositButton: Locator;
-    readonly depositedToast: Locator;
     // Flow-complete screen
     readonly flowCompleteHeading: Locator;
     readonly flowCompleteStatus: Locator;
@@ -26,10 +23,7 @@ export class YieldFlowSection {
         this.approveButton = this.page.getByTestId('@yield/form/approve-button');
         this.approveModalContinueButton = this.page.getByTestId('@modal/approve/continue-button');
         this.pendingTransactionLabel = this.page.getByTestId('@pending-transaction/title');
-        this.approvedToast = this.page.getByTestId('@toast/tx-approved');
-        this.approvedToastAmount = this.page.getByTestId('@toast/tx-approved/amount');
         this.depositButton = this.page.getByTestId('@yield/form/deposit-button');
-        this.depositedToast = this.page.getByTestId('@toast/tx-yield-deposit');
         this.flowCompleteHeading = this.page.getByTestId('@yield/flow-complete/heading');
         this.flowCompleteStatus = this.page.getByTestId('@yield/flow-complete/status');
         this.flowCompleteApy = this.page.getByTestId('@earn/dashboard/apy-percentage');

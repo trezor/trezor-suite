@@ -121,7 +121,7 @@ export const ApproveModal = (props: ApproveModalProps) => {
                             <Text typographyStyle="body-sm">
                                 <Translation id="TR_ACCOUNT" />
                             </Text>
-                            <Row gap={8}>
+                            <Row gap={8} data-testid="@modal/approve/account-value">
                                 <NetworkIcon networkSymbol={account.symbol} size={20} />
                                 <AccountLabeling
                                     account={account}

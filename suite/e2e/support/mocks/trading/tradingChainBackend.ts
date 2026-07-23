@@ -20,6 +20,8 @@ import {
 export interface TradingChainBackend {
     readonly backendType: BackendType;
     readonly url: string;
+    /** Txid of the broadcast answered locally by blockBroadcast(), once it has happened. */
+    lastBroadcastTxid: string | undefined;
     start(): Promise<void>;
     stop(): Promise<void>;
     blockBroadcast(): void;
@@ -46,7 +48,7 @@ const extractTxSignature = (base64Tx: string) =>
 class SolanaTradingBackend implements TradingChainBackend {
     readonly backendType: BackendType = 'solana';
     private readonly server = new SolanaRpcServerMock(SOL_UPSTREAM_URL);
-    private readonly blockedSignatures: string[] = [];
+    lastBroadcastTxid: string | undefined;
 
     get url() {
         return this.server.url;
@@ -54,14 +56,14 @@ class SolanaTradingBackend implements TradingChainBackend {
 
     blockBroadcast() {
         this.server.setHandler('sendTransaction', ([base64Tx]) => {
-            this.blockedSignatures.push(extractTxSignature(String(base64Tx ?? '')));
+            this.lastBroadcastTxid = extractTxSignature(String(base64Tx ?? ''));
 
             return sendTransactionResponse('0').result;
         });
 
         // Fake confirmation only for the blocked sends; other signature queries stay live.
         this.server.setHandler('getSignatureStatuses', ([signatures]) =>
-            (signatures as string[])?.some(signature => this.blockedSignatures.includes(signature))
+            (signatures as string[])?.some(signature => this.lastBroadcastTxid === signature)
                 ? getSignatureStatusesResponse('0').result
                 : PASSTHROUGH,
         );
@@ -81,6 +83,7 @@ class SolanaTradingBackend implements TradingChainBackend {
 class BlockbookTradingBackend implements TradingChainBackend {
     readonly backendType: BackendType = 'blockbook';
     private readonly proxy: BlockbookProxyMock;
+    lastBroadcastTxid: string | undefined;
 
     constructor(
         upstreamUrl: string,
@@ -96,8 +99,10 @@ class BlockbookTradingBackend implements TradingChainBackend {
     blockBroadcast() {
         this.proxy.setHandler('sendTransaction', params => {
             const { hex } = params as { hex: string };
+            const txid = this.deriveTxid(hex);
+            this.lastBroadcastTxid = txid;
 
-            return { result: this.deriveTxid(hex) };
+            return { result: txid };
         });
     }
 

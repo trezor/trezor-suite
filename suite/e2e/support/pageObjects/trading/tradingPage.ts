@@ -4,6 +4,7 @@ import { messages } from '@suite/intl';
 import type { TradingCountryCode } from '@suite-common/trading';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
+import { TradingApprovalModal } from './approvalModal';
 import { TradingAssetPicker } from './assetsModal';
 import { TradingConfirmationModal } from './confirmationModal';
 import { TradingTransactionsSection } from './transactionsSection';
@@ -24,6 +25,7 @@ export class TradingPage {
     readonly receiveAccount: TradingReceiveAccount;
     readonly quotes: TradingQuotesSection;
     readonly confirmation: TradingConfirmationModal;
+    readonly approvalModal: TradingApprovalModal;
     readonly inputs: TradingFormInputs;
     readonly transactionDetailSidebar: TransactionDetailSidebar;
 
@@ -36,6 +38,11 @@ export class TradingPage {
     readonly swapBestOfferButton: Locator;
     readonly kycWarning: Locator;
     readonly proceedToPayButton: Locator;
+    readonly approveSpendingButton: Locator;
+    readonly pendingApprovalTransactionLabel: Locator;
+    readonly pendingApprovalTransactionIdLabel: Locator;
+    readonly pendingApprovalTransactionId: Locator;
+    readonly swapButton: Locator;
     readonly backToAccountButton = (type: 'Buy' | 'Sell' | 'Swap') =>
         this.page.getByRole('button', { name: `Make another ${type}` });
 
@@ -51,6 +58,7 @@ export class TradingPage {
     readonly transactionDetailStatus: Locator;
     readonly transactionDetailHeader: Locator;
     readonly transactionDetail: Locator;
+    readonly transactionDetailTxid: Locator;
     readonly transactions: TradingTransactionsSection;
 
     // Swap toast notifications
@@ -67,6 +75,7 @@ export class TradingPage {
         this.receiveAccount = new TradingReceiveAccount(page);
         this.quotes = new TradingQuotesSection(page);
         this.confirmation = new TradingConfirmationModal(page, devicePrompt);
+        this.approvalModal = new TradingApprovalModal(page);
         this.inputs = new TradingFormInputs(page);
         this.transactionDetailSidebar = new TransactionDetailSidebar(page);
 
@@ -78,6 +87,15 @@ export class TradingPage {
         this.swapBestOfferButton = this.page.getByTestId('@trading/form/exchange-button');
         this.kycWarning = this.page.getByTestId('@trading/form/kyc-warning');
         this.proceedToPayButton = this.page.getByRole('button', { name: 'Proceed to pay' });
+        this.approveSpendingButton = this.page.getByTestId('@trading/form/approve-button');
+        this.pendingApprovalTransactionLabel = this.page.getByTestId('@pending-transaction/title');
+        this.pendingApprovalTransactionIdLabel = this.page.getByTestId(
+            '@pending-transaction/txid/label',
+        );
+        this.pendingApprovalTransactionId = this.page.getByTestId(
+            '@pending-transaction/txid/value',
+        );
+        this.swapButton = this.page.getByTestId('@trading/form/swap-button');
 
         // Swap
         this.sendAddressInput = this.page.getByTestId('outputs.0.address');
@@ -90,6 +108,7 @@ export class TradingPage {
         this.transactionDetailStatus = this.page.getByTestId('@trading/transaction/detail/status');
         this.transactionDetailHeader = this.page.getByTestId('@trading/transaction/detail/header');
         this.transactionDetail = this.page.getByTestId('@trading/transaction/detail');
+        this.transactionDetailTxid = this.page.getByTestId('@tx-detail/txid-value');
         this.transactions = new TradingTransactionsSection(page);
 
         // Swap toast notifications

@@ -37,7 +37,7 @@ export const AllowanceModalProviderInfo = ({
                 <Translation id={provider.label} />
             </Text>
             <Column alignItems="flex-end" gap={2}>
-                <Logo>
+                <Logo data-testid="@modal/approve/provider-value">
                     {provider.logo && (
                         <Row alignItems="center" justifyContent="center">
                             {typeof provider.logo === 'string' ? (
