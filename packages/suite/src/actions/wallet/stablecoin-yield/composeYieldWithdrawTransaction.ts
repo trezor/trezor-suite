@@ -14,8 +14,11 @@ import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
+import { isArrayMember } from '@trezor/utils';
 
 import type { AppState, Dispatch } from 'src/types/suite';
+
+const YIELD_VAULT_NETWORK_SYMBOLS = ['eth', 'op', 'arb', 'base'] as const;
 
 export type ComposeYieldWithdrawTransactionParams = {
     account: Account & { networkType: 'ethereum' };
@@ -35,6 +38,10 @@ export const composeYieldWithdrawTransaction = async ({
     getState,
 }: ComposeYieldWithdrawTransactionParams): Promise<Result<string, YieldFeeEstimationError>> => {
     const { vault } = flowData;
+
+    if (!isArrayMember(account.symbol, YIELD_VAULT_NETWORK_SYMBOLS)) {
+        throw new Error(`Network ${account.symbol} does not support stablecoin yield vaults.`);
+    }
 
     const { address: vaultAddress } = await getYieldVault({
         routeParams: {

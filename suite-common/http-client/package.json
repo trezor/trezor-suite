@@ -8,10 +8,13 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest"
     },
     "dependencies": {
-        "up-fetch": "2.6.0",
+        "up-fetch": "2.6.0"
+    },
+    "devDependencies": {
         "zod": "4.3.6"
     }
 }
