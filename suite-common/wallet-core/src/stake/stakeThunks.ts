@@ -43,19 +43,33 @@ export const initStakeDataThunk = createThunk(
                 params: { networks: PROD_STAKING_SYMBOLS },
             });
 
-            // A part of the batch requests failed
+            // A part of the batch requests failed.
             if (stakingData.errors.length) {
-                console.error('Upstream error', stakingData.errors);
+                const failedNetworkSymbols = PROD_STAKING_SYMBOLS.filter(
+                    symbol => !stakingData.data.some(item => item.symbol === symbol),
+                );
+                const errorSummary = stakingData.errors
+                    .map(({ code, message }) => `${code}: ${message}`)
+                    .join('; ');
+
+                // Deliberately console.warn, not console.error: captureConsoleIntegration turns
+                // error-level logs into Sentry events on all platforms (objects render there as
+                // "[object Object]"), and these partial upstream failures are user-unactionable
+                // and already reported with full fidelity by the earn-staking worker itself.
+                console.warn(
+                    `Staking batch upstream error (${failedNetworkSymbols.join(', ')}): ${errorSummary}`,
+                );
             }
 
             dispatch(stakeDataActions.fetchStakeDataSuccess(stakingData.data));
         } catch (error) {
-            console.error(error);
-            dispatch(
-                stakeDataActions.fetchStakeDataFailure(
-                    error instanceof Error ? error.message : 'Unknown error',
-                ),
-            );
+            const message = error instanceof Error ? error.message : 'Unknown error';
+
+            // Also console.warn: a whole-batch failure is transient network noise (client
+            // offline, worker outage) and this thunk retries every 60 seconds, so an
+            // error-level log would flood Sentry for the outage duration.
+            console.warn(`Staking batch request failed: ${message}`);
+            dispatch(stakeDataActions.fetchStakeDataFailure(message));
         }
     },
 );
