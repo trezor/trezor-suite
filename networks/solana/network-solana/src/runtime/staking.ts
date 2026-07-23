@@ -17,7 +17,6 @@ import {
     EVERSTAKE_SOLANA_MAINNET_VALIDATOR,
     EVERSTAKE_VOTER_PUBKEYS,
     MAX_CLAIM_ACCOUNTS,
-    MAX_DEACTIVATE_ACCOUNTS,
     MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
     MIN_STAKE_DELEGATION,
     STAKE_ACCOUNT_V2_SIZE,
@@ -242,8 +241,8 @@ export const unstake = async ({
                 remaining -= stakeAmount;
                 i++;
 
-                // Max num of deactivate instructions reached
-                if (accountsToDeactivate.length === MAX_DEACTIVATE_ACCOUNTS) {
+                // Same cap as the split path, so a full unstake hits the same per-tx account limit.
+                if (accountsToDeactivate.length === MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT) {
                     break;
                 }
                 continue;
