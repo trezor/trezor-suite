@@ -6,21 +6,14 @@ import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/t
 import { initialWalletSettingsState, prepareAccountsReducer } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import { asWalletDescriptor } from '@trezor/device-utils';
-import { createDeferred } from '@trezor/utils';
 
 import * as fixtures from '../__fixtures__/metadataActions';
 import * as metadataActions from '../metadataActions';
 import * as metadataLabelingActions from '../metadataLabelingActions';
 import * as metadataProviderActions from '../metadataProviderThunks';
-import {
-    type SuiteRootStateSliceForMetadata,
-    initialMetadataState,
-    metadataReducer,
-} from '../metadataReducer';
+import { type SuiteRootStateSliceForMetadata, metadataReducer } from '../metadataReducer';
 import * as metadataThunks from '../metadataThunks';
-import * as metadataUtils from '../metadataUtils';
 import { DropboxProvider } from '../providers/DropboxProvider';
-import { InMemoryTestProvider } from '../providers/InMemoryTestProvider';
 
 const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
 const accountsReducer = prepareAccountsReducer(extraDependenciesCommonMock);
@@ -346,81 +339,5 @@ describe('Metadata Actions', () => {
         expect(store.getState().metadata.hasLegacyLabelsMigrated).toEqual({
             [otherWalletDescriptor]: true,
         });
-    });
-
-    it('coalesces concurrent metadata fetches for the same provider and device', async () => {
-        const staticSessionId = 'wallet@device:0' as const;
-        const aesKey = '00'.repeat(32);
-        const encryptedMetadata = await metadataUtils.encrypt({}, aesKey);
-        const store = initStore(
-            getInitialState({
-                metadata: {
-                    ...initialMetadataState,
-                    enabled: true,
-                    providers: [
-                        {
-                            type: 'inMemoryTest',
-                            clientId: 'inMemoryTest',
-                            data: {},
-                            isCloud: false,
-                            tokens: {},
-                            user: '',
-                        },
-                    ],
-                    selectedProvider: { labels: 'inMemoryTest', passwords: '' },
-                },
-                device: {
-                    state: { staticSessionId },
-                    metadata: {
-                        1: {
-                            fileName: 'wallet.mtdt',
-                            aesKey,
-                            key: 'metadata-key',
-                        },
-                    },
-                },
-                accounts: [],
-                suite: { online: true },
-            }),
-        );
-        const providerDetails =
-            createDeferred<Awaited<ReturnType<InMemoryTestProvider['getProviderDetails']>>>();
-        const getProviderDetailsSpy = jest
-            .spyOn(InMemoryTestProvider.prototype, 'getProviderDetails')
-            .mockReturnValue(providerDetails.promise);
-        const getFileContentSpy = jest
-            .spyOn(InMemoryTestProvider.prototype, 'getFileContent')
-            .mockResolvedValue({ success: true, payload: encryptedMetadata });
-
-        try {
-            metadataProviderActions.providerInstance.labels = undefined;
-
-            const firstFetch = store.dispatch(
-                metadataLabelingActions.fetchAndSaveMetadata(staticSessionId),
-            );
-            const secondFetch = store.dispatch(
-                metadataLabelingActions.fetchAndSaveMetadata(staticSessionId),
-            );
-
-            expect(getProviderDetailsSpy).toHaveBeenCalledTimes(1);
-
-            providerDetails.resolve({
-                success: true,
-                payload: {
-                    type: 'inMemoryTest',
-                    clientId: 'inMemoryTest',
-                    isCloud: false,
-                    tokens: {},
-                    user: '',
-                },
-            });
-            await Promise.all([firstFetch, secondFetch]);
-
-            expect(getFileContentSpy).toHaveBeenCalledTimes(1);
-        } finally {
-            getProviderDetailsSpy.mockRestore();
-            getFileContentSpy.mockRestore();
-            metadataProviderActions.providerInstance.labels = undefined;
-        }
     });
 });

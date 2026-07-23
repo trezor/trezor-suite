@@ -2,7 +2,12 @@ import { sha256 } from '@noble/hashes/sha2.js';
 import { base58check as createBase58check } from '@scure/base';
 import * as crypto from 'crypto';
 
-import { type DataType, type MetadataProvider } from '@suite-common/metadata-types';
+import {
+    type DataType,
+    type MetadataEncryptionVersion,
+    type MetadataProvider,
+} from '@suite-common/metadata-types';
+import { type Account } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';
 import { getIndexOrThrow } from '@trezor/utils';
 
@@ -62,6 +67,25 @@ export const deriveFilenameForLabeling = (metaKey: string, encryptionVersion: nu
     const extension = '.mtdt';
 
     return `${name}${postfix}${extension}`;
+};
+
+export const getAccountWithMetadataKey = (
+    account: Account,
+    deviceMetadataKey: string,
+    encryptionVersion: MetadataEncryptionVersion,
+) => {
+    const metadataKey = deriveMetadataKey(deviceMetadataKey, account.metadata.key);
+
+    return {
+        ...account,
+        metadata: {
+            ...account.metadata,
+            [encryptionVersion]: {
+                fileName: deriveFilenameForLabeling(metadataKey, encryptionVersion),
+                aesKey: deriveAesKey(metadataKey),
+            },
+        },
+    };
 };
 
 const getRandomIv = (): Promise<Buffer> =>

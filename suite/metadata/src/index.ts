@@ -4,6 +4,7 @@ export * as metadataThunks from './metadataThunks';
 export { default as GoogleClient } from './google';
 export * from './metadataProviderThunks';
 export * as metadataLabelingActions from './metadataLabelingActions';
+export { fetchAndSaveMetadata } from './fetchAndSaveMetadata';
 export * as metadataLabelingConstants from './metadataLabelingConstants';
 export * as METADATA from './metadataConstants';
 export { moveLabelsForRbfOldMetadataThunk } from './moveLabelsForRbfOldMetadataThunk';

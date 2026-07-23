@@ -6,6 +6,7 @@ import { fixLoadedCoinjoinAccount } from '@suite/coinjoin';
 import type { FlagsState } from '@suite/flags';
 import { lockDevice } from '@suite/locks';
 import {
+    fetchAndSaveMetadata,
     metadataActions,
     metadataLabelingActions,
     selectLabelingDataForAccount,
@@ -210,7 +211,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
 export const extraDependencies: ExtraDependenciesStatic = {
     thunks: {
         initMetadata: metadataLabelingActions.init,
-        fetchAndSaveMetadata: metadataLabelingActions.fetchAndSaveMetadata,
+        fetchAndSaveMetadata,
         addAccountMetadata: metadataLabelingActions.addAccountMetadata,
         forgetBluetoothDevice: forgetBluetoothDeviceThunk,
     },
