@@ -1,56 +1,20 @@
 import { Translation } from '@suite/intl';
 import { goto } from '@suite/router';
-import { Box, Button, Column, Image, Paragraph, Row, Text } from '@trezor/components';
+import { Image } from '@trezor/components';
 
-import { useDispatch, useLayoutSize } from 'src/hooks/suite';
-import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
+import { useDispatch } from 'src/hooks/suite';
 
-import { CloseButton } from './CommonPromoBannerComponents';
+import { Banner } from './Banner';
+import { useBannerResponsiveValue } from './useBannerResponsiveValue';
 
 type StablecoinYieldBannerProps = {
     onClose: () => void;
     onCTAClick: () => void;
 };
 
-const Title = ({ isVerticalLayout }: { isVerticalLayout: boolean }) => {
-    const { isBelowLaptop } = useLayoutSize();
-
-    return (
-        <Paragraph
-            typographyStyle={isBelowLaptop ? 'headline-sm' : 'headline-md'}
-            flex="1"
-            margin={{ right: isVerticalLayout ? 32 : 0 }}
-        >
-            <Translation id="TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_TITLE" />
-        </Paragraph>
-    );
-};
-
-const Description = () => {
-    const { isBelowDesktop } = useLayoutSize();
-
-    return (
-        <Text typographyStyle={isBelowDesktop ? 'body-sm-strong' : 'headline-sm'}>
-            <Translation id="TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_DESCRIPTION" />
-        </Text>
-    );
-};
-
-const CTAButton = ({ onClick, isBelowLaptop }: { onClick: () => void; isBelowLaptop: boolean }) => (
-    <Button
-        intent="brand"
-        onClick={onClick}
-        size={isBelowLaptop ? 'medium' : 'large'}
-        data-testid="@dashboard/promo-banner/stablecoin-yield/button"
-    >
-        <Translation id="TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_BUTTON" />
-    </Button>
-);
-
 export const StablecoinYieldBanner = ({ onClose, onCTAClick }: StablecoinYieldBannerProps) => {
     const dispatch = useDispatch();
-    const { isBelowLaptop, isBelowDesktop } = useLayoutSize();
-    const isVerticalLayout = useIsContentBelowBreakpoint();
+    const getBannerResponsiveValue = useBannerResponsiveValue();
 
     const handleCTAClick = () => {
         onCTAClick();
@@ -58,39 +22,30 @@ export const StablecoinYieldBanner = ({ onClose, onCTAClick }: StablecoinYieldBa
     };
 
     return (
-        <Box
-            height={isVerticalLayout ? undefined : 213}
-            padding={{ left: 24, top: isVerticalLayout ? 16 : 0 }}
-            backgroundColor="elementFillNeutralSofter"
-        >
-            <ContentFlex
-                height="100%"
-                margin={{
-                    right: isBelowDesktop ? undefined : 48,
-                }}
-                justifyContent="space-between"
-                gap={24}
-                alignItems="center"
-            >
-                <Column gap={isBelowDesktop ? 16 : 24}>
-                    <Column gap={isBelowLaptop ? 4 : 8}>
-                        <Title isVerticalLayout={isVerticalLayout} />
-                        <Description />
-                    </Column>
-
-                    <CTAButton onClick={handleCTAClick} isBelowLaptop={isBelowLaptop} />
-                </Column>
-
-                <Row height="100%" alignItems="flex-end">
-                    <Image
-                        image="DASHBOARD_PROMO_BANNER_STABLECOIN_YIELD"
-                        height="100%"
-                        objectFit="cover"
-                        objectPosition="left"
-                    />
-                </Row>
-            </ContentFlex>
-            <CloseButton onClose={onClose} />
-        </Box>
+        <Banner
+            title={<Translation id="TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_TITLE" />}
+            description={
+                <Translation id="TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_DESCRIPTION" />
+            }
+            ctaLabel={<Translation id="TR_PROMO_BANNER_DASHBOARD_STABLECOIN_YIELD_BUTTON" />}
+            onCTAClick={handleCTAClick}
+            onClose={onClose}
+            data-testid="@dashboard/promo-banner/stablecoin-yield/button"
+            image={
+                <Image
+                    image="DASHBOARD_PROMO_BANNER_STABLECOIN_YIELD"
+                    height="100%"
+                    width="100%"
+                    objectFit={getBannerResponsiveValue({
+                        default: 'cover',
+                        laptop: 'contain',
+                    })}
+                    objectPosition={getBannerResponsiveValue({
+                        default: 'center',
+                        tablet: 'top',
+                    })}
+                />
+            }
+        />
     );
 };
