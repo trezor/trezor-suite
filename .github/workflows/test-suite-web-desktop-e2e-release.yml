@@ -11,6 +11,9 @@ on:
   push:
     branches:
       - release/2*
+  pull_request:
+    paths:
+      - .github/workflows/test-suite-web-desktop-e2e-release.yml
   workflow_dispatch:
     inputs:
       publish_results_to_github:
