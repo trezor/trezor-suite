@@ -61,7 +61,6 @@ export {
     type TokenIconProps,
     type TokenIconSize,
 } from './components/TokenIcon/tokenIconTypes';
-export { shouldShowNetworkIcon } from './components/TokenIcon/tokenIconUtils';
 export * from './components/TokenIconSet/TokenIconSet';
 export { TooltipRow } from './components/TooltipRow/TooltipRow';
 export * from './components/TopAssets/TopAssets';
