@@ -271,8 +271,20 @@ export class DropboxProvider extends AbstractMetadataProvider {
                 case 403:
                     return this.error('ACCESS_ERROR', message);
                 case 409: // endpoint specific error
-                case 429: // rate limit error
                     return this.error('RATE_LIMIT_ERROR', message);
+                case 429: {
+                    const retryAfter =
+                        err.headers?.get?.('retry-after') ??
+                        err.headers?.['retry-after'] ??
+                        err.headers?.['Retry-After'];
+                    const retryAfterSeconds = Number(retryAfter);
+                    const retryAfterMs =
+                        Number.isFinite(retryAfterSeconds) && retryAfterSeconds >= 0
+                            ? retryAfterSeconds * 1000
+                            : undefined;
+
+                    return this.error('RATE_LIMIT_ERROR', message, retryAfterMs);
+                }
                 default:
                 // intentional fall-through
             }

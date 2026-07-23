@@ -42,6 +42,11 @@ const getLabelableEntities =
 
 type LabelableEntity = ReturnType<ReturnType<typeof getLabelableEntities>>[number];
 
+const inFlightMetadataFetches = new Map<
+    ReturnType<typeof metadataUtils.getFetchTrackingId>,
+    Promise<unknown>
+>();
+
 const fetchMetadata =
     ({
         provider,
@@ -162,7 +167,7 @@ const syncMetadataKeys =
         // keys sooner when enabling labeling on device;
     };
 
-export const fetchAndSaveMetadata =
+const fetchAndSaveMetadataForDevice =
     (deviceStateArg?: StaticSessionId) =>
     async (dispatch: Dispatch, getState: () => MetadataRootState) => {
         const provider = selectSelectedProviderForLabels(getState());
@@ -265,6 +270,40 @@ export const fetchAndSaveMetadata =
                     clientId: provider.clientId,
                 }),
             );
+        }
+    };
+
+export const fetchAndSaveMetadata =
+    (deviceStateArg?: StaticSessionId) =>
+    async (dispatch: Dispatch, getState: () => MetadataRootState) => {
+        const provider = selectSelectedProviderForLabels(getState());
+        const device = deviceStateArg
+            ? selectDeviceByStaticSessionId(getState(), deviceStateArg)
+            : selectSelectedDevice(getState());
+
+        if (!provider || !device?.state?.staticSessionId) {
+            return;
+        }
+
+        const fetchTrackingId = metadataUtils.getFetchTrackingId(
+            'labels',
+            provider.clientId,
+            device.state.staticSessionId,
+        );
+        const existingFetchPromise = inFlightMetadataFetches.get(fetchTrackingId);
+        if (existingFetchPromise) {
+            return existingFetchPromise;
+        }
+
+        const fetchPromise = fetchAndSaveMetadataForDevice(deviceStateArg)(dispatch, getState);
+        inFlightMetadataFetches.set(fetchTrackingId, fetchPromise);
+
+        try {
+            await fetchPromise;
+        } finally {
+            if (inFlightMetadataFetches.get(fetchTrackingId) === fetchPromise) {
+                inFlightMetadataFetches.delete(fetchTrackingId);
+            }
         }
     };
 

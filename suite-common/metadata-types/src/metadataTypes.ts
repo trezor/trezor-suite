@@ -101,10 +101,14 @@ export type Error = {
     success: false;
     code: keyof typeof ProviderErrorReason;
     error: string;
+    retryAfterMs?: number;
 };
 export type Result<T> = Promise<Success<T> | Error>;
 
 export abstract class AbstractMetadataProvider {
+    private apiRequestQueue: Promise<unknown> = Promise.resolve();
+    private apiRequestCooldownUntil = 0;
+
     /* isCloud means that this provider is not local and allows multi client sync. These providers are suitable for backing up data. */
     abstract isCloud: boolean;
 
@@ -150,41 +154,79 @@ export abstract class AbstractMetadataProvider {
         return { success } as const;
     }
 
-    error(code: keyof typeof ProviderErrorReason, reason: string) {
+    error(code: keyof typeof ProviderErrorReason, reason: string, retryAfterMs?: number) {
         const success = false as const;
 
         return {
             success,
             code,
             error: reason,
+            ...(retryAfterMs === undefined ? {} : { retryAfterMs }),
         } as const;
+    }
+
+    private getRetryDelay(error: Error, retry: number, delay: number) {
+        if (error.code === 'RATE_LIMIT_ERROR' && error.retryAfterMs !== undefined) {
+            return error.retryAfterMs;
+        }
+
+        const exponentialDelay = delay * 2 ** retry;
+        const jitter = Math.floor(Math.random() * delay);
+
+        return exponentialDelay + jitter;
+    }
+
+    private async waitForApiRequestCooldown() {
+        const delay = this.apiRequestCooldownUntil - Date.now();
+
+        if (delay > 0) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+        }
+    }
+
+    private async runApiRequest(
+        fn: () => Result<any>,
+        { retries, delay }: { retries: number; delay: number },
+    ): Result<any> {
+        let retried = 0;
+
+        while (true) {
+            await this.waitForApiRequestCooldown();
+
+            const result = await fn();
+
+            if (result.success) {
+                return result;
+            }
+
+            const retryDelay = this.getRetryDelay(result, retried, delay);
+            if (result.code === 'RATE_LIMIT_ERROR') {
+                this.apiRequestCooldownUntil = Math.max(
+                    this.apiRequestCooldownUntil,
+                    Date.now() + retryDelay,
+                );
+            }
+
+            if (retried >= retries) {
+                return result;
+            }
+
+            retried++;
+            await new Promise(resolve => setTimeout(resolve, retryDelay));
+        }
     }
 
     scheduleApiRequest<T extends () => ReturnType<R>, R extends (...args: any) => Result<any>>(
         fn: T,
         options: { retries: number; delay: number } = { retries: 3, delay: 1000 },
     ) {
-        let retried = 0;
+        const request = this.apiRequestQueue.then(() => this.runApiRequest(fn, options)) as Promise<
+            Awaited<ReturnType<R>>
+        >;
 
-        return new Promise<Awaited<ReturnType<R>>>(resolve => {
-            const { retries, delay } = options;
-            const run = async () => {
-                const res = await fn();
+        this.apiRequestQueue = request.catch(() => undefined);
 
-                if (res.success) {
-                    return resolve(res);
-                }
-
-                if (retries > 0 && retried < retries) {
-                    retried++;
-                    setTimeout(run, delay);
-                } else {
-                    // reached retries limit, return error
-                    resolve(res);
-                }
-            };
-            run();
-        });
+        return request;
     }
 }
 
