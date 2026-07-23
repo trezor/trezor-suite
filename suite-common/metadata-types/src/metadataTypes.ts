@@ -105,6 +105,8 @@ export type Error = {
 export type Result<T> = Promise<Success<T> | Error>;
 
 export abstract class AbstractMetadataProvider {
+    private apiRequestQueue: Promise<unknown> = Promise.resolve();
+
     /* isCloud means that this provider is not local and allows multi client sync. These providers are suitable for backing up data. */
     abstract isCloud: boolean;
 
@@ -160,9 +162,9 @@ export abstract class AbstractMetadataProvider {
         } as const;
     }
 
-    scheduleApiRequest<T extends () => ReturnType<R>, R extends (...args: any) => Result<any>>(
+    private runApiRequest<T extends () => ReturnType<R>, R extends (...args: any) => Result<any>>(
         fn: T,
-        options: { retries: number; delay: number } = { retries: 3, delay: 1000 },
+        options: { retries: number; delay: number },
     ) {
         let retried = 0;
 
@@ -185,6 +187,16 @@ export abstract class AbstractMetadataProvider {
             };
             run();
         });
+    }
+
+    scheduleApiRequest<T extends () => ReturnType<R>, R extends (...args: any) => Result<any>>(
+        fn: T,
+        options: { retries: number; delay: number } = { retries: 3, delay: 1000 },
+    ) {
+        const request = this.apiRequestQueue.then(() => this.runApiRequest<T, R>(fn, options));
+        this.apiRequestQueue = request;
+
+        return request;
     }
 }
 
