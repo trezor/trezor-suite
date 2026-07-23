@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { cryptoIdToSymbol, tradingExchangeActions } from '@suite-common/trading';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { Text, TextButton } from '@suite-native/atoms';
+import { Button, Text } from '@suite-native/atoms';
 import { exchangeActions } from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
 
@@ -27,7 +28,13 @@ const USDT_ETH: TradeableAsset = {
     contractAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7' as TokenAddress,
 };
 
+const ButtonStyleOverride = prepareNativeStyle(({ spacings }) => ({
+    paddingHorizontal: spacings.sp4,
+    paddingVertical: spacings.sp2,
+}));
+
 export const ExchangeUsdcPresetButton = () => {
+    const { applyStyle } = useNativeStyles();
     const { getValues, setValue } = useExchangeFormContext();
     const dispatch = useDispatch();
     const debugAccount = useSelector((state: AccountsRootState) =>
@@ -64,8 +71,13 @@ export const ExchangeUsdcPresetButton = () => {
     };
 
     return (
-        <TextButton size="small" onPress={handlePress} intent="accentViolet">
-            Prefill 1 USDC → USDT
-        </TextButton>
+        <Button
+            size="medium"
+            onPress={handlePress}
+            intent="accentViolet"
+            style={applyStyle(ButtonStyleOverride)}
+        >
+            Prefill 1 USDC→USDT
+        </Button>
     );
 };
