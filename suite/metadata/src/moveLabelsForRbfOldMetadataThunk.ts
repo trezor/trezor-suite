@@ -9,7 +9,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { typedObjectKeys } from '@trezor/utils';
 
 import * as METADATA from './metadataConstants';
-import * as metadataLabelingActions from './metadataLabelingActions';
+import { addMetadata } from './metadataLabelingActions/addMetadata';
 import { selectLabelingDataForAccount } from './metadataReducer';
 
 type DeleteAllOutputLabelsParams = {
@@ -31,7 +31,7 @@ const deleteDanglingLabels = async ({
 }: DeleteAllOutputLabelsParams) => {
     for (const outputIndex of typedObjectKeys(labels)) {
         await dispatch(
-            metadataLabelingActions.addMetadata({
+            addMetadata({
                 type: 'outputLabel',
                 entityKey: accountKey,
                 txid,
@@ -66,7 +66,7 @@ const copyLabelToNewTransaction = async ({
         const value = accountOutputLabels[outputIndex];
 
         await dispatch(
-            metadataLabelingActions.addMetadata({
+            addMetadata({
                 type: 'outputLabel',
                 entityKey: accountKey,
                 txid: newTxid,

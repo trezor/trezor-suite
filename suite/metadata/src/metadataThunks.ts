@@ -2,7 +2,7 @@ import { selectDeviceByStaticSessionId } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { type StaticSessionId } from '@trezor/connect';
 
-import * as metadataLabelingActions from './metadataLabelingActions';
+import { init } from './metadataLabelingActions/init';
 import * as METADATA_LABELING from './metadataLabelingConstants';
 import { selectIsMetadataEnabled } from './metadataReducer';
 
@@ -19,7 +19,7 @@ export const initNewDeviceStateMetadataThunk = createThunk(
         const metadataPresentOnDevice = device?.metadata[METADATA_LABELING.ENCRYPTION_VERSION];
 
         if (!metadataPresentOnDevice) {
-            await dispatch(metadataLabelingActions.init(false));
+            await dispatch(init(false));
         }
     },
 );

@@ -4,7 +4,12 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import type * as metadataActions from '../metadataActions';
 import * as METADATA from '../metadataConstants';
-import type * as metadataLabelingActions from '../metadataLabelingActions';
+import type { addAccountMetadata as AddAccountMetadata } from '../metadataLabelingActions/addAccountMetadata';
+import type { addDeviceMetadata as AddDeviceMetadata } from '../metadataLabelingActions/addDeviceMetadata';
+import type { addMetadata as AddMetadata } from '../metadataLabelingActions/addMetadata';
+import type { init as Init } from '../metadataLabelingActions/init';
+import type { setAccountMetadataKey as SetAccountMetadataKey } from '../metadataLabelingActions/setAccountMetadataKey';
+import type { setDeviceMetadataKey as SetDeviceMetadataKey } from '../metadataLabelingActions/setDeviceMetadataKey';
 import * as METADATA_LABELING from '../metadataLabelingConstants';
 import type * as metadataProviderActions from '../metadataProviderThunks';
 import type * as metadataThunks from '../metadataThunks';
@@ -16,7 +21,7 @@ type Fixture<T extends (...a: any) => any> = {
     result?: any;
 };
 
-const setDeviceMetadataKey: Fixture<(typeof metadataLabelingActions)['setDeviceMetadataKey']>[] = [
+const setDeviceMetadataKey: Fixture<typeof SetDeviceMetadataKey>[] = [
     {
         description: `Metadata not enabled`,
         params: [
@@ -87,42 +92,41 @@ const setDeviceMetadataKey: Fixture<(typeof metadataLabelingActions)['setDeviceM
     },
 ];
 
-const setAccountMetadataKey: Fixture<(typeof metadataLabelingActions)['setAccountMetadataKey']>[] =
-    [
-        {
-            description: `Account m/49'/0'/0'`,
-            initialState: {
-                device: {
-                    state: { staticSessionId: '1stTestnetAddress@device_id:0' },
-                    metadata: {
-                        1: {
-                            key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
-                        },
-                    },
-                },
-            },
-            params: [
-                mockWalletAccount({
-                    symbol: 'btc',
-                    descriptor: asAccountDescriptor('btc1'),
-                    metadata: {
-                        key: 'xpub6CVKsQYXc9awxgV1tWbG4foDvdcnieK2JkbpPEBKB5WwAPKBZ1mstLbKVB4ov7QzxzjaxNK6EfmNY5Jsk2cG26EVcEkycGW4tchT2dyUhrx',
-                    },
-                }),
-            ],
-            result: {
+const setAccountMetadataKey: Fixture<typeof SetAccountMetadataKey>[] = [
+    {
+        description: `Account m/49'/0'/0'`,
+        initialState: {
+            device: {
+                state: { staticSessionId: '1stTestnetAddress@device_id:0' },
                 metadata: {
                     1: {
-                        fileName:
-                            '828652b66f2e6f919fbb7fe4c9609d4891ed531c6fac4c28441e53ebe577ac85.mtdt',
-                        aesKey: '9bc3736f0b45cd681854a724b5bba67b9da1e50bc9983fd2dd56e53e74b75480',
+                        key: '20c8bf0701213cdcf4c2f56fd0096c1772322d42fb9c4d0ddf6bb122d713d2f3',
                     },
                 },
             },
         },
-    ];
+        params: [
+            mockWalletAccount({
+                symbol: 'btc',
+                descriptor: asAccountDescriptor('btc1'),
+                metadata: {
+                    key: 'xpub6CVKsQYXc9awxgV1tWbG4foDvdcnieK2JkbpPEBKB5WwAPKBZ1mstLbKVB4ov7QzxzjaxNK6EfmNY5Jsk2cG26EVcEkycGW4tchT2dyUhrx',
+                },
+            }),
+        ],
+        result: {
+            metadata: {
+                1: {
+                    fileName:
+                        '828652b66f2e6f919fbb7fe4c9609d4891ed531c6fac4c28441e53ebe577ac85.mtdt',
+                    aesKey: '9bc3736f0b45cd681854a724b5bba67b9da1e50bc9983fd2dd56e53e74b75480',
+                },
+            },
+        },
+    },
+];
 
-const addDeviceMetadata: Fixture<(typeof metadataLabelingActions)['addDeviceMetadata']>[] = [
+const addDeviceMetadata: Fixture<typeof AddDeviceMetadata>[] = [
     {
         description: `Without device`,
         initialState: {
@@ -159,7 +163,7 @@ const addDeviceMetadata: Fixture<(typeof metadataLabelingActions)['addDeviceMeta
     },
 ];
 
-const addAccountMetadata: Fixture<(typeof metadataLabelingActions)['addAccountMetadata']>[] = [
+const addAccountMetadata: Fixture<typeof AddAccountMetadata>[] = [
     {
         description: `Without provider`,
         initialState: {
@@ -363,7 +367,7 @@ const connectProvider: Fixture<(typeof metadataProviderActions)['connectProvider
     // todo: singleton (instance) behavior
 ];
 
-const addMetadata: Fixture<(typeof metadataLabelingActions)['addMetadata']>[] = [
+const addMetadata: Fixture<typeof AddMetadata>[] = [
     {
         description: 'does not need update',
         initialState: {
@@ -463,7 +467,7 @@ export const disableMetadata: Fixture<(typeof metadataThunks)['disableMetadata']
     },
 ];
 
-const init: Fixture<(typeof metadataLabelingActions)['init']>[] = [
+const init: Fixture<typeof Init>[] = [
     {
         description: 'device without state',
         initialState: {
