@@ -4,6 +4,7 @@ import {
     getNetworkOptional,
     isNetworkSymbol,
     isWrappedNativeToken,
+    shouldShowNetworkBadge,
 } from '@suite-common/wallet-config';
 
 import { NativeTokenIcon } from './NativeTokenIcon';
@@ -16,6 +17,7 @@ export const TokenIcon = ({
     contractAddress,
     size = 32,
     showNetworkIcon = false,
+    showNativeNetworkBadge = false,
     shouldTryToFetch = true,
     placeholderWithTooltip = true,
     placeholder = '',
@@ -30,17 +32,21 @@ export const TokenIcon = ({
 
     if (!contractAddress) {
         if (showNetworkIcon) {
-            const network = getNetworkOptional(symbol);
-            const networkSymbol = network?.settlementLayer ?? symbol;
-            const displaySymbol = networkSymbol !== symbol ? networkSymbol : symbol;
+            const networkSymbol = getNetworkOptional(symbol)?.settlementLayer ?? symbol;
+            const hasDistinctSettlementLayer = networkSymbol !== symbol;
+            const isBadgeableTokenNetwork =
+                showNativeNetworkBadge && isNetworkSymbol(symbol) && shouldShowNetworkBadge(symbol);
             const tokenIcon = (
-                <NativeTokenIcon symbol={displaySymbol} size={size} data-testid={dataTestId} />
+                <NativeTokenIcon symbol={networkSymbol} size={size} data-testid={dataTestId} />
             );
 
-            if (
-                (networkSymbol !== symbol || wrappedTokenIcon === 'network') &&
-                isNetworkIconSymbol(symbol)
-            ) {
+            const showBadge =
+                isNetworkIconSymbol(symbol) &&
+                (hasDistinctSettlementLayer ||
+                    wrappedTokenIcon === 'network' ||
+                    isBadgeableTokenNetwork);
+
+            if (showBadge) {
                 return (
                     <NetworkIconBadge
                         networkSymbol={symbol}

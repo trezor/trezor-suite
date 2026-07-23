@@ -12,6 +12,7 @@ export interface TokenIconProps extends AllowedFrameProps {
     contractAddress?: string | null;
     size?: TokenIconSize;
     showNetworkIcon?: boolean;
+    showNativeNetworkBadge?: boolean;
     shouldTryToFetch?: boolean;
     placeholderWithTooltip?: boolean;
     placeholder?: string;

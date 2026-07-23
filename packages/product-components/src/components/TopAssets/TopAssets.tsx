@@ -52,6 +52,7 @@ export function TopAssets({
                                     // @ts-expect-error
                                     symbol={asset.symbol}
                                     showNetworkIcon
+                                    showNativeNetworkBadge
                                 />
                             ) : (
                                 <TokenIcon
@@ -59,6 +60,7 @@ export function TopAssets({
                                     symbol={asset.networkSymbol}
                                     contractAddress={asset.contractAddress}
                                     placeholder={asset.displaySymbol}
+                                    showNetworkIcon
                                 />
                             )}
                             <Text typographyStyle="body-sm" intent="neutral">
