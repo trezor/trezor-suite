@@ -15,7 +15,9 @@ import {
 } from 'src/views/earn/tron';
 import { EarnClaim } from 'src/views/earn/yield/claim';
 import { EarnDeposit } from 'src/views/earn/yield/deposit';
+import { EarnUnwrap } from 'src/views/earn/yield/unwrap';
 import { EarnWithdraw } from 'src/views/earn/yield/withdraw';
+import { EarnWrap } from 'src/views/earn/yield/wrap';
 import PasswordManagerView from 'src/views/password-manager';
 import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
 import { SettingsConnectedApps } from 'src/views/settings/SettingsConnectedApps/SettingsConnectedApps';
@@ -51,6 +53,8 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     'earn-yield-deposit': EarnDeposit,
     'earn-yield-withdraw': EarnWithdraw,
     'earn-yield-claim': EarnClaim,
+    'earn-yield-unwrap': EarnUnwrap,
+    'earn-yield-wrap': EarnWrap,
     'earn-tron': EarnTronRedirect,
     'earn-tron-stake': EarnTronStake,
     'earn-tron-vote': EarnTronVote,

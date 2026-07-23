@@ -34,6 +34,20 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             }),
         ),
     ),
+    'earn-yield-unwrap': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/yield/unwrap/index').then(
+            ({ EarnUnwrap }) => ({
+                default: EarnUnwrap,
+            }),
+        ),
+    ),
+    'earn-yield-wrap': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/yield/wrap/index').then(
+            ({ EarnWrap }) => ({
+                default: EarnWrap,
+            }),
+        ),
+    ),
     'earn-tron': lazy(() =>
         import(/* webpackChunkName: "earn" */ 'src/views/earn/tron/index').then(
             ({ EarnTronRedirect }) => ({

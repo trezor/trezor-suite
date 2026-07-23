@@ -12,6 +12,7 @@ import { isSafeObjectKey } from '@trezor/utils';
 import { STABLECOIN_YIELD_PREFIX } from './stablecoinYieldConstants';
 import {
     type StablecoinYieldClaimUnsignedTransaction,
+    YIELD_FLOW_TYPES,
     type YieldApproveModalState,
     type YieldFlowCompleteRewardItem,
     type YieldFlowStepId,
@@ -542,7 +543,7 @@ const stablecoinYieldSlice = createSlice({
     extraReducers: builder => {
         builder.addCase(transactionsActions.replaceTransaction, (state, { payload }) => {
             const { txid: prevTxid, tx } = payload;
-            (['deposit', 'withdraw', 'redeem', 'claim'] as const).forEach(flowType => {
+            YIELD_FLOW_TYPES.forEach(flowType => {
                 const bucket = state[flowType];
                 Object.values(bucket).forEach(session => {
                     if (session.action.pendingTransaction?.txid === prevTxid) {

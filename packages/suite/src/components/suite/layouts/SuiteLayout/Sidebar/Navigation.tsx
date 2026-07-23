@@ -82,6 +82,8 @@ export const Navigation = ({ children }: NavigationProps) => {
                                   'earn-yield-deposit',
                                   'earn-yield-withdraw',
                                   'earn-yield-claim',
+                                  'earn-yield-unwrap',
+                                  'earn-yield-wrap',
                                   'earn-tron',
                                   'earn-tron-stake',
                                   'earn-tron-vote',

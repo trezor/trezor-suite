@@ -7,6 +7,7 @@ export const YIELD_FLOW_TYPES = ['deposit', 'withdraw', 'redeem', 'claim'] as co
 export const YIELD_FLOW_STEPS = ['wrap', 'approve', 'action', 'unwrap', 'complete'] as const;
 
 export type YieldFlowType = (typeof YIELD_FLOW_TYPES)[number];
+export type WrappedNativeFlowType = 'wrap' | 'unwrap';
 export type YieldPositionFlowType = Exclude<YieldFlowType, 'claim'>;
 export type YieldWithdrawFlowType = Extract<YieldFlowType, 'withdraw' | 'redeem'>;
 export type YieldFlowStepId = (typeof YIELD_FLOW_STEPS)[number];

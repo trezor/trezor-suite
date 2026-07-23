@@ -13,7 +13,8 @@ type YieldWrapStepProps = {
     nativeBalance: string;
     onMaxClick: () => void;
     onSubmit: () => void;
-    onSkip: () => void;
+    onSkip?: () => void;
+    shouldShowReceivingRow?: boolean;
 };
 
 export const YieldWrapStep = ({
@@ -23,6 +24,7 @@ export const YieldWrapStep = ({
     onMaxClick,
     onSubmit,
     onSkip,
+    shouldShowReceivingRow = true,
 }: YieldWrapStepProps) => (
     <Column gap={16}>
         <YieldAmountCard
@@ -38,34 +40,38 @@ export const YieldWrapStep = ({
             }}
         />
 
-        <Card type="contrast" paddingType="small">
-            <Row justifyContent="space-between" alignItems="center" width="100%">
-                <Text typographyStyle="body-md">
-                    <Translation id="TR_EARN_YIELD_WRAP_RECEIVING" />
-                </Text>
-                <Row alignItems="center" gap={8}>
-                    <TokenIcon
-                        size={20}
-                        symbol={token.networkSymbol}
-                        contractAddress={token.contractAddress ?? null}
-                        placeholder={token.symbol}
-                        showNetworkIcon
-                        isBordered={false}
-                    />
+        {shouldShowReceivingRow && (
+            <Card type="contrast" paddingType="small">
+                <Row justifyContent="space-between" alignItems="center" width="100%">
                     <Text typographyStyle="body-md">
-                        <FormattedCryptoAmount value="0" symbol={token.symbol} />
+                        <Translation id="TR_EARN_YIELD_WRAP_RECEIVING" />
                     </Text>
+                    <Row alignItems="center" gap={8}>
+                        <TokenIcon
+                            size={20}
+                            symbol={token.networkSymbol}
+                            contractAddress={token.contractAddress ?? null}
+                            placeholder={token.symbol}
+                            showNetworkIcon
+                            isBordered={false}
+                        />
+                        <Text typographyStyle="body-md">
+                            <FormattedCryptoAmount value="0" symbol={token.symbol} />
+                        </Text>
+                    </Row>
                 </Row>
-            </Row>
-        </Card>
+            </Card>
+        )}
 
         <Row gap={8} width="100%">
             <Button size="large" flex="1" onClick={onSubmit}>
                 <Translation id="TR_EARN_YIELD_WRAP_SUBMIT" values={{ nativeSymbol }} />
             </Button>
-            <Button size="large" intent="neutral" priority="secondary" onClick={onSkip}>
-                <Translation id="TR_SKIP" />
-            </Button>
+            {onSkip && (
+                <Button size="large" intent="neutral" priority="secondary" onClick={onSkip}>
+                    <Translation id="TR_SKIP" />
+                </Button>
+            )}
         </Row>
     </Column>
 );

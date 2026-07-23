@@ -11,7 +11,7 @@ type YieldUnwrapStepProps = {
     tokenBalance: string;
     onMaxClick: () => void;
     onSubmit: () => void;
-    onSkip: () => void;
+    onSkip?: () => void;
 };
 
 export const YieldUnwrapStep = ({
@@ -40,9 +40,11 @@ export const YieldUnwrapStep = ({
             <Button size="large" flex="1" onClick={onSubmit}>
                 <Translation id="TR_EARN_YIELD_UNWRAP_SUBMIT" values={{ tokenSymbol }} />
             </Button>
-            <Button size="large" intent="neutral" priority="secondary" onClick={onSkip}>
-                <Translation id="TR_SKIP" />
-            </Button>
+            {onSkip && (
+                <Button size="large" intent="neutral" priority="secondary" onClick={onSkip}>
+                    <Translation id="TR_SKIP" />
+                </Button>
+            )}
         </Row>
     </Column>
 );
