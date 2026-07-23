@@ -179,7 +179,10 @@ export type ContractInfoResponse = ContractInfoResult;
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare function FSend(method: 'getInfo'): Promise<ServerInfo>;
 declare function FSend(method: 'getBlockHash', params: { height: number }): Promise<BlockHash>;
-declare function FSend(method: 'getBlock', params: { id: string }): Promise<Block>;
+declare function FSend(
+    method: 'getBlock',
+    params: { id: string; page?: number; pageSize?: number },
+): Promise<Block>;
 declare function FSend(
     method: 'getBlockFilter',
     params: WsBlockFilterReq & FilterRequestParams,
