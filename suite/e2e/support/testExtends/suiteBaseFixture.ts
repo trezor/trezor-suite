@@ -6,14 +6,21 @@ import { TestAnnotationType } from '@trezor/e2e-utils';
 import { SetupEmu, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { collectCoverageMap } from './coverageMapFixture';
-import { getUrl, isDesktopProject } from '../common';
+import { getUrl, isDesktopProject, isTauriProject } from '../common';
+import { startConnectWsBridge } from '../connectWsBridge';
 import { currentsTest } from './currentsFixture';
 import { enhancePage } from './enhancePage';
 import { PlaywrightTarget, SuiteTestOptions } from './suiteTestOptions';
 import { Watcher, jsExceptionWatcher, toastErrorWatcher } from './watchers';
 import { DeviceFixture } from '../device';
 import { wipeAndRestartEvoluServer } from '../helpers/evoluClient';
-import { electronSetup, electronTeardown, trezorUserEnvStuckProtection, webSetup } from '../setup';
+import {
+    electronSetup,
+    electronTeardown,
+    tauriSetup,
+    trezorUserEnvStuckProtection,
+    webSetup,
+} from '../setup';
 import { ElectronConf, TrezorUserEnv } from '../types';
 
 type SuiteBaseFixture = {
@@ -170,11 +177,24 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
         }
     },
 
-    page: async ({ target, context, electronApp }, use) => {
+    page: async ({ target, context, electronApp, electronConf }, use) => {
         if (isDesktopProject(target)) {
             const window = await electronApp!.firstWindow();
             enhancePage(window);
             await use(window);
+        } else if (isTauriProject(target)) {
+            const page = await tauriSetup(context, { offlineMode: electronConf?.offlineMode });
+            enhancePage(page);
+            // The Tauri backend hosts the connect-ws server; for the Chromium e2e we stand it up as
+            // a Node bridge when a test opts in (mirrors electronConf.exposeConnectWs).
+            const connectWs = electronConf?.exposeConnectWs
+                ? await startConnectWsBridge(page)
+                : undefined;
+            try {
+                await use(page);
+            } finally {
+                await connectWs?.close();
+            }
         } else {
             const page = await webSetup(context);
             enhancePage(page);

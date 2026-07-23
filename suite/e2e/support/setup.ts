@@ -6,6 +6,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { BRIDGE_VERSION } from './bridge';
 import { getVideoPath, mockRemoteMessageSystem } from './common';
 import { Suite, launchSuite } from './electron';
+import { installTauriDesktopApi } from './tauriDesktopApi';
 import { ElectronConf } from './types';
 
 export const electronSetup = async (
@@ -103,6 +104,56 @@ export const webSetup = async (browserContext: BrowserContext) => {
     await page.context().addInitScript(() => {
         window.Playwright = true;
     });
+    await page.goto('./');
+    await mockRemoteMessageSystem(page);
+
+    return page;
+};
+
+// Drives the Tauri (desktop-mode) frontend in Chromium. Same as webSetup, but installs a
+// `window.desktopApi` mirroring the Tauri Rust backend before any bundle runs, so the desktop
+// build boots (handshake/loadModules) exactly as it does inside the native WKWebView.
+export const tauriSetup = async (
+    browserContext: BrowserContext,
+    options: { offlineMode?: boolean } = {},
+) => {
+    await TrezorUserEnvLink.startBridge(BRIDGE_VERSION);
+
+    if (browserContext.browser()?.browserType().name() === 'chromium') {
+        await browserContext.grantPermissions(['local-network-access']);
+    }
+
+    const page = await browserContext.newPage();
+
+    await page.context().addInitScript(installTauriDesktopApi);
+    await page.context().addInitScript(() => {
+        window.Playwright = true;
+    });
+
+    if (options.offlineMode) {
+        // Suite's connection banner is driven by navigator.onLine (src/support/suite/OnlineStatus).
+        // Electron's setOffline flips it to false; force the same in the webview.
+        await page.context().addInitScript(() => {
+            Object.defineProperty(window.navigator, 'onLine', {
+                configurable: true,
+                get: () => false,
+            });
+        });
+        // Electron's offline mode disables the renderer's external network while the device stays
+        // reachable via the main process. The Tauri webview reaches the device over the local
+        // Bridge, so we block only non-local hosts and keep localhost (app assets + Bridge) alive.
+        await browserContext.route('**/*', route => {
+            const { hostname } = new URL(route.request().url());
+            const isLocal =
+                hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
+            if (isLocal) {
+                route.continue();
+            } else {
+                route.abort('internetdisconnected');
+            }
+        });
+    }
+
     await page.goto('./');
     await mockRemoteMessageSystem(page);
 

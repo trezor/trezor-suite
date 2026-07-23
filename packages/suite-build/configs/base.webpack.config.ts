@@ -195,7 +195,9 @@ const config: webpack.Configuration = {
         new webpack.ProgressPlugin(),
         new webpack.DefinePlugin({
             'process.browser': true,
-            'process.env.SUITE_TYPE': JSON.stringify(project),
+            // The Tauri shell runs the desktop frontend, so it must report SUITE_TYPE as
+            // 'desktop' (drives `isDesktop()` and `getDesktopApi()` reading window.desktopApi).
+            'process.env.SUITE_TYPE': JSON.stringify(project === 'tauri' ? 'desktop' : project),
             'process.env.VERSION': JSON.stringify(suiteVersion),
             'process.env.COMMITHASH': JSON.stringify(gitRevision),
             'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),

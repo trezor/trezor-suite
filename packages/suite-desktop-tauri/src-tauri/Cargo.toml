@@ -1,0 +1,59 @@
+[package]
+name = "trezor-suite-tauri"
+version = "0.1.0"
+description = "Trezor Suite — Tauri desktop shell"
+authors = ["Trezor"]
+license = ""
+repository = ""
+edition = "2021"
+rust-version = "1.77.2"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.6.3", features = [] }
+
+[dependencies]
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+log = "0.4"
+tauri = { version = "2.11.3", features = ["tray-icon"] }
+tauri-plugin-log = "2"
+tauri-plugin-deep-link = "2"
+tauri-plugin-single-instance = { version = "2", features = ["deep-link"] }
+tokio = { version = "1", features = ["net", "rt", "sync", "macros", "time"] }
+futures-util = "0.3"
+axum = { version = "0.7", features = ["ws"] }
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "stream", "socks"] }
+pgp = "0.14"
+sha2 = "0.10"
+# linux-native-sync-persistent (NOT plain linux-native): plain keyutils is in-memory and wiped on
+# reboot, which would silently make all safe-storage-encrypted data undecryptable after a restart.
+# The persistent variant adds the Secret Service fallback (crypto-rust = pure-Rust crypto backend).
+keyring = { version = "3", features = ["apple-native", "linux-native-sync-persistent", "windows-native", "crypto-rust"] }
+aes-gcm = "0.10"
+# in-process Trezor Bridge (replaces the bundled Node.js node-bridge): USB via rusb (libusb —
+# the same C library node-usb/trezord use; nusb's async interrupt-OUT transfers never complete on
+# macOS). `vendored` statically builds libusb from source so no system lib / Node runtime is needed.
+# nusb is kept only for its enumeration (serial without opening + hotplug), which works fine.
+nusb = "0.1"
+rusb = { version = "0.9", features = ["vendored"] }
+crc32fast = "1"
+hex = "0.4"
+# in-process Bluetooth host (replaces the Node bluetooth-host sidecar): a WS ipc-proxy server for
+# the preload + a WS client to the native trezor-bluetooth server.
+tokio-tungstenite = "0.24"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+libc = "0.2"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2 = "0.6"
+block2 = "0.6"
+objc2-foundation = "0.3"
+objc2-app-kit = "0.3"
+objc2-local-authentication = "0.3"

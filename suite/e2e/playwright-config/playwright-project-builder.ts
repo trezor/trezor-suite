@@ -59,6 +59,21 @@ export class PlaywrightProjectBuilder {
                     grep: [],
                 };
                 break;
+            case PlaywrightTarget.Tauri:
+                // Runs the desktop-mode frontend in Chromium (see PlaywrightTarget.Tauri). Shares
+                // the web target's browser setup but excludes @webOnly like the desktop target.
+                this.project = {
+                    name: projectName,
+                    use: {
+                        ...devices['Desktop Chrome'],
+                        channel: 'chromium',
+                        baseURL: process.env.BASE_URL || 'http://localhost:8000/',
+                        target: PlaywrightTarget.Tauri,
+                    },
+                    grepInvert: [/@webOnly/, /@group=manual/],
+                    grep: [],
+                };
+                break;
             default:
                 throw new Error(`Unknown target: ${target}`);
         }

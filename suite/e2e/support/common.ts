@@ -19,6 +19,10 @@ export const isDesktopProject = (target: PlaywrightTarget) => target === Playwri
 
 export const isWebProject = (target: PlaywrightTarget) => target === PlaywrightTarget.Web;
 
+// Tauri runs in Chromium (against the desktop-mode frontend) like the web target, so it shares the
+// browser-based setup and the baseURL rather than the Electron file:// URL.
+export const isTauriProject = (target: PlaywrightTarget) => target === PlaywrightTarget.Tauri;
+
 export const getUrl = (testInfo: TestInfo, target: PlaywrightTarget) => {
     const electronApiURL = 'file:///';
     const apiURL = isDesktopProject(target) ? electronApiURL : testInfo.project.use.baseURL;

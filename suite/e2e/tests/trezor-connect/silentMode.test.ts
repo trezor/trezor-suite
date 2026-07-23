@@ -7,24 +7,36 @@ import { DeviceFixture } from '../../support/device';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-// Spy runs in the Electron main process to intercept ipcMain 'app/focus' events.
-// We cannot spy in the renderer because contextBridge.exposeInMainWorld freezes
-// the exposed desktopApi object, making property assignment silently fail.
-const installAppFocusSpy = (electronApp: ElectronApplication) =>
-    electronApp.evaluate(({ ipcMain }) => {
-        (global as any).__appFocusCalls = 0;
-        ipcMain.on('app/focus', () => {
-            (global as any).__appFocusCalls = ((global as any).__appFocusCalls ?? 0) + 1;
-        });
-    });
+// Counts desktopApi 'app/focus' requests so we can assert whether Suite is brought to the
+// foreground. On Electron the spy runs in the main process (contextBridge freezes the renderer's
+// desktopApi so we can't wrap it there). On the Tauri target there is no Electron main process, so
+// the injected window.desktopApi (support/tauriDesktopApi.ts) increments window.__appFocusCalls and
+// we read it from the page instead.
+const installAppFocusSpy = (page: Page, electronApp?: ElectronApplication) =>
+    electronApp
+        ? electronApp.evaluate(({ ipcMain }) => {
+              (global as any).__appFocusCalls = 0;
+              ipcMain.on('app/focus', () => {
+                  (global as any).__appFocusCalls = ((global as any).__appFocusCalls ?? 0) + 1;
+              });
+          })
+        : page.evaluate(() => {
+              (window as any).__appFocusCalls = 0;
+          });
 
-const resetAppFocusSpy = (electronApp: ElectronApplication) =>
-    electronApp.evaluate(() => {
-        (global as any).__appFocusCalls = 0;
-    });
+const resetAppFocusSpy = (page: Page, electronApp?: ElectronApplication) =>
+    electronApp
+        ? electronApp.evaluate(() => {
+              (global as any).__appFocusCalls = 0;
+          })
+        : page.evaluate(() => {
+              (window as any).__appFocusCalls = 0;
+          });
 
-const getAppFocusCallCount = (electronApp: ElectronApplication): Promise<number> =>
-    electronApp.evaluate(() => (global as any).__appFocusCalls ?? 0);
+const getAppFocusCallCount = (page: Page, electronApp?: ElectronApplication): Promise<number> =>
+    electronApp
+        ? electronApp.evaluate(() => (global as any).__appFocusCalls ?? 0)
+        : page.evaluate(() => (window as any).__appFocusCalls ?? 0);
 
 const signMessage = () =>
     TrezorConnect.signMessage({
@@ -76,7 +88,7 @@ test.describe('TrezorConnect silent mode', { tag: ['@T3T1', '@T3W1', '@desktopOn
             await page.getByTestId('@settings/connect-apps/tabs/trezor-connect').click();
             await page.getByTestId('@settings/connect-apps/no-apps').waitFor({ state: 'visible' });
 
-            await installAppFocusSpy(electronApp!);
+            await installAppFocusSpy(page, electronApp);
 
             // First call: grant permissions, remember WITHOUT silent mode.
             // Also verify the silent mode checkbox is hidden until Remember is ticked.
@@ -93,11 +105,11 @@ test.describe('TrezorConnect silent mode', { tag: ['@T3T1', '@T3W1', '@desktopOn
             await confirmSignMessageOnDevice(page, device);
 
             // Baseline: silent mode OFF — subsequent call should bring Suite to foreground.
-            await resetAppFocusSpy(electronApp!);
+            await resetAppFocusSpy(page, electronApp);
             signMessage();
             await page.getByTestId('@prompts/confirm-on-device').waitFor({ state: 'visible' });
             await expect
-                .poll(() => getAppFocusCallCount(electronApp!), { timeout: 5000 })
+                .poll(() => getAppFocusCallCount(page, electronApp), { timeout: 5000 })
                 .toBeGreaterThan(0);
             await device.pressContinue();
             await device.pressContinue();
@@ -116,13 +128,13 @@ test.describe('TrezorConnect silent mode', { tag: ['@T3T1', '@T3W1', '@desktopOn
 
             // Silent mode ON — Suite must NOT focus. The confirm-on-device prompt still
             // renders (silent mode only suppresses window focus, not Suite UI).
-            await resetAppFocusSpy(electronApp!);
+            await resetAppFocusSpy(page, electronApp);
             signMessage();
             await page.getByTestId('@prompts/confirm-on-device').waitFor({ state: 'visible' });
             // Focus fires via a useEffect chained through async appIsVisible() IPC —
             // wait briefly so that chain can settle before asserting zero.
             await page.waitForTimeout(300);
-            expect(await getAppFocusCallCount(electronApp!)).toBe(0);
+            expect(await getAppFocusCallCount(page, electronApp)).toBe(0);
             await device.pressContinue();
             await device.pressContinue();
             await device.pressYes();
