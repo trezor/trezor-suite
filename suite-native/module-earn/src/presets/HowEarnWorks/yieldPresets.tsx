@@ -14,7 +14,7 @@ type CreateHowYieldWorksPresetProps = {
     vaultTokenSymbol: string;
     apy: number | null;
     onApyPress: () => void;
-    bonusRewardTokenName?: string | null;
+    bonusRewardTokenSymbol?: string | null;
 };
 
 export const createHowYieldWorksPreset = ({
@@ -22,7 +22,7 @@ export const createHowYieldWorksPreset = ({
     vaultTokenSymbol,
     apy,
     onApyPress,
-    bonusRewardTokenName,
+    bonusRewardTokenSymbol,
 }: CreateHowYieldWorksPresetProps): HowEarnWorksScreenPreset => ({
     benefitItems: [
         {
@@ -53,7 +53,7 @@ export const createHowYieldWorksPreset = ({
             ),
             description: <Translation id="earn.howYieldWorksScreen.benefits.third.description" />,
         },
-        ...(bonusRewardTokenName
+        ...(bonusRewardTokenSymbol
             ? [
                   {
                       id: 'yield-benefit-bonus-reward',
@@ -61,7 +61,7 @@ export const createHowYieldWorksPreset = ({
                       title: (
                           <Translation
                               id="earn.howYieldWorksScreen.benefits.fourth.title"
-                              values={{ bonusRewardTokenName }}
+                              values={{ bonusRewardTokenSymbol }}
                           />
                       ),
                       description: (
@@ -145,5 +145,37 @@ export const createHowYieldWorksPreset = ({
                 },
             ],
         },
+        ...(bonusRewardTokenSymbol
+            ? [
+                  {
+                      id: 'claim',
+                      title: <Translation id="earn.howYieldWorksScreen.claimTimelineTitle" />,
+                      iconName: 'coins' as const,
+                      items: [
+                          {
+                              id: 'claim.first',
+                              title: (
+                                  <Translation id="earn.howYieldWorksScreen.claimTimeline.first.title" />
+                              ),
+                              description: (
+                                  <Translation id="earn.howYieldWorksScreen.claimTimeline.first.description" />
+                              ),
+                          },
+                          {
+                              id: 'claim.second',
+                              title: (
+                                  <Translation
+                                      id="earn.howYieldWorksScreen.claimTimeline.second.title"
+                                      values={{ bonusRewardTokenSymbol }}
+                                  />
+                              ),
+                              description: (
+                                  <Translation id="earn.howYieldWorksScreen.claimTimeline.second.description" />
+                              ),
+                          },
+                      ],
+                  },
+              ]
+            : []),
     ],
 });

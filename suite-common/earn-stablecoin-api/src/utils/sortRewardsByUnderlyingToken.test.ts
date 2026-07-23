@@ -1,6 +1,9 @@
 import { type RewardDtoV2, type TokenDtoV2 } from '@suite-common/earn-stablecoin-defs';
 
-import { sortRewardsByUnderlyingToken } from './sortRewardsByUnderlyingToken';
+import {
+    getProtocolIncentiveRewardTokens,
+    sortRewardsByUnderlyingToken,
+} from './sortRewardsByUnderlyingToken';
 
 const USDC: TokenDtoV2 = {
     symbol: 'USDC',
@@ -84,5 +87,27 @@ describe('sortRewardsByUnderlyingToken', () => {
             incentive,
             lending,
         ]);
+    });
+});
+
+describe('getProtocolIncentiveRewardTokens', () => {
+    it('returns only the tokens of protocol_incentive rewards', () => {
+        const rewards = [reward(USDC, 'lending', 0.04), reward(MORPHO, 'protocol_incentive', 0.1)];
+
+        expect(getProtocolIncentiveRewardTokens(rewards)).toEqual([MORPHO]);
+    });
+
+    it('returns an empty array when there are no protocol_incentive rewards', () => {
+        expect(getProtocolIncentiveRewardTokens([reward(USDC, 'lending', 0.04)])).toEqual([]);
+    });
+
+    it('returns every protocol_incentive reward token, preserving order', () => {
+        const rewards = [
+            reward(MORPHO, 'protocol_incentive', 0.2),
+            reward(USDC, 'lending', 0.04),
+            reward(ARB, 'protocol_incentive', 0.01),
+        ];
+
+        expect(getProtocolIncentiveRewardTokens(rewards)).toEqual([MORPHO, ARB]);
     });
 });
