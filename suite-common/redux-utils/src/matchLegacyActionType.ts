@@ -13,6 +13,7 @@ declare const matchedLegacyActionType: unique symbol;
 export type LegacyActionTypeMatcher<TAction extends Action> = ((
     action: Action,
 ) => action is TAction) & {
+    // The unique-symbol property brands this intersection so no unrelated type guard can satisfy it.
     readonly [matchedLegacyActionType]: TAction;
 };
 

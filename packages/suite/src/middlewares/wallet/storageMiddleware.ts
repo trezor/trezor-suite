@@ -194,7 +194,7 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
         getDevice: (action, state) => {
             const { account } = action.payload;
 
-            return account ? findAccountDevice(account, selectDevices(state)) : undefined;
+            return account ? getDeviceByAccountKey(account.key, state) : undefined;
         },
         save: ({ action }, { dispatch, getState }) => {
             const { account } = action.payload;
@@ -535,10 +535,8 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case COINJOIN.CLIENT_PRISON_EVENT: {
                     const affectedAccounts = action.payload.map(inmate => inmate.accountKey);
                     const state = api.getState();
-                    const devices = selectDevices(state);
                     affectedAccounts.forEach(key => {
-                        const account = selectAccountByKey(state, key as AccountKey);
-                        const device = account && findAccountDevice(account, devices);
+                        const device = getDeviceByAccountKey(key as AccountKey, state);
                         if (device && getIsDeviceRemembered(device)) {
                             api.dispatch(storageActions.saveCoinjoinAccount(key as AccountKey));
                         }
