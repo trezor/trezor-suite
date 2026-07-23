@@ -121,6 +121,7 @@ export const Address = ({
                         size="small"
                         intent="neutral"
                         priority="secondary"
+                        isInverse
                         onClick={e => {
                             e.stopPropagation();
 

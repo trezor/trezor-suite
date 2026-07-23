@@ -9,14 +9,23 @@ import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { Box, Button, Column, Image, Paragraph, Row, intermediaryTheme } from '@trezor/components';
+import {
+    Box,
+    Button,
+    Column,
+    IconButton,
+    Image,
+    Paragraph,
+    Row,
+    intermediaryTheme,
+} from '@trezor/components';
+import { XIcon } from '@trezor/icons';
 import { DASHBOARD_ONBOARDING_FEEDBACK_URL } from '@trezor/urls';
 
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 import { selectShouldShowOnboardingFeedbackBanner } from './onboardingFeedbackBannerSelectors';
-import { CloseButton } from '../DashboardPromoBanner/CommonPromoBannerComponents';
 import { bannerAnimationConfig } from '../banner-animations';
 
 const Title = ({ isVerticalLayout }: { isVerticalLayout: boolean }) => {
@@ -73,7 +82,7 @@ const CTAButton = ({ onClick, isBelowLaptop }: { onClick: () => void; isBelowLap
         <Button
             intent="neutral"
             onClick={onClick}
-            size={isBelowLaptop ? 'medium' : 'large'}
+            size="medium"
             href={href}
             data-testid="@dashboard/onboarding-feedback-banner/button"
         >
@@ -133,7 +142,7 @@ export const OnboardingFeedbackBanner = () => {
                                     margin={{ horizontal: 24, vertical: isVerticalLayout ? 16 : 0 }}
                                     zIndex={1}
                                 >
-                                    <Column gap={isBelowLaptop ? 4 : 8}>
+                                    <Column>
                                         <Title isVerticalLayout={isVerticalLayout} />
                                         <Description />
                                     </Column>
@@ -166,7 +175,15 @@ export const OnboardingFeedbackBanner = () => {
                                     />
                                 </Row>
                             </ContentFlex>
-                            <CloseButton onClose={handleClose} />
+                            <Box position={{ type: 'absolute', top: 12, right: 12 }}>
+                                <IconButton
+                                    icon={XIcon}
+                                    intent="neutral"
+                                    priority="secondary"
+                                    onClick={handleClose}
+                                    tooltip={{ content: <Translation id="TR_CLOSE" /> }}
+                                />
+                            </Box>
                         </Box>
                     </motion.div>
                 )}

@@ -139,7 +139,9 @@ const StyledText = styled.span<StyledTextProps>`
             background-color: ${({ theme }) => theme.elementFillNeutralSoft};
             box-decoration-break: clone;
         `}
-        ${withTextProps} ${withFrameProps};
+    
+    ${withTextProps};
+    ${withFrameProps};
 `;
 
 export type TextProps = Pick<HTMLProps<HTMLElement>, 'onCopy' | 'onClick'> & {
