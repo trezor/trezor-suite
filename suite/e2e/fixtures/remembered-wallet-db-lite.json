@@ -15517,14 +15517,7 @@
                                 "protocol_version_minor": 1,
                                 "pairing_methods": ["CodeEntry"]
                             },
-                            "credentials": [
-                                {
-                                    "trezor_static_public_key": "4875a91270789b7895d2b0e8e5d99f5af9d47a8d9a7291aeca4f60b39a280326",
-                                    "credential": "0a180a064368726f6d6510001a0c5472657a6f7220537569746512207698ddc56ac4cf126f9c242724767935268b5212448e225ed086d0d04d07c18c",
-                                    "autoconnect": false,
-                                    "host_static_key": "3b7411f179b95e0247e6ed16933410d376f88774269c0263cab0c9372435bf3b"
-                                }
-                            ],
+                            "credentials": [],
                             "channel": "8279"
                         },
                         "lastConnectedVia": "usb",
@@ -15655,15 +15648,7 @@
             {
                 "key": "value",
                 "value": {
-                    "credentials": [
-                        {
-                            "trezor_static_public_key": "4875a91270789b7895d2b0e8e5d99f5af9d47a8d9a7291aeca4f60b39a280326",
-                            "credential": "0a180a064368726f6d6510001a0c5472657a6f7220537569746512207698ddc56ac4cf126f9c242724767935268b5212448e225ed086d0d04d07c18c",
-                            "autoconnect": false,
-                            "host_static_key": "3b7411f179b95e0247e6ed16933410d376f88774269c0263cab0c9372435bf3b",
-                            "connectionCounter": 1
-                        }
-                    ]
+                    "credentials": []
                 }
             }
         ],

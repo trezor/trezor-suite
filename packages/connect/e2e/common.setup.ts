@@ -7,6 +7,8 @@ import type { EmuStartOptsType, TrezorUserEnvLinkClass } from '@trezor/trezor-us
 import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { versionUtils } from '@trezor/utils';
 
+import { THP_CREDENTIALS_AUTOCONNECT } from './common-thp-credentials';
+
 // import TrezorConnect from '../src';
 
 // Read emulator start options from EMULATOR_START_OPTS env var (JSON string set by run.ts).
@@ -233,28 +235,7 @@ export const initTrezorConnect = async (
         thp: {
             appName: 'TrezorConnect',
             hostName: 'tests:e2e',
-            knownCredentials: [
-                // all all seed credential generated from thpPairing.test
-                {
-                    host_static_key:
-                        '0007070707070707070707070707070707070707070707070707070707070747',
-                    trezor_static_public_key:
-                        '566f6976fd42cafadf1b843ce4e6275c930d52efac878217df0ea2a23933b07d',
-                    credential:
-                        '0a1c0a0974657374733a65326510011a0d5472657a6f72436f6e6e65637412203fa725f325ba34cce19e39e6c87f573a9db1a532c28f67a363f0ea8317f64af9',
-                    autoconnect: true,
-                },
-                // credential for newer TENV image
-                {
-                    host_static_key:
-                        '0007070707070707070707070707070707070707070707070707070707070747',
-                    trezor_static_public_key:
-                        'ca9a6e4682ac461c59d75a8625c05bf3a4af01e084abc5a7fe8ad126c2d6f772',
-                    credential:
-                        '0a1c0a0974657374733a65326510011a0d5472657a6f72436f6e6e65637412204cd0d3ccab3d615430d218e96d78cd5b89a06783581e5948d8cc532e423bd145',
-                    autoconnect: true,
-                },
-            ],
+            knownCredentials: THP_CREDENTIALS_AUTOCONNECT,
             pairingMethods: ['CodeEntry'],
         },
         ...options,
