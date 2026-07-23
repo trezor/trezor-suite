@@ -79,10 +79,6 @@ export type ProtoWithDerivationPath<T> =
     | ProtoWithoutAddressN<T, number[]>
     | ProtoWithExtendedAddressN<T, number[], DerivationPath>;
 
-// unwrap original generic PROTO type from the replacement
-export type ProtoWithAddressN<P extends ProtoWithDerivationPath<any>> =
-    P extends ProtoWithDerivationPath<infer T> ? T : unknown;
-
 // Common fields for all *.getAddress methods
 export type GetAddress = Static<typeof GetAddress>;
 export const GetAddress = Type.Object({
