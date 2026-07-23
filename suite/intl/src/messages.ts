@@ -10117,6 +10117,30 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_UNWRAP_SUBMIT',
         defaultMessage: 'Unwrap {tokenSymbol}',
     },
+    TR_UNWRAP_NATIVE_TOKEN: {
+        id: 'TR_UNWRAP_NATIVE_TOKEN',
+        defaultMessage: 'Unwrap',
+    },
+    TR_WRAP_NATIVE_TOKEN: {
+        id: 'TR_WRAP_NATIVE_TOKEN',
+        defaultMessage: 'Wrap',
+    },
+    TR_WRAP_COMPLETE_HEADING: {
+        id: 'TR_WRAP_COMPLETE_HEADING',
+        defaultMessage: 'Wrapping complete',
+    },
+    TR_WRAP_COMPLETE_DESCRIPTION: {
+        id: 'TR_WRAP_COMPLETE_DESCRIPTION',
+        defaultMessage: 'Your {nativeSymbol} was wrapped to {tokenSymbol}.',
+    },
+    TR_UNWRAP_COMPLETE_HEADING: {
+        id: 'TR_UNWRAP_COMPLETE_HEADING',
+        defaultMessage: 'Unwrapping complete',
+    },
+    TR_UNWRAP_COMPLETE_DESCRIPTION: {
+        id: 'TR_UNWRAP_COMPLETE_DESCRIPTION',
+        defaultMessage: 'Your {tokenSymbol} was unwrapped to {nativeSymbol}.',
+    },
     TR_EARN_YIELD_WITHDRAW_ASSETS: {
         id: 'TR_EARN_YIELD_WITHDRAW_ASSETS',
         defaultMessage: 'Withdraw assets',

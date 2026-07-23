@@ -98,6 +98,12 @@ const validateWalletParams = (hash: HashString): CommonWalletParams => {
     });
 };
 
+const accountScopedEarnYieldRoutes: Route['name'][] = [
+    'earn-yield-claim',
+    'earn-yield-unwrap',
+    'earn-yield-wrap',
+];
+
 const validateEarnYieldParams = (route: Route, hash: HashString) => {
     const [symbol, index, rawAccountType, rawYieldId, rawContractAddress] = parseHash(hash);
 
@@ -115,7 +121,7 @@ const validateEarnYieldParams = (route: Route, hash: HashString) => {
         return;
     }
 
-    if (route.name === 'earn-yield-claim') {
+    if (accountScopedEarnYieldRoutes.includes(route.name)) {
         return accountRouteParams;
     }
 

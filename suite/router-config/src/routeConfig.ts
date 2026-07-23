@@ -54,6 +54,18 @@ export const routes = [
         params: earnParams,
     },
     {
+        name: 'earn-yield-unwrap',
+        pattern: '/earn/yield/unwrap',
+        app: 'earn-yield',
+        params: earnParams,
+    },
+    {
+        name: 'earn-yield-wrap',
+        pattern: '/earn/yield/wrap',
+        app: 'earn-yield',
+        params: earnParams,
+    },
+    {
         name: 'earn-tron',
         pattern: '/earn/tron',
         app: 'earn-staking',

@@ -35,6 +35,7 @@ import {
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,
     isErc4626,
+    isWrappedNativeToken,
 } from '@suite-common/wallet-utils';
 import {
     Button,
@@ -49,6 +50,7 @@ import {
 } from '@trezor/components';
 import {
     ArrowDownIcon,
+    ArrowUUpLeftIcon,
     ArrowUpIcon,
     ArrowUpRightIcon,
     CurrencyCircleDollarIcon,
@@ -414,6 +416,23 @@ const TokenRowBasicActions = ({
                             (tokenStatusType === TokenManagementAction.HIDE
                                 ? !isBelowTablet
                                 : true),
+                    },
+                    {
+                        label: <Translation id="TR_UNWRAP_NATIVE_TOKEN" />,
+                        icon: ArrowUUpLeftIcon,
+                        onClick: () =>
+                            dispatch(
+                                goto({
+                                    routeName: 'earn-yield-unwrap',
+                                    params: {
+                                        symbol: account.symbol,
+                                        accountIndex: account.index,
+                                        accountType: account.accountType,
+                                    },
+                                }),
+                            ),
+                        isDisabled: token.balance === '0',
+                        isHidden: !isWrappedNativeToken(account.symbol, token.contract),
                     },
                     {
                         label: <Translation id="TR_EARN_YIELD_DEPOSIT" />,
