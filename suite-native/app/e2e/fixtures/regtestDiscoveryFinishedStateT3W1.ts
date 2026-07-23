@@ -1,5 +1,6 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 import { PreloadedState } from '@suite-native/state';
+import { THP_CREDENTIALS } from '@trezor/connect/e2e/common-thp-credentials';
 
 /**
  *  reflects state after REGTEST discovery of connected T3W1 device with `mnemonic_immune` seed from @packages/trezor-user-env-link constants.
@@ -415,23 +416,7 @@ export const regtestDiscoveryFinishedStateT3W1: PreloadedState = {
                     sendNonce: 2,
                     recvNonce: 3,
                     expectedResponses: [],
-                    credentials: [
-                        {
-                            trezor_static_public_key:
-                                '566f6976fd42cafadf1b843ce4e6275c930d52efac878217df0ea2a23933b07d',
-                            credential:
-                                '0a240a1273646b5f6770686f6e6536345f61726d363410001a0c5472657a6f7220537569746512200a2c35e21fc72f70b5cddcfba5aface516c57e31810dd442ff9ef6dfc8657eff',
-                            autoconnect: false,
-                            connectionCounter: 1,
-                        },
-                        {
-                            trezor_static_public_key:
-                                'ca9a6e4682ac461c59d75a8625c05bf3a4af01e084abc5a7fe8ad126c2d6f772',
-                            credential:
-                                '0a1c0a0974657374733a65326510001a0d5472657a6f72436f6e6e65637412203a4826fcf4d107240c1b9aa0c4bec6abab95e50b35950b5da8a648da135ae96d',
-                            autoconnect: false,
-                        },
-                    ],
+                    credentials: THP_CREDENTIALS,
                 },
                 connected: true,
                 buttonRequests: [],

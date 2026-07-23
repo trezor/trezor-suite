@@ -3,6 +3,7 @@ import { vi } from 'vitest';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import TrezorConnect, { type Device, type ThpSettings, type UiEvent } from '@trezor/connect';
 
+import { THP_CREDENTIALS } from '../../common-thp-credentials';
 import { getController, initTrezorConnect, restartEmu, setup } from '../../common.setup';
 
 describe('THP pairing', () => {
@@ -99,26 +100,7 @@ describe('THP pairing', () => {
     it('ThpPairing with credentials (autoconnect: false)', async () => {
         const device = await waitForDevice({
             pairingMethods: ['CodeEntry'],
-            knownCredentials: [
-                {
-                    host_static_key:
-                        '0007070707070707070707070707070707070707070707070707070707070747',
-                    trezor_static_public_key:
-                        '566f6976fd42cafadf1b843ce4e6275c930d52efac878217df0ea2a23933b07d',
-                    credential:
-                        '0a180a064368726f6d6510001a0c5472657a6f722053756974651220884364860fbccd18f6c14890ee4cf427c6a1e7e7a4cba91866474b4b7d73cb00',
-                    autoconnect: false,
-                },
-                {
-                    host_static_key:
-                        '0007070707070707070707070707070707070707070707070707070707070747',
-                    trezor_static_public_key:
-                        'ca9a6e4682ac461c59d75a8625c05bf3a4af01e084abc5a7fe8ad126c2d6f772',
-                    credential:
-                        '0a1c0a0974657374733a65326510001a0d5472657a6f72436f6e6e65637412203a4826fcf4d107240c1b9aa0c4bec6abab95e50b35950b5da8a648da135ae96d',
-                    autoconnect: false,
-                },
-            ],
+            knownCredentials: THP_CREDENTIALS,
         });
 
         const pairingSpy = vi.fn();
@@ -137,7 +119,11 @@ describe('THP pairing', () => {
         const device = await waitForDevice({ pairingMethods: ['CodeEntry'] });
 
         const credentialsSpy = vi.fn();
-        TrezorConnect.on('device-thp_credentials_changed', credentialsSpy);
+        TrezorConnect.on('device-thp_credentials_changed', event => {
+            credentialsSpy(event);
+            // uncomment this line to generate fixtures for e2e/common-thp-credentials.ts
+            // console.log('Credentials', event.credentials);
+        });
 
         TrezorConnect.on('ui-request_thp_pairing', async event => {
             const state = await getPairingInfo(event);
