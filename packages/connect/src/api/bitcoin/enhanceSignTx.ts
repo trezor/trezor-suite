@@ -10,11 +10,11 @@ const ZCASH_NU5_VERSION_GROUP_ID = 0x26a7270a;
 // Must track the currently active Zcash network upgrade or transactions will be
 // rejected by the network and never confirm.
 // NU6.2 (active since mainnet height 3364600): 0x5437f330.
-// See:
-// https://zfnd.org/zebra-4-5-3-and-5-0-0-emergency-soft-fork-and-nu6-2-activation/
-// https://github.com/ZcashFoundation/zebra/blob/616fa36ecc06e730f1e2accc9a45bca4eb08b561/CHANGELOG.md?plain=1#L22
-// https://github.com/ZcashFoundation/zebra/blob/616fa36ecc06e730f1e2accc9a45bca4eb08b561/zebra-chain/src/parameters/network_upgrade.rs#L234
-const ZCASH_FALLBACK_BRANCH_ID = 0x5437f330;
+// See https://zfnd.org/zebra-4-5-3-and-5-0-0-emergency-soft-fork-and-nu6-2-activation/
+//
+// NU6.3 (active since mainnet height 3428143): 0x37a5165b.
+// See https://github.com/zcash/zips/blob/main/zips/zip-0258.md
+const ZCASH_FALLBACK_BRANCH_ID = 0x37a5165b;
 
 // enhance TransactionOptions with default values if they are not provided
 // in case of network upgrade/fork those values should be updated as well
