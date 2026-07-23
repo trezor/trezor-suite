@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     type YieldDtoV2,
-    getBonusRewardToken,
+    getProtocolIncentiveRewardTokens,
     useAllYieldOpportunities,
 } from '@suite-common/earn-stablecoin-api';
 import { getNetworkByYieldXyzId } from '@suite-common/wallet-config';
@@ -36,7 +36,7 @@ export type YieldFlowResolutionStatus =
 type UnresolvedYieldFlowData = {
     account: Account | null;
     apy: number | null;
-    bonusRewardTokenName: string | null;
+    bonusRewardTokenSymbol: string | null;
     flowKey: string | null;
     providerName: string | null;
     receiptToken: YieldFlowDisplayToken | null;
@@ -54,7 +54,7 @@ type UnresolvedYieldFlowData = {
 type YieldFlowDataResolved = {
     account: Account;
     apy: number | null;
-    bonusRewardTokenName: string | null;
+    bonusRewardTokenSymbol: string | null;
     flowKey: string;
     providerName: string;
     receiptToken: YieldFlowDisplayToken;
@@ -83,7 +83,7 @@ type YieldFlowProps = { displayError?: boolean } & YieldFlowParams;
 const defaultFlowData: ResolvedYieldFlowData = {
     account: null,
     apy: null,
-    bonusRewardTokenName: null,
+    bonusRewardTokenSymbol: null,
     flowKey: null,
     providerName: null,
     receiptToken: null,
@@ -134,10 +134,15 @@ export const resolveYieldFlowData = ({
     const vaultTokenName = vault.outputToken?.name;
     const vaultTokenSymbol = vault.outputToken.symbol;
     const vaultName = vault.metadata.name ?? vaultTokenName;
-    const bonusRewardToken = getBonusRewardToken(vault.rewardRate.components, vault.token);
+    // Protocol-incentive rewards (e.g. MORPHO) are the ones claimed manually; their presence
+    // gates both the bonus-reward benefit bullet and the "Claim rewards" timeline section,
+    // matching the desktop nutshell modal.
+    const [protocolIncentiveRewardToken] = getProtocolIncentiveRewardTokens(
+        vault.rewardRate.components,
+    );
     const resolvedVaultData = {
         apy,
-        bonusRewardTokenName: bonusRewardToken?.name ?? null,
+        bonusRewardTokenSymbol: protocolIncentiveRewardToken?.symbol ?? null,
         providerName,
         tokenSymbol: toTokenSymbol(vault.token.symbol.toUpperCase()),
         vault,

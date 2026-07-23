@@ -2813,8 +2813,9 @@ export const messages = {
                     description: 'This is your vault position.',
                 },
                 fourth: {
-                    title: 'You will also earn {bonusRewardTokenName} tokens as rewards.',
-                    description: 'These must be claimed separately.',
+                    title: "You'll earn {bonusRewardTokenSymbol} as rewards.",
+                    description:
+                        'They may only be offered for a limited time, but once earned, you can claim them in the Earn tab.',
                 },
             },
             timelineCardTitle: 'Deposit timeline',
@@ -2842,6 +2843,17 @@ export const messages = {
                 },
                 second: {
                     title: 'Receive {tokenSymbol} in account',
+                    description: 'Instantly',
+                },
+            },
+            claimTimelineTitle: 'Claim rewards',
+            claimTimeline: {
+                first: {
+                    title: 'Sign claim transaction',
+                    description: 'Network fee',
+                },
+                second: {
+                    title: 'Receive {bonusRewardTokenSymbol} in account',
                     description: 'Instantly',
                 },
             },

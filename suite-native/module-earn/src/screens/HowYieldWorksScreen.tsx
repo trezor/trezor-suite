@@ -35,7 +35,7 @@ export const HowYieldWorksScreen = () => {
         vault,
         tokenSymbol,
         vaultTokenSymbol,
-        bonusRewardTokenName,
+        bonusRewardTokenSymbol,
         resolutionStatus,
     } = useResolvedYieldFlowData(route.params);
 
@@ -95,7 +95,7 @@ export const HowYieldWorksScreen = () => {
         vaultTokenSymbol,
         apy,
         onApyPress: apyBreakdownAlert.onPress,
-        bonusRewardTokenName,
+        bonusRewardTokenSymbol,
     });
 
     return (
