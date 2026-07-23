@@ -5,14 +5,14 @@ import { useTradingDebugModeFlag } from '../hooks/useTradingDebugModeFlag';
 
 export type DebugModeViewProps = BoxProps;
 
-const DebugModeViewStyle = prepareNativeStyle(({ colors, spacings }) => ({
-    marginHorizontal: spacings.sp4,
+const DebugModeViewStyle = prepareNativeStyle(({ colors, spacings, borders }) => ({
     marginVertical: spacings.sp2,
-    paddingHorizontal: spacings.sp4,
+    paddingHorizontal: spacings.sp8,
     paddingVertical: spacings.sp2,
     borderWidth: 1,
-    borderColor: colors.elementBorderField,
-    backgroundColor: colors.elementFillBoldDisabled,
+    borderColor: colors.elementBorderAccentVioletSofter,
+    backgroundColor: colors.elementFillAccentVioletSoft,
+    borderRadius: borders.radii.r12,
 }));
 
 export const DebugModeView = ({ style, ...otherProps }: DebugModeViewProps) => {

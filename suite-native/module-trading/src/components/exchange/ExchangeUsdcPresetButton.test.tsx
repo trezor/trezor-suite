@@ -63,7 +63,7 @@ describe('ExchangeUsdcPresetButton', () => {
         });
 
         it('renders the preset button', () => {
-            expect(screen.getByText('Prefill 1 USDC → USDT')).toBeOnTheScreen();
+            expect(screen.getByText('Prefill 1 USDC→USDT')).toBeOnTheScreen();
         });
 
         it('fills form for 1 USDC -> USDT trade', () => {
