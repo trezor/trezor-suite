@@ -32,25 +32,27 @@ export const InputWrapper = ({ children, label, hint, error }: InputWrapperProps
     const errorMessage = (error && errorToMessageMap[error]) ?? error;
 
     return (
-        <VStack spacing="sp6">
+        <VStack flex={1} spacing="sp6">
             {!!label && (
                 <Text variant="body-md" color="contentPrimary" style={applyStyle(labelStyle)}>
                     {label}
                 </Text>
             )}
             <Box>{children}</Box>
-            <Box marginLeft="sp12">
-                {!!error && (
-                    <Animated.View entering={FadeIn} exiting={FadeOut}>
-                        <Hint variant="error">{errorMessage}</Hint>
-                    </Animated.View>
-                )}
-                {!!hint && (
-                    <Animated.View entering={FadeIn} exiting={FadeOut}>
-                        <Hint>{hint}</Hint>
-                    </Animated.View>
-                )}
-            </Box>
+            {(!!error || !!hint) && (
+                <Box marginLeft="sp12">
+                    {!!error && (
+                        <Animated.View entering={FadeIn} exiting={FadeOut}>
+                            <Hint variant="error">{errorMessage}</Hint>
+                        </Animated.View>
+                    )}
+                    {!!hint && (
+                        <Animated.View entering={FadeIn} exiting={FadeOut}>
+                            <Hint>{hint}</Hint>
+                        </Animated.View>
+                    )}
+                </Box>
+            )}
         </VStack>
     );
 };
