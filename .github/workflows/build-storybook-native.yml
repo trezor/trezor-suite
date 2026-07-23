@@ -12,6 +12,9 @@ on:
     paths:
       - "suite-native/storybook/**"
       - "suite-native/**/*.story.*"
+  pull_request:
+    paths:
+      - .github/workflows/build-storybook-native.yml
 
 jobs:
   build-storybook:

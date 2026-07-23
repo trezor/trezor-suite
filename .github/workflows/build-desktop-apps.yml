@@ -15,7 +15,6 @@ on:
   pull_request:
     types: [labeled]
   workflow_dispatch:
-    inputs:
 
 env:
   DESKTOP_APP_NAME: "Trezor-Suite"

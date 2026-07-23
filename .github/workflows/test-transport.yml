@@ -19,6 +19,7 @@ on:
       - "packages/protocol/**"
       - "packages/trezor-user-env-link/**"
       - "docker/docker-compose.transport-test-ci.yml"
+      - ".github/workflows/test-transport.yml"
   workflow_dispatch:
 
 concurrency:

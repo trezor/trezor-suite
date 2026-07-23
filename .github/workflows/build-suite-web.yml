@@ -21,6 +21,9 @@ on:
       - ".github/workflows/release*"
       - ".github/workflows/template*"
       - "**.md"
+  pull_request:
+    paths:
+      - .github/workflows/build-suite-web.yml
   workflow_dispatch:
 
 concurrency:
