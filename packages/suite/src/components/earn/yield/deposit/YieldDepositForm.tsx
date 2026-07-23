@@ -5,7 +5,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { getYieldFlowStepSequence, splitYieldPendingTransaction } from '@suite-common/wallet-core';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
-import { Banner, Button, Column, Text } from '@trezor/components';
+import { Banner, Column, Text } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 
@@ -46,6 +46,7 @@ export const YieldDepositForm = () => {
         isSubmittingAction,
         setAmountInput,
         completeWrapStep,
+        returnToWrapStep,
         submitApprovalAction,
         submitAction,
         revokeAllowance,
@@ -202,6 +203,7 @@ export const YieldDepositForm = () => {
                                         values={{ nativeSymbol }}
                                     />
                                 ),
+                                onEdit: returnToWrapStep,
                                 content: () => (
                                     <YieldWrapStep
                                         token={token}
@@ -215,17 +217,7 @@ export const YieldDepositForm = () => {
                             },
                             approve: {
                                 title: <Translation id="TR_EARN_YIELD_SELECT_AMOUNT_AND_APPROVE" />,
-                                rightContent: view =>
-                                    view.state === 'done' && (
-                                        <Button
-                                            size="small"
-                                            intent="neutral"
-                                            priority="secondary"
-                                            onClick={handleOnModify}
-                                        >
-                                            <Translation id="TR_MODIFY" />
-                                        </Button>
-                                    ),
+                                onEdit: handleOnModify,
                                 content: () => (
                                     <YieldApproveStep
                                         token={token}

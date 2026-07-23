@@ -93,6 +93,7 @@ export type UseYieldFlowResult = {
     isSubmittingAction: boolean;
     setAmountInput: (amount: string) => void;
     completeWrapStep: () => void;
+    returnToWrapStep: () => void;
     completeUnwrapStep: () => void;
     submitApprovalAction: () => void;
     submitAction: () => void;
@@ -296,6 +297,10 @@ export const useYieldFlow = ({
     // and unwrap transactions themselves come with the shared wrap thunks.
     const completeWrapStep = useCallback(() => {
         setIsWrapStepCompleted(true);
+    }, []);
+
+    const returnToWrapStep = useCallback(() => {
+        setIsWrapStepCompleted(false);
     }, []);
 
     const completeUnwrapStep = useCallback(() => {
@@ -620,6 +625,7 @@ export const useYieldFlow = ({
         isSubmittingAction: session.action.isSubmitting,
         setAmountInput,
         completeWrapStep,
+        returnToWrapStep,
         completeUnwrapStep,
         submitApprovalAction,
         submitAction,
