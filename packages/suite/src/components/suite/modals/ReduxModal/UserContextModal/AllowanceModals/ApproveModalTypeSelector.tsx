@@ -96,7 +96,12 @@ export const ApproveModalTypeSelector = ({
     );
 
     const renderOption = (type: SelectableType) => (
-        <CardList.Item key={type} onClick={() => handleSelect(type)} width="100%">
+        <CardList.Item
+            key={type}
+            onClick={() => handleSelect(type)}
+            width="100%"
+            data-testid={`@modal/approve/${type.toLowerCase()}-option`}
+        >
             <Column gap={4} flex="1" alignItems="flex-start">
                 <Row gap={8}>
                     <TokenIcon
@@ -133,7 +138,10 @@ export const ApproveModalTypeSelector = ({
                             size={20}
                             placeholder={displaySymbol}
                         />
-                        <Text typographyStyle="body-sm-strong">
+                        <Text
+                            typographyStyle="body-sm-strong"
+                            data-testid="@modal/approve/limit-value"
+                        >
                             <Translation
                                 id={TYPE_LABEL_ID[selectedType]}
                                 values={translationValues}
@@ -154,6 +162,7 @@ export const ApproveModalTypeSelector = ({
     return (
         <Popover
             ref={popoverRef}
+            data-testid="@modal/approve/limit-selector"
             placement={{ position: 'bottom', alignment: 'end' }}
             zIndex={zIndices.modal + 1}
             popoverOffset={-60}

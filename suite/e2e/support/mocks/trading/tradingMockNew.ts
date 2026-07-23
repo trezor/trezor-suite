@@ -97,6 +97,16 @@ export class TradingMockNew {
         });
     }
 
+    // Txid of the broadcast blocked by the backend (source of truth for post-send assertions).
+    get lastBroadcastTxid(): string {
+        const txid = this.backend?.lastBroadcastTxid;
+        if (!txid) {
+            throw new Error('Backend has not recorded a broadcast yet (is startBackend set up?)');
+        }
+
+        return txid;
+    }
+
     @step()
     async mockProviderStatusPage() {
         if (this.tradeFlow !== 'swap') {

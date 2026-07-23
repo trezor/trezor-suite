@@ -39,6 +39,7 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
         device,
         blockbookMock,
         yieldMock,
+        toastSection,
     }) => {
         await test.step('Check yield dashboard', async () => {
             await yieldSection.earnMenuButton.click();
@@ -161,8 +162,8 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
             });
             blockbookMock.updateAllowance('10000000'); // 10 USDC
             await devicePrompt.sendButton.click();
-            await expect(yieldFlowSection.approvedToast).toBeVisible();
-            await expect(yieldFlowSection.approvedToastAmount).toHaveText('10USDC');
+            await expect(toastSection.approved).toBeVisible();
+            await expect(toastSection.approvedAmount).toHaveText('10USDC');
             await expect(yieldFlowSection.pendingTransactionLabel).toHaveTranslation(
                 'TR_EXCHANGE_APPROVAL_FORM_CONFIRMING_APPROVAL',
             );
@@ -219,7 +220,7 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
             });
             await devicePrompt.waitForFinalPromptAndConfirm();
             await devicePrompt.sendButton.click();
-            await expect(yieldFlowSection.depositedToast).toBeVisible();
+            await expect(toastSection.yieldDeposit).toBeVisible();
             await expect(yieldFlowSection.flowCompleteHeading).toHaveTranslation(
                 'TR_EARN_YIELD_DEPOSIT_COMPLETE',
             );

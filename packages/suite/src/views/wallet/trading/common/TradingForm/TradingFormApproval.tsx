@@ -275,6 +275,7 @@ export const TradingFormApproval = () => {
                         </>
                     ) : (
                         <Button
+                            data-testid="@trading/form/approve-button"
                             onClick={() => handleApproveClick(onApproveTransactionClick)}
                             intent="brand"
                             size="large"
@@ -324,7 +325,13 @@ export const TradingFormApproval = () => {
             )}
 
             {approvalStep === 'LOADING' && (
-                <Button intent="brand" size="large" width="100%" isDisabled={true}>
+                <Button
+                    data-testid="@trading/form/swap-button"
+                    intent="brand"
+                    size="large"
+                    width="100%"
+                    isDisabled={true}
+                >
                     <Translation id="TR_TRADING_SWAP" />
                 </Button>
             )}
@@ -361,6 +368,7 @@ export const TradingFormApproval = () => {
                                 value={tx.approvalTxid}
                                 intent="brand"
                                 typographyStyle="body-md"
+                                data-testid="@pending-transaction/txid/value"
                             />
                         ) : (
                             <Translation id="TR_UNKNOWN" />

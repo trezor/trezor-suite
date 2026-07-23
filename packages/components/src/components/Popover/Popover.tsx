@@ -39,6 +39,7 @@ export type PopoverProps = {
     onInteraction?: () => void;
     popoverOffset?: number;
     zIndex?: number;
+    'data-testid'?: string;
 };
 
 export function usePopover({
@@ -114,9 +115,10 @@ export const usePopoverContext = () =>
 
 type PopoverTriggerProps = {
     children: React.ReactNode;
+    'data-testid'?: string;
 };
 
-export const PopoverTrigger = ({ children }: PopoverTriggerProps) => {
+export const PopoverTrigger = ({ children, 'data-testid': dataTestId }: PopoverTriggerProps) => {
     const context = usePopoverContext();
     const ref = useMergeRefs([context.refs.setReference]);
 
@@ -124,6 +126,7 @@ export const PopoverTrigger = ({ children }: PopoverTriggerProps) => {
         <div
             ref={ref}
             data-state={context.open ? 'open' : 'closed'}
+            data-testid={dataTestId}
             {...context.getReferenceProps()}
             style={{
                 display: 'flex',
@@ -192,6 +195,7 @@ export const Popover = forwardRef(
             zIndex = zIndices.popover,
             children,
             onOpenChange,
+            'data-testid': dataTestId,
         }: PopoverProps & { children: React.ReactNode },
         ref,
     ) => {
@@ -210,7 +214,7 @@ export const Popover = forwardRef(
 
         return (
             <PopoverContext.Provider value={popover}>
-                <PopoverTrigger>{children}</PopoverTrigger>
+                <PopoverTrigger data-testid={dataTestId}>{children}</PopoverTrigger>
                 <PopoverContent style={{ zIndex }}>{content}</PopoverContent>
             </PopoverContext.Provider>
         );

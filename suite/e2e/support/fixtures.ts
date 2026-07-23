@@ -23,6 +23,7 @@ import { PaginationControl } from './pageObjects/pagination';
 import { RecoveryModal } from './pageObjects/recoveryModal';
 import { SettingsPage } from './pageObjects/settings/settingsPage';
 import { StakingSection } from './pageObjects/staking/stakingSection';
+import { ToastSection } from './pageObjects/toastSection';
 import { FeeSection } from './pageObjects/trading/feeSection';
 import { TradingPage } from './pageObjects/trading/tradingPage';
 import { TrezorInput } from './pageObjects/trezorInput';
@@ -68,6 +69,7 @@ type Fixtures = {
     yieldMock: YieldMock;
     txSimulationModal: TxSimulationModal;
     paginationControl: PaginationControl;
+    toastSection: ToastSection;
     evoluClient: EvoluClient;
 };
 
@@ -178,6 +180,9 @@ const test = suiteBaseTest.extend<Fixtures>({
     },
     paginationControl: async ({ page }, use) => {
         await use(new PaginationControl(page));
+    },
+    toastSection: async ({ page }, use) => {
+        await use(new ToastSection(page));
     },
     evoluClient: async ({}, use) => {
         await checkEvoluRelayServerRunning();
