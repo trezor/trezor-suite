@@ -111,8 +111,10 @@ export const isAccountBasedNetwork = (symbol: NetworkSymbol) => {
 export const getNetworkFeatures = (symbol: NetworkSymbol): NetworkFeature[] =>
     networks[symbol]?.features;
 
-export const getCoingeckoId = (symbol: NetworkSymbol): string | undefined =>
-    networks[symbol].coingeckoId;
+export const shouldShowNetworkBadge = (symbol: NetworkSymbol): boolean =>
+    getNetworkFeatures(symbol).includes('tokens');
+
+export const getCoingeckoId = (symbol: NetworkSymbol) => networks[symbol].coingeckoId;
 
 export const isNetworkSymbol = (symbol: NetworkSymbolExtended): symbol is NetworkSymbol =>
     Object.hasOwn(networks, symbol);
