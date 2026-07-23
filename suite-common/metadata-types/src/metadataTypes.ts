@@ -107,6 +107,10 @@ export type Result<T> = Promise<Success<T> | Error>;
 
 export abstract class AbstractMetadataProvider {
     private apiRequestQueue: Promise<unknown> = Promise.resolve();
+
+    /**
+     * Prevent queued requests from bypassing Retry-After when the rate-limited request exhausts its retries.
+     */
     private apiRequestCooldownUntil = 0;
 
     /* isCloud means that this provider is not local and allows multi client sync. These providers are suitable for backing up data. */
