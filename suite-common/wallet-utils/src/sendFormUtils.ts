@@ -137,6 +137,26 @@ const getSerializedErc20Transfer = (token: TokenInfo, to: string, amount: string
     return `0x${ERC20_TRANSFER}${erc20recipient}${erc20amount}`;
 };
 
+type EvmEstimateSpecificBase = {
+    from?: string;
+    to?: string;
+    data?: string;
+    value?: string;
+};
+
+// Attach the wallet-declared privatePending hint to an EVM estimateFee `specific` object, but ONLY
+// when there are in-flight private nonces to declare. The `length > 0` guard is deliberate: blockbook
+// treats the hint as presence-only and routes any request that carries a non-empty `nonces` array to
+// the rate-limited private relay, so declaring on every keystroke would re-open the relay quota drain
+// (trezor/blockbook#1629). With no private nonces the base object is returned unchanged.
+export const buildEvmEstimateSpecific = (
+    base: EvmEstimateSpecificBase,
+    privatePendingNonces?: number[],
+): EvmEstimateSpecificBase & { privatePending?: { nonces: number[] } } =>
+    privatePendingNonces && privatePendingNonces.length > 0
+        ? { ...base, privatePending: { nonces: privatePendingNonces } }
+        : base;
+
 // TrezorConnect.blockchainEstimateFee for ETH
 export const getEthereumEstimateFeeParams = (
     to: string,

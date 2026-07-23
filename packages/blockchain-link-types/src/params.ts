@@ -22,6 +22,17 @@ export interface GetFiatRatesTickersListParams {
     token?: string;
 }
 
+/**
+ * Wallet-declared in-flight PRIVATE (alternative send-tx / relay) transactions. Lets blockbook route
+ * the nonce lookup and gas estimate deterministically from authoritative wallet state instead of
+ * inferring it from its per-instance `recentSenders` heuristic (fragile across restarts and
+ * load-balanced replicas). Blockbook only (EVM). See trezor/blockbook#1639.
+ */
+export interface PrivatePendingHint {
+    nonces: number[]; // account nonces of the in-flight private txs; blockbook raises the reported pending nonce to max(nonces)+1
+    txids?: string[]; // forward-compat only; not yet consumed by blockbook
+}
+
 export interface EstimateFeeParams {
     blocks?: number[];
     specific?: {
@@ -32,6 +43,7 @@ export interface EstimateFeeParams {
         data?: string; // eth tx data, sol tx message
         value?: string; // eth tx amount
         newAccountProgramName?: 'staking' | 'spl-token' | 'spl-token-2022'; // program name of the Solana account that is being created, default: 'spl-token'
+        privatePending?: { nonces: number[] }; // eth: presence-only routing hint (see PrivatePendingHint) - routes the estimate to the relay's pending-private state
     };
 }
 
@@ -60,4 +72,5 @@ export interface AccountInfoParams {
     tokenAccountsPubKeys?: string[]; // solana only, token accounts to fetch txids for
     protocols?: 'erc4626'[]; // protocols to include in the response (e.g. 'erc4626')
     confirmedNonce?: boolean; // blockbook only (EVM), additionally fetch the confirmed (mined-only) nonce
+    privatePending?: PrivatePendingHint; // blockbook only (EVM), authoritatively declares in-flight private txs for deterministic nonce routing
 }

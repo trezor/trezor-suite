@@ -789,6 +789,8 @@ export interface WsAccountInfoReq {
     gap?: number;
     /** If true, additionally fetch and return the confirmed (mined-only) nonce for Ethereum-like addresses (extra backend call). */
     confirmedNonce?: boolean;
+    /** Wallet-declared in-flight private (alternative send-tx / relay) txs so blockbook routes the pending-nonce lookup deterministically instead of via its recentSenders heuristic. EVM only. */
+    privatePending?: { nonces: number[]; txids?: string[] };
 }
 export interface WsContractInfoReq {
     /** Contract address to query. */

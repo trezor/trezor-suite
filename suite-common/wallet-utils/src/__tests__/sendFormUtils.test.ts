@@ -9,6 +9,7 @@ import { BigNumber } from '@trezor/utils';
 
 import * as fixtures from '../__fixtures__/sendFormUtils';
 import {
+    buildEvmEstimateSpecific,
     calculateMax,
     calculateTotal,
     calculateTotalGasCost,
@@ -784,6 +785,37 @@ describe('sendForm utils', () => {
                     amount: '8.00000001',
                 }),
             ).toBe(false);
+        });
+    });
+
+    describe('buildEvmEstimateSpecific', () => {
+        const base = { from: '0xabc', to: '0xdef', value: '0x0', data: '0x' };
+
+        it('returns the base unchanged when there are no private-pending nonces', () => {
+            expect(buildEvmEstimateSpecific(base)).toEqual(base);
+            expect(buildEvmEstimateSpecific(base)).not.toHaveProperty('privatePending');
+        });
+
+        it('returns the base unchanged for an empty nonce array (presence-only guard)', () => {
+            expect(buildEvmEstimateSpecific(base, [])).toEqual(base);
+            expect(buildEvmEstimateSpecific(base, [])).not.toHaveProperty('privatePending');
+        });
+
+        it('attaches privatePending only when at least one nonce is declared', () => {
+            expect(buildEvmEstimateSpecific(base, [5])).toEqual({
+                ...base,
+                privatePending: { nonces: [5] },
+            });
+            expect(buildEvmEstimateSpecific(base, [5, 6])).toEqual({
+                ...base,
+                privatePending: { nonces: [5, 6] },
+            });
+        });
+
+        it('does not mutate the base object', () => {
+            const input = { ...base };
+            buildEvmEstimateSpecific(input, [1]);
+            expect(input).toEqual(base);
         });
     });
 });
