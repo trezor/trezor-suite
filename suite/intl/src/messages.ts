@@ -11276,11 +11276,11 @@ export const messages = defineMessages({
     },
     TR_TX_WRAP: {
         id: 'TR_TX_WRAP',
-        defaultMessage: 'Wrap {nativeAmount} into {wrappedAmount}',
+        defaultMessage: 'Wrap {nativeSymbol} into {wrappedAmount}',
     },
     TR_TX_UNWRAP: {
         id: 'TR_TX_UNWRAP',
-        defaultMessage: 'Unwrap {wrappedAmount} into {nativeAmount}',
+        defaultMessage: 'Unwrap {wrappedAmount} into {nativeSymbol}',
     },
     TR_WRAP_NATIVE_TOKEN: {
         id: 'TR_WRAP_NATIVE_TOKEN',

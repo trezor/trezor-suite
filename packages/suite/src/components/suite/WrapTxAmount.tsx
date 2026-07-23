@@ -14,11 +14,9 @@ import { FormattedCryptoAmount } from './FormattedCryptoAmount';
 
 interface WrapTxAmountProps {
     transaction: WalletAccountTransaction;
-    /** Render the wrapped-token symbol (e.g. WETH) instead of the native one (e.g. ETH). */
-    wrapped?: boolean;
 }
 
-export const WrapTxAmount = ({ transaction, wrapped }: WrapTxAmountProps) => {
+export const WrapTxAmount = ({ transaction }: WrapTxAmountProps) => {
     const { symbol } = transaction;
 
     const amount = useMemo(() => {
@@ -26,8 +24,8 @@ export const WrapTxAmount = ({ transaction, wrapped }: WrapTxAmountProps) => {
 
         if (!kind) return undefined;
 
-        // Wrapping is 1:1, so both legs show the same amount and only differ in symbol. The amount
-        // is the transaction value for a wrap and the withdraw(uint256) calldata for an unwrap.
+        // Wrapping is 1:1, so the wrapped amount equals the native one. The amount is the
+        // transaction value for a wrap and the withdraw(uint256) calldata for an unwrap.
         const subunits =
             kind === 'wrap'
                 ? transaction.amount
@@ -41,9 +39,6 @@ export const WrapTxAmount = ({ transaction, wrapped }: WrapTxAmountProps) => {
     if (!amount) return null;
 
     return (
-        <FormattedCryptoAmount
-            value={amount}
-            symbol={wrapped ? (getWrappedNativeSymbol(symbol) ?? symbol) : symbol}
-        />
+        <FormattedCryptoAmount value={amount} symbol={getWrappedNativeSymbol(symbol) ?? symbol} />
     );
 };

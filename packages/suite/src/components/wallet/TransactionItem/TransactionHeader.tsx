@@ -138,8 +138,8 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
             <Translation
                 id={wrapKind === 'wrap' ? 'TR_TX_WRAP' : 'TR_TX_UNWRAP'}
                 values={{
-                    nativeAmount: <WrapTxAmount transaction={transaction} />,
-                    wrappedAmount: <WrapTxAmount transaction={transaction} wrapped />,
+                    nativeSymbol: getNetworkDisplaySymbol(transaction.symbol),
+                    wrappedAmount: <WrapTxAmount transaction={transaction} />,
                 }}
             />
         );
