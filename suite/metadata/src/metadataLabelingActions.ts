@@ -26,6 +26,7 @@ import type { MetadataAction } from './metadataActions';
 import * as metadataActions from './metadataActions';
 import * as METADATA from './metadataConstants';
 import * as metadataDataThunks from './metadataDataThunks';
+import { fetchIntervals } from './metadataFetchIntervals';
 import * as METADATA_LABELING from './metadataLabelingConstants';
 import * as metadataProviderActions from './metadataProviderThunks';
 import {
@@ -52,7 +53,11 @@ const fetchMetadata =
         entity: LabelableEntity;
         encryptionVersion?: MetadataEncryptionVersion;
     }) =>
-    async (dispatch: Dispatch) => {
+    async (dispatch: Dispatch, getState: () => MetadataRootState) => {
+        if (!selectMetadata(getState()).enabled) {
+            return;
+        }
+
         const dataType = 'labels';
 
         const providerInstance = dispatch(
@@ -70,6 +75,10 @@ const fetchMetadata =
             entity[encryptionVersion] ?? throwError('trying to fetch entity without metadata');
 
         const response = await providerInstance.getFileContent(fileName);
+
+        if (!selectMetadata(getState()).enabled) {
+            return;
+        }
 
         if (!response.success) {
             throw response;
@@ -165,6 +174,10 @@ const syncMetadataKeys =
 export const fetchAndSaveMetadata =
     (deviceStateArg?: StaticSessionId) =>
     async (dispatch: Dispatch, getState: () => MetadataRootState) => {
+        if (!selectMetadata(getState()).enabled) {
+            return;
+        }
+
         const provider = selectSelectedProviderForLabels(getState());
         if (!provider) return;
 
@@ -199,6 +212,10 @@ export const fetchAndSaveMetadata =
             // to renew access token are issued by every provider.getFileContent
             const response = await providerInstance.getProviderDetails();
 
+            if (!selectMetadata(getState()).enabled) {
+                return;
+            }
+
             device = deviceStateArg
                 ? selectDeviceByStaticSessionId(getState(), deviceStateArg)
                 : selectSelectedDevice(getState());
@@ -224,9 +241,9 @@ export const fetchAndSaveMetadata =
 
             // device is disconnected or something is wrong with it
             if (!device?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION]) {
-                if (metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {
-                    clearInterval(metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]);
-                    delete metadataProviderActions.fetchIntervals[fetchIntervalTrackingId];
+                if (fetchIntervals[fetchIntervalTrackingId]) {
+                    clearInterval(fetchIntervals[fetchIntervalTrackingId]);
+                    delete fetchIntervals[fetchIntervalTrackingId];
                 }
 
                 return;
@@ -242,12 +259,16 @@ export const fetchAndSaveMetadata =
             );
             await Promise.all(promises);
         } catch (error) {
+            if (!selectMetadata(getState()).enabled) {
+                return;
+            }
+
             // This handles cases of providers that do not support token renewal.
             // We want those to work normally as long as their short-lived token allows. And only if
             // it expires, we want them to silently disconnect provider, keep metadata in place.
             // So that users will not notice that token expired until they will try to add or edit
             // already existing label
-            if (device?.state && metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {
+            if (device?.state && fetchIntervals[fetchIntervalTrackingId]) {
                 return dispatch(
                     metadataProviderActions.disconnectProvider({
                         removeMetadata: false,
@@ -676,7 +697,11 @@ export const init =
             ? selectDeviceByStaticSessionId(getState(), deviceStateArg)
             : selectSelectedDevice(getState());
 
-        if (!device?.state?.staticSessionId || !selectedProvider) {
+        if (
+            !selectMetadata(getState()).enabled ||
+            !device?.state?.staticSessionId ||
+            !selectedProvider
+        ) {
             return true;
         }
 
@@ -687,12 +712,16 @@ export const init =
         );
 
         // 7. if interval for watching provider is not set, create it
-        if (device.state && !metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {
+        if (device.state && !fetchIntervals[fetchIntervalTrackingId]) {
             // todo: possible race condition that has been around since always
             // user is editing label and at that very moment update arrives. updates to specific entities should be probably discarded in such case?
-            metadataProviderActions.fetchIntervals[fetchIntervalTrackingId] = setInterval(() => {
+            fetchIntervals[fetchIntervalTrackingId] = setInterval(() => {
                 const device = selectSelectedDevice(getState());
-                if (!getState().suite.online || !device?.state?.staticSessionId) {
+                if (
+                    !selectMetadata(getState()).enabled ||
+                    !getState().suite.online ||
+                    !device?.state?.staticSessionId
+                ) {
                     return;
                 }
                 dispatch(fetchAndSaveMetadata(device.state.staticSessionId));

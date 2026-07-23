@@ -15,13 +15,13 @@ import { type ExtraDependencies } from '@suite-common/redux-utils';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { exhaustive } from '@trezor/type-utils';
-import { createDeferred, createZip, typedObjectKeys } from '@trezor/utils';
+import { createDeferred, createZip } from '@trezor/utils';
 
 import * as METADATA from './metadataConstants';
 import { disposeMetadata } from './metadataDataThunks';
+import { clearFetchIntervals } from './metadataFetchIntervals';
 import * as METADATA_PROVIDER from './metadataProviderConstants';
 import { type MetadataRootState, selectSelectedProviderForLabels } from './metadataReducer';
-import { type FetchIntervalTrackingId } from './metadataUtils';
 import { DropboxProvider } from './providers/DropboxProvider';
 import { FileSystemProvider } from './providers/FileSystemProvider';
 import { GoogleProvider } from './providers/GoogleProvider';
@@ -38,8 +38,6 @@ export const providerInstance: Record<DataType, ProviderInstance | undefined> = 
     labels: undefined,
     passwords: undefined,
 };
-
-export const fetchIntervals: { [id: FetchIntervalTrackingId]: any } = {}; // any because of native at the moment, otherwise number | undefined
 
 const createProviderInstance = (
     type: MetadataProvider['type'],
@@ -106,13 +104,7 @@ type DisconnectProviderParams = {
 export const disconnectProvider =
     ({ clientId, dataType, removeMetadata = true }: DisconnectProviderParams) =>
     async (dispatch: Dispatch, _getState: () => MetadataRootState, extra: ExtraDependencies) => {
-        typedObjectKeys(fetchIntervals).forEach((id: FetchIntervalTrackingId) => {
-            const [trackedDataType, trackedClientId] = id.split('-');
-            if (trackedDataType === dataType && trackedClientId === clientId) {
-                clearInterval(fetchIntervals[id]);
-                delete fetchIntervals[id];
-            }
-        });
+        clearFetchIntervals({ dataType, clientId });
 
         // dispose metadata values (not keys)
         if (removeMetadata) {

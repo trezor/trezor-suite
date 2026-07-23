@@ -12,6 +12,7 @@ import { selectAccounts } from '@suite-common/wallet-core';
 
 import { setAccountAdd } from './metadataActions';
 import * as METADATA from './metadataConstants';
+import { clearFetchIntervals } from './metadataFetchIntervals';
 import * as METADATA_LABELING from './metadataLabelingConstants';
 import { type MetadataRootState, selectSelectedProviderForLabels } from './metadataReducer';
 import * as metadataUtils from './metadataUtils';
@@ -62,6 +63,8 @@ export const disposeMetadataKeys =
     };
 
 export const disableMetadata = () => (dispatch: Dispatch) => {
+    clearFetchIntervals({ dataType: 'labels' });
+
     dispatch({
         type: METADATA.DISABLE,
     });

@@ -12,6 +12,7 @@ import { cloneObject } from '@trezor/utils';
 
 import * as METADATA from './metadataConstants';
 import * as metadataDataThunks from './metadataDataThunks';
+import { fetchIntervals } from './metadataFetchIntervals';
 import * as METADATA_PASSWORDS from './metadataPasswordsConstants';
 import * as METADATA_PROVIDER from './metadataProviderConstants';
 import * as metadataProviderActions from './metadataProviderThunks';
@@ -176,8 +177,8 @@ export const init = () => async (dispatch: Dispatch, getState: () => MetadataRoo
         device.state.staticSessionId,
     );
 
-    if (device?.state && !metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {
-        metadataProviderActions.fetchIntervals[fetchIntervalTrackingId] = setInterval(() => {
+    if (device?.state && !fetchIntervals[fetchIntervalTrackingId]) {
+        fetchIntervals[fetchIntervalTrackingId] = setInterval(() => {
             device = selectSelectedDevice(getState());
             const { fileName, aesKey } = device?.passwords?.[1] || {};
 

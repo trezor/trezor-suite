@@ -9,9 +9,15 @@ import { asWalletDescriptor } from '@trezor/device-utils';
 
 import * as fixtures from '../__fixtures__/metadataActions';
 import * as metadataActions from '../metadataActions';
+import * as METADATA from '../metadataConstants';
+import { fetchIntervals } from '../metadataFetchIntervals';
 import * as metadataLabelingActions from '../metadataLabelingActions';
 import * as metadataProviderActions from '../metadataProviderThunks';
-import { type SuiteRootStateSliceForMetadata, metadataReducer } from '../metadataReducer';
+import {
+    type SuiteRootStateSliceForMetadata,
+    initialMetadataState,
+    metadataReducer,
+} from '../metadataReducer';
 import * as metadataThunks from '../metadataThunks';
 import { DropboxProvider } from '../providers/DropboxProvider';
 
@@ -96,6 +102,40 @@ const getInitialState = (state?: InitialState) => {
         },
     };
 };
+
+const DROPBOX_CLIENT_ID = 'dropbox-client-id';
+const STATIC_SESSION_ID = '1stTestnetAddress@device_id:0';
+
+const getMetadataFetchInitialState = (isMetadataEnabled: boolean) =>
+    getInitialState({
+        metadata: {
+            ...initialMetadataState,
+            enabled: isMetadataEnabled,
+            providers: [
+                {
+                    type: 'dropbox',
+                    clientId: DROPBOX_CLIENT_ID,
+                    data: {},
+                    isCloud: true,
+                    tokens: { refreshToken: 'token' },
+                    user: 'power-user',
+                },
+            ],
+            selectedProvider: { labels: DROPBOX_CLIENT_ID, passwords: '' },
+        },
+        device: {
+            state: { staticSessionId: STATIC_SESSION_ID },
+            metadata: {
+                1: {
+                    fileName: 'wallet.mtdt',
+                    aesKey: 'key',
+                    key: 'metadata-key',
+                },
+            },
+        },
+        accounts: [],
+        suite: { online: true },
+    });
 
 type State = ReturnType<typeof getInitialState>;
 const initStore = (state: State) => {
@@ -339,5 +379,80 @@ describe('Metadata Actions', () => {
         expect(store.getState().metadata.hasLegacyLabelsMigrated).toEqual({
             [otherWalletDescriptor]: true,
         });
+    });
+
+    it('does not fetch labeling data when metadata is disabled', async () => {
+        const store = initStore(getMetadataFetchInitialState(false));
+        const getProviderDetailsSpy = jest.spyOn(DropboxProvider.prototype, 'getProviderDetails');
+
+        try {
+            metadataProviderActions.providerInstance.labels = undefined;
+            await store.dispatch(metadataLabelingActions.fetchAndSaveMetadata(STATIC_SESSION_ID));
+
+            expect(getProviderDetailsSpy).not.toHaveBeenCalled();
+        } finally {
+            getProviderDetailsSpy.mockRestore();
+            metadataProviderActions.providerInstance.labels = undefined;
+        }
+    });
+
+    it('does not fetch labeling files after metadata is disabled during provider validation', async () => {
+        const store = initStore(getMetadataFetchInitialState(true));
+        let resolveProviderDetails:
+            | ((result: Awaited<ReturnType<DropboxProvider['getProviderDetails']>>) => void)
+            | undefined;
+        const providerDetailsPromise = new Promise<
+            Awaited<ReturnType<DropboxProvider['getProviderDetails']>>
+        >(resolve => {
+            resolveProviderDetails = resolve;
+        });
+        const getProviderDetailsSpy = jest
+            .spyOn(DropboxProvider.prototype, 'getProviderDetails')
+            .mockReturnValue(providerDetailsPromise);
+        const getFileContentSpy = jest.spyOn(DropboxProvider.prototype, 'getFileContent');
+
+        try {
+            metadataProviderActions.providerInstance.labels = undefined;
+            const fetchPromise = store.dispatch(
+                metadataLabelingActions.fetchAndSaveMetadata(STATIC_SESSION_ID),
+            );
+
+            store.dispatch({ type: METADATA.DISABLE });
+            resolveProviderDetails?.({
+                success: true,
+                payload: {
+                    type: 'dropbox',
+                    clientId: DROPBOX_CLIENT_ID,
+                    isCloud: true,
+                    tokens: { refreshToken: 'token' },
+                    user: 'power-user',
+                },
+            });
+            await fetchPromise;
+
+            expect(getFileContentSpy).not.toHaveBeenCalled();
+        } finally {
+            getProviderDetailsSpy.mockRestore();
+            getFileContentSpy.mockRestore();
+            metadataProviderActions.providerInstance.labels = undefined;
+        }
+    });
+
+    it('clears labeling fetch intervals when metadata is disabled', async () => {
+        const store = initStore(getInitialState());
+        const intervalId =
+            'labels-google-client-id-with-hyphens-1stTestnetAddress@device_id:0' as const;
+        const interval = setInterval(() => undefined, 60_000);
+
+        fetchIntervals[intervalId] = interval;
+
+        try {
+            await store.dispatch(metadataThunks.disableMetadata());
+
+            expect(fetchIntervals[intervalId]).toBeUndefined();
+        } finally {
+            clearInterval(interval);
+            delete fetchIntervals[intervalId];
+        }
     });
 });
