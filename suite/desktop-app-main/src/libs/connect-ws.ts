@@ -220,11 +220,15 @@ export const exposeConnectWs = ({
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
                     error: message.payload?.error,
                     callId: message.payload?.callId,
+                    // the renderer acts only on this connection's own calls
+                    connectionId,
                 });
             } else if (message.type === CORE_CALL_CANCEL) {
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
                     error: message.payload?.reason,
                     callId: message.payload?.callId,
+                    // the renderer acts only on this connection's own calls
+                    connectionId,
                 });
             } else if (message.type === CORE_CALL) {
                 if (!processOnPort) {
@@ -308,9 +312,11 @@ export const exposeConnectWs = ({
                     }
 
                     // Send call to renderer. It echoes the namespaced `id` back on the response,
-                    // which resolves this connection's deferred.
+                    // which resolves this connection's deferred; `connectionId` marks the owner so
+                    // that a cancel from another connection leaves the call alone.
                     mainWindow.webContents.send('connect-popup/call', {
                         id: storeId,
+                        connectionId,
                         method,
                         payload: rest,
                         origin,
@@ -368,6 +374,8 @@ export const exposeConnectWs = ({
             if (connectionPendingMessages.size > 0) {
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
                     error: 'Connection closed',
+                    // the renderer acts only on the closed connection's own calls
+                    connectionId,
                 });
 
                 for (const id of connectionPendingMessages) {
