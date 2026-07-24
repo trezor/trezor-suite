@@ -27,8 +27,8 @@ const stakeCardStyle = prepareNativeStyle<{ isStakeVariant: boolean }>(
         extend: {
             condition: isStakeVariant,
             style: {
-                backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation1,
-                borderColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation0,
+                backgroundColor: utils.colors.surfaceFillSunken,
+                borderColor: utils.colors.surfaceBorderSunken,
                 borderWidth: utils.borders.widths.small,
                 pointerEvents: 'none',
             },

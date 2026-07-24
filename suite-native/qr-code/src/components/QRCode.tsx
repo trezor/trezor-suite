@@ -85,7 +85,7 @@ export const QRCode = ({
             >
                 <ReactQRCode
                     bgColor={colorVariants.standard.surfaceFillRaised}
-                    fgColor={colorVariants.standard.legacyBackgroundNeutralBold}
+                    fgColor={colorVariants.standard.elementFillContrast}
                     level={hasCenterIcon ? 'H' : 'Q'}
                     size={qrCodeSize}
                     value={data}

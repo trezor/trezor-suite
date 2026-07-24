@@ -40,7 +40,7 @@ export const useHomeRefreshControl = ({
             <RefreshControl
                 refreshing={isRefreshing}
                 onRefresh={handleRefresh}
-                colors={[colors.legacyBackgroundPrimaryDefault]}
+                colors={[colors.elementFillBrandBold]}
             />
         );
     }, [isDiscoveredDeviceAccountless, handleRefresh, colors, isRefreshing]);

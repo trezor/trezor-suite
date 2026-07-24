@@ -15,7 +15,7 @@ export type LoaderProps = {
 
 // TODO: modify component to fit Figma design.
 // issue: https://github.com/trezor/trezor-suite/issues/7538
-export const Loader = ({ size, title, color = 'legacyBackgroundPrimaryDefault' }: LoaderProps) => {
+export const Loader = ({ size, title, color = 'contentBrand' }: LoaderProps) => {
     const {
         utils: { colors },
     } = useNativeStyles();

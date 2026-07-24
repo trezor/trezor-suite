@@ -45,7 +45,7 @@ export const CreateWalletLoader = () => {
                     y={0}
                     width={animationProgress}
                     height={LOADER_HEIGHT}
-                    color={utils.colors.legacyBackgroundSecondaryDefault}
+                    color={utils.colors.contentBrand}
                     r={5}
                 />
             </Group>

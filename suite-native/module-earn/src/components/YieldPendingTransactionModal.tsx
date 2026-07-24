@@ -161,11 +161,7 @@ export const YieldPendingTransactionModal = ({
                 <VStack spacing="sp12" alignItems="center">
                     <Badge intent="warning" label={pendingLabel} />
                     <Box style={applyStyle(pendingIconStyle)}>
-                        <CircularSpinner
-                            size={56}
-                            color="legacyBackgroundAlertYellowBold"
-                            width={2}
-                        />
+                        <CircularSpinner size={56} color="elementFillWarningBold" width={2} />
                         <Icon name="arrowUp" color="contentPrimary" size="large" />
                     </Box>
                 </VStack>

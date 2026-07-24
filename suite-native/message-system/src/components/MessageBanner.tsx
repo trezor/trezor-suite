@@ -33,19 +33,19 @@ type MessageBannerStyle = {
 
 const MessageBannerVariantToStyleMap = {
     info: {
-        backgroundColor: 'legacyBackgroundAlertBlueSubtleOnElevation0',
+        backgroundColor: 'elementFillInfoSoft',
         icon: 'info',
         iconColor: 'contentInfo',
         iconIntent: 'info',
     },
     warning: {
-        backgroundColor: 'legacyBackgroundAlertYellowSubtleOnElevation0',
+        backgroundColor: 'elementFillWarningSoft',
         icon: 'warning',
         iconColor: 'contentWarning',
         iconIntent: 'warning',
     },
     critical: {
-        backgroundColor: 'legacyBackgroundAlertRedSubtleOnElevation0',
+        backgroundColor: 'elementFillCriticalSoft',
         icon: 'warning',
         iconColor: 'contentCritical',
         iconIntent: 'critical',

@@ -106,7 +106,7 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
             {
                 condition: hasWarning,
                 style: {
-                    borderColor: utils.colors.legacyBackgroundAlertYellowBold,
+                    borderColor: utils.colors.borderWarning,
                     borderWidth: utils.borders.widths.large,
                 },
             },
@@ -114,7 +114,7 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
                 condition: hasError,
                 style: {
                     borderColor: utils.colors.elementBorderFieldError,
-                    backgroundColor: utils.colors.legacyBackgroundAlertRedSubtleOnElevation1,
+                    backgroundColor: utils.colors.borderCritical,
                 },
             },
         ],

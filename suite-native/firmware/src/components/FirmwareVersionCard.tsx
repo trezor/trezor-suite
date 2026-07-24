@@ -42,8 +42,8 @@ const firmwareArrowStyle = prepareNativeStyle(utils => {
         height: firmwareArrowSize,
         top: -(firmwareArrowSize / 2 + utils.spacings.sp4),
         zIndex: 3,
-        backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation1,
-        borderColor: utils.colors.surfaceFillRaised,
+        backgroundColor: utils.colors.surfaceFillModal,
+        borderColor: utils.colors.surfaceFillModeless,
         borderRadius: utils.borders.radii.round,
         borderWidth: utils.spacings.sp4,
         justifyContent: 'center',
@@ -93,7 +93,7 @@ export const FirmwareVersionCard = ({ isUpdateRequired, children }: FirmwareVers
                 </HStack>
                 <VStack spacing="sp6">
                     <FirmwareInfoBox
-                        backgroundColor="legacyBackgroundTertiaryDefaultOnElevation1"
+                        backgroundColor="elementFillNeutralSoft"
                         title={<Translation id="firmware.versionCard.currentFirmware" />}
                         titleColor="contentSecondary"
                         version={concatFirmwareVersion(firmwareVersion)}

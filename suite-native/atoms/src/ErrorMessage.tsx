@@ -14,7 +14,7 @@ const errorMessageStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: utils.colors.legacyBackgroundAlertRedSubtleOnElevation0,
+    backgroundColor: utils.colors.elementFillCriticalSofter,
     margin: utils.spacings.sp8,
     borderColor: utils.colors.elementBorderFieldError,
     borderWidth: 1,

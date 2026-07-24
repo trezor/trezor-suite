@@ -23,7 +23,7 @@ const SCREEN_SIZE = Dimensions.get('screen');
 
 const modalBackgroundOverlayStyle = prepareNativeStyle(utils => ({
     flex: 1,
-    backgroundColor: utils.transparentize(0.25, utils.colors.legacyBackgroundNeutralBold),
+    backgroundColor: utils.colors.surfaceFillMediaOverlay,
     // this need to be here so the background does not stretch out when appearing
     // new RN architecture might fix this, so evaluate later
     width: SCREEN_SIZE.width,

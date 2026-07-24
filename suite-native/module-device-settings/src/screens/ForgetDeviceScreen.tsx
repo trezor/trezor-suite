@@ -5,7 +5,7 @@ import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 import { useForgetDevice } from '../hooks/useForgetDevice';
 
 const ListItem = ({ icon, children }: Pick<IconListTextItemProps, 'icon' | 'children'>) => (
-    <IconListTextItem icon={icon} iconSize="large" variant="yellow" textVariant="body-md">
+    <IconListTextItem icon={icon} iconSize="large" variant="warning" textVariant="body-md">
         {children}
     </IconListTextItem>
 );

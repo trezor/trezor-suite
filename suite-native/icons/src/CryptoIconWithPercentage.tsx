@@ -101,7 +101,7 @@ export const CryptoIconWithPercentage = ({
                                 r={RADIUS}
                                 style="stroke"
                                 strokeWidth={6}
-                                color={utils.colors.legacyBackgroundSurfaceElevation2}
+                                color={utils.colors.elementFillNeutralSofter}
                             />
                             {/* Helps to brighten up the stroke color in dark mode */}
                             <Path

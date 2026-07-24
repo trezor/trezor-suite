@@ -11,7 +11,7 @@ export type ProgressBarProps = {
 const trackStyle = prepareNativeStyle(utils => ({
     height: 6,
     borderRadius: utils.borders.radii.r4,
-    backgroundColor: utils.colors.legacyBackgroundPrimarySubtleOnElevation1,
+    backgroundColor: utils.colors.elementFillBrandSofter,
     overflow: 'hidden',
 }));
 

@@ -33,7 +33,7 @@ type StakingManagementReadyToClaimCardProps = {
 };
 
 const containerStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.legacyBackgroundPrimarySubtleOnElevation1,
+    backgroundColor: utils.colors.elementFillBrandSoft,
     borderRadius: utils.borders.radii.r12,
     padding: utils.spacings.sp16,
 }));

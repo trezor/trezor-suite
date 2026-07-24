@@ -15,9 +15,9 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { HELP_CENTER_ADA_STAKING } from '@trezor/urls';
 
 const bannerStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.legacyBackgroundAlertYellowSubtleOnElevation1,
+    backgroundColor: utils.colors.elementFillWarningSofter,
     borderWidth: utils.borders.widths.small,
-    borderColor: utils.colors.legacyBackgroundAlertYellowSubtleOnElevationNegative,
+    borderColor: utils.colors.elementBorderWarningSofter,
     borderRadius: utils.borders.radii.r12,
     padding: utils.spacings.sp16,
 }));

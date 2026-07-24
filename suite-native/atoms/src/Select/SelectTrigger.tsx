@@ -22,7 +22,7 @@ const selectStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: utils.colors.legacyBackgroundNeutralSubtleOnElevation1,
+    backgroundColor: utils.colors.elementFillField,
     borderWidth: utils.borders.widths.small,
     borderRadius: utils.borders.radii.r12,
     borderColor: utils.colors.elementBorderField,

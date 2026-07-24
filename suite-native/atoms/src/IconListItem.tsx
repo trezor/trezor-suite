@@ -10,10 +10,10 @@ import { HStack } from './Stack';
 import { Text } from './Text';
 
 export const ICON_LIST_ITEM_VARIANTS = [
-    'default',
-    'blue',
-    'red',
-    'yellow',
+    'neutral',
+    'info',
+    'critical',
+    'warning',
     'primary',
     'brand',
 ] as const;
@@ -27,35 +27,36 @@ type IconColors = {
 };
 
 const iconColorsMap = {
-    default: {
+    neutral: {
         iconColor: 'contentPrimary',
-        iconBorderColor: 'borderNeutral',
-        iconBackgroundColor: 'legacyBackgroundTertiaryDefaultOnElevation1',
+        iconBorderColor: 'elementBorderNeutralSofter',
+        iconBackgroundColor: 'elementFillNeutralSofter',
     },
-    blue: {
+    info: {
         iconColor: 'contentInfo',
-        iconBorderColor: 'legacyBackgroundAlertBlueSubtleOnElevation0',
-        iconBackgroundColor: 'legacyBackgroundAlertBlueSubtleOnElevation1',
+        iconBorderColor: 'elementBorderInfoSofter',
+        iconBackgroundColor: 'elementFillInfoSofter',
     },
-    red: {
+    critical: {
         iconColor: 'contentCritical',
-        iconBorderColor: 'legacyBackgroundAlertRedSubtleOnElevation0',
-        iconBackgroundColor: 'legacyBackgroundAlertRedSubtleOnElevation1',
+        iconBorderColor: 'elementBorderCriticalSofter',
+        iconBackgroundColor: 'elementFillCriticalSofter',
     },
-    yellow: {
+    warning: {
         iconColor: 'contentWarning',
-        iconBorderColor: 'legacyBackgroundAlertYellowSubtleOnElevation0',
-        iconBackgroundColor: 'legacyBackgroundAlertYellowSubtleOnElevation1',
+        iconBorderColor: 'elementBorderWarningSofter',
+        iconBackgroundColor: 'elementFillWarningSofter',
     },
     primary: {
         iconColor: 'contentPrimaryInverse',
-        iconBorderColor: 'legacyBackgroundPrimaryDefault',
-        iconBackgroundColor: 'legacyBackgroundPrimaryDefault',
+        // `elementFillFieldSelected` has no matching border token, so this variant is borderless.
+        iconBorderColor: 'transparent',
+        iconBackgroundColor: 'elementFillFieldSelected',
     },
     brand: {
-        iconColor: 'legacyBackgroundPrimaryDefault',
-        iconBorderColor: 'legacyBackgroundPrimarySubtleOnElevationNegative',
-        iconBackgroundColor: 'legacyBackgroundPrimarySubtleOnElevation0',
+        iconColor: 'contentBrand',
+        iconBorderColor: 'elementBorderBrandSofter',
+        iconBackgroundColor: 'elementFillBrandSofter',
     },
 } as const satisfies Record<IconListItemVariant, IconColors>;
 export type IconListItemProps = {
@@ -76,7 +77,7 @@ export const IconListItem = ({
     icon,
     children,
     iconSize = 'medium',
-    variant = 'default',
+    variant = 'neutral',
     verticalAlign = 'center',
     spacing = 'sp12',
 }: IconListItemProps) => {

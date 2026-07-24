@@ -33,7 +33,7 @@ export const AboutUsBanners = () => {
             <VStack>
                 <Card
                     style={applyStyle(cardStyle, {
-                        backgroundColor: 'legacyBackgroundNeutralBold',
+                        backgroundColor: 'elementFillContrast',
                     })}
                 >
                     <VStack spacing="sp24" style={applyStyle(stackStyle)}>
@@ -55,11 +55,11 @@ export const AboutUsBanners = () => {
                 </Card>
                 <Card
                     style={applyStyle(cardStyle, {
-                        backgroundColor: 'legacyBackgroundSecondaryDefault',
+                        backgroundColor: 'elementFillBrandBold',
                     })}
                 >
                     <VStack spacing="sp24" style={applyStyle(stackStyle)}>
-                        <Text color="contentPrimaryInverse" variant="headline-md">
+                        <Text color="contentButtonBrandPrimary" variant="headline-md">
                             <Translation id="moduleSettings.aboutUs.followUs" />
                         </Text>
                         <HStack spacing="sp24">

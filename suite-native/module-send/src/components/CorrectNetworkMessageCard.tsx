@@ -7,7 +7,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
 const cardStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation1,
+    backgroundColor: utils.colors.surfaceFillSunken,
     borderColor: utils.colors.borderNeutral,
     borderWidth: utils.borders.widths.small,
     paddingVertical: utils.spacings.sp12,

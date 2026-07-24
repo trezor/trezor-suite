@@ -38,12 +38,12 @@ const circleStyle = prepareNativeStyle<{ status: StepStatus }>((utils, { status 
     extend: [
         {
             condition: status === 'done',
-            style: { backgroundColor: utils.colors.legacyBackgroundSecondaryDefault },
+            style: { backgroundColor: utils.colors.elementFillBrandBold },
         },
         {
             condition: status === 'active',
             style: {
-                backgroundColor: utils.colors.legacyBackgroundPrimarySubtleOnElevationNegative,
+                backgroundColor: utils.colors.elementFillBrandSofter,
             },
         },
     ],
@@ -53,10 +53,10 @@ const innerDotStyle = prepareNativeStyle<{ status: StepStatus }>((utils, { statu
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: utils.colors.legacyBackgroundNeutralSubtleOnElevation0,
+    backgroundColor: utils.colors.elementFillNeutralSofter,
     extend: {
         condition: status === 'active',
-        style: { backgroundColor: utils.colors.legacyBackgroundSecondaryDefault },
+        style: { backgroundColor: utils.colors.elementFillBrandBold },
     },
 }));
 
@@ -68,7 +68,7 @@ const connectorStyle = prepareNativeStyle<{ isDone: boolean }>((utils, { isDone 
     backgroundColor: 'transparent',
     extend: {
         condition: isDone,
-        style: { backgroundColor: utils.colors.legacyBackgroundSecondaryDefault },
+        style: { backgroundColor: utils.colors.elementFillBrandBold },
     },
 }));
 
@@ -84,7 +84,7 @@ const StepRow = ({ status, children }: { status: StepStatus; children: ReactNode
         <HStack spacing="sp12" alignItems="center">
             <View style={applyStyle(circleStyle, { status })}>
                 {status === 'done' ? (
-                    <Icon name="check" size="small" color="contentPrimaryInverse" />
+                    <Icon name="check" size="small" color="contentButtonBrandPrimary" />
                 ) : (
                     <View style={applyStyle(innerDotStyle, { status })} />
                 )}

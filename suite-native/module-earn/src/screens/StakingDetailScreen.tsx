@@ -41,7 +41,7 @@ export const StakingDetailScreen = () => {
             <RefreshControl
                 refreshing={isRefreshing}
                 onRefresh={handleRefresh}
-                colors={[utils.colors.legacyBackgroundPrimaryDefault]}
+                colors={[utils.colors.elementFillBrandBold]}
             />
         ),
         [isRefreshing, handleRefresh, utils.colors],

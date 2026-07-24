@@ -5,7 +5,7 @@ const stepperDotWrapperStyle = prepareNativeStyle(utils => ({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: utils.spacings.sp12,
-    backgroundColor: utils.colors.legacyBackgroundSurfaceElevation2,
+    backgroundColor: utils.colors.surfaceFillSunken,
     width: utils.spacings.sp16,
     height: utils.spacings.sp16,
     borderRadius: utils.borders.radii.round,

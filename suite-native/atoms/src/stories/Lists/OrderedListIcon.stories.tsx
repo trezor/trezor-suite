@@ -31,8 +31,6 @@ export const OrderedListIcon: OrderedListIconStory = {
     name: 'OrderedListIcon',
     args: {
         iconNumber: 1,
-        iconBackgroundColor: 'legacyBackgroundTertiaryDefaultOnElevation1',
-        iconBorderColor: 'borderNeutral',
         iconBorderRadius: 'r12',
         iconColor: 'contentPrimary',
         iconSize: 'mediumLarge',

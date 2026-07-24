@@ -19,7 +19,7 @@ const iconContainerStyle = prepareNativeStyle(utils => ({
     width: utils.spacings.sp40,
     height: utils.spacings.sp40,
     borderRadius: utils.borders.radii.r20,
-    backgroundColor: utils.colors.legacyBackgroundSurfaceElevation2,
+    backgroundColor: utils.colors.surfaceFillSunken,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: utils.spacings.sp12,
