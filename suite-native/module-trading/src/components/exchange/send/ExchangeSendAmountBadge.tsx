@@ -34,28 +34,19 @@ const ExchangeSendFiatAmountBadge = ({ amount, asset }: ExchangeSendFiatAmountBa
     return <FiatAmountBadge amount={fiatAmount} />;
 };
 
-const ExchangeSendFiatAmountBadgeContainer = ({ amount }: { amount: string }) => {
-    const { control } = useExchangeFormContext();
-    const asset = useWatch({ control, name: 'sendAsset' });
-
-    if (!asset) {
-        return null;
-    }
-
-    return <ExchangeSendFiatAmountBadge amount={amount} asset={asset} />;
-};
-
 export const ExchangeSendAmountBadge = () => {
     const isLoading = useSelector(selectTradingExchangeIsLoading);
+    const { control } = useExchangeFormContext();
+    const asset = useWatch({ control, name: 'sendAsset' });
 
     const { errorMessage, hasError, value } = useField({ name: 'sendCryptoAmount' });
     if (!isLoading && hasError) {
         return <Badge label={errorMessage} intent="critical" size="small" />;
     }
 
-    if (!value) {
+    if (!value || !asset) {
         return null;
     }
 
-    return <ExchangeSendFiatAmountBadgeContainer amount={value} />;
+    return <ExchangeSendFiatAmountBadge amount={value} asset={asset} />;
 };

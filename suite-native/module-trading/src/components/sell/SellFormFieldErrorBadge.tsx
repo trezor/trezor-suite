@@ -106,19 +106,10 @@ const SellSendFiatAmountBadge = ({ amount, asset }: SellSendFiatAmountBadgeProps
     return <FiatAmountBadge amount={fiatAmount} />;
 };
 
-const SellSendFiatAmountBadgeContainer = ({ amount }: { amount: string }) => {
-    const { control } = useSellFormContext();
-    const asset = useWatch({ control, name: 'sendAsset' });
-
-    if (!asset) {
-        return null;
-    }
-
-    return <SellSendFiatAmountBadge amount={amount} asset={asset} />;
-};
-
 export const SellFormFieldErrorBadge = ({ fieldName }: SellFormFieldErrorBadgeProps) => {
     const isLoading = useSelector(selectTradingSellIsLoading);
+    const { control } = useSellFormContext();
+    const asset = useWatch({ control, name: 'sendAsset' });
 
     const { errorMessage, hasError, value } = useField({ name: fieldName });
     const mismatchedAmountMessage = useMismatchedAmountMessage(fieldName);
@@ -134,11 +125,11 @@ export const SellFormFieldErrorBadge = ({ fieldName }: SellFormFieldErrorBadgePr
     }
 
     if (fieldName === 'cryptoStringAmount') {
-        if (!value) {
+        if (!value || !asset) {
             return null;
         }
 
-        return <SellSendFiatAmountBadgeContainer amount={value} />;
+        return <SellSendFiatAmountBadge amount={value} asset={asset} />;
     }
 
     return null;
