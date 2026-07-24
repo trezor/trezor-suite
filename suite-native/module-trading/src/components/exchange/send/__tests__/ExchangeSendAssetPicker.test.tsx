@@ -163,20 +163,55 @@ describe('ExchangeSendAssetPicker', () => {
 
     it('should apply exchange send asset change effects on item press', async () => {
         form.setValue('sendCryptoAmount', '1');
-        form.setValue('receiveAsset', btcAsset);
         const dispatchSpy = jest.spyOn(store, 'dispatch');
         const { getByText } = renderExchangeSendAssetPicker();
 
         await userEvent.press(getByText('BTC'));
 
         expect(form.getValues('sendCryptoAmount')).toBeUndefined();
-        expect(form.getValues('receiveAsset')).toBeUndefined();
         expect(dispatchSpy).toHaveBeenCalledWith(exchangeActions.sendAssetChanged());
         expect(reportMock).toHaveBeenCalledWith({
             type: events.tradingParameterChangedEvent.name,
             payload: {
                 type: 'exchange',
                 parameter: 'cryptoFrom',
+            },
+        });
+    });
+
+    it('should clear the receive asset and apply its change effects when it collides with the newly selected send asset', async () => {
+        form.setValue('sendCryptoAmount', '1');
+        form.setValue('receiveAsset', btcAsset);
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { getByText } = renderExchangeSendAssetPicker();
+
+        await userEvent.press(getByText('BTC'));
+
+        expect(form.getValues('receiveAsset')).toBeUndefined();
+        expect(dispatchSpy).toHaveBeenCalledWith(exchangeActions.receiveAssetChanged());
+        expect(reportMock).toHaveBeenCalledWith({
+            type: events.tradingParameterChangedEvent.name,
+            payload: {
+                type: 'exchange',
+                parameter: 'cryptoTo',
+            },
+        });
+    });
+
+    it('should not apply receive asset change effects when there is no collision', async () => {
+        form.setValue('sendCryptoAmount', '1');
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { getByText } = renderExchangeSendAssetPicker();
+
+        await userEvent.press(getByText('BTC'));
+
+        expect(form.getValues('receiveAsset')).toBeUndefined();
+        expect(dispatchSpy).not.toHaveBeenCalledWith(exchangeActions.receiveAssetChanged());
+        expect(reportMock).not.toHaveBeenCalledWith({
+            type: events.tradingParameterChangedEvent.name,
+            payload: {
+                type: 'exchange',
+                parameter: 'cryptoTo',
             },
         });
     });

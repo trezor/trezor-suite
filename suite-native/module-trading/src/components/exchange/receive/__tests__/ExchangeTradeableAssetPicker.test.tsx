@@ -4,6 +4,7 @@ import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { type TestStore, fireEvent, screen } from '@suite-native/test-utils-store';
+import { btcAsset } from '@suite-native/trading-fixtures';
 import { exchangeActions } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 import { FirmwareType } from '@trezor/connect';
@@ -91,6 +92,24 @@ describe('ExchangeTradeableAssetPicker', () => {
             payload: {
                 type: 'exchange',
                 parameter: 'cryptoTo',
+            },
+        });
+    });
+
+    it('should clear the send asset and its typed amount when it collides with the newly selected receive asset', () => {
+        form.setValue('sendAsset', btcAsset);
+        form.setValue('sendCryptoAmount', '1');
+        const { getByLabelText } = renderTradeableAssetPicker();
+
+        fireEvent.press(getByLabelText('Bitcoin'));
+
+        expect(form.getValues('sendAsset')).toBeUndefined();
+        expect(form.getValues('sendCryptoAmount')).toBeUndefined();
+        expect(reportMock).toHaveBeenCalledWith({
+            type: events.tradingParameterChangedEvent.name,
+            payload: {
+                type: 'exchange',
+                parameter: 'cryptoFrom',
             },
         });
     });

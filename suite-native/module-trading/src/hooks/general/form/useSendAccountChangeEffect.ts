@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import type { AccountsRootState } from '@suite-common/wallet-core';
@@ -18,13 +18,21 @@ type SendAccountSelector = (state: TradingRootState & AccountsRootState) => Acco
 export const useSendAccountChangeEffect = (
     setValue: FormSetValue,
     selectSendAccount: SendAccountSelector,
+    // Fires when a previously selected account disappears (e.g. device forgotten/hidden)
+    // and the send asset is cleared, so callers can reset the typed amount and stale limits.
+    onSendAssetCleared?: () => void,
 ) => {
     const sendAccount = useSelector(selectSendAccount);
+    const hadSendAccountRef = useRef(false);
 
     useEffect(() => {
         setValue('sendAccount', sendAccount);
         if (!sendAccount) {
             setValue('sendAsset', undefined);
+            if (hadSendAccountRef.current) {
+                onSendAssetCleared?.();
+            }
         }
-    }, [sendAccount, setValue]);
+        hadSendAccountRef.current = !!sendAccount;
+    }, [sendAccount, setValue, onSendAssetCleared]);
 };

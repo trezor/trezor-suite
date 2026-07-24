@@ -38,6 +38,14 @@ export const ExchangeSendAssetPicker = () => {
 
                 if (asset.cryptoId === form.getValues('receiveAsset')?.cryptoId) {
                     form.setValue('receiveAsset', undefined);
+                    dispatch(exchangeActions.receiveAssetChanged());
+                    analytics.report({
+                        type: events.tradingParameterChangedEvent.name,
+                        payload: {
+                            type: 'exchange',
+                            parameter: 'cryptoTo',
+                        },
+                    });
                 }
 
                 dispatch(exchangeActions.sendAssetChanged());

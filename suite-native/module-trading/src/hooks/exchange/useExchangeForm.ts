@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import type { ExchangeTrade } from 'invity-api';
@@ -17,6 +17,7 @@ import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import {
+    exchangeActions,
     selectExchangeAmountLimits,
     selectExchangeQuotes,
     selectExchangeSelectedReceiveAccount,
@@ -208,11 +209,17 @@ export const useExchangeForm = () => {
         context,
     });
     const { control, setValue } = form;
+    const dispatch = useDispatch();
     const receiveAsset = useWatch({ control, name: 'receiveAsset' });
+
+    const onSendAssetCleared = useCallback(() => {
+        setValue('sendCryptoAmount', undefined, { shouldValidate: true });
+        dispatch(exchangeActions.sendAssetChanged());
+    }, [dispatch, setValue]);
 
     useExchangeQuotesChangeEffect(form);
     useExchangeQuoteChangeEffect(form);
-    useSendAccountChangeEffect(setValue, selectExchangeSelectedSendAccount);
+    useSendAccountChangeEffect(setValue, selectExchangeSelectedSendAccount, onSendAssetCleared);
     useReceiveAccountChangeEffect(setValue, selectExchangeSelectedReceiveAccount);
     useReceiveAccountPreselectionEffect({
         receiveAsset,
