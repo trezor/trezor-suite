@@ -15,13 +15,15 @@ import { ExchangeSendAssetPicker } from './ExchangeSendAssetPicker';
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
 import { TradeableAssetNetworkInfo } from '../../general/TradeableAssetNetworkInfo';
 
+type ExchangeNetworkReserveBannerProps = {
+    symbol: NetworkSymbol;
+    contractAddress?: string;
+};
+
 const ExchangeNetworkReserveBanner = ({
     symbol,
     contractAddress,
-}: {
-    symbol: NetworkSymbol;
-    contractAddress?: string;
-}) => {
+}: ExchangeNetworkReserveBannerProps) => {
     const { control } = useExchangeFormContext();
     const [sendCryptoAmount, sendAccount] = useWatch({
         name: ['sendCryptoAmount', 'sendAccount'],
@@ -59,7 +61,7 @@ export const ExchangeSendContent = () => {
                 <TradeableAssetNetworkInfo asset={asset} />
                 <ExchangeSendAccountCryptoBalance />
             </HStack>
-            {symbol && (
+            {!!symbol && (
                 <ExchangeNetworkReserveBanner
                     symbol={symbol}
                     contractAddress={asset?.contractAddress}
