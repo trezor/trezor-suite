@@ -36,6 +36,11 @@ export type ConnectProcessInfo = {
 };
 export type ConnectCallSource = {
     origin: string;
+    // Permissions the host/dapp declared up front (via ConnectSettings.requestedPermissions),
+    // forwarded through the popup handshake. Sanitized in connectPopupCallThunkInner so the first
+    // consent covers the whole set. Only populated for the web/webextension handshake today;
+    // desktop-ws/mcp carry it once suite-desktop-core forwards it.
+    requestedPermissions?: PermissionRequest[];
 } & (
     | {
           type: typeof CALL_SOURCE_DESKTOP_WS;
