@@ -2,7 +2,7 @@ import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discree
 import { useFormatters } from '@suite-common/formatters';
 import { type TronTxContractType } from '@suite-common/wallet-constants';
 import { type StakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
-import { getTxStakeType } from '@suite-common/wallet-utils';
+import { getNativeWrapTxKind, getTxStakeType } from '@suite-common/wallet-utils';
 import { Text } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { type NativeTypographyStyle } from '@trezor/theme';
@@ -11,6 +11,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { getUnstakeTxAmount } from '../utils';
 import { UnstakeTransactionDetailTitle } from './UnstakeTransactionDetailTitle';
+import { WrapTransactionName } from './WrapTransactionName';
 
 type TransactionNameProps = {
     transaction: WalletAccountTransaction;
@@ -116,6 +117,13 @@ export const TransactionName = ({ transaction, isPending, variant }: Transaction
     const { CryptoAmountFormatter: cryptoAmountFormatter } = useFormatters();
     const { isDiscreetMode } = useDiscreetMode();
     const ethName = transaction.ethereumSpecific?.parsedData?.name;
+
+    // WETH wrap/unwrap get their own label (with the amount) instead of the generic contract-call
+    // method name ("deposit"/"withdraw") that the indexer parses.
+    const wrapKind = getNativeWrapTxKind(transaction);
+    if (wrapKind) {
+        return <WrapTransactionName transaction={transaction} kind={wrapKind} variant={variant} />;
+    }
 
     // Stellar trustline addition/removal (short version without asset code)
     if (

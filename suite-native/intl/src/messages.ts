@@ -2173,6 +2173,8 @@ export const messages = {
             claiming: 'Claiming',
             changeDelegate: 'Change delegate',
             changingDelegate: 'Changing delegate',
+            wrap: 'Wrap {nativeSymbol} into {wrappedAmount}',
+            unwrap: 'Unwrap {wrappedAmount} into {nativeSymbol}',
             tron: {
                 createAccount: 'Create Account',
                 updateAccount: 'Update Account',

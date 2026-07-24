@@ -3,6 +3,7 @@ export * from './components/TransactionList';
 export * from './components/TransactionIcon';
 export * from './components/TransactionName';
 export * from './components/UnstakeTransactionDetailTitle';
+export * from './components/WrapTransactionName';
 export * from './components/TransactionOutputLabel';
 export * from './components/TransactionOutputLabelEditable';
 export * from './components/TokenTransferListItem';
