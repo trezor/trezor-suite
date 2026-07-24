@@ -2,36 +2,35 @@ import { openDeferredModal } from '@suite/modal';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin/src/tx-simulation';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowDisplayToken,
-    composeYieldWrapTransactionThunk,
+    composeYieldUnwrapTransactionThunk,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
 import { sendYieldTransaction } from './stablecoin-yield/signingHelpers';
 
-const WRAP_NATIVE_TOKEN_PREFIX = '@wallet/wrap-native-token';
+const UNWRAP_NATIVE_TOKEN_PREFIX = '@wallet/unwrap-native-token';
 
-type WrapNativeTokenPayload = {
+type UnwrapNativeTokenPayload = {
     account: Account;
     token: YieldFlowDisplayToken & { contractAddress: string };
-    wrapAmount: string;
+    unwrapAmount: string;
 };
 
-export const submitWrapNativeTokenThunk = createThunk(
-    `${WRAP_NATIVE_TOKEN_PREFIX}/submit`,
-    async ({ account, token, wrapAmount }: WrapNativeTokenPayload, { dispatch, getState }) => {
+export const submitUnwrapNativeTokenThunk = createThunk(
+    `${UNWRAP_NATIVE_TOKEN_PREFIX}/submit`,
+    async ({ account, token, unwrapAmount }: UnwrapNativeTokenPayload, { dispatch, getState }) => {
         try {
             const result = await dispatch(
-                composeYieldWrapTransactionThunk({ account, token, wrapAmount }),
+                composeYieldUnwrapTransactionThunk({ account, token, unwrapAmount }),
             ).unwrap();
 
             if (result.type === 'error') {
                 dispatch(
                     notificationsActions.addToast({
                         type: 'sign-tx-error',
-                        error: `Failed to compose wrap transaction (${result.reason}).`,
+                        error: `Failed to compose unwrap transaction (${result.reason}).`,
                     }),
                 );
 
@@ -42,7 +41,7 @@ export const submitWrapNativeTokenThunk = createThunk(
                 openDeferredModal({
                     type: 'earn-yield-tx-simulation',
                     data: {
-                        flow: 'wrap',
+                        flow: 'unwrap',
                         unsignedTx: result.unsignedTransaction,
                         account,
                     } satisfies StablecoinYieldTxSimulationParams,
@@ -53,20 +52,13 @@ export const submitWrapNativeTokenThunk = createThunk(
                 return undefined;
             }
 
-            const network = getNetwork(account.symbol);
-
             const sendResult = await sendYieldTransaction({
                 account,
-                amount: wrapAmount,
-                token: {
-                    networkSymbol: account.symbol,
-                    symbol: getNetworkDisplaySymbol(account.symbol),
-                    decimals: network.decimals,
-                    contractAddress: null,
-                },
+                amount: unwrapAmount,
+                token,
                 unsignedTransaction: result.unsignedTransaction,
-                flowKey: 'standalone-wrap-native',
-                flowType: 'deposit',
+                flowKey: 'standalone-unwrap-native',
+                flowType: 'withdraw',
                 dispatch,
                 getState,
                 selectedFee: userAcceptedTxSimulation?.selectedFee ?? null,

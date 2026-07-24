@@ -2,16 +2,13 @@ import { type MouseEvent } from 'react';
 
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
-import { openModal } from '@suite/modal';
+import { goto } from '@suite/router';
 import {
-    getNetworkDisplaySymbol,
     getNetworkType,
     getWrappedNativeAddress,
     getWrappedNativeSymbol,
 } from '@suite-common/wallet-config';
-import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import { Button } from '@trezor/components';
-import { BigNumber } from '@trezor/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
@@ -42,23 +39,17 @@ export const WrapNativeTokenButton = ({ account }: WrapNativeTokenButtonProps) =
         return null;
     }
 
-    // Keep a native buffer for the wrap fee (and any follow-up approve/deposit), matching the
-    // reserve the shared wrap logic uses.
-    const maxWrapAmount = BigNumber.max(
-        0,
-        new BigNumber(account.formattedBalance).minus(WETH_WRAP_GAS_RESERVE),
-    ).toString();
-
     const onClick = (e: MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
 
         dispatch(
-            openModal({
-                type: 'wrap-native-token',
-                account,
-                maxWrapAmount,
-                nativeSymbol: getNetworkDisplaySymbol(symbol),
-                wrappedSymbol,
+            goto({
+                routeName: 'earn-yield-wrap',
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
             }),
         );
     };

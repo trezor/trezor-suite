@@ -2,10 +2,10 @@ import { useCallback } from 'react';
 
 import { useDevice } from '@suite/device';
 import { type YieldFlowType, stablecoinYieldActions } from '@suite-common/wallet-core';
-import TrezorConnect from '@trezor/connect';
 
-import { getYieldErrorTranslationKey } from 'src/actions/wallet/stablecoin-yield/signingHelpers';
 import { useDispatch } from 'src/hooks/suite';
+
+import { ensureDeviceSession } from './ensureDeviceSession';
 
 type UseEnsureYieldDeviceSessionParams = {
     flowType: YieldFlowType;
@@ -20,45 +20,21 @@ export const useEnsureYieldDeviceSession = ({
     const { device } = useDevice();
 
     return useCallback(async (): Promise<boolean> => {
-        if (!device?.state?.staticSessionId) {
+        const result = await ensureDeviceSession(device);
+
+        if (result.success) {
+            return true;
+        }
+
+        if (result.error) {
             dispatch(
                 stablecoinYieldActions.setError({
                     flowType,
                     flowKey,
-                    error: 'TR_EARN_YIELD_ERROR_GENERIC',
+                    error: result.error,
                 }),
             );
-
-            return false;
         }
-
-        const response = await TrezorConnect.getDeviceState({
-            device: {
-                path: device.path,
-                instance: device.instance,
-                state: { staticSessionId: device.state.staticSessionId },
-                useEmptyPassphrase: device.useEmptyPassphrase,
-            },
-        });
-
-        if (response.success) {
-            return true;
-        }
-
-        const { code } = response.error;
-        if (code === 'Failure_ActionCancelled' || code === 'Method_Cancel') {
-            return false;
-        }
-
-        dispatch(
-            stablecoinYieldActions.setError({
-                flowType,
-                flowKey,
-                error: getYieldErrorTranslationKey(
-                    new Error(response.error.message, { cause: code }),
-                ),
-            }),
-        );
 
         return false;
     }, [device, dispatch, flowType, flowKey]);

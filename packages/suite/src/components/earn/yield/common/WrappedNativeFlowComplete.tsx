@@ -7,29 +7,23 @@ import { CheckCircleFilledIcon, CheckIcon } from '@trezor/icons';
 
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
-import { type AccountOverviewRoute, useNavigateToAccountRoute } from './useNavigateToAccountRoute';
+import { useNavigateToAccountRoute } from './useNavigateToAccountRoute';
 
 type WrappedNativeFlowCompleteProps = {
     account: Account;
     heading: ReactNode;
     description: ReactNode;
-    overviewRoute?: AccountOverviewRoute;
     children?: ReactNode;
 };
 
-/**
- * Complete screen of the standalone wrap/unwrap flows. Visual counterpart of
- * `YieldFlowComplete`, which stays vault-flow-only because of its analytics coupling.
- */
 export const WrappedNativeFlowComplete = ({
     account,
     heading,
     description,
-    overviewRoute = 'wallet-tokens',
     children,
 }: WrappedNativeFlowCompleteProps) => {
     const { isBelowMobile } = useLayoutSize();
-    const navigateToOverview = useNavigateToAccountRoute(account, overviewRoute);
+    const navigateToOverview = useNavigateToAccountRoute(account, 'wallet-tokens');
 
     return (
         <Column gap={16}>
