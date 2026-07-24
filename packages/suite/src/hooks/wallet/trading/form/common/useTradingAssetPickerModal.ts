@@ -21,14 +21,14 @@ export const useTradingAssetPickerModal = () => {
             return;
         }
 
-        if (!device?.connected) {
+        if (!device?.state?.staticSessionId) {
             dispatch(setConnectionModal(true));
 
             return;
         }
 
         openAssetPicker();
-    }, [dispatch, hasEnabledNetworks, device?.connected, openAssetPicker]);
+    }, [dispatch, hasEnabledNetworks, device?.state?.staticSessionId, openAssetPicker]);
 
     return { open, openModal: handleOpenModal, closeModal, toggleModal } as const;
 };
