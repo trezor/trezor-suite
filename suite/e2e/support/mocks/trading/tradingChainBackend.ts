@@ -53,7 +53,6 @@ class SolanaTradingBackend implements TradingChainBackend {
     }
 
     blockBroadcast() {
-        // IMPORTANT: answering this method locally is what prevents actually sending crypto.
         this.server.setHandler('sendTransaction', ([base64Tx]) => {
             this.blockedSignatures.push(extractTxSignature(String(base64Tx ?? '')));
 
@@ -77,8 +76,8 @@ class SolanaTradingBackend implements TradingChainBackend {
     }
 }
 
-// Blockbook-backed chains (BTC, ETH): the broadcast is a `sendTransaction` frame answered
-// locally so nothing reaches the mempool.
+// One backend for both Blockbook chains (BTC, ETH): shared transport, with the upstream URL
+// and txid derivation injected per chain.
 class BlockbookTradingBackend implements TradingChainBackend {
     readonly backendType: BackendType = 'blockbook';
     private readonly proxy: BlockbookProxyMock;
@@ -95,7 +94,6 @@ class BlockbookTradingBackend implements TradingChainBackend {
     }
 
     blockBroadcast() {
-        // IMPORTANT: answering this method locally is what prevents actually sending crypto.
         this.proxy.setHandler('sendTransaction', params => {
             const { hex } = params as { hex: string };
 

@@ -1,4 +1,3 @@
-import { getCryptoId } from '@suite-common/trading';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
 import { getCompanyNameFromList } from '../../fixtures/trading';
@@ -8,10 +7,11 @@ import { expect, test } from '../../support/fixtures';
 import { transformAddress } from '../../support/testExtends/customMatchers';
 
 const sendAmount = '5';
-const tokenSymbol = 'USDT';
-const formattedSendAmount = `${localizeNumber(sendAmount)} ${tokenSymbol}`;
-const sendAccountLabel = 'Solana #1';
-const receiveAccountLabel = 'Ethereum #1';
+const sourceTokenSymbol = 'USDC';
+const formattedSendAmount = `${localizeNumber(sendAmount)} ${sourceTokenSymbol}`;
+const sendAccountLabel = 'Ethereum #1';
+const receiveAccountLabel = 'Solana #1';
+const receiveTokenSymbol = 'USDT';
 
 test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
@@ -19,19 +19,19 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.beforeEach(
         async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMockNew }) => {
             tradingMockNew.setTradeFlow('swap');
-            const solBackend = await tradingMockNew.startBackend('sol');
+            const ethBackend = await tradingMockNew.startBackend('eth');
 
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
-                enableNetworks: ['eth', { symbol: 'sol', backend: solBackend }],
+                enableNetworks: [{ symbol: 'eth', backend: ethBackend }, 'sol'],
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openSwapTrading({ symbol: 'sol' });
+            await walletPage.openSwapTrading({ symbol: 'eth' });
         },
     );
 
-    test('Swap SOL USDT token to ETH', async ({
+    test('Swap ETH USDC token to SOL USDT token', async ({
         tradingPage,
         page,
         device,
@@ -42,16 +42,17 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
             await tradingPage.fillSwapForm({
                 amount: sendAmount,
                 sellAsset: {
-                    networkSymbol: 'sol',
-                    tokenSymbol,
+                    networkSymbol: 'eth',
+                    tokenSymbol: sourceTokenSymbol,
                 },
                 buyAsset: {
-                    searchFilter: 'Ethereum',
-                    networkFilter: 'eth',
-                    assetCryptoId: getCryptoId('eth'),
+                    searchFilter: receiveTokenSymbol,
+                    networkFilter: 'sol',
+                    networkSymbol: 'sol',
+                    tokenSymbol: receiveTokenSymbol,
                 },
                 selectReceiveAddress: async () => {
-                    await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'eth');
+                    await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'sol');
                 },
             });
         });
@@ -78,37 +79,37 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
             );
             await expect(device).toShowOnDisplay({
                 T3W1: {
-                    header: { title: 'Recipient' },
-                    body: [
-                        transformAddress(tradingMockNew.liveTrade.sendAddress, 'fourTetragrams'),
-                    ],
+                    header: { title: 'Send' },
+                    body: [transformAddress(tradingMockNew.liveTrade.sendAddress, 'evmTetragrams')],
                     actions: { right_button: 'Continue' },
+                },
+                T3T1: {
+                    header: { title: 'Address', subtitle: 'Recipient' },
+                    body: [transformAddress(tradingMockNew.liveTrade.sendAddress, 'evmTetragrams')],
                 },
             });
             await devicePrompt.waitForPromptAndConfirm();
         });
 
         await test.step('Verify amount and fee on prompt and device', async () => {
-            await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
+            await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
                 formattedSendAmount,
             );
+            // The EVM max fee is live; we just crosscheck modal and device.
             const reviewFee = (await devicePrompt.cryptoAmountOf('fee').textContent())?.trim();
             if (!reviewFee) {
                 throw new Error('Review fee amount was not displayed on the confirmation modal');
             }
+            const maxFeeWrapped = device.wrapText(`${reviewFee} ETH`, { isAmount: true });
             await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: 'Send' },
-                    body: [
-                        ['Amount:'],
-                        [formattedSendAmount],
-                        ['Max fees and rent'],
-                        device.wrapText(`${reviewFee} SOL`, { wrapByWords: true }),
-                    ],
+                    body: [['Amount'], [formattedSendAmount], ['Maximum fee'], maxFeeWrapped],
                     actions: { right_button: 'Hold to sign' },
                 },
                 T3T1: {
                     header: { title: 'Summary' },
+                    body: [['Amount'], [formattedSendAmount], ['Maximum fee'], maxFeeWrapped],
                 },
             });
             await devicePrompt.waitForFinalPromptAndConfirm();
@@ -142,7 +143,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
         await test.step('Verify transaction detail values', async () => {
             await expect(tradingPage.confirmation.sendCryptoAmount).toHaveText(formattedSendAmount);
             await expect(tradingPage.confirmation.receiveCryptoAmount).toHaveText(
-                `${receiveAmount} ETH`,
+                `${receiveAmount} ${receiveTokenSymbol}`,
             );
             await expect(tradingPage.confirmation.provider).toHaveText(providerName);
         });
