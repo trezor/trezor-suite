@@ -5,7 +5,6 @@ export * from './createMiddleware';
 export type * from './extraDependenciesType';
 export type * from './connectInitHooksType';
 export * from './createReducerWithExtraDeps';
-export * from './createActionWithExtraDeps';
 export * from './createSingleInstanceThunk';
 export * from './hooks/useSelectorDeepComparison';
 export * from './selectorsUtils';

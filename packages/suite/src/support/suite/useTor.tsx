@@ -6,7 +6,7 @@ import {
     selectDisconnectAllRelaysDep,
     selectReconnectAllRelaysDep,
 } from '@suite-common/suite-sync-types';
-import { notificationsActions } from '@suite-common/toast-notifications';
+import { addToastOnceThunk } from '@suite-common/toast-notifications';
 import { getLocationHostname, isDesktop, isWeb } from '@trezor/env-utils';
 import { type BootstrapTorEvent, type TorStatusEvent, desktopApi } from '@trezor/suite-desktop-api';
 
@@ -56,7 +56,7 @@ export const useTor = () => {
                 handleTorReconnection({ status: type });
 
                 if (type === TorStatus.Slow) {
-                    dispatch(notificationsActions.addToastOnce({ type: 'tor-is-slow' }));
+                    dispatch(addToastOnceThunk({ type: 'tor-is-slow' }));
                 }
             });
 
