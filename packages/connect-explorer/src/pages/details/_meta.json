@@ -2,5 +2,6 @@
     "commonParams": "Common parameters",
     "events": "Events",
     "path": "Path",
+    "permissions": "Permissions",
     "protobuf": "Protobuf schema"
 }

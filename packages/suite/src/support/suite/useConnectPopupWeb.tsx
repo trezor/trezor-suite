@@ -144,6 +144,7 @@ export const useConnectPopupWeb = () => {
                               id: data.id,
                               payload: { manifest: data.payload?.manifest },
                               version: data.payload?.version,
+                              requestedPermissions: data.payload?.requestedPermissions,
                           }
                         : data;
                 setIncomingMessages(prev => [...prev, normalized]);

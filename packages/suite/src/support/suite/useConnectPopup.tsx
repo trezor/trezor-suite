@@ -14,6 +14,7 @@ import {
     CORE_CALL_CANCEL,
     type CallMethodKeys,
     POPUP,
+    type PermissionRequest,
     RESPONSE_EVENT,
     createPopupMessage,
 } from '@trezor/connect';
@@ -30,6 +31,7 @@ export type ConnectPopupMessage =
           id: string;
           payload: { manifest: ManifestPartial };
           version: string;
+          requestedPermissions?: PermissionRequest[];
       }
     | { type: typeof CORE_CALL; id: string; payload: { method: string; [key: string]: unknown } }
     | { type: typeof POPUP.CLOSED; payload?: { error?: string; callId?: string } | null }
@@ -70,6 +72,7 @@ export const useConnectPopup = (
     const lifecycle = useSelector(state => state.suite.lifecycle);
     const popupCall = useSelector(selectConnectPopupCall);
     const manifest = useRef<ManifestPartial | undefined>(undefined);
+    const requestedPermissions = useRef<PermissionRequest[] | undefined>(undefined);
     const [pendingHandshake, setPendingHandshake] = useState<string | undefined>();
     const [responseSent, setResponseSent] = useState(false);
 
@@ -91,6 +94,7 @@ export const useConnectPopup = (
                     ...event.payload.manifest,
                     npmVersion: event.version,
                 };
+                requestedPermissions.current = event.requestedPermissions;
                 setPendingHandshake(event.id);
             } else if (event.type === CORE_CALL) {
                 if (!manifest.current) {
@@ -109,6 +113,7 @@ export const useConnectPopup = (
                             type: CALL_SOURCE_WEB,
                             origin: popupLink.origin,
                             manifest: manifest.current,
+                            requestedPermissions: requestedPermissions.current,
                         },
                     }),
                 );

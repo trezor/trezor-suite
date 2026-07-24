@@ -42,9 +42,13 @@ import {
     type SelectAccountCandidate,
     isUtxoNetwork,
 } from './connectPopupTypes';
-import { deriveCardanoEnabledNetworks } from './deriveEnabledNetworks';
 import { postCallHooks, preCallHooks } from './methodHooks';
-import { permissionsAreCovered } from './permissionsGrouping';
+import {
+    deriveCardanoEnabledNetworks,
+    mergePermissions,
+    permissionsAreCovered,
+    sanitizeRequestedPermissions,
+} from './permissions';
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
 
@@ -75,9 +79,9 @@ export const connectPopupCallThunkInner = createThunk<
                 throw methodInfo.error;
             }
             const methodInfoPayload = methodInfo.payload as MethodInfo;
-            const requestedPermissions = methodInfoPayload.requiredPermissions;
+            const callPermissions = methodInfoPayload.requiredPermissions;
             const hasPermission = (name: string) =>
-                requestedPermissions.some(p => p.permission === name);
+                callPermissions.some(p => p.permission === name);
             if (
                 hasPermission('management') ||
                 hasPermission('internal') ||
@@ -86,6 +90,16 @@ export const connectPopupCallThunkInner = createThunk<
                 throw TypedError('Method_NotAllowed');
             }
 
+            // Permissions the host/dapp declared up front (ConnectSettings.requestedPermissions),
+            // sanitized against the same rules as the hard block above. Merged with this call's own
+            // required permissions so the first consent covers the whole declared set at once — a
+            // single "Remember" then silences every later in-scope call.
+            const declaredPermissions = sanitizeRequestedPermissions(
+                source.requestedPermissions,
+                source.type === CALL_SOURCE_DEEPLINK,
+            );
+            const consentPermissions = mergePermissions(callPermissions, declaredPermissions);
+
             dispatch(
                 connectPopupActions.initiateCall({
                     method,
@@ -93,7 +107,7 @@ export const connectPopupCallThunkInner = createThunk<
                         methodTitle:
                             methodInfoPayload.confirmation?.label ?? methodInfoPayload.info,
                         confirmLabel: methodInfoPayload.confirmation?.customConfirmButton?.label,
-                        permissionTypes: methodInfoPayload.requiredPermissions,
+                        permissionTypes: consentPermissions,
                         useUi: methodInfoPayload.useUi,
                     },
                     payload,
@@ -101,14 +115,16 @@ export const connectPopupCallThunkInner = createThunk<
                 }),
             );
 
-            // Check if permission remembered (permission, coin).
+            // Check if permission remembered (permission, coin). Keyed on THIS call's required
+            // permissions (not the declared superset) so a call is silent whenever its own needs are
+            // already covered, even if the app declared more than it has been granted so far.
             const rememberedApps = selectConnectAppPermissions(getState());
 
             const isRemembered = rememberedApps.some(
                 app =>
                     app.origin === source.origin &&
                     app.process?.fullPath === source.process?.fullPath &&
-                    permissionsAreCovered(requestedPermissions, app.allowedPermissions),
+                    permissionsAreCovered(callPermissions, app.allowedPermissions),
             );
 
             if (!isRemembered && source.type !== CALL_SOURCE_WALLETCONNECT) {
@@ -127,7 +143,7 @@ export const connectPopupCallThunkInner = createThunk<
             // platform (desktop/web popup AND native deeplink) and for remembered apps too (which
             // skip the approve action a middleware would key off). updateConnectSettings returns
             // { success: false } rather than throwing on the thin transports; the result is ignored.
-            const enabledNetworks = deriveCardanoEnabledNetworks(requestedPermissions);
+            const enabledNetworks = deriveCardanoEnabledNetworks(consentPermissions);
             if (enabledNetworks.length) {
                 await TrezorConnect.updateConnectSettings({ enabledNetworks });
             }
