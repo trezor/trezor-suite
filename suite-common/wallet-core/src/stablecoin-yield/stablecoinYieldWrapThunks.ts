@@ -10,7 +10,7 @@ import {
 
 import { STABLECOIN_YIELD_PREFIX } from './stablecoinYieldConstants';
 import { estimateYieldFeeLevel } from './stablecoinYieldFeeEstimation';
-import type { YieldFlowDisplayToken, YieldFlowResolvedData } from './stablecoinYieldTypes';
+import type { YieldFlowDisplayToken } from './stablecoinYieldTypes';
 import {
     buildYieldUnsignedTransaction,
     buildYieldUnwrapTransactionData,
@@ -24,7 +24,7 @@ const YIELD_WRAP_THUNK_PREFIX = `${STABLECOIN_YIELD_PREFIX}/thunk`;
 export type ComposeYieldWrapErrorReason =
     | 'unsupported-network'
     | 'not-wrapped-native'
-    | 'vault-chain-mismatch'
+    | 'missing-chain-id'
     | 'missing-fee-level'
     | 'fee-estimation-failed';
 
@@ -39,14 +39,13 @@ export type ComposeYieldWrapResult =
       };
 
 type ComposeYieldWrapTransactionPayload = {
-    flowData: YieldFlowResolvedData;
-    /** Native coin amount to wrap — the value carried by the transaction. */
+    account: Account;
+    token: Pick<YieldFlowDisplayToken, 'contractAddress' | 'decimals'>;
     wrapAmount: string;
 };
 
 type ComposeYieldUnwrapTransactionPayload = {
     account: Account;
-    /** The wrapped-native (WETH) token being unwrapped. */
     token: Pick<YieldFlowDisplayToken, 'contractAddress' | 'decimals'>;
     unwrapAmount: string;
 };
@@ -62,9 +61,7 @@ export const composeYieldWrapTransactionThunk = createThunk<
     void
 >(
     `${YIELD_WRAP_THUNK_PREFIX}/composeWrapTransaction`,
-    async ({ flowData, wrapAmount }, { dispatch, getState }) => {
-        const { account, token, vault } = flowData;
-
+    async ({ account, token, wrapAmount }, { dispatch, getState }) => {
         if (account.networkType !== 'ethereum') {
             return { type: 'error', reason: 'unsupported-network' } as const;
         }
@@ -77,8 +74,8 @@ export const composeYieldWrapTransactionThunk = createThunk<
 
         const network = getNetwork(account.symbol);
 
-        if (!network.chainId || vault.chainId !== network.chainId) {
-            return { type: 'error', reason: 'vault-chain-mismatch' } as const;
+        if (!network.chainId) {
+            return { type: 'error', reason: 'missing-chain-id' } as const;
         }
 
         const { data, value } = buildYieldWrapTransactionData({
@@ -161,7 +158,7 @@ export const composeYieldUnwrapTransactionThunk = createThunk<
         const network = getNetwork(account.symbol);
 
         if (!network.chainId) {
-            return { type: 'error', reason: 'vault-chain-mismatch' } as const;
+            return { type: 'error', reason: 'missing-chain-id' } as const;
         }
 
         const { data } = buildYieldUnwrapTransactionData({
