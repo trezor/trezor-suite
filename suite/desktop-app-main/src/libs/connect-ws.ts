@@ -16,7 +16,7 @@ import { isLinux } from '@trezor/env-utils';
 import { type ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
 import { createDeferred, resolveAfter } from '@trezor/utils';
 
-import { addMessage, deleteMessage, setAppInit } from './connect-popup-messages';
+import { addMessage, deleteMessage, rejectMessage, setAppInit } from './connect-popup-messages';
 import { type createHttpReceiver } from './http-receiver';
 import { getProcessIcon } from './process-icon';
 import { type Dependencies } from '../modules';
@@ -26,6 +26,10 @@ const HANDSHAKE_TIMEOUT_MS = 10000;
 const MAX_CONCURRENT_CONNECTIONS = 50;
 const MAX_CONNECTIONS_PER_ORIGIN = 5;
 const MAX_MESSAGE_SIZE = 2 * 1024 * 1024; // 2 MB
+
+// Per-connection id used to namespace the process-global response store. Each client numbers
+// its requests on its own, so two connections can have a call with the same id in flight.
+let connectionCounter = 0;
 
 /**
  * allowed message from connect-in-suite-desktop implementation
@@ -101,6 +105,11 @@ export const exposeConnectWs = ({
     });
 
     wss.on('connection', (ws, req) => {
+        const connectionId = `ws-${++connectionCounter}`;
+        // Namespaces a caller-supplied request id to this connection. Internal to the main
+        // process; the original id is still echoed back to the client on the wire.
+        const getStoreId = (id: string) => `${connectionId}:${id}`;
+        // Namespaced store keys of this connection's in-flight calls.
         const connectionPendingMessages = new Set<string>();
         const ip = req.socket.remoteAddress;
         const port = req.socket.remotePort;
@@ -246,8 +255,23 @@ export const exposeConnectWs = ({
 
                 const { method, ...rest } = message.payload;
 
-                const deferred = addMessage(message.id);
-                connectionPendingMessages.add(message.id);
+                const storeId = getStoreId(message.id);
+                // Reject a request id that this connection already has in flight instead of
+                // overwriting its deferred (which would leave the first call without a response).
+                if (connectionPendingMessages.has(storeId)) {
+                    logger.error(LOG_PREFIX, `duplicate in-flight id ${message.id}`);
+                    ws.send(
+                        JSON.stringify({
+                            id: message.id,
+                            success: false,
+                            payload: { error: 'Duplicate in-flight request id' },
+                        }),
+                    );
+
+                    return;
+                }
+                const deferred = addMessage(storeId);
+                connectionPendingMessages.add(storeId);
 
                 try {
                     // check window exists, if not wait for it to be created
@@ -268,8 +292,8 @@ export const exposeConnectWs = ({
                             LOG_PREFIX,
                             'Main window not available after initialization timeout',
                         );
-                        deleteMessage(message.id);
-                        connectionPendingMessages.delete(message.id);
+                        deleteMessage(storeId);
+                        connectionPendingMessages.delete(storeId);
                         ws.send(
                             JSON.stringify({
                                 id: message.id,
@@ -283,9 +307,10 @@ export const exposeConnectWs = ({
                         return;
                     }
 
-                    // send call to renderer
+                    // Send call to renderer. It echoes the namespaced `id` back on the response,
+                    // which resolves this connection's deferred.
                     mainWindow.webContents.send('connect-popup/call', {
-                        id: message.id,
+                        id: storeId,
                         method,
                         payload: rest,
                         origin,
@@ -313,6 +338,7 @@ export const exposeConnectWs = ({
                     // wait for response
                     const response = await deferred.promise;
 
+                    // Echo back the original (client-facing) id, not the namespaced store id.
                     ws.send(
                         JSON.stringify({
                             ...response,
@@ -322,7 +348,7 @@ export const exposeConnectWs = ({
                 } catch (e) {
                     logger.error(LOG_PREFIX, 'error handling call: ' + e);
                 } finally {
-                    connectionPendingMessages.delete(message.id);
+                    connectionPendingMessages.delete(storeId);
                 }
             }
         });
@@ -345,7 +371,9 @@ export const exposeConnectWs = ({
                 });
 
                 for (const id of connectionPendingMessages) {
-                    deleteMessage(id);
+                    // Reject (not just delete) so the awaiting message handler unblocks and
+                    // releases its closure instead of waiting on a deferred nothing settles.
+                    rejectMessage(id, new Error('Connection closed'));
                 }
                 connectionPendingMessages.clear();
             }
