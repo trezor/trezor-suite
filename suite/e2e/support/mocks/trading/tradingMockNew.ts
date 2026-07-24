@@ -25,7 +25,6 @@ const WATCH_POLL_PERIOD = '00:30';
 const WATCH_POLL_TIMEOUT = 35_000;
 const ADVANCE_ATTEMPTS = 5;
 
-// Mock for partner site status page
 const MOCK_PROVIDER_STATUS_ORIGIN = 'https://mocked.partner.site/orders';
 const mockProviderStatusPageHtml = (orderId: string) =>
     `<!DOCTYPE html><html><head><title>Mocked Provider Support</title></head><body><h1>Mocked Provider Support Page</h1><p>Order ID: ${orderId}</p></body></html>`;
@@ -54,7 +53,6 @@ export class TradingMockNew {
         assertPassphraseEnv();
     }
 
-    // Required; call once in beforeEach — the status/redirect/backend methods guard on it.
     setTradeFlow(flow: TradeFlow) {
         this.flow = flow;
     }
@@ -73,7 +71,7 @@ export class TradingMockNew {
         return TRADE_ENDPOINTS[this.tradeFlow];
     }
 
-    // Sell + swap only (buy has no on-chain send); blocks the broadcast. Call before discovery.
+    // Sell + swap only; call before discovery.
     @step()
     async startBackend(symbol: NetworkSymbol): Promise<{ type: BackendType; url: string }> {
         this.backend = createTradingChainBackend(symbol);
@@ -83,7 +81,6 @@ export class TradingMockNew {
         return { type: this.backend.backendType, url: this.backend.url };
     }
 
-    // Buy + sell only (swap has no provider redirect); rewrites the live redirect back into Suite.
     @step()
     async rewriteTradeRedirect() {
         if (this.tradeFlow === 'swap') {
@@ -141,13 +138,11 @@ export class TradingMockNew {
         return this.capturedTrade;
     }
 
-    // Pin the status the app sees now (the baseline, set at/just before the send).
     @step()
     async setStatus(status: string) {
         await this.routeWatch(status);
     }
 
-    // Fast-forward the clock until a poll returns the target status; retry past stale polls.
     @step()
     async advanceStatus(status: string) {
         await this.routeWatch(status);

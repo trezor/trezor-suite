@@ -3,12 +3,11 @@ import { TranslationKey } from '@suite/intl';
 export type TradeStatusPhase = {
     status: string;
     translationKey: TranslationKey;
-    // Extra ICU values the translation needs; the provider name is injected by the caller.
+    // ICU values for the translation.
     translationValues?: (provider: string) => Record<string, string | number>;
 };
 
-// Swap transaction detail progresses CONFIRMING → CONVERTING → SUCCESS once the (blocked)
-// send is broadcast. Only CONVERTING renders the provider name.
+// Only CONVERTING renders the provider name, hence the lone translationValues.
 export const swapStatusFlow: readonly TradeStatusPhase[] = [
     { status: 'CONFIRMING', translationKey: 'TR_EXCHANGE_DETAIL_SENDING_TRANSACTION' },
     {

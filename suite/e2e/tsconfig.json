@@ -81,6 +81,7 @@
         },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../../packages/utxo-lib" }
     ]
 }
