@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import { WebSocketServer } from 'ws';
 
-import { CORE_CALL, POPUP } from '@trezor/connect';
+import { CORE_CALL, CORE_CALL_CANCEL, POPUP } from '@trezor/connect';
 import { findProcessFromIncomingPort } from '@trezor/node-utils';
 
 import { initConnectPopupResponseHandler } from './connect-popup-messages';
@@ -41,14 +41,21 @@ const handshake = {
 };
 
 const coreCall = { id: '1', type: CORE_CALL, payload: { method: 'getAddress' } };
+const coreCallCancel = { id: '2', type: CORE_CALL_CANCEL, payload: {} };
+const popupClosed = { id: '2', type: POPUP.CLOSED, payload: {} };
 
 describe('connect-ws', () => {
     let server: EventEmitter;
     let rendererSend: jest.Mock;
 
-    const getForwardedCalls = (): { id: string }[] =>
+    const getForwardedCalls = (): { id: string; connectionId?: string }[] =>
         rendererSend.mock.calls
             .filter(([channel]) => channel === 'connect-popup/call')
+            .map(([, params]) => params);
+
+    const getForwardedCancels = (): { connectionId?: string }[] =>
+        rendererSend.mock.calls
+            .filter(([channel]) => channel === 'connect-popup/cancel')
             .map(([, params]) => params);
 
     // Answers the renderer's nth forwarded call the way the renderer does, by echoing its id.
@@ -155,5 +162,26 @@ describe('connect-ws', () => {
         ]);
 
         client.close();
+    });
+
+    it('tags each cancel with the connection it came from', async () => {
+        const first = await connect();
+        const second = await connect();
+        await first.send(coreCall);
+        await second.send(coreCall);
+
+        await second.send(coreCallCancel);
+        await first.send(popupClosed);
+        first.close();
+
+        const [firstCall, secondCall] = getForwardedCalls();
+        expect(firstCall?.connectionId).not.toBe(secondCall?.connectionId);
+        expect(getForwardedCancels().map(({ connectionId }) => connectionId)).toEqual([
+            secondCall?.connectionId,
+            firstCall?.connectionId,
+            firstCall?.connectionId,
+        ]);
+
+        second.close();
     });
 });
