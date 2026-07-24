@@ -24,11 +24,15 @@ import TrezorConnect, {
     UI_EVENTS,
     UI_REQUESTS,
 } from '@trezor/connect';
+import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
 import { isMacOs } from '@trezor/env-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectSuiteLifecycle } from 'src/selectors/suite/suiteSelectors';
+
+// `connectionId` is undefined for MCP calls, so no connect-ws cancel can match them.
+type TrackedPopupCall = { connectionId?: string };
 
 export const useConnectPopupDesktop = () => {
     const { desktopApi, analytics, dispatch } = useServices(
@@ -42,6 +46,9 @@ export const useConnectPopupDesktop = () => {
     selectedDeviceRef.current = selectedDevice;
     const lifecycle = useSelector(selectSuiteLifecycle);
     const initialized = useRef(false);
+
+    const queuedPopupCalls = useRef(new Set<TrackedPopupCall>());
+    const activePopupCall = useRef<TrackedPopupCall | undefined>(undefined);
 
     useEffect(() => {
         const init = async () => {
@@ -100,7 +107,24 @@ export const useConnectPopupDesktop = () => {
                     return;
                 }
 
+                queuedPopupCalls.current.add(params);
                 await queuePopupCall();
+                const isCanceled = !queuedPopupCalls.current.delete(params);
+
+                // Removed by a cancel while queued: don't open the popup or start a device flow
+                // for a client that already gave up.
+                if (isCanceled) {
+                    const error = serializeError(TypedError('Method_Cancel'));
+                    desktopApi.connectPopupResponse({
+                        success: false,
+                        error,
+                        payload: error, // for backward compatibility with v9
+                        id: params.id,
+                    });
+
+                    return;
+                }
+
                 const deferred = getPopupCallDeferred(true);
                 const isMcp = params.sourceType === CALL_SOURCE_MCP;
                 dispatch(
@@ -129,7 +153,11 @@ export const useConnectPopupDesktop = () => {
                               },
                     }),
                 );
+                activePopupCall.current = params;
                 const response = await deferred.promise;
+                if (activePopupCall.current === params) {
+                    activePopupCall.current = undefined;
+                }
                 if (response.success) {
                     desktopApi.connectPopupResponse({ ...response, id: params.id });
                 } else {
@@ -142,7 +170,18 @@ export const useConnectPopupDesktop = () => {
                 }
             });
             desktopApi.on('connect-popup/cancel', params => {
-                dispatch(connectPopupCancelThunk(params));
+                const { connectionId } = params;
+                queuedPopupCalls.current.forEach(queuedPopupCall => {
+                    if (queuedPopupCall.connectionId === connectionId) {
+                        queuedPopupCalls.current.delete(queuedPopupCall);
+                    }
+                });
+                // One client must not be able to cancel another client's active call.
+                if (activePopupCall.current?.connectionId === connectionId) {
+                    dispatch(
+                        connectPopupCancelThunk({ error: params.error, callId: params.callId }),
+                    );
+                }
             });
             desktopApi.on('app/auto-start/popup-request', () => {
                 dispatch(openModal({ type: 'auto-start-before-quit' }));
