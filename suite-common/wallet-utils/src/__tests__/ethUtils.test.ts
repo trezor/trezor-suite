@@ -1,10 +1,15 @@
 import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import { UINT256_MAX } from '@suite-common/suite-constants';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 import {
     buildApprovalTransactionData,
     getEvmTransactionTextSignature,
+    getNativeWrapTxKind,
+    getUnwrapAmountByEthereumDataHex,
+    isUnwrapNativeTx,
+    isWrapNativeTx,
     padLeftEven,
     sanitizeHex,
     strip,
@@ -156,6 +161,115 @@ describe('eth utils', () => {
 
         it('returns "unknown" for selector-only claim (too short)', () => {
             expect(getEvmTransactionTextSignature('0x71ee95c0')).toBe('unknown');
+        });
+    });
+
+    describe('wrapped-native tx detection', () => {
+        const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+        const OTHER = '0x1111111111111111111111111111111111111111';
+        const DEPOSIT = '0xd0e30db0'; // WETH deposit()
+        const WITHDRAW =
+            '0x2e1a7d4d0000000000000000000000000000000000000000000000000de0b6b3a7640000'; // withdraw(1e18)
+        const ERC4626_DEPOSIT =
+            '0x6e553f65' + // deposit(uint256,address) — different selector, must not be treated as a wrap
+            '00000000000000000000000000000000000000000000000000000000004c4b40' +
+            '0000000000000000000000009ea3721b5bf3b64b4418c38b603154d2d597fae3';
+
+        const wrap = (to: string | null, data: string | null) =>
+            isWrapNativeTx({ networkSymbol: 'eth', to, data });
+        const unwrap = (to: string | null, data: string | null) =>
+            isUnwrapNativeTx({ networkSymbol: 'eth', to, data });
+
+        it('isWrapNativeTx detects deposit() to the wrapped-native contract', () => {
+            expect(wrap(WETH, DEPOSIT)).toBe(true);
+        });
+
+        it('isWrapNativeTx ignores deposit() to a non-WETH contract (target guard)', () => {
+            expect(wrap(OTHER, DEPOSIT)).toBe(false);
+        });
+
+        it('isWrapNativeTx ignores other selectors on the WETH contract', () => {
+            expect(wrap(WETH, WITHDRAW)).toBe(false);
+            expect(wrap(WETH, ERC4626_DEPOSIT)).toBe(false);
+        });
+
+        it('isWrapNativeTx returns false for a missing target or data', () => {
+            expect(wrap(null, DEPOSIT)).toBe(false);
+            expect(wrap(WETH, null)).toBe(false);
+        });
+
+        it('isUnwrapNativeTx detects withdraw() to the wrapped-native contract', () => {
+            expect(unwrap(WETH, WITHDRAW)).toBe(true);
+        });
+
+        it('isUnwrapNativeTx ignores withdraw() to a non-WETH contract', () => {
+            expect(unwrap(OTHER, WITHDRAW)).toBe(false);
+        });
+
+        it('isUnwrapNativeTx ignores the deposit() selector', () => {
+            expect(unwrap(WETH, DEPOSIT)).toBe(false);
+        });
+
+        it('getUnwrapAmountByEthereumDataHex returns the wad amount for withdraw()', () => {
+            expect(getUnwrapAmountByEthereumDataHex(WITHDRAW)).toBe('1000000000000000000');
+        });
+
+        it('getUnwrapAmountByEthereumDataHex returns null for non-withdraw data', () => {
+            expect(getUnwrapAmountByEthereumDataHex(DEPOSIT)).toBe(null);
+            expect(getUnwrapAmountByEthereumDataHex('0xdeadbeef')).toBe(null);
+            expect(getUnwrapAmountByEthereumDataHex(undefined)).toBe(null);
+        });
+    });
+
+    describe('getNativeWrapTxKind', () => {
+        const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+        const OTHER = '0x1111111111111111111111111111111111111111';
+        const DEPOSIT = '0xd0e30db0';
+        const WITHDRAW =
+            '0x2e1a7d4d0000000000000000000000000000000000000000000000000de0b6b3a7640000';
+
+        const tx = ({
+            targets = [],
+            internalTransfers = [],
+            data,
+        }: {
+            targets?: { addresses?: string[] }[];
+            internalTransfers?: { from: string }[];
+            data?: string;
+        }) =>
+            ({
+                symbol: 'eth',
+                targets,
+                internalTransfers,
+                ethereumSpecific: data ? { data } : undefined,
+            }) as unknown as WalletAccountTransaction;
+
+        it('detects a wrap when the WETH contract is the value target', () => {
+            expect(
+                getNativeWrapTxKind(tx({ targets: [{ addresses: [WETH] }], data: DEPOSIT })),
+            ).toBe('wrap');
+        });
+
+        it('detects an unwrap when the WETH contract is the internal ETH sender', () => {
+            expect(
+                getNativeWrapTxKind(tx({ internalTransfers: [{ from: WETH }], data: WITHDRAW })),
+            ).toBe('unwrap');
+        });
+
+        it('ignores a deposit() to a non-WETH contract', () => {
+            expect(
+                getNativeWrapTxKind(tx({ targets: [{ addresses: [OTHER] }], data: DEPOSIT })),
+            ).toBeUndefined();
+        });
+
+        it('ignores a WETH interaction with an unrelated selector', () => {
+            expect(
+                getNativeWrapTxKind(tx({ targets: [{ addresses: [WETH] }], data: '0xdeadbeef' })),
+            ).toBeUndefined();
+        });
+
+        it('returns undefined without a WETH target or data', () => {
+            expect(getNativeWrapTxKind(tx({}))).toBeUndefined();
         });
     });
 

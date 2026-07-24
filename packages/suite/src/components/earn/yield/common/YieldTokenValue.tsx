@@ -1,7 +1,6 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
-import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 
@@ -17,30 +16,25 @@ type YieldTokenValueProps = {
     'data-testid'?: string;
 };
 
-export const YieldTokenValue = ({
-    token,
-    amount,
-    'data-testid': dataTestId,
-}: YieldTokenValueProps) => {
-    const roundedAmount = new BigNumber(amount).decimalPlaces(2, BigNumber.ROUND_DOWN).toFixed();
-
-    return (
-        <Row alignItems="center" gap={8}>
-            <TokenIcon
-                size={24}
-                symbol={token.networkSymbol}
-                contractAddress={token.contractAddress}
-                placeholder={token.symbol}
-                showNetworkIcon
-                isBordered={false}
-            />
-            <Text typographyStyle="body-md-strong">
-                <FormattedCryptoAmount
-                    value={roundedAmount}
-                    symbol={token.symbol}
-                    data-testid={dataTestId}
-                />
-            </Text>
-        </Row>
-    );
-};
+export const YieldTokenValue = ({ token, amount }: YieldTokenValueProps) => (
+    <Row alignItems="center" gap={8}>
+        <TokenIcon
+            size={24}
+            symbol={token.networkSymbol}
+            contractAddress={token.contractAddress}
+            placeholder={token.symbol}
+            showNetworkIcon
+            isBordered={false}
+        />
+        <Text typographyStyle="body-md-strong">
+            {/*
+                `isBalance` runs the amount through `formatCoinBalance`, which keeps the leading
+                significant digits and appends an ellipsis (…) once the fractional part gets too
+                long. This keeps the rendered width bounded (no more layout jitter) while still
+                showing the meaningful digits of small stablecoin/WETH amounts — a fixed decimal
+                cap instead rounded those down to zeroes.
+            */}
+            <FormattedCryptoAmount value={amount} symbol={token.symbol} isBalance />
+        </Text>
+    </Row>
+);

@@ -25,4 +25,8 @@ export const EVM_ABI = {
         ]),
         claimWithdrawRequest: parseAbi(['function claimWithdrawRequest()']),
     },
+    weth: {
+        deposit: parseAbi(['function deposit() payable']),
+        withdraw: parseAbi(['function withdraw(uint256 wad)']),
+    },
 } as const;

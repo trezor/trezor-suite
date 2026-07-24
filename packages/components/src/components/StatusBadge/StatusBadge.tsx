@@ -2,18 +2,18 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Box } from '@trezor/components';
+import { Box } from '../Box/Box';
+import { Dot, type DotIntent } from '../Dot/Dot';
 
-import { type BackendStatus } from './getBackendStatus';
-
-const DOT_SIZE = 10;
+const DOT_SIZE = 8;
 const OUTLINE_WIDTH = 2;
 const DOT_OFFSET = 4;
 const MASK_RADIUS = DOT_SIZE / 2 + OUTLINE_WIDTH;
 const DOT_CENTER = DOT_SIZE / 2 - DOT_OFFSET;
 
-type StatusIndicatorProps = {
-    status?: BackendStatus;
+export type StatusBadgeProps = {
+    isShown?: boolean;
+    intent?: DotIntent;
     children: ReactNode;
     'data-testid'?: string;
 };
@@ -26,25 +26,25 @@ const MaskedContent = styled.div`
     );
 `;
 
-const Indicator = styled.div`
+const IndicatorWrapper = styled.div`
     position: absolute;
     top: -${DOT_OFFSET}px;
     right: -${DOT_OFFSET}px;
-    width: ${DOT_SIZE}px;
-    height: ${DOT_SIZE}px;
-    border-radius: 50%;
-    background-color: ${({ theme }) => theme.elementFillNeutralBold};
+    display: flex;
 `;
 
-export const StatusIndicator = ({
-    status,
+export const StatusBadge = ({
+    isShown,
+    intent = 'neutral',
     children,
     'data-testid': dataTestId,
-}: StatusIndicatorProps) =>
-    status ? (
-        <Box position={{ type: 'relative' }}>
+}: StatusBadgeProps) =>
+    isShown ? (
+        <Box position={{ type: 'relative' }} display="inline-flex">
             <MaskedContent>{children}</MaskedContent>
-            <Indicator data-testid={dataTestId} />
+            <IndicatorWrapper>
+                <Dot data-testid={dataTestId} size={DOT_SIZE} intent={intent} />
+            </IndicatorWrapper>
         </Box>
     ) : (
         children

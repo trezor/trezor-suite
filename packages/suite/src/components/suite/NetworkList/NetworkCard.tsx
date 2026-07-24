@@ -2,14 +2,13 @@ import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Box, Card, Column, IconButton, Row, Text } from '@trezor/components';
+import { Box, Card, Column, IconButton, Row, StatusBadge, Text } from '@trezor/components';
 import { SlidersIcon } from '@trezor/icons';
 import { NetworkIcon } from '@trezor/product-components';
 
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 import { RepresentativeAssetIconSet } from './RepresentativeAssetIconSet';
-import { StatusIndicator } from './StatusIndicator';
 import { type BackendStatus } from './getBackendStatus';
 
 type NetworkCardProps = {
@@ -61,8 +60,8 @@ export const NetworkCard = ({
                         {onSettings && (
                             // Make the clickable area bigger
                             <Box padding={8} margin={-8} onClick={() => onSettings(symbol)}>
-                                <StatusIndicator
-                                    status={backendStatus}
+                                <StatusBadge
+                                    isShown={backendStatus !== undefined}
                                     data-testid={`@settings/wallet/network/${symbol}/backend-status`}
                                 >
                                     <IconButton
@@ -79,7 +78,7 @@ export const NetworkCard = ({
                                         intent="neutral"
                                         priority="secondary"
                                     />
-                                </StatusIndicator>
+                                </StatusBadge>
                             </Box>
                         )}
                         {rightContent}

@@ -23,6 +23,14 @@ export const filterNonActivityNotifications = (
 ): NotificationsState<TranslationKey> =>
     notifications.filter(notification => notification.type !== 'coin-scheme-protocol');
 
+// transaction-related notifications (sent/received/confirmed, staking, yield, exchange, claims)
+export const isTransactionNotification = (
+    notification: NotificationsState<TranslationKey>[number],
+) =>
+    notification.type.startsWith('tx-') ||
+    notification.type === 'raw-tx-sent' ||
+    notification.type === 'successful-claim';
+
 export const getSeenAndUnseenNotifications = (
     notifications: NotificationsState<TranslationKey>,
 ): {

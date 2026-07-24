@@ -48,7 +48,7 @@ const StyledMarkdown = styled.div`
     }
 
     li {
-        margin: 0 0 10px;
+        margin: 0 0 8px;
     }
 
     a {

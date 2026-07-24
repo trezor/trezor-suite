@@ -11,6 +11,7 @@ import {
     Row,
     ShortcutBadge,
     type ShortcutBadgeProps,
+    StatusBadge,
     TOOLTIP_DELAY_LONG,
     TOOLTIP_DELAY_SHORT,
     Tooltip,
@@ -57,6 +58,7 @@ export type NavigationItemProps = {
     goToRoute?: Route['name'];
     preserveParams?: boolean;
     isActive?: boolean;
+    hasIndicator?: boolean;
     'data-testid'?: string;
     className?: string;
     values?: ExtendedMessageDescriptor['values'];
@@ -78,6 +80,7 @@ const NavItem = ({
     routes,
     goToRoute,
     isActive,
+    hasIndicator,
     'data-testid': dataTest,
     values,
     preserveParams,
@@ -131,13 +134,15 @@ const NavItem = ({
                 data-testid={dataTest || `@suite/menu/${goToRoute}`}
                 type="button"
             >
-                <Icon
-                    as={icon}
-                    size={24}
-                    intent="neutral"
-                    priority={isItemActive ? 'primary' : 'secondary'}
-                    pointerEvents="none"
-                />
+                <StatusBadge isShown={hasIndicator} intent="critical">
+                    <Icon
+                        as={icon}
+                        size={24}
+                        intent="neutral"
+                        priority={isItemActive ? 'primary' : 'secondary'}
+                        pointerEvents="none"
+                    />
+                </StatusBadge>
                 {expanded && (
                     <Paragraph
                         typographyStyle="body-md"

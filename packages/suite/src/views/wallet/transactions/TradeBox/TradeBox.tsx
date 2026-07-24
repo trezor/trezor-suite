@@ -17,6 +17,8 @@ import { PriceTicker, TrendTicker } from 'src/components/suite';
 import { useDispatch, useLayoutSize } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
+import { WrapNativeTokenButton } from './WrapNativeTokenButton';
+
 type TradeBoxProps = {
     account: Account;
 };
@@ -185,6 +187,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                                 <Translation id="TR_TRADING_SWAP" />
                             </ActionButton>
                         )}
+                        <WrapNativeTokenButton account={account} />
                     </Row>
                 </Flex>
             </Card>

@@ -28,7 +28,13 @@ const claimUnsignedTxBase = {
 
 const stablecoinYieldTxSimulationParams = z.discriminatedUnion('flow', [
     z.strictObject({
-        flow: z.union([z.literal('deposit'), z.literal('withdraw'), z.literal('redeem')]),
+        flow: z.union([
+            z.literal('deposit'),
+            z.literal('withdraw'),
+            z.literal('redeem'),
+            z.literal('wrap'),
+            z.literal('unwrap'),
+        ]),
         account: partialAccount,
         unsignedTx: z.string(),
     }),
@@ -57,7 +63,9 @@ function composeUnsignedEvmTx(
     switch (params.flow) {
         case 'deposit':
         case 'redeem':
-        case 'withdraw': {
+        case 'withdraw':
+        case 'wrap':
+        case 'unwrap': {
             const {
                 to,
                 value = '0x0',

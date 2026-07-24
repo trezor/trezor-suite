@@ -1,12 +1,17 @@
 import { Calldata } from '@suite-common/calldata';
 import { UINT256_MAX } from '@suite-common/suite-constants';
-import { type EvmTransactionPurpose } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type EvmTransactionPurpose,
+    type WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { asAmountSubunit, asAmountUnit } from './AmountTypes';
 import { unitsToSubunits } from './amountUtils';
+import { isWrappedNativeToken } from './tokenUtils';
 
 export const isEip1559 = (
     tx: Record<string, any> | null | undefined,
@@ -48,6 +53,50 @@ export const getEvmTransactionTextSignature = (data?: string): EvmTransactionPur
     if (Calldata.evm.distributor.claim.decode(data)) return 'claim';
 
     return 'unknown';
+};
+
+type WrappedNativeTxParams = {
+    networkSymbol: NetworkSymbol;
+    to?: string | null;
+    data?: string | null;
+};
+
+// deposit() (0xd0e30db0) is a generic selector shared by many contracts, so the selector alone is
+// not enough — the target must also be the chain's wrapped-native contract.
+export const isWrapNativeTx = ({ networkSymbol, to, data }: WrappedNativeTxParams): boolean =>
+    isWrappedNativeToken(networkSymbol, to) &&
+    Calldata.evm.weth.deposit.decode(data ?? undefined) !== null;
+
+export const isUnwrapNativeTx = ({ networkSymbol, to, data }: WrappedNativeTxParams): boolean =>
+    isWrappedNativeToken(networkSymbol, to) &&
+    Calldata.evm.weth.withdraw.decode(data ?? undefined) !== null;
+
+// Amount (in wei) unwrapped by a WETH withdraw(uint256) call, or null when data is not one.
+export const getUnwrapAmountByEthereumDataHex = (data?: string): string | null =>
+    Calldata.evm.weth.withdraw.decode(data)?.wad.toString() ?? null;
+
+/**
+ * Classifies an EVM transaction as a native wrap/unwrap for display. The wrapped-native (WETH)
+ * contract shows up as the value recipient for a wrap and as the internal ETH sender for an
+ * unwrap, so both `targets` and `internalTransfers` are considered when resolving the target.
+ */
+export const getNativeWrapTxKind = (
+    transaction: WalletAccountTransaction,
+): 'wrap' | 'unwrap' | undefined => {
+    const { symbol } = transaction;
+    const data = transaction.ethereumSpecific?.data;
+
+    const candidateAddresses = [
+        ...transaction.targets.flatMap(target => target.addresses ?? []),
+        ...transaction.internalTransfers.map(transfer => transfer.from),
+    ];
+    const to = candidateAddresses.find(address => isWrappedNativeToken(symbol, address));
+
+    if (!to) return undefined;
+    if (isWrapNativeTx({ networkSymbol: symbol, to, data })) return 'wrap';
+    if (isUnwrapNativeTx({ networkSymbol: symbol, to, data })) return 'unwrap';
+
+    return undefined;
 };
 
 export const isEvmApprovalTx = (data?: string): boolean =>

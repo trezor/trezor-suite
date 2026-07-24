@@ -162,9 +162,10 @@ export const initialStablecoinYieldState: StablecoinYieldState = {
 
 const createInitialStablecoinYieldSessionState = (
     flowType: YieldFlowType,
+    isNativeDeposit = false,
 ): StablecoinYieldSessionState => ({
     ...initialStablecoinYieldSessionState,
-    step: getYieldFlowStepSequence({ flowType })[0],
+    step: getYieldFlowStepSequence({ flowType, isWrappedNativeVault: isNativeDeposit })[0],
     approval: { ...initialStablecoinYieldSessionState.approval },
     action: { ...initialStablecoinYieldSessionState.action },
     result: {
@@ -199,9 +200,11 @@ const stablecoinYieldSlice = createSlice({
     reducers: {
         initSession(
             state: StablecoinYieldState,
-            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+            action: PayloadAction<
+                StablecoinYieldSessionActionPayload & { isNativeDeposit?: boolean }
+            >,
         ) {
-            const { flowType, flowKey } = action.payload;
+            const { flowType, flowKey, isNativeDeposit } = action.payload;
 
             if (!isSafeObjectKey(flowKey)) {
                 return;
@@ -210,7 +213,10 @@ const stablecoinYieldSlice = createSlice({
             const sessionKey = getStablecoinYieldSessionKey(flowKey);
 
             if (!state[flowType][sessionKey]) {
-                state[flowType][sessionKey] = createInitialStablecoinYieldSessionState(flowType);
+                state[flowType][sessionKey] = createInitialStablecoinYieldSessionState(
+                    flowType,
+                    isNativeDeposit,
+                );
             }
         },
         disposeSession(
@@ -379,6 +385,17 @@ const stablecoinYieldSlice = createSlice({
         ) {
             withSession(state, action.payload, session => {
                 session.step = getNextYieldFlowStep(action.payload.flowType, 'approve');
+            });
+        },
+        skipWrapStep(
+            state: StablecoinYieldState,
+            action: PayloadAction<StablecoinYieldSessionActionPayload>,
+        ) {
+            withSession(state, action.payload, session => {
+                // Only advance from the wrap step, so repeated init calls can't regress the flow.
+                if (session.step === 'wrap') {
+                    session.step = getNextYieldFlowStep(action.payload.flowType, 'wrap');
+                }
             });
         },
         revokeSuccess(
