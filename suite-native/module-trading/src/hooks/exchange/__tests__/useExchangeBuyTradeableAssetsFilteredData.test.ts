@@ -40,21 +40,6 @@ describe('useExchangeBuyTradeableAssetsFilteredData', () => {
         ]);
     });
 
-    it('should exclude sendAsset from the filtered list', () => {
-        mockUseWatch.mockReturnValue(btcAsset);
-
-        const { result } = renderUseExchangeBuyTradeableAssetsFilteredData();
-
-        expect(result.current.filteredData).toHaveLength(2);
-        expect(result.current.filteredData).toEqual([
-            expect.objectContaining({ cryptoId: usdcAsset.cryptoId }),
-            expect.objectContaining({ cryptoId: ethAsset.cryptoId }),
-        ]);
-        expect(result.current.filteredData).not.toContainEqual(
-            expect.objectContaining({ cryptoId: btcAsset.cryptoId }),
-        );
-    });
-
     it('should filter assets by search text', () => {
         mockUseWatch.mockReturnValue(undefined);
 

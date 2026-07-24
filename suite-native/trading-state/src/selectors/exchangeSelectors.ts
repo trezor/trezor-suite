@@ -53,9 +53,7 @@ export const selectExchangeSelectedReceiveAccount = createMemoizedSelectorWithAc
 
 export const selectExchangeBuyTradeableAssets = createTradingWithFeatureFlagsMemoizedSelector(
     [
-        selectTradingExchangeBuyCryptoIds as unknown as (
-            state: TradingRootState,
-        ) => ReturnType<typeof selectTradingExchangeBuyCryptoIds>,
+        selectTradingExchangeBuyCryptoIds,
         ({ wallet }) => wallet.trading.info.coins,
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreExperimentalOnlyNetworksEnabled),
@@ -68,7 +66,9 @@ export const selectExchangeBuyTradeableAssets = createTradingWithFeatureFlagsMem
         return cryptoIds
             .flatMap(cryptoId => {
                 const coinInfo = coins[cryptoId];
-                if (!coinInfo) return [];
+                if (!coinInfo) {
+                    return [];
+                }
 
                 return [coinInfoToTradeableAsset(cryptoId, coinInfo)];
             })
