@@ -11,6 +11,7 @@ import {
     Row,
     ShortcutBadge,
     type ShortcutBadgeProps,
+    StatusBadge,
     TOOLTIP_DELAY_LONG,
     TOOLTIP_DELAY_SHORT,
     Tooltip,
@@ -19,8 +20,6 @@ import { commonFocusStyles } from '@trezor/components/src/utils/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
-
-import { StatusIndicator } from '../../../NetworkList/StatusIndicator';
 
 const Container = styled.button<{ $isActive?: boolean }>`
     flex: 1;
@@ -135,7 +134,7 @@ const NavItem = ({
                 data-testid={dataTest || `@suite/menu/${goToRoute}`}
                 type="button"
             >
-                <StatusIndicator show={hasIndicator} intent="critical">
+                <StatusBadge isShown={hasIndicator} intent="critical">
                     <Icon
                         as={icon}
                         size={24}
@@ -143,7 +142,7 @@ const NavItem = ({
                         priority={isItemActive ? 'primary' : 'secondary'}
                         pointerEvents="none"
                     />
-                </StatusIndicator>
+                </StatusBadge>
                 {expanded && (
                     <Paragraph
                         typographyStyle="body-md"

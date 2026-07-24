@@ -2,7 +2,8 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Box, Dot, type DotIntent } from '@trezor/components';
+import { Box } from '../Box/Box';
+import { Dot, type DotIntent } from '../Dot/Dot';
 
 const DOT_SIZE = 8;
 const OUTLINE_WIDTH = 2;
@@ -10,8 +11,8 @@ const DOT_OFFSET = 4;
 const MASK_RADIUS = DOT_SIZE / 2 + OUTLINE_WIDTH;
 const DOT_CENTER = DOT_SIZE / 2 - DOT_OFFSET;
 
-type StatusIndicatorProps = {
-    show?: boolean;
+export type StatusBadgeProps = {
+    isShown?: boolean;
     intent?: DotIntent;
     children: ReactNode;
     'data-testid'?: string;
@@ -32,14 +33,14 @@ const IndicatorWrapper = styled.div`
     display: flex;
 `;
 
-export const StatusIndicator = ({
-    show,
+export const StatusBadge = ({
+    isShown,
     intent = 'neutral',
     children,
     'data-testid': dataTestId,
-}: StatusIndicatorProps) =>
-    show ? (
-        <Box position={{ type: 'relative' }}>
+}: StatusBadgeProps) =>
+    isShown ? (
+        <Box position={{ type: 'relative' }} display="inline-flex">
             <MaskedContent>{children}</MaskedContent>
             <IndicatorWrapper>
                 <Dot data-testid={dataTestId} size={DOT_SIZE} intent={intent} />
