@@ -43,6 +43,9 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
     });
 
     const { ref: hexRef, ...hexField } = register(inputHexName, {
+        onChange: () => {
+            composeTransaction(inputHexName);
+        },
         required: translationString('DATA_NOT_SET'),
         validate: (value = '') => {
             if (!isHexValid(value)) return translationString('DATA_NOT_VALID_HEX');
