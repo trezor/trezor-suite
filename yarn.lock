@@ -14484,6 +14484,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/scrollview": "workspace:*"
     "@suite-native/suite-sync": "workspace:*"
+    "@suite-native/test-utils-store": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
