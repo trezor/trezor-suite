@@ -73,6 +73,7 @@ const connectPublicCallableMethodGroups = {
         'getCoinInfo',
     ],
     bitcoin: [
+        'sendTransaction',
         'signTransaction',
         'composeTransaction',
         'authorizeCoinjoin',

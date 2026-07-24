@@ -23,7 +23,6 @@ export * from './api/nostr/common';
 
 // types used in @trezor/suite. if you need a type, reexport it from ./api/<method>
 export type {
-    ComposeOutput,
     PrecomposeResultError,
     PrecomposeResultNonFinal,
     PrecomposeResultFinal,
