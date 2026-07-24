@@ -1,7 +1,8 @@
 /**
- * High-level AuthDB update. Unlike authDbUpdateLeaf, no Merkle proof is passed by
- * the caller — @trezor/connect computes it internally from the injected
- * `authLabelLookupProvider` (see ConnectSettings.authLabelLookupProvider).
+ * High-level AuthDB update. Unlike the low-level WARD round
+ * (wardSetEntry/wardCommit/wardFinalize), no Merkle proof is passed by the caller —
+ * @trezor/connect computes it internally from the injected `authLabelLookupProvider`
+ * (see ConnectSettings.authLabelLookupProvider) and drives the whole WARD write round.
  */
 
 import type { Static } from '@trezor/schema-utils';

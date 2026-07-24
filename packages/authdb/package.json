@@ -30,6 +30,10 @@
                 "types": "./lib/proof/index.d.mts",
                 "default": "./lib/proof/index.mjs"
             },
+            "./mocks": {
+                "types": "./lib/mocks/index.d.mts",
+                "default": "./lib/mocks/index.mjs"
+            },
             "./storage": {
                 "types": "./lib/storage/index.d.mts",
                 "default": "./lib/storage/index.mjs"
@@ -53,6 +57,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@noble/curves": "^2.2.0",
         "@noble/hashes": "^2.0.1"
     },
     "optionalDependencies": {

@@ -4,10 +4,10 @@ import { Type } from '@trezor/schema-utils';
 import type { applyFlags } from './applyFlags';
 import type { applySettings } from './applySettings';
 import type { authDbInit } from './authDbInit';
+import type { authDbListPending } from './authDbListPending';
 import type { authDbLookup } from './authDbLookup';
 import type { authDbSetRoot } from './authDbSetRoot';
 import type { authDbUpdateAddress } from './authDbUpdateAddress';
-import type { authDbUpdateLeaf } from './authDbUpdateLeaf';
 import type { authDbVerifyAddress } from './authDbVerifyAddress';
 import type { authenticateDevice } from './authenticateDevice';
 import type { authorizeCoinjoin } from './authorizeCoinjoin';
@@ -214,9 +214,9 @@ export const TrezorConnectDevice = Type.Object({
     // https://connect.trezor.io/9/methods/device/pingDevice/
     pingDevice: Type.Unsafe<typeof pingDevice>(),
     authDbInit: Type.Unsafe<typeof authDbInit>(),
+    authDbListPending: Type.Unsafe<typeof authDbListPending>(),
     authDbSetRoot: Type.Unsafe<typeof authDbSetRoot>(),
     authDbLookup: Type.Unsafe<typeof authDbLookup>(),
-    authDbUpdateLeaf: Type.Unsafe<typeof authDbUpdateLeaf>(),
     authDbUpdateAddress: Type.Unsafe<typeof authDbUpdateAddress>(),
     authDbVerifyAddress: Type.Unsafe<typeof authDbVerifyAddress>(),
 });

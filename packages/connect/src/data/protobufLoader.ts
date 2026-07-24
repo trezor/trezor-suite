@@ -1,4 +1,5 @@
 import { protobufManager } from '@trezor/protobuf';
+import * as authdbProto from '@trezor/protobuf/src/definitions/messages-authdb_pb';
 import * as bitcoinProto from '@trezor/protobuf/src/definitions/messages-bitcoin_pb';
 import * as bleProto from '@trezor/protobuf/src/definitions/messages-ble_pb';
 import * as bootloaderProto from '@trezor/protobuf/src/definitions/messages-bootloader_pb';
@@ -10,7 +11,6 @@ import * as definitionsProto from '@trezor/protobuf/src/definitions/messages-def
 import * as eosProto from '@trezor/protobuf/src/definitions/messages-eos_pb';
 import * as ethereumEip712Proto from '@trezor/protobuf/src/definitions/messages-ethereum-eip712_pb';
 import * as ethereumProto from '@trezor/protobuf/src/definitions/messages-ethereum_pb';
-import * as authdbProto from '@trezor/protobuf/src/definitions/messages-authdb_pb';
 import * as evoluProto from '@trezor/protobuf/src/definitions/messages-evolu_pb';
 import * as managementProto from '@trezor/protobuf/src/definitions/messages-management_pb';
 import * as moneroProto from '@trezor/protobuf/src/definitions/messages-monero_pb';
@@ -21,6 +21,7 @@ import * as telemetryProto from '@trezor/protobuf/src/definitions/messages-telem
 import * as tezosProto from '@trezor/protobuf/src/definitions/messages-tezos_pb';
 import * as thpProto from '@trezor/protobuf/src/definitions/messages-thp_pb';
 import * as tronProto from '@trezor/protobuf/src/definitions/messages-tron_pb';
+import * as wardProto from '@trezor/protobuf/src/definitions/messages-ward_pb';
 import * as messagesProto from '@trezor/protobuf/src/definitions/messages_pb';
 import * as optionsProto from '@trezor/protobuf/src/definitions/options_pb';
 
@@ -38,6 +39,7 @@ export const loadProtobufModules = () => {
         ethereumEip712Proto,
         ethereumProto,
         authdbProto,
+        wardProto,
         evoluProto,
         managementProto,
         moneroProto,

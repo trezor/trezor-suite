@@ -38,7 +38,7 @@ export type AuthLabelEntry = {
  * root    — current Merkle root hash as maintained by the Trezor device.
  * counter — monotonically increasing version; incremented by the device on every tree mutation.
  * mac     — root-attestation token, if the provider has one: HMAC(mac_key, wallet_id||counter||root),
- *           as returned by AuthDbUpdateLeafResponse.mac / AuthDbApplyOfflineOperationsResponse.root_mac.
+ *           as returned by WARDConfirmCommitAck.root_mac (formerly AuthDbUpdateLeafResponse.mac).
  *           Since mac_key is wallet-derived (not device-derived), this token is replayable via
  *           AuthDbFastForwardRoot on any physical device that has unlocked the same wallet.
  */

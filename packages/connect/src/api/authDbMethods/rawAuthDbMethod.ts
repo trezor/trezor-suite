@@ -18,14 +18,16 @@ import { AbstractMethod } from '../../core/AbstractMethod';
  */
 
 /**
- * The three low-level AuthDB methods (authDbLookup, authDbSetRoot, authDbUpdateLeaf) are
- * thin passthroughs to a single proto request/response pair with no per-method business
- * logic. This factory produces a MethodClass for one of them, removing the identical
- * constructor/run() boilerplate.
+ * The single-message low-level AuthDB methods (authDbLookup, authDbSetRoot) are thin
+ * passthroughs to one proto request/response pair with no per-method business logic.
+ * This factory produces a MethodClass for one of them, removing the identical
+ * constructor/run() boilerplate. (authDbInit and authDbUpdate/VerifyAddress are
+ * multi-message orchestrations and are hand-written AbstractMethod classes instead.)
  *
- * Wire message names are derived from `name` (PascalCase + optional 'Response' suffix)
- * since all three already follow that convention — e.g. 'authDbLookup' maps to the
- * 'AuthDbLookup'/'AuthDbLookupResponse' proto messages.
+ * Wire message names default to PascalCase(name) + 'Response'. Since the firmware
+ * migrated AuthDb* to WARD, the current callers pass explicit requestType/responseType
+ * (e.g. authDbLookup -> 'WARDLookup'/'WARDLookupAck'); the default derivation is kept
+ * for any future method whose wire names follow the PascalCase+'Response' convention.
  */
 type RawAuthDbMethodConfig<Name extends CallMethodPayload['method']> = {
     name: Name;
@@ -33,7 +35,15 @@ type RawAuthDbMethodConfig<Name extends CallMethodPayload['method']> = {
     schema: TSchema;
     /** Builds the wire params from the validated payload. */
     buildParams: (payload: any) => Record<string, unknown>;
-    /** Defaults to true, matching five of the six existing methods (authDbLookup is the one exception). */
+    /**
+     * Wire request message name. Defaults to PascalCase(name). Callers override it when
+     * the wire name doesn't follow that convention — e.g. authDbLookup maps to the
+     * renamed 'WARDLookup', with ack 'WARDLookupAck' rather than a 'Response' suffix.
+     */
+    requestType?: string;
+    /** Wire response message name. Defaults to `${requestType}Response`. */
+    responseType?: string;
+    /** Defaults to true; authDbLookup sets it false (a read-only lookup needs no passphrase). */
     useEmptyPassphrase?: boolean;
     info?: string;
     confirmation?: UiRequestConfirmation['payload'];
@@ -42,8 +52,9 @@ type RawAuthDbMethodConfig<Name extends CallMethodPayload['method']> = {
 export const createRawAuthDbMethod = <Name extends CallMethodPayload['method']>(
     config: RawAuthDbMethodConfig<Name>,
 ) => {
-    const requestType = config.name.charAt(0).toUpperCase() + config.name.slice(1);
-    const responseType = `${requestType}Response`;
+    const requestType =
+        config.requestType ?? config.name.charAt(0).toUpperCase() + config.name.slice(1);
+    const responseType = config.responseType ?? `${requestType}Response`;
 
     return class RawAuthDbMethod extends AbstractMethod<Name, Record<string, unknown>> {
         constructor(message: MethodMessage<Name>) {
@@ -71,9 +82,9 @@ export const createRawAuthDbMethod = <Name extends CallMethodPayload['method']>(
 
         async run() {
             const cmd = this.getDevice().getCommands();
-            // requestType/responseType are derived strings, not literals from the typedCall
+            // requestType/responseType are plain strings, not literals from the typedCall
             // overload union — the cast is safe because config.schema/name pairs are only
-            // ever constructed for the six known AuthDB wire messages below.
+            // ever constructed for the known AuthDB/WARD wire messages.
             const response = await cmd.typedCall(
                 requestType as any,
                 responseType as any,

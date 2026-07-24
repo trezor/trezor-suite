@@ -4,9 +4,14 @@ import { createRawAuthDbMethod } from '../rawAuthDbMethod';
 
 export default createRawAuthDbMethod({
     name: 'authDbLookup',
-    schema: PROTO.AuthDbLookup,
+    // Wire message renamed AuthDbLookup -> WARDLookup in firmware; the public method
+    // name stays authDbLookup (used by connect-cli's wallet_id probe, which relies on
+    // this low-level call echoing wallet_id without rejecting a mismatch).
+    requestType: 'WARDLookup',
+    responseType: 'WARDLookupAck',
+    schema: PROTO.WARDLookup,
     useEmptyPassphrase: false,
-    buildParams: (payload: PROTO.AuthDbLookup) => ({
+    buildParams: (payload: PROTO.WARDLookup) => ({
         address: payload.address,
         ...(payload.value !== undefined && { value: payload.value }),
         proof: payload.proof ?? [],

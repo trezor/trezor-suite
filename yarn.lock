@@ -5765,7 +5765,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/curves@npm:^2.0.1, @noble/curves@npm:~2.2.0":
+"@noble/curves@npm:^2.0.1, @noble/curves@npm:^2.2.0, @noble/curves@npm:~2.2.0":
   version: 2.2.0
   resolution: "@noble/curves@npm:2.2.0"
   dependencies:
@@ -15500,7 +15500,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/authdb@workspace:packages/authdb"
   dependencies:
+    "@noble/curves": "npm:^2.2.0"
     "@noble/hashes": "npm:^2.0.1"
+    "@types/better-sqlite3": "npm:^7.6.0"
+    better-sqlite3: "npm:^12.6.2"
+  dependenciesMeta:
+    better-sqlite3:
+      optional: true
   languageName: unknown
   linkType: soft
 

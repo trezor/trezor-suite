@@ -64,6 +64,7 @@ export { GetOwnershipProof } from './api/getOwnershipProof';
 export { PushTransaction } from './api/pushTransaction';
 export { RequestLoginSchema } from './api/requestLogin';
 export { UnlockPathParams } from './api/unlockPath';
+export { AuthDbInitSchema } from './api/authDbInit';
 export { AuthDbUpdateAddressSchema } from './api/authDbUpdateAddress';
 export { AuthDbVerifyAddressSchema } from './api/authDbVerifyAddress';
 export { FirmwareType } from '@trezor/device-utils';

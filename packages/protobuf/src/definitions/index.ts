@@ -3,16 +3,6 @@
 import { type Static, Type } from '@trezor/schema-utils';
 
 import {
-    AuthDbInit,
-    AuthDbInitResponse,
-    AuthDbLookup,
-    AuthDbLookupResponse,
-    AuthDbSetRoot,
-    AuthDbSetRootResponse,
-    AuthDbUpdateLeaf,
-    AuthDbUpdateLeafResponse,
-} from './messages-authdb';
-import {
     Address,
     AuthorizeCoinJoin,
     GetAddress,
@@ -75,8 +65,6 @@ import {
 import {
     ButtonAck,
     ButtonRequest,
-    Deprecated_PassphraseStateAck,
-    Deprecated_PassphraseStateRequest,
     Failure,
     PassphraseAck,
     PassphraseRequest,
@@ -247,9 +235,12 @@ import {
     SolanaAddress,
     SolanaGetAddress,
     SolanaGetPublicKey,
+    SolanaMessageSignature,
     SolanaPublicKey,
+    SolanaSignMessage,
     SolanaSignTx,
     SolanaTxSignature,
+    SolanaVerifyMessage,
 } from './messages-solana';
 import {
     StellarAccountMergeOp,
@@ -312,9 +303,31 @@ import {
     TronTriggerSmartContract,
     TronUnfreezeBalanceV2Contract,
     TronVoteWitnessContract,
+    TronWithdrawBalance,
     TronWithdrawUnfreeze,
 } from './messages-tron';
+import {
+    WARDAddPending,
+    WARDAddPendingAck,
+    WARDCommitCandidate,
+    WARDCommitCandidateAck,
+    WARDConfirmCommit,
+    WARDConfirmCommitAck,
+    WARDDebugSetRoot,
+    WARDDebugSetRootAck,
+    WARDIngestAttestation,
+    WARDIngestAttestationAck,
+    WARDListPendingEdits,
+    WARDListPendingEditsAck,
+    WARDLookup,
+    WARDLookupAck,
+    WARDReconcile,
+    WARDReconcileAck,
+    WARDSync,
+    WARDSyncAck,
+} from './messages-ward';
 
+export type * from './messages-authdb';
 export type * from './options';
 export * from './messages-common';
 export * from './messages-bitcoin';
@@ -328,7 +341,6 @@ export * from './messages-definitions';
 export * from './messages-eos';
 export * from './messages-ethereum';
 export * from './messages-ethereum-eip712';
-export * from './messages-authdb';
 export * from './messages-evolu';
 export * from './messages-monero';
 export * from './messages-ripple';
@@ -338,6 +350,7 @@ export * from './messages-telemetry';
 export * from './messages-tezos';
 export * from './messages-thp';
 export * from './messages-tron';
+export * from './messages-ward';
 export type * from './messages';
 
 export type MessageType = Static<typeof MessageType>;
@@ -351,8 +364,6 @@ export const MessageType = Type.Object(
         PinMatrixAck,
         PassphraseRequest,
         PassphraseAck,
-        Deprecated_PassphraseStateRequest,
-        Deprecated_PassphraseStateAck,
         PaymentRequest,
         GetPublicKey,
         PublicKey,
@@ -510,14 +521,6 @@ export const MessageType = Type.Object(
         EthereumTypedDataStructAck,
         EthereumTypedDataValueRequest,
         EthereumTypedDataValueAck,
-        AuthDbInit,
-        AuthDbInitResponse,
-        AuthDbSetRoot,
-        AuthDbSetRootResponse,
-        AuthDbLookup,
-        AuthDbLookupResponse,
-        AuthDbUpdateLeaf,
-        AuthDbUpdateLeafResponse,
         EvoluGetNode,
         EvoluNode,
         EvoluSignRegistrationRequest,
@@ -572,6 +575,9 @@ export const MessageType = Type.Object(
         SolanaAddress,
         SolanaSignTx,
         SolanaTxSignature,
+        SolanaSignMessage,
+        SolanaMessageSignature,
+        SolanaVerifyMessage,
         StellarGetAddress,
         StellarAddress,
         StellarSignTx,
@@ -627,7 +633,26 @@ export const MessageType = Type.Object(
         TronFreezeBalanceV2Contract,
         TronUnfreezeBalanceV2Contract,
         TronWithdrawUnfreeze,
+        TronWithdrawBalance,
         TronSignature,
+        WARDAddPending,
+        WARDAddPendingAck,
+        WARDCommitCandidate,
+        WARDCommitCandidateAck,
+        WARDConfirmCommit,
+        WARDConfirmCommitAck,
+        WARDSync,
+        WARDSyncAck,
+        WARDIngestAttestation,
+        WARDIngestAttestationAck,
+        WARDListPendingEdits,
+        WARDListPendingEditsAck,
+        WARDReconcile,
+        WARDReconcileAck,
+        WARDLookup,
+        WARDLookupAck,
+        WARDDebugSetRoot,
+        WARDDebugSetRootAck,
     },
     { $id: 'MessageType' },
 );
@@ -735,16 +760,23 @@ export type WireInMessage =
     | 'EthereumSignTypedData'
     | 'EthereumTypedDataStructAck'
     | 'EthereumTypedDataValueAck'
-    | 'AuthDbInit'
-    | 'AuthDbSetRoot'
-    | 'AuthDbLookup'
-    | 'AuthDbUpdateLeaf'
     | 'EvoluGetNode'
     | 'EvoluSignRegistrationRequest'
     | 'EvoluGetDelegatedIdentityKey'
     | 'EvoluIndexManagement'
     | 'MoneroGetAddress'
     | 'MoneroGetWatchKey'
+    | 'MoneroTransactionInitRequest'
+    | 'MoneroTransactionSetInputRequest'
+    | 'MoneroTransactionInputViniRequest'
+    | 'MoneroTransactionAllInputsSetRequest'
+    | 'MoneroTransactionSetOutputRequest'
+    | 'MoneroTransactionAllOutSetRequest'
+    | 'MoneroTransactionSignInputRequest'
+    | 'MoneroTransactionFinalRequest'
+    | 'MoneroKeyImageExportInitRequest'
+    | 'MoneroKeyImageSyncStepRequest'
+    | 'MoneroKeyImageSyncFinalRequest'
     | 'MoneroGetTxKeyRequest'
     | 'MoneroLiveRefreshStartRequest'
     | 'MoneroLiveRefreshStepRequest'
@@ -755,6 +787,8 @@ export type WireInMessage =
     | 'SolanaGetPublicKey'
     | 'SolanaGetAddress'
     | 'SolanaSignTx'
+    | 'SolanaSignMessage'
+    | 'SolanaVerifyMessage'
     | 'StellarGetAddress'
     | 'StellarSignTx'
     | 'StellarPaymentOp'
@@ -791,7 +825,17 @@ export type WireInMessage =
     | 'TronTriggerSmartContract'
     | 'TronFreezeBalanceV2Contract'
     | 'TronUnfreezeBalanceV2Contract'
-    | 'TronWithdrawUnfreeze';
+    | 'TronWithdrawUnfreeze'
+    | 'TronWithdrawBalance'
+    | 'WARDAddPending'
+    | 'WARDCommitCandidate'
+    | 'WARDConfirmCommit'
+    | 'WARDSync'
+    | 'WARDIngestAttestation'
+    | 'WARDListPendingEdits'
+    | 'WARDReconcile'
+    | 'WARDLookup'
+    | 'WARDDebugSetRoot';
 
 export type WireOutMessage =
     | 'Success'
@@ -845,37 +889,22 @@ export type WireOutMessage =
     | 'EthereumTypedDataSignature'
     | 'EthereumTypedDataStructRequest'
     | 'EthereumTypedDataValueRequest'
-    | 'AuthDbInitResponse'
-    | 'AuthDbSetRootResponse'
-    | 'AuthDbLookupResponse'
-    | 'AuthDbUpdateLeafResponse'
     | 'EvoluNode'
     | 'EvoluRegistrationRequest'
     | 'EvoluDelegatedIdentityKey'
     | 'EvoluIndexManagementResponse'
     | 'MoneroAddress'
     | 'MoneroWatchKey'
-    | 'MoneroTransactionInitRequest'
     | 'MoneroTransactionInitAck'
-    | 'MoneroTransactionSetInputRequest'
     | 'MoneroTransactionSetInputAck'
-    | 'MoneroTransactionInputViniRequest'
     | 'MoneroTransactionInputViniAck'
-    | 'MoneroTransactionAllInputsSetRequest'
     | 'MoneroTransactionAllInputsSetAck'
-    | 'MoneroTransactionSetOutputRequest'
     | 'MoneroTransactionSetOutputAck'
-    | 'MoneroTransactionAllOutSetRequest'
     | 'MoneroTransactionAllOutSetAck'
-    | 'MoneroTransactionSignInputRequest'
     | 'MoneroTransactionSignInputAck'
-    | 'MoneroTransactionFinalRequest'
     | 'MoneroTransactionFinalAck'
-    | 'MoneroKeyImageExportInitRequest'
     | 'MoneroKeyImageExportInitAck'
-    | 'MoneroKeyImageSyncStepRequest'
     | 'MoneroKeyImageSyncStepAck'
-    | 'MoneroKeyImageSyncFinalRequest'
     | 'MoneroKeyImageSyncFinalAck'
     | 'MoneroGetTxKeyAck'
     | 'MoneroLiveRefreshStartAck'
@@ -887,6 +916,7 @@ export type WireOutMessage =
     | 'SolanaPublicKey'
     | 'SolanaAddress'
     | 'SolanaTxSignature'
+    | 'SolanaMessageSignature'
     | 'StellarAddress'
     | 'StellarTxOpRequest'
     | 'StellarSignedTx'
@@ -905,7 +935,16 @@ export type WireOutMessage =
     | 'ThpEndResponse'
     | 'TronAddress'
     | 'TronContractRequest'
-    | 'TronSignature';
+    | 'TronSignature'
+    | 'WARDAddPendingAck'
+    | 'WARDCommitCandidateAck'
+    | 'WARDConfirmCommitAck'
+    | 'WARDSyncAck'
+    | 'WARDIngestAttestationAck'
+    | 'WARDListPendingEditsAck'
+    | 'WARDReconcileAck'
+    | 'WARDLookupAck'
+    | 'WARDDebugSetRootAck';
 
 export type MessageKey = keyof MessageType;
 

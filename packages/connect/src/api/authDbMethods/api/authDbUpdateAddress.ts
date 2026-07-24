@@ -7,7 +7,9 @@ import {
     generateMerkleProof,
     generateNonMembershipProof,
 } from '@trezor/authdb';
-import type { AuthLabelEntry } from '@trezor/authdb';
+import type { AuthLabelEntry, TreeState } from '@trezor/authdb';
+// DEV/TEST-ONLY debug WM signer (stands in for the WARD Manager); see @trezor/authdb/mocks.
+import { ZERO_MAC_HEX, signWardUpdate, signWmAttestation } from '@trezor/authdb/src/mocks';
 import type { MethodPermission } from '@trezor/connect-common';
 import { AuthDbUpdateAddressSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
@@ -23,6 +25,69 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
     'authDbUpdateAddress',
     AuthDbUpdateAddressSchema
 > {
+    private async bootstrapWardMvpOnly(
+        cmd: ReturnType<ReturnType<typeof this.getDevice>['getCommands']>,
+        walletId: string,
+        treeState: TreeState | null,
+        vlog: (...m: unknown[]) => void,
+    ) {
+        const counter = treeState?.counter ?? 0;
+        const mac = treeState?.mac;
+        const root = treeState?.root;
+
+        // MVP only: the device-side queue/apply split is not implemented yet, so the
+        // high-level dbchange flow bootstrap-syncs the device to the host's current
+        // tree state immediately before the authenticated WARD write round.
+        vlog('MVP bootstrap before device apply', {
+            counter,
+            root: root ?? '(none — empty tree)',
+            mac: mac ?? '(none)',
+        });
+
+        vlog('-> WARDSync (device)');
+        const sync = await cmd.typedCall('WARDSync', 'WARDSyncAck', {});
+        const { nonce, version, wallet_id: deviceWalletId } = sync.message;
+        vlog('<- WARDSyncAck', { nonce, version, wallet_id: deviceWalletId });
+
+        if (deviceWalletId === undefined) {
+            throw ERRORS.TypedError(
+                'Runtime',
+                'authDbUpdateAddress: device did not return a wallet_id for the sync round',
+            );
+        }
+        if (deviceWalletId !== walletId) {
+            throw ERRORS.TypedError(
+                'Runtime',
+                `authDbUpdateAddress: device wallet_id (${deviceWalletId}) does not match requested walletId (${walletId})`,
+            );
+        }
+
+        const macForSig = mac ?? ZERO_MAC_HEX;
+        const wmSignature = signWmAttestation(deviceWalletId, nonce, counter, macForSig);
+
+        vlog('-> WARDIngestAttestation (device)');
+        const ingest = await cmd.typedCall('WARDIngestAttestation', 'WARDIngestAttestationAck', {
+            counter,
+            ...(mac !== undefined && { mac }),
+            wm_signature: wmSignature,
+        });
+        vlog('<- WARDIngestAttestationAck', {
+            counter: ingest.message.counter,
+            wallet_id: ingest.message.wallet_id,
+        });
+
+        vlog('-> WARDReconcile (device)');
+        const reconcile = await cmd.typedCall('WARDReconcile', 'WARDReconcileAck', {
+            ...(root !== undefined && { root }),
+        });
+        vlog('<- WARDReconcileAck', {
+            counter: reconcile.message.counter,
+            new_root: reconcile.message.new_root,
+            wallet_id: reconcile.message.wallet_id,
+            root_mac: reconcile.message.root_mac,
+        });
+    }
+
     constructor(message: MethodMessage<'authDbUpdateAddress'>) {
         const { payload } = message;
         Assert(AuthDbUpdateAddressSchema, payload);
@@ -136,8 +201,14 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
         });
 
         const cmd = this.getDevice().getCommands();
-        vlog('-> AuthDbUpdateLeaf (device)');
-        const response = await cmd.typedCall('AuthDbUpdateLeaf', 'AuthDbUpdateLeafResponse', {
+        await this.bootstrapWardMvpOnly(cmd, walletId, currentTreeState, vlog);
+
+        // MVP only: there is no dedicated ApplyPending RPC yet, so the authenticated
+        // apply step still uses WARDAddPending directly after the bootstrap-sync above.
+        // The rest of the write round remains: AddPending -> CommitCandidate ->
+        // WM signs candidate -> ConfirmCommit.
+        vlog('-> WARDAddPending (device)');
+        const setEntry = await cmd.typedCall('WARDAddPending', 'WARDAddPendingAck', {
             address: utf8Hex(address),
             old_value: oldValueHex,
             new_value: newValueHex,
@@ -151,25 +222,63 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
                     witness_counter: nonMembership.witnessCounter!,
                 }),
         });
-        vlog('<- AuthDbUpdateLeafResponse', {
-            counter: response.message.counter,
-            new_root: response.message.new_root,
-            wallet_id: response.message.wallet_id,
-            mac: response.message.mac,
+        vlog('<- WARDAddPendingAck', {
+            counter: setEntry.message.counter,
+            wallet_id: setEntry.message.wallet_id,
         });
+
+        vlog('-> WARDCommitCandidate (device)');
+        const commit = await cmd.typedCall('WARDCommitCandidate', 'WARDCommitCandidateAck', {});
+        vlog('<- WARDCommitCandidateAck', {
+            counter: commit.message.counter,
+            new_root: commit.message.new_root,
+            mac: commit.message.mac,
+            wallet_id: commit.message.wallet_id,
+        });
+
+        const candidateCounter = commit.message.counter;
+        const candidateMac = commit.message.mac;
+        const deviceWalletId = commit.message.wallet_id;
 
         // Defense in depth: the caller-supplied walletId scopes local storage, but only the
         // device's own echoed wallet_id proves which seed+passphrase was actually unlocked.
-        if (response.message.wallet_id !== undefined && response.message.wallet_id !== walletId) {
+        // Check it before signing, since the signature binds to this wallet_id.
+        if (deviceWalletId !== undefined && deviceWalletId !== walletId) {
             vlog('REJECT wallet_id mismatch', {
-                deviceWalletId: response.message.wallet_id,
+                deviceWalletId,
                 requestedWalletId: walletId,
             });
             throw ERRORS.TypedError(
                 'Runtime',
-                `authDbUpdateAddress: device wallet_id (${response.message.wallet_id}) does not match requested walletId (${walletId})`,
+                `authDbUpdateAddress: device wallet_id (${deviceWalletId}) does not match requested walletId (${walletId})`,
             );
         }
+        if (deviceWalletId === undefined) {
+            throw ERRORS.TypedError(
+                'Runtime',
+                'authDbUpdateAddress: device did not return a wallet_id for the WARD candidate',
+            );
+        }
+
+        // WM final attestation over the exact committed candidate. The debug QM signer
+        // stands in for the WARD Manager here; a real provisioned WM key is a follow-up.
+        // A candidate that empties the tree has no root MAC, so the signature is over the
+        // all-zero MAC and no `mac` field is sent to Finalize.
+        const macForSig = candidateMac ?? ZERO_MAC_HEX;
+        const qmSignature = signWardUpdate(deviceWalletId, candidateCounter, macForSig);
+
+        vlog('-> WARDConfirmCommit (device)');
+        const response = await cmd.typedCall('WARDConfirmCommit', 'WARDConfirmCommitAck', {
+            counter: candidateCounter,
+            ...(candidateMac !== undefined && { mac: candidateMac }),
+            qm_signature: qmSignature,
+        });
+        vlog('<- WARDConfirmCommitAck', {
+            counter: response.message.counter,
+            new_root: response.message.new_root,
+            wallet_id: response.message.wallet_id,
+            root_mac: response.message.root_mac,
+        });
 
         // The device already committed this update by the time we reach this point — a
         // failure below means the local cache is now stale, not that the operation failed.
@@ -183,7 +292,7 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
                 await provider.setTreeState(walletId, {
                     root: response.message.new_root,
                     counter: response.message.counter,
-                    mac: response.message.mac,
+                    mac: response.message.root_mac,
                 });
             }
             vlog('local cache updated (upsert + setTreeState)');

@@ -125,13 +125,13 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
         let response;
         if (isMember) {
             const proof = generateMerkleProof(rows, address, networkSymbol);
-            vlog('-> AuthDbLookup (membership)', {
+            vlog('-> WARDLookup (membership)', {
                 value: bytesToHex(entryToValueBytes(networkSymbol, entry)),
                 counter: entry.counter,
                 proofLen: proof.length,
                 proof,
             });
-            response = await cmd.typedCall('AuthDbLookup', 'AuthDbLookupResponse', {
+            response = await cmd.typedCall('WARDLookup', 'WARDLookupAck', {
                 address: utf8Hex(address),
                 value: bytesToHex(entryToValueBytes(networkSymbol, entry)),
                 proof,
@@ -139,7 +139,7 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
             });
         } else {
             const nonMembership = generateNonMembershipProof(rows, address, networkSymbol);
-            vlog('-> AuthDbLookup (non-membership)', {
+            vlog('-> WARDLookup (non-membership)', {
                 proofLen: nonMembership.proof.length,
                 proof: nonMembership.proof,
                 witnessAddress: nonMembership.witnessAddress,
@@ -148,7 +148,7 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
                     : null,
                 witnessCounter: nonMembership.witnessCounter ?? null,
             });
-            response = await cmd.typedCall('AuthDbLookup', 'AuthDbLookupResponse', {
+            response = await cmd.typedCall('WARDLookup', 'WARDLookupAck', {
                 address: utf8Hex(address),
                 proof: nonMembership.proof,
                 ...(nonMembership.witnessAddress !== null && {
@@ -158,7 +158,7 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
                 }),
             });
         }
-        vlog('<- AuthDbLookupResponse', {
+        vlog('<- WARDLookupAck', {
             valid: response.message.valid,
             membership: response.message.membership,
             counter: response.message.counter,

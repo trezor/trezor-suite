@@ -158,6 +158,14 @@ export const ProtobufManager = () => {
     const messages: Record<string, DescMessage | undefined> = {};
     const extensions: Record<string, DescExtension | undefined> = {};
     const enums: Record<string, DescEnum | undefined> = {};
+    const messageNameAliases: Record<string, string> = {
+        WARDSetEntry: 'WARDAddPending',
+        WARDSetEntryAck: 'WARDAddPendingAck',
+        WARDInitSyncRound: 'WARDSync',
+        WARDInitSyncRoundAck: 'WARDSyncAck',
+        WARDMergeState: 'WARDReconcile',
+        WARDMergeStateAck: 'WARDReconcileAck',
+    };
 
     const load = (modules: Record<string, AnyDesc> | Record<string, AnyDesc>[]) => {
         if (Array.isArray(modules)) {
@@ -258,15 +266,16 @@ export const ProtobufManager = () => {
             );
         }
 
-        const messageName = matchedMessageType.name
+        const rawMessageName = matchedMessageType.name
             .replace('ThpMessageType_', '')
             .replace('MessageType_', '');
+        const messageName = messageNameAliases[rawMessageName] ?? rawMessageName;
         const schemaKey = messageName + 'Schema';
         const schema = messages[schemaKey];
 
         if (!schema) {
             throw new Error(
-                `Schema "${messageName}" (from ID ${nameOrId}) not found. Available: ${Object.keys(messages).length}`,
+                `Schema "${messageName}" (from ID ${nameOrId}, enum ${rawMessageName}) not found. Available: ${Object.keys(messages).length}`,
             );
         }
 

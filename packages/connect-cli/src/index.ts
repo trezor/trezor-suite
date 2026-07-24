@@ -167,19 +167,16 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
         await TrezorConnect.updateConnectSettings({ authLabelLookupProvider: db });
     }
 
-    // Resolve walletId to the device's real wallet_id (SLIP-21 "AUTHDB DEVICE ID").
-    // The low-level AuthDbLookup echoes it and — unlike the high-level methods — does NOT
-    // reject a wallet_id mismatch, so a throwaway probe works even while walletId is still
-    // 'default'. Without this, every high-level method rejects the device's echoed wallet_id
-    // as a mismatch. Skipped when the caller pinned --wallet-id, or when there's no device.
+    // Resolve walletId to the device's real wallet_id (RIPEMD160(SHA256(master pubkey))).
+    // WARDListPendingEdits is input-free and always echoes wallet_id regardless of tree
+    // state, so it's a safe throwaway probe. (WARDLookup can't be used for this: once the
+    // tree is non-empty it rejects a proofless query before echoing wallet_id.) Without
+    // this, every high-level method rejects the device's echoed wallet_id as a mismatch.
+    // Skipped when the caller pinned --wallet-id, or when there's no device.
     if (!walletIdExplicit && device) {
         try {
-            const probe = await TrezorConnect.authDbLookup({
-                device,
-                address: Buffer.from('__walletid_probe__').toString('hex'),
-                proof: [],
-            });
-            console.log('[walletId] authDbLookup probe raw result:', JSON.stringify(probe));
+            const probe = await TrezorConnect.authDbListPending({ device });
+            console.log('[walletId] authDbListPending probe raw result:', JSON.stringify(probe));
             if (probe.success && probe.payload.wallet_id) {
                 walletId = probe.payload.wallet_id;
                 console.log('Using device wallet_id:', walletId);
@@ -193,7 +190,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
             }
         } catch (err) {
             console.warn(
-                '[walletId] authDbLookup probe THREW:',
+                '[walletId] authDbListPending probe THREW:',
                 err instanceof Error ? `${err.name}: ${err.message}` : String(err),
             );
         }
@@ -202,18 +199,11 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
     try {
         for (const method of dbMethods) {
             if (method === 'dbinit') {
-                // qmCounter/qmSignature come from the Quota Manager (relayed here via
-                // --db-params for testing); the root + its attesting counter/mac come from
-                // the local tree_state (Evolu's role). The device verifies the QM signature,
-                // then (if a root is supplied) that counter == qm_last_counter and that the
-                // root_mac is one it produced itself.
-                const { qmCounter, qmSignature } = params;
-                if (qmCounter === undefined || !qmSignature) {
-                    console.error(
-                        'dbinit requires --db-params=\'{"qmCounter":<n>,"qmSignature":"<hex>"}\' ',
-                    );
-                    process.exit(1);
-                }
+                // WARD sync round: adopt the WM-attested checkpoint (counter, mac) and the
+                // host-held root. They come from the local tree_state (Evolu's role); an
+                // empty tree_state bootstraps at counter 0 with no root/mac. authDbInit
+                // mints the device nonce, produces the WM freshness attestation with the
+                // debug QM key, and drives IngestAttestation -> MergeState.
                 if (!device) {
                     console.error('dbinit requires a connected device');
                     process.exit(1);
@@ -221,14 +211,10 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                 const treeState = db.getTreeState(walletId);
                 const initParams: Parameters<typeof TrezorConnect.authDbInit>[0] = {
                     device,
-                    qm_counter: qmCounter,
-                    qm_signature: qmSignature,
-                    ...(treeState?.root &&
-                        treeState.mac && {
-                            root: treeState.root,
-                            counter: treeState.counter,
-                            root_mac: treeState.mac,
-                        }),
+                    counter: treeState?.counter ?? 0,
+                    walletId,
+                    ...(treeState?.root && { root: treeState.root }),
+                    ...(treeState?.mac && { mac: treeState.mac }),
                 };
                 const initResult = await TrezorConnect.authDbInit(initParams);
                 if (!initResult.success) {
@@ -327,16 +313,12 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
                     );
                     process.exit(1);
                 }
+                // authDbSetRoot now maps to the DEBUG-ONLY WARDDebugSetRoot (unauthenticated
+                // single-call root injection; rejected on production firmware). It takes only
+                // the root — the device stamps a fresh counter/mac itself.
                 const setRootParams: Parameters<typeof TrezorConnect.authDbSetRoot>[0] = {
                     device,
                     root: treeState.root,
-                    // mac is required by the wire protocol; all-zero is accepted only on
-                    // debug builds (plain unauthenticated root injection).
-                    mac: treeState.mac ?? '0'.repeat(64),
-                    ...(treeState.mac !== undefined && {
-                        wallet_id: walletId,
-                        counter: treeState.counter,
-                    }),
                 };
                 const setRootResult = await TrezorConnect.authDbSetRoot(setRootParams);
                 if (!setRootResult.success) {

@@ -57,8 +57,8 @@ describe('authDbVerifyAddress', () => {
         const result = await method.run();
 
         expect(typedCall).toHaveBeenCalledWith(
-            'AuthDbLookup',
-            'AuthDbLookupResponse',
+            'WARDLookup',
+            'WARDLookupAck',
             expect.objectContaining({ value: expect.any(String) }),
         );
         expect(result).toEqual({ isMember: true, valid: true, counter: 2, identifier: undefined });

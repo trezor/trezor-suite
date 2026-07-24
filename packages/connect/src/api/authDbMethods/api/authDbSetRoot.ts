@@ -4,18 +4,19 @@ import { createRawAuthDbMethod } from '../rawAuthDbMethod';
 
 export default createRawAuthDbMethod({
     name: 'authDbSetRoot',
-    schema: PROTO.AuthDbSetRoot,
-    info: 'Set address-database Merkle root',
+    // AuthDbSetRoot was absorbed into the WARD sync round (WARDMergeState). The only
+    // remaining single-call root install is the DEBUG-ONLY unauthenticated injection
+    // WARDDebugSetRoot (rejected on production firmware), which the public method name
+    // authDbSetRoot now maps to for test/dev seeding.
+    requestType: 'WARDDebugSetRoot',
+    responseType: 'WARDDebugSetRootAck',
+    schema: PROTO.WARDDebugSetRoot,
+    info: 'Inject an address-database Merkle root (debug-only)',
     confirmation: {
         view: 'device-management' as const,
-        label: 'Update the address-database Merkle root stored on the device?',
+        label: 'Inject the address-database Merkle root on the device (debug)?',
     },
-    buildParams: (payload: PROTO.AuthDbSetRoot) => ({
+    buildParams: (payload: PROTO.WARDDebugSetRoot) => ({
         root: payload.root,
-        // Required by the wire protocol; all-zero is accepted only on debug builds
-        // (plain unauthenticated root injection).
-        mac: payload.mac,
-        ...(payload.wallet_id !== undefined && { wallet_id: payload.wallet_id }),
-        ...(payload.counter !== undefined && { counter: payload.counter }),
     }),
 });
