@@ -37,8 +37,18 @@ export type SolanaMessageSignature = Static<typeof SolanaMessageSignature>;
 export const SolanaMessageSignature = Type.Object(
     {
         signature: Type.String(),
+        signed_data: Type.Optional(Type.String()),
     },
     { $id: 'SolanaMessageSignature' },
+);
+
+export type SolanaOffchainMessageV1 = Static<typeof SolanaOffchainMessageV1>;
+export const SolanaOffchainMessageV1 = Type.Object(
+    {
+        message: Type.String(),
+        signers: Type.Array(Type.String()),
+    },
+    { $id: 'SolanaOffchainMessageV1' },
 );
 
 export type SolanaPublicKey = Static<typeof SolanaPublicKey>;
@@ -53,8 +63,8 @@ export type SolanaSignMessage = Static<typeof SolanaSignMessage>;
 export const SolanaSignMessage = Type.Object(
     {
         address_n: Type.Array(Type.Number()),
-        message: Type.String(),
         chunkify: Type.Optional(Type.Boolean()),
+        message: SolanaOffchainMessageV1,
     },
     { $id: 'SolanaSignMessage' },
 );
@@ -102,8 +112,9 @@ export const SolanaTxSignature = Type.Object(
 export type SolanaVerifyMessage = Static<typeof SolanaVerifyMessage>;
 export const SolanaVerifyMessage = Type.Object(
     {
-        envelope: Type.String(),
         chunkify: Type.Optional(Type.Boolean()),
+        message: SolanaOffchainMessageV1,
+        signatures: Type.Array(Type.String()),
     },
     { $id: 'SolanaVerifyMessage' },
 );

@@ -70,6 +70,7 @@ export const EthereumERC7730Path = Type.Object(
     {
         path: Type.Array(Type.Number()),
         container_path: Type.Optional(EnumEthereumERC7730ContainerPath),
+        const_value: Type.Optional(Type.String()),
     },
     { $id: 'EthereumERC7730Path' },
 );

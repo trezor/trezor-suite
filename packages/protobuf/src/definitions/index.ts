@@ -106,12 +106,14 @@ import {
 } from './messages-eos';
 import {
     EthereumAddress,
+    EthereumAuth7702Signature,
     EthereumDefinitionAck,
     EthereumDefinitionRequest,
     EthereumGetAddress,
     EthereumGetPublicKey,
     EthereumMessageSignature,
     EthereumPublicKey,
+    EthereumSignAuth7702,
     EthereumSignMessage,
     EthereumSignTx,
     EthereumSignTxEIP1559,
@@ -253,6 +255,7 @@ import {
     StellarCreateAccountOp,
     StellarCreatePassiveSellOfferOp,
     StellarGetAddress,
+    StellarInvokeHostFunctionOp,
     StellarManageBuyOfferOp,
     StellarManageDataOp,
     StellarManageSellOfferOp,
@@ -262,6 +265,8 @@ import {
     StellarSetOptionsOp,
     StellarSignTx,
     StellarSignedTx,
+    StellarTxExt,
+    StellarTxExtRequest,
     StellarTxOpRequest,
 } from './messages-stellar';
 import { Telemetry, TelemetryGet } from './messages-telemetry';
@@ -496,6 +501,8 @@ export const MessageType = Type.Object(
         EthereumVerifyMessage,
         EthereumSignTypedHash,
         EthereumTypedDataSignature,
+        EthereumSignAuth7702,
+        EthereumAuth7702Signature,
         EthereumSignTypedData,
         EthereumTypedDataStructRequest,
         EthereumTypedDataStructAck,
@@ -581,6 +588,9 @@ export const MessageType = Type.Object(
         StellarBumpSequenceOp,
         StellarClaimClaimableBalanceOp,
         StellarSignedTx,
+        StellarInvokeHostFunctionOp,
+        StellarTxExtRequest,
+        StellarTxExt,
         TelemetryGet,
         Telemetry,
         TezosGetAddress,
@@ -723,6 +733,7 @@ export type WireInMessage =
     | 'EthereumSignMessage'
     | 'EthereumVerifyMessage'
     | 'EthereumSignTypedHash'
+    | 'EthereumSignAuth7702'
     | 'EthereumSignTypedData'
     | 'EthereumTypedDataStructAck'
     | 'EthereumTypedDataValueAck'
@@ -773,6 +784,8 @@ export type WireInMessage =
     | 'StellarManageDataOp'
     | 'StellarBumpSequenceOp'
     | 'StellarClaimClaimableBalanceOp'
+    | 'StellarInvokeHostFunctionOp'
+    | 'StellarTxExt'
     | 'TelemetryGet'
     | 'TezosGetAddress'
     | 'TezosGetPublicKey'
@@ -846,6 +859,7 @@ export type WireOutMessage =
     | 'EthereumDefinitionRequest'
     | 'EthereumMessageSignature'
     | 'EthereumTypedDataSignature'
+    | 'EthereumAuth7702Signature'
     | 'EthereumTypedDataStructRequest'
     | 'EthereumTypedDataValueRequest'
     | 'EvoluNode'
@@ -881,6 +895,7 @@ export type WireOutMessage =
     | 'StellarAddress'
     | 'StellarTxOpRequest'
     | 'StellarSignedTx'
+    | 'StellarTxExtRequest'
     | 'Telemetry'
     | 'TezosAddress'
     | 'TezosPublicKey'
