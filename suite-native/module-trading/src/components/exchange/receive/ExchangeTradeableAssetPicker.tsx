@@ -29,6 +29,14 @@ export const ExchangeTradeableAssetPicker = () => {
 
         if (asset.cryptoId === form.getValues('sendAsset')?.cryptoId) {
             form.setValue('sendAsset', undefined);
+            form.setValue('sendCryptoAmount', undefined, { shouldValidate: true });
+            analytics.report({
+                type: events.tradingParameterChangedEvent.name,
+                payload: {
+                    type: 'exchange',
+                    parameter: 'cryptoFrom',
+                },
+            });
         }
 
         const previousSymbol = cryptoIdToSymbol(selectedValue?.cryptoId);

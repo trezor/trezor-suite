@@ -23,6 +23,7 @@ const btc2Account = getBtcAccount({ descriptor: asAccountDescriptor('btc2legacy'
 describe('useSendAccountChangeEffect', () => {
     let store: TestStore;
     let setValue: jest.Mock;
+    let onSendAssetCleared: jest.Mock;
 
     const reducer = {
         locale: localeReducer,
@@ -36,7 +37,11 @@ describe('useSendAccountChangeEffect', () => {
     const renderUseSendAccountChangeEffect = () =>
         renderHookWithStoreProvider(
             () => {
-                useSendAccountChangeEffect(setValue, selectExchangeSelectedSendAccount);
+                useSendAccountChangeEffect(
+                    setValue,
+                    selectExchangeSelectedSendAccount,
+                    onSendAssetCleared,
+                );
             },
             { store },
         );
@@ -51,6 +56,7 @@ describe('useSendAccountChangeEffect', () => {
             },
         });
         setValue = jest.fn();
+        onSendAssetCleared = jest.fn();
     });
 
     it('should set sendAccount and sendAsset to undefined initially', () => {
@@ -59,6 +65,26 @@ describe('useSendAccountChangeEffect', () => {
         expect(setValue).toHaveBeenCalledTimes(2);
         expect(setValue).toHaveBeenCalledWith('sendAccount', undefined);
         expect(setValue).toHaveBeenCalledWith('sendAsset', undefined);
+    });
+
+    it('should not fire onSendAssetCleared on initial mount when there was no account', () => {
+        renderUseSendAccountChangeEffect();
+
+        expect(onSendAssetCleared).not.toHaveBeenCalled();
+    });
+
+    it('should fire onSendAssetCleared when a previously selected account disappears', () => {
+        renderUseSendAccountChangeEffect();
+        act(() => {
+            store.dispatch(tradingExchangeActions.setTradingAccountKey(btc1Account.key));
+        });
+
+        onSendAssetCleared.mockClear();
+        act(() => {
+            store.dispatch(tradingExchangeActions.setTradingAccountKey(undefined));
+        });
+
+        expect(onSendAssetCleared).toHaveBeenCalledTimes(1);
     });
 
     it('should set sendAccount when account is changed in store', () => {

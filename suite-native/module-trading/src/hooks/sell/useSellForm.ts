@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import type { SellFiatTrade } from 'invity-api';
 
@@ -20,6 +20,7 @@ import {
     selectSellAmountLimits,
     selectSellFormDefaultValues,
     selectSellSelectedSendAccount,
+    sellActions,
 } from '@suite-native/trading-state';
 import { type SellFormType, type SellFormValues } from '@suite-native/trading-types';
 
@@ -144,8 +145,14 @@ export const useSellForm = (): SellFormType => {
     });
 
     const { control } = form;
+    const dispatch = useDispatch();
 
-    useSendAccountChangeEffect(form.setValue, selectSellSelectedSendAccount);
+    const onSendAssetCleared = useCallback(() => {
+        form.setValue('cryptoStringAmount', undefined, { shouldValidate: true });
+        dispatch(sellActions.sendAssetChanged());
+    }, [dispatch, form]);
+
+    useSendAccountChangeEffect(form.setValue, selectSellSelectedSendAccount, onSendAssetCleared);
     useSendAccountAssetBalance({
         control,
         setBalance,

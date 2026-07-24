@@ -88,14 +88,14 @@ const waitForPromiseAndReport = async (
 };
 
 const useExchangeQuotesThunk = (
-    getValues: ExchangeFormType['getValues'],
+    { getValues, control }: ExchangeFormType,
     requestState: ExchangeQuoteRequestState,
     quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const dispatch = useDispatch();
-    const asset = getValues('sendAsset');
+    const asset = useWatch({ control, name: 'sendAsset' });
     const symbol = getSymbolFromTradeableAsset(asset);
     const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>
         selectIsAmountInSats(state, symbol),
@@ -176,12 +176,12 @@ const useExchangeQuotesInvalidator = (
     });
 };
 
-export const useExchangeQuotes = ({ getValues, control }: ExchangeFormType) => {
+export const useExchangeQuotes = (form: ExchangeFormType) => {
     const debounce = useDebounce();
     const promiseRef = useRef<AbortablePromise | undefined>(undefined);
 
-    const requestState = useExchangeQuoteRequestState(control);
+    const requestState = useExchangeQuoteRequestState(form.control);
 
     useExchangeQuotesInvalidator(requestState.isFetchAllowed, promiseRef, debounce);
-    useExchangeQuotesThunk(getValues, requestState, promiseRef, debounce);
+    useExchangeQuotesThunk(form, requestState, promiseRef, debounce);
 };

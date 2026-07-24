@@ -4,6 +4,7 @@ import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils';
 import { type TestStore, fireEvent, screen } from '@suite-native/test-utils-store';
+import { ethAsset } from '@suite-native/trading-fixtures';
 import { buyActions } from '@suite-native/trading-state';
 import { type BuyFormType } from '@suite-native/trading-types';
 import { FirmwareType } from '@trezor/connect';
@@ -84,15 +85,35 @@ describe('BuyTradeableAssetPicker', () => {
             expect(getByLabelText('USDC')).toBeTruthy();
         });
 
-        it('should apply buy asset change effects on item press', () => {
+        it('should apply buy asset change effects on cross-network item press', async () => {
             form.setValue('cryptoValue', '0.1');
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { getByLabelText } = renderTradeableAssetPicker();
+            const { getByLabelText } = await renderTradeableAssetPicker();
 
             fireEvent.press(getByLabelText('Bitcoin'));
 
             expect(form.getValues('cryptoValue')).toBeUndefined();
             expect(dispatchSpy).toHaveBeenCalledWith(buyActions.assetChanged());
+            expect(reportMock).toHaveBeenCalledWith({
+                type: events.tradingParameterChangedEvent.name,
+                payload: {
+                    type: 'buy',
+                    parameter: 'cryptoTo',
+                },
+            });
+        });
+
+        it('should dispatch assetTokenChanged when switching between assets on the same network', async () => {
+            form.setValue('asset', ethAsset);
+            form.setValue('cryptoValue', '0.1');
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const { getByLabelText } = await renderTradeableAssetPicker();
+
+            fireEvent.press(getByLabelText('USDC'));
+
+            expect(form.getValues('cryptoValue')).toBeUndefined();
+            expect(dispatchSpy).toHaveBeenCalledWith(buyActions.assetTokenChanged());
+            expect(dispatchSpy).not.toHaveBeenCalledWith(buyActions.assetChanged());
             expect(reportMock).toHaveBeenCalledWith({
                 type: events.tradingParameterChangedEvent.name,
                 payload: {

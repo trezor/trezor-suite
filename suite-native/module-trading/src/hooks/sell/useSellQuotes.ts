@@ -105,13 +105,13 @@ const useSellQuotesInvalidator = (
 };
 
 const useSellQuotesThunk = (
-    getValues: SellFormType['getValues'],
+    { getValues, control }: SellFormType,
     requestState: SellQuoteRequestState,
     quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
     const dispatch = useDispatch();
-    const asset = getValues('sendAsset');
+    const asset = useWatch({ control, name: 'sendAsset' });
     const symbol = getSymbolFromTradeableAsset(asset);
     const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>
         selectIsAmountInSats(state, symbol),
@@ -182,5 +182,5 @@ export const useSellQuotes = (form: SellFormType) => {
     const requestState = useSellQuoteRequestState(form);
 
     useSellQuotesInvalidator(requestState.isFetchAllowed, promiseRef, debounce);
-    useSellQuotesThunk(form.getValues, requestState, promiseRef, debounce);
+    useSellQuotesThunk(form, requestState, promiseRef, debounce);
 };
