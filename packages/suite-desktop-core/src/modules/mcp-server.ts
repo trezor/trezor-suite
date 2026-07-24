@@ -359,7 +359,7 @@ const MCP_TOOLS = [
             'Send a cryptocurrency transaction using the Trezor device. ' +
             'Just provide "to" address, "value", and "coin" — everything else is automatic. ' +
             'For Bitcoin/UTXO chains (btc, ltc, bch, doge, zec): ' +
-            'handled by composeTransaction — account, UTXOs, and fees are resolved by Suite. ' +
+            'handled by sendTransaction — account, UTXOs, and fees are resolved by Suite. ' +
             'For Ethereum/EVM chains (eth, pol, bsc, arb, base, op, avax, rhc, etc): ' +
             'nonce and EIP-1559 gas fees are auto-filled; use "accountIndex" to select account. ' +
             'For ERC-20 token transfers: set "tokenContract" and "tokenDecimals" — the server encodes the transfer calldata automatically. ' +
@@ -825,7 +825,7 @@ const handleXrpSend = async (
 };
 
 /**
- * Handle BTC/UTXO transaction via a single composeTransaction call with push=true.
+ * Handle BTC/UTXO transaction via a single sendTransaction call with push=true.
  * TrezorConnect handles everything internally: account discovery, fee estimation,
  * UTXO selection, fee level selection, signing, and broadcasting.
  */
@@ -843,7 +843,7 @@ const handleUtxoSend = (
         });
     }
 
-    return callPopup(sendPopupCall, 'composeTransaction', {
+    return callPopup(sendPopupCall, 'sendTransaction', {
         outputs: [
             {
                 type: 'payment',
@@ -897,7 +897,7 @@ const handleSendTransaction = async (
             return autoBroadcast(sendPopupCall, coin, signResult, params.broadcast !== false);
         }
 
-        // Otherwise, single composeTransaction call — TrezorConnect handles everything
+        // Otherwise, single sendTransaction call — TrezorConnect handles everything
         return handleUtxoSend(params, sendPopupCall, coin);
     }
 

@@ -50,6 +50,7 @@ export { default as requestLogin } from './requestLogin';
 export { default as resetDevice } from './resetDevice';
 export { default as loadDevice } from './loadDevice';
 export { default as selectAccount } from './selectAccount';
+export { default as sendTransaction } from './sendTransaction';
 export { default as setBrightness } from './setBrightness';
 export { default as setBusy } from './setBusy';
 export { default as signMessage } from './signMessage';

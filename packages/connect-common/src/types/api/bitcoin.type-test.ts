@@ -1,4 +1,8 @@
-import type { PrecomposedResult, TrezorConnectPrivilegedAPI as TrezorConnect } from '../../index';
+import type {
+    PrecomposedResult,
+    SignedTransaction,
+    TrezorConnectPrivilegedAPI as TrezorConnect,
+} from '../../index';
 import { asDeviceUniquePath } from '../../index';
 
 export const getAddress = async (api: TrezorConnect) => {
@@ -497,17 +501,22 @@ export const pushTransaction = async (api: TrezorConnect) => {
     api.pushTransaction({ coin: 'btc' });
 };
 
-export const composeTransaction = async (api: TrezorConnect) => {
-    // Method with mixed params and mixed responses
-
-    const compose = await api.composeTransaction({
+export const sendTransaction = async (api: TrezorConnect) => {
+    const send = await api.sendTransaction({
         outputs: [],
         coin: 'btc',
+        push: true,
+        // @ts-expect-error
+        account: null as any,
     });
-    if (compose.success) {
-        compose.payload.serializedTx.toLowerCase();
-    }
 
+    if (send.success) {
+        const a: SignedTransaction = send.payload;
+        void a;
+    }
+};
+
+export const composeTransaction = async (api: TrezorConnect) => {
     const precompose = await api.composeTransaction({
         outputs: [],
         account: {
@@ -521,6 +530,8 @@ export const composeTransaction = async (api: TrezorConnect) => {
         },
         feeLevels: [{ feePerUnit: '1' }],
         coin: 'btc',
+        // @ts-expect-error
+        push: true,
     });
 
     if (precompose.success) {

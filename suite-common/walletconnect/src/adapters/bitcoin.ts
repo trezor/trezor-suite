@@ -149,7 +149,6 @@ const bitcoinRequestThunk = createThunk<
             const precomposedTransaction = await TrezorConnect.composeTransaction({
                 outputs,
                 coin: account.symbol,
-                identity: getAccountIdentity(account),
                 account: {
                     path: account.path,
                     addresses: account.addresses!,
