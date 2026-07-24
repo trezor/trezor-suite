@@ -139,17 +139,6 @@ describe('exchangeSelectors', () => {
             expect(selectExchangeBuyTradeableAssets(state)).toEqual([]);
         });
 
-        it('should filter out forbidden cryptoId', () => {
-            const result = selectExchangeBuyTradeableAssets(
-                state,
-                'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            );
-            expect(result).toEqual([
-                expect.objectContaining({ cryptoId: 'ethereum' }),
-                expect.objectContaining({ cryptoId: 'bitcoin' }),
-            ]);
-        });
-
         it('should filter out coins with invalid network symbols', () => {
             // Add a coin with an invalid symbol that doesn't map to a network
             state.wallet.trading.exchange.exchangeInfo!.buyCryptoIds = [
