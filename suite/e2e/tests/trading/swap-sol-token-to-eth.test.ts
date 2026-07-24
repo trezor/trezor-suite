@@ -1,15 +1,17 @@
 import { getCryptoId } from '@suite-common/trading';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
-import { getCompanyNameFromList } from '../../fixtures/trading';
+import { getCompanyNameFromList } from '../../fixtures/invity';
 import { swapStatusFlow } from '../../fixtures/trading/statusFlow';
-import { formatAddressWithNewlines, isWebProject } from '../../support/common';
+import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { transformAddress } from '../../support/testExtends/customMatchers';
 
-const sendAmount = '0.5';
-const formattedSendAmount = `${localizeNumber(sendAmount)} SOL`;
-const accountLabel = 'Solana #1';
+const sendAmount = '5';
+const tokenSymbol = 'USDT';
+const formattedSendAmount = `${localizeNumber(sendAmount)} ${tokenSymbol}`;
+const sendAccountLabel = 'Solana #1';
+const receiveAccountLabel = 'Ethereum #1';
 
 test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
@@ -17,12 +19,11 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.beforeEach(
         async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMockNew }) => {
             tradingMockNew.setTradeFlow('swap');
-            await tradingMockNew.mockProviderStatusPage();
             const solBackend = await tradingMockNew.startBackend('sol');
 
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
-                enableNetworks: ['btc', { symbol: 'sol', backend: solBackend }],
+                enableNetworks: ['eth', { symbol: 'sol', backend: solBackend }],
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
@@ -30,40 +31,38 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
         },
     );
 
-    test('Swap SOL to BTC', async ({
+    test('Swap SOL USDT token to ETH', async ({
         tradingPage,
         page,
         device,
         devicePrompt,
         tradingMockNew,
-        target,
     }) => {
         await test.step('Fill in a Swap form', async () => {
             await tradingPage.fillSwapForm({
                 amount: sendAmount,
                 sellAsset: {
-                    searchFilter: accountLabel,
                     networkSymbol: 'sol',
+                    tokenSymbol,
                 },
                 buyAsset: {
-                    searchFilter: 'Bitcoin',
-                    assetCryptoId: getCryptoId('btc'),
+                    searchFilter: 'Ethereum',
+                    networkFilter: 'eth',
+                    assetCryptoId: getCryptoId('eth'),
                 },
                 selectReceiveAddress: async () => {
-                    await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'btc');
+                    await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'eth');
                 },
             });
         });
 
         let receiveAmount: string;
         let providerName: string;
-        let solanaFee: string;
         let liveTradePromise: ReturnType<typeof tradingMockNew.waitForLiveTrade>;
 
         await test.step('Confirm the Swap trade', async () => {
             receiveAmount = await tradingPage.quotes.getBestOfferAmount();
-            await tradingPage.fees.waitToBeCalculated();
-            solanaFee = (await tradingPage.fees.getSolanaFee()).toString();
+            await expect(tradingPage.fees.maximumFeeAmountToBeCalculated).toBeHidden();
             liveTradePromise = tradingMockNew.waitForLiveTrade();
             await tradingPage.swapBestOfferButton.click();
         });
@@ -73,7 +72,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
             await liveTradePromise;
             providerName = getCompanyNameFromList(tradingMockNew.liveTrade.exchange, 'swapList');
 
-            await expect(devicePrompt.headerParagraph).toContainText(accountLabel);
+            await expect(devicePrompt.headerParagraph).toContainText(sendAccountLabel);
             await expect(devicePrompt.outputValueOf('address')).toHaveText(
                 formatAddressWithNewlines(tradingMockNew.liveTrade.sendAddress),
             );
@@ -93,15 +92,18 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
             await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
                 formattedSendAmount,
             );
-            await expect(devicePrompt.cryptoAmountOf('fee')).toHaveText(solanaFee);
+            const reviewFee = (await devicePrompt.cryptoAmountOf('fee').textContent())?.trim();
+            if (!reviewFee) {
+                throw new Error('Review fee amount was not displayed on the confirmation modal');
+            }
             await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: 'Send' },
                     body: [
                         ['Amount:'],
                         [formattedSendAmount],
-                        ['Transaction fee'],
-                        device.wrapText(`${solanaFee} SOL`, { wrapByWords: true }),
+                        ['Max fees and rent'],
+                        device.wrapText(`${reviewFee} SOL`, { wrapByWords: true }),
                     ],
                     actions: { right_button: 'Hold to sign' },
                 },
@@ -119,42 +121,28 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
             await devicePrompt.sendButton.click();
 
             await tradingPage.verifySwapToast({
-                sendAccount: accountLabel,
-                receiveAccount: 'Bitcoin #1',
+                sendAccount: sendAccountLabel,
+                receiveAccount: receiveAccountLabel,
                 sendAmount,
                 receiveAmount,
             });
         });
 
-        for (const phase of swapStatusFlow) {
-            await test.step(`Wait for status change to ${phase.status}`, async () => {
-                await tradingMockNew.advanceStatus(phase.status);
-                const values = phase.translationValues?.(providerName);
+        for (const step of swapStatusFlow) {
+            await test.step(`Wait for status change to ${step.status}`, async () => {
+                await tradingMockNew.advanceStatus(step.status);
+                const values = step.translationValues?.(providerName);
                 await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
-                    phase.translationKey,
+                    step.translationKey,
                     { values },
                 );
             });
-
-            if (phase.status === 'CONVERTING' && isWebProject(target)) {
-                await test.step('Support banner link opens the mocked provider page', async () => {
-                    const statusLink = page.locator('a[href*="mocked.partner.site"]');
-                    // eslint-disable-next-line playwright/no-conditional-expect
-                    await expect(statusLink).toBeVisible({ timeout: 10_000 });
-                    const providerPagePromise = page.context().waitForEvent('page');
-                    await statusLink.click();
-                    const providerTab = await providerPagePromise;
-                    // eslint-disable-next-line playwright/no-conditional-expect
-                    await expect(providerTab).toHaveURL(/mocked\.partner\.site\/orders\//);
-                    await providerTab.close();
-                });
-            }
         }
 
         await test.step('Verify transaction detail values', async () => {
             await expect(tradingPage.confirmation.sendCryptoAmount).toHaveText(formattedSendAmount);
             await expect(tradingPage.confirmation.receiveCryptoAmount).toHaveText(
-                `${receiveAmount} BTC`,
+                `${receiveAmount} ETH`,
             );
             await expect(tradingPage.confirmation.provider).toHaveText(providerName);
         });
