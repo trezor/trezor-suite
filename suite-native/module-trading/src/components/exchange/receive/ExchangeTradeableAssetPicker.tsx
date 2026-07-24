@@ -1,62 +1,39 @@
-import { useDispatch } from 'react-redux';
-
-import { useServices } from '@suite-common/dependency-injection';
-import { cryptoIdToSymbol } from '@suite-common/trading';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { HStack } from '@suite-native/atoms';
 import { exchangeActions } from '@suite-native/trading-state';
-import { type TradeableAsset } from '@suite-native/trading-types';
 
 import { ExchangeReceiveAmountInput } from './ExchangeReceiveAmountInput';
 import { ExchangeTradeableAssetsSheet } from './ExchangeTradeableAssetsSheet';
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
+import { useTradeableAssetChange } from '../../../hooks/general/form/useTradeableAssetChange';
 import { useSheetControls } from '../../../hooks/general/useSheetControls';
 import { SelectTradeableAssetButton } from '../../general/SelectTradeableAssetButton';
 
 const ASSET_PICKER_TEST_ID = '@trading/exchange/asset-receive-button';
 
+// Selecting a receive asset that equals the send asset clears the send side. The receive change
+// action dispatched afterwards already resets a superset of the send state, so no counterpart
+// action is needed here.
+const RECEIVE_ASSET_COLLISION = {
+    counterpartAssetField: 'sendAsset',
+    counterpartAmountField: 'sendCryptoAmount',
+    counterpartAnalyticsParameter: 'cryptoFrom',
+} as const;
+
 export const ExchangeTradeableAssetPicker = () => {
-    const dispatch = useDispatch();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
     const form = useExchangeFormContext();
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
         useSheetControls(form, 'receiveAsset');
 
-    const handleAssetSelect = (asset: TradeableAsset) => {
-        if (asset.cryptoId === selectedValue?.cryptoId) {
-            return;
-        }
-
-        if (asset.cryptoId === form.getValues('sendAsset')?.cryptoId) {
-            form.setValue('sendAsset', undefined);
-            form.setValue('sendCryptoAmount', undefined, { shouldValidate: true });
-            analytics.report({
-                type: events.tradingParameterChangedEvent.name,
-                payload: {
-                    type: 'exchange',
-                    parameter: 'cryptoFrom',
-                },
-            });
-        }
-
-        const previousSymbol = cryptoIdToSymbol(selectedValue?.cryptoId);
-        const symbol = cryptoIdToSymbol(asset.cryptoId);
-
-        setSelectedValue(asset);
-
-        dispatch(
-            previousSymbol === symbol
-                ? exchangeActions.receiveTokenChanged()
-                : exchangeActions.receiveAssetChanged(),
-        );
-        analytics.report({
-            type: events.tradingParameterChangedEvent.name,
-            payload: {
-                type: 'exchange',
-                parameter: 'cryptoTo',
-            },
-        });
-    };
+    const handleAssetSelect = useTradeableAssetChange({
+        form,
+        tradingType: 'exchange',
+        selectedValue,
+        setSelectedValue,
+        analyticsParameter: 'cryptoTo',
+        getAssetChangedAction: exchangeActions.receiveAssetChanged,
+        getAssetTokenChangedAction: exchangeActions.receiveTokenChanged,
+        collision: RECEIVE_ASSET_COLLISION,
+    });
 
     return (
         <>
