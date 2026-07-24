@@ -3,16 +3,6 @@ import { Type } from '@sinclair/typebox';
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ParamsTable } from '../../../components/ParamsTable';
-import composeTransaction from '../../../data/methods/bitcoin/composeTransaction';
-
-<ApiPlayground options={[{ title: 'composeTransaction', legacyConfig: composeTransaction[0] }]} />
-
-export const RequestSchema = Type.Object({
-    outputs: Type.Array(Type.Object({}, { $id: 'Output' })),
-    coin: Type.String(),
-    push: Type.Optional(Type.Boolean()),
-    sequence: Type.Optional(Type.Number()),
-});
 
 export const PrecomposeSchema = Type.Object({
     outputs: Type.Array(Type.Object({}, { $id: 'Output' })),
@@ -33,7 +23,6 @@ export const PrecomposeSchema = Type.Object({
 export const paramDescriptions = {
     outputs: 'Array of output objects described [below](#accepted-output-objects)',
     coin: 'determines the network definition. Coin `shortcut` (a `CoinSymbol`, e.g. `btc`) is used — see [supported coins](/details/coins) for every accepted value.',
-    push: 'determines if composed transaction will be broadcasted into blockchain network. Default is set to false.',
     sequence: 'transaction input field used in RBF or locktime transactions',
     account:
         'containing essential data, partial result of [getAccountInfo method](../common/getAccountInfo#result)',
@@ -48,34 +37,15 @@ export const paramDescriptions = {
 
 This method works only for `Bitcoin` and `Bitcoin-like` coins.
 
-Can be used in two different ways and returned result depends on used parameters.
-
-## Requests a payment to a set of given outputs.
-
-An automated payment process separated in to following steps:
-
-1. Account discovery for requested coin is performed and the user is asked for source account selection. [[1]](#additional-notes)
-2. User is asked for fee level selection.
-3. Transaction is calculated, change output is added automatically if needed. [[2]](#additional-notes)
-4. Signing transaction with Trezor, user is asked for confirmation on device.
-
-Returned response is a signed transaction in hexadecimal format same as in [signTransaction method](signTransaction#result).
-
-### Params:
-
-<CommonParamsLink />
-
-<ParamsTable schema={RequestSchema} descriptions={paramDescriptions} />
-
-## Precompose, prepare transaction to be signed by Trezor.
-
-Skip first two steps of `payment request` (described above) by providing `account` and `feeLevels` params and perform **only** transaction calculation. [[2]](#additional-notes)
+Prepare transaction to be signed by Trezor by providing `account` and `feeLevels` params and perform **only** transaction calculation. [[1]](#additional-notes)
 
 The result, internally called [`PrecomposedTransaction`](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/bitcoin/composeTransaction.ts) is a set of params that can be used in [signTransaction method](signTransaction.md#params) afterwards.
 
-This useful for the quick preparation of multiple variants for the same transaction using different fee levels or using incomplete data (like missing output addresses just to calculate fee)
+This is useful for the quick preparation of multiple variants for the same transaction using different fee levels or using incomplete data (like missing output addresses just to calculate fee).
 
 _Device and backend connection is not required for this case since all data are provided._
+
+For an interactive flow that includes account discovery, fee selection, and signing, see [sendTransaction](sendTransaction).
 
 ### Params:
 
@@ -94,55 +64,13 @@ _Device and backend connection is not required for this case since all data are 
 - `opreturn` - [read more](https://trezor.io/learn/a/use-op_return-in-trezor-suite-app)
     - `type` - _required_ with `opreturn` value
     - `dataHex` - _required_ `hexadecimal string` with arbitrary data
-- `payment-noaddress` - incomplete output, target address is not known yet. used only in precompose
+- `payment-noaddress` - incomplete output, target address is not known yet
     - `type` - _required_ with `payment-noaddress` value
     - `amount` - _required_ `string` value to send in satoshi
-- `send-max-noaddress` - incomplete output, target address is not known yet. used only in precompose
+- `send-max-noaddress` - incomplete output, target address is not known yet
     - `type` - _required_ with `send-max-noaddress` value
 
-## Examples
-
-### Payment example
-
-Send 0.002 BTC to "18WL2iZKmpDYWk1oFavJapdLALxwSjcSk2"
-
-```javascript
-TrezorConnect.composeTransaction({
-    outputs: [
-        { amount: "200000", address: "18WL2iZKmpDYWk1oFavJapdLALxwSjcSk2" }
-    ]
-    coin: "btc",
-    push: true
-});
-```
-
-### Payment result
-
-[SignedTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/bitcoin/composeTransaction.ts)
-
-```javascript
-{
-    success: true,
-    payload: {
-        signatures: Array<string>, // signer signatures
-        serializedTx: string,      // serialized transaction
-        txid?: string,             // blockchain transaction id
-    }
-}
-```
-
-Error
-
-```javascript
-{
-    success: false,
-    error: {
-        message: string // error message
-    }
-}
-```
-
-### Precompose example
+## Example
 
 Prepare multiple variants of the same transaction
 
@@ -191,7 +119,7 @@ TrezorConnect.composeTransaction({
 });
 ```
 
-### Precompose result
+## Result
 
 ```javascript
 {
@@ -243,9 +171,19 @@ TrezorConnect.composeTransaction({
 }
 ```
 
+Error
+
+```javascript
+{
+    success: false,
+    error: {
+        message: string // error message
+    }
+}
+```
+
 For more examples see [composeTransaction fixtures](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/e2e/__fixtures__/composeTransaction.ts)
 
 ### Additional notes
 
-- [1] `UI.SELECT_ACCOUNT` and `UI.SELECT_FEE` events are emitted when using `trusted mode`
-- [2] Account utxo selection, fee and change calculation is performed by [@trezor/utxo-lib](https://github.com/trezor/trezor-suite/tree/develop/packages/utxo-lib/src/compose) module
+- [1] Account utxo selection, fee and change calculation is performed by [@trezor/utxo-lib](https://github.com/trezor/trezor-suite/tree/develop/packages/utxo-lib/src/compose) module

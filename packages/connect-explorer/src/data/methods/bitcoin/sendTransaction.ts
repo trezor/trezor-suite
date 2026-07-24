@@ -43,8 +43,8 @@ const examples: Partial<Record<CoinSymbol, Array<{ amount: string; address: stri
 
 export default [
     {
-        name: 'composeTransaction',
-        submitButton: 'Compose transaction',
+        name: 'sendTransaction',
+        submitButton: 'Send transaction',
         fields: [
             {
                 name: 'coin',
