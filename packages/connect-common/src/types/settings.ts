@@ -10,6 +10,7 @@ import type { Logger } from '@trezor/utils';
 import type { CoinSymbol } from './coinInfo';
 import type { DefinitionsChannel } from './definitions';
 import type { FirmwareChannel } from './firmware';
+import type { PermissionRequest } from './method';
 
 export const Manifest = Type.Object({
     appName: Type.String(),
@@ -76,6 +77,12 @@ export interface ConnectSettings {
     localFirmwares?: LocalFirmwares;
     thp?: ThpSettings;
     enabledNetworks?: EnabledNetwork[];
+    // Permissions the host/dapp declares up front so the user can approve the whole set in a single
+    // consent instead of being prompted per call. Like `manifest`, this is host-side authorization
+    // that Core never reads — it is forwarded to the popup host (via the handshake), which sanitizes
+    // it. Orthogonal to `enabledNetworks` (a Core capability); see the note on `EnabledNetwork`
+    // above. `coin` is the `coinInfo.shortcut` (matched case-insensitively by the popup).
+    requestedPermissions?: PermissionRequest[];
 }
 
 export type ConnectImplSettings = {
@@ -84,6 +91,7 @@ export type ConnectImplSettings = {
     env?: 'node' | 'web' | 'webextension' | 'electron' | 'react-native';
     debug?: boolean;
     enabledNetworks?: EnabledNetwork[];
+    requestedPermissions?: PermissionRequest[];
 };
 
 export type ConnectDynamicSettings = Partial<ConnectImplSettings> & {
