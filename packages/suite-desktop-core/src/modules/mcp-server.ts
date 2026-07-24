@@ -24,6 +24,8 @@ export const SERVICE_NAME = 'mcp-server';
 
 const LOG_PREFIX = 'mcp-server';
 
+const MCP_CONNECTION_ID = 'mcp';
+
 const MCP_MANIFEST = {
     appName: 'MCP Agent',
     appUrl: 'http://localhost',
@@ -1139,6 +1141,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
 
             mainWindow.webContents.send('connect-popup/call', {
                 id: call.id,
+                connectionId: MCP_CONNECTION_ID,
                 method: call.method,
                 payload: call.payload,
                 silent: call.silent,
