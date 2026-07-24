@@ -59,8 +59,8 @@ const itemDescriptionStyle = prepareNativeStyle(() => ({
 const defaultItemIconProps = {
     iconSize: 'large',
     iconColor: 'contentBrand',
-    iconBackgroundColor: 'legacyBackgroundPrimarySubtleOnElevation1',
-    iconBorderColor: 'legacyBackgroundPrimarySubtleOnElevationNegative',
+    iconBackgroundColor: 'elementFillBrandSofter',
+    iconBorderColor: 'elementBorderBrandSofter',
 } as const;
 
 const renderDefaultItemIcon = (index: number) => (

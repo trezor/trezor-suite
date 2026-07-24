@@ -13,7 +13,7 @@ const overlayWrapperStyle = prepareNativeStyle(utils => ({
     ...StyleSheet.absoluteFill,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation0,
+    backgroundColor: utils.colors.surfaceFillPage,
 }));
 
 const bottomWrapperStyle = prepareNativeStyle(utils => ({

@@ -28,7 +28,7 @@ const indicatorStyle = prepareNativeStyle(utils => ({
     position: 'absolute',
     top: CONTAINER_PADDING,
     bottom: CONTAINER_PADDING,
-    backgroundColor: utils.colors.legacyBackgroundSurfaceElevation3,
+    backgroundColor: utils.colors.surfaceFillRaised,
     borderRadius: utils.borders.radii.round,
     ...utils.boxShadows.small,
 }));

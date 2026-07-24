@@ -18,7 +18,7 @@ const descriptionInputStyle = prepareNativeStyle(utils => ({
     borderWidth: utils.borders.widths.small,
     borderColor: utils.colors.borderNeutral,
     borderRadius: utils.borders.radii.r12,
-    backgroundColor: utils.colors.legacyBackgroundNeutralSubtleOnElevation0,
+    backgroundColor: utils.colors.elementFillField,
     padding: utils.spacings.sp16,
     minHeight: 100,
     color: utils.colors.contentPrimary,

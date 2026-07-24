@@ -4,12 +4,14 @@ import { useNativeStyles } from '@trezor/styles-native';
 
 export const InfoShapeSvg = () => {
     const { utils } = useNativeStyles();
-    const borderColor = utils.colors.legacyBackgroundAlertBlueSubtleOnElevationNegative;
-    const backgroundColor = utils.colors.legacyBackgroundAlertBlueSubtleOnElevation1;
+    const borderColor = utils.colors.illustrationFillInfo;
+    const underlayColor = utils.colors.surfaceFillRaised;
+    const backgroundColor = utils.colors.elementFillInfoSofter;
 
     return (
         <Svg width={112} height={112} fill="none">
             <Rect x="4" y="4" width="104" height="104" rx="52" fill={borderColor} />
+            <Rect x="16" y="16" width="80" height="80" rx="40" fill={underlayColor} />
             <Rect x="16" y="16" width="80" height="80" rx="40" fill={backgroundColor} />
         </Svg>
     );

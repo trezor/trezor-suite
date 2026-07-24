@@ -104,7 +104,7 @@ export const UtxoCard = ({
     return (
         <Card
             noPadding
-            borderColor={isSelected ? 'legacyBackgroundSecondaryDefault' : 'transparent'}
+            borderColor={isSelected ? 'elementFillFieldSelected' : 'transparent'}
             style={applyStyle(cardStyle)}
         >
             <VStack spacing="sp12">

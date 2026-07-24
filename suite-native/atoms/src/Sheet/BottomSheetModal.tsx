@@ -39,6 +39,10 @@ const backgroundStyle = prepareNativeStyle(({ colors }) => ({
     backgroundColor: colors.surfaceFillPage,
 }));
 
+const backdropStyle = prepareNativeStyle(({ colors }) => ({
+    backgroundColor: colors.surfaceFillMediaOverlay,
+}));
+
 const footerStyle = prepareNativeStyle<{ bottomInset: number }>(({ colors }, { bottomInset }) => ({
     backgroundColor: colors.surfaceFillPage,
     paddingBottom: bottomInset,
@@ -72,10 +76,16 @@ export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetM
         const maxDynamicContentSize = MAX_MODAL_HEIGHT - top + footerHeight;
 
         const renderBackdrop = useCallback(
-            (props: BottomSheetBackdropProps) => (
-                <BottomSheetBackdrop appearsOnIndex={0} disappearsOnIndex={-1} {...props} />
+            ({ style, ...props }: BottomSheetBackdropProps) => (
+                <BottomSheetBackdrop
+                    appearsOnIndex={0}
+                    disappearsOnIndex={-1}
+                    opacity={1}
+                    style={[applyStyle(backdropStyle), style]}
+                    {...props}
+                />
             ),
-            [],
+            [applyStyle],
         );
 
         const onCloseModal = useCallback(() => {

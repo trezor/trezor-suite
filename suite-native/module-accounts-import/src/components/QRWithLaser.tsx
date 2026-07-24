@@ -114,7 +114,7 @@ export const QrWithLaser = () => {
 
     const paint = useMemo(() => Skia.Paint(), []);
     paint.setColorFilter(
-        Skia.ColorFilter.MakeBlend(Skia.Color(colors.legacyBackgroundNeutralBold), BlendMode.SrcIn),
+        Skia.ColorFilter.MakeBlend(Skia.Color(colors.elementFillContrast), BlendMode.SrcIn),
     );
 
     return (

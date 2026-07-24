@@ -24,14 +24,14 @@ const badgeStyle = prepareNativeStyle<{ isActive: boolean }>((utils, { isActive 
     width: BADGE_SIZE,
     height: BADGE_SIZE,
     borderRadius: utils.borders.radii.round,
-    backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation0,
-    borderColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation0,
+    backgroundColor: utils.colors.elementFillNeutralSofter,
+    borderColor: utils.colors.elementBorderNeutralSofter,
 
     extend: {
         condition: isActive,
         style: {
-            backgroundColor: utils.colors.legacyBackgroundSecondaryDefault,
-            borderColor: utils.colors.legacyBackgroundPrimarySubtleOnElevationNegative,
+            backgroundColor: utils.colors.elementFillBrandBold,
+            borderColor: utils.colors.contentBrand,
         },
     },
 }));
@@ -54,9 +54,7 @@ export const ReviewOutputStatusBadge = ({ status }: ReviewOutputStatusBadgeProps
     }));
 
     if (status === 'success') {
-        return (
-            <Icon name="checkCircleFilled" color="legacyBackgroundSecondaryDefault" size="medium" />
-        );
+        return <Icon name="checkCircleFilled" color="contentBrand" size="medium" />;
     }
 
     const isActive = status === 'active';

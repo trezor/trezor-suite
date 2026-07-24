@@ -54,8 +54,8 @@ const detailRowStyle = prepareNativeStyle(({ spacings }) => ({
 
 const cardStyle = prepareNativeStyle(({ colors, borders, boxShadows, spacings }) => ({
     paddingVertical: spacings.sp10,
-    backgroundColor: colors.legacyBackgroundTertiaryDefaultOnElevation1,
-    borderColor: colors.borderNeutral,
+    backgroundColor: colors.surfaceFillSunken,
+    borderColor: colors.surfaceBorderSunken,
     borderWidth: borders.widths.small,
     ...boxShadows.none,
 }));

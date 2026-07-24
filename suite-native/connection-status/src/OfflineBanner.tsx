@@ -9,7 +9,7 @@ import { useIsFwRevisionCheckOfflineError } from './useIsFwRevisionCheckOfflineE
 import { useIsOfflineBannerVisible } from './useIsOfflineBannerVisible';
 
 const containerStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.legacyBackgroundAlertYellowBold,
+    backgroundColor: utils.colors.elementFillWarningBold,
 }));
 
 const contentStyle = prepareNativeStyle<{ topSafeAreaInset: number }>(

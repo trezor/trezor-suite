@@ -11,7 +11,7 @@ export type FavouriteIconProps = {
 
 const getIconProps = (isFavourite: boolean): IconProps =>
     isFavourite
-        ? { name: 'starFilled', color: 'legacyBackgroundAlertYellowBold' }
+        ? { name: 'starFilled', color: 'elementFillWarningBold' }
         : { name: 'star', color: 'contentSecondary' };
 
 const useA11yButtonHint = (isFavourite: boolean): string => {

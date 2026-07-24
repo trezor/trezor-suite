@@ -29,7 +29,7 @@ const CHECKBOX_ANIMATION_DURATION = 200; // same as in useAccordionAnimation
 
 const InformativeList = () => (
     <VStack spacing="sp24">
-        <IconListItem icon="warning" variant="yellow" iconSize="large" verticalAlign="flex-start">
+        <IconListItem icon="warning" variant="warning" iconSize="large" verticalAlign="flex-start">
             <VStack spacing="sp4">
                 <Text variant="body-md-strong">
                     <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.item1" />
@@ -39,7 +39,7 @@ const InformativeList = () => (
                 </Text>
             </VStack>
         </IconListItem>
-        <IconListItem icon="code" variant="yellow" iconSize="large" verticalAlign="flex-start">
+        <IconListItem icon="code" variant="warning" iconSize="large" verticalAlign="flex-start">
             <VStack spacing="sp4">
                 <Text variant="body-md-strong">
                     <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.item2" />

@@ -16,7 +16,7 @@ const screenFooterStyle = prepareNativeStyle(utils => ({
 }));
 
 const rewardsBoxStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.legacyBackgroundPrimarySubtleOnElevation0,
+    backgroundColor: utils.colors.elementFillBrandSoft,
     borderTopLeftRadius: utils.borders.radii.r16,
     borderTopRightRadius: utils.borders.radii.r16,
     borderBottomLeftRadius: utils.borders.radii.r24,

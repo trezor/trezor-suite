@@ -28,8 +28,8 @@ export const EarnConsentsItem = ({
                 iconName={iconName}
                 iconSize="large"
                 iconColor="contentInfo"
-                iconBackgroundColor="legacyBackgroundAlertBlueSubtleOnElevation1"
-                iconBorderColor="legacyBackgroundAlertBlueSubtleOnElevation0"
+                iconBackgroundColor="elementFillInfoSofter"
+                iconBorderColor="elementBorderInfoSofter"
             />
             <Text variant="body-sm-strong" color={color} style={applyStyle(textStyle)}>
                 {children}

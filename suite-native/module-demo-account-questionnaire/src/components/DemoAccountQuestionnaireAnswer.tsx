@@ -13,7 +13,7 @@ const cardStyle = prepareNativeStyle<{ isSelected: boolean }>((utils, { isSelect
         {
             condition: isSelected,
             style: {
-                borderColor: utils.colors.legacyBackgroundPrimaryDefault,
+                borderColor: utils.colors.borderBrand,
                 borderWidth: utils.borders.widths.large,
                 padding: 0,
             },

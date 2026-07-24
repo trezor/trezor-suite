@@ -20,7 +20,7 @@ const headerStyle = prepareNativeStyle(utils => ({
 const caretButtonStyle = prepareNativeStyle(utils => ({
     padding: 14,
     borderRadius: utils.borders.radii.round,
-    backgroundColor: utils.colors.legacyBackgroundTertiaryDefaultOnElevation0,
+    backgroundColor: utils.colors.elementFillNeutralSoft,
 }));
 
 export const YieldPendingTransactionModalHeader = ({

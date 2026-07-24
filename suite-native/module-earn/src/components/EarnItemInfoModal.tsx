@@ -23,14 +23,14 @@ type EarnItemInfoModalProps = {
 };
 
 const clipboardContainerStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.legacyBackgroundPrimarySubtleOnElevation1,
+    backgroundColor: utils.colors.elementFillBrandSofter,
     width: '100%',
     alignItems: 'center',
     paddingHorizontal: utils.spacings.sp16,
     paddingVertical: utils.spacings.sp12,
     marginTop: utils.spacings.sp24,
     borderWidth: utils.borders.widths.small,
-    borderColor: utils.colors.legacyBackgroundPrimarySubtleOnElevationNegative,
+    borderColor: utils.colors.elementBorderBrandSofter,
     borderRadius: utils.borders.radii.r12,
 }));
 

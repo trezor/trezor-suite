@@ -44,8 +44,8 @@ export const HowEarnWorksBenefitsSection = ({ items }: HowEarnWorksBenefitsSecti
                         iconName={item.icon}
                         iconSize="large"
                         iconColor="contentBrand"
-                        iconBackgroundColor="legacyBackgroundPrimarySubtleOnElevation1"
-                        iconBorderColor="legacyBackgroundPrimarySubtleOnElevationNegative"
+                        iconBackgroundColor="elementFillBrandSofter"
+                        iconBorderColor="elementBorderBrandSofter"
                     />
                     <VStack spacing={0} style={applyStyle(benefitTextContainerStyle)}>
                         <Text variant="body-md-strong" style={applyStyle(benefitTitleStyle)}>

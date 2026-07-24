@@ -120,8 +120,8 @@ export const FeeOption = ({
     const isChecked = selectedLevel === feeKey;
 
     const highlightColor: Color = areFeeValuesComplete
-        ? 'legacyBackgroundSecondaryDefault'
-        : 'legacyBackgroundAlertRedBold';
+        ? 'elementFillFieldSelected'
+        : 'elementFillCriticalBold';
 
     const borderAnimationValue = useDerivedValue(
         () => (isChecked ? withTiming(1) : withTiming(0)),

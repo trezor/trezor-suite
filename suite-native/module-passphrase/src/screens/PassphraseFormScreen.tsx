@@ -28,9 +28,9 @@ import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 const ANIMATION_DURATION = 300;
 
 const cardStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.legacyBackgroundAlertBlueSubtleOnElevation1,
+    backgroundColor: utils.colors.elementFillInfoSofter,
     borderRadius: utils.borders.radii.r16,
-    borderColor: utils.colors.legacyBackgroundAlertBlueSubtleOnElevationNegative,
+    borderColor: utils.colors.elementBorderInfoSofter,
     borderWidth: utils.borders.widths.small,
     padding: utils.spacings.sp16,
     flex: 1,
