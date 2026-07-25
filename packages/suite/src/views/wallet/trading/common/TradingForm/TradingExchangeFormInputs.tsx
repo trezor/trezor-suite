@@ -65,7 +65,6 @@ export const TradingExchangeFormInputs = () => {
         changeFeeLevel,
         shouldSendInSats,
         showReserveBanner,
-        resetSelectedOffer,
         setAmountLimits,
     } = context;
     const asset = useSelectedTradingAsset(type);
@@ -108,17 +107,15 @@ export const TradingExchangeFormInputs = () => {
     // `useTradingExchangeForm` has some re-rendering issues, use refs to avoid them
     const setAmountLimitsRef = useCurrentRef(setAmountLimits);
     const setValueRef = useCurrentRef(setValue);
-    const resetSelectedOfferRef = useCurrentRef(resetSelectedOffer);
 
     const onCryptoCurrencyChangeRef = useCurrentRef(helpers.onCryptoCurrencyChange);
     const handleSellAssetSelect = useCallback<TradingFormInputSellAssetProps['onAssetSelect']>(
         async asset => {
             await onCryptoCurrencyChangeRef.current(asset);
 
-            resetSelectedOfferRef.current();
             setValueRef.current(TRADING_FORM_PROVIDER_SELECT, undefined, { shouldDirty: true });
         },
-        [onCryptoCurrencyChangeRef, resetSelectedOfferRef, setValueRef],
+        [onCryptoCurrencyChangeRef, setValueRef],
     );
 
     const handleReceiveAssetSelect = useCallback<TradingFormInputBuyAssetProps['onAssetSelect']>(
@@ -128,10 +125,9 @@ export const TradingExchangeFormInputs = () => {
             });
             setAmountLimitsRef.current(undefined);
             dispatch(tradingActions.setModalCryptoCurrency(asset.id));
-            resetSelectedOfferRef.current();
             setValueRef.current(TRADING_FORM_PROVIDER_SELECT, undefined, { shouldDirty: true });
         },
-        [dispatch, setAmountLimitsRef, setValueRef, resetSelectedOfferRef],
+        [dispatch, setAmountLimitsRef, setValueRef],
     );
 
     return (

@@ -87,7 +87,6 @@ const TradingFormInputFiatContent = ({
     const setFractionButton = isExchangeOrSellContext
         ? context.form.helpers.setFractionButton
         : undefined;
-    const handleResetSelectedOffer = isExchangeContext ? context.resetSelectedOffer : undefined;
 
     const tokenAddress = (sendCryptoSelect?.contractAddress ?? undefined) as
         | TokenAddress
@@ -189,9 +188,8 @@ const TradingFormInputFiatContent = ({
 
     const handleChange = useCallback(() => {
         setFractionButton?.(undefined);
-        handleResetSelectedOffer?.();
         clearErrors(cryptoInputName);
-    }, [setFractionButton, handleResetSelectedOffer, clearErrors, cryptoInputName]);
+    }, [setFractionButton, clearErrors, cryptoInputName]);
 
     useEffect(() => {
         setShowReserveBanner?.(isNetworkReserveError);
