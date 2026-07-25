@@ -178,5 +178,6 @@ export const useTradingQuoteRequest = <TFormProps extends FieldValues, TResult>(
     return {
         isScheduledQuotesRefresh,
         refreshQuotes,
+        abortActiveRequest,
     };
 };

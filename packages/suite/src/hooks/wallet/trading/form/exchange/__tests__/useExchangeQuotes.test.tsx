@@ -263,6 +263,39 @@ describe('useExchangeQuotes', () => {
         expect(mockHandleRequest).not.toHaveBeenCalled();
     });
 
+    it('aborts the in-flight request when the receive identity becomes incoherent', async () => {
+        mockHandleRequest.mockImplementationOnce((payload: unknown) => {
+            const thunk = () => ({
+                abort: mockAbort,
+                unwrap: () => new Promise<ExchangeTrade[]>(() => {}),
+            });
+
+            return Object.assign(thunk, { payload });
+        });
+
+        const { result } = renderExchangeQuotes(VALID_DEFAULTS, {
+            receiveAddress: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+            receiveAccountKey: mockAccountKey({ descriptor: 'receiveaccount1', symbol: 'eth' }),
+            receiveAccountSymbol: 'eth',
+        });
+
+        await act(async () => {
+            await result.current.methods.trigger();
+        });
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
+        expect(mockAbort).not.toHaveBeenCalled();
+
+        act(() => {
+            result.current.methods.setValue('receiveCryptoSelect', {
+                ...RECEIVE_CRYPTO_SELECT,
+                id: 'binancecoin' as CryptoId,
+            });
+        });
+
+        await waitFor(() => expect(mockAbort).toHaveBeenCalled());
+    });
+
     it('clears the selected quote when only the receive account changes', async () => {
         const { rerender } = renderExchangeQuotes(VALID_DEFAULTS, {
             receiveAddress: '0xreceive',
