@@ -9,7 +9,10 @@ import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
-import { selectTradingCoinSymbolByCryptoId } from '../../selectors/tradingSelectors';
+import {
+    selectTradingCoinSymbolByCryptoId,
+    selectTradingExchangeQuotesRequest,
+} from '../../selectors/tradingSelectors';
 import {
     type HandleExchangeRequestThunkProps,
     type MinimalExchangeFormProps,
@@ -116,6 +119,11 @@ export const handleExchangeRequestThunk = createThunk<
             dispatch(tradingActions.stopRefetchQuotes());
 
             return rejectWithValue('Invalid request data');
+        }
+
+        const currentQuotesRequest = selectTradingExchangeQuotesRequest(getState());
+        if (currentQuotesRequest && requestData.receive !== currentQuotesRequest.receive) {
+            dispatch(tradingExchangeActions.clearQuotes());
         }
 
         let allQuotes: ExchangeTrade[] = [];
