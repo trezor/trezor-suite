@@ -74,14 +74,18 @@ const rejectWhenAborted = (signal: AbortSignal | undefined, clear: AbortSignal) 
         const errorSignal = new RejectWhenAbortedError();
         if (clear.aborted) return reject(errorSignal);
         if (signal?.aborted) return reject(errorSignal);
-        const onAbort = () => reject(errorSignal);
-        signal?.addEventListener('abort', onAbort);
-        const onClear = () => {
-            signal?.removeEventListener('abort', onAbort);
-            clear.removeEventListener('abort', onClear);
+        // One shared handler attached to both signals so the first abort detaches both
+        // listeners before rejecting. Two separate listeners that each removed only
+        // themselves would leave the surviving one to call reject() a second time when the
+        // other AbortSignal later fires, producing a Node 'multipleResolves' event for the
+        // same already-settled promise.
+        function rejectAndCleanup() {
+            signal?.removeEventListener('abort', rejectAndCleanup);
+            clear.removeEventListener('abort', rejectAndCleanup);
             reject(errorSignal);
-        };
-        clear.addEventListener('abort', onClear);
+        }
+        signal?.addEventListener('abort', rejectAndCleanup);
+        clear.addEventListener('abort', rejectAndCleanup);
     });
 
 const resolveAction = async <T>(action: ScheduledAction<T>, clear: AbortSignal) => {
