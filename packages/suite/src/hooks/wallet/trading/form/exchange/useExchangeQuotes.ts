@@ -67,7 +67,7 @@ export const useExchangeQuotes = ({
         receiveAccountKey,
     });
 
-    const { isScheduledQuotesRefresh, refreshQuotes } = useTradingQuoteRequest({
+    const { isScheduledQuotesRefresh, refreshQuotes, abortActiveRequest } = useTradingQuoteRequest({
         methods,
         immediateFields: EXCHANGE_IMMEDIATE_FIELDS,
         debouncedFields: EXCHANGE_DEBOUNCED_FIELDS,
@@ -110,6 +110,8 @@ export const useExchangeQuotes = ({
                 receiveAccountSymbol,
             })
         ) {
+            abortActiveRequest();
+
             return;
         }
 
@@ -122,6 +124,7 @@ export const useExchangeQuotes = ({
         receiveAccountSymbol,
         dispatch,
         refreshQuotes,
+        abortActiveRequest,
     ]);
 
     const exchangeType = useWatch({ control: methods.control, name: TRADING_EXCHANGE_FORM });
