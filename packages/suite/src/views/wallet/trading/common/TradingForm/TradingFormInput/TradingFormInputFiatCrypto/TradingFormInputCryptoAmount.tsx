@@ -31,7 +31,6 @@ import {
 } from 'src/types/trading/tradingForm';
 import {
     isTradingBuyContext,
-    isTradingExchangeContext,
     isTradingExchangeOrSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { getFeeInUnits, tradingGetAccountLabel } from 'src/utils/wallet/trading/tradingUtils';
@@ -75,9 +74,6 @@ const TradingFormInputCryptoAmountContent = ({
     const isExchangeOrSellContext = isTradingExchangeOrSellContext(context);
     const setFractionButton = isExchangeOrSellContext
         ? context.form.helpers.setFractionButton
-        : undefined;
-    const handleResetSelectedOffer = isTradingExchangeContext(context)
-        ? context.resetSelectedOffer
         : undefined;
     const setShowReserveBanner = isExchangeOrSellContext ? context.setShowReserveBanner : undefined;
 
@@ -143,9 +139,8 @@ const TradingFormInputCryptoAmountContent = ({
             setValue(TRADING_FORM_OUTPUT_MAX, undefined, { shouldDirty: true });
             setFractionButton(undefined);
         }
-        handleResetSelectedOffer?.();
         clearErrors(fiatInputName);
-    }, [setValue, setFractionButton, handleResetSelectedOffer, clearErrors, fiatInputName]);
+    }, [setValue, setFractionButton, clearErrors, fiatInputName]);
 
     useEffect(() => {
         setShowReserveBanner?.(isNetworkReserveError);

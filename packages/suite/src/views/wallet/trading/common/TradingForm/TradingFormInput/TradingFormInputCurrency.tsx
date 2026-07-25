@@ -67,7 +67,6 @@ export const TradingFormInputCurrency = ({
         }
 
         if (isTradingExchangeContext(context)) {
-            context.resetSelectedOffer();
             context.refreshQuotes();
         }
     };

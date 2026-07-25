@@ -49,7 +49,6 @@ export const TradingFormApproval = () => {
         revokeApproval,
         refreshQuotes,
         confirmApproval,
-        resetSelectedOffer,
         selectedQuote,
         isScheduledQuotesRefresh,
         isComposing,
@@ -171,7 +170,6 @@ export const TradingFormApproval = () => {
             },
         });
 
-        resetSelectedOffer();
         await refreshQuotes();
     };
 
