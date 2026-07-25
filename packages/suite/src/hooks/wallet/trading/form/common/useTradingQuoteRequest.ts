@@ -38,6 +38,7 @@ export const useTradingQuoteRequest = <TFormProps extends FieldValues, TResult>(
     const abortActiveRequest = useCallback(() => {
         controllerRef.current?.abort();
         controllerRef.current = null;
+        setIsScheduledQuotesRefresh(false);
     }, []);
 
     const clearDebounceTimer = useCallback(() => {
@@ -69,7 +70,7 @@ export const useTradingQuoteRequest = <TFormProps extends FieldValues, TResult>(
             return;
         }
 
-        abortActiveRequest();
+        controllerRef.current?.abort();
         const controller = new AbortController();
         controllerRef.current = controller;
         const { signal } = controller;
@@ -86,9 +87,11 @@ export const useTradingQuoteRequest = <TFormProps extends FieldValues, TResult>(
             return;
         }
 
+        const currentValues = methods.getValues();
+
         setIsScheduledQuotesRefresh(true);
 
-        const request = configRef.current.requestQuotes(values);
+        const request = configRef.current.requestQuotes(currentValues);
         signal.addEventListener('abort', () => request.abort(), { once: true });
         isQuoteLifecycleActive.current = true;
 
@@ -99,14 +102,14 @@ export const useTradingQuoteRequest = <TFormProps extends FieldValues, TResult>(
                 return;
             }
 
-            configRef.current.onResolved?.(result, values);
+            configRef.current.onResolved?.(result, currentValues);
             setIsScheduledQuotesRefresh(false);
         } catch {
             if (!signal.aborted) {
                 setIsScheduledQuotesRefresh(false);
             }
         }
-    }, [methods, configRef, stopQuoteRequests, abortActiveRequest]);
+    }, [methods, configRef, stopQuoteRequests]);
 
     useTradingRefetchScheduler({
         onRefetch: () => {

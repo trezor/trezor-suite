@@ -82,11 +82,11 @@ const TRADING_FIAT_VALUES: TradingFiatRatesReturn = {
     fiatRatesUpdater: jest.fn(() => Promise.resolve(null)),
 };
 
-const renderFiatCryptoAmount = () =>
+const renderFiatCryptoAmount = (defaultValues: TradingSellFormProps = DEFAULTS) =>
     renderHook(() => {
         const methods = useForm<TradingSellFormProps>({
             mode: 'onChange',
-            defaultValues: DEFAULTS,
+            defaultValues,
         });
         const amount = useTradingFiatCryptoAmount({
             methods,
@@ -123,7 +123,7 @@ describe('useTradingFiatCryptoAmount', () => {
         expect(result.current.amount.fractionButton).toBe(1);
     });
 
-    it('recalculates the crypto amount from the typed fiat amount after the debounce', async () => {
+    it('recalculates the crypto amount from the typed fiat amount', async () => {
         const { result } = renderFiatCryptoAmount();
 
         act(() => {
@@ -134,6 +134,20 @@ describe('useTradingFiatCryptoAmount', () => {
             () => expect(result.current.methods.getValues('outputs.0.amount')).toBe('0.00200000'),
             { timeout: 1500 },
         );
+    });
+
+    it('keeps a prefilled crypto amount on mount when the fiat is empty', async () => {
+        const { result } = renderFiatCryptoAmount({
+            ...DEFAULTS,
+            outputs: [{ ...DEFAULTS.outputs[0]!, amount: '0.5', fiat: '' }],
+        });
+
+        await new Promise(resolve => {
+            setTimeout(resolve, 700);
+        });
+
+        expect(result.current.methods.getValues('outputs.0.amount')).toBe('0.5');
+        expect(result.current.methods.formState.errors.outputs).toBeUndefined();
     });
 
     it('does not recalculate crypto while a fraction button is active', async () => {
