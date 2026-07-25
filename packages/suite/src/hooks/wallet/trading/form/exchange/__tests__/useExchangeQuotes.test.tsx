@@ -11,7 +11,7 @@ import {
     type TradingAssetSellOption,
     type TradingExchangeFormProps,
 } from '@suite-common/trading';
-import { getNetwork } from '@suite-common/wallet-config';
+import { type Network, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { useExchangeQuotes } from '../useExchangeQuotes';
@@ -127,14 +127,17 @@ const wait = (ms: number) =>
 
 const renderExchangeQuotes = (
     defaultValues: TradingExchangeFormProps,
-    {
-        receiveAddress,
-        resolver,
-    }: {
+    options: {
+        network?: Network;
         receiveAddress?: string;
+        receiveAccountKey?: ReturnType<typeof mockAccountKey>;
+        receiveAccountSymbol?: NetworkSymbol;
         resolver?: Resolver<TradingExchangeFormProps>;
     } = {},
 ) => {
+    const { receiveAddress, receiveAccountKey, receiveAccountSymbol, resolver } = options;
+    const network = 'network' in options ? options.network : getNetwork('btc');
+
     const store = configureMockStore({
         preloadedState: {
             wallet: {
@@ -146,26 +149,32 @@ const renderExchangeQuotes = (
     });
 
     return renderHookWithStoreProvider(
-        () => {
+        ({ currentNetwork, currentReceiveAccountKey }) => {
             const methods = useForm<TradingExchangeFormProps>({
                 mode: 'onChange',
                 defaultValues,
                 resolver,
             });
+
             const quotes = useExchangeQuotes({
-                control: methods.control,
-                getValues: methods.getValues,
-                setValue: methods.setValue,
-                network: getNetwork('btc'),
+                methods,
+                network: currentNetwork,
                 shouldSendInSats: false,
                 receiveAddress,
-                receiveAccountKey: undefined,
+                receiveAccountKey: currentReceiveAccountKey,
+                receiveAccountSymbol,
                 composeRequestCallback: jest.fn(),
             });
 
             return { methods, quotes };
         },
-        { store },
+        {
+            store,
+            initialProps: {
+                currentNetwork: network,
+                currentReceiveAccountKey: receiveAccountKey,
+            },
+        },
     );
 };
 
@@ -226,6 +235,75 @@ describe('useExchangeQuotes', () => {
         await waitFor(() => expect(mockSaveSelectedQuote).toHaveBeenCalledWith(undefined));
     });
 
+    it('does not dispatch a quotes request while the receive identity is incoherent (#28143/#30213)', async () => {
+        const { result } = renderExchangeQuotes(VALID_DEFAULTS, {
+            receiveAddress: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+            receiveAccountKey: mockAccountKey({ descriptor: 'receiveaccount1', symbol: 'eth' }),
+            receiveAccountSymbol: 'eth',
+        });
+
+        await act(async () => {
+            await result.current.methods.trigger();
+        });
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
+        mockHandleRequest.mockClear();
+        mockSaveSelectedQuote.mockClear();
+
+        act(() => {
+            result.current.methods.setValue('receiveCryptoSelect', {
+                ...RECEIVE_CRYPTO_SELECT,
+                id: 'binancecoin' as CryptoId,
+            });
+        });
+
+        await waitFor(() => expect(mockSaveSelectedQuote).toHaveBeenCalledWith(undefined));
+        await wait(700);
+
+        expect(mockHandleRequest).not.toHaveBeenCalled();
+    });
+
+    it('clears the selected quote when only the receive account changes', async () => {
+        const { rerender } = renderExchangeQuotes(VALID_DEFAULTS, {
+            receiveAddress: '0xreceive',
+            receiveAccountKey: mockAccountKey({ descriptor: 'receiveaccount1', symbol: 'eth' }),
+        });
+
+        expect(mockSaveSelectedQuote).not.toHaveBeenCalled();
+
+        rerender({
+            currentNetwork: getNetwork('btc'),
+            currentReceiveAccountKey: mockAccountKey({
+                descriptor: 'receiveaccount2',
+                symbol: 'eth',
+            }),
+        });
+
+        await waitFor(() => expect(mockSaveSelectedQuote).toHaveBeenCalledWith(undefined));
+    });
+
+    it('fetches quotes once the network becomes available again', async () => {
+        const { result, rerender } = renderExchangeQuotes(VALID_DEFAULTS, {
+            network: undefined,
+            receiveAddress: '0xreceive',
+        });
+
+        await act(async () => {
+            await result.current.methods.trigger();
+        });
+
+        await wait(700);
+
+        expect(mockHandleRequest).not.toHaveBeenCalled();
+
+        rerender({
+            currentNetwork: getNetwork('btc'),
+            currentReceiveAccountKey: undefined,
+        });
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
+    });
+
     it('switches a DEX selection to CEX when only CEX quotes are available', async () => {
         mockCexQuotes = QUOTES;
         mockDexQuotes = [];
@@ -240,15 +318,5 @@ describe('useExchangeQuotes', () => {
                 TRADING_EXCHANGE_FORM_CEX,
             ),
         );
-    });
-
-    it('resetSelectedOffer flags a scheduled quotes refresh', () => {
-        const { result } = renderExchangeQuotes(VALID_DEFAULTS);
-
-        act(() => {
-            result.current.quotes.resetSelectedOffer();
-        });
-
-        expect(result.current.quotes.isScheduledQuotesRefresh).toBe(true);
     });
 });
