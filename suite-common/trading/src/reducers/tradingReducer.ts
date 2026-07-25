@@ -42,10 +42,10 @@ const tradingSlice = createSliceWithExtraDeps({
                 state.buy.isLoading = false;
             })
             .addCase(buyThunks.handleRequestThunk.rejected, (state, action) => {
+                state.buy.isLoading = false;
                 if (action.meta?.aborted) {
                     return;
                 }
-                state.buy.isLoading = false;
                 state.buy.amountLimits = undefined;
                 state.buy.quotes = [];
                 state.buy.quotesRequest = undefined;
@@ -57,10 +57,10 @@ const tradingSlice = createSliceWithExtraDeps({
                 state.exchange.isLoading = false;
             })
             .addCase(exchangeThunks.handleRequestThunk.rejected, (state, action) => {
+                state.exchange.isLoading = false;
                 if (action.meta?.aborted) {
                     return;
                 }
-                state.exchange.isLoading = false;
                 state.exchange.amountLimits = undefined;
                 state.exchange.quotes = [];
                 state.exchange.quotesRequest = undefined;
@@ -72,13 +72,13 @@ const tradingSlice = createSliceWithExtraDeps({
                 state.sell.isLoading = false;
             })
             .addCase(sellThunks.handleRequestThunk.rejected, (state, action) => {
+                state.sell.isLoading = false;
                 if (action.meta?.aborted) {
                     return;
                 }
                 state.sell.amountLimits = undefined;
                 state.sell.quotes = [];
                 state.sell.quotesRequest = undefined;
-                state.sell.isLoading = false;
             })
             .addCase(sellThunks.handleTradeThunk.pending, state => {
                 state.exchange.isLoading = true;

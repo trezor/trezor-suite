@@ -263,7 +263,7 @@ describe('useExchangeQuotes', () => {
         expect(mockHandleRequest).not.toHaveBeenCalled();
     });
 
-    it('aborts the in-flight request when the receive identity becomes incoherent', async () => {
+    it('aborts the in-flight request and clears the loading state when the receive identity becomes incoherent', async () => {
         mockHandleRequest.mockImplementationOnce((payload: unknown) => {
             const thunk = () => ({
                 abort: mockAbort,
@@ -284,6 +284,7 @@ describe('useExchangeQuotes', () => {
         });
 
         await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
+        await waitFor(() => expect(result.current.quotes.isScheduledQuotesRefresh).toBe(true));
         expect(mockAbort).not.toHaveBeenCalled();
 
         act(() => {
@@ -294,15 +295,23 @@ describe('useExchangeQuotes', () => {
         });
 
         await waitFor(() => expect(mockAbort).toHaveBeenCalled());
+        await waitFor(() => expect(result.current.quotes.isScheduledQuotesRefresh).toBe(false));
     });
 
-    it('clears the selected quote when only the receive account changes', async () => {
-        const { rerender } = renderExchangeQuotes(VALID_DEFAULTS, {
-            receiveAddress: '0xreceive',
+    it('clears the selected quote and refetches when only the receive account changes', async () => {
+        const { result, rerender } = renderExchangeQuotes(VALID_DEFAULTS, {
+            receiveAddress: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
             receiveAccountKey: mockAccountKey({ descriptor: 'receiveaccount1', symbol: 'eth' }),
+            receiveAccountSymbol: 'eth',
         });
 
-        expect(mockSaveSelectedQuote).not.toHaveBeenCalled();
+        await act(async () => {
+            await result.current.methods.trigger();
+        });
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
+        mockHandleRequest.mockClear();
+        mockSaveSelectedQuote.mockClear();
 
         rerender({
             currentNetwork: getNetwork('btc'),
@@ -313,6 +322,7 @@ describe('useExchangeQuotes', () => {
         });
 
         await waitFor(() => expect(mockSaveSelectedQuote).toHaveBeenCalledWith(undefined));
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
     });
 
     it('fetches quotes once the network becomes available again', async () => {
