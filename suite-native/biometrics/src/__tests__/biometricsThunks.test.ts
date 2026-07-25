@@ -3,6 +3,7 @@ import * as LocalAuthentication from 'expo-local-authentication';
 
 import { events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
+import { getTranslation, localeInitialState, localeReducer } from '@suite-native/intl';
 
 import { biometricsSlice, biometricsSliceInitialState } from '../biometricsSlice';
 import {
@@ -40,9 +41,11 @@ const createBiometricsStore = (
     configureStore({
         reducer: {
             biometrics: biometricsSlice.reducer,
+            locale: localeReducer,
         },
         preloadedState: {
             biometrics: preloadedBiometricsState,
+            locale: localeInitialState,
         },
         middleware: getDefaultMiddleware =>
             getDefaultMiddleware({
@@ -103,6 +106,17 @@ describe('biometricsThunks', () => {
             expect(store.getState().biometrics.biometricsError).toBe(
                 AuthenticateError.AuthenticationFailed,
             );
+        });
+
+        it('should pass translated labels to the native prompt', async () => {
+            const store = createBiometricsStore();
+
+            await store.dispatch(authenticateUserThunk());
+
+            expect(LocalAuthentication.authenticateAsync).toHaveBeenCalledWith({
+                promptMessage: getTranslation('biometrics.prompt.title'),
+                cancelLabel: getTranslation('generic.buttons.cancel'),
+            });
         });
     });
 
