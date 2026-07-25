@@ -73,7 +73,7 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
         mode: 'onChange',
         defaultValues: redirectValues || defaultValues,
     });
-    const { formState, reset, setValue, getValues, control } = methods;
+    const { formState, reset, setValue, getValues, clearErrors, control } = methods;
     // Watch only those values that are relevant in render function
     const [cryptoSelect, fiatInput, cryptoInput, currencySelect, paymentMethod] = useWatch({
         control,
@@ -124,6 +124,7 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
     const toggleAmountInCrypto = () => {
         setValue(TRADING_FORM_CRYPTO_INPUT, '');
         setValue(TRADING_FORM_FIAT_INPUT, '');
+        clearErrors([TRADING_FORM_CRYPTO_INPUT, TRADING_FORM_FIAT_INPUT]);
         baseToggleAmountInCrypto();
     };
 

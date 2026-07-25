@@ -94,9 +94,15 @@ export const useTradingFiatCryptoAmount = <T extends TradingSellExchangeFormProp
     // recalculate the crypto amount from the fiat amount
     const calculateCryptoAmountFromFiat = useCallback(
         (fiatAmount: string | undefined) => {
+            if (!fiatAmount) {
+                setValue(TRADING_FORM_OUTPUT_AMOUNT, '', { shouldValidate: true });
+
+                return;
+            }
+
             const fiatCurrency = getValues(TRADING_FORM_OUTPUT_CURRENCY);
 
-            if (!tradingFiatValues || !fiatCurrency || !fiatAmount) {
+            if (!tradingFiatValues || !fiatCurrency) {
                 return;
             }
 
