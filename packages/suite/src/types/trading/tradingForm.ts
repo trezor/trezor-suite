@@ -215,7 +215,6 @@ export interface TradingExchangeFormContextProps
     }) => Promise<ExchangeTrade | undefined>;
     refreshQuotes: () => Promise<void>;
     isScheduledQuotesRefresh: boolean;
-    resetSelectedOffer: () => void;
     fetchFeesAndCompose: () => Promise<void>;
     tradingReceiveAddress: ReturnType<typeof useTradingReceiveAddress>;
 

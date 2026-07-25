@@ -89,7 +89,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         defaultValues,
     });
 
-    const { reset, register, getValues, setValue, formState, control } = methods;
+    const { reset, register, getValues, setValue, clearErrors, formState, control } = methods;
 
     // Watch only the values the orchestrator itself renders with; each atomic hook
     // owns its own narrow named subscription. Replaces the former broad useWatch.
@@ -149,11 +149,10 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         shouldSuppressComposeErrors: hasEip712SignDataType(selectedQuote),
     });
 
-    const isFormLoading = isInitialDataLoading || formState.isSubmitting || isLoading;
+    const isFormLoadingBase = isInitialDataLoading || formState.isSubmitting || isLoading;
     const isFormInvalid = !(formIsValid && hasValues) || !isReceiveAddressFormValid;
-    const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
 
-    const { toggleAmountInCrypto } = useTradingCurrencySwitcher({
+    const { toggleAmountInCrypto: baseToggleAmountInCrypto } = useTradingCurrencySwitcher({
         account,
         methods,
         inputNames: {
@@ -162,19 +161,27 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         },
     });
 
-    const { cexQuotes, dexQuotes, isScheduledQuotesRefresh, resetSelectedOffer, refreshQuotes } =
-        useExchangeQuotes({
-            control,
-            getValues,
-            setValue,
-            network,
-            shouldSendInSats,
-            receiveAddress: tradingReceiveAddress.receiveAddress,
-            receiveAccountKey: tradingReceiveAddress.selectedAccount?.key,
-            composeRequestCallback: () => {
-                composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
-            },
-        });
+    const { cexQuotes, dexQuotes, isScheduledQuotesRefresh, refreshQuotes } = useExchangeQuotes({
+        methods,
+        network,
+        shouldSendInSats,
+        receiveAddress: tradingReceiveAddress.receiveAddress,
+        receiveAccountKey: tradingReceiveAddress.selectedAccount?.key,
+        receiveAccountSymbol: tradingReceiveAddress.selectedAccount?.symbol,
+        composeRequestCallback: () => {
+            composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
+        },
+    });
+
+    const isFormLoading = isFormLoadingBase || isScheduledQuotesRefresh;
+    const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
+
+    const toggleAmountInCrypto = () => {
+        setValue(TRADING_FORM_OUTPUT_AMOUNT, '', { shouldDirty: true });
+        setValue(TRADING_FORM_OUTPUT_FIAT, '', { shouldDirty: true });
+        clearErrors([TRADING_FORM_OUTPUT_AMOUNT, TRADING_FORM_OUTPUT_FIAT]);
+        baseToggleAmountInCrypto();
+    };
 
     const helpers = useExchangeFormInputs({
         account,
@@ -293,7 +300,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         confirmApproval,
         refreshQuotes,
         isScheduledQuotesRefresh,
-        resetSelectedOffer,
         fetchFeesAndCompose,
         tradingReceiveAddress,
         isLoadingQuote,

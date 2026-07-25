@@ -40,7 +40,6 @@ test.describe('Trading - Buy Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, (
                 searchFilter: 'Jupiter',
                 assetCryptoId: cryptoId,
             });
-            await tradingPage.quotes.waitForSync();
             await tradingPage.inputs.fiatCryptoSwitchButton.click();
             const isCryptoInput = true;
             await tradingPage.fillBuyForm({

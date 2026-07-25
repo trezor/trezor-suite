@@ -28,7 +28,7 @@ export class TradingQuotesSection {
     async waitForSync() {
         await expect(this.loadingSpinner).toBeHidden({ timeout: 30000 });
         // Even though the offer sync is finished, the best offer might not be displayed correctly yet and show 0 BTC
-        await expect(this.bestOfferAmount).not.toHaveText(/^0( w+)?$/);
+        await expect(this.bestOfferAmount).not.toHaveText(/^0( \w+)?$/);
     }
 
     @step()
