@@ -55,6 +55,7 @@ export const Feature = {
         trx: 'trx.staking.claim',
     },
     vote: {
+        ada: 'ada.staking.vote',
         trx: 'trx.staking.vote',
     },
     withdraw: {
