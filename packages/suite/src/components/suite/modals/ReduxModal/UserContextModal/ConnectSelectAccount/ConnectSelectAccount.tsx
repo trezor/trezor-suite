@@ -61,7 +61,14 @@ export const ConnectSelectAccount = () => {
         manualPhase,
         manualAccountIndex,
     } = popupCall;
-    const { selectionType, minCount, maxCount, accountTypeTabs, addressSelection } = options;
+    const {
+        selectionType,
+        minCount,
+        maxCount,
+        accountTypeTabs,
+        addressSelection,
+        requireOnDeviceVerification,
+    } = options;
     // 'manual' is a two-phase flow: pick an account (drill-in, no export), then pick one of its
     // used addresses (the actual export). Every other mode has a single, flat account-index list.
     const isManualAccountPickPhase = addressSelection === 'manual' && manualPhase !== 'address';
@@ -89,12 +96,15 @@ export const ConnectSelectAccount = () => {
     // Selection stays live: it's pure Redux state and touches no device.
     const isDiscovering = pageCandidates.some(c => c.loading);
 
-    // Verification is always available but optional (mirrors ConnectAddressConfirmation) — connecting
-    // only requires a valid selection.
+    // When requireOnDeviceVerification is set (the default), every selected candidate must be
+    // confirmed on the device before it can be exported; otherwise verification stays optional
+    // (mirrors ConnectAddressConfirmation).
+    const allSelectedVerified = selectedCandidates.every(c => c.validated === 'valid');
     const canConfirm =
         selectedCount >= minCount &&
         (maxCount === undefined || selectedCount <= maxCount) &&
-        !isVerifying;
+        !isVerifying &&
+        (!requireOnDeviceVerification || allSelectedVerified);
 
     const toggle = (target: SelectAccountCandidate) => {
         const isTarget = (c: SelectAccountCandidate) =>

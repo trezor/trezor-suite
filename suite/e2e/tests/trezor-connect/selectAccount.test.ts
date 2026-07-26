@@ -100,6 +100,52 @@ test.describe('TrezorConnect.selectAccount', { tag: ['@T3T1', '@T3W1', '@desktop
         await connectSelectAccountModal.closeButton.click();
     });
 
+    // With requireOnDeviceVerification set (the default), the picker must not let the user export a
+    // selection until it has been confirmed on the device: selecting alone keeps confirm disabled,
+    // and only verifying the address unlocks it.
+    test('requireOnDeviceVerification blocks confirm until the address is verified', async ({
+        page,
+        device,
+        connectPermissionsModal,
+        connectSelectAccountModal,
+    }) => {
+        const res = TrezorConnect.selectAccount({
+            coin: 'eth',
+            selectionType: 'single',
+            requireOnDeviceVerification: true,
+        });
+
+        await connectPermissionsModal.confirmButton.click();
+
+        await expect(connectSelectAccountModal.account(0)).toBeVisible();
+
+        // Selecting an account is not enough — confirm stays disabled while it is unverified.
+        await connectSelectAccountModal.checkbox(0).click();
+        await expect(connectSelectAccountModal.verifiedBadge(0)).toBeHidden();
+        await expect(connectSelectAccountModal.confirmButton).toBeDisabled();
+
+        // Verify the selected address on the device; only then does confirm unlock.
+        await connectSelectAccountModal.verifyButton(0).click();
+        // TODO: 'verifying' is set right after clicking; give the device call time to start.
+        await page.waitForTimeout(1000);
+        await device.pressYes();
+        await expect(connectSelectAccountModal.verifiedBadge(0)).toBeVisible();
+        await expect(connectSelectAccountModal.confirmButton).toBeEnabled();
+
+        await connectSelectAccountModal.confirmButton.click();
+
+        const response = await res;
+        expect(response.success).toBe(true);
+        if (!response.success) return;
+
+        expect(response.payload).toHaveLength(1);
+        const [account] = response.payload;
+        if (!account) return;
+        expect(account.address).toMatch(/^0x[0-9a-fA-F]{40}$/);
+
+        await connectSelectAccountModal.closeButton.click();
+    });
+
     test('cancelling returns a Method_Cancel error', async ({
         connectPermissionsModal,
         connectSelectAccountModal,
