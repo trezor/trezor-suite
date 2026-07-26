@@ -14,7 +14,11 @@ import {
     AddressDisplayOptions,
     type EvmSelectedFee,
 } from '@suite-common/wallet-types';
-import { getAccountIdentity, getMevProtectedTxData } from '@suite-common/wallet-utils';
+import {
+    getAccountIdentity,
+    getMevProtectedTxData,
+    isAccountWatchOnly,
+} from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
 import type { AppState, Dispatch } from 'src/types/suite';
@@ -72,6 +76,10 @@ export const sendYieldTransaction = async ({
 }: SendYieldTransactionParams) => {
     const device = selectSelectedDevice(getState());
     const addressDisplayType = selectAddressDisplayType(getState());
+
+    if (isAccountWatchOnly(account)) {
+        throw new Error('Watch-only accounts cannot authorize transactions.');
+    }
 
     if (!device) {
         throw new Error('Device not found.');

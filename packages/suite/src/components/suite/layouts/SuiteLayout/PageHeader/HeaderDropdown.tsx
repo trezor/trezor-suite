@@ -3,7 +3,7 @@ import { type JSX } from 'react';
 import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { getNetwork } from '@suite-common/wallet-config';
-import { hasNetworkFeatures } from '@suite-common/wallet-utils';
+import { hasNetworkFeatures, isAccountWatchOnly } from '@suite-common/wallet-utils';
 import { Dropdown, type DropdownMenuItemProps, type IconComponent } from '@trezor/components';
 import { PencilLineIcon, WalletConnectIcon } from '@trezor/icons';
 
@@ -42,7 +42,10 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
                       },
                       title: <Translation id="TR_NAV_SIGN_AND_VERIFY" />,
                       icon: PencilLineIcon,
-                      isHidden: account ? !hasNetworkFeatures(account, 'sign-verify') : false,
+                      isHidden: account
+                          ? isAccountWatchOnly(account) ||
+                            !hasNetworkFeatures(account, 'sign-verify')
+                          : false,
                   },
               ]
             : []),
@@ -57,7 +60,9 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
             title: <Translation id="TR_WALLETCONNECT" />,
             icon: WalletConnectIcon,
             // caipId marks networks with a WalletConnect adapter (see suite-common/walletconnect)
-            isHidden: account ? !getNetwork(account.symbol).caipId : true,
+            isHidden: account
+                ? isAccountWatchOnly(account) || !getNetwork(account.symbol).caipId
+                : true,
         },
     ];
 

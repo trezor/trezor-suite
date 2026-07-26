@@ -1,8 +1,8 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 import type { MiddlewareAPI } from 'redux';
 
-import { selectSelectedAccountKey } from '@suite/account';
-import { routerLocationChange, selectRouteName } from '@suite/router';
+import { selectSelectedAccount, selectSelectedAccountKey } from '@suite/account';
+import { goto, routerLocationChange, selectRouteName } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { tradingActions } from '@suite-common/trading';
@@ -18,10 +18,13 @@ import {
     transactionsActions,
     unsubscribeBlockchainThunk,
 } from '@suite-common/wallet-core';
+import { isAccountWatchOnly } from '@suite-common/wallet-utils';
 
 import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
 import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
 import type { Action, AppState, Dispatch } from 'src/types/suite';
+import { isWatchOnlyAccountRouteRestricted } from 'src/utils/wallet/watchOnlyAccountRoutes';
+import { removeWatchOnlyAccountImportInstructionsBySymbol } from 'src/utils/wallet/watchOnlyAccountStorage';
 
 const walletMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -59,6 +62,13 @@ const walletMiddleware =
 
         if (accountsActions.removeAccount.match(action)) {
             api.dispatch(unsubscribeBlockchainThunk(action.payload));
+        }
+
+        if (
+            action.type === WALLET_SETTINGS.CHANGE_COIN_VISIBILITY &&
+            !action.payload.shouldBeVisible
+        ) {
+            removeWatchOnlyAccountImportInstructionsBySymbol(action.payload.symbol);
         }
 
         // Update custom backends
@@ -105,6 +115,20 @@ const walletMiddleware =
         }
 
         api.dispatch(selectedAccountActions.syncSelectedAccount(action));
+
+        if (routerLocationChange.match(action)) {
+            const state = api.getState();
+            const selectedAccount = selectSelectedAccount(state);
+            const routeName = selectRouteName(state);
+
+            if (
+                selectedAccount &&
+                isAccountWatchOnly(selectedAccount) &&
+                isWatchOnlyAccountRouteRestricted(routeName)
+            ) {
+                api.dispatch(goto({ routeName: 'wallet-index', preserveParams: true }));
+            }
+        }
 
         return action;
     };

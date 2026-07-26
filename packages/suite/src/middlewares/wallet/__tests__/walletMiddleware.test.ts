@@ -3,6 +3,7 @@ import { type RouterState } from '@suite/router';
 import { extraDependenciesCommonMock, testMocks } from '@suite-common/test-utils';
 import {
     type SendState,
+    WALLET_SETTINGS,
     prepareBlockchainMiddleware,
     prepareSendFormReducer,
 } from '@suite-common/wallet-core';
@@ -14,6 +15,10 @@ import formDraftReducer from 'src/reducers/wallet/formDraftReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
 import { type Action } from 'src/types/suite';
+import {
+    getWatchOnlyAccountImportInstructions,
+    storeWatchOnlyAccountImportInstruction,
+} from 'src/utils/wallet/watchOnlyAccountStorage';
 
 import * as fixtures from '../__fixtures__/walletMiddleware';
 
@@ -93,6 +98,7 @@ const initStore = (state: State) => {
 describe('walletMiddleware', () => {
     afterEach(() => {
         jest.clearAllMocks();
+        window.sessionStorage.clear();
     });
 
     fixtures.blockchainSubscription.forEach(f => {
@@ -149,5 +155,32 @@ describe('walletMiddleware', () => {
                 expect(store.getState().wallet.send?.drafts).toEqual(expectedDrafts);
             },
         );
+    });
+
+    it('removes stored watch-only accounts for a disabled network', () => {
+        storeWatchOnlyAccountImportInstruction({
+            descriptor: 'ethereum-account',
+            symbol: 'eth',
+        });
+        storeWatchOnlyAccountImportInstruction({
+            descriptor: 'bitcoin-account',
+            symbol: 'btc',
+        });
+        const store = initStore(getInitialState());
+
+        store.dispatch({
+            type: WALLET_SETTINGS.CHANGE_COIN_VISIBILITY,
+            payload: {
+                symbol: 'eth',
+                shouldBeVisible: false,
+            },
+        });
+
+        expect(getWatchOnlyAccountImportInstructions()).toEqual([
+            {
+                descriptor: 'bitcoin-account',
+                symbol: 'btc',
+            },
+        ]);
     });
 });

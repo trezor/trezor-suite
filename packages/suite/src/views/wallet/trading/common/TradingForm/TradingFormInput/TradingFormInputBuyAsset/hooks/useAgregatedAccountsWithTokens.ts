@@ -2,11 +2,7 @@ import { useMemo } from 'react';
 import { useThrottle } from 'react-use';
 
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
-import {
-    selectAllAccountsToList,
-    selectBaseCurrency,
-    selectCurrentFiatRates,
-} from '@suite-common/wallet-core';
+import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getAccountFiatBalance } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
@@ -14,6 +10,7 @@ import { useCurrentRef } from '@trezor/react-utils';
 import { BigNumber, deepEqual } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
+import { selectAllOwnedAccountsToList } from 'src/selectors/suite/watchOnlyAccountSelectors';
 import {
     enhanceTokensWithRates,
     getAccountsWithPositiveBalanceOrVisibleTokens,
@@ -47,7 +44,7 @@ type AccountTokenId = `${Account['symbol']}--${TokenInfo['contract']}`;
  */
 export function useAgregatedAccountsWithTokens() {
     const accounts = useSelector(
-        selectAllAccountsToList,
+        selectAllOwnedAccountsToList,
         // Prevent re-redering the `useAgregatedAccountsWithTokens` hook and thus its children when the accounts change (accounts are being constantly updated in Redux)
         areAccountsEqual,
     );

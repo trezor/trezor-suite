@@ -34,6 +34,7 @@ import { type Account } from '@suite-common/wallet-types';
 import {
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,
+    isAccountWatchOnly,
     isErc4626,
     isWrappedNativeToken,
 } from '@suite-common/wallet-utils';
@@ -113,6 +114,8 @@ const TokenRowBasicActions = ({
     const contractAddress = getContractAddressForNetworkSymbol(account.symbol, token.contract);
     const tokenCryptoId = toTokenCryptoId(account.symbol, contractAddress);
     const tokenTradingOptions = coins?.[tokenCryptoId]?.services;
+    const isWatchOnly = isAccountWatchOnly(account);
+    const watchOnlyActionProps = isWatchOnly ? { isHidden: true } : {};
 
     const canBuyToken = !!tokenTradingOptions && tokenTradingOptions.buy;
     const canSwapToken =
@@ -376,6 +379,7 @@ const TokenRowBasicActions = ({
                         'data-testid': '@trading/tokens/buy-button',
                         icon: CurrencyCircleDollarIcon,
                         onClick: onBuyButtonClick,
+                        ...watchOnlyActionProps,
                         isDisabled: !canBuyToken,
                     },
                     {
@@ -383,6 +387,7 @@ const TokenRowBasicActions = ({
                         'data-testid': '@trading/tokens/sell-button',
                         icon: CurrencyCircleDollarIcon,
                         onClick: onSellButtonClick,
+                        ...watchOnlyActionProps,
                         isDisabled: token.balance === '0' || !canSellToken,
                     },
                     {
@@ -391,6 +396,7 @@ const TokenRowBasicActions = ({
                         icon: RepeatIcon,
                         onClick: onSwapButtonClick,
                         isHidden: type === 'defi' ? false : !isBelowTablet,
+                        ...watchOnlyActionProps,
                         isDisabled: !canSwapToken,
                     },
                     {
@@ -404,6 +410,7 @@ const TokenRowBasicActions = ({
                             (tokenStatusType === TokenManagementAction.HIDE
                                 ? !isBelowTablet
                                 : true),
+                        ...watchOnlyActionProps,
                     },
                     {
                         label: <Translation id="TR_NAV_SEND" />,
@@ -416,6 +423,7 @@ const TokenRowBasicActions = ({
                             (tokenStatusType === TokenManagementAction.HIDE
                                 ? !isBelowTablet
                                 : true),
+                        ...watchOnlyActionProps,
                     },
                     {
                         label: <Translation id="TR_UNWRAP_NATIVE_TOKEN" />,
@@ -440,6 +448,7 @@ const TokenRowBasicActions = ({
                         onClick: () => {},
                         isDisabled: type === 'defi' ? isDepositButtonDisabled : true,
                         isHidden: type === 'defi' ? !isBelowTablet : !isErc4626(token),
+                        ...watchOnlyActionProps,
                     },
                     {
                         label: <Translation id="TR_EARN_YIELD_WITHDRAW" />,
@@ -447,6 +456,7 @@ const TokenRowBasicActions = ({
                         onClick: () => {},
                         isDisabled: type === 'defi' ? isWithdrawButtonDisabled : true,
                         isHidden: type === 'defi' ? !isBelowTablet : !isErc4626(token),
+                        ...watchOnlyActionProps,
                     },
                     {
                         label: (
@@ -460,7 +470,10 @@ const TokenRowBasicActions = ({
                         ),
                         icon: EyeSlashIcon,
                         onClick: onShowHideButtonClick,
-                        isHidden: tokenStatusType === TokenManagementAction.SHOW && !isBelowTablet,
+                        isHidden:
+                            !isWatchOnly &&
+                            tokenStatusType === TokenManagementAction.SHOW &&
+                            !isBelowTablet,
                     },
                     {
                         label: <Translation id="TR_VIEW_ALL_TRANSACTION" />,
@@ -479,11 +492,12 @@ const TokenRowBasicActions = ({
                         onClick: onDeactivateTokenButtonClick,
                         // Only show for Stellar tokens
                         isHidden: network.networkType !== 'stellar',
+                        ...watchOnlyActionProps,
                     },
                 ]}
             />
 
-            {type !== 'defi' && !isBelowTablet && (
+            {!isWatchOnly && type !== 'defi' && !isBelowTablet && (
                 <IconButton
                     isDisabled={!canSwapToken}
                     key="swap"
@@ -501,7 +515,8 @@ const TokenRowBasicActions = ({
                 />
             )}
 
-            {!isBelowTablet &&
+            {!isWatchOnly &&
+                !isBelowTablet &&
                 (tokenStatusType === TokenManagementAction.SHOW ? (
                     <Button
                         iconLeft={EyeIcon}

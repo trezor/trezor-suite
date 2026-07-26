@@ -5,7 +5,7 @@ import { selectRouterParams } from '@suite/router';
 import { selectIsNftSectionEnabled } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { getNetworkOptional } from '@suite-common/wallet-config';
-import { hasNetworkFeatures } from '@suite-common/wallet-utils';
+import { hasNetworkFeatures, isAccountWatchOnly } from '@suite-common/wallet-utils';
 
 import { type NavigationItem, SubpageNavigation } from 'src/components/suite/layouts/SuiteLayout';
 import { useGoToWithAnalytics } from 'src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
@@ -70,7 +70,9 @@ export const AccountNavigation = () => {
                 });
             },
             title: <Translation id="TR_NAV_STAKING" />,
-            isHidden: !hasNetworkFeatures(account, 'staking'),
+            isHidden:
+                !hasNetworkFeatures(account, 'staking') ||
+                (account !== undefined && isAccountWatchOnly(account)),
             'data-testid': '@wallet/menu/staking',
         },
         {

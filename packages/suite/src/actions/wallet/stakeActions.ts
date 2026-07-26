@@ -21,6 +21,7 @@ import {
 import {
     formatNetworkAmount,
     getMevProtectedTxData,
+    isAccountWatchOnly,
     isRbfBumpFeeTransaction,
     isSupportedAdaStakingNetworkSymbol,
     isSupportedEthStakingNetworkSymbol,
@@ -222,7 +223,7 @@ export const signTransaction =
         const device = selectSelectedDevice(getState());
         const { account } = getState().wallet.selectedAccount;
 
-        if (!device || !account) return;
+        if (!device || !account || isAccountWatchOnly(account)) return;
 
         const enhancedTxInfo: PrecomposedTransactionFinal = {
             ...transactionInfo,
