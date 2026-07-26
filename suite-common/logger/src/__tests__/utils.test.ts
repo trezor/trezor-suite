@@ -12,6 +12,7 @@ describe('logsUtils', () => {
             'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
         ),
         symbol: 'btc',
+        watchOnlyLabel: 'QA whale',
     });
     const device = mockSuiteDevice();
 
@@ -29,6 +30,7 @@ describe('logsUtils', () => {
                 utxo: REDACTED_REPLACEMENT,
                 metadata: REDACTED_REPLACEMENT,
                 key: REDACTED_REPLACEMENT,
+                watchOnlyLabel: REDACTED_REPLACEMENT,
             });
         });
     });
