@@ -16,6 +16,7 @@ import { Card, Column, Modal, Tooltip } from '@trezor/components';
 import { VotingDelegationsOptions } from 'src/components/earn';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import {
     ChangeDelegateFormContext,
     useChangeDelegateForm,
@@ -36,6 +37,8 @@ export const StakeChangeDelegateModalLoaded = ({
     const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
 
     const { account } = selectedAccount;
+
+    const { isVotingDisabled, votingMessageContent } = useMessageSystemStaking(account.symbol);
 
     const changeDelegateContextValues = useChangeDelegateForm({ selectedAccount });
 
@@ -62,7 +65,7 @@ export const StakeChangeDelegateModalLoaded = ({
         onCancel?.();
     };
 
-    const { isDisabled, errorType } = useMemo(() => {
+    const { isDisabled: isSelectionInvalid, errorType } = useMemo(() => {
         switch (selectedVotingDelegation.type) {
             case 'everstake': {
                 if (isEverstake) {
@@ -89,6 +92,20 @@ export const StakeChangeDelegateModalLoaded = ({
         return { isDisabled: false };
     }, [selectedVotingDelegation, currentDrepId, isEverstake]);
 
+    const isDisabled = isSelectionInvalid || isVotingDisabled;
+
+    const tooltipContent = useMemo(() => {
+        if (isVotingDisabled) {
+            return votingMessageContent;
+        }
+
+        if (isSelectionInvalid && errorType === 'current_delegate') {
+            return <Translation id="TR_STAKE_CHANGE_DELEGATE_DISABLED_TOOLTIP" />;
+        }
+
+        return undefined;
+    }, [isVotingDisabled, votingMessageContent, isSelectionInvalid, errorType]);
+
     return (
         <ChangeDelegateFormContext.Provider value={changeDelegateContextValues}>
             <FormProvider {...methods}>
@@ -96,10 +113,7 @@ export const StakeChangeDelegateModalLoaded = ({
                     heading={<Translation id="TR_STAKE_CHANGE_DELEGATE" />}
                     onCancel={handleCancel}
                     bottomContent={
-                        <Tooltip
-                            isActive={isDisabled && errorType === 'current_delegate'}
-                            content={<Translation id="TR_STAKE_CHANGE_DELEGATE_DISABLED_TOOLTIP" />}
-                        >
+                        <Tooltip content={tooltipContent}>
                             <Modal.Button
                                 isDisabled={isDisabled}
                                 onClick={() => handleSubmit(signTx)()}
