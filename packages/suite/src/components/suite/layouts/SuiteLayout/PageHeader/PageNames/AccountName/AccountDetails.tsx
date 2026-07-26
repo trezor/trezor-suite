@@ -8,6 +8,7 @@ import { useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { isAccountWatchOnly } from '@suite-common/wallet-utils';
 import { Column, H2, Row, Text, motionEasing } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
@@ -37,6 +38,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
     const { symbol, key, path, accountType, formattedBalance, deviceState, networkType } =
         selectedAccount;
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
+    const isWatchOnly = isAccountWatchOnly(selectedAccount);
 
     const getTypographyStyle = () => {
         if (isBalanceShown) {
@@ -65,6 +67,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                         path={path}
                         networkType={networkType}
                         size={isBalanceShown ? 'small' : 'medium'}
+                        isWatchOnly={isWatchOnly}
                     />
                 }
                 gap={8}
@@ -81,6 +84,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
             defaultLabel,
             accountType,
             networkType,
+            isWatchOnly,
             isBalanceShown,
             translationString,
         ],

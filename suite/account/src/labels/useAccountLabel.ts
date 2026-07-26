@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useTranslation } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
+import { isAccountWatchOnly } from '@suite-common/wallet-utils';
 
 import { getDefaultAccountLabel } from './getDefaultAccountLabel';
 import { type SelectAccountLabelState, selectAccountLabel } from './selectAccountLabel';
@@ -28,9 +29,10 @@ export const useAccountLabel = ({ account }: UseAccountLabelParams): AccountLabe
     );
 
     const defaultLabel = getDefaultAccountLabel(translationString, account);
+    const watchOnlyAccountLabel = isAccountWatchOnly(account) ? account.watchOnlyLabel : undefined;
 
     return {
-        label: accountLabel || defaultLabel,
+        label: accountLabel || watchOnlyAccountLabel || defaultLabel,
         defaultLabel,
     };
 };
