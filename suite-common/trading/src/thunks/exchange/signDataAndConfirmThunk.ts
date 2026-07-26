@@ -3,6 +3,7 @@ import { type ExchangeTrade } from 'invity-api';
 import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Account } from '@suite-common/wallet-types';
+import { isAccountWatchOnly } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     type EthereumSignTypedDataMessage,
     type EthereumSignTypedDataTypes,
@@ -53,6 +54,10 @@ export const signDataAndConfirmThunk = createThunk<
         }: SignDataAndConfirmThunkProps,
         { dispatch, getState, rejectWithValue },
     ) => {
+        if (isAccountWatchOnly(account)) {
+            return rejectWithValue(signDataRejectedValue);
+        }
+
         const selectedQuote = selectTradingExchangeSelectedQuote(getState());
         const sendAccountKey = selectTradingExchangeAccountKey(getState());
         const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
