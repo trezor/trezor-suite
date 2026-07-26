@@ -1,3 +1,4 @@
+import { selectIsDebugModeActive } from '@suite/debug';
 import { selectFlags, setFlag } from '@suite/flags';
 import { metadataLabelingActions } from '@suite/metadata';
 import { initialRedirection, routerInit } from '@suite/router';
@@ -22,7 +23,9 @@ import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import * as bioAuthThunks from 'src/actions/suite/bioAuthThunks';
+import { restoreWatchOnlyAccountsThunk } from 'src/actions/wallet/watchOnlyAccountActions';
 import type { Dispatch, GetState } from 'src/types/suite';
+import { getWatchOnlyAccountImportInstructions } from 'src/utils/wallet/watchOnlyAccountStorage';
 
 import { SUITE } from './constants';
 import { onSuiteReady } from './suiteActions';
@@ -133,4 +136,8 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     }
     // 16. backend connected, suite is ready to use
     dispatch(onSuiteReady());
+
+    if (selectIsDebugModeActive(getState()) && getWatchOnlyAccountImportInstructions().length > 0) {
+        void dispatch(restoreWatchOnlyAccountsThunk());
+    }
 };
