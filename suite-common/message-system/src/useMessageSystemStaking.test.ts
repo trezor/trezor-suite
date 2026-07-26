@@ -42,6 +42,16 @@ const stateWithDisabledFeatures = {
                     feature: [{ domain: 'eth.staking.claim', flag: false }],
                 },
             },
+            {
+                message: {
+                    id: 'adaVoteDisabledMsg',
+                    priority: 1,
+                    dismissible: false,
+                    category: ['feature'],
+                    content: { en: 'Change delegate disabled' },
+                    feature: [{ domain: 'ada.staking.vote', flag: false }],
+                },
+            },
         ],
         experiments: [],
     },
@@ -49,7 +59,7 @@ const stateWithDisabledFeatures = {
         banner: [],
         context: [],
         modal: [],
-        feature: ['stakeDisabledMsg', 'claimDisabledMsg'],
+        feature: ['stakeDisabledMsg', 'claimDisabledMsg', 'adaVoteDisabledMsg'],
     },
 } as unknown as MessageSystemState;
 
@@ -80,6 +90,22 @@ describe('useMessageSystemStaking', () => {
             unstakingMessageContent: 'Staking disabled',
             claimingMessageContent: 'Claiming disabled',
         });
+    });
+
+    it('returns disabled state and message for ada change-delegate (vote) feature', () => {
+        const { result } = renderHook('ada');
+
+        expect(result.current).toMatchObject({
+            isVotingDisabled: true,
+            votingMessageContent: 'Change delegate disabled',
+        });
+    });
+
+    it('returns undefined voting state for networks without a vote feature key', () => {
+        const { result } = renderHook('eth');
+
+        expect(result.current.isVotingDisabled).toBeUndefined();
+        expect(result.current.votingMessageContent).toBeUndefined();
     });
 
     it('returns localized message content', () => {
