@@ -30,6 +30,7 @@ import {
     getMevProtectedTxData,
     getPendingAccount,
     hasNetworkFeatures,
+    isAccountWatchOnly,
     isAllowanceUnlimited,
     isCardanoTx,
     isEvmApprovalTxByTextSignature,
@@ -584,6 +585,13 @@ export const signTransactionThunk = createThunk<
         { formState, precomposedTransaction, selectedAccount, paymentRequests },
         { dispatch, rejectWithValue, getState },
     ) => {
+        if (isAccountWatchOnly(selectedAccount)) {
+            return rejectWithValue({
+                error: 'sign-transaction-failed',
+                message: 'Watch-only accounts cannot authorize transactions.',
+            });
+        }
+
         const device = selectSelectedDevice(getState());
 
         if (!device || precomposedTransaction?.type !== 'final')

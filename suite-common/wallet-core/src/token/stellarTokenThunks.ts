@@ -5,6 +5,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import {
     getConvertedOrDefaultFeeInfo,
+    isAccountWatchOnly,
     isTestnet,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
@@ -30,6 +31,14 @@ const manageTrustline = async (
     rejectWithValue: (value: any) => any,
 ) => {
     const { account, contractAddress, selectedFee, customFeePerUnit } = payload;
+
+    if (isAccountWatchOnly(account)) {
+        return rejectWithValue({
+            error: 'sign-transaction-failed',
+            message: 'Watch-only accounts cannot authorize transactions.',
+        });
+    }
+
     const device = selectSelectedDevice(getState());
     const rawFeeInfo = selectRawNetworkFeeInfo(getState(), account.symbol);
 

@@ -4,13 +4,15 @@ import {
     getAccountTotalStakingBalance,
     getAccountsWithSomeTransactionHistory,
     getStakingProvidersForAnalytics,
+    isAccountWatchOnly,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { getAccountAnalyticsTokenSymbols } from '../tokens/tokenUtils';
 
 export const isAccountActiveForAnalytics = (account: Account) =>
-    getAccountsWithSomeTransactionHistory([account]).length > 0 || !account.empty;
+    !isAccountWatchOnly(account) &&
+    (getAccountsWithSomeTransactionHistory([account]).length > 0 || !account.empty);
 
 export const getAccountInfoAnalyticsPayload = (
     account: Account,
