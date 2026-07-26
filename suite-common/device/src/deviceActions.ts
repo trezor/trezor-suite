@@ -36,7 +36,7 @@ const connectDevice = createAction(DEVICE.CONNECT, (payload: DeviceConnectAction
 
 const createDeviceInstance = createAction(
     `${DEVICE_MODULE_PREFIX}/createDeviceInstance`,
-    (payload: { device: TrezorDevice }) => ({ payload }),
+    (payload: { device: TrezorDevice; preserveState?: boolean }) => ({ payload }),
 );
 
 const connectUnacquiredDevice = createAction(

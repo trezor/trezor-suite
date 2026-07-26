@@ -422,20 +422,18 @@ const updateTimestamp = (draft: DeviceReducerState, device?: TrezorDevice) => {
  * @param {TrezorDevice} device
  * @returns
  */
-// TODO: this now can only be used for imported device!
-const createInstance = (draft: DeviceReducerState, device: TrezorDevice) => {
+// This action is used for virtual devices with an explicitly assigned state.
+const createInstance = (draft: DeviceReducerState, device: TrezorDevice, preserveState = false) => {
     // only acquired devices
     if (!device?.features) return;
 
-    const isPortfolioTrackerDevice = device.id === PORTFOLIO_TRACKER_DEVICE_ID;
+    const shouldPreserveState = device.id === PORTFOLIO_TRACKER_DEVICE_ID || preserveState;
 
     const currentTime = new Date().getTime();
     const newDevice: TrezorDevice = {
         ...device,
         remember: true,
-        // In mobile app, we need to keep device state defined by the constant
-        // to be able to filter device accounts for portfolio tracker
-        state: isPortfolioTrackerDevice ? device.state : undefined,
+        state: shouldPreserveState ? device.state : undefined,
         walletNumber: undefined,
         ts: currentTime,
         firstConnectedTimestamp: device.firstConnectedTimestamp ?? currentTime,
@@ -713,7 +711,7 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                 },
             )
             .addCase(deviceActions.createDeviceInstance, (state, { payload }) => {
-                createInstance(state, payload.device);
+                createInstance(state, payload.device, payload.preserveState);
             })
             .addCase(
                 deviceActions.setDelegatedIdentityKey,
