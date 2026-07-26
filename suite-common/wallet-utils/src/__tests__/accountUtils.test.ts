@@ -14,6 +14,8 @@ import {
     getUtxoFromSignedTransaction,
     getUtxoOutpoint,
     hasNetworkFeatures,
+    isAccountDiscoverable,
+    isAccountWatchOnly,
     isTestnet,
     sortByBIP44AddressIndex,
     sortByCoin,
@@ -27,6 +29,30 @@ import {
 } from '../amountUtils';
 
 describe('account utils', () => {
+    describe(isAccountWatchOnly.name, () => {
+        it.each([
+            [{ isWatchOnly: true }, true],
+            [{ isWatchOnly: false }, false],
+            [{ isWatchOnly: undefined }, false],
+        ])('identifies explicitly marked watch-only accounts', (account, expected) => {
+            expect(isAccountWatchOnly(account)).toBe(expected);
+        });
+    });
+
+    describe(isAccountDiscoverable.name, () => {
+        it('excludes imported accounts', () => {
+            expect(
+                isAccountDiscoverable(
+                    mockWalletAccount({
+                        accountType: 'imported',
+                        imported: true,
+                        symbol: 'btc',
+                    }),
+                ),
+            ).toBe(false);
+        });
+    });
+
     fixtures.getUtxoFromSignedTransaction.forEach(f => {
         it(`getUtxoFromSignedTransaction: ${f.description}`, () => {
             // @ts-expect-error params are partial

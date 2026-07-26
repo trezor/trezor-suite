@@ -187,6 +187,8 @@ export type AccountBase = {
     empty: boolean;
     visible: boolean;
     imported?: boolean;
+    isWatchOnly?: boolean;
+    watchOnlyLabel?: string;
     balance: string;
     availableBalance: string;
     formattedBalance: string;
