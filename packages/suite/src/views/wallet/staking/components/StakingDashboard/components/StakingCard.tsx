@@ -110,8 +110,10 @@ export const StakingCard = ({
     const {
         isStakingDisabled,
         isUnstakingDisabled,
+        isVotingDisabled,
         stakingMessageContent,
         unstakingMessageContent,
+        votingMessageContent,
     } = useMessageSystemStaking(account.symbol);
 
     const {
@@ -215,7 +217,8 @@ export const StakingCard = ({
     };
 
     const openChangeDelegateModal = () => {
-        if (!isCardanoNetworkType || !isStakingActive || isStakeConfirming) return;
+        if (!isCardanoNetworkType || !isStakingActive || isStakeConfirming || isVotingDisabled)
+            return;
 
         dispatch(openModal({ type: 'change-delegate' }));
 
@@ -420,14 +423,19 @@ export const StakingCard = ({
                         </Button>
                     </Tooltip>
                     {isCardanoNetworkType && (
-                        <Button
-                            onClick={openChangeDelegateModal}
-                            isDisabled={!isStakingActive || isStakeConfirming}
-                            intent="neutral"
-                            priority="secondary"
-                        >
-                            <Translation id="TR_STAKE_CHANGE_DELEGATE" />
-                        </Button>
+                        <Tooltip content={votingMessageContent}>
+                            <Button
+                                onClick={openChangeDelegateModal}
+                                isDisabled={
+                                    !isStakingActive || isStakeConfirming || isVotingDisabled
+                                }
+                                iconLeft={isVotingDisabled ? InfoIcon : undefined}
+                                intent="neutral"
+                                priority="secondary"
+                            >
+                                <Translation id="TR_STAKE_CHANGE_DELEGATE" />
+                            </Button>
+                        </Tooltip>
                     )}
                 </Row>
             </Column>
