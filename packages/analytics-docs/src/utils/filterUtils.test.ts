@@ -1,4 +1,4 @@
-import type { EventDoc } from '../../types';
+import type { EventDoc } from '../types';
 import {
     eventHasVersion,
     eventMatchesFullText,
@@ -9,7 +9,7 @@ import {
     getEventId,
     getVersionsWithEvents,
     toEventExportName,
-} from '../filterUtils';
+} from './filterUtils';
 
 describe('fuzzyMatch (event name)', () => {
     it('empty query matches everything', () => {
