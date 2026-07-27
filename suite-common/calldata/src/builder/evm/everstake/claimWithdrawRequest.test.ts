@@ -1,4 +1,4 @@
-import { buildClaimWithdrawRequest } from '../../../../builder/evm/everstake/claimWithdrawRequest';
+import { buildClaimWithdrawRequest } from './claimWithdrawRequest';
 
 describe('buildClaimWithdrawRequest', () => {
     it('encodes claimWithdrawRequest selector with no args', () => {

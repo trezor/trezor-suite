@@ -1,7 +1,7 @@
 import { BigNumber } from '@trezor/utils';
 
-import { buildWithdraw } from '../../../builder/evm/withdraw';
-import { asEvmAddress } from '../../../types/evm';
+import { buildWithdraw } from './withdraw';
+import { asEvmAddress } from '../../types/evm';
 
 const SENDER = asEvmAddress('0x22E228AdE324185123A54Ad25F3459a99CF51E7a');
 

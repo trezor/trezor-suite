@@ -1,5 +1,5 @@
-import { createCrossValidator } from '../../builder/createCrossValidator';
-import { createPolicy } from '../../policy/createPolicy';
+import { createCrossValidator } from './createCrossValidator';
+import { createPolicy } from '../policy/createPolicy';
 
 describe('createCrossValidator', () => {
     it('returns empty array when validate returns null', () => {

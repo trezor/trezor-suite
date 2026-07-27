@@ -1,6 +1,6 @@
 import { BigNumber } from '@trezor/utils';
 
-import { buildStake } from '../../../../builder/evm/everstake/stake';
+import { buildStake } from './stake';
 
 describe('buildStake', () => {
     it('encodes valid stake calldata for source = 1', () => {

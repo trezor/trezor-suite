@@ -1,6 +1,6 @@
 import { BigNumber } from '@trezor/utils';
 
-import { buildUnstake } from '../../../../builder/evm/everstake/unstake';
+import { buildUnstake } from './unstake';
 
 describe('buildUnstake', () => {
     it('encodes valid unstake calldata', () => {
