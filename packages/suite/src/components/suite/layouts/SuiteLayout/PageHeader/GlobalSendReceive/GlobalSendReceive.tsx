@@ -7,7 +7,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { resetProtocol } from 'src/actions/suite/protocolActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectAllOwnedAccountsToList } from 'src/selectors/suite/watchOnlyAccountSelectors';
 import { globalSendReceiveFiltersActions } from 'src/slices/wallet/globalSendReceiveFilters';
 import { type AccountItemType } from 'src/types/wallet';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
@@ -24,7 +23,6 @@ export const GlobalSendReceive = memo(function GlobalSendReceiveInner() {
     const { sendAnalytics, receiveAnalytics } = useGlobalSendReceiveAnalytics();
     const dispatch = useDispatch();
     const accounts = useSelector(selectAllAccountsToList);
-    const ownedAccounts = useSelector(selectAllOwnedAccountsToList);
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
 
     const isDeviceConnected = !!device?.connected && !!device?.available;
@@ -64,10 +62,6 @@ export const GlobalSendReceive = memo(function GlobalSendReceiveInner() {
         closeModal();
         dispatch(globalSendReceiveFiltersActions.resetFilters());
     };
-
-    if (accounts.length > 0 && ownedAccounts.length === 0) {
-        return null;
-    }
 
     return (
         <AppNavigationTooltip>

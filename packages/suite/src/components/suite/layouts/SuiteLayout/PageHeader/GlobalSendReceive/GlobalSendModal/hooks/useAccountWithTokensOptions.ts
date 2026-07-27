@@ -10,7 +10,7 @@ import {
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { canAccountAuthorize, filterAccountsByNetworkSymbol } from '@suite-common/wallet-utils';
+import { filterAccountsByNetworkSymbol } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
 import { useCurrentRef } from '@trezor/react-utils';
 
@@ -42,11 +42,7 @@ export function useAccountWithTokensOptions({
     expandedHiddenTokensGroups,
     staticSessionId,
 }: UseAccountWithTokensOptionsProps): AccountWithTokensOption[] {
-    const visibleAccounts = useSelector(selectVisibleDeviceAccounts);
-    const baseAccounts = useMemo(
-        () => visibleAccounts.filter(canAccountAuthorize),
-        [visibleAccounts],
-    );
+    const baseAccounts = useSelector(selectVisibleDeviceAccounts);
 
     const accounts = useSelector(state =>
         selectAccountsWithSuiteSyncLabel(state, baseAccounts, staticSessionId),

@@ -8,7 +8,6 @@ import {
     getNetworkDisplaySymbol,
     getNetworkFeatures,
 } from '@suite-common/wallet-config';
-import { isAccountWatchOnly } from '@suite-common/wallet-utils';
 import { ArrowDownIcon, ArrowsLeftRightIcon, CurrencyCircleDollarIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout } from 'src/components/wallet';
@@ -26,18 +25,6 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
 
     const displaySymbol = getNetworkDisplaySymbol(account.symbol);
     const networkName = getNetwork(account.symbol).name;
-
-    if (isAccountWatchOnly(account)) {
-        return (
-            <AccountExceptionLayout
-                data-testid="@accounts/empty-account"
-                title={<Translation id="TR_ACCOUNT_IS_EMPTY_TITLE" />}
-                description={<Translation id="TR_ACCOUNT_WATCH_ONLY_ANNOUNCEMENT" />}
-                icon={ArrowsLeftRightIcon}
-                iconVariant="neutral"
-            />
-        );
-    }
 
     const handleNavigateToReceivePage = () => {
         dispatch(goto({ routeName: 'wallet-receive', preserveParams: true }));

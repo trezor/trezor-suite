@@ -1,7 +1,7 @@
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { canAccountAuthorize, hasNetworkFeatures } from '@suite-common/wallet-utils';
+import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { type AccountItemType } from 'src/types/wallet';
@@ -41,7 +41,7 @@ export const AccountSection = ({
     const isStakeShownStored = useSelector(state =>
         selectAccountIsStakingActive(state, account.key),
     );
-    const isStakeShown = !hideStaking && canAccountAuthorize(account) && isStakeShownStored;
+    const isStakeShown = !hideStaking && isStakeShownStored;
 
     const tokens = getTokens({
         tokens: accountTokens,

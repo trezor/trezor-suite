@@ -2,7 +2,6 @@ import { selectFullSelectedAccount } from '@suite/account';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { selectRouterParams } from '@suite/router';
-import { canAccountAuthorize } from '@suite-common/wallet-utils';
 import { Row } from '@trezor/components';
 import { ButtonGroup } from '@trezor/components/src/components/buttons/ButtonGroup/ButtonGroup';
 import { ArrowDownIcon, ArrowUpIcon } from '@trezor/icons';
@@ -21,10 +20,6 @@ export const HeaderActions = () => {
     const selectedAccount = useSelector(selectFullSelectedAccount);
     const routerParams = useSelector(selectRouterParams) as WalletParams;
     const { device } = useDevice();
-
-    if (selectedAccount.account && !canAccountAuthorize(selectedAccount.account)) {
-        return null;
-    }
 
     const accountType = selectedAccount.account?.accountType || routerParams?.accountType || '';
     const isTradingAvailable = !['coinjoin'].includes(accountType);

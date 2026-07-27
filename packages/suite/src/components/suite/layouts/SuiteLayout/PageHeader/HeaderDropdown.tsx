@@ -42,10 +42,7 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
                       },
                       title: <Translation id="TR_NAV_SIGN_AND_VERIFY" />,
                       icon: PencilLineIcon,
-                      isHidden: account
-                          ? !canAccountAuthorize(account) ||
-                            !hasNetworkFeatures(account, 'sign-verify')
-                          : false,
+                      isHidden: account ? !hasNetworkFeatures(account, 'sign-verify') : false,
                   },
               ]
             : []),

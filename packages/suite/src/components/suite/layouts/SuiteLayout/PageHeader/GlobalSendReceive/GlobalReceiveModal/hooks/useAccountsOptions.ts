@@ -3,13 +3,13 @@ import { useThrottle } from 'react-use';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
+import { selectAllAccountsToList } from '@suite-common/wallet-core';
 
 import { ASSET_ROW_HEIGHT } from 'src/components/suite/asset-picker/constants';
 import { useSelector } from 'src/hooks/suite';
-import { selectAllOwnedAccountsToList } from 'src/selectors/suite/watchOnlyAccountSelectors';
 
 export function useAccountsOptions() {
-    const baseAccounts = useSelector(selectAllOwnedAccountsToList);
+    const baseAccounts = useSelector(selectAllAccountsToList);
     const device = useSelector(selectSelectedDevice);
 
     const accounts = useSelector(state =>

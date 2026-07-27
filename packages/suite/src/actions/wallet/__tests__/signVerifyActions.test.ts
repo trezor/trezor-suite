@@ -1,5 +1,6 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
+import { ACCOUNT_AUTHORIZATION_UNAVAILABLE_MESSAGE } from '@suite-common/wallet-utils';
 
 import { showAddress, sign, verify } from 'src/actions/wallet/signVerifyActions';
 import { configureStore } from 'src/support/tests/configureStore';
@@ -42,6 +43,36 @@ describe('Sign/Verify actions', () => {
         const res = await store.dispatch(sign(PATH, MESSAGE));
         expect(res.address).toStrictEqual(ADDRESS);
         expect(res.signature).toStrictEqual(SIGNATURE);
+    });
+
+    it('allows a watch-only account to verify but stops it at signing', async () => {
+        store = configureStore()({
+            wallet: {
+                selectedAccount: {
+                    account: { symbol: 'btc', networkType: 'bitcoin', isWatchOnly: true },
+                },
+                settings: { addressDisplayType: 'chunked' },
+            },
+            device: { selectedDevice: mockSuiteDevice({ connected: true, available: true }) },
+        });
+
+        const result = await store.dispatch(sign(PATH, MESSAGE));
+        const notificationAction = store
+            .getActions()
+            .find(
+                ({ payload }: { payload?: { type?: string } }) =>
+                    payload?.type === 'sign-message-error',
+            );
+
+        expect(result).toBe(false);
+        expect(notificationAction.payload.error).toBe(ACCOUNT_AUTHORIZATION_UNAVAILABLE_MESSAGE);
+
+        testMocks.setTrezorConnectFixtures({
+            success: true,
+            payload: { message: MESSAGE },
+        });
+
+        await expect(store.dispatch(verify(ADDRESS, MESSAGE, SIGNATURE))).resolves.toBe(true);
     });
 
     it('verify', async () => {
