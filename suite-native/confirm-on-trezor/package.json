@@ -27,5 +27,6 @@
         "react-native": "0.85.3",
         "react-native-gesture-handler": "2.31.1",
         "react-native-reanimated": "4.3.1"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

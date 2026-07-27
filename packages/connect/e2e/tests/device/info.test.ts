@@ -1,6 +1,4 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import TrezorConnect, { connectCallableMethods } from '@trezor/connect';
-
+import TrezorConnect, { connectCallableMethods } from '../../../src';
 import { getController, initTrezorConnect, setup } from '../../common.setup';
 const controller = getController();
 

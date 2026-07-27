@@ -21,5 +21,6 @@
         "@trezor/device-utils": "workspace:*",
         "@trezor/protocol": "workspace:*",
         "@trezor/utils": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

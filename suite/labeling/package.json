@@ -46,5 +46,6 @@
         "react-redux": "9.3.0",
         "react-select": "^5.10.2",
         "redux": "^5.0.1"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

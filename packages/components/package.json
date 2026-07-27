@@ -63,5 +63,6 @@
         "stylelint": "^17.1.1",
         "stylelint-config-standard": "^40.0.0",
         "typescript-styled-plugin": "^0.18.3"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

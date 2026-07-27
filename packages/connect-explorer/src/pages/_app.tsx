@@ -31,7 +31,7 @@ const ThemeComponent = ({ Component, pageProps }: AppProps) => {
     }, [router]);
 
     return (
-        <ThemeProvider theme={intermediaryTheme[theme]}>
+        <ThemeProvider theme={{ variant: theme, ...intermediaryTheme[theme] }}>
             <Provider store={store}>
                 <Component {...pageProps} />
             </Provider>

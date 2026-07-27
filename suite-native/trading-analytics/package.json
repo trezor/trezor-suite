@@ -27,5 +27,6 @@
         "@suite-native/test-utils-store": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
         "@types/invity-api": "^1.1.19"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

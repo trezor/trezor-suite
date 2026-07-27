@@ -12,5 +12,6 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

@@ -15,5 +15,6 @@
         "@suite-native/toasts": "workspace:*",
         "expo-clipboard": "~56.0.3",
         "react": "19.2.3"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

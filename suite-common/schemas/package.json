@@ -12,5 +12,11 @@
     },
     "dependencies": {
         "zod": "4.3.6"
+    },
+    "exports": {
+        "./src/evm": {
+            "types": "./libDev/src/evm/index.d.ts",
+            "default": "./src/evm/index.ts"
+        }
     }
 }

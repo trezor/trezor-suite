@@ -15,5 +15,6 @@
     "dependencies": {
         "idb": "^8.0.3",
         "semver": "^7.7.1"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

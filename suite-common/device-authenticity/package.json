@@ -20,5 +20,6 @@
         "@suite-common/toast-notifications": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/type-utils": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

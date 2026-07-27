@@ -5,7 +5,7 @@
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/generated/icons/index",
-    "types": "src/index.ts",
+    "types": "./libDev/src/index.d.ts",
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",

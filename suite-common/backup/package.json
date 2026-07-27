@@ -16,5 +16,6 @@
     },
     "devDependencies": {
         "@suite-common/suite-types": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

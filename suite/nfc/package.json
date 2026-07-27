@@ -17,5 +17,6 @@
         "@trezor/icons": "workspace:*",
         "react": "19.2.3",
         "styled-components": "^6.3.9"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

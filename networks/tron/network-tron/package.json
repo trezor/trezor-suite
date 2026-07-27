@@ -6,9 +6,18 @@
     "main": "./src/index.ts",
     "type": "module",
     "exports": {
-        "./constants": "./src/constants/index.ts",
-        "./utils": "./src/utils/index.ts",
-        ".": "./src/index.ts"
+        "./constants": {
+            "types": "./libDev/src/constants/index.d.ts",
+            "default": "./src/constants/index.ts"
+        },
+        "./utils": {
+            "types": "./libDev/src/utils/index.d.ts",
+            "default": "./src/utils/index.ts"
+        },
+        ".": {
+            "types": "./libDev/src/index.d.ts",
+            "default": "./src/index.ts"
+        }
     },
     "publishConfig": {
         "main": "./lib/index.js",
@@ -41,5 +50,6 @@
     },
     "dependencies": {
         "@noble/hashes": "^2.0.1"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

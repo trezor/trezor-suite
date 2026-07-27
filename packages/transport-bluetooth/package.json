@@ -39,5 +39,6 @@
         "react": "19.2.3",
         "react-dom": "19.2.3",
         "webpack": "5.108.1"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

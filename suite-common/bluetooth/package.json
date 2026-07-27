@@ -19,5 +19,6 @@
         "@suite-common/test-utils": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

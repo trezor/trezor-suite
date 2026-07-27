@@ -22,5 +22,6 @@
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

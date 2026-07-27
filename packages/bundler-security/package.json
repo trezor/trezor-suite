@@ -13,5 +13,6 @@
     },
     "dependencies": {
         "webpack": "5.108.1"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

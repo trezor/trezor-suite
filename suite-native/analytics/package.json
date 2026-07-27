@@ -26,5 +26,6 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/utils": "workspace:^",
         "react-native": "0.85.3"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

@@ -22,5 +22,6 @@
         "@suite-native/analytics-redux": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/state": "workspace:*"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }

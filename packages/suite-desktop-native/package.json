@@ -19,5 +19,6 @@
     "devDependencies": {
         "@types/node": "22.13.10",
         "node-gyp": "12.2.0"
-    }
+    },
+    "types": "./libDev/src/index.d.ts"
 }
