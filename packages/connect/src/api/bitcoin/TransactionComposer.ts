@@ -1,5 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/TransactionComposer.js
 
+import type { Address } from '@trezor/blockchain-link-types';
 import type {
     BitcoinNetworkInfo,
     ComposeResult,
@@ -30,21 +31,16 @@ type Options = {
 };
 
 export class TransactionComposer {
-    account: DiscoveryAccount;
-
-    utxos: ComposedInputs[];
-
-    outputs: ComposeOutput[];
-
-    coinInfo: BitcoinNetworkInfo;
-
-    baseFee: number;
-
-    sortingStrategy: TransactionInputOutputSortingStrategy;
-
-    feeLevels: FeeLevel[];
-
-    customFee: string | undefined;
+    private account: DiscoveryAccount;
+    private utxos: ComposedInputs[];
+    private outputs: ComposeOutput[];
+    private coinInfo: BitcoinNetworkInfo;
+    private baseFee: number;
+    private sortingStrategy: TransactionInputOutputSortingStrategy;
+    private feeLevels: FeeLevel[];
+    private customFee: string | undefined;
+    private feePolicy: ComposeFeePolicy | undefined;
+    private changeAddress: Address | undefined;
 
     composed: { [key: string]: ComposeResult } = {};
 
@@ -64,63 +60,73 @@ export class TransactionComposer {
         this.sortingStrategy = options.sortingStrategy;
         this.feeLevels = options.feeLevels;
 
-        // map to @trezor/utxo-lib/compose format
         const { addresses } = options.account;
-        const allAddresses: string[] = !addresses
-            ? []
-            : addresses.used
-                  .concat(addresses.unused)
-                  .concat(addresses.change)
-                  .map(a => a.address);
-        this.utxos = options.utxos.flatMap(u => {
-            // exclude amounts lower than dust limit if they are NOT required
-            if (!u.required && new BigNumber(u.amount).lte(this.coinInfo.dustLimit)) return [];
+        const allAddresses = new Set(
+            addresses?.used
+                .concat(addresses.unused)
+                .concat(addresses.change)
+                .map(a => a.address),
+        );
 
-            return {
+        // find unused change address or fallback to the last in the list
+        this.changeAddress = addresses?.change.find(a => !a.transfers) ?? addresses?.change.at(-1);
+
+        // map to @trezor/utxo-lib/compose format
+        this.utxos = options.utxos
+            // exclude amounts lower than dust limit if they are NOT required
+            .filter(u => u.required || new BigNumber(u.amount).gt(this.coinInfo.dustLimit))
+            .map(u => ({
                 ...u,
                 coinbase: typeof u.coinbase === 'boolean' ? u.coinbase : false, // decide it it can be spent immediately (false) or after 100 conf (true)
-                own: allAddresses.includes(u.address), // decide if it can be spent immediately (own) or after 6 conf (not own)
-            };
-        });
+                own: allAddresses.has(u.address), // decide if it can be spent immediately (own) or after 6 conf (not own)
+            }));
+
+        if (networks.isNetworkType('doge', options.coinInfo.network)) {
+            this.feePolicy = 'doge';
+        } else if (networks.isNetworkType('zcash', options.coinInfo.network)) {
+            this.feePolicy = 'zcash';
+        }
     }
 
     // Composing fee levels for SelectFee view in popup
     composeAllFeeLevels() {
         const { levels } = this;
-        if (this.utxos.length < 1) return false;
 
-        this.composed = {};
-        let atLeastOneValid = false;
-        levels.forEach(level => {
-            if (level.feePerUnit !== '0') {
-                const tx = this.compose(level.feePerUnit);
-                if (tx.type === 'final') {
-                    atLeastOneValid = true;
-                }
-                this.composed[level.label] = tx;
-            }
-        });
-
-        if (!atLeastOneValid) {
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const lastLevel: (typeof levels)[number] = levels[levels.length - 1];
-            let lastFee = new BigNumber(lastLevel.feePerUnit);
-            while (lastFee.gt(this.coinInfo.minFee) && this.composed.custom === undefined) {
-                lastFee = lastFee.minus(1);
-
-                const tx = this.compose(lastFee.toString());
-                if (tx.type === 'final') {
-                    this.customFee = lastFee.toString();
-                    this.composed.custom = tx;
-
-                    return true;
-                }
-            }
-
+        if (!this.utxos.length) {
             return false;
         }
 
-        return true;
+        this.composed = Object.fromEntries(
+            levels
+                .filter(({ feePerUnit }) => feePerUnit !== '0')
+                .map(({ label, feePerUnit }) => [label, this.compose(feePerUnit)]),
+        );
+
+        const atLeastOneValid = Object.values(this.composed).some(tx => tx.type === 'final');
+        if (atLeastOneValid) {
+            return true;
+        }
+
+        if (this.composed.custom) {
+            return false;
+        }
+
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const lastLevel: (typeof levels)[number] = levels[levels.length - 1];
+        let lastFee = new BigNumber(lastLevel.feePerUnit);
+        while (lastFee.gt(this.coinInfo.minFee)) {
+            lastFee = lastFee.minus(1);
+
+            const tx = this.compose(lastFee.toString());
+            if (tx.type === 'final') {
+                this.customFee = lastFee.toString();
+                this.composed.custom = tx;
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     composeCustomFee(fee: string) {
@@ -129,48 +135,32 @@ export class TransactionComposer {
         this.customFee = tx.type === 'final' ? tx.feePerByte : fee;
     }
 
-    getFeeLevelList() {
-        const list: SelectFeeLevel[] = [];
-        this.levels.forEach(level => {
+    getFeeLevelList(): SelectFeeLevel[] {
+        return this.levels.map(level => {
             const tx = this.composed[level.label];
             if (tx?.type === 'final') {
-                list.push({
+                return {
                     name: level.label,
                     fee: tx.fee,
                     feePerByte: level.feePerUnit,
                     blocks: level.blocks,
                     minutes: level.blocks * this.coinInfo.blockTime,
                     total: tx.totalSpent,
-                });
+                };
             } else {
-                list.push({
+                return {
                     name: level.label,
                     fee: '0',
                     disabled: true,
-                });
+                };
             }
         });
-
-        return list;
     }
 
-    compose(feeRate: string): ComposeResult {
-        const { account, coinInfo, baseFee } = this;
-        const { addresses } = account;
-        if (!addresses) return { type: 'error', error: 'ADDRESSES-NOT-SET' };
-        // find not used change address or fallback to the last in the list
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const lastChange: (typeof addresses.change)[number] =
-            addresses.change[addresses.change.length - 1];
-        const changeAddress = addresses.change.find(a => !a.transfers) || lastChange;
-        // const inputAmounts = coinInfo.segwit || coinInfo.forkid !== null || coinInfo.network.consensusBranchId !== null;
+    private compose(feeRate: string): ComposeResult {
+        const { account, coinInfo, baseFee, changeAddress, feePolicy } = this;
 
-        let feePolicy: ComposeFeePolicy | undefined;
-        if (networks.isNetworkType('doge', coinInfo.network)) {
-            feePolicy = 'doge';
-        } else if (networks.isNetworkType('zcash', coinInfo.network)) {
-            feePolicy = 'zcash';
-        }
+        if (!changeAddress) return { type: 'error', error: 'ADDRESSES-NOT-SET' };
 
         return composeTx({
             txType: account.type,
@@ -186,9 +176,5 @@ export class TransactionComposer {
             baseFee,
             feePolicy,
         });
-    }
-
-    dispose() {
-        // TODO
     }
 }
