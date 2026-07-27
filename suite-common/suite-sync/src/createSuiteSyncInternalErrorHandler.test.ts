@@ -15,7 +15,7 @@ import { err, ok } from '@trezor/type-utils';
 import {
     type CreateSuiteSyncInternalErrorHandlerDeps,
     createSuiteSyncInternalErrorHandler,
-} from '../createSuiteSyncInternalErrorHandler';
+} from './createSuiteSyncInternalErrorHandler';
 
 const ownerId = asSuiteSyncOwnerId('owner-id');
 const walletDescriptor = asWalletDescriptor('wallet-descriptor');

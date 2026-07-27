@@ -10,8 +10,8 @@ import { ok } from '@trezor/type-utils';
 import {
     type EnsureSuiteSyncKeysDeps,
     createEnsureSuiteSyncKeys,
-} from '../createEnsureSuiteSyncKeys';
-import { type GetDeviceForStaticSessionId } from '../getDeviceForStaticSessionId';
+} from './createEnsureSuiteSyncKeys';
+import { type GetDeviceForStaticSessionId } from './getDeviceForStaticSessionId';
 
 const createMockDeps = () =>
     ({
