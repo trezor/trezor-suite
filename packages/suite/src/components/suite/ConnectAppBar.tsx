@@ -21,6 +21,8 @@ export const ConnectBarWrapper = styled.div`
     top: 0;
     left: 0;
     width: 100%;
+    background: ${({ theme }) => theme.surfaceFillFixed};
+    border-bottom: 1px solid ${({ theme }) => theme.surfaceBorderFixed};
 `;
 
 interface ConnectAppBarProps {
@@ -46,13 +48,10 @@ export const ConnectAppBar = ({ canSwitchDevice }: ConnectAppBarProps) => {
     return (
         <ConnectBarWrapper>
             <Box
-                backgroundColor="surfaceFillPage"
                 padding={{
                     horizontal: 24,
                     vertical: 16,
                 }}
-                borderWidth={{ bottom: 2 }}
-                borderColor="elementBorderNeutralSofter"
             >
                 <TrafficLightOffset>
                     <Row gap={12} alignItems="center" justifyContent="space-between">

@@ -93,6 +93,7 @@ export const Banner = ({
             backgroundColor={mapIntentToBackgroundColor(intent)}
             borderColor={mapIntentToBorderColor(intent)}
             borderWidth={1}
+            borderOffset={-1}
             borderRadius={8}
             data-testid={dataTest}
             overflow="hidden"
