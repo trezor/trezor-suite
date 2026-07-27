@@ -58,7 +58,26 @@ const main: StorybookConfig = {
             define: {
                 'process.version': '"v18.0.0"',
             },
-            plugins: [nodePolyfills()],
+            plugins: [
+                nodePolyfills(),
+                {
+                    // Vite ignores @trezor/connect's "react-native" package.json field and
+                    // resolves to workers.browser.ts, which Vite's worker plugin can't bundle.
+                    // Redirect to workers.native.ts, matching Metro's resolution in the real app.
+                    name: 'redirect-connect-workers-to-native',
+                    enforce: 'pre',
+                    resolveId(source) {
+                        if (
+                            source.endsWith('/workers/workers') ||
+                            source === '../workers/workers'
+                        ) {
+                            return require.resolve('@trezor/connect/src/workers/workers.native.ts');
+                        }
+
+                        return null;
+                    },
+                },
+            ],
         };
 
         return mergeConfig(config, myConfig);

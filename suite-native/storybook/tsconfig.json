@@ -4,6 +4,7 @@
     "references": [
         { "path": "../alerts" },
         { "path": "../intl" },
+        { "path": "../../packages/connect" },
         { "path": "../../packages/eslint" },
         {
             "path": "../../packages/styles-native"
