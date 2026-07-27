@@ -16,6 +16,7 @@ import { Box, Button, Column, IconButton, Row, Text } from '@trezor/components';
 import { CaretLeftIcon, InfoIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
+import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useDispatch } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
@@ -131,14 +132,30 @@ export const YieldPageHeader = ({
                             >
                                 {vaultName}
                             </Text>
-                            <AccountLabel
-                                account={account}
-                                showAccountTypeBadge
-                                accountTypeBadgeSize="small"
-                                intent="neutral"
-                                priority="secondary"
-                                typographyStyle="body-sm"
-                            />
+                            {/* The balance aligns with the right edge of the vault name above;
+                                when the name is shorter, the gap keeps it 24px from the label. */}
+                            <Row justifyContent="space-between" alignItems="center" gap={24}>
+                                <AccountLabel
+                                    account={account}
+                                    showAccountTypeBadge
+                                    accountTypeBadgeSize="small"
+                                    intent="neutral"
+                                    priority="secondary"
+                                    typographyStyle="body-sm"
+                                />
+                                <Text
+                                    typographyStyle="body-sm"
+                                    intent="neutral"
+                                    priority="secondary"
+                                >
+                                    <FormattedCryptoAmount
+                                        value={account.formattedBalance}
+                                        symbol={account.symbol}
+                                        isBalance
+                                        data-testid="@yield/page-header/balance"
+                                    />
+                                </Text>
+                            </Row>
                         </Column>
                     </Row>
                 ) : (
