@@ -2,13 +2,13 @@ import type { FirmwareRevisionCheckResult } from '@trezor/connect-common/src/typ
 import type { FirmwareRelease } from '@trezor/device-utils';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 
-import { httpRequest } from '../../utils/assets';
-import type { CheckFirmwareRevisionParams } from '../checkFirmwareRevision';
-import { checkFirmwareRevision } from '../checkFirmwareRevision';
+import type { CheckFirmwareRevisionParams } from './checkFirmwareRevision';
+import { checkFirmwareRevision } from './checkFirmwareRevision';
+import { httpRequest } from '../utils/assets';
 
-jest.mock('../../utils/assets', () => ({
-    ...jest.requireActual('../../utils/assets'),
-    httpRequest: jest.fn(jest.requireActual('../../utils/assets').httpRequest),
+jest.mock('../utils/assets', () => ({
+    ...jest.requireActual('../utils/assets'),
+    httpRequest: jest.fn(jest.requireActual('../utils/assets').httpRequest),
 }));
 
 const EXPECTED_BOOTLOADER_HASH = '94f1c90db28db1f8ce5dca966976343658f5dadee83834987c8b049c49d1edd0';

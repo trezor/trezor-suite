@@ -6,7 +6,7 @@ import * as firmwareReleaseStore from '../../data/firmwareReleaseStore';
 import { loadProtobufModules } from '../../data/protobufLoader';
 import * as settingsStore from '../../data/settingsStore';
 import { Device } from '../Device';
-import { handshakeCancel } from '../workflow/handshake';
+import { handshakeCancel } from './handshake';
 
 const { createTestTransport } = global.JestMocks;
 

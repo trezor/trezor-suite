@@ -8,7 +8,7 @@ import { getReleaseByVersion } from '../../data/firmwareInfo';
 import * as settingsStore from '../../data/settingsStore';
 import { Device } from '../Device';
 import type { TypedCallProvider } from '../DeviceCurrentSession';
-import { checkFirmwareHash } from '../workflow/checkFirmwareHash';
+import { checkFirmwareHash } from './checkFirmwareHash';
 
 const { createTestTransport } = global.JestMocks;
 
