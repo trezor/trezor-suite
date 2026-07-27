@@ -14,26 +14,32 @@ const watchOnlyAccount = { isWatchOnly: true } as Account;
 const authorizationContracts = [
     [
         'send transaction',
-        signTransactionThunk({
-            formState: {} as FormState,
-            precomposedTransaction: { type: 'final' } as PrecomposedTransactionFinal,
-            selectedAccount: watchOnlyAccount,
-        }),
+        () =>
+            configureMockStore().dispatch(
+                signTransactionThunk({
+                    formState: {} as FormState,
+                    precomposedTransaction: { type: 'final' } as PrecomposedTransactionFinal,
+                    selectedAccount: watchOnlyAccount,
+                }),
+            ),
     ],
     [
         'Stellar token deactivation',
-        deactivateStellarTokenThunk({
-            account: watchOnlyAccount,
-            contractAddress: 'USDC-GISSUER',
-            selectedFee: 'normal',
-        }),
+        () =>
+            configureMockStore().dispatch(
+                deactivateStellarTokenThunk({
+                    account: watchOnlyAccount,
+                    contractAddress: 'USDC-GISSUER',
+                    selectedFee: 'normal',
+                }),
+            ),
     ],
 ] as const;
 
 it.each(authorizationContracts)(
     '%s rejects watch-only accounts before device authorization',
     async (_, authorize) => {
-        const result = await configureMockStore().dispatch(authorize);
+        const result = await authorize();
 
         expect(result.meta.requestStatus).toBe('rejected');
         expect(result.payload).toEqual({

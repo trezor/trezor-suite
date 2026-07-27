@@ -5,7 +5,6 @@ import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/
 
 import * as fixtures from '../__fixtures__/accountUtils';
 import {
-    ACCOUNT_AUTHORIZATION_UNAVAILABLE_MESSAGE,
     accountSearchFn,
     canAccountAuthorize,
     enhanceAddresses,
@@ -43,14 +42,6 @@ describe('account utils', () => {
                 expect(canAccountAuthorize(account)).toBe(expectedCanAuthorize);
             },
         );
-    });
-
-    describe(canAccountAuthorize.name, () => {
-        it('uses one shared authorization error message', () => {
-            expect(ACCOUNT_AUTHORIZATION_UNAVAILABLE_MESSAGE).toBe(
-                'Watch-only accounts cannot authorize transactions.',
-            );
-        });
     });
 
     describe(isAccountDiscoverable.name, () => {
