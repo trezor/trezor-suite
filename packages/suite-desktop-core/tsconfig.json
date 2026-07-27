@@ -1,7 +1,12 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
-    "include": ["src", "e2e", "**/*.json"],
+    "include": [
+        "src",
+        "mocks",
+        "e2e",
+        "**/*.json"
+    ],
     "references": [
         {
             "path": "../../suite-common/connect-popup"

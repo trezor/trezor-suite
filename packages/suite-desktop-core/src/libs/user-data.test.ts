@@ -10,7 +10,7 @@ import {
     resolveDirectoryInUserDataDir,
     resolvePathInUserDataDir,
     save,
-} from '../libs/user-data';
+} from './user-data';
 
 jest.mock('electron', () => ({
     app: {
