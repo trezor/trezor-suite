@@ -1,4 +1,4 @@
-import { withPlatformUtm, withUtmParams } from '../src/utms';
+import { withPlatformUtm, withUtmParams } from './utms';
 
 describe(withPlatformUtm.name, () => {
     test('adds utm_medium=mobile for trezor.io urls', () => {
