@@ -145,7 +145,7 @@ export const YieldAmountCard = ({
         <Card paddingType="none">
             <Column gap={8} width="100%" padding={{ vertical: 16, horizontal: 20 }}>
                 <Row justifyContent="space-between" alignItems="center" gap={16}>
-                    <Text typographyStyle="body-md">
+                    <Text typographyStyle="body-md" data-testid="@yield/form/amount-label">
                         <Translation id={heading?.amountLabelTranslationId ?? 'AMOUNT'} />
                     </Text>
                     {unitSwitch ?? fiatSwitch}
@@ -176,7 +176,12 @@ export const YieldAmountCard = ({
                         maxLength={AMOUNT_INPUT_MAX_LENGTH}
                         isDisabled={isDisabled}
                         rightContent={
-                            <Text typographyStyle="body-md" intent="neutral" priority="secondary">
+                            <Text
+                                typographyStyle="body-md"
+                                intent="neutral"
+                                priority="secondary"
+                                data-testid="@yield/form/amount-unit"
+                            >
                                 {tokenSymbol}
                             </Text>
                         }
@@ -186,7 +191,12 @@ export const YieldAmountCard = ({
                 {summary && (
                     <Row justifyContent="space-between" alignItems="center" gap={8} width="100%">
                         <Row alignItems="center" gap={8} minWidth={0}>
-                            <Text typographyStyle="body-md" intent="neutral" priority="secondary">
+                            <Text
+                                typographyStyle="body-md"
+                                intent="neutral"
+                                priority="secondary"
+                                data-testid="@yield/form/summary-label"
+                            >
                                 <Translation id={summary.labelTranslationId} />:
                             </Text>
                             <TruncatedAmount>
@@ -194,6 +204,7 @@ export const YieldAmountCard = ({
                                     typographyStyle="body-md"
                                     intent="neutral"
                                     priority="secondary"
+                                    data-testid="@yield/form/summary-amount-with-symbol"
                                 >
                                     {summary.value}
                                 </Text>

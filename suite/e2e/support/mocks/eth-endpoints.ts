@@ -89,8 +89,9 @@ export const fixtures = [
         method: 'estimateFee',
         default: true,
         response: ({ params }: any) => {
-            // deposit(assets, receiver) === 0x6e553f65
-            if (params?.specific?.data?.startsWith('0x6e553f65')) {
+            // ERC-4626 vault calls: deposit === 0x6e553f65, withdraw === 0xb460af94
+            const vaultCallSelectors = ['0x6e553f65', '0xb460af94'];
+            if (vaultCallSelectors.some(selector => params?.specific?.data?.startsWith(selector))) {
                 return {
                     data: [
                         {

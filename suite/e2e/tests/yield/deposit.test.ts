@@ -1,7 +1,8 @@
 import ETH_BASE_TX from '../../fixtures/staking/eth-base-tx.json';
 import ETH_STAKE_CONFIRMED_TX from '../../fixtures/staking/eth-stake-confirmed-tx.json';
 import { expect, test } from '../../support/fixtures';
-import { YIELD_VAULTS } from '../../support/mocks/yieldMock';
+import { ETH_MOCKED_ACCOUNT } from '../../support/mocks/eth-endpoints';
+import { YIELD_USDC_VAULT_SHARE_TOKEN, YIELD_VAULTS } from '../../support/mocks/yieldMock';
 
 const { usdcPrime, usdtPrime } = YIELD_VAULTS;
 const YIELD_USDC_VAULT_DISPLAY_NAME = ['Trezor Steakhouse', '\n', 'USDC Prime Vault'];
@@ -219,6 +220,18 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                 },
             });
             await devicePrompt.waitForFinalPromptAndConfirm();
+
+            blockbookMock.updateAllowance('0');
+            blockbookMock.updateAccountState({
+                txs: 3,
+                nonce: '2',
+                tokens: [
+                    ...ETH_MOCKED_ACCOUNT.tokens.map(token =>
+                        token.symbol === 'USDC' ? { ...token, balance: '990000000' } : token,
+                    ),
+                    YIELD_USDC_VAULT_SHARE_TOKEN,
+                ],
+            });
             await devicePrompt.sendButton.click();
             await expect(toastSection.yieldDeposit).toBeVisible();
             await expect(yieldFlowSection.flowCompleteHeading).toHaveTranslation(
@@ -232,8 +245,23 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
             // Output shares render at full token precision via formatCoinBalance (8 fractional
             // digits + ellipsis), not the rounded simulation preview shown earlier in the flow.
             await expect(yieldFlowSection.flowCompleteTransferOutputAmount).toHaveText(
-                '9.94424967… trSHUSDCp',
+                '9.94423845… trSHUSDCp',
             );
+
+            await blockbookMock.sendNewBlockNotification({
+                // One block above bestHeight of the getInfo fixture in eth-endpoints.
+                height: 22881954,
+                hash: '0xa07d0d92b6bb9a5f388d47a10b824b4b09e0b3aeb08d0f61c0e30a25f6c8455f',
+            });
+        });
+
+        await test.step('Returning to the dashboard shows the deposited position', async () => {
+            await yieldFlowSection.backToOverviewButton.click();
+
+            // The vault row now offers deposit-more + withdraw actions instead of "Deposit now".
+            await expect(yieldSection.withdrawButton(usdcPrime.id)).toBeVisible();
+            await expect(yieldSection.depositMoreButton(usdcPrime.id)).toBeVisible();
+            await expect(yieldSection.depositNowButton(usdcPrime.id)).toBeHidden();
         });
     });
 });

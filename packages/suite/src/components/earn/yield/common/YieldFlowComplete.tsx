@@ -129,7 +129,12 @@ export const YieldFlowComplete = ({
                 </Column>
             </Card>
 
-            <Button intent="neutral" priority="secondary" onClick={handleBackToOverview}>
+            <Button
+                intent="neutral"
+                priority="secondary"
+                data-testid="@yield/flow-complete/back-to-overview-button"
+                onClick={handleBackToOverview}
+            >
                 <Translation id="TR_EARN_YIELD_BACK_TO_OVERVIEW" />
             </Button>
 
