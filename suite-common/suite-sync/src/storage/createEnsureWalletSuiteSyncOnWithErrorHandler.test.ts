@@ -4,8 +4,8 @@ import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import { type StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
-import type { CreateEnsureWalletSuiteSyncOnWithFwCheckDeps } from '../createEnsureWalletSuiteSyncOnWithErrorHandler';
-import { createEnsureWalletSuiteSyncOnWithErrorHandler } from '../createEnsureWalletSuiteSyncOnWithErrorHandler';
+import type { CreateEnsureWalletSuiteSyncOnWithFwCheckDeps } from './createEnsureWalletSuiteSyncOnWithErrorHandler';
+import { createEnsureWalletSuiteSyncOnWithErrorHandler } from './createEnsureWalletSuiteSyncOnWithErrorHandler';
 
 const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
 

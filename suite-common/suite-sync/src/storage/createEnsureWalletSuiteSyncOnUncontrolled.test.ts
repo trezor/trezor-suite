@@ -3,9 +3,9 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import type { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
-import { SuiteSyncUnavailableOnDeviceError } from '../../createEnsureSuiteSyncKeys';
-import { type CreateEnsureWalletSuiteSyncOnUncontrolledDeps } from '../createEnsureWalletSuiteSyncOnUncontrolled';
-import { createEnsureWalletSuiteSyncOnUncontrolled } from '../createEnsureWalletSuiteSyncOnUncontrolled';
+import { SuiteSyncUnavailableOnDeviceError } from '../createEnsureSuiteSyncKeys';
+import { type CreateEnsureWalletSuiteSyncOnUncontrolledDeps } from './createEnsureWalletSuiteSyncOnUncontrolled';
+import { createEnsureWalletSuiteSyncOnUncontrolled } from './createEnsureWalletSuiteSyncOnUncontrolled';
 
 const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
 
