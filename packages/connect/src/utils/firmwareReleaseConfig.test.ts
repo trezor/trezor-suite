@@ -1,4 +1,4 @@
-import { getOnlyLocalFirmwareReleaseConfig } from '../firmwareReleaseConfigUtils';
+import { getOnlyLocalFirmwareReleaseConfig } from './firmwareReleaseConfigUtils';
 
 const releasesJwsLocal = require('@trezor/connect-data/files/firmware/release/releases.v1.json');
 

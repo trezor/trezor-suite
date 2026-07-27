@@ -1,5 +1,5 @@
-import { getBitcoinNetwork, getEthereumNetwork, getMiscNetwork } from '../../data/coinInfo';
-import type { getAccountLabel, isUtxoBased } from '../accountUtils';
+import { getBitcoinNetwork, getEthereumNetwork, getMiscNetwork } from '../src/data/coinInfo';
+import type { getAccountLabel, isUtxoBased } from '../src/utils/accountUtils';
 
 export const getAccountLabelFixtures: TestFixtures<typeof getAccountLabel> = [
     {

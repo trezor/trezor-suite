@@ -1,4 +1,4 @@
-import { buildOutputDescriptor } from '../buildOutputDescriptor';
+import { buildOutputDescriptor } from './buildOutputDescriptor';
 
 const XPUB =
     'xpub6DDUPHpUo4pcy43iJeZjbSVWGav1SMMmuWdMHiGtkK8rhKmfbomtkwW6GKs1GGAKehT6QRocrmda3WWxXawpjmwaUHfFRXuKrXSapdckEYF';

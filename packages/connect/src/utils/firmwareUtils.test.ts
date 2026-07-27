@@ -2,7 +2,7 @@ import { firmwareAssets } from '@trezor/connect-data';
 import type { FirmwareRelease } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
-import { findBestCompatibleRelease, isStrictFeatures } from '../firmwareUtils';
+import { findBestCompatibleRelease, isStrictFeatures } from './firmwareUtils';
 
 type FirmwareAssetGroup = { [file: string]: FirmwareRelease };
 

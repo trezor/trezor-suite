@@ -1,12 +1,12 @@
 import type { CoinInfo, Features } from '@trezor/connect-common';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { getAllNetworks } from '../../data/coinInfo';
 import {
     getUnavailableCapabilities,
     parseCapabilities,
     parseRevision,
-} from '../deviceFeaturesUtils';
+} from './deviceFeaturesUtils';
+import { getAllNetworks } from '../data/coinInfo';
 
 const T1B1_UPDATE_REQUIRED = {
     amountUnit: 'update-required',
@@ -247,7 +247,7 @@ describe('utils/deviceFeaturesUtils', () => {
             new Promise<void>(done => {
                 jest.resetModules();
 
-                jest.mock('../../data/config', () => ({
+                jest.mock('../data/config', () => ({
                     __esModule: true,
                     config: {
                         supportedFirmware: [
@@ -260,7 +260,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 }));
 
                 // eslint-disable-next-line @typescript-eslint/no-shadow
-                import('../deviceFeaturesUtils').then(({ getUnavailableCapabilities }) => {
+                import('./deviceFeaturesUtils').then(({ getUnavailableCapabilities }) => {
                     // added new capability
                     expect(getUnavailableCapabilities(featT2T1, coins)).toEqual({
                         newCapabilityOrFeature: 'update-required',
@@ -273,7 +273,7 @@ describe('utils/deviceFeaturesUtils', () => {
             new Promise<void>(done => {
                 jest.resetModules();
 
-                jest.mock('../../data/config', () => ({
+                jest.mock('../data/config', () => ({
                     __esModule: true,
                     config: {
                         supportedFirmware: [
@@ -286,7 +286,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 }));
 
                 // eslint-disable-next-line @typescript-eslint/no-shadow
-                import('../deviceFeaturesUtils').then(({ getUnavailableCapabilities }) => {
+                import('./deviceFeaturesUtils').then(({ getUnavailableCapabilities }) => {
                     // added new capability
                     expect(getUnavailableCapabilities(featT2T1, coins)).toEqual({
                         newCapabilityOrFeature: 'no-support',

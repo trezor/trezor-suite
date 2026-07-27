@@ -1,5 +1,5 @@
-import * as fixtures from '../__fixtures__/accountUtils';
-import { getAccountLabel, isUtxoBased } from '../accountUtils';
+import { getAccountLabel, isUtxoBased } from './accountUtils';
+import * as fixtures from '../../mocks/mockAccountUtils';
 
 describe('utils/accountUtils', () => {
     describe('getAccountLabel', () => {

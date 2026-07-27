@@ -1,5 +1,5 @@
-import * as fixtures from '../__fixtures__/hdnodeUtils';
-import * as hdnode from '../hdnodeUtils';
+import * as hdnode from './hdnodeUtils';
+import * as fixtures from '../../mocks/mockHdnodeUtils';
 
 describe('utils/hdnode', () => {
     describe('convertXpub', () => {
