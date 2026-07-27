@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 
-import { useFreshRef } from '../useFreshRef';
+import { useFreshRef } from './useFreshRef';
 
 describe('useFreshRef', () => {
     it('sets ref.current to the latest value on the initial render', () => {
