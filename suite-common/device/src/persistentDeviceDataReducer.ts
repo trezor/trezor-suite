@@ -1,4 +1,4 @@
-import { createReducer, isAnyOf } from '@reduxjs/toolkit';
+import { createReducer } from '@reduxjs/toolkit';
 
 import type {
     PersistentDeviceData,
@@ -142,8 +142,8 @@ export const persistentDeviceDataReducer = createReducer(
                     setManualDeviceCheckSuccess(state, payload.deviceId);
                 },
             )
-            .addMatcher(
-                isAnyOf(deviceActions.connectDevice, deviceActions.connectUnacquiredDevice),
+            .addCase(
+                deviceActions.connectDevice,
                 (state: PersistentDeviceDataState, { payload: { device } }) => {
                     updatePersistentDeviceData(state, device);
                 },
