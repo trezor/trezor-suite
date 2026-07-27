@@ -7,11 +7,11 @@ jest.mock('@trezor/env-utils', () => ({
 }));
 
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
-import { createMockedBluetoothDevice } from './__tests__/createMockedBluetoothDevice';
 import {
     filterOutNonResponsiveDevices,
     getLastUpdatedLimitForDevice,
 } from './filterOutNonResponsiveDevices';
+import { createMockedBluetoothDevice } from '../../../mocks/mockBluetoothDevice';
 
 const NOW = 8_000;
 
