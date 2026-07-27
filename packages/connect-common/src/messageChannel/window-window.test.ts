@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { WindowWindowChannel } from '../window-window';
+import { WindowWindowChannel } from './window-window';
 
 type TestMessage = {
     type: 'test-message';

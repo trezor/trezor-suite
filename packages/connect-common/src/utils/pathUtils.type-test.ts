@@ -1,7 +1,7 @@
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import type { ProtoWithDerivationPath } from '../../types/params';
-import { fixPath } from '../pathUtils';
+import { fixPath } from './pathUtils';
+import type { ProtoWithDerivationPath } from '../types/params';
 
 declare const inputWithDerivationPath: ProtoWithDerivationPath<PROTO.TxInputType>;
 declare const outputWithDerivationPath: ProtoWithDerivationPath<PROTO.TxOutputType>;

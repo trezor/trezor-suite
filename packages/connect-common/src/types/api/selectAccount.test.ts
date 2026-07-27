@@ -1,6 +1,6 @@
 import { Validate } from '@trezor/schema-utils';
 
-import { MultiSelectBounds } from '../selectAccount';
+import { MultiSelectBounds } from './selectAccount';
 
 describe('MultiSelectBounds schema', () => {
     it('accepts valid whole-number bounds and one-sided/empty bounds', () => {

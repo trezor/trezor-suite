@@ -1,4 +1,4 @@
-import { normalizeCancelParams } from '../cancelParams';
+import { normalizeCancelParams } from './cancelParams';
 
 describe('utils/cancelParams', () => {
     describe('normalizeCancelParams', () => {

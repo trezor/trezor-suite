@@ -1,7 +1,7 @@
 /**
  * @jest-environment jsdom
  */
-import { ServiceWorkerWindowExtConnectableChannel } from '../serviceworker-window-ext-connectable';
+import { ServiceWorkerWindowExtConnectableChannel } from './serviceworker-window-ext-connectable';
 
 type TestMessage = { type: 'test-message'; channel?: { peer: string; here: string } };
 
