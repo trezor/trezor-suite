@@ -1,5 +1,5 @@
-import { ipcRenderer } from './ipcRenderer';
-import { getDesktopApi } from '../main';
+import { getDesktopApi } from './main';
+import { ipcRenderer } from '../mocks/mockIpcRenderer';
 
 const api = getDesktopApi(ipcRenderer);
 if (!api) throw new Error('desktopApi not initialized');

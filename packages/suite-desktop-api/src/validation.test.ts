@@ -1,4 +1,4 @@
-import * as validation from '../validation';
+import * as validation from './validation';
 
 describe('Validation', () => {
     it('isPrimitive', () => {

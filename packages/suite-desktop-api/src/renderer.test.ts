@@ -1,6 +1,6 @@
-import { factory } from '../factory';
-import { desktopApi, getDesktopApi } from '../renderer';
-import { ipcRenderer } from './ipcRenderer';
+import { factory } from './factory';
+import { desktopApi, getDesktopApi } from './renderer';
+import { ipcRenderer } from '../mocks/mockIpcRenderer';
 
 describe('Renderer', () => {
     it('api is not defined', async () => {
