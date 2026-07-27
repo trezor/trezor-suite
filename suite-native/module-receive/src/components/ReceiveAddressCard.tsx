@@ -7,7 +7,7 @@ import {
     selectAccountDeviceState,
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Box, InlineAlertBox, type InlineAlertBoxProps, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
@@ -16,13 +16,13 @@ import { ReceiveAddressDetails } from './ReceiveAddressDetails';
 type ReceiveAddressCardProps = {
     accountKey: AccountKey;
     address: string;
-    isTokenAddress?: boolean;
+    tokenContract?: TokenAddress;
 };
 
 export const ReceiveAddressCard = ({
     accountKey,
     address,
-    isTokenAddress = false,
+    tokenContract,
 }: ReceiveAddressCardProps) => {
     const accountDescriptor = useSelector((state: AccountsRootState) =>
         selectAccountDescriptor(state, accountKey),
@@ -39,6 +39,7 @@ export const ReceiveAddressCard = ({
     }
 
     const { name: networkName } = getNetwork(symbol);
+    const isTokenAddress = tokenContract !== undefined;
 
     const getCardAlertProps = (): InlineAlertBoxProps | undefined => {
         if (symbol === 'ada') {
@@ -73,6 +74,7 @@ export const ReceiveAddressCard = ({
                 address={address}
                 deviceStaticSessionId={deviceStaticSessionId}
                 networkSymbol={symbol}
+                tokenContract={tokenContract}
                 showLabelEdit={!isTokenAddress}
             />
             {cardAlertProps && (

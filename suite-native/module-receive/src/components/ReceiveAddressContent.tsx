@@ -72,7 +72,7 @@ export const ReceiveAddressContent = ({
                 <ReceiveAddressCard
                     accountKey={accountKey}
                     address={address}
-                    isTokenAddress={!!tokenContract}
+                    tokenContract={tokenContract}
                 />
                 <ReceiveDestinationTagInfo accountKey={accountKey} tokenContract={tokenContract} />
             </VStack>
