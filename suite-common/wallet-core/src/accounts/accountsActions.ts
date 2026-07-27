@@ -47,7 +47,6 @@ export type CreateAccountActionProps = Pick<
     | 'deviceState'
     | 'imported'
     | 'isWatchOnly'
-    | 'watchOnlyLabel'
     | 'accountLabel'
     | 'visible'
 > & {

@@ -132,25 +132,15 @@ describe('account utils', () => {
             index: 0,
         });
 
-        it('prefers the default account of the network', () => {
-            expect(
-                accountUtils.getAssetAccountRouteParams([importedAccount, normalAccount], 'eth'),
-            ).toEqual({ symbol: 'eth', accountIndex: 0, accountType: 'normal' });
-        });
-
-        it('falls back to the first account of the network when there is no default one', () => {
-            expect(accountUtils.getAssetAccountRouteParams([importedAccount], 'eth')).toEqual({
-                symbol: 'eth',
+        it.each([
+            [[importedAccount, normalAccount], 'eth', 'normal'],
+            [[importedAccount], 'eth', 'imported'],
+            [[importedAccount], 'btc', 'normal'],
+        ] as const)('selects the expected asset route', (accounts, symbol, accountType) => {
+            expect(accountUtils.getAssetAccountRouteParams([...accounts], symbol)).toEqual({
+                symbol,
                 accountIndex: 0,
-                accountType: 'imported',
-            });
-        });
-
-        it('ignores accounts of other networks', () => {
-            expect(accountUtils.getAssetAccountRouteParams([importedAccount], 'btc')).toEqual({
-                symbol: 'btc',
-                accountIndex: 0,
-                accountType: 'normal',
+                accountType,
             });
         });
     });

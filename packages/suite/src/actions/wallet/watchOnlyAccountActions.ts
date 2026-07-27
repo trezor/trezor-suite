@@ -24,7 +24,6 @@ import {
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
 import { asDeviceUniquePath } from '@trezor/connect-common';
-import { convertTaprootXpub } from '@trezor/utils';
 
 import {
     type WatchOnlyAccountImportInstruction,
@@ -50,21 +49,6 @@ export const watchOnlyDevice = {
     remember: false,
 } satisfies AcquiredDevice;
 
-const normalizeDescriptor = (descriptor: string, isBitcoinNetwork: boolean) => {
-    const trimmedDescriptor = descriptor.trim();
-
-    if (!isBitcoinNetwork) {
-        return trimmedDescriptor;
-    }
-
-    return (
-        convertTaprootXpub({
-            xpub: trimmedDescriptor,
-            direction: 'h-to-apostrophe',
-        }) ?? trimmedDescriptor
-    );
-};
-
 export const importWatchOnlyAccountThunk = createThunk<
     AccountKey,
     WatchOnlyAccountImportInstruction,
@@ -78,23 +62,19 @@ export const importWatchOnlyAccountThunk = createThunk<
             return rejectWithValue('The selected network is not supported by this Suite build.');
         }
 
-        const isBitcoinNetwork = network.networkType === 'bitcoin';
-        const normalizedDescriptor = normalizeDescriptor(descriptor, isBitcoinNetwork);
+        if (!isAddressBasedNetwork(network.networkType)) {
+            return rejectWithValue('Only address-based networks support watch-only accounts.');
+        }
+
+        const normalizedDescriptor = descriptor.trim();
         const normalizedAccountLabel = accountLabel?.trim() || undefined;
 
         if (!normalizedDescriptor) {
             return rejectWithValue('Enter a public address or account key.');
         }
 
-        if (
-            isAddressBasedNetwork(network.networkType) &&
-            !isAddressValid(normalizedDescriptor, symbol)
-        ) {
+        if (!isAddressValid(normalizedDescriptor, symbol)) {
             return rejectWithValue('Enter a valid public address for the selected network.');
-        }
-
-        if (network.networkType === 'cardano' && !/^[0-9a-f]{128}$/i.test(normalizedDescriptor)) {
-            return rejectWithValue('Enter a 128-character hexadecimal Cardano account public key.');
         }
 
         const existingNetworkAccounts = selectAccountsByNetworkAndDeviceState(
@@ -179,7 +159,7 @@ export const importWatchOnlyAccountThunk = createThunk<
                 path: (response.payload.path ?? '') as Bip43Path,
                 symbol,
                 visible: true,
-                watchOnlyLabel: normalizedAccountLabel,
+                accountLabel: normalizedAccountLabel,
             });
 
             dispatch(createAccountAction);

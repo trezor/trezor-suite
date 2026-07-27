@@ -46,11 +46,14 @@ describe(selectIsDeviceAuthenticityCheckSupported.name, () => {
 describe(selectPhysicalDeviceWallets.name, () => {
     it('excludes all virtual devices', () => {
         const physicalDevice = mockSuiteDevice({ id: 'physical-device' });
-        const watchOnlyDevice = mockSuiteDevice({ id: WATCH_ONLY_DEVICE_ID });
         const state = {
             device: {
                 ...deviceReducerInitialState,
-                devices: [portfolioTrackerDevice, watchOnlyDevice, physicalDevice],
+                devices: [
+                    portfolioTrackerDevice,
+                    mockSuiteDevice({ id: WATCH_ONLY_DEVICE_ID }),
+                    physicalDevice,
+                ],
             },
         };
 

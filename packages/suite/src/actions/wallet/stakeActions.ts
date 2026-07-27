@@ -19,9 +19,9 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
+    canAccountAuthorize,
     formatNetworkAmount,
     getMevProtectedTxData,
-    isAccountWatchOnly,
     isRbfBumpFeeTransaction,
     isSupportedAdaStakingNetworkSymbol,
     isSupportedEthStakingNetworkSymbol,
@@ -223,7 +223,7 @@ export const signTransaction =
         const device = selectSelectedDevice(getState());
         const { account } = getState().wallet.selectedAccount;
 
-        if (!device || !account || isAccountWatchOnly(account)) return;
+        if (!device || !account || !canAccountAuthorize(account)) return;
 
         const enhancedTxInfo: PrecomposedTransactionFinal = {
             ...transactionInfo,

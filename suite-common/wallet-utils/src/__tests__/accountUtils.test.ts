@@ -5,7 +5,9 @@ import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/
 
 import * as fixtures from '../__fixtures__/accountUtils';
 import {
+    ACCOUNT_AUTHORIZATION_UNAVAILABLE_MESSAGE,
     accountSearchFn,
+    canAccountAuthorize,
     enhanceAddresses,
     findAccountDevice,
     getAccountIdentifier,
@@ -29,13 +31,25 @@ import {
 } from '../amountUtils';
 
 describe('account utils', () => {
-    describe(isAccountWatchOnly.name, () => {
+    describe('account authorization contract', () => {
         it.each([
-            [{ isWatchOnly: true }, true],
-            [{ isWatchOnly: false }, false],
-            [{ isWatchOnly: undefined }, false],
-        ])('identifies explicitly marked watch-only accounts', (account, expected) => {
-            expect(isAccountWatchOnly(account)).toBe(expected);
+            [{ isWatchOnly: true }, true, false],
+            [{ isWatchOnly: false }, false, true],
+            [{ isWatchOnly: undefined }, false, true],
+        ])(
+            'derives watch-only and authorization capabilities',
+            (account, expectedWatchOnly, expectedCanAuthorize) => {
+                expect(isAccountWatchOnly(account)).toBe(expectedWatchOnly);
+                expect(canAccountAuthorize(account)).toBe(expectedCanAuthorize);
+            },
+        );
+    });
+
+    describe(canAccountAuthorize.name, () => {
+        it('uses one shared authorization error message', () => {
+            expect(ACCOUNT_AUTHORIZATION_UNAVAILABLE_MESSAGE).toBe(
+                'Watch-only accounts cannot authorize transactions.',
+            );
         });
     });
 

@@ -69,6 +69,7 @@ const initStore = () => {
         },
     });
 };
+type TestStore = ReturnType<typeof initStore>;
 
 describe('virtual device discovery', () => {
     const getDeviceStateMock = jest.mocked(TrezorConnect.getDeviceState);
@@ -83,31 +84,25 @@ describe('virtual device discovery', () => {
         jest.clearAllMocks();
     });
 
-    it('does not create discovery state when discovery is started', async () => {
+    it.each([
+        [
+            'start',
+            (store: TestStore) => store.dispatch(startDiscoveryThunk({ device: watchOnlyDevice })),
+        ],
+        [
+            'direct',
+            (store: TestStore) => store.dispatch(runDiscoveryThunk({ device: watchOnlyDevice })),
+        ],
+        [
+            'additional',
+            (store: TestStore) =>
+                store.dispatch(runAdditionalDiscoveryThunk(WATCH_ONLY_DEVICE_STATE)),
+        ],
+    ])('skips %s discovery', async (_, runDiscovery) => {
         const store = initStore();
         store.dispatch(discoveryActions.startDiscovery(WATCH_ONLY_DEVICE_PATH));
 
-        await store.dispatch(startDiscoveryThunk({ device: watchOnlyDevice }));
-
-        expect(store.getState().wallet.discovery).toEqual({});
-        expect(getDeviceStateMock).not.toHaveBeenCalled();
-    });
-
-    it('does not call TrezorConnect when discovery is run directly', async () => {
-        const store = initStore();
-        store.dispatch(discoveryActions.startDiscovery(WATCH_ONLY_DEVICE_PATH));
-
-        await store.dispatch(runDiscoveryThunk({ device: watchOnlyDevice }));
-
-        expect(store.getState().wallet.discovery).toEqual({});
-        expect(getDeviceStateMock).not.toHaveBeenCalled();
-    });
-
-    it('does not call TrezorConnect when additional discovery is run', async () => {
-        const store = initStore();
-        store.dispatch(discoveryActions.startDiscovery(WATCH_ONLY_DEVICE_PATH));
-
-        await store.dispatch(runAdditionalDiscoveryThunk(WATCH_ONLY_DEVICE_STATE));
+        await runDiscovery(store);
 
         expect(store.getState().wallet.discovery).toEqual({});
         expect(getDeviceStateMock).not.toHaveBeenCalled();

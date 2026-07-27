@@ -65,6 +65,12 @@ export const isAccountFailed = (account: Account): account is FailedAccount => !
 export const isAccountWatchOnly = ({ isWatchOnly }: Pick<Account, 'isWatchOnly'>): boolean =>
     isWatchOnly === true;
 
+export const canAccountAuthorize = (account: Pick<Account, 'isWatchOnly'>): boolean =>
+    !isAccountWatchOnly(account);
+
+export const ACCOUNT_AUTHORIZATION_UNAVAILABLE_MESSAGE =
+    'Watch-only accounts cannot authorize transactions.';
+
 export const isAccountDiscoverable = ({ accountType }: Account) =>
     accountType !== 'imported' && accountType !== 'placeholder' && accountType !== 'coinjoin';
 

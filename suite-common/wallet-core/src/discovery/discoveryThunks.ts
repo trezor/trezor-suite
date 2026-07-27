@@ -650,7 +650,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
 
         const device = selectDeviceByStaticSessionId(getState(), staticSessionId);
 
-        if (isVirtualDevice(device)) {
+        if (device && isVirtualDevice(device)) {
             dispatch(discoveryActions.deleteDiscovery(device.path));
 
             return;

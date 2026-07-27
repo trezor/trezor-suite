@@ -120,7 +120,7 @@ describe(importWatchOnlyAccountThunk.name, () => {
                 imported: true,
                 isWatchOnly: true,
                 symbol: 'eth',
-                watchOnlyLabel: 'QA whale',
+                accountLabel: 'QA whale',
             }),
         ]);
 
@@ -138,20 +138,17 @@ describe(importWatchOnlyAccountThunk.name, () => {
         expect(getWatchOnlyAccountImportInstructions()).toEqual([]);
     });
 
-    it('imports a Bitcoin address as a single-address watch-only account', async () => {
+    it('rejects non-address-based networks before account discovery', async () => {
         const store = createStore();
 
-        await importAccount(store, {
+        const result = await importAccount(store, {
             descriptor: BTC_ADDRESS,
             symbol: 'btc',
         });
 
-        expect(getAccountInfoMock).toHaveBeenCalledWith(
-            expect.objectContaining({
-                coin: 'btc',
-                descriptor: BTC_ADDRESS,
-            }),
-        );
+        expect(importWatchOnlyAccountThunk.rejected.match(result)).toBe(true);
+        expect(result.payload).toBe('Only address-based networks support watch-only accounts.');
+        expect(getAccountInfoMock).not.toHaveBeenCalled();
     });
 
     it('keeps a selected physical device while restoring accounts', async () => {

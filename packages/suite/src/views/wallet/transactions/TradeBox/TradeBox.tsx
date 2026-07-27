@@ -6,7 +6,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import { hasNetworkFeatures, isAccountWatchOnly } from '@suite-common/wallet-utils';
+import { canAccountAuthorize, hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Button, Card, Flex, InfoItem, Row, Text } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { TokenIcon } from '@trezor/product-components';
@@ -34,7 +34,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
 
     const isStakeNetwork = hasNetworkFeatures(account, 'staking');
 
-    if (isAccountWatchOnly(account)) {
+    if (!canAccountAuthorize(account)) {
         return null;
     }
 

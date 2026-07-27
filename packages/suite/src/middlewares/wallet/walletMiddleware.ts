@@ -18,7 +18,7 @@ import {
     transactionsActions,
     unsubscribeBlockchainThunk,
 } from '@suite-common/wallet-core';
-import { isAccountWatchOnly } from '@suite-common/wallet-utils';
+import { canAccountAuthorize } from '@suite-common/wallet-utils';
 
 import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
 import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
@@ -123,7 +123,7 @@ const walletMiddleware =
 
             if (
                 selectedAccount &&
-                isAccountWatchOnly(selectedAccount) &&
+                !canAccountAuthorize(selectedAccount) &&
                 isWatchOnlyAccountRouteRestricted(routeName)
             ) {
                 api.dispatch(goto({ routeName: 'wallet-index', preserveParams: true }));

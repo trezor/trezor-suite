@@ -32,9 +32,9 @@ import { type Explorer, type Network } from '@suite-common/wallet-config';
 import { selectExplorer, sendFormActions } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
+    canAccountAuthorize,
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,
-    isAccountWatchOnly,
     isErc4626,
     isWrappedNativeToken,
 } from '@suite-common/wallet-utils';
@@ -114,8 +114,8 @@ const TokenRowBasicActions = ({
     const contractAddress = getContractAddressForNetworkSymbol(account.symbol, token.contract);
     const tokenCryptoId = toTokenCryptoId(account.symbol, contractAddress);
     const tokenTradingOptions = coins?.[tokenCryptoId]?.services;
-    const isWatchOnly = isAccountWatchOnly(account);
-    const watchOnlyActionProps = isWatchOnly ? { isHidden: true } : {};
+    const canAuthorize = canAccountAuthorize(account);
+    const watchOnlyActionProps = canAuthorize ? {} : { isHidden: true };
 
     const canBuyToken = !!tokenTradingOptions && tokenTradingOptions.buy;
     const canSwapToken =
@@ -471,7 +471,7 @@ const TokenRowBasicActions = ({
                         icon: EyeSlashIcon,
                         onClick: onShowHideButtonClick,
                         isHidden:
-                            !isWatchOnly &&
+                            canAuthorize &&
                             tokenStatusType === TokenManagementAction.SHOW &&
                             !isBelowTablet,
                     },
@@ -497,7 +497,7 @@ const TokenRowBasicActions = ({
                 ]}
             />
 
-            {!isWatchOnly && type !== 'defi' && !isBelowTablet && (
+            {canAuthorize && type !== 'defi' && !isBelowTablet && (
                 <IconButton
                     isDisabled={!canSwapToken}
                     key="swap"
@@ -515,7 +515,7 @@ const TokenRowBasicActions = ({
                 />
             )}
 
-            {!isWatchOnly &&
+            {canAuthorize &&
                 !isBelowTablet &&
                 (tokenStatusType === TokenManagementAction.SHOW ? (
                     <Button

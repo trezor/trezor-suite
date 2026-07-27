@@ -35,16 +35,14 @@ const writeWatchOnlyAccountImportInstructions = (
     instructions: WatchOnlyAccountImportInstruction[],
 ) => {
     try {
-        if (instructions.length === 0) {
+        if (instructions.length > 0) {
+            window.sessionStorage.setItem(
+                WATCH_ONLY_ACCOUNT_IMPORTS_STORAGE_KEY,
+                JSON.stringify(instructions),
+            );
+        } else {
             window.sessionStorage.removeItem(WATCH_ONLY_ACCOUNT_IMPORTS_STORAGE_KEY);
-
-            return;
         }
-
-        window.sessionStorage.setItem(
-            WATCH_ONLY_ACCOUNT_IMPORTS_STORAGE_KEY,
-            JSON.stringify(instructions),
-        );
     } catch {
         // Session storage is an optional convenience and must not block account management.
     }
@@ -74,31 +72,30 @@ export const isSameWatchOnlyAccount = (
     first.symbol === second.symbol &&
     getComparableDescriptor(first) === getComparableDescriptor(second);
 
+const updateWatchOnlyAccountImportInstructions = (
+    update: (
+        instructions: WatchOnlyAccountImportInstruction[],
+    ) => WatchOnlyAccountImportInstruction[],
+) => writeWatchOnlyAccountImportInstructions(update(getWatchOnlyAccountImportInstructions()));
+
 export const storeWatchOnlyAccountImportInstruction = (
     instruction: WatchOnlyAccountImportInstruction,
-) => {
-    writeWatchOnlyAccountImportInstructions([
-        ...getWatchOnlyAccountImportInstructions().filter(
+) =>
+    updateWatchOnlyAccountImportInstructions(instructions => [
+        ...instructions.filter(
             storedInstruction => !isSameWatchOnlyAccount(storedInstruction, instruction),
         ),
         instruction,
     ]);
-};
 
-export const removeWatchOnlyAccountImportInstruction = (
-    instruction: WatchOnlyAccountIdentifier,
-) => {
-    writeWatchOnlyAccountImportInstructions(
-        getWatchOnlyAccountImportInstructions().filter(
+export const removeWatchOnlyAccountImportInstruction = (instruction: WatchOnlyAccountIdentifier) =>
+    updateWatchOnlyAccountImportInstructions(instructions =>
+        instructions.filter(
             storedInstruction => !isSameWatchOnlyAccount(storedInstruction, instruction),
         ),
     );
-};
 
-export const removeWatchOnlyAccountImportInstructionsBySymbol = (symbol: NetworkSymbol) => {
-    writeWatchOnlyAccountImportInstructions(
-        getWatchOnlyAccountImportInstructions().filter(
-            storedInstruction => storedInstruction.symbol !== symbol,
-        ),
+export const removeWatchOnlyAccountImportInstructionsBySymbol = (symbol: NetworkSymbol) =>
+    updateWatchOnlyAccountImportInstructions(instructions =>
+        instructions.filter(storedInstruction => storedInstruction.symbol !== symbol),
     );
-};

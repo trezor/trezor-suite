@@ -2,7 +2,7 @@ import { selectFullSelectedAccount } from '@suite/account';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { selectRouterParams } from '@suite/router';
-import { isAccountWatchOnly } from '@suite-common/wallet-utils';
+import { canAccountAuthorize } from '@suite-common/wallet-utils';
 import { Row } from '@trezor/components';
 import { ButtonGroup } from '@trezor/components/src/components/buttons/ButtonGroup/ButtonGroup';
 import { ArrowDownIcon, ArrowUpIcon } from '@trezor/icons';
@@ -22,7 +22,7 @@ export const HeaderActions = () => {
     const routerParams = useSelector(selectRouterParams) as WalletParams;
     const { device } = useDevice();
 
-    if (selectedAccount.account && isAccountWatchOnly(selectedAccount.account)) {
+    if (selectedAccount.account && !canAccountAuthorize(selectedAccount.account)) {
         return null;
     }
 

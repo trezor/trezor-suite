@@ -2,20 +2,16 @@ import { isWatchOnlyAccountRouteRestricted } from '../watchOnlyAccountRoutes';
 
 describe(isWatchOnlyAccountRouteRestricted.name, () => {
     it.each([
-        'wallet-send',
-        'wallet-receive',
-        'wallet-sign-verify',
-        'wallet-staking',
-        'wallet-trading-buy',
-        'wallet-anonymize',
-    ] as const)('restricts %s', routeName => {
-        expect(isWatchOnlyAccountRouteRestricted(routeName)).toBe(true);
+        ['wallet-send', true],
+        ['wallet-receive', true],
+        ['wallet-sign-verify', true],
+        ['wallet-staking', true],
+        ['wallet-trading-buy', true],
+        ['wallet-anonymize', true],
+        ['wallet-index', false],
+        ['wallet-nfts', false],
+        ['wallet-trading-transactions', false],
+    ] as const)('checks whether %s is restricted', (routeName, expected) => {
+        expect(isWatchOnlyAccountRouteRestricted(routeName)).toBe(expected);
     });
-
-    it.each(['wallet-index', 'wallet-nfts', 'wallet-trading-transactions'] as const)(
-        'allows %s',
-        routeName => {
-            expect(isWatchOnlyAccountRouteRestricted(routeName)).toBe(false);
-        },
-    );
 });

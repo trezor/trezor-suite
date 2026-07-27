@@ -4,7 +4,7 @@ import { type Route, goto } from '@suite/router';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
-import { isAccountWatchOnly } from '@suite-common/wallet-utils';
+import { canAccountAuthorize } from '@suite-common/wallet-utils';
 import { Button } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -32,7 +32,7 @@ export const AssetActionButton = ({
     const accounts = useSelector(selectVisibleDeviceAccounts);
     const networkAccounts = accounts.filter(account => account.symbol === symbol);
 
-    if (networkAccounts.length > 0 && networkAccounts.every(isAccountWatchOnly)) {
+    if (networkAccounts.length > 0 && !networkAccounts.some(canAccountAuthorize)) {
         return null;
     }
 

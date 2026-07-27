@@ -20,7 +20,9 @@ import {
     type PrecomposedTransactionFinalCardano,
 } from '@suite-common/wallet-types';
 import {
+    ACCOUNT_AUTHORIZATION_UNAVAILABLE_MESSAGE,
     asAmountSubunit,
+    canAccountAuthorize,
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
     formatNetworkAmount,
@@ -30,7 +32,6 @@ import {
     getMevProtectedTxData,
     getPendingAccount,
     hasNetworkFeatures,
-    isAccountWatchOnly,
     isAllowanceUnlimited,
     isCardanoTx,
     isEvmApprovalTxByTextSignature,
@@ -585,10 +586,10 @@ export const signTransactionThunk = createThunk<
         { formState, precomposedTransaction, selectedAccount, paymentRequests },
         { dispatch, rejectWithValue, getState },
     ) => {
-        if (isAccountWatchOnly(selectedAccount)) {
+        if (!canAccountAuthorize(selectedAccount)) {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
-                message: 'Watch-only accounts cannot authorize transactions.',
+                message: ACCOUNT_AUTHORIZATION_UNAVAILABLE_MESSAGE,
             });
         }
 

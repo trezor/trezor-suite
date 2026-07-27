@@ -10,7 +10,7 @@ import {
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { filterAccountsByNetworkSymbol, isAccountWatchOnly } from '@suite-common/wallet-utils';
+import { canAccountAuthorize, filterAccountsByNetworkSymbol } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
 import { useCurrentRef } from '@trezor/react-utils';
 
@@ -44,7 +44,7 @@ export function useAccountWithTokensOptions({
 }: UseAccountWithTokensOptionsProps): AccountWithTokensOption[] {
     const visibleAccounts = useSelector(selectVisibleDeviceAccounts);
     const baseAccounts = useMemo(
-        () => visibleAccounts.filter(account => !isAccountWatchOnly(account)),
+        () => visibleAccounts.filter(canAccountAuthorize),
         [visibleAccounts],
     );
 

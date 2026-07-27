@@ -2,6 +2,7 @@ import { type FormEvent, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { AccountLabel } from '@suite/account';
 import { goto } from '@suite/router';
 import {
     type NetworkSymbol,
@@ -44,7 +45,7 @@ const Form = styled.form`
 `;
 
 const networkOptions = networksCollection
-    .filter(network => !network.isHidden)
+    .filter(network => !network.isHidden && isAddressBasedNetwork(network.networkType))
     .map(network => ({
         label: network.name,
         value: network.symbol,
@@ -86,7 +87,7 @@ const WatchOnlyAccountItem = ({ account }: { account: Account }) => {
                 title={
                     <Row gap={8}>
                         <TokenIcon symbol={account.symbol} />
-                        {account.watchOnlyLabel}
+                        <AccountLabel account={account} />
                     </Row>
                 }
                 description={
@@ -125,26 +126,6 @@ export const WatchOnlyAccounts = () => {
     const [isImporting, setIsImporting] = useState(false);
 
     const selectedNetworkOption = networkOptions.find(option => option.value === networkSymbol);
-    const selectedNetwork = getNetworkOptional(networkSymbol);
-    let identifierLabel = 'Account public key (XPUB) or descriptor';
-    let identifierDescription = 'Enter an account-level public key or descriptor.';
-
-    switch (selectedNetwork?.networkType) {
-        case 'bitcoin':
-            identifierLabel = 'Public address, XPUB or descriptor';
-            identifierDescription =
-                'Enter a single public address or an account-level public key or descriptor.';
-            break;
-        case 'cardano':
-            identifierLabel = 'Cardano account public key';
-            identifierDescription = 'Enter a 128-character hexadecimal Cardano account public key.';
-            break;
-        default:
-            if (selectedNetwork && isAddressBasedNetwork(selectedNetwork.networkType)) {
-                identifierLabel = 'Public address';
-                identifierDescription = 'Enter the public address for the selected network.';
-            }
-    }
 
     const handleImport = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -176,7 +157,7 @@ export const WatchOnlyAccounts = () => {
             <SectionItem data-testid="@settings/debug/watch-only/import">
                 <TextColumn
                     title="Import watch-only account"
-                    description="Load an external public address or account public key through Suite's regular backend pipeline. The account remains local to this session and cannot authorize transactions."
+                    description="Load an external public address through Suite's regular backend pipeline. The account remains local to this session and cannot authorize transactions."
                 />
                 <ActionColumn>
                     <Form onSubmit={handleImport}>
@@ -190,16 +171,13 @@ export const WatchOnlyAccounts = () => {
                                 data-testid="@settings/debug/watch-only/network"
                             />
                             <Input
-                                label={identifierLabel}
+                                label="Public address"
                                 value={descriptor}
                                 onChange={event => setDescriptor(event.target.value)}
                                 isDisabled={isImporting}
                                 hasError={!!errorMessage}
                                 data-testid="@settings/debug/watch-only/identifier"
                             />
-                            <Text typographyStyle="body-sm" color="contentSecondary">
-                                {identifierDescription}
-                            </Text>
                             <Input
                                 label="Label (optional)"
                                 value={accountLabel}
