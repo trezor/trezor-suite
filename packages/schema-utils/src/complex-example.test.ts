@@ -1,4 +1,4 @@
-import { Assert, Type, Validate } from '../src';
+import { Assert, Type, Validate } from './index';
 
 describe('complex-example', () => {
     it('should work with a schema like StellarSignTx', () => {

@@ -1,5 +1,6 @@
-import { InvalidParameter } from '../src/errors';
-import { Assert, Type } from '../src/index';
+import { InvalidParameter } from './errors';
+
+import { Assert, Type } from './index';
 
 describe('Assert', () => {
     it('should not throw an error if matches schema', () => {
