@@ -1,5 +1,5 @@
-import { curve25519fixtures, elligator2fixtures } from './curve25519.fixtures';
-import { curve25519, elligator2 } from '../../src/protocol-thp/crypto/curve25519';
+import { curve25519, elligator2 } from './curve25519';
+import { curve25519fixtures, elligator2fixtures } from '../../../mocks/mockCurve25519';
 
 describe('curve25519', () => {
     it('elligator2', () => {

@@ -1,4 +1,4 @@
-import { bridge } from '../src/index';
+import { bridge } from '../index';
 
 describe('protocol-bridge', () => {
     it('encode', () => {

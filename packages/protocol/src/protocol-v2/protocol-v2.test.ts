@@ -1,5 +1,6 @@
-import { decode, encode, getHeaders } from '../src/protocol-v2';
-import { THP_CONTROL_BYTE } from '../src/protocol-v2/constants';
+import { THP_CONTROL_BYTE } from './constants';
+
+import { decode, encode, getHeaders } from './index';
 
 describe('protocol-v2', () => {
     it('encode/decode v2 message', () => {

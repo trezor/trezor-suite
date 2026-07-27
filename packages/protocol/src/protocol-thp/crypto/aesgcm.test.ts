@@ -1,4 +1,4 @@
-import { aesgcm } from '../../src/protocol-thp/crypto/aesgcm';
+import { aesgcm } from './aesgcm';
 
 it('AESGCM encode/decode', () => {
     const key = Buffer.from(

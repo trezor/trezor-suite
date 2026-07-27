@@ -1,4 +1,4 @@
-import { findKnownPairingCredentials } from '../../src/protocol-thp/crypto/pairing';
+import { findKnownPairingCredentials } from './pairing';
 
 describe('pairing', () => {
     it('findKnownPairingCredentials', () => {
