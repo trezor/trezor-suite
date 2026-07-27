@@ -20,7 +20,6 @@ const TYPE_DECLARATION_SIZE_FAILURE_GUIDANCE = [
 // Generated declarations and static datasets whose size is intrinsic to their content.
 const LEGIT_BIG_FILES = new Set<string>([
     'packages/connect-data/libDev/src/map-releases.d.ts',
-    'packages/connect/libDev/e2e/__fixtures__/cardanoSignTransaction.d.ts',
     'packages/icons/libDev/src/index.d.ts',
     'packages/protobuf/libDev/src/definitions/index.d.ts',
     'packages/protobuf/libDev/src/definitions/messages-bitcoin.d.ts',
