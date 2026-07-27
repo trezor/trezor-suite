@@ -1,6 +1,6 @@
 import net from 'net';
 
-import { checkSocks5Proxy } from '../checkSocks5Proxy';
+import { checkSocks5Proxy } from './checkSocks5Proxy';
 
 jest.mock('net');
 

@@ -1,6 +1,6 @@
 import { type Log } from '@trezor/utils';
 
-import { getFreePort } from '../getFreePort';
+import { getFreePort } from './getFreePort';
 import {
     HttpServer,
     type ParamsValidatorHandler,
@@ -9,8 +9,8 @@ import {
     parseBodyJSON,
     parseBodyJSONWithLimit,
     parseBodyText,
-} from '../http';
-import { parseRequestUrl } from '../parseRequestUrl';
+} from './http';
+import { parseRequestUrl } from './parseRequestUrl';
 
 type Events = {
     foo: (arg: string) => void;

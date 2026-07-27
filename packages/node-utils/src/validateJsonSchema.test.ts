@@ -1,4 +1,4 @@
-import { validateJsonSchema } from '../validateJsonSchema';
+import { validateJsonSchema } from './validateJsonSchema';
 
 describe('validateJsonSchema', () => {
     const mockConfig = JSON.stringify({ key: 'value' });

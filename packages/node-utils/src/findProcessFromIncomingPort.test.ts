@@ -1,7 +1,7 @@
 import net from 'net';
 
-import { findProcessFromIncomingPort } from '../findProcessFromIncomingPort';
-import { getFreePort } from '../getFreePort';
+import { findProcessFromIncomingPort } from './findProcessFromIncomingPort';
+import { getFreePort } from './getFreePort';
 
 describe('findProcessFromIncomingPort', () => {
     test('start a server on a random free port and try to detect it', async () => {
