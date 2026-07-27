@@ -41,6 +41,11 @@ const ethereumIsAddressValidCases: EthereumIsAddressValidCase[] = [
         expected: true,
     },
     {
+        address: '0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF',
+        symbol: 'hype',
+        expected: true,
+    },
+    {
         address: '0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF0',
         symbol: 'eth',
         expected: false,
@@ -58,6 +63,11 @@ const ethereumIsAddressValidCases: EthereumIsAddressValidCase[] = [
     {
         address: '0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF0',
         symbol: 'thod',
+        expected: false,
+    },
+    {
+        address: '0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF0',
+        symbol: 'hype',
         expected: false,
     },
     {
@@ -229,6 +239,11 @@ const ethereumAddressTypeCases: EthereumAddressTypeCase[] = [
         expectedAddressType: addressType.ADDRESS,
     },
     {
+        address: '0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF',
+        symbol: 'hype',
+        expectedAddressType: addressType.ADDRESS,
+    },
+    {
         address: '0x02fcd51aAbB814FfFe17908fbc888A8975D839A5',
         symbol: 'eth',
         expectedAddressType: undefined,
@@ -236,6 +251,10 @@ const ethereumAddressTypeCases: EthereumAddressTypeCase[] = [
 ];
 
 describe('ethereum validator', () => {
+    it('supports HyperEVM', () => {
+        expect(ethereumValidator.getSupportedCoins()).toContain('hype');
+    });
+
     it.each(ethereumIsAddressValidCases)('validates $symbol address $address', testCase => {
         const { address, expected } = testCase;
         const { symbol } = testCase;

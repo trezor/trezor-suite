@@ -15,6 +15,7 @@ export const networkIcons = {
     doge: require('../cryptoAssets/networkIcons/doge.svg'),
     etc: require('../cryptoAssets/networkIcons/etc.svg'),
     eth: require('../cryptoAssets/networkIcons/eth.svg'),
+    hype: require('../cryptoAssets/networkIcons/hype.svg'),
     ltc: require('../cryptoAssets/networkIcons/ltc.svg'),
     nmc: require('../cryptoAssets/networkIcons/nmc.svg'),
     op: require('../cryptoAssets/networkIcons/op.svg'),

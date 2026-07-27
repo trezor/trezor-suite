@@ -1,3 +1,4 @@
+import { type NetworkConfig } from './networksConfig';
 import { type NetworkSymbol } from './types';
 
 type WrappedNativeToken = {
@@ -6,7 +7,10 @@ type WrappedNativeToken = {
     decimals: number;
 };
 
-export const WRAPPED_NATIVE: Partial<Record<NetworkSymbol, WrappedNativeToken>> = {
+type EvmNetworkSymbol = Extract<NetworkConfig, { networkType: 'ethereum' }>['symbol'];
+
+// Complete record over EVM networks, so adding an ethereum-type network without its wrapped native token fails type-check.
+const evmWrappedNativeTokens: Record<EvmNetworkSymbol, WrappedNativeToken> = {
     eth: { address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', symbol: 'WETH', decimals: 18 },
     op: { address: '0x4200000000000000000000000000000000000006', symbol: 'WETH', decimals: 18 },
     bsc: { address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', symbol: 'WBNB', decimals: 18 },
@@ -15,12 +19,17 @@ export const WRAPPED_NATIVE: Partial<Record<NetworkSymbol, WrappedNativeToken>> 
     pol: { address: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270', symbol: 'WPOL', decimals: 18 },
     base: { address: '0x4200000000000000000000000000000000000006', symbol: 'WETH', decimals: 18 },
     arb: { address: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1', symbol: 'WETH', decimals: 18 },
+    rhc: { address: '0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73', symbol: 'WETH', decimals: 18 },
+    hype: { address: '0x5555555555555555555555555555555555555555', symbol: 'WHYPE', decimals: 18 },
     avax: { address: '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7', symbol: 'WAVAX', decimals: 18 },
 
     // --- testnets ---
     tsep: { address: '0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9', symbol: 'WETH', decimals: 18 },
     thod: { address: '0xE0decAa66aED871ac9eb924443D1Bf333Fdb062E', symbol: 'WETH', decimals: 18 },
 };
+
+export const WRAPPED_NATIVE: Partial<Record<NetworkSymbol, WrappedNativeToken>> =
+    evmWrappedNativeTokens;
 
 export const getWrappedNativeAddress = (networkSymbol: NetworkSymbol) =>
     WRAPPED_NATIVE[networkSymbol]?.address;

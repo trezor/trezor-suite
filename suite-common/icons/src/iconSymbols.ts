@@ -11,6 +11,7 @@ export const networkSymbols = [
     'dsol',
     'etc',
     'eth',
+    'hype',
     'ltc',
     'op',
     'pol',

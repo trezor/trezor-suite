@@ -55,6 +55,7 @@ const getSupportedCoins = (): NetworkSymbol[] => [
     'base',
     'op',
     'rhc',
+    'hype',
     'avax',
     'etc',
     'tsep',

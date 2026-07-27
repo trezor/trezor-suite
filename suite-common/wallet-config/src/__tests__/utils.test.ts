@@ -35,6 +35,12 @@ describe('Robinhood Chain network', () => {
     });
 });
 
+describe('HyperEVM network', () => {
+    it('supports NFTs and NFT definitions', () => {
+        expect(networks.hype.features).toEqual(expect.arrayContaining(['nfts', 'nft-definitions']));
+    });
+});
+
 describe(getMainnets.name, () => {
     it('returns non-testnet, non-debug-only networks when debug is false', () => {
         const result = getMainnets({
@@ -108,7 +114,7 @@ describe('isAccountBasedNetwork', () => {
         expect(isAccountBasedNetwork(symbol)).toBe(false);
     });
 
-    it.each<NetworkSymbol>(['eth', 'sol'])('returns true for %s', symbol => {
+    it.each<NetworkSymbol>(['eth', 'sol', 'hype'])('returns true for %s', symbol => {
         expect(isAccountBasedNetwork(symbol)).toBe(true);
     });
 
@@ -118,12 +124,20 @@ describe('isAccountBasedNetwork', () => {
 });
 
 describe(isNetworkUsingExternalBackend.name, () => {
-    it.each<NetworkSymbol>(['bsc', 'pol', 'op', 'arb', 'base', 'rhc', 'avax', 'sol', 'dsol'])(
-        'returns true for %s',
-        symbol => {
-            expect(isNetworkUsingExternalBackend(symbol)).toBe(true);
-        },
-    );
+    it.each<NetworkSymbol>([
+        'bsc',
+        'pol',
+        'op',
+        'arb',
+        'base',
+        'rhc',
+        'hype',
+        'avax',
+        'sol',
+        'dsol',
+    ])('returns true for %s', symbol => {
+        expect(isNetworkUsingExternalBackend(symbol)).toBe(true);
+    });
 
     it.each<NetworkSymbol>(['btc', 'eth', 'trx', 'xlm', 'xrp', 'ada'])(
         'returns false for %s',

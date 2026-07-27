@@ -93,6 +93,7 @@ const networkTypeMap: Record<NetworkSymbol, NetworkSpecificDefault> = {
     // Eth
     eth: networkSpecificDefaultEthereum,
     etc: networkSpecificDefaultEthereum,
+    hype: networkSpecificDefaultEthereum,
 
     // Testnet Eth
     tsep: networkSpecificDefaultEthereum,
