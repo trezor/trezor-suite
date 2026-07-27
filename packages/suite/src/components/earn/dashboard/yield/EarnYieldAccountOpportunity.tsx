@@ -17,7 +17,10 @@ import {
     getYieldVaultContractAddress,
     isStablecoinYieldSupported,
 } from '@suite-common/wallet-core';
-import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import {
+    getContractAddressForNetworkSymbol,
+    isWrappedNativeToken,
+} from '@suite-common/wallet-utils';
 import { Card, Column, Icon, Row, Table } from '@trezor/components';
 import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
@@ -95,7 +98,11 @@ export const EarnYieldAccountOpportunity = ({
         const networkSymbol = opportunity.account?.symbol ?? opportunity.networkSymbol;
         const accountIndex = opportunity.account?.index ?? 0;
         const accountType = opportunity.account?.accountType ?? 'normal';
-        const tokenAddress = opportunity.vault.token.address;
+        // A wrapped-native (WETH) vault deposit spends the native asset (wrapped on the way in),
+        // so prefill a native buy rather than the wrapped ERC-20, which on-ramps don't sell.
+        const tokenAddress = isWrappedNativeToken(networkSymbol, opportunity.vault.token.address)
+            ? undefined
+            : opportunity.vault.token.address;
 
         if (opportunity.account) {
             const tokenCryptoId = tokenAddress
