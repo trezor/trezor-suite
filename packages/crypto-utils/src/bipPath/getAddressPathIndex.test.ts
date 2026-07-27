@@ -1,4 +1,4 @@
-import { getAddressPathIndex } from '../getAddressPathIndex';
+import { getAddressPathIndex } from './getAddressPathIndex';
 
 describe(getAddressPathIndex.name, () => {
     it.each([
