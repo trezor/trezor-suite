@@ -1,4 +1,4 @@
-import { type SuiteSwitch, getSwitchValue, hasSwitch } from '../libs/process-switches';
+import { type SuiteSwitch, getSwitchValue, hasSwitch } from './process-switches';
 
 type Fixture = {
     it: string;

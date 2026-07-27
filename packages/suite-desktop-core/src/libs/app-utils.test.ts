@@ -1,4 +1,4 @@
-import { processStatePatch } from '../libs/app-utils';
+import { processStatePatch } from './app-utils';
 
 const fullState = '--state={ "d": { "e": true, "f": null }, "a.c": "baz" }';
 const partialState1 = '--state.a={"b": [5] }';

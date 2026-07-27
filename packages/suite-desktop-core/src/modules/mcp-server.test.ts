@@ -52,7 +52,7 @@ jest.mock('../libs/process-icon', () => ({
     debug: jest.fn(),
 };
 
-import { init } from '../modules/mcp-server';
+import { init } from './mcp-server';
 
 const TEST_TOKEN = 'test-token-abc123';
 
