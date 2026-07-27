@@ -1,15 +1,15 @@
 import {
+    getFirmwareOrBootloaderVersionArray,
+    getFirmwareVersion,
+    getFirmwareVersionArray,
+} from './firmwareUtils';
+import { type PartialDevice } from './types';
+import {
     T1B1Features,
     T1B1FeaturesBL,
     T2T1Features,
     T2T1FeaturesBL,
-} from '../__fixtures__/deviceFeatures';
-import {
-    getFirmwareOrBootloaderVersionArray,
-    getFirmwareVersion,
-    getFirmwareVersionArray,
-} from '../firmwareUtils';
-import { type PartialDevice } from '../types';
+} from '../mocks/mockDeviceFeatures';
 
 describe('firmwareUtils', () => {
     describe(getFirmwareOrBootloaderVersionArray.name, () => {
