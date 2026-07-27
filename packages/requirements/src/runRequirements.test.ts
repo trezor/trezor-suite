@@ -55,6 +55,18 @@ describe('runRequirements', () => {
             expect(first?.requirement).toBe('failing');
         });
 
+        it('records how long the requirement takes', async () => {
+            const timestamps = [10, 35];
+            const results = await runRequirements({
+                requirements: [createRepoRequirement({ name: 'timed' })],
+                repoRoot: '/repo',
+                mode: 'verify',
+                now: () => timestamps.shift() ?? 0,
+            });
+
+            expect(results[0]?.durationMs).toBe(25);
+        });
+
         it('calls fix when mode is fix and fix is defined', async () => {
             const results = await runRequirements({
                 requirements: [

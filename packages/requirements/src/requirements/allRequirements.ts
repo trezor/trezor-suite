@@ -7,6 +7,7 @@ import { requireForbiddenDeps } from './forbidden-deps/requireForbiddenDeps';
 import { requirePackageJsonScripts } from './package-json/requirePackageJsonScripts';
 import { requirePublishConfig } from './package-json/requirePublishConfig';
 import { requireConnectPublicDependencies } from './public-package-dependencies/requireConnectPublicDependencies';
+import { requireTestColocation } from './test-colocation/requireTestColocation';
 import { requireTypeDeclarationSize } from './type-declarations/requireTypeDeclarationSize';
 
 export const requirements: ReadonlyArray<Requirement<RequirementScope>> = [
@@ -18,5 +19,6 @@ export const requirements: ReadonlyArray<Requirement<RequirementScope>> = [
     requireForbiddenDeps,
     requirePackageJsonScripts,
     requirePublishConfig,
+    requireTestColocation,
     requireTypeDeclarationSize,
 ];
