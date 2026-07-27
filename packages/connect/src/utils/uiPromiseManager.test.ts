@@ -1,6 +1,6 @@
 import { UI_RESPONSE } from '@trezor/connect-common';
 
-import { createUiPromiseManager } from '../uiPromiseManager';
+import { createUiPromiseManager } from './uiPromiseManager';
 
 const createMockDevice = (path: string) =>
     ({

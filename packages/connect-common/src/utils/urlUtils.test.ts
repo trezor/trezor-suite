@@ -1,4 +1,4 @@
-import { getHost, getOrigin } from '@trezor/connect-common/src/utils/urlUtils';
+import { getHost, getOrigin } from './urlUtils';
 
 describe('utils/urlUtils', () => {
     it('getOrigin', () => {

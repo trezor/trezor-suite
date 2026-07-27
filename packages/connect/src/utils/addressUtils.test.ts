@@ -1,8 +1,8 @@
 import type { CoinSymbol } from '@trezor/connect-common/src/types/coinInfo';
 
-import { getBitcoinNetwork } from '../../data/coinInfo';
-import * as fixtures from '../__fixtures__/addressUtils';
-import * as utils from '../addressUtils';
+import * as utils from './addressUtils';
+import * as fixtures from '../../mocks/mockAddressUtils';
+import { getBitcoinNetwork } from '../data/coinInfo';
 
 describe('utils/addressUtils', () => {
     describe('isValidAddress', () => {
