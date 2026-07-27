@@ -1,6 +1,6 @@
 import type { AnyDesc } from '@bufbuild/protobuf';
 
-import { ProtobufManager } from '../src/manager';
+import { ProtobufManager } from './manager';
 
 const getAllProtoModules = () => {
     const protoFiles = [

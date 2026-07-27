@@ -1,4 +1,4 @@
-import { ProtobufManager } from '../src/manager';
+import { ProtobufManager } from './manager';
 
 const protobufManager = ProtobufManager();
 protobufManager.load([
