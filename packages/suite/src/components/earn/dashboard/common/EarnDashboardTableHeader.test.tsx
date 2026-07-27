@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react';
 
 import { ThemeProvider } from 'src/support/suite/ThemeProvider';
 
-import { EarnDashboardTableHeader } from '../EarnDashboardTableHeader';
+import { EarnDashboardTableHeader } from './EarnDashboardTableHeader';
 
 jest.mock('@suite/intl', () => ({
     ...jest.requireActual('@suite/intl'),

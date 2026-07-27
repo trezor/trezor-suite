@@ -1,4 +1,4 @@
-import { getDashboardParamModal } from '../useGlobalSendReceiveModal';
+import { getDashboardParamModal } from './useGlobalSendReceiveModal';
 
 describe('getDashboardParamModal', () => {
     it('returns the modal type for valid params', () => {

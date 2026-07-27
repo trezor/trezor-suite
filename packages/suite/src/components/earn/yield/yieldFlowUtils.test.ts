@@ -1,6 +1,6 @@
 import { getYieldFlowStepSequence } from '@suite-common/wallet-core';
 
-import { getYieldFlowSteps } from '../yieldFlowUtils';
+import { getYieldFlowSteps } from './yieldFlowUtils';
 
 const depositSequence = getYieldFlowStepSequence({ flowType: 'deposit' });
 const depositWithWrapSequence = getYieldFlowStepSequence({

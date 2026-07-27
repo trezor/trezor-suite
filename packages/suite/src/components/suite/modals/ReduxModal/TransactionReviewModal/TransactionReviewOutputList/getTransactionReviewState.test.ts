@@ -1,4 +1,4 @@
-import { getTransactionReviewState } from '../getTransactionReviewState';
+import { getTransactionReviewState } from './getTransactionReviewState';
 
 describe(getTransactionReviewState.name, () => {
     it('returns "confirmed" state for signed transactions', () => {

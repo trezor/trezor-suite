@@ -27,7 +27,7 @@ jest.mock('src/hooks/suite/useLocalNetworkAccessPermission', () => ({
 
 import { useLocalNetworkAccessPermission } from 'src/hooks/suite/useLocalNetworkAccessPermission';
 
-import { useLegacyBridgeDetection } from '../BridgeDeprecatedBanner';
+import { useLegacyBridgeDetection } from './BridgeDeprecatedBanner';
 
 const mockIsWeb = isWeb as jest.MockedFunction<typeof isWeb>;
 const mockUseLna = useLocalNetworkAccessPermission as jest.MockedFunction<

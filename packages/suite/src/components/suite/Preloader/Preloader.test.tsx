@@ -17,18 +17,18 @@ import { configureStore } from 'src/support/tests/configureStore';
 import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { findByTestId, renderWithProviders } from 'src/support/tests/hooksHelper';
 
-import { Preloader } from '../Preloader';
-import { selectShouldDisplayDeviceCompromisedOnRoute } from '../selectShouldDisplayDeviceCompromisedOnRoute';
+import { Preloader } from './Preloader';
+import { selectShouldDisplayDeviceCompromisedOnRoute } from './selectShouldDisplayDeviceCompromisedOnRoute';
 
 jest.mock('@trezor/env-utils', () => ({
     ...jest.requireActual('@trezor/env-utils'),
     isLinux: jest.fn(() => true),
 }));
 
-jest.mock('../selectShouldDisplayDeviceCompromisedOnRoute', () => ({
-    ...jest.requireActual('../selectShouldDisplayDeviceCompromisedOnRoute'),
+jest.mock('./selectShouldDisplayDeviceCompromisedOnRoute', () => ({
+    ...jest.requireActual('./selectShouldDisplayDeviceCompromisedOnRoute'),
     selectShouldDisplayDeviceCompromisedOnRoute: jest.fn(
-        jest.requireActual('../selectShouldDisplayDeviceCompromisedOnRoute')
+        jest.requireActual('./selectShouldDisplayDeviceCompromisedOnRoute')
             .selectShouldDisplayDeviceCompromisedOnRoute,
     ),
 }));
@@ -543,7 +543,7 @@ describe(`${Preloader.name} component`, () => {
 
         unmount();
         (selectShouldDisplayDeviceCompromisedOnRoute as jest.Mock).mockImplementation(
-            jest.requireActual('../selectShouldDisplayDeviceCompromisedOnRoute')
+            jest.requireActual('./selectShouldDisplayDeviceCompromisedOnRoute')
                 .selectShouldDisplayDeviceCompromisedOnRoute,
         );
     });

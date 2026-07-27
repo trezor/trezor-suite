@@ -2,8 +2,8 @@ import { renderHook } from '@testing-library/react';
 
 import { type Account } from '@suite-common/wallet-types';
 
-import { type YieldAccountOpportunity } from '../../types';
-import { useYieldAccountsVisibility } from '../useYieldAccountsVisibility';
+import { useYieldAccountsVisibility } from './useYieldAccountsVisibility';
+import { type YieldAccountOpportunity } from '../types';
 
 const createMockAccount = (overrides: Partial<Account>): Account =>
     ({

@@ -1,7 +1,7 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import TrezorConnect from '@trezor/connect';
 
-import { ensureDeviceSession } from '../ensureDeviceSession';
+import { ensureDeviceSession } from './ensureDeviceSession';
 
 const device = mockSuiteDevice({
     connected: true,

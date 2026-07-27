@@ -2,7 +2,7 @@ import { type UnavailableCapability } from '@trezor/connect';
 
 import { type Account } from 'src/types/wallet';
 
-import { verifyAvailability } from '../verifyAvailability';
+import { verifyAvailability } from './verifyAvailability';
 
 const getMockAccount = (account: Partial<Account> = {}): Account =>
     ({

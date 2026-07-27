@@ -2,7 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 
 import { type Account } from '@suite-common/wallet-types';
 
-import { useStakingAccountsVisibility } from '../useStakingAccountsVisibility';
+import { useStakingAccountsVisibility } from './useStakingAccountsVisibility';
 
 const mockGetAccountTotalStakingBalance = jest.fn<string | null, [Account]>();
 

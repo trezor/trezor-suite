@@ -11,12 +11,12 @@ import { BigNumber } from '@trezor/utils';
 
 import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
-import { type AccountWithTokensOption } from '../../types';
+import { type AccountWithTokensOption } from '../types';
 import {
     getAccountsWithTokenDisplayNames,
     getTokenDisplayNameSources,
     useAccountsWithTokenDisplayNames,
-} from '../useAccountsWithTokenDisplayNames';
+} from './useAccountsWithTokenDisplayNames';
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
