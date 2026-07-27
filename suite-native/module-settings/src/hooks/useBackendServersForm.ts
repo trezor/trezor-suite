@@ -21,7 +21,7 @@ import {
 } from '@suite-common/wallet-core';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { type SelectItemType } from '@suite-native/atoms';
-import { useForm } from '@suite-native/forms';
+import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import TrezorConnect, { BLOCKCHAIN, type BlockchainError } from '@trezor/connect';
 
@@ -102,8 +102,12 @@ export const useBackendServersForm = ({ symbol, backendOptions }: Network) => {
         }
     };
 
-    const selectedServerType = form.watch('serverType');
-    const isOnionAddress = form.watch('serverAddress').includes('.onion:');
+    const selectedServerType = useWatch({ control: form.control, name: 'serverType' });
+    const isOnionAddress = useWatch({
+        control: form.control,
+        name: 'serverAddress',
+        compute: serverAddress => serverAddress.includes('.onion:'),
+    });
     const [isConnecting, setIsConnecting] = useState(false);
 
     const setBackend = ({ serverType, serverAddress }: FormValues) => {

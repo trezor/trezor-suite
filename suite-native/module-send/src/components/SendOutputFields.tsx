@@ -10,7 +10,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Card, Text, VStack } from '@suite-native/atoms';
-import { useFormContext } from '@suite-native/forms';
+import { useFormContext, useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
     NetworkReserveBanner,
@@ -42,7 +42,7 @@ export const SendOutputFields = ({
     maxAmount,
 }: SendOutputFieldsProps) => {
     const { applyStyle } = useNativeStyles();
-    const { control, watch } = useFormContext<SendOutputsFormValues>();
+    const { control } = useFormContext<SendOutputsFormValues>();
     const [qrNetworkSymbol, setQrNetworkSymbol] = useState<NetworkSymbol | null>(null);
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
@@ -52,7 +52,7 @@ export const SendOutputFields = ({
     );
     const outputsFieldArray = useFieldArray({ control, name: 'outputs' });
 
-    const amount = watch('outputs.0.amount');
+    const amount = useWatch({ control, name: 'outputs.0.amount' });
 
     const shouldShowBanner = useIsNetworkReserveBannerVisible({
         symbol,

@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { Box, HStack, Text } from '@suite-native/atoms';
-import { useFormContext } from '@suite-native/forms';
+import { useFormContext, useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -34,11 +34,11 @@ type PinFormProgressProps = {
 export const PinFormProgress = ({ title }: PinFormProgressProps) => {
     const { applyStyle } = useNativeStyles();
     const {
-        watch,
+        control,
         formState: { isSubmitted },
     } = useFormContext();
 
-    const pinLength = watch('pin').length;
+    const pinLength = useWatch({ control, name: 'pin', compute: pin => pin.length });
 
     if (!pinLength) {
         return <Text variant="headline-sm">{title}</Text>;

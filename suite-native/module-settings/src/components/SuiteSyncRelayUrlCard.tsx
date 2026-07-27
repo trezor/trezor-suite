@@ -3,7 +3,7 @@ import {
     type SuiteSyncServerTypeSelectValue,
 } from '@suite-common/suite-sync';
 import { Button, Card, Select, VStack } from '@suite-native/atoms';
-import { Form, TextInputField } from '@suite-native/forms';
+import { Form, TextInputField, useWatch } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
 import { useSuiteSyncRelayUrlForm } from '../hooks/useSuiteSyncRelayUrlForm';
@@ -12,7 +12,7 @@ export const SuiteSyncRelayUrlCard = () => {
     const { translate } = useTranslate();
     const { form, serverTypes, submit } = useSuiteSyncRelayUrlForm();
 
-    const server = form.watch('server');
+    const server = useWatch({ control: form.control, name: 'server' });
 
     const setServer = (value: SuiteSyncServerTypeSelectValue) =>
         form.setValue('server', value, { shouldDirty: true });

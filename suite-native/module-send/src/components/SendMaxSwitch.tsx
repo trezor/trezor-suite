@@ -1,3 +1,4 @@
+import { useWatch } from 'react-hook-form';
 import { Keyboard } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
@@ -46,9 +47,9 @@ export const SendMaxSwitch = ({
     });
 
     const converters = useCryptoFiatConverters({ symbol, tokenContract });
-    const { setValue, watch } = useFormContext<SendOutputsFormValues>();
+    const { setValue, control } = useFormContext<SendOutputsFormValues>();
 
-    const [outputs, setMaxOutputId] = watch(['outputs', 'setMaxOutputId']);
+    const [outputs, setMaxOutputId] = useWatch({ control, name: ['outputs', 'setMaxOutputId'] });
 
     const isMainnetSendMaxAvailable = !tokenContract && outputs.length === 1;
     const isSendMaxAvailable = tokenContract || isMainnetSendMaxAvailable;

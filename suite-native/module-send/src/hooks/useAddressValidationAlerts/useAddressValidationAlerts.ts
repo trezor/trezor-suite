@@ -6,7 +6,7 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 import { checkAddressChecksum, isAddressValid } from '@suite-common/address';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { useFormContext } from '@suite-native/forms';
+import { useFormContext, useWatch } from '@suite-native/forms';
 import { type SendStackParamList, type SendStackRoutes } from '@suite-native/navigation';
 
 import { useAddressChecksum } from './useAddressChecksum';
@@ -22,13 +22,13 @@ export const useAddressValidationAlerts = ({ inputIndex }: UseAddressValidationA
     const {
         params: { tokenContract, accountKey },
     } = useRoute<RouteProp<SendStackParamList, SendStackRoutes.SendOutputs>>();
-    const { watch } = useFormContext();
+    const { control } = useFormContext();
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
 
     const addressFieldName = getOutputFieldName(inputIndex, 'address');
-    const addressValue = watch(addressFieldName);
+    const addressValue = useWatch({ control, name: addressFieldName });
 
     const { handleAddressChecksum, wasAddressChecksummed, resetAddressChecksummed } =
         useAddressChecksum(addressFieldName);

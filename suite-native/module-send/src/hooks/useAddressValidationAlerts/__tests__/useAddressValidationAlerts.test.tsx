@@ -1,7 +1,7 @@
 import { useRoute } from '@react-navigation/native';
 
 import { useAlert } from '@suite-native/alerts';
-import { Form } from '@suite-native/forms';
+import { Form, useWatch } from '@suite-native/forms';
 import { act, renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 import TrezorConnect from '@trezor/connect';
 
@@ -53,15 +53,21 @@ jest.mock('@suite-native/alerts', () => ({
     useAlert: jest.fn(),
 }));
 
+jest.mock('@suite-native/forms', () => ({
+    ...jest.requireActual('@suite-native/forms'),
+    useWatch: jest.fn(),
+}));
+
 const mockedUseRoute = useRoute as jest.MockedFunction<any>;
 const mockedUseAlert = useAlert as jest.MockedFunction<any>;
+const mockedUseWatch = useWatch as unknown as jest.Mock;
 
 const getAccountInfoSpy = jest.spyOn(TrezorConnect, 'getAccountInfo');
 
 describe('useAddressValidationAlerts', () => {
     let mockShowAlert: jest.Mock;
     let mockSetValue: jest.Mock;
-    let mockWatch: jest.Mock;
+    const mockWatch = mockedUseWatch;
 
     const mockRoute = {
         params: {
@@ -91,9 +97,7 @@ describe('useAddressValidationAlerts', () => {
             {
                 preloadedState,
                 wrapper: ({ children }) => (
-                    <Form form={{ setValue: mockSetValue, watch: mockWatch } as any}>
-                        {children}
-                    </Form>
+                    <Form form={{ setValue: mockSetValue } as any}>{children}</Form>
                 ),
             },
         );
@@ -111,7 +115,7 @@ describe('useAddressValidationAlerts', () => {
 
         mockShowAlert = jest.fn();
         mockSetValue = jest.fn();
-        mockWatch = jest.fn();
+        mockedUseWatch.mockReset();
 
         mockedUseRoute.mockReturnValue(mockRoute);
         mockedUseAlert.mockReturnValue({ showAlert: mockShowAlert });

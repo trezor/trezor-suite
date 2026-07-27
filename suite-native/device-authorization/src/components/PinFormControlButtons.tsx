@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button, HStack, IconButton } from '@suite-native/atoms';
-import { useFormContext } from '@suite-native/forms';
+import { useFormContext, useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import TrezorConnect, { DEVICE, UI_REQUEST, UI_RESPONSE } from '@trezor/connect';
@@ -41,7 +41,7 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
 
     const openLink = useOpenLink();
     const { showAlert } = useAlert();
-    const { handleSubmit, getValues, watch, setValue, reset } = useFormContext();
+    const { handleSubmit, getValues, setValue, reset, control } = useFormContext();
 
     const handleSuccess = useCallback(() => {
         onSuccess?.();
@@ -101,7 +101,7 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
         setValue('pin', pin.slice(0, -1));
     };
 
-    const pinLength = watch('pin').length;
+    const pinLength = useWatch({ control, name: 'pin', compute: pin => pin.length });
 
     const cardAnimatedStyle = useAnimatedStyle(() => {
         animatedHeight.value = withTiming(pinLength ? containerHeight : 0, {
