@@ -9,7 +9,7 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import type { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
-import { createSuiteSyncStorageMock } from '../../../tests/createSuiteSyncStorageMock.mock';
+import { createSuiteSyncStorageMock } from '../../../mocks/mockCreateSuiteSyncStorage';
 import { SuiteSyncUnavailableOnDeviceError } from '../../createEnsureSuiteSyncKeys';
 import type { EnsureStorageDeps } from '../createEnsureStorage';
 import { createEnsureStorage } from '../createEnsureStorage';

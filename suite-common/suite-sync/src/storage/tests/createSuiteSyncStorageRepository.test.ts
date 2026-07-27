@@ -1,7 +1,7 @@
 import { mockNotExpected } from '@suite-common/dependency-injection';
 import { mockSuiteSyncStorage } from '@suite-common/suite-sync-storage/mocks';
 
-import { createSuiteSyncStorageMock } from '../../../tests/createSuiteSyncStorageMock.mock';
+import { createSuiteSyncStorageMock } from '../../../mocks/mockCreateSuiteSyncStorage';
 import { asStorageId, createSuiteSyncStorageRepository } from '../createSuiteSyncStorageRepository';
 
 const storageId1 = asStorageId('1');

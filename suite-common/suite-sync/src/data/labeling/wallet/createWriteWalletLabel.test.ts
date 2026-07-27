@@ -4,8 +4,8 @@ import { type StaticSessionId } from '@trezor/connect';
 import { asWalletDescriptor } from '@trezor/device-utils';
 import { ok } from '@trezor/type-utils';
 
-import { createSuiteSyncStorageMock } from '../../../../../tests/createSuiteSyncStorageMock.mock';
-import { type WriteWalletLabelDeps, createWriteWalletLabel } from '../createWriteWalletLabel';
+import { type WriteWalletLabelDeps, createWriteWalletLabel } from './createWriteWalletLabel';
+import { createSuiteSyncStorageMock } from '../../../../mocks/mockCreateSuiteSyncStorage';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3' as const;
 

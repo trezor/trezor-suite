@@ -3,8 +3,8 @@ import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
 
-import { type SuiteSyncDataRootState } from '../../suiteSyncDataReducer';
-import { selectAccountsWithSuiteSyncLabel } from '../selectAccountsWithSuiteSyncLabel';
+import { type SuiteSyncDataRootState } from '../suiteSyncDataReducer';
+import { selectAccountsWithSuiteSyncLabel } from './selectAccountsWithSuiteSyncLabel';
 
 const WALLET_DESCRIPTOR = asWalletDescriptor('selectedWallet');
 const DEVICE_STATIC_SESSION_ID: StaticSessionId = 'selectedWallet@deviceId:0';

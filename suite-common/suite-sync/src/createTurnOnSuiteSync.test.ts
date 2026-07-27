@@ -9,7 +9,7 @@ import { SuiteSyncUnavailableOnDeviceError } from './createEnsureSuiteSyncKeys';
 import { type CreateTurnOnSuiteSyncDeps, createTurnOnSuiteSync } from './createTurnOnSuiteSync';
 import type { GetDeviceForStaticSessionIdDep } from './getDeviceForStaticSessionId';
 import { setSuiteSyncError, updateSuiteSyncEnabled } from './suiteSyncSlice';
-import { createSuiteSyncStorageMock } from '../tests/createSuiteSyncStorageMock.mock';
+import { createSuiteSyncStorageMock } from '../mocks/mockCreateSuiteSyncStorage';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 

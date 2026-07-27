@@ -9,7 +9,7 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 import {
     fromSuiteSyncToSearchAccountLabels,
     fromSuiteSyncToSearchOutputLabels,
-} from '../fromSuiteSyncToSearchAccountLabels';
+} from './fromSuiteSyncToSearchAccountLabels';
 
 const outputLabelsFixture: SuiteSyncOutput[] = [
     {

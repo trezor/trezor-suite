@@ -3,9 +3,9 @@ import { asAccountDescriptor, createAccountKey } from '@suite-common/wallet-type
 import { type StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
-import { createSuiteSyncStorageMock } from '../../../../../tests/createSuiteSyncStorageMock.mock';
-import { SuiteSyncUnavailableOnDeviceError } from '../../../../createEnsureSuiteSyncKeys';
-import { type UpdateAccountLabelDeps, createUpdateAccountLabel } from '../createUpdateAccountLabel';
+import { type UpdateAccountLabelDeps, createUpdateAccountLabel } from './createUpdateAccountLabel';
+import { createSuiteSyncStorageMock } from '../../../../mocks/mockCreateSuiteSyncStorage';
+import { SuiteSyncUnavailableOnDeviceError } from '../../../createEnsureSuiteSyncKeys';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 const accountKey = createAccountKey({
