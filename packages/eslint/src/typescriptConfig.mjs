@@ -1,8 +1,6 @@
 import tseslint from 'typescript-eslint';
 
-// Type-aware ESLint rules create a TypeScript project service.
-// Enable them only when a linting environment explicitly opts in.
-const areTypeAwareRulesEnabled = process.env.ESLINT_TYPE_AWARE === 'true';
+import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
 
 // Deny importing from build artifact directories — consumers should resolve
 // through the package root, not from `lib/` or `libDev/`.
@@ -154,7 +152,7 @@ export const typescriptConfig = [
             '@typescript-eslint/no-unnecessary-type-assertion': 'off',
         },
     },
-    ...(areTypeAwareRulesEnabled
+    ...(areExpensiveChecksEnabled
         ? []
         : [
               {

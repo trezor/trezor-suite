@@ -1,5 +1,7 @@
 import pluginReact from 'eslint-plugin-react';
 import pluginReactHooks from 'eslint-plugin-react-hooks';
+
+import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
 /**
  * @typedef {import('eslint').Linter.Config} Config
  */
@@ -36,4 +38,22 @@ export const reactConfig = [
             'react-hooks/use-memo': 'off', // Too restrictive: enforces inline function in useMemo (forbids using variable)
         },
     },
+    ...(areExpensiveChecksEnabled
+        ? []
+        : [
+              {
+                  rules: {
+                      'react-hooks/preserve-manual-memoization': 'off',
+                      'react-hooks/incompatible-library': 'off',
+                      'react-hooks/immutability': 'off',
+                      'react-hooks/globals': 'off',
+                      'react-hooks/error-boundaries': 'off',
+                      'react-hooks/purity': 'off',
+                      'react-hooks/set-state-in-render': 'off',
+                      'react-hooks/unsupported-syntax': 'off',
+                      'react-hooks/config': 'off',
+                      'react-hooks/gating': 'off',
+                  },
+              },
+          ]),
 ];

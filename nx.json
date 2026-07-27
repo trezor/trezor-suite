@@ -59,7 +59,7 @@
                 "{workspaceRoot}/eslint.config.mjs",
                 "{workspaceRoot}/packages/eslint/**/*",
                 {
-                    "env": "ESLINT_TYPE_AWARE"
+                    "env": "ESLINT_RUN_EXPENSIVE_CHECKS"
                 }
             ],
             "outputs": ["{projectRoot}/.eslintcache"],
