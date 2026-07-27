@@ -7,6 +7,7 @@ import {
     UI_REQUEST,
     createUiMessage,
 } from '@trezor/connect-common';
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
@@ -19,7 +20,7 @@ import { validatePath } from '../utils/pathUtils';
 
 type Params = {
     proto: PROTO.GetPublicKey;
-    coinInfo?: BitcoinNetworkInfo;
+    coinInfo: BitcoinNetworkInfo;
     suppressBackupWarning?: boolean;
     unlockPath?: PROTO.UnlockPath;
 };
@@ -41,16 +42,21 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
             if (coinInfo && !batch.crossChain) {
                 validateCoinPath(address_n, coinInfo);
             } else if (!coinInfo) {
-                // NOTE: Some 3rd parties are calling getPublicKey with non-bitcoin coins, like "ETH".
-                // This is incorrect usage, but we need to keep backward compatibility.
-                // So if no coin is provided, we will keep coinInfo undefined, which will
-                // lead to getPublicKeyLabel returning a label based on the path
-                coinInfo = getBitcoinNetwork(address_n); // ?? getBitcoinNetwork('btc')!;
+                // coin not provided (or not bitcoin-like), try to derive network from the path
+                coinInfo = getBitcoinNetwork(address_n);
+            }
+
+            if (!coinInfo) {
+                // Non-bitcoin-like networks (e.g. "eth") used to be silently accepted here and
+                // fall back to btc for backward compatibility. Since connect 10 getPublicKey only
+                // supports bitcoin-like coins, so a network that resolves via neither the coin nor
+                // the path is rejected.
+                throw ERRORS.TypedError('Method_UnknownCoin');
             }
 
             const proto = {
                 address_n,
-                coin_name: coinInfo?.name,
+                coin_name: coinInfo.name,
                 show_display: batch.showOnTrezor,
                 script_type: batch.scriptType,
                 ignore_xpub_magic: batch.ignoreXpubMagic,
@@ -109,9 +115,7 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
             const batch: (typeof params)[number] = params[i];
             const { coinInfo, unlockPath, proto } = batch;
-            // if coinInfo is not provided, use fallback (see above in init method)
-            const coinInfoFallback = coinInfo ?? getBitcoinNetwork('btc')!;
-            const response = await cmd.getHDNode(proto, { coinInfo: coinInfoFallback, unlockPath });
+            const response = await cmd.getHDNode(proto, { coinInfo, unlockPath });
             responses.push(response);
 
             if (this.hasBundle) {
