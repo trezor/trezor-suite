@@ -1,5 +1,5 @@
-import { ABORTED_BY_SIGNAL, INTERFACE_DATA_TRANSFER } from '../src/errors';
-import { readMessageBuffer } from '../src/utils/readMessageBuffer';
+import { ABORTED_BY_SIGNAL, INTERFACE_DATA_TRANSFER } from '../errors';
+import { readMessageBuffer } from './readMessageBuffer';
 
 describe('readMessageBuffer', () => {
     it('read from readBuffer', async () => {

@@ -4,9 +4,9 @@ import * as commonProto from '@trezor/protobuf/src/definitions/messages-common_p
 import * as messagesProto from '@trezor/protobuf/src/definitions/messages_pb';
 import { v1 as v1Protocol } from '@trezor/protocol';
 
-import { UsbApi } from '../src/api/usb';
-import { AbstractApiTransport } from '../src/transports/abstractApi';
-import { PathPublic, Session } from '../src/types';
+import { UsbApi } from '../api/usb';
+import { PathPublic, Session } from '../types';
+import { AbstractApiTransport } from './abstractApi';
 
 protobufManager.load([commonProto, messagesProto, bitcoinProto]);
 

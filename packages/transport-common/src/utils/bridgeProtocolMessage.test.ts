@@ -1,7 +1,4 @@
-import {
-    type BridgeProtocolMessage,
-    validateProtocolMessage,
-} from '../src/utils/bridgeProtocolMessage';
+import { type BridgeProtocolMessage, validateProtocolMessage } from './bridgeProtocolMessage';
 
 type Fixture = {
     description: string;
