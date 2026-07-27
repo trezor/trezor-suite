@@ -12,8 +12,8 @@
 
 import type { MessagesSchema as Messages } from '@trezor/protobuf';
 
-import { DeviceCommands } from '../src/device/DeviceCommands';
-import type { TypedCallProvider } from '../src/types/typed-call-provider';
+import { DeviceCommands } from './DeviceCommands';
+import type { TypedCallProvider } from '../types/typed-call-provider';
 
 declare const provider: TypedCallProvider;
 declare const wireOut: Messages.WireOutMessage;
