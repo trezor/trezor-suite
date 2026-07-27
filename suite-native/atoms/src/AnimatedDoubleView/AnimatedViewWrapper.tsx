@@ -18,6 +18,9 @@ export type AnimatedViewWrapperProps = {
     renderView: (props: RenderViewProps) => ReactNode;
     focused: boolean;
     handleViewSwitch: () => void;
+    // Vertical offset of the unfocused view. Taller views (e.g. the stacked
+    // amount inputs) pass a larger value so the two views do not overlap.
+    unfocusedOffset?: number;
 };
 
 export const ANIMATION_DURATION = 300;
@@ -30,7 +33,8 @@ const withPredefinedTiming = (toValue: number) =>
     withTiming(toValue, { duration: ANIMATION_DURATION });
 
 const getScale = (focused: boolean) => (focused ? SCALE_FOCUSED : SCALE_UNFOCUSED);
-const getTranslateY = (focused: boolean) => (focused ? TRANSLATE_Y_FOCUSED : TRANSLATE_Y_UNFOCUSED);
+const getTranslateY = (focused: boolean, unfocusedOffset: number) =>
+    focused ? TRANSLATE_Y_FOCUSED : unfocusedOffset;
 
 export const wrapperStyle = prepareNativeStyle<{ focused: boolean }>((_, { focused }) => ({
     position: 'absolute',
@@ -43,21 +47,22 @@ export const AnimatedViewWrapper = ({
     renderView,
     focused,
     handleViewSwitch,
+    unfocusedOffset = TRANSLATE_Y_UNFOCUSED,
 }: AnimatedViewWrapperProps) => {
     const { applyStyle } = useNativeStyles();
 
     const scale = useSharedValue(getScale(focused));
-    const translateY = useSharedValue(getTranslateY(focused));
+    const translateY = useSharedValue(getTranslateY(focused, unfocusedOffset));
 
     useEffect(() => {
         scale.value = withPredefinedTiming(getScale(focused));
-        translateY.value = withPredefinedTiming(getTranslateY(focused));
+        translateY.value = withPredefinedTiming(getTranslateY(focused, unfocusedOffset));
 
         return () => {
             cancelAnimation(scale);
             cancelAnimation(translateY);
         };
-    }, [focused, scale, translateY]);
+    }, [focused, scale, translateY, unfocusedOffset]);
 
     const animatedStyle = useAnimatedStyle(
         () => ({

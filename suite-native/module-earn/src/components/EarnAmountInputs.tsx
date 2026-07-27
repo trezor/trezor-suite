@@ -5,6 +5,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { type ActiveView, BaseAmountInputs, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
+import { AMOUNT_INPUT_UNFOCUSED_OFFSET, AMOUNT_INPUT_WRAPPER_HEIGHT } from '../constants';
 import { EarnAmountErrorMessage } from './EarnAmountErrorMessage';
 import { EarnCryptoAmountInput } from './EarnCryptoAmountInput';
 import { EarnFiatAmountInput } from './EarnFiatAmountInput';
@@ -33,6 +34,8 @@ export const EarnAmountInputs = ({
             <BaseAmountInputs
                 symbol={symbol}
                 onInputSwitch={onCurrencyChange}
+                unfocusedOffset={AMOUNT_INPUT_UNFOCUSED_OFFSET}
+                wrapperHeight={AMOUNT_INPUT_WRAPPER_HEIGHT}
                 renderTopRow={() => (
                     <>
                         <Text variant="body-sm">
