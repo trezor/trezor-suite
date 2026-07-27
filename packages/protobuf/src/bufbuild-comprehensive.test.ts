@@ -4,9 +4,10 @@
  * and error handling works correctly.
  */
 
-import { AnyDesc, ScalarType } from '@bufbuild/protobuf';
+import { type AnyDesc, ScalarType } from '@bufbuild/protobuf';
+import { FeatureSet_FieldPresence } from '@bufbuild/protobuf/wkt';
 
-import { ProtobufManager } from '../src/manager';
+import { ProtobufManager } from './manager';
 
 type TestPayload = Record<string, unknown>;
 
@@ -67,7 +68,9 @@ describe('ProtobufManager comprehensive tests', () => {
         try {
             const { schema } = protobufManager.findSchema(messageName);
 
-            return schema.fields.filter(f => f.presence === 'LEGACY_REQUIRED').map(f => f.name);
+            return schema.fields
+                .filter(f => f.presence === FeatureSet_FieldPresence.LEGACY_REQUIRED)
+                .map(f => f.name);
         } catch {
             return [];
         }
