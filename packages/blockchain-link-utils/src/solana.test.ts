@@ -16,8 +16,8 @@ import {
     getTxType,
     transformTokenInfo,
     transformTransaction,
-} from '../solana';
-import { fixtures } from './fixtures/solana';
+} from './solana';
+import { fixtures } from '../mocks/mockSolana';
 
 describe('solana/utils', () => {
     // Token Utils

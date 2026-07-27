@@ -2,8 +2,8 @@
 import { identifyTransaction } from '@trezor/network-stellar';
 import type { RawStellarTransaction } from '@trezor/network-stellar/types';
 
-import { transformTransaction } from '../stellar';
-import { fixtures } from './fixtures/stellar';
+import { transformTransaction } from './stellar';
+import { fixtures } from '../mocks/mockStellar';
 
 describe('stellar/utils', () => {
     describe('transformTransaction', () => {
