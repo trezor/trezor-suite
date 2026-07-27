@@ -2,8 +2,8 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import type { RepoContext } from '../../Requirement';
-import { requireAgentsSkills } from '../requireAgentsSkills';
+import type { RepoContext } from '../Requirement';
+import { requireAgentsSkills } from './requireAgentsSkills';
 
 const createTempRepo = (): string => mkdtempSync(join(tmpdir(), 'agents-skills-'));
 

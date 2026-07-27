@@ -1,5 +1,5 @@
-import { type ExecResult } from '../execCliCommand';
-import { createGetAffectedWorkspaces } from '../getAffectedWorkspaces';
+import { type ExecResult } from './execCliCommand';
+import { createGetAffectedWorkspaces } from './getAffectedWorkspaces';
 
 type CreateTestGetAffectedWorkspacesOptions = {
     readonly workspaceListResult: ExecResult;

@@ -2,8 +2,8 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import type { WorkspaceContext } from '../../Requirement';
-import { requirePackageJsonScripts } from '../requirePackageJsonScripts';
+import type { WorkspaceContext } from '../Requirement';
+import { requirePackageJsonScripts } from './requirePackageJsonScripts';
 
 const createTempWorkspace = (): string => mkdtempSync(join(tmpdir(), 'package-json-'));
 

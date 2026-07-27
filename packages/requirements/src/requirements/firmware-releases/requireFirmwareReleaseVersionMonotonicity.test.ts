@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import {
     findFirmwareReleaseRegressions,
     requireFirmwareReleaseVersionMonotonicity,
-} from '../requireFirmwareReleaseVersionMonotonicity';
+} from './requireFirmwareReleaseVersionMonotonicity';
 
 type ReleaseFields = {
     readonly version: ReadonlyArray<number>;

@@ -1,4 +1,4 @@
-import { createExecCliCommand } from '../execCliCommand';
+import { createExecCliCommand } from './execCliCommand';
 
 const execCliCommand = createExecCliCommand({
     console: {

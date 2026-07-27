@@ -2,8 +2,8 @@ import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import type { RepoContext } from '../../Requirement';
-import { requireDocsSummary } from '../requireDocsSummary';
+import type { RepoContext } from '../Requirement';
+import { requireDocsSummary } from './requireDocsSummary';
 
 const createTempRepo = (): string => mkdtempSync(join(tmpdir(), 'docs-summary-'));
 

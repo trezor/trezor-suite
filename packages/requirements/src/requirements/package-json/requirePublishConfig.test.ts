@@ -2,8 +2,8 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import type { WorkspaceContext } from '../../Requirement';
-import { requirePublishConfig } from '../requirePublishConfig';
+import type { WorkspaceContext } from '../Requirement';
+import { requirePublishConfig } from './requirePublishConfig';
 
 const createTempWorkspace = (): string => mkdtempSync(join(tmpdir(), 'publish-config-'));
 
