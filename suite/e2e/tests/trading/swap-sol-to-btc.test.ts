@@ -77,7 +77,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
             await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: 'Recipient' },
-                    body: [transformAddress(sendAddress, 'fullLine')],
+                    body: [transformAddress(sendAddress, 'fourTetragrams')],
                     actions: { right_button: 'Continue' },
                 },
             });
