@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
-import { Card, Column, Dot, Row } from '@trezor/components';
+import { AnimatedDot, Card, CollapsibleBox, Column, Row } from '@trezor/components';
 
 import {
     type NavigationItem,
@@ -12,7 +12,7 @@ import {
 import { NotificationGroup } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationGroup';
 import { ReleaseNotes } from 'src/components/suite/notifications/ReleaseNotes/ReleaseNotes';
 import { TriggerActivityNotification } from 'src/components/suite/notifications/TriggerActivityNotification/TriggerActivityNotification';
-import { useLayout, useSelector } from 'src/hooks/suite';
+import { useActivityNotificationPhase, useLayout, useSelector } from 'src/hooks/suite';
 import { isTransactionNotification } from 'src/utils/suite/notification';
 
 type ActivityTab = 'transactions' | 'release-notes' | 'all';
@@ -30,13 +30,20 @@ const NotificationsView = () => {
         notification => !notification.seen,
     );
 
+    const notificationPhase = useActivityNotificationPhase(hasUnseenNotifications, false);
+
     const activitySubpages: NavigationItem<ActivityTab>[] = [
         {
             id: 'transactions',
             title: (
                 <Row gap={4} alignItems="center">
                     <Translation id="NOTIFICATIONS_IMPORTANT_TITLE" />
-                    {hasUnseenNotifications && <Dot intent="critical" size={8} />}
+                    <AnimatedDot
+                        isShown={notificationPhase !== 'off'}
+                        isAnimated={notificationPhase === 'ringing'}
+                        intent="critical"
+                        size={8}
+                    />
                 </Row>
             ),
             callback: () => setSelectedTab('transactions'),
@@ -67,19 +74,6 @@ const NotificationsView = () => {
 
     return (
         <Column gap={16} width="100%" maxWidth={600} margin={{ horizontal: 'auto' }}>
-            {isDebugModeActive && (
-                <Card
-                    header={
-                        <Row gap={8}>
-                            Debug activity
-                            <DebugOnlyBadge />
-                        </Row>
-                    }
-                >
-                    <TriggerActivityNotification />
-                </Card>
-            )}
-
             {selectedTab === 'transactions' && (
                 <Card>
                     <NotificationGroup notifications={transactionNotifications} />
@@ -95,6 +89,19 @@ const NotificationsView = () => {
                 </Card>
             )}
             {selectedTab === 'release-notes' && <ReleaseNotes />}
+
+            {isDebugModeActive && (
+                <CollapsibleBox
+                    heading={
+                        <Row gap={8}>
+                            Debug activity
+                            <DebugOnlyBadge />
+                        </Row>
+                    }
+                >
+                    <TriggerActivityNotification />
+                </CollapsibleBox>
+            )}
         </Column>
     );
 };

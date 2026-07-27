@@ -2,13 +2,13 @@ import { type FC, useCallback, useMemo } from 'react';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { selectIsInitialRun } from '@suite/flags';
-import { type Route } from '@suite/router';
+import { type Route, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { Column } from '@trezor/components';
 import { BellIcon, GearSixIcon, HouseIcon, PiggyBankIcon, RepeatIcon } from '@trezor/icons';
 
-import { useSelector } from 'src/hooks/suite';
+import { useActivityNotificationPhase, useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 import { isTransactionNotification } from 'src/utils/suite/notification';
 
@@ -39,6 +39,12 @@ export const Navigation = ({ children }: NavigationProps) => {
         state.notifications.some(
             notification => !notification.seen && isTransactionNotification(notification),
         ),
+    );
+
+    const isActivityOpen = useSelector(selectRouteName) === 'notifications-index';
+    const activityNotificationPhase = useActivityNotificationPhase(
+        hasUnseenNotifications,
+        isActivityOpen,
     );
 
     const reportSwapNavigation = useCallback(() => {
@@ -99,7 +105,8 @@ export const Navigation = ({ children }: NavigationProps) => {
                     icon: BellIcon,
                     goToRoute: 'notifications-index',
                     routes: ['notifications-index'],
-                    hasIndicator: hasUnseenNotifications,
+                    hasIndicator: activityNotificationPhase !== 'off',
+                    isIndicatorAnimated: activityNotificationPhase === 'ringing',
                     'data-testid': '@suite/menu/notifications',
                     shortcut: ['ALT', 'KEY_I'],
                 },
@@ -112,7 +119,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                     shortcut: ['MOD', 'COMMA'],
                 },
             ],
-            [startRoute, isBtcOnly, reportSwapNavigation, hasUnseenNotifications],
+            [startRoute, isBtcOnly, reportSwapNavigation, activityNotificationPhase],
         );
 
     return (

@@ -59,6 +59,7 @@ export type NavigationItemProps = {
     preserveParams?: boolean;
     isActive?: boolean;
     hasIndicator?: boolean;
+    isIndicatorAnimated?: boolean;
     'data-testid'?: string;
     className?: string;
     values?: ExtendedMessageDescriptor['values'];
@@ -81,6 +82,7 @@ const NavItem = ({
     goToRoute,
     isActive,
     hasIndicator,
+    isIndicatorAnimated,
     'data-testid': dataTest,
     values,
     preserveParams,
@@ -134,7 +136,12 @@ const NavItem = ({
                 data-testid={dataTest || `@suite/menu/${goToRoute}`}
                 type="button"
             >
-                <StatusBadge isShown={hasIndicator} intent="critical">
+                <StatusBadge
+                    isShown={hasIndicator}
+                    isAnimated={isIndicatorAnimated}
+                    intent="critical"
+                    offset={{ x: -6, y: 5 }}
+                >
                     <Icon
                         as={icon}
                         size={24}
