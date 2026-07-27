@@ -5,7 +5,7 @@ import {
     isVersionArray,
     isWithinRange,
     normalizeVersion,
-} from '../src/versionUtils';
+} from './versionUtils';
 
 const fixture = [
     [[1, 0, 0], '1.0.0-beta'],

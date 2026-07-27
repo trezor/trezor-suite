@@ -1,4 +1,4 @@
-import { sanitizeFilename } from '../src/sanitizeFilename';
+import { sanitizeFilename } from './sanitizeFilename';
 
 describe(sanitizeFilename.name, () => {
     it('valid wallet filenames', () => {

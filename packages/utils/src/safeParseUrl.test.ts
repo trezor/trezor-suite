@@ -1,4 +1,4 @@
-import { safeParseUrl } from '../src/safeParseUrl';
+import { safeParseUrl } from './safeParseUrl';
 
 describe('safeParseUrl', () => {
     it.each([

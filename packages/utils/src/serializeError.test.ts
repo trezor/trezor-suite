@@ -1,4 +1,4 @@
-import { serializeError } from '../src/serializeError';
+import { serializeError } from './serializeError';
 
 class CustomError extends Error {
     somethingExtra = 'extra stuff';
