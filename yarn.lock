@@ -16069,7 +16069,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/components@workspace:packages/components"
   dependencies:
+    "@babel/preset-env": "npm:7.29.7"
     "@babel/preset-react": "npm:^7.29.7"
+    "@babel/preset-typescript": "npm:^7.29.7"
     "@floating-ui/react": "npm:^0.27.17"
     "@storybook/addon-docs": "npm:^10.3.4"
     "@storybook/addon-links": "npm:^10.3.4"
@@ -16570,7 +16572,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/product-components@workspace:packages/product-components"
   dependencies:
+    "@babel/preset-env": "npm:7.29.7"
     "@babel/preset-react": "npm:^7.29.7"
+    "@babel/preset-typescript": "npm:^7.29.7"
     "@storybook/addon-docs": "npm:^10.3.4"
     "@storybook/addon-links": "npm:^10.3.4"
     "@storybook/react": "npm:^10.3.4"
