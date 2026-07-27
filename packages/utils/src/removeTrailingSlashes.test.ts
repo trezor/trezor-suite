@@ -1,4 +1,4 @@
-import { removeTrailingSlashes } from '../src/removeTrailingSlashes'; // Adjust path as needed
+import { removeTrailingSlashes } from './removeTrailingSlashes'; // Adjust path as needed
 
 describe('removeTrailingSlashes', () => {
     it('should remove multiple trailing slashes', () => {

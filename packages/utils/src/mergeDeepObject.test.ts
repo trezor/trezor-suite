@@ -1,4 +1,4 @@
-import { mergeDeepObject } from '../src/mergeDeepObject';
+import { mergeDeepObject } from './mergeDeepObject';
 
 interface INamedObject {
     propertyA: string[];
