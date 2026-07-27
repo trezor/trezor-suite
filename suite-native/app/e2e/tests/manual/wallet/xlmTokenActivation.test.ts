@@ -4,7 +4,7 @@ import { it } from '../../../support/wrappedIt';
 
 describe.skip('Manual', () => {
     it(
-        'Send form XLM',
+        'XLM token activation',
         {
             testCase: 'XLM token activation',
             prerequisites: ['connected device', 'seed with funds on it'],
