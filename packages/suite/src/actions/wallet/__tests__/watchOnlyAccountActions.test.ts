@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
+import { WATCH_ONLY_DEVICE_ID, deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import {
     configureMockStore,
@@ -21,7 +21,6 @@ import {
 } from 'src/utils/wallet/watchOnlyAccountStorage';
 
 import {
-    WATCH_ONLY_DEVICE_ID,
     WATCH_ONLY_DEVICE_STATE,
     importWatchOnlyAccountThunk,
     removeWatchOnlyAccountThunk,

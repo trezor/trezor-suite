@@ -1,5 +1,6 @@
 import { isAddressValid } from '@suite-common/address';
 import {
+    WATCH_ONLY_DEVICE_ID,
     deviceActions,
     portfolioTrackerDevice,
     selectDeviceById,
@@ -34,12 +35,11 @@ import {
 } from 'src/utils/wallet/watchOnlyAccountStorage';
 
 const WATCH_ONLY_ACCOUNT_ACTION_PREFIX = '@wallet/watch-only-account';
-export const WATCH_ONLY_DEVICE_ID = 'debugWatchOnlyAccounts';
 export const WATCH_ONLY_DEVICE_STATE = `state@${WATCH_ONLY_DEVICE_ID}:1` as StaticSessionId;
 const virtualDeviceTemplate = portfolioTrackerDevice as AcquiredDevice;
 export const watchOnlyDevice = {
     ...virtualDeviceTemplate,
-    features: { ...virtualDeviceTemplate.features },
+    features: { ...virtualDeviceTemplate.features, label: 'Watch-only accounts' },
     id: WATCH_ONLY_DEVICE_ID,
     state: {
         staticSessionId: WATCH_ONLY_DEVICE_STATE,
@@ -205,10 +205,9 @@ export const restoreWatchOnlyAccountsThunk = createThunk<void>(
             await dispatch(importWatchOnlyAccountThunk(importInstruction));
         }
 
-        const state = getState();
-        const selectedDevice = selectSelectedDevice(state);
+        const selectedDevice = selectSelectedDevice(getState());
         if (
-            selectAccountsByDeviceState(state, WATCH_ONLY_DEVICE_STATE).length > 0 &&
+            selectAccountsByDeviceState(getState(), WATCH_ONLY_DEVICE_STATE).length > 0 &&
             (!selectedDevice || selectedDevice.id === WATCH_ONLY_DEVICE_ID)
         ) {
             await dispatch(selectDeviceThunk({ device: watchOnlyDevice }));

@@ -7,6 +7,8 @@ import type {
 } from '@suite-common/suite-types';
 import { type Device } from '@trezor/connect';
 
+import { PORTFOLIO_TRACKER_DEVICE_ID, WATCH_ONLY_DEVICE_ID } from './deviceConstants';
+
 export const DeviceCancelledErr = (): DeviceCancelledErrType => ({
     type: 'DeviceCancelled' as const,
 });
@@ -45,6 +47,9 @@ export const isApprovalFlowSupported = (device: TrezorDevice | undefined) =>
 
 export const isEvmClearSigningSupported = (device: TrezorDevice | undefined) =>
     !device?.unavailableCapabilities?.['evmClearSigning'];
+
+export const isVirtualDevice = (device: TrezorDevice | Device | undefined) =>
+    device?.id === PORTFOLIO_TRACKER_DEVICE_ID || device?.id === WATCH_ONLY_DEVICE_ID;
 
 export const isTrezorDeviceWithState = (
     device: TrezorDevice | undefined,

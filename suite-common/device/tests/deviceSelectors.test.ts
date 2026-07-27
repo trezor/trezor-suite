@@ -1,9 +1,12 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { portfolioTrackerDevice } from '../src/deviceConstants';
+import { WATCH_ONLY_DEVICE_ID, portfolioTrackerDevice } from '../src/deviceConstants';
 import { deviceReducerInitialState } from '../src/deviceReducer';
-import { selectIsDeviceAuthenticityCheckSupported } from '../src/deviceSelectors';
+import {
+    selectIsDeviceAuthenticityCheckSupported,
+    selectPhysicalDeviceWallets,
+} from '../src/deviceSelectors';
 
 describe(selectIsDeviceAuthenticityCheckSupported.name, () => {
     it('returns true for supported Trezor Safe devices', () => {
@@ -37,5 +40,20 @@ describe(selectIsDeviceAuthenticityCheckSupported.name, () => {
         };
 
         expect(selectIsDeviceAuthenticityCheckSupported(state)).toBe(true);
+    });
+});
+
+describe(selectPhysicalDeviceWallets.name, () => {
+    it('excludes all virtual devices', () => {
+        const physicalDevice = mockSuiteDevice({ id: 'physical-device' });
+        const watchOnlyDevice = mockSuiteDevice({ id: WATCH_ONLY_DEVICE_ID });
+        const state = {
+            device: {
+                ...deviceReducerInitialState,
+                devices: [portfolioTrackerDevice, watchOnlyDevice, physicalDevice],
+            },
+        };
+
+        expect(selectPhysicalDeviceWallets(state)).toEqual([physicalDevice]);
     });
 });

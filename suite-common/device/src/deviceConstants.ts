@@ -9,6 +9,9 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 export const PORTFOLIO_TRACKER_DEVICE_ID = 'hiddenDeviceWithImportedAccounts';
 export const PORTFOLIO_TRACKER_DEVICE_STATE = `state@${PORTFOLIO_TRACKER_DEVICE_ID}:1`;
 
+// This debug-only device holds watch-only accounts imported from public addresses or account keys.
+export const WATCH_ONLY_DEVICE_ID = 'debugWatchOnlyAccounts';
+
 export const DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD = 40;
 
 export const portfolioTrackerDevice: TrezorDevice = {
