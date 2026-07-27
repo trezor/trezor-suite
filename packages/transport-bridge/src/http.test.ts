@@ -2,10 +2,10 @@ import EventEmitter from 'events';
 
 import { getFreePort } from '@trezor/node-utils';
 import { UdpApi } from '@trezor/transport/src/api/udp';
-import { AbstractApi, AbstractApiArgs, bridgeApiCall } from '@trezor/transport-common';
+import { type AbstractApi, type AbstractApiArgs, bridgeApiCall } from '@trezor/transport-common';
 import { resolveAfter } from '@trezor/utils';
 
-import { TrezordNode } from '../src/http';
+import { TrezordNode } from './http';
 
 const muteLogger = {
     info: (..._args: string[]) => {},

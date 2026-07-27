@@ -1,6 +1,6 @@
-import { AbstractApi, PathPublic } from '@trezor/transport-common';
+import { type AbstractApi, PathPublic } from '@trezor/transport-common';
 
-import { createCore } from '../src/core';
+import { createCore } from './core';
 
 /**
  * Lock-safety of the node-bridge core acquire/release wrappers around
