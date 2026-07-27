@@ -1,0 +1,92 @@
+---
+description: Automatically remember which passphrase belongs to each account based on a unique identifier
+---
+
+# Handling Passphrases in Trezor Connect
+
+Passphrases are a critical security feature of Trezor.
+
+Each passphrase creates a separate wallet (and therefore separate accounts and addresses).
+
+However in real usage:
+
+- Users often have multiple passphrase wallets.
+- They may use the same account index in different passphrase wallets.
+- Current integrations require users to:
+    - Manually re-enter the passphrase for every operation.
+    - Manually verify that the correct passphrase wallet is active.
+
+This leads to:
+
+- Risk of signing with the wrong wallet.
+- Poor UX.
+- Extra confirmation steps.
+
+Trezor Connect provides a solution using a unique identifier for each passphrase wallet:
+
+**`device.state.staticSessionId`**
+
+## Step 1: Initial Account Import
+
+When importing an account from Trezor, we can request the public key as usual:
+
+```tsx
+const response = await TrezorConnect.getPublicKey({
+    path: "m/49'/0'/0'",
+    coin: 'btc',
+    showOnTrezor: true,
+});
+```
+
+## Step 2: Read and Store `staticSessionId`
+
+Along with the usual `payload`, the response also contains a `device` object describing the currently unlocked wallet (including the active passphrase).
+
+Example response:
+
+```json
+{
+    "success": true,
+    "payload": {
+        "xpub": "..."
+    },
+    "device": {
+        "state": {
+            "staticSessionId": "k9F3sLqT2P8mZxA7QwR5E4nC1D6H0B@A1B2C3D4E5F60718293A4B5C6D7E8F90:1"
+            //...
+        }
+        //...
+    }
+}
+```
+
+Store the `device.state.staticSessionId` together with the other details about the imported account to bind it to a specific passphrase wallet.
+
+## Step 3: Use `staticSessionId` for Future Operations
+
+For all future operations (for example signing), pass back the stored `staticSessionId` together with the account path:
+
+```tsx
+await TrezorConnect.signTransaction({
+  device: {
+    state: {
+      staticSessionId: storedAccount.staticSessionId,
+    },
+  },
+  path: storedAccount.path,
+  inputs: [...],
+  outputs: [...],
+});
+
+```
+
+Trezor Connect will automatically restore the correct passphrase wallet and sign using the intended account.
+
+## Summary
+
+- Each passphrase wallet has a unique `staticSessionId`.
+- Read it from the response’s `device.state.staticSessionId` when importing an account.
+- Store it with the account.
+- Provide it in `device.state.staticSessionId` payload for future operations.
+
+This removes the need for manual wallet switching and ensures actions always use the correct passphrase wallet.
