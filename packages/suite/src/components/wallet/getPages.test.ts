@@ -1,4 +1,4 @@
-import { getPages } from '../Pagination';
+import { getPages } from './Pagination';
 
 describe('getPages', () => {
     it('should show all pages when there page count is less or equal to stride + 2', () => {

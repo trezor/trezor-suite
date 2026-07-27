@@ -12,7 +12,7 @@ import { configureStore } from 'src/support/tests/configureStore';
 import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
-import { DeviceCompromised } from '../DeviceCompromised';
+import { DeviceCompromised } from './DeviceCompromised';
 
 jest.mock('@suite-common/tx-simulation', () => ({}));
 

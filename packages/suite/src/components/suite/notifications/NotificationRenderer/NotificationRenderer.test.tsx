@@ -8,8 +8,8 @@ import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState'
 import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
-import { type NotificationViewProps } from '../../Notifications/NotificationGroup/NotificationList/NotificationView';
-import { NotificationRenderer } from '../NotificationRenderer';
+import { NotificationRenderer } from './NotificationRenderer';
+import { type NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
 
 type TradingErrorNotification = Extract<NotificationEntry, { type: 'trading-error' }>;
 

@@ -9,7 +9,7 @@ import {
     type TokenDisplayNameSource,
     getTokenDisplaySymbolName,
     getTokensDisplaySymbolNames,
-} from '../tokenDisplayNames';
+} from './tokenDisplayNames';
 
 const createAsset = (
     overrides: Partial<TradingAssetOptionWithContractAddress> &

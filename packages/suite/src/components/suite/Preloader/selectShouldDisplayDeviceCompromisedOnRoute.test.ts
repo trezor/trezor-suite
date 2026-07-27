@@ -5,7 +5,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
 import { type AcquiredDevice, type AppState } from 'src/types/suite';
 
-import { selectShouldDisplayDeviceCompromisedOnRoute } from '../selectShouldDisplayDeviceCompromisedOnRoute';
+import { selectShouldDisplayDeviceCompromisedOnRoute } from './selectShouldDisplayDeviceCompromisedOnRoute';
 
 type Fixture = {
     description: string;
