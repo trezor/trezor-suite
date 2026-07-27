@@ -2,12 +2,13 @@ import '@suite-common/test-utils/globalOverrides';
 import { type IDBPDatabase, deleteDB, openDB } from 'idb';
 
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { type SuiteDBSchema } from 'src/storage/definitions';
 
-import migration from '../25.11.0';
+import migration from './26.5.0.1';
 
-const DB_NAME = 'suite-idb-test-25.11.0';
+const DB_NAME = 'suite-idb-test-26.5.0.1';
 const INITIAL_VERSION = 1;
 
 const runMigration = () =>
@@ -17,32 +18,35 @@ const runMigration = () =>
         },
     });
 
-describe('migration 25.11.0', () => {
+describe('migration 26.5.0.1', () => {
     beforeEach(async () => {
         await deleteDB(DB_NAME);
     });
 
-    test('migrates autoEject and autoForget from suiteSettings to walletSettings', async () => {
+    test('migrates addressDisplayType from suiteSettings to walletSettings', async () => {
         const db = await openDB(DB_NAME, INITIAL_VERSION, {
             upgrade(db) {
                 db.createObjectStore('suiteSettings');
                 db.createObjectStore('walletSettings');
             },
         });
-        await db.put('suiteSettings', { settings: { autoEject: true } }, 'suite');
-        await db.put('walletSettings', { isAutoEjectEnabled: false }, 'wallet');
+        await db.put(
+            'suiteSettings',
+            { settings: { addressDisplayType: AddressDisplayOptions.ORIGINAL } },
+            'suite',
+        );
+        await db.put('walletSettings', {}, 'wallet');
         db.close();
 
         const migratedDb = await runMigration();
 
         const wallet = await migratedDb.get('walletSettings', 'wallet');
-        expect(wallet).toBeDefined();
-        expect(wallet?.isAutoEjectEnabled).toBe(true);
+        expect(wallet?.addressDisplayType).toBe(AddressDisplayOptions.ORIGINAL);
 
         migratedDb.close();
     });
 
-    test('prefills defaults into walletSettings if original values are missing', async () => {
+    test('defaults to chunked if addressDisplayType is missing from suiteSettings', async () => {
         const db = await openDB(DB_NAME, INITIAL_VERSION, {
             upgrade(db) {
                 db.createObjectStore('suiteSettings');
@@ -56,13 +60,12 @@ describe('migration 25.11.0', () => {
         const migratedDb = await runMigration();
 
         const wallet = await migratedDb.get('walletSettings', 'wallet');
-        expect(wallet).toBeDefined();
-        expect(wallet?.isAutoEjectEnabled).toBe(false);
+        expect(wallet?.addressDisplayType).toBe(AddressDisplayOptions.CHUNKED);
 
         migratedDb.close();
     });
 
-    test('prefills defaults into walletSettings if suiteSettings store is missing', async () => {
+    test('defaults to chunked if suiteSettings store is missing', async () => {
         const db = await openDB(DB_NAME, INITIAL_VERSION, {
             upgrade(db) {
                 db.createObjectStore('walletSettings');
@@ -74,8 +77,7 @@ describe('migration 25.11.0', () => {
         const migratedDb = await runMigration();
 
         const wallet = await migratedDb.get('walletSettings', 'wallet');
-        expect(wallet).toBeDefined();
-        expect(wallet?.isAutoEjectEnabled).toBe(false);
+        expect(wallet?.addressDisplayType).toBe(AddressDisplayOptions.CHUNKED);
 
         migratedDb.close();
     });
@@ -87,7 +89,11 @@ describe('migration 25.11.0', () => {
                 db.createObjectStore('walletSettings');
             },
         });
-        await db.put('suiteSettings', { settings: { autoEject: true } }, 'suite');
+        await db.put(
+            'suiteSettings',
+            { settings: { addressDisplayType: AddressDisplayOptions.ORIGINAL } },
+            'suite',
+        );
         db.close();
 
         const migratedDb = await runMigration();
@@ -95,7 +101,7 @@ describe('migration 25.11.0', () => {
         const wallet = await migratedDb.get('walletSettings', 'wallet');
         expect(wallet).toEqual({
             ...initialWalletSettingsState,
-            isAutoEjectEnabled: true,
+            addressDisplayType: AddressDisplayOptions.ORIGINAL,
         });
 
         migratedDb.close();
