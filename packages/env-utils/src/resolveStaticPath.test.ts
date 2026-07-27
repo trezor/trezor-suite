@@ -1,4 +1,4 @@
-import { resolveStaticPath } from '../resolveStaticPath';
+import { resolveStaticPath } from './resolveStaticPath';
 
 const OLD_ENV = { ...process.env };
 
