@@ -16,9 +16,7 @@ export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
     const isN4w1BackupEnabled = useSelector(selectIsN4w1BackupEnabled);
-
-    // "NotAvailable" means, that backup has been already done and thus is not available.
-    const isBackupDone = device?.features?.backup_availability === 'NotAvailable';
+    const isBackupRequired = device?.features?.backup_availability === 'Required';
 
     // When N4W1 backup is enabled, multi-share backup is replaced by the NFC-based
     // additional backup flow (CreateWalletBackup), which uses a different backup method.
@@ -26,7 +24,7 @@ export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }
         isN4w1BackupEnabled ||
         !device?.features ||
         !doesSupportMultiShare(device.features) ||
-        !isBackupDone
+        isBackupRequired
     ) {
         return;
     }
