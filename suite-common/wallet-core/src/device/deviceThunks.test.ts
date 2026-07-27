@@ -5,6 +5,7 @@ import {
     prepareBluetoothReducerCreator,
 } from '@suite-common/bluetooth';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
+import { preparePersistentDeviceDataReducer } from '@suite-common/persistent-device-data';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestStore, filterThunkActionTypes } from '@suite-common/test-utils';
 import { prepareThpReducer } from '@suite-common/thp';
@@ -36,6 +37,10 @@ const bluetoothReducer = prepareBluetoothReducerCreator<BluetoothDeviceCommon>()
 const thpReducer = prepareThpReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
+const persistentDeviceDataReducer = preparePersistentDeviceDataReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadPersistentDeviceData: mockReducer() },
+});
 const extra: ForgetDevicePersistentDataThunkDeps = {
     thunks: {
         forgetBluetoothDevice: jest.fn(() => () => undefined),
@@ -49,6 +54,7 @@ const initStore = () =>
             bluetooth: bluetoothReducer,
             device: deviceReducer,
             thp: thpReducer,
+            persistentDeviceData: persistentDeviceDataReducer,
         }),
         preloadedState: forgetPersistentDataPreloadedStateFixture,
     });
@@ -60,7 +66,7 @@ describe(forgetDevicePersistentDataThunk.name, () => {
         const state = store.getState();
 
         // device-id-1 persistent data is removed, others remain
-        expect(state.device.persistentDeviceData.map(d => d.device_id)).toEqual([
+        expect(state.persistentDeviceData.devices.map(d => d.device_id)).toEqual([
             'device-id-2',
             'device-id-3',
         ]);
@@ -75,7 +81,7 @@ describe(forgetDevicePersistentDataThunk.name, () => {
         await store.dispatch(forgetDevicePersistentDataThunk({ deviceId: 'device-id-2' }));
         const state = store.getState();
 
-        expect(state.device.persistentDeviceData.map(d => d.device_id)).toEqual([
+        expect(state.persistentDeviceData.devices.map(d => d.device_id)).toEqual([
             'device-id-1',
             'device-id-3',
         ]);
@@ -88,7 +94,7 @@ describe(forgetDevicePersistentDataThunk.name, () => {
         await store.dispatch(forgetDevicePersistentDataThunk({ deviceId: 'device-id-3' }));
         const state = store.getState();
 
-        expect(state.device.persistentDeviceData.map(d => d.device_id)).toEqual([
+        expect(state.persistentDeviceData.devices.map(d => d.device_id)).toEqual([
             'device-id-1',
             'device-id-2',
         ]);

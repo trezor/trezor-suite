@@ -14,6 +14,7 @@
     "dependencies": {
         "@suite-common/connect-popup": "workspace:*",
         "@suite-common/device": "workspace:*",
+        "@suite-common/persistent-device-data": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",

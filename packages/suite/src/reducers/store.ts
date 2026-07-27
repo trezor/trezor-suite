@@ -17,6 +17,10 @@ import { type FirmwareUpdateState, prepareFirmwareReducer } from '@suite-common/
 import { type GeolocationState, geolocationReducer } from '@suite-common/geolocation';
 import { addLog } from '@suite-common/logger';
 import { type NetworksState, networksReducer } from '@suite-common/networks';
+import {
+    type PersistentDeviceDataState,
+    preparePersistentDeviceDataReducer,
+} from '@suite-common/persistent-device-data';
 import { type ReceiveState, prepareReceiveReducer } from '@suite-common/receive';
 import { type SuiteSyncDataState, suiteSyncDataReducer } from '@suite-common/suite-sync';
 import { type SuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
@@ -56,6 +60,7 @@ const thpReducer = prepareThpReducer(extraDependencies);
 const suiteSyncReducer = prepareSuiteSyncReducer(extraDependencies);
 const suiteSyncQuotaManagerReducer = suiteSyncQuotaManagerSlice.prepareReducer(extraDependencies);
 const receiveReducer = prepareReceiveReducer(extraDependencies);
+const persistentDeviceDataReducer = preparePersistentDeviceDataReducer(extraDependencies);
 
 export type AppState = SuiteReducersState & {
     networks: NetworksState;
@@ -75,6 +80,7 @@ export type AppState = SuiteReducersState & {
     suiteSyncData: SuiteSyncDataState;
     geolocation: GeolocationState;
     globalSendReceiveFilters: GlobalSendReceiveFiltersState;
+    persistentDeviceData: PersistentDeviceDataState;
 };
 
 export type SuiteRootReducer = Reducer<AppState, UnknownAction, Partial<AppState>>;
@@ -98,6 +104,7 @@ export const rootReducer: SuiteRootReducer = combineReducers({
     suiteSyncData: suiteSyncDataReducer,
     geolocation: geolocationReducer,
     globalSendReceiveFilters: globalSendReceiveFiltersReducer,
+    persistentDeviceData: persistentDeviceDataReducer,
 } satisfies ReducersMapObject<AppState, never, Record<keyof AppState, never>>);
 
 const loggerExcludedActions = [addLog.type];

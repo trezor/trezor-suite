@@ -5,6 +5,7 @@ import { firmwareInitialState } from '@suite-common/firmware';
 import { geolocationInitialState } from '@suite-common/geolocation';
 import { logsSliceInitialState } from '@suite-common/logger';
 import { messageSystemInitialState } from '@suite-common/message-system';
+import { persistentDeviceDataInitialState } from '@suite-common/persistent-device-data';
 import { receiveInitialState } from '@suite-common/receive';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager';
@@ -81,6 +82,7 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
     walletConnect: walletConnectInitialState,
     suiteSyncQuotaManager: quotaManagerInitialState,
     featureFeedback: featureFeedbackInitialState,
+    persistentDeviceData: persistentDeviceDataInitialState,
 
     wallet: {
         accounts: accountsInitialState,

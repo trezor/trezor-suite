@@ -11,6 +11,7 @@ import { torActions } from '@suite/tor';
 import { analyticsActions } from '@suite-common/analytics-redux';
 import { deviceActions } from '@suite-common/device';
 import { discreetModeActions } from '@suite-common/discreet-mode';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import {
     WALLET_SETTINGS,
     accountsActions,
@@ -118,7 +119,7 @@ const sentryMiddleware =
                 name: type /* type key is used internally by Sentry so it's not allowed */,
                 version: version || 'not-available',
             });
-        } else if (deviceActions.setDeviceAuthenticityResult.match(action)) {
+        } else if (persistentDeviceDataActions.setDeviceAuthenticityResult.match(action)) {
             const { result } = action.payload;
             if (!result) return action;
 

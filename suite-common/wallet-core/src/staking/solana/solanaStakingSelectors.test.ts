@@ -192,7 +192,6 @@ const getTestState = ({
                 staticSessionId: staticStateString,
             },
         } as TrezorDevice,
-        persistentDeviceData: [],
     },
 });
 

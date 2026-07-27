@@ -33,7 +33,7 @@ describe(createSaveDelegatedIdentityKey.name, () => {
         expect(actions).toStrictEqual([
             {
                 payload: { delegatedKey: 'delegatedKey-<encrypted>', deviceId: 'device-123' },
-                type: '@suite/device/setDelegatedIdentityKey',
+                type: '@suite/persistent-device-data/setDelegatedIdentityKey',
             },
         ]);
     });

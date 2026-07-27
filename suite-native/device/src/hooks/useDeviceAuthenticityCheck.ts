@@ -4,13 +4,14 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { deviceActions, selectSelectedDevice } from '@suite-common/device';
+import { selectSelectedDevice } from '@suite-common/device';
 import { isDeviceAuthenticityValid } from '@suite-common/device-authenticity';
 import {
     Feature,
     type MessageSystemRootState,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { type StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
 import {
@@ -168,7 +169,7 @@ export const useDeviceAuthenticityCheck = () => {
 
             // Clear previous result
             dispatch(
-                deviceActions.setDeviceAuthenticityResult({
+                persistentDeviceDataActions.setDeviceAuthenticityResult({
                     deviceId: device.id,
                     result: undefined,
                 }),
@@ -199,7 +200,7 @@ export const useDeviceAuthenticityCheck = () => {
             const storedResult: StoredAuthenticateDeviceResult = createStoredResult(result);
 
             dispatch(
-                deviceActions.setDeviceAuthenticityResult({
+                persistentDeviceDataActions.setDeviceAuthenticityResult({
                     deviceId: device.id,
                     result: storedResult,
                 }),

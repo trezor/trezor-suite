@@ -1,5 +1,5 @@
 import { useServices } from '@suite-common/dependency-injection';
-import { deviceActions } from '@suite-common/device';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { Button, Card, Text, VStack } from '@suite-native/atoms';
 import { selectMMKVStorageDep } from '@suite-native/services';
@@ -29,7 +29,9 @@ export const DangerZoneCard = () => {
                     <Button
                         intent="critical"
                         priority="primary"
-                        onPress={() => dispatch(deviceActions.clearDevicePersistentData())}
+                        onPress={() =>
+                            dispatch(persistentDeviceDataActions.clearDevicePersistentData())
+                        }
                     >
                         Clear app&apos;s device persistent data
                     </Button>

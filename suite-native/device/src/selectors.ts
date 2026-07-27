@@ -3,7 +3,6 @@ import { A } from '@mobily/ts-belt';
 import {
     type DeviceRootState,
     getIsDeviceIdValid,
-    selectDeviceAuthenticityByDeviceId,
     selectDeviceFirmwareVersionArray,
     selectDeviceInstances,
     selectDeviceModel,
@@ -12,9 +11,7 @@ import {
     selectIsDeviceConnected,
     selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceInBootloader,
-    selectIsDeviceInvariabilityCheckSuccess,
     selectIsDeviceThpLocked,
-    selectIsEntropyCheckFailed,
     selectIsFirmwareAuthenticityCheckDismissed,
     selectIsUnacquiredDevice,
     selectSelectedDevice,
@@ -29,6 +26,12 @@ import {
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
+import {
+    type PersistentDeviceDataRootState,
+    selectDeviceAuthenticityByDeviceId,
+    selectIsDeviceInvariabilityCheckSuccess,
+    selectIsEntropyCheckFailed,
+} from '@suite-common/persistent-device-data';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type ThpRootState, selectThpAutoconnectStep } from '@suite-common/thp';
 import {
@@ -67,6 +70,7 @@ import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 import { getIsDeviceSetupSupported, isFirmwareVersionSupported } from './utils';
 
 export type NativeDeviceRootState = DeviceRootState &
+    PersistentDeviceDataRootState &
     ThpRootState &
     AccountsRootState &
     DiscoveryRootState &

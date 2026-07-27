@@ -9,6 +9,9 @@
         {
             "path": "../../suite-common/message-system"
         },
+        {
+            "path": "../../suite-common/persistent-device-data"
+        },
         { "path": "../router" },
         { "path": "../router-config" },
         { "path": "../settings" },

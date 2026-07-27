@@ -4,6 +4,7 @@ import { type TranslationKey } from '@suite/intl';
 import { type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
+import { type PersistentDeviceDataState } from '@suite-common/persistent-device-data';
 import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
@@ -36,7 +37,10 @@ const services: SuiteRouterHistoryDep = {
     suiteRouterHistory: mockSuiteRouterHistory(),
 };
 
-const getInitialState = (device: DeviceReducerState): AppState =>
+const getInitialState = (
+    device: DeviceReducerState,
+    persistentDeviceData: PersistentDeviceDataState = { devices: [] },
+): AppState =>
     ({
         ...mockInitialAppState,
         device,
@@ -45,6 +49,7 @@ const getInitialState = (device: DeviceReducerState): AppState =>
             selectedAccount: mockInitialAppState.wallet?.selectedAccount ?? { account: null },
             accounts: mockInitialAppState.wallet?.accounts ?? [],
         },
+        persistentDeviceData,
     }) as AppState;
 
 const defaultDevice = mockSuiteDevice();
@@ -62,19 +67,22 @@ const matchingDevicePersistentData = {
 const deviceCompromisedFixtures: Array<{
     description: string;
     device: DeviceReducerState;
+    persistentDeviceData?: PersistentDeviceDataState;
     result: TranslationKey;
 }> = [
     {
         description: 'Entropy check error',
         device: {
             ...deviceInitialState,
-            persistentDeviceData: [
+            selectedDevice: mockSuiteDevice(),
+        },
+        persistentDeviceData: {
+            devices: [
                 {
                     ...matchingDevicePersistentData,
                     lastEntropyCheckResult: { success: false },
                 },
             ],
-            selectedDevice: mockSuiteDevice(),
         },
         result: 'TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT',
     },
@@ -164,7 +172,6 @@ const deviceCompromisedFixtures: Array<{
         description: 'Device invariability check error',
         device: {
             ...mockInitialAppState.device,
-            persistentDeviceData: [matchingDevicePersistentData],
             selectedDevice: {
                 ...defaultDevice,
                 features: {
@@ -174,16 +181,17 @@ const deviceCompromisedFixtures: Array<{
                 },
             },
         },
+        persistentDeviceData: { devices: [matchingDevicePersistentData] },
         result: 'TR_DEVICE_COMPROMISED_INVARIABILITY_CHECK_FAILED_TEXT',
     },
 ];
 
 describe(`${DeviceCompromised.name} component`, () => {
-    deviceCompromisedFixtures.forEach(({ description, device, result }) => {
+    deviceCompromisedFixtures.forEach(({ description, device, persistentDeviceData, result }) => {
         it(description, () => {
             const root = createTestCompositionRoot({
                 extra: { services },
-                preloadedState: getInitialState(device),
+                preloadedState: getInitialState(device, persistentDeviceData),
             });
             const { getByText, unmount } = renderWithProviders(root, <DeviceCompromised />);
             expect(getByText(result)).not.toBeNull();

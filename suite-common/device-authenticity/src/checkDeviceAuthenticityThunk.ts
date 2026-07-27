@@ -1,9 +1,10 @@
-import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import {
     Feature,
     type MessageSystemRootState,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { createThunk } from '@suite-common/redux-utils';
 import { type StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -58,7 +59,7 @@ export const checkDeviceAuthenticityThunk = createThunk<
                 : // or internal error (then skip the check by storing undefined)
                   undefined;
             dispatch(
-                deviceActions.setDeviceAuthenticityResult({
+                persistentDeviceDataActions.setDeviceAuthenticityResult({
                     deviceId: device.id,
                     result: storedResult,
                 }),
@@ -101,7 +102,7 @@ export const checkDeviceAuthenticityThunk = createThunk<
             );
 
             dispatch(
-                deviceActions.setDeviceAuthenticityResult({
+                persistentDeviceDataActions.setDeviceAuthenticityResult({
                     deviceId: device.id,
                     result: storedResult,
                 }),
@@ -115,7 +116,7 @@ export const checkDeviceAuthenticityThunk = createThunk<
             dispatch(notificationsActions.addToast({ type: 'device-authenticity-success' }));
         }
         dispatch(
-            deviceActions.setDeviceAuthenticityResult({
+            persistentDeviceDataActions.setDeviceAuthenticityResult({
                 deviceId: device.id,
                 result: storedResult,
             }),

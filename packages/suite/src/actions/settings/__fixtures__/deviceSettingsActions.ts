@@ -2,6 +2,7 @@ import assert from 'assert';
 
 import type { SuiteSettingsState } from '@suite/settings';
 import { deviceActions, deviceInitialState, prepareDeviceReducer } from '@suite-common/device';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -88,7 +89,7 @@ const fixture: Fixture[] = [
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
                 {
-                    type: deviceActions.forgetDevicePersistentData.type,
+                    type: persistentDeviceDataActions.forgetDevicePersistentData.type,
                     payload: { deviceId: 'device-id' },
                 },
                 {
@@ -224,7 +225,7 @@ const fixture: Fixture[] = [
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
                 {
-                    type: deviceActions.forgetDevicePersistentData.type,
+                    type: persistentDeviceDataActions.forgetDevicePersistentData.type,
                     payload: { deviceId: 'device-id' },
                 },
                 {
@@ -361,9 +362,9 @@ const fixture: Fixture[] = [
         result: {
             actions: [
                 {
-                    type: deviceActions.setEntropyCheckResult.type,
+                    type: persistentDeviceDataActions.setEntropyCheckResult.type,
                     payload: { deviceId: 'device-id', success: true },
-                } satisfies ReturnType<typeof deviceActions.setEntropyCheckResult>,
+                } satisfies ReturnType<typeof persistentDeviceDataActions.setEntropyCheckResult>,
             ],
         },
         initialState: {
@@ -392,9 +393,9 @@ const fixture: Fixture[] = [
                     },
                 } satisfies ReturnType<typeof notificationsActions.addToast>,
                 {
-                    type: deviceActions.setEntropyCheckResult.type,
+                    type: persistentDeviceDataActions.setEntropyCheckResult.type,
                     payload: { deviceId: 'device-id', success: false },
-                } satisfies ReturnType<typeof deviceActions.setEntropyCheckResult>,
+                } satisfies ReturnType<typeof persistentDeviceDataActions.setEntropyCheckResult>,
             ],
         },
         initialState: {

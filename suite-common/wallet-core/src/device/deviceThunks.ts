@@ -17,7 +17,6 @@ import {
     selectDeviceThunk,
     selectDevices,
     selectNewlyConnectedDeviceThunk,
-    selectPersistentDeviceDataById,
     selectPhysicalDeviceWallets,
     selectSelectedDevice,
     shouldDeviceBeRemembered,
@@ -27,6 +26,11 @@ import {
     type FirmwareRootState,
     selectIsFirmwareInstallationRunning,
 } from '@suite-common/firmware';
+import {
+    type PersistentDeviceDataRootState,
+    persistentDeviceDataActions,
+    selectPersistentDeviceDataById,
+} from '@suite-common/persistent-device-data';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type AcquiredDevice,
@@ -397,6 +401,7 @@ type ForgetDevicePersistentDataThunkParams = {
  * But not wallets, see `forgetDevice` (ejecting wallets & forgetting the rest are separate features).
  */
 export type ForgetDevicePersistentDataThunkState = DeviceRootState &
+    PersistentDeviceDataRootState &
     WithBluetoothState<BluetoothDeviceCommon>;
 
 export type ForgetDevicePersistentDataThunkDeps = {
@@ -421,7 +426,7 @@ export const forgetDevicePersistentDataThunk = createThunk<
         const device = selectDeviceById(getState(), deviceId);
         const matchingDevice = selectPersistentDeviceDataById(getState(), deviceId);
 
-        dispatch(deviceActions.forgetDevicePersistentData({ deviceId }));
+        dispatch(persistentDeviceDataActions.forgetDevicePersistentData({ deviceId }));
 
         const bluetoothId =
             matchingDevice?.descriptor?.apiType === 'bluetooth' && matchingDevice.descriptor.id

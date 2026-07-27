@@ -86,6 +86,9 @@
         { "path": "../../suite-common/mev" },
         { "path": "../../suite-common/networks" },
         {
+            "path": "../../suite-common/persistent-device-data"
+        },
+        {
             "path": "../../suite-common/platform-encryption"
         },
         {

@@ -1,7 +1,8 @@
 import { useRef } from 'react';
 
 import { selectKnownDeviceByDeviceId } from '@suite-common/bluetooth/src/bluetoothSelectors';
-import { selectPersistentDeviceDataById, selectSelectedDevice } from '@suite-common/device';
+import { selectSelectedDevice } from '@suite-common/device';
+import { selectPersistentDeviceDataById } from '@suite-common/persistent-device-data';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getIsDeviceConnectedViaBluetooth, getIsThpDevice } from '@suite-common/suite-utils';
 import { exhaustive } from '@trezor/type-utils';

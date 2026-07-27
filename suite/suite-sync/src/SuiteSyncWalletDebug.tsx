@@ -2,7 +2,7 @@
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { deviceActions } from '@suite-common/device';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type WithSuiteSyncAndDeviceState,
@@ -58,7 +58,7 @@ export const SuiteSyncWalletDebug = ({
             }),
         );
         dispatch(
-            deviceActions.setDelegatedIdentityKey({
+            persistentDeviceDataActions.setDelegatedIdentityKey({
                 deviceId: device.id,
                 delegatedKey: null,
             }),

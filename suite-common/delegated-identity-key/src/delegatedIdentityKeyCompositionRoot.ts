@@ -1,7 +1,11 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
 import { toGetter } from '@suite-common/dependency-injection';
-import { type DeviceRootState, selectDeviceDelegatedIdentityKey } from '@suite-common/device';
+import { type DeviceRootState } from '@suite-common/device';
+import {
+    type PersistentDeviceDataRootState,
+    selectDelegatedIdentityKeyByDeviceId,
+} from '@suite-common/persistent-device-data';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 
 import { createEnsureDelegatedIdentityKey } from './ensureDelegatedIdentityKey';
@@ -14,7 +18,7 @@ import { createSaveDelegatedIdentityKey } from './saveDelegatedIdentityKey';
 
 type DelegatedIdentityKeyCompositionRootDeps = {
     dispatch: Dispatch;
-    getState: () => DeviceRootState;
+    getState: () => DeviceRootState & PersistentDeviceDataRootState;
 } & PlatformEncryptionDep &
     RetrieveDelegatedIdentityKeyFromDeviceDeps;
 
@@ -27,7 +31,7 @@ export const delegatedIdentityKeyCompositionRoot = (
             platformEncryption: deps.platformEncryption,
             getDeviceDelegatedIdentityKey: toGetter(
                 deps.getState,
-                selectDeviceDelegatedIdentityKey,
+                selectDelegatedIdentityKeyByDeviceId,
             ),
         }),
         retrieveDelegatedIdentityKeyFromDevice: createRetrieveDelegatedIdentityKeyFromDevice({
