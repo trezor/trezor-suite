@@ -2,10 +2,10 @@ import { parseAbi } from 'viem';
 
 import { BigNumber } from '@trezor/utils';
 
-import { buildApprove } from '../../builder/evm/approve';
-import { EVM_ABI } from '../../constants/evm';
-import { asEvmAddress } from '../../types/evm';
-import { createVerifier } from '../../verifier/createVerifier';
+import { createVerifier } from './createVerifier';
+import { buildApprove } from '../builder/evm/approve';
+import { EVM_ABI } from '../constants/evm';
+import { asEvmAddress } from '../types/evm';
 
 const SPENDER = asEvmAddress('0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae');
 const SPENDER_CHECKSUMMED = asEvmAddress('0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE');
