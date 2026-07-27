@@ -2,7 +2,7 @@ import {
     getBackRoute,
     getTradingHeaderTitle,
     isTradingTopLevelRoute,
-} from '../tradingPageHeaderUtils';
+} from './tradingPageHeaderUtils';
 
 describe('tradingPageHeaderUtils', () => {
     describe('isTradingTopLevelRoute', () => {

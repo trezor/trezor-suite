@@ -13,7 +13,7 @@ import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState'
 import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
-import { EthereumNonce } from '../EthereumNonce';
+import { EthereumNonce } from './EthereumNonce';
 
 const ethAccount = mockWalletAccount({ symbol: 'eth' }) as any;
 

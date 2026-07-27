@@ -1,4 +1,4 @@
-import { shouldAttemptToLoadNextPageForVisibleTransactions } from '../transaction-fetch-utils';
+import { shouldAttemptToLoadNextPageForVisibleTransactions } from './transaction-fetch-utils';
 
 describe('TransactionFetchUtils', () => {
     it('should request fetching because the current number of visible transaction is 0 and there are still available', () => {

@@ -1,6 +1,6 @@
 import { type BuyTradeStatus } from 'invity-api';
 
-import { getBuyDetailHeaderMessages } from '../utils';
+import { getBuyDetailHeaderMessages } from './utils';
 
 describe('getBuyDetailHeaderMessages', () => {
     it('returns the processing header once the user has paid (APPROVAL_PENDING)', () => {

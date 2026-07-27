@@ -4,7 +4,7 @@ import { type RatesByKey, asCryptoBaseCurrencyCode } from '@suite-common/wallet-
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
-import { getFiatInputRules } from '../tradingFormInputFiatCryptoRules';
+import { getFiatInputRules } from './tradingFormInputFiatCryptoRules';
 
 const t = ((key: string, values?: Record<string, unknown>) =>
     values ? `${key}:${JSON.stringify(values)}` : key) as TranslationFunction;

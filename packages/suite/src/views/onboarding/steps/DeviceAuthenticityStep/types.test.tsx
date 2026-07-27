@@ -1,7 +1,7 @@
 import { Icon } from '@trezor/components';
 import { GradientIcon } from '@trezor/icons';
 
-import { type SecurityChecklistItem } from '../types';
+import { type SecurityChecklistItem } from './types';
 
 describe('SecurityChecklistItem', () => {
     describe('type tests', () => {
