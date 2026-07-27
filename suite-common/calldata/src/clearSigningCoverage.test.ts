@@ -1,8 +1,8 @@
 import { typedObjectKeys } from '@trezor/utils';
 
-import { CLEAR_SIGNED_SWAP_SELECTORS, getEvmClearSignedSwapCoverage } from '../clearSigning';
-import { DECODABLE_SWAP_SELECTORS, decodeClearSignedSwap } from '../clearSigningSwap';
-import { ONEINCH_FIXTURES } from '../fixtures/oneInchClearSigning';
+import { CLEAR_SIGNED_SWAP_SELECTORS, getEvmClearSignedSwapCoverage } from './clearSigning';
+import { DECODABLE_SWAP_SELECTORS, decodeClearSignedSwap } from './clearSigningSwap';
+import { ONEINCH_FIXTURES } from '../mocks/mockOneInchClearSigning';
 
 const ONEINCH = '0x111111125421cA6dc452d289314280a0f8842A65';
 const LIFI = '0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE';
