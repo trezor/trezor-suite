@@ -41,7 +41,8 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedBoxFrameProps)[number]>
 
 const Container = styled.div<
     TransientProps<AllowedFrameProps> & {
-        $borderWidth?: BoxBorderWidth;
+        $borderWidth?: BorderWidth;
+        $borderOffset?: number;
         $backgroundColor?: Color;
         $backgroundColorOnInteraction?: Color;
         $borderColor?: Color;
@@ -50,26 +51,20 @@ const Container = styled.div<
 >`
     background: unset;
     box-shadow: unset;
-    border-width: 0;
-    border-style: solid;
-    border-color: ${({ $borderColor, theme }) => theme[$borderColor ?? 'borderNeutral']};
+    outline: ${({ $borderColor, theme }) => theme[$borderColor ?? 'borderNeutral']} solid 0;
     transition: 0.2s ease-in-out;
 
-    ${({ $borderWidth }) => {
-        if ($borderWidth == null) return null;
-        if (typeof $borderWidth === 'object') {
-            return css`
-                border-width: ${getValueWithUnit($borderWidth.top ?? $borderWidth.vertical ?? 0)}
-                    ${getValueWithUnit($borderWidth.right ?? $borderWidth.horizontal ?? 0)}
-                    ${getValueWithUnit($borderWidth.bottom ?? $borderWidth.vertical ?? 0)}
-                    ${getValueWithUnit($borderWidth.left ?? $borderWidth.horizontal ?? 0)};
-            `;
-        }
+    ${({ $borderWidth }) =>
+        $borderWidth &&
+        css`
+            outline-width: ${getValueWithUnit($borderWidth)};
+        `}
 
-        return css`
-            border-width: ${getValueWithUnit($borderWidth)};
-        `;
-    }}
+    ${({ $borderOffset }) =>
+        $borderOffset !== undefined &&
+        css`
+            outline-offset: ${getValueWithUnit($borderOffset)};
+        `}
 
     ${({ $backgroundColor, theme }) =>
         $backgroundColor &&
@@ -99,24 +94,14 @@ const Container = styled.div<
     ${withFrameProps};
 `;
 
-type BoxBorderWidth =
-    | {
-          top?: BorderWidth;
-          bottom?: BorderWidth;
-          left?: BorderWidth;
-          right?: BorderWidth;
-          horizontal?: BorderWidth;
-          vertical?: BorderWidth;
-      }
-    | BorderWidth;
-
 export type BoxProps = Pick<
     HTMLProps<HTMLElement>,
     'onClick' | 'onMouseEnter' | 'onMouseLeave' | 'tabIndex'
 > &
     AllowedFrameProps & {
         children?: React.ReactNode;
-        borderWidth?: BoxBorderWidth;
+        borderWidth?: BorderWidth;
+        borderOffset?: number;
         backgroundColor?: Color;
         backgroundColorOnInteraction?: Color;
         borderColor?: Color;
@@ -130,6 +115,7 @@ export type BoxProps = Pick<
 export const Box = ({
     children,
     borderWidth,
+    borderOffset,
     backgroundColor,
     backgroundColorOnInteraction,
     borderColor,
@@ -152,6 +138,7 @@ export const Box = ({
             data-testid={dataTestId}
             aria-hidden={ariaHidden}
             $borderWidth={borderWidth}
+            $borderOffset={borderOffset}
             $backgroundColor={backgroundColor}
             $backgroundColorOnInteraction={backgroundColorOnInteraction}
             $borderColor={borderColor}

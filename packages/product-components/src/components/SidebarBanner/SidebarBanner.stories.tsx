@@ -57,14 +57,7 @@ export const SidebarBannerWithHeroContent: StoryObj<typeof SidebarBannerComponen
         ctaLabel: 'Learn more',
         description: 'Your labels stay secure and in sync across your devices.',
         heading: 'Turn on Suite Sync',
-        heroContent: (
-            <Box
-                backgroundColor="elementFillNeutralSofter"
-                borderRadius={8}
-                height={80}
-                width="100%"
-            />
-        ),
+        heroContent: <Box backgroundColor="elementFillBrandSofter" height={80} width="100%" />,
         onClick: action('onClick'),
     },
 };
