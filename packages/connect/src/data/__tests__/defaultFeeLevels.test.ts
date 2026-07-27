@@ -98,6 +98,30 @@ describe('getEthereumFeeLevels', () => {
                 dustLimit: -1,
             },
         },
+        hype: {
+            defaultGas: 0.1,
+            minFee: 0.001,
+            maxFee: 1000,
+            coinInfo: {
+                chain: 'hype',
+                blocktime_seconds: 1,
+            },
+            expected: {
+                blockTime: 1,
+                defaultFees: [
+                    {
+                        label: 'normal',
+                        feePerUnit: '100000000', // 0.1 Gwei * 1e9 = 100000000 Wei
+                        feeLimit: '21000',
+                        blocks: -1,
+                    },
+                ],
+                minFee: 0.001,
+                maxFee: 1000,
+                minPriorityFee: 0,
+                dustLimit: -1,
+            },
+        },
         unknown: {
             defaultGas: 5,
             minFee: 0.000000001,

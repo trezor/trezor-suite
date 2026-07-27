@@ -42,6 +42,7 @@ const EVM_GAS_PRICE_PER_CHAIN_IN_GWEI: Record<
     arb: { min: 0.001, max: 1000, defaultGas: 0.01, minPriorityFee: 0 },
     op: { min: 0.000000001, max: 1000, defaultGas: 0.01, minPriorityFee: 0 },
     rhc: { min: 0.001, max: 1000, defaultGas: 0.1, minPriorityFee: 0 },
+    hype: { min: 0.001, max: 1000, defaultGas: 0.1, minPriorityFee: 0 },
 };
 
 const getEvmChainGweiGasPrice = (chain: string) =>

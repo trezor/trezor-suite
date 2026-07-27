@@ -14,6 +14,11 @@ describe('data/coinInfo', () => {
             chainId: 4663,
             slip44: 4663,
         });
+        expect(getCoinInfoOrThrow('hype')).toMatchObject({
+            shortcut: 'HYPE',
+            chainId: 999,
+            slip44: 999,
+        });
 
         // the network name and label forms are no longer accepted (D2/D3)
         expect(() => getCoinInfoOrThrow('bitcoin')).toThrow('Coin not found');
@@ -25,6 +30,13 @@ describe('data/coinInfo', () => {
         expect(getCoinInfoOrThrow('rhc').blockchainLink).toEqual({
             type: 'blockbook',
             url: ['https://rhc.trezor.io'],
+        });
+    });
+
+    it('uses the HyperEVM Blockbook backend', () => {
+        expect(getCoinInfoOrThrow('hype').blockchainLink).toEqual({
+            type: 'blockbook',
+            url: ['https://hype.trezor.io'],
         });
     });
 

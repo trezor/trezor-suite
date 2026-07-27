@@ -135,6 +135,28 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
+                "url": ["https://hype.trezor.io"]
+            },
+            "chain": "hype",
+            "chain_id": 999,
+            "blocktime_seconds": 1,
+            "coingecko_id": "hyperevm",
+            "label": "HYPE",
+            "name": "HyperEVM",
+            "shortcut": "HYPE",
+            "slip44": 999,
+            "support": {
+                "T1B1": "1.9.4",
+                "T2B1": "2.6.1",
+                "T2T1": "2.3.5",
+                "T3B1": "2.8.1",
+                "T3T1": "2.6.1",
+                "T3W1": "2.6.1"
+            }
+        },
+        {
+            "blockchain_link": {
+                "type": "blockbook",
                 "url": ["https://rhc.trezor.io"]
             },
             "chain": "rhc",

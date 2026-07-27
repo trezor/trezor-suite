@@ -37,6 +37,8 @@ export const ACCOUNT_TYPES = [
     { symbol: 'op', type: 'ledger', path: "m/44'/60'/i'/0/0" },
     { symbol: 'rhc', type: 'normal', path: "m/44'/60'/0'/0/i" },
     { symbol: 'rhc', type: 'ledger', path: "m/44'/60'/i'/0/0" },
+    { symbol: 'hype', type: 'normal', path: "m/44'/60'/0'/0/i" },
+    { symbol: 'hype', type: 'ledger', path: "m/44'/60'/i'/0/0" },
     { symbol: 'avax', type: 'normal', path: "m/44'/60'/0'/0/i" },
     { symbol: 'avax', type: 'ledger', path: "m/44'/60'/i'/0/0" },
     { symbol: 'sol', type: 'normal', path: "m/44'/501'/i'/0'" },
