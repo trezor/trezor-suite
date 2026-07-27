@@ -40,10 +40,7 @@ import {
 } from './deviceConstants';
 import { type DeviceRootState } from './deviceReducer';
 import { isTrezorDeviceWithState } from './deviceUtils';
-import {
-    deviceInvariabilityCheck,
-    rawDataToDeviceInvariabilityCheckDTO,
-} from './services/deviceInvariabilityCheck';
+import { selectPersistentDeviceData } from './persistentDeviceDataSelectors';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 
@@ -56,20 +53,6 @@ export const selectSelectedDevice = (state: DeviceRootState) => state.device.sel
 export const selectIsAnyDeviceSelected = createMemoizedSelector(
     [selectSelectedDevice],
     device => !!device,
-);
-
-export const selectPersistentDeviceData = (state: DeviceRootState) =>
-    state.device.persistentDeviceData;
-
-export const selectPersistentDeviceDataById = createMemoizedSelector(
-    [selectPersistentDeviceData, (_state, deviceId: TrezorDevice['id']) => deviceId],
-    (persistentDeviceData, deviceId) =>
-        persistentDeviceData.find(data => data.device_id === deviceId),
-);
-
-export const selectEntropyCheckResultByDeviceId = createMemoizedSelector(
-    [selectPersistentDeviceDataById],
-    persistentDeviceData => persistentDeviceData?.lastEntropyCheckResult,
 );
 
 // Use in tests only! See deviceReducer for the property definition.
@@ -325,27 +308,12 @@ export const selectDeviceById = createMemoizedSelector(
     (devices, deviceId) => devices.find(device => device.id === deviceId),
 );
 
-const selectDeviceAuthenticity = (state: DeviceRootState) => state.device.persistentDeviceData;
-
-export const selectDeviceAuthenticityByDeviceId = createMemoizedSelector(
-    [(_state: DeviceRootState, deviceId: TrezorDevice['id']) => deviceId, selectDeviceAuthenticity],
-    (deviceId, persistentDeviceData) =>
-        deviceId
-            ? persistentDeviceData.find(data => data.device_id === deviceId)?.authenticityResult
-            : undefined,
-);
-
 export const selectIsFirmwareAuthenticityCheckDismissed = createMemoizedSelector(
     [
         (_state, deviceId: TrezorDevice['id']) => deviceId,
         state => state.device.dismissedSecurityChecks?.firmwareAuthenticity,
     ],
     (deviceId, dismissedChecks) => !!(deviceId && dismissedChecks?.includes(deviceId)),
-);
-
-export const selectIsEntropyCheckFailed = createMemoizedSelector(
-    [selectPersistentDeviceDataById],
-    persistentDeviceData => persistentDeviceData?.lastEntropyCheckResult?.success === false,
 );
 
 export const selectWasFwHashCheckOtherErrorLastTime = createMemoizedSelector(
@@ -355,18 +323,6 @@ export const selectWasFwHashCheckOtherErrorLastTime = createMemoizedSelector(
         const lastHashCheck = lastConnectedAuthenticityChecks?.firmwareHash;
 
         return lastHashCheck && !lastHashCheck.success && lastHashCheck.error === 'other-error';
-    },
-);
-
-export const selectIsDeviceInvariabilityCheckSuccess = createMemoizedSelector(
-    [
-        (_state, device) => device,
-        (state, device) => selectPersistentDeviceDataById(state, device?.id),
-    ],
-    (device, previousData) => {
-        const dto = rawDataToDeviceInvariabilityCheckDTO({ device, previousData });
-
-        return deviceInvariabilityCheck(dto).success;
     },
 );
 

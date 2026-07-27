@@ -2,6 +2,8 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { asDeviceUniquePath } from '@trezor/connect-common';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
+export const DEVICE_MODULE_PREFIX = '@suite/device';
+
 // These hidden device constants are used in mobile app to hold all imported accounts.
 
 // Changing these strings will result in app crash as accounts are persisted.

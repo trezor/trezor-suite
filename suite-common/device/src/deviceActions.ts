@@ -1,24 +1,18 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import type {
-    AcquiredDevice,
-    ButtonRequest,
-    PersistentDeviceData,
-    StoredAuthenticateDeviceResult,
-    TrezorDevice,
-} from '@suite-common/suite-types';
+import type { AcquiredDevice, ButtonRequest, TrezorDevice } from '@suite-common/suite-types';
 import {
     DEVICE,
     type DecodedTrezorPushNotification,
     type Device,
     type DeviceState,
-    type EntropyCheckResult,
     type StaticSessionId,
 } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type Err } from '@trezor/type-utils';
 
-export const DEVICE_MODULE_PREFIX = '@suite/device';
+import { DEVICE_MODULE_PREFIX } from './deviceConstants';
+import { persistentDeviceDataActions } from './persistentDeviceDataActions';
 
 export type DeviceConnectActionPayload = {
     device: Device;
@@ -86,14 +80,6 @@ const forgetDevice = createAction(
     (payload: { device: TrezorDevice }) => ({ payload }),
 );
 
-// Forget persistent deviceReducer data for a device. See `forgetSingleDevicePersistentDataThunk` for all device-associated data.
-const forgetDevicePersistentData = createAction(
-    `${DEVICE_MODULE_PREFIX}/forgetDevicePersistentData`,
-    (payload: { deviceId: AcquiredDevice['id'] }) => ({ payload }),
-);
-
-const clearDevicePersistentData = createAction(`${DEVICE_MODULE_PREFIX}/clearDevicePersistentData`);
-
 const addButtonRequest = createAction(
     `${DEVICE_MODULE_PREFIX}/addButtonRequest`,
     (payload: { device?: TrezorDevice; buttonRequest: ButtonRequest }) => ({ payload }),
@@ -126,41 +112,11 @@ const dismissFirmwareAuthenticityCheck = createAction(
     (payload: string) => ({ payload }),
 );
 
-type SetEntropyCheckResultParams = { deviceId: AcquiredDevice['id'] } & EntropyCheckResult;
-const setEntropyCheckResult = createAction(
-    `${DEVICE_MODULE_PREFIX}/setEntropyCheckResult`,
-    (payload: SetEntropyCheckResultParams) => ({ payload }),
-);
-
-type SetDelegatedIdentityKeyParams = {
-    deviceId: string;
-    delegatedKey: PersistentDeviceData['delegatedIdentityKey'];
-};
-
-const setDelegatedIdentityKey = createAction(
-    `${DEVICE_MODULE_PREFIX}/setDelegatedIdentityKey`,
-    ({ deviceId, delegatedKey }: SetDelegatedIdentityKeyParams) => ({
-        payload: { deviceId, delegatedKey },
-    }),
-);
-
 const setDiscovered = createAction(
     `${DEVICE_MODULE_PREFIX}/setDiscovered`,
     (staticSessionId: StaticSessionId, success: boolean) => ({
         payload: { staticSessionId, success },
     }),
-);
-
-const setDeviceAuthenticityResult = createAction(
-    `${DEVICE_MODULE_PREFIX}/setDeviceAuthenticityResult`,
-    (payload: { deviceId: TrezorDevice['id']; result: StoredAuthenticateDeviceResult }) => ({
-        payload,
-    }),
-);
-
-const setManualDeviceCheckSuccess = createAction(
-    `${DEVICE_MODULE_PREFIX}/setManualDeviceCheckSuccess`,
-    (payload: { deviceId: TrezorDevice['id'] }) => ({ payload }),
 );
 
 // Use in tests only! See deviceReducer for the property definition.
@@ -181,18 +137,13 @@ export const deviceActions = {
     setRememberDevice,
     setTemporaryRememberedDevice,
     forgetDevice,
-    forgetDevicePersistentData,
-    clearDevicePersistentData,
+    ...persistentDeviceDataActions,
     addButtonRequest,
     requestDeviceReconnect,
     selectDevice,
     updateSelectedDevice,
     removeButtonRequests,
-    setEntropyCheckResult,
-    setDelegatedIdentityKey,
     setDiscovered,
     devicePushNotification,
-    setDeviceAuthenticityResult,
-    setManualDeviceCheckSuccess,
     setSimulatedEntropyCheckFail,
 };
