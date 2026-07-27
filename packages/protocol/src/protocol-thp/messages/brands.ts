@@ -9,7 +9,6 @@ export type HostStaticKey = Buffer & Branded<'HostStaticKey'>;
 export type HostStaticKeyHex = string & Branded<'HostStaticKey'>;
 
 export type HostStaticPublicKey = Buffer & Branded<'HostStaticPublicKey'>;
-export type HostStaticPublicKeyHex = string & Branded<'HostStaticPublicKey'>;
 
 export type TrezorStaticPublicKey = string & Branded<'TrezorStaticPublicKey'>;
 
@@ -19,8 +18,6 @@ export const asHostStaticKey = (value: Buffer): HostStaticKey => value as HostSt
 export const asHostStaticKeyHex = (value: string): HostStaticKeyHex => value as HostStaticKeyHex;
 export const asHostStaticPublicKey = (value: Buffer): HostStaticPublicKey =>
     value as HostStaticPublicKey;
-export const asHostStaticPublicKeyHex = (value: string): HostStaticPublicKeyHex =>
-    value as HostStaticPublicKeyHex;
 export const asTrezorStaticPublicKey = (value: string): TrezorStaticPublicKey =>
     value as TrezorStaticPublicKey;
 export const asThpCredentialId = (value: string): ThpCredentialId => value as ThpCredentialId;

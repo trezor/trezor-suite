@@ -5,13 +5,11 @@ export {
     asHostStaticKey,
     asHostStaticKeyHex,
     asHostStaticPublicKey,
-    asHostStaticPublicKeyHex,
     asTrezorStaticPublicKey,
     asThpCredentialId,
     type HostStaticKey,
     type HostStaticKeyHex,
     type HostStaticPublicKey,
-    type HostStaticPublicKeyHex,
     type TrezorStaticPublicKey,
     type ThpCredentialId,
 } from './protocol-thp/messages';
