@@ -12,6 +12,10 @@ type YieldFlowTransferRowProps = {
     outputLabelId: TranslationId;
     input: YieldFlowCompleteValue;
     output: YieldFlowCompleteValue;
+    /** Present the input token as its native asset (set when the input is the wrapped-native deposit token, never the receipt token). */
+    inputPresentsNative?: boolean;
+    /** Present the output token as its native asset (set when the output is the wrapped-native deposit token, never the receipt token). */
+    outputPresentsNative?: boolean;
 };
 
 export const YieldFlowTransferRow = ({
@@ -19,6 +23,8 @@ export const YieldFlowTransferRow = ({
     outputLabelId,
     input,
     output,
+    inputPresentsNative = false,
+    outputPresentsNative = false,
 }: YieldFlowTransferRowProps) => {
     const { isBelowTablet } = useLayoutSize();
 
@@ -33,6 +39,7 @@ export const YieldFlowTransferRow = ({
                     contractAddress: input.token.contractAddress ?? null,
                 }}
                 amount={input.amount}
+                presentWrappedAsNative={inputPresentsNative}
                 data-testid="@yield/flow-complete/transfer/input"
             />
         </Column>
@@ -49,6 +56,7 @@ export const YieldFlowTransferRow = ({
                     contractAddress: output.token.contractAddress ?? null,
                 }}
                 amount={output.amount}
+                presentWrappedAsNative={outputPresentsNative}
                 data-testid="@yield/flow-complete/transfer/output"
             />
         </Column>

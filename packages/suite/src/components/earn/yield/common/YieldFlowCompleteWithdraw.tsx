@@ -38,6 +38,7 @@ export const YieldFlowCompleteWithdraw = ({
                     outputLabelId="TR_RECEIVED"
                     input={input}
                     output={output}
+                    outputPresentsNative
                 />
             ) : (
                 <Row
@@ -55,6 +56,7 @@ export const YieldFlowCompleteWithdraw = ({
                                 contractAddress: receivedValue.token.contractAddress ?? null,
                             }}
                             amount={receivedValue.amount}
+                            presentWrappedAsNative
                         />
                     </Column>
                 </Row>

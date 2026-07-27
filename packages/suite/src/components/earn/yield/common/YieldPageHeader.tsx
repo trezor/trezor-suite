@@ -121,6 +121,7 @@ export const YieldPageHeader = ({
                                 showNetworkIcon
                                 size={32}
                                 isBordered={false}
+                                wrappedTokenIcon="network"
                             />
                         )}
                         <Column gap={2} overflow="hidden">

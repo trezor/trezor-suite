@@ -53,6 +53,7 @@ export const YieldFlowCompleteDeposit = ({
             outputLabelId="TR_RECEIVED"
             input={input}
             output={output}
+            inputPresentsNative
         />
     </YieldFlowComplete>
 );

@@ -145,6 +145,7 @@ export const ApproveModal = (props: ApproveModalProps) => {
                                     <TokenIcon
                                         symbol={account.symbol}
                                         contractAddress={token.contract}
+                                        wrappedTokenIcon="network"
                                         size={20}
                                         placeholder={displaySymbol}
                                     />

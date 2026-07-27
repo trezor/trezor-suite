@@ -13,12 +13,18 @@ type YieldTokenValueToken = {
 type YieldTokenValueProps = {
     token: YieldTokenValueToken;
     amount: string;
+    /**
+     * Present a wrapped-native deposit token (e.g. WETH) as its native asset (ETH). Must stay
+     * `false` for the vault receipt token (`vault.outputToken`, e.g. trSHETHp).
+     */
+    presentWrappedAsNative?: boolean;
     'data-testid'?: string;
 };
 
 export const YieldTokenValue = ({
     token,
     amount,
+    presentWrappedAsNative = false,
     'data-testid': dataTestId,
 }: YieldTokenValueProps) => (
     <Row alignItems="center" gap={8}>
@@ -29,6 +35,7 @@ export const YieldTokenValue = ({
             placeholder={token.symbol}
             showNetworkIcon
             isBordered={false}
+            wrappedTokenIcon={presentWrappedAsNative ? 'network' : 'token'}
         />
         <Text typographyStyle="body-md-strong">
             {/*

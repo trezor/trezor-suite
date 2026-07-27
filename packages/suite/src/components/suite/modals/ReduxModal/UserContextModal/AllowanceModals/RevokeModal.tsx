@@ -168,6 +168,7 @@ export const RevokeModal = (props: RevokeModalProps) => {
                                     <TokenIcon
                                         symbol={account.symbol}
                                         contractAddress={token.contract}
+                                        wrappedTokenIcon="network"
                                         size={20}
                                         placeholder={displaySymbol}
                                     />

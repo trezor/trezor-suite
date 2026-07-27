@@ -51,6 +51,7 @@ export const YieldWrapStep = ({
                         placeholder={token.symbol}
                         showNetworkIcon
                         isBordered={false}
+                        wrappedTokenIcon="network"
                     />
                     <Text typographyStyle="body-md">
                         <FormattedCryptoAmount value="0" symbol={token.symbol} />

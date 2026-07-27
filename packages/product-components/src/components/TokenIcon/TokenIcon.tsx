@@ -1,5 +1,6 @@
 import { isCryptoIconSymbol, isNetworkIconSymbol } from '@suite-common/icons';
 import { getCoingeckoId, getNetworkOptional, isNetworkSymbol } from '@suite-common/wallet-config';
+import { isWrappedNativeToken } from '@suite-common/wallet-utils';
 
 import { NativeTokenIcon } from './NativeTokenIcon';
 import { NonNativeTokenIcon } from './NonNativeTokenIcon';
@@ -16,8 +17,13 @@ export const TokenIcon = ({
     placeholder = '',
     customLogoUrl,
     isBordered = true,
+    wrappedTokenIcon = 'token',
     'data-testid': dataTestId,
 }: TokenIconProps) => {
+    if (wrappedTokenIcon === 'network' && isWrappedNativeToken(symbol, contractAddress)) {
+        contractAddress = null;
+    }
+
     if (!contractAddress) {
         if (showNetworkIcon) {
             const network = getNetworkOptional(symbol);
