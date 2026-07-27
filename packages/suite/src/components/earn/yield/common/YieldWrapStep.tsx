@@ -16,11 +16,12 @@ import { YieldPendingTransaction } from './YieldPendingTransaction';
 type YieldWrapStepProps = {
     token: YieldFlowDisplayToken;
     nativeSymbol: string;
-    nativeBalance: string;
+    availableAmount: string;
     onMaxClick: () => void;
     onSubmit: () => void;
     onSkip?: () => void;
     shouldShowReceivingRow?: boolean;
+    receivingAmount?: string;
     isSubmitting?: boolean;
     isSubmitDisabled?: boolean;
     warning?: ReactNode;
@@ -31,11 +32,12 @@ type YieldWrapStepProps = {
 export const YieldWrapStep = ({
     token,
     nativeSymbol,
-    nativeBalance,
+    availableAmount,
     onMaxClick,
     onSubmit,
     onSkip,
     shouldShowReceivingRow = true,
+    receivingAmount = '0',
     isSubmitting = false,
     isSubmitDisabled = false,
     warning,
@@ -51,8 +53,8 @@ export const YieldWrapStep = ({
                 amountLabelTranslationId: 'TR_EARN_YIELD_WRAP_AMOUNT',
             }}
             summary={{
-                labelTranslationId: 'TR_BALANCE',
-                value: <FormattedCryptoAmount value={nativeBalance} symbol={nativeSymbol} />,
+                labelTranslationId: 'TR_EARN_YIELD_AVAILABLE_TO_WRAP',
+                value: <FormattedCryptoAmount value={availableAmount} symbol={nativeSymbol} />,
                 onMaxClick: pendingTransaction ? undefined : onMaxClick,
             }}
             warning={warning}
@@ -74,7 +76,7 @@ export const YieldWrapStep = ({
                             isBordered={false}
                         />
                         <Text typographyStyle="body-md">
-                            <FormattedCryptoAmount value="0" symbol={token.symbol} />
+                            <FormattedCryptoAmount value={receivingAmount} symbol={token.symbol} />
                         </Text>
                     </Row>
                 </Row>

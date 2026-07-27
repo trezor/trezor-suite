@@ -15,10 +15,14 @@ const FLOW_KEY = 'account-key:yield-id:0xtoken';
 const getSession = (state: StablecoinYieldState, flowType: YieldFlowType) =>
     state[flowType][getStablecoinYieldSessionKey(FLOW_KEY)];
 
-const initSession = (flowType: YieldFlowType, isNativeDeposit?: boolean) =>
+const initSession = (flowType: YieldFlowType, isWrappedNativeVault?: boolean) =>
     stablecoinYieldReducer(
         initialStablecoinYieldState,
-        stablecoinYieldActions.initSession({ flowType, flowKey: FLOW_KEY, isNativeDeposit }),
+        stablecoinYieldActions.initSession({
+            flowType,
+            flowKey: FLOW_KEY,
+            isWrappedNativeVault,
+        }),
     );
 
 describe('stablecoinYieldReducer', () => {
@@ -35,26 +39,168 @@ describe('stablecoinYieldReducer', () => {
             expect(getSession(state, 'deposit')?.step).toBe('wrap');
         });
 
+        it('preserves the wrapped-native flow when resetting a session', () => {
+            const state = stablecoinYieldReducer(
+                initSession('deposit', true),
+                stablecoinYieldActions.resetSession({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.step).toBe('wrap');
+            expect(getSession(state, 'deposit')?.isWrappedNativeVault).toBe(true);
+        });
+
         it('moves a native deposit from the wrap step to approve when it is skipped', () => {
             const state = stablecoinYieldReducer(
                 initSession('deposit', true),
-                stablecoinYieldActions.skipWrapStep({ flowType: 'deposit', flowKey: FLOW_KEY }),
+                stablecoinYieldActions.resolveWrappedNativeStep({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    step: 'wrap',
+                }),
             );
 
             expect(getSession(state, 'deposit')?.step).toBe('approve');
         });
 
+        it('seeds the deposit amount with the wrapped amount', () => {
+            const state = stablecoinYieldReducer(
+                initSession('deposit', true),
+                stablecoinYieldActions.resolveWrappedNativeStep({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    step: 'wrap',
+                    amount: '0.2',
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.action.amount).toBe('0.2');
+        });
+
+        it('keeps the deposit amount empty when the wrap step is skipped', () => {
+            const state = stablecoinYieldReducer(
+                initSession('deposit', true),
+                stablecoinYieldActions.resolveWrappedNativeStep({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    step: 'wrap',
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.action.amount).toBeNull();
+        });
+
         it('does not regress once the wrap step has been left', () => {
-            // skipWrapStep must only advance from the wrap step, so a repeat can't pull the
-            // flow back from approve/action.
-            const skipWrap = stablecoinYieldActions.skipWrapStep({
+            const resolveWrap = stablecoinYieldActions.resolveWrappedNativeStep({
                 flowType: 'deposit',
                 flowKey: FLOW_KEY,
+                step: 'wrap',
             });
-            const once = stablecoinYieldReducer(initSession('deposit', true), skipWrap);
-            const twice = stablecoinYieldReducer(once, skipWrap);
+            const once = stablecoinYieldReducer(initSession('deposit', true), resolveWrap);
+            const twice = stablecoinYieldReducer(once, resolveWrap);
 
             expect(getSession(twice, 'deposit')?.step).toBe('approve');
+        });
+
+        it('returns a wrapped-native deposit from approve back to the wrap step', () => {
+            const atApprove = stablecoinYieldReducer(
+                initSession('deposit', true),
+                stablecoinYieldActions.resolveWrappedNativeStep({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    step: 'wrap',
+                }),
+            );
+            const state = stablecoinYieldReducer(
+                atApprove,
+                stablecoinYieldActions.returnToWrapStep({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.step).toBe('wrap');
+        });
+
+        it('does not return to the wrap step for a non-wrapped vault', () => {
+            const state = stablecoinYieldReducer(
+                initSession('deposit'),
+                stablecoinYieldActions.returnToWrapStep({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.step).toBe('approve');
+        });
+
+        it('does not return to the wrap step while a transaction is in flight', () => {
+            const atApprove = stablecoinYieldReducer(
+                initSession('deposit', true),
+                stablecoinYieldActions.resolveWrappedNativeStep({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    step: 'wrap',
+                }),
+            );
+            const withPendingTx = stablecoinYieldReducer(
+                atApprove,
+                stablecoinYieldActions.setPendingTx({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    tx: { type: 'approve', txid: '0xabc', amount: '1' },
+                }),
+            );
+            const state = stablecoinYieldReducer(
+                withPendingTx,
+                stablecoinYieldActions.returnToWrapStep({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.step).toBe('approve');
+        });
+
+        it.each(['withdraw', 'redeem'] as const)(
+            'moves a wrapped-native %s from action to unwrap',
+            flowType => {
+                const state = stablecoinYieldReducer(
+                    initSession(flowType, true),
+                    stablecoinYieldActions.completeAction({
+                        flowType,
+                        flowKey: FLOW_KEY,
+                        amount: '10',
+                    }),
+                );
+
+                expect(getSession(state, flowType)?.step).toBe('unwrap');
+            },
+        );
+
+        it('stores the unwrapped amount and completes the flow', () => {
+            const actionCompleteState = stablecoinYieldReducer(
+                initSession('withdraw', true),
+                stablecoinYieldActions.completeAction({
+                    flowType: 'withdraw',
+                    flowKey: FLOW_KEY,
+                    amount: '10',
+                }),
+            );
+            const state = stablecoinYieldReducer(
+                actionCompleteState,
+                stablecoinYieldActions.resolveWrappedNativeStep({
+                    flowType: 'withdraw',
+                    flowKey: FLOW_KEY,
+                    step: 'unwrap',
+                    amount: '10',
+                }),
+            );
+
+            expect(getSession(state, 'withdraw')?.step).toBe('complete');
+            expect(getSession(state, 'withdraw')?.result.unwrappedAmount).toBe('10');
         });
 
         it.each(['withdraw', 'redeem', 'claim'] as const)(
@@ -90,6 +236,18 @@ describe('stablecoinYieldReducer', () => {
             );
 
             expect(getSession(state, 'deposit')?.step).toBe('action');
+        });
+
+        it('does not skip the wrap step when an allowance check resolves early', () => {
+            const state = stablecoinYieldReducer(
+                initSession('deposit', true),
+                stablecoinYieldActions.skipApprovalStep({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.step).toBe('wrap');
         });
 
         it('keeps deposit on the action step when the approval skip repeats', () => {

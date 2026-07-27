@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { type EarnParams } from '@suite/router';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowCompleteValue,
     type YieldWithdrawFlowType,
@@ -92,27 +93,38 @@ export const useYieldWithdraw = ({
         return null;
     }
 
-    const { completedAmount } = flowResult;
+    const { completedAmount, unwrappedAmount } = flowResult;
     const isSharesInput = flowType === 'redeem';
     const pricePerShareState = vault.state?.pricePerShareState;
     const completedInput = {
         token: isSharesInput ? receiptToken : token,
         amount: completedAmount,
     };
-    const completedOutput = isSharesInput
-        ? {
-              token,
-              amount: pricePerShareState
-                  ? getConvertedOutputTokenBalanceToInputTokenAmount({
-                        networkSymbol: token.networkSymbol,
-                        token,
-                        outputToken: receiptToken,
-                        outputTokenBalance: completedAmount,
-                        pricePerShareState,
-                    })
-                  : completedAmount,
-          }
-        : undefined;
+    let completedOutput: YieldFlowCompleteValue | undefined;
+
+    if (unwrappedAmount !== null) {
+        completedOutput = {
+            token: {
+                networkSymbol: account.symbol,
+                symbol: getNetworkDisplaySymbol(account.symbol),
+                decimals: getNetwork(account.symbol).decimals,
+            },
+            amount: unwrappedAmount,
+        };
+    } else if (isSharesInput) {
+        completedOutput = {
+            token,
+            amount: pricePerShareState
+                ? getConvertedOutputTokenBalanceToInputTokenAmount({
+                      networkSymbol: token.networkSymbol,
+                      token,
+                      outputToken: receiptToken,
+                      outputTokenBalance: completedAmount,
+                      pricePerShareState,
+                  })
+                : completedAmount,
+        };
+    }
 
     return {
         ...flowResult,

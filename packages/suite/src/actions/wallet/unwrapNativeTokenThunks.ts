@@ -4,6 +4,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type YieldFlowDisplayToken,
+    type YieldWithdrawFlowType,
     composeYieldUnwrapTransactionThunk,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -16,11 +17,18 @@ type UnwrapNativeTokenPayload = {
     account: Account;
     token: YieldFlowDisplayToken & { contractAddress: string };
     unwrapAmount: string;
+    yieldFlow?: {
+        flowKey: string;
+        flowType: YieldWithdrawFlowType;
+    };
 };
 
 export const submitUnwrapNativeTokenThunk = createThunk(
     `${UNWRAP_NATIVE_TOKEN_PREFIX}/submit`,
-    async ({ account, token, unwrapAmount }: UnwrapNativeTokenPayload, { dispatch, getState }) => {
+    async (
+        { account, token, unwrapAmount, yieldFlow }: UnwrapNativeTokenPayload,
+        { dispatch, getState },
+    ) => {
         try {
             const result = await dispatch(
                 composeYieldUnwrapTransactionThunk({ account, token, unwrapAmount }),
@@ -57,8 +65,8 @@ export const submitUnwrapNativeTokenThunk = createThunk(
                 amount: unwrapAmount,
                 token,
                 unsignedTransaction: result.unsignedTransaction,
-                flowKey: 'standalone-unwrap-native',
-                flowType: 'withdraw',
+                flowKey: yieldFlow?.flowKey ?? 'standalone-unwrap-native',
+                flowType: yieldFlow?.flowType ?? 'withdraw',
                 dispatch,
                 getState,
                 selectedFee: userAcceptedTxSimulation?.selectedFee ?? null,

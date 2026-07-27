@@ -11,6 +11,7 @@ export type WrappedNativeFlowType = 'wrap' | 'unwrap';
 export type YieldPositionFlowType = Exclude<YieldFlowType, 'claim'>;
 export type YieldWithdrawFlowType = Extract<YieldFlowType, 'withdraw' | 'redeem'>;
 export type YieldFlowStepId = (typeof YIELD_FLOW_STEPS)[number];
+export type WrappedNativeStepId = Extract<YieldFlowStepId, 'wrap' | 'unwrap'>;
 
 export type YieldFlowFormValues = {
     amountInput: string;

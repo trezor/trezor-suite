@@ -7,6 +7,7 @@ import { submitWrapNativeTokenThunk } from '../wrapNativeTokenThunks';
 
 const mockComposeYieldWrapTransactionThunk = jest.fn();
 const mockOpenDeferredModal = jest.fn();
+const mockSendYieldTransaction = jest.fn();
 
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
@@ -19,7 +20,7 @@ jest.mock('@suite/modal', () => ({
 }));
 
 jest.mock('../stablecoin-yield/signingHelpers', () => ({
-    sendYieldTransaction: jest.fn(),
+    sendYieldTransaction: (payload: unknown) => mockSendYieldTransaction(payload),
 }));
 
 const account = mockWalletAccount({ symbol: 'eth' }) as Account;
@@ -66,6 +67,35 @@ describe('submitWrapNativeTokenThunk', () => {
             expect.objectContaining({
                 type: 'earn-yield-tx-simulation',
                 data: expect.objectContaining({ flow: 'wrap' }),
+            }),
+        );
+    });
+
+    it('uses the parent yield flow identity when provided', async () => {
+        const store = configureMockStore({ extra: {}, preloadedState: {} });
+        mockOpenDeferredModal.mockImplementation(
+            () => () => Promise.resolve({ value: true, resolve: jest.fn() }),
+        );
+        mockSendYieldTransaction.mockResolvedValue({ txid: '0xwrap' });
+
+        await store
+            .dispatch(
+                submitWrapNativeTokenThunk({
+                    account,
+                    token,
+                    wrapAmount: '1',
+                    yieldFlow: {
+                        flowKey: 'yield-flow',
+                        flowType: 'deposit',
+                    },
+                }),
+            )
+            .unwrap();
+
+        expect(mockSendYieldTransaction).toHaveBeenCalledWith(
+            expect.objectContaining({
+                flowKey: 'yield-flow',
+                flowType: 'deposit',
             }),
         );
     });

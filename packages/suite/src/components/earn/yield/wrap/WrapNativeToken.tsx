@@ -7,8 +7,11 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
-import { type YieldFlowDisplayToken, type YieldFlowFormValues } from '@suite-common/wallet-core';
+import {
+    type YieldFlowDisplayToken,
+    type YieldFlowFormValues,
+    getWrappableNativeBalance,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
@@ -53,10 +56,7 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
         decimals: token.decimals,
     };
 
-    const maxWrapAmount = BigNumber.max(
-        0,
-        new BigNumber(account.formattedBalance).minus(WETH_WRAP_GAS_RESERVE),
-    ).toString();
+    const maxWrapAmount = getWrappableNativeBalance(account.formattedBalance);
 
     const amountInput = useWatch({ control: methods.control, name: 'amountInput' });
     const amount = new BigNumber(amountInput || '');
@@ -145,7 +145,7 @@ export const WrapNativeToken = ({ account, token }: WrapNativeTokenProps) => {
                     <YieldWrapStep
                         token={token}
                         nativeSymbol={nativeSymbol}
-                        nativeBalance={account.formattedBalance}
+                        availableAmount={maxWrapAmount}
                         shouldShowReceivingRow={false}
                         isSubmitting={wrapMutation.isPending}
                         isSubmitDisabled={!isAmountValid}

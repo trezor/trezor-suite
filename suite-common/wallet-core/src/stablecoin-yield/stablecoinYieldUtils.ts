@@ -144,29 +144,20 @@ export const getYieldFlowStepSequence = <TFlowType extends YieldFlowType>({
     return sequence as YieldFlowStepSequence<TFlowType>;
 };
 
-/**
- * Returns the step that follows `step` in the flow's step sequence. Stays on `step`
- * when it is the last one or not part of the flow at all.
- *
- * The full sequence (wrap/unwrap included) is used to locate `step`, so an optional step
- * such as `wrap` can be advanced from. Optional steps are skipped as *targets* though —
- * they are entered explicitly (e.g. `wrap` is left via `skipWrapStep`), never as the
- * automatic next step of the preceding one.
- */
+/** Returns the next step in the sequence selected for the current vault. */
 export const getNextYieldFlowStep = (
     flowType: YieldFlowType,
     step: YieldFlowStepId,
+    isWrappedNativeVault = false,
 ): YieldFlowStepId => {
-    const sequence = getYieldFlowStepSequence({ flowType, isWrappedNativeVault: true });
+    const sequence = getYieldFlowStepSequence({ flowType, isWrappedNativeVault });
     const stepIndex = sequence.indexOf(step);
 
     if (stepIndex === -1) {
         return step;
     }
 
-    const nextStep = sequence.slice(stepIndex + 1).find(s => s !== 'wrap' && s !== 'unwrap');
-
-    return nextStep ?? step;
+    return sequence[stepIndex + 1] ?? step;
 };
 
 export const getYieldWithdrawInputToken = ({
@@ -382,6 +373,16 @@ type GetYieldDepositableBalanceParams = {
 };
 
 /**
+ * Native balance that can be wrapped, after keeping `WETH_WRAP_GAS_RESERVE` aside to cover the
+ * follow-up wrap + approve + deposit (+ exit) fees.
+ */
+export const getWrappableNativeBalance = (nativeFormattedBalance: string): string =>
+    BigNumber.max(
+        0,
+        new BigNumber(nativeFormattedBalance || '0').minus(WETH_WRAP_GAS_RESERVE),
+    ).toString();
+
+/**
  * Balance available for a yield deposit. For a wrapped-native (WETH) vault the native balance can
  * be wrapped, so it counts in after keeping `WETH_WRAP_GAS_RESERVE` aside to cover the follow-up
  * wrap + approve + deposit (+ exit) fees.
@@ -399,14 +400,10 @@ export const getYieldDepositableBalance = ({
         return tokenDepositBalance;
     }
 
-    // Native-asset deposit: the native balance can also be wrapped, after keeping the fee reserve
-    // aside for the follow-up wrap + approve + deposit (+ exit) transactions.
-    const wrappableNativeBalance = BigNumber.max(
-        0,
-        new BigNumber(nativeFormattedBalance || '0').minus(WETH_WRAP_GAS_RESERVE),
-    );
-
-    return new BigNumber(tokenDepositBalance).plus(wrappableNativeBalance).toString();
+    // Native-asset deposit: the wrappable native balance also counts in.
+    return new BigNumber(tokenDepositBalance)
+        .plus(getWrappableNativeBalance(nativeFormattedBalance))
+        .toString();
 };
 
 type GetYieldWrapAmountParams = {

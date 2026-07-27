@@ -171,6 +171,8 @@ const SECTIONS = {
         '/earn/yield/deposit',
         '/earn/yield/withdraw',
         '/earn/yield/claim',
+        '/earn/yield/wrap',
+        '/earn/yield/unwrap',
         '/earn/tron',
         '/earn/tron/stake',
         '/earn/tron/vote',

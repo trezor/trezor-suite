@@ -10092,6 +10092,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_WRAP_AMOUNT',
         defaultMessage: 'Amount to wrap',
     },
+    TR_EARN_YIELD_AVAILABLE_TO_WRAP: {
+        id: 'TR_EARN_YIELD_AVAILABLE_TO_WRAP',
+        defaultMessage: 'Available to wrap',
+    },
     TR_EARN_YIELD_WRAP_RECEIVING: {
         id: 'TR_EARN_YIELD_WRAP_RECEIVING',
         defaultMessage: 'Receiving',

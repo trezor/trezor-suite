@@ -5,9 +5,11 @@ import { BigNumber } from '@trezor/utils';
 
 import {
     buildApprovalTransactionData,
+    getEvmTransactionPurpose,
     getEvmTransactionTextSignature,
     getNativeWrapTxKind,
     getUnwrapAmountByEthereumDataHex,
+    getWrappedNativeTxTarget,
     isUnwrapNativeTx,
     isWrapNativeTx,
     padLeftEven,
@@ -79,6 +81,10 @@ describe('eth utils', () => {
         it('should return "unknown" for data that starts with approve selector but is too short', () => {
             const shortData = '0x095ea7b3';
             expect(getEvmTransactionTextSignature(shortData)).toBe('unknown');
+        });
+
+        it('keeps WETH wrap calldata "unknown" — classifying it needs the tx target', () => {
+            expect(getEvmTransactionTextSignature('0xd0e30db0')).toBe('unknown');
         });
 
         it('should return "unknown" for data that starts with approve selector but has invalid parameters', () => {
@@ -157,6 +163,40 @@ describe('eth utils', () => {
             ).data;
 
             expect(getEvmTransactionTextSignature(claimData ?? undefined)).toBe('claim');
+        });
+    });
+
+    describe('getEvmTransactionPurpose', () => {
+        const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+        const OTHER = '0x1111111111111111111111111111111111111111';
+        const WRAP_DATA = '0xd0e30db0';
+        const UNWRAP_DATA =
+            '0x2e1a7d4d0000000000000000000000000000000000000000000000000de0b6b3a7640000';
+
+        it('classifies WETH calldata as wrap/unwrap when the target is the wrapped-native contract', () => {
+            expect(
+                getEvmTransactionPurpose({ networkSymbol: 'eth', to: WETH, data: WRAP_DATA }),
+            ).toBe('wrap');
+            expect(
+                getEvmTransactionPurpose({ networkSymbol: 'eth', to: WETH, data: UNWRAP_DATA }),
+            ).toBe('unwrap');
+        });
+
+        it('keeps WETH calldata "unknown" for a non-wrapped-native target', () => {
+            expect(
+                getEvmTransactionPurpose({ networkSymbol: 'eth', to: OTHER, data: WRAP_DATA }),
+            ).toBe('unknown');
+        });
+
+        it('falls back to the calldata text signature', () => {
+            const approveData =
+                '0x095ea7b3' +
+                '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' +
+                '0000000000000000000000000000000000000000000000000de0b6b3a7640000';
+
+            expect(
+                getEvmTransactionPurpose({ networkSymbol: 'eth', to: OTHER, data: approveData }),
+            ).toBe('approve');
         });
 
         it('returns "unknown" for selector-only claim (too short)', () => {
@@ -270,6 +310,40 @@ describe('eth utils', () => {
 
         it('returns undefined without a WETH target or data', () => {
             expect(getNativeWrapTxKind(tx({}))).toBeUndefined();
+        });
+    });
+
+    describe('getWrappedNativeTxTarget', () => {
+        const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
+        const OTHER = '0x1111111111111111111111111111111111111111';
+
+        const tx = ({
+            targets = [],
+            internalTransfers = [],
+        }: {
+            targets?: { addresses?: string[] }[];
+            internalTransfers?: { from: string }[];
+        }) =>
+            ({
+                symbol: 'eth',
+                targets,
+                internalTransfers,
+            }) as unknown as WalletAccountTransaction;
+
+        it('finds the WETH contract among the value targets', () => {
+            expect(getWrappedNativeTxTarget(tx({ targets: [{ addresses: [WETH] }] }))).toBe(WETH);
+        });
+
+        it('finds the WETH contract among the internal ETH senders', () => {
+            expect(getWrappedNativeTxTarget(tx({ internalTransfers: [{ from: WETH }] }))).toBe(
+                WETH,
+            );
+        });
+
+        it('returns undefined for a transaction not touching the WETH contract', () => {
+            expect(
+                getWrappedNativeTxTarget(tx({ targets: [{ addresses: [OTHER] }] })),
+            ).toBeUndefined();
         });
     });
 

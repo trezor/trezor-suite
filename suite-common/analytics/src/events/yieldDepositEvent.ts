@@ -13,6 +13,8 @@ type Attributes = {
         | 'revoke-modal'
         | 'revoke-success'
         | 'modify-allowance'
+        | 'wrap'
+        | 'wrap-success'
         | 'deposit'
         | 'tx-simulation-modal'
         | 'success'
@@ -35,6 +37,7 @@ export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
         { version: '26.5.0', notes: 'added (as yield/supply)' },
         { version: '26.5.2', notes: 'renamed from yield/supply to yield/deposit' },
         { version: '26.7.1', notes: 'moved to suite-common, reported from mobile as well' },
+        { version: '26.8.0', notes: 'added wrap transaction events' },
     ],
 
     attributes: {
@@ -48,6 +51,7 @@ export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
                     version: '26.5.2',
                     notes: 'added `approve-success`, `revoke-success`, `leftPending`, `tx-simulation-modal`, `firmware-upgrade-needed-modal` values',
                 },
+                { version: '26.8.0', notes: 'added `wrap` and `wrap-success` values' },
             ],
         },
         networkSymbol: {

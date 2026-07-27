@@ -31,6 +31,7 @@ export const YieldDepositForm = () => {
         completedAmount,
         completedReceiptAmount,
         maxAmount,
+        liveAmount,
         errorMessage,
         approveModalState,
         pendingTransaction,
@@ -45,7 +46,8 @@ export const YieldDepositForm = () => {
         isSubmittingApprove,
         isSubmittingAction,
         setAmountInput,
-        completeWrapStep,
+        submitWrap,
+        skipWrap,
         returnToWrapStep,
         submitApprovalAction,
         submitAction,
@@ -60,6 +62,8 @@ export const YieldDepositForm = () => {
 
     const { approvalPendingTransaction, actionPendingTransaction: depositPendingTransaction } =
         splitYieldPendingTransaction(pendingTransaction, 'deposit');
+    const wrapPendingTransaction =
+        pendingTransaction?.type === 'wrap' ? pendingTransaction : undefined;
 
     const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
     const sequence = getYieldFlowStepSequence({
@@ -123,6 +127,34 @@ export const YieldDepositForm = () => {
         });
 
         submitAction();
+    };
+
+    const handleOnWrap = () => {
+        analytics.report({
+            type: events.yieldDepositEvent.name,
+            payload: {
+                type: 'wrap',
+                action: 'continue',
+                networkSymbol: token.networkSymbol,
+                vaultId: vault.id,
+            },
+        });
+
+        submitWrap();
+    };
+
+    const handleOnSkipWrap = () => {
+        analytics.report({
+            type: events.yieldDepositEvent.name,
+            payload: {
+                type: 'wrap',
+                action: 'cancel',
+                networkSymbol: token.networkSymbol,
+                vaultId: vault.id,
+            },
+        });
+
+        skipWrap();
     };
 
     const handleMaxClick = () => {
@@ -208,10 +240,24 @@ export const YieldDepositForm = () => {
                                     <YieldWrapStep
                                         token={token}
                                         nativeSymbol={nativeSymbol}
-                                        nativeBalance={account.formattedBalance}
-                                        onMaxClick={() => setAmountInput(account.formattedBalance)}
-                                        onSubmit={completeWrapStep}
-                                        onSkip={completeWrapStep}
+                                        availableAmount={maxAmount}
+                                        receivingAmount={liveAmount || '0'}
+                                        isSubmitting={isSubmittingAction}
+                                        isSubmitDisabled={
+                                            isAmountEmpty ||
+                                            isAmountTooHigh ||
+                                            isAmountInvalidDecimals
+                                        }
+                                        warning={
+                                            !isAmountInvalidDecimals && isAmountTooHigh ? (
+                                                <YieldActionStepWarning isInsufficientFunds />
+                                            ) : undefined
+                                        }
+                                        pendingTransaction={wrapPendingTransaction}
+                                        onMaxClick={handleMaxClick}
+                                        onSubmit={handleOnWrap}
+                                        onSkip={handleOnSkipWrap}
+                                        onPendingTxClick={openPendingTransaction}
                                     />
                                 ),
                             },
@@ -241,6 +287,7 @@ export const YieldDepositForm = () => {
                                         }
                                         isDisabled={
                                             isAmountEmpty ||
+                                            (flow.isWrappedNativeVault && isAmountTooHigh) ||
                                             isAmountInvalidDecimals ||
                                             isSubmittingApprove ||
                                             !!approvalPendingTransaction

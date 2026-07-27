@@ -7,6 +7,8 @@ type Attributes = {
     action: AttributeDef<EarnModalAction>;
     type: AttributeDef<
         | 'withdraw'
+        | 'unwrap'
+        | 'unwrap-success'
         | 'tx-simulation-modal'
         | 'success'
         | 'error'
@@ -27,6 +29,7 @@ export const yieldWithdrawEvent: EventDef<Attributes, EventType.YieldWithdraw> =
     changelog: [
         { version: '26.5.0', notes: 'added' },
         { version: '26.7.1', notes: 'moved to suite-common, reported from mobile as well' },
+        { version: '26.8.0', notes: 'added unwrap transaction events' },
     ],
 
     attributes: {
@@ -42,6 +45,7 @@ export const yieldWithdrawEvent: EventDef<Attributes, EventType.YieldWithdraw> =
                     version: '26.5.2',
                     notes: 'added `leftPending`, `tx-simulation-modal`, `firmware-upgrade-needed-modal` values',
                 },
+                { version: '26.8.0', notes: 'added `unwrap` and `unwrap-success` values' },
             ],
         },
         operation: {
