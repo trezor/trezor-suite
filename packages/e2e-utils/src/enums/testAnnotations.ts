@@ -36,6 +36,8 @@ export enum TestCategory {
     Firmware = 'Firmware',
     CoinJoin = 'CoinJoin',
     Staking = 'Staking',
+    Earn = 'Earn',
+    MEV = 'MEV',
     Solana = 'Solana',
     Engagement = 'Engagement',
     Buy = 'Buy',
@@ -65,6 +67,7 @@ export const TestPriorityColors: Record<TestPriority, string> = {
 export enum TestStream {
     Trends = 'Trends', // do not use for new tests
     Wallet = 'Wallet',
+    Earn = 'Earn',
     Trade = 'Trade',
     Foundation = 'Foundation',
     Engagement = 'Engagement', // do not use for new tests
