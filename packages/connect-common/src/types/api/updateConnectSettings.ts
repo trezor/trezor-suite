@@ -1,8 +1,8 @@
 /**
- * Update Connect settings such as proxy, transports, and AuthDB provider configuration.
+ * Update Connect settings such as proxy, transports, and WARD data provider configuration.
  */
 
-import type { AuthLabelProvider } from '@trezor/authdb';
+import type { AuthLabelProvider as WardDataProvider } from '@trezor/authdb';
 
 import type { Response } from '../params';
 import type { ConnectSettingsTransport, Proxy } from '../settings';
@@ -10,7 +10,7 @@ import type { ConnectSettingsTransport, Proxy } from '../settings';
 export type UpdateConnectSettings = {
     proxy?: Proxy;
     transports?: ConnectSettingsTransport[];
-    authLabelLookupProvider?: AuthLabelProvider;
+    wardDataProvider?: WardDataProvider;
 };
 
 export declare function updateConnectSettings(

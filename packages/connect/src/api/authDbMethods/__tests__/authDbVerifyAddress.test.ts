@@ -36,7 +36,7 @@ const buildDevice = (typedCall: jest.Mock) => ({ getCommands: () => ({ typedCall
 
 describe('authDbVerifyAddress', () => {
     beforeEach(() => {
-        settingsStore.update({ authLabelLookupProvider: undefined });
+        settingsStore.update({ wardDataProvider: undefined });
     });
 
     it('verifies membership against the device', async () => {
@@ -47,7 +47,7 @@ describe('authDbVerifyAddress', () => {
             lookup: jest.fn().mockResolvedValue({ metadata: {}, counter: 2 }),
             getAllEntries: jest.fn().mockResolvedValue(rows),
         });
-        settingsStore.update({ authLabelLookupProvider: provider });
+        settingsStore.update({ wardDataProvider: provider });
 
         const typedCall = jest.fn().mockResolvedValue({
             message: { valid: true, counter: 2, membership: true },
@@ -69,7 +69,7 @@ describe('authDbVerifyAddress', () => {
             { address: 'bc1qother', networkSymbol: 'btc', entry: { metadata: {}, counter: 1 } },
         ];
         const provider = buildProvider({ getAllEntries: jest.fn().mockResolvedValue(rows) });
-        settingsStore.update({ authLabelLookupProvider: provider });
+        settingsStore.update({ wardDataProvider: provider });
 
         const typedCall = jest.fn().mockResolvedValue({
             message: { valid: true, counter: 1, membership: false },
@@ -92,7 +92,7 @@ describe('authDbVerifyAddress', () => {
             getAllEntries: jest.fn().mockResolvedValue(rows),
             getTreeState: jest.fn().mockResolvedValue(null),
         });
-        settingsStore.update({ authLabelLookupProvider: provider });
+        settingsStore.update({ wardDataProvider: provider });
 
         const method = buildMethod({});
         const result = await method.run();
@@ -111,7 +111,7 @@ describe('authDbVerifyAddress', () => {
             getAllEntries: jest.fn().mockResolvedValue(rows),
             getTreeState: jest.fn().mockResolvedValue({ root: 'stale-root', counter: 1 }),
         });
-        settingsStore.update({ authLabelLookupProvider: provider });
+        settingsStore.update({ wardDataProvider: provider });
 
         const method = buildMethod({});
         const result = await method.run();

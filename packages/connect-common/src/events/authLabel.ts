@@ -5,11 +5,11 @@ export const AUTH_LABEL = {
 } as const;
 
 /**
- * Dispatched via updateConnectSettings({ authLabelLookupProvider }) to swap the live
- * AuthDB provider after init() — mirrors TRANSPORT.SET_TRANSPORTS, which does the same
+ * Dispatched via updateConnectSettings({ wardDataProvider }) to swap the live
+ * WARD data provider after init() — mirrors TRANSPORT.SET_TRANSPORTS, which does the same
  * for the transports setting.
  */
 export interface AuthLabelSetProvider {
     type: typeof AUTH_LABEL.SET_PROVIDER;
-    payload: Pick<ConnectSettings, 'authLabelLookupProvider'>;
+    payload: Pick<ConnectSettings, 'wardDataProvider'>;
 }

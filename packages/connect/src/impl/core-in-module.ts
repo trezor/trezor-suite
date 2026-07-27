@@ -133,7 +133,7 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
     protected abstract updateProxy(proxy: UpdateConnectSettings['proxy']): Promise<void>;
 
     public async updateConnectSettings(params: UpdateConnectSettings) {
-        const { proxy, transports: newTransports, authLabelLookupProvider } = params;
+        const { proxy, transports: newTransports, wardDataProvider } = params;
 
         try {
             await this.updateProxy(proxy);
@@ -148,11 +148,11 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
             this.handleCoreMessage({ type: TRANSPORT.SET_TRANSPORTS, payload: { transports } });
         }
 
-        if (authLabelLookupProvider !== undefined) {
-            this.settings = parseConnectSettings({ ...this.settings, authLabelLookupProvider });
+        if (wardDataProvider !== undefined) {
+            this.settings = parseConnectSettings({ ...this.settings, wardDataProvider });
             this.handleCoreMessage({
                 type: AUTH_LABEL.SET_PROVIDER,
-                payload: { authLabelLookupProvider },
+                payload: { wardDataProvider },
             });
         }
 
@@ -200,7 +200,7 @@ export abstract class CoreInModule implements ConnectFactoryDependencies<Connect
 
     public dispose() {
         this.eventEmitter.removeAllListeners();
-        void this.settings.authLabelLookupProvider?.dispose?.();
+        void this.settings.wardDataProvider?.dispose?.();
         this.settings = parseConnectSettings();
 
         // Only dispose coreManager if initialization has completed.

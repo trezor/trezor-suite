@@ -159,8 +159,6 @@ export const ProtobufManager = () => {
     const extensions: Record<string, DescExtension | undefined> = {};
     const enums: Record<string, DescEnum | undefined> = {};
     const messageNameAliases: Record<string, string> = {
-        WARDSetEntry: 'WARDAddPending',
-        WARDSetEntryAck: 'WARDAddPendingAck',
         WARDInitSyncRound: 'WARDSync',
         WARDInitSyncRoundAck: 'WARDSyncAck',
         WARDMergeState: 'WARDReconcile',

@@ -38,23 +38,29 @@ const buildMethod = (payload: Record<string, unknown>, deviceInstance?: any) => 
     return method;
 };
 
-const buildDevice = (typedCall: jest.Mock) => ({ getCommands: () => ({ typedCall }) }) as any;
+const buildDevice = (typedCall: jest.Mock, setWardProofCallback: jest.Mock = jest.fn()) =>
+    ({ getCommands: () => ({ typedCall, setWardProofCallback }) }) as any;
 
 // The high-level method performs an MVP bootstrap-sync first, then drives the WARD
-// write round (AddPending -> CommitCandidate -> ConfirmCommit),
-// so the mocked typedCall answers each wire message with its matching Ack. The device
-// must echo wallet_id (the method binds the WM final signature to it), and CommitCandidate/ConfirmCommit
-// carry the candidate/installed root.
+// pull update round (QueueUpdate -> PerformUpdate -> ConfirmedByWM), so the mocked
+// typedCall answers each wire message with its matching Ack. The device must echo
+// wallet_id (the method binds the WM final signature to it); QueueUpdate returns the
+// pending_id and PerformUpdate/ConfirmedByWM carry the candidate/installed root. The
+// WARDProofRequest the device would emit during PerformUpdate is answered by the
+// callback the method registers via setWardProofCallback (see tests below); with
+// typedCall mocked, that exchange does not run here.
 const buildWardTypedCall = ({
     counter,
     root,
     walletId = WALLET_ID,
     mac,
+    pendingId = 1,
 }: {
     counter: number;
     root?: string;
     walletId?: string;
     mac?: string;
+    pendingId?: number;
 }) =>
     jest.fn().mockImplementation((requestType: string) => {
         switch (requestType) {
@@ -68,13 +74,15 @@ const buildWardTypedCall = ({
                 return Promise.resolve({
                     message: { counter, new_root: root, wallet_id: walletId, root_mac: mac },
                 });
-            case 'WARDAddPending':
-                return Promise.resolve({ message: { counter, wallet_id: walletId } });
-            case 'WARDCommitCandidate':
+            case 'WARDQueueUpdate':
+                return Promise.resolve({
+                    message: { counter, pending_id: pendingId, wallet_id: walletId },
+                });
+            case 'WARDPerformUpdate':
                 return Promise.resolve({
                     message: { counter, new_root: root, mac, wallet_id: walletId },
                 });
-            case 'WARDConfirmCommit':
+            case 'WARDConfirmedByWM':
                 return Promise.resolve({
                     message: { counter, new_root: root, wallet_id: walletId, root_mac: mac },
                 });
@@ -85,34 +93,41 @@ const buildWardTypedCall = ({
 
 describe('authDbUpdateAddress', () => {
     beforeEach(() => {
-        settingsStore.update({ authLabelLookupProvider: undefined });
+        settingsStore.update({ wardDataProvider: undefined });
     });
 
     it('throws when no provider is configured', async () => {
         const method = buildMethod({ device: {} }, buildDevice(jest.fn()));
-        await expect(method.run()).rejects.toThrow(/authLabelLookupProvider/);
+        await expect(method.run()).rejects.toThrow(/wardDataProvider/);
     });
 
-    it('inserts a new entry with a non-membership proof and no old_value', async () => {
+    it('inserts a new entry with a non-membership proof and no old_value on the queue step', async () => {
         const existingRows: AuthLabelRow[] = [
             { address: 'bc1qother', networkSymbol: 'btc', entry: { metadata: {}, counter: 1 } },
         ];
         const provider = buildProvider({
             getAllEntries: jest.fn().mockResolvedValue(existingRows),
         });
-        settingsStore.update({ authLabelLookupProvider: provider });
+        settingsStore.update({ wardDataProvider: provider });
 
         const typedCall = buildWardTypedCall({ counter: 1, root: 'root1' });
-        const method = buildMethod({ device: {} }, buildDevice(typedCall));
+        const setWardProofCallback = jest.fn();
+        const method = buildMethod({ device: {} }, buildDevice(typedCall, setWardProofCallback));
 
         const result = await method.run();
 
+        // Intent-only queue: no proof, no counter on the wire — just the new value.
         expect(typedCall).toHaveBeenCalledWith(
-            'WARDAddPending',
-            'WARDAddPendingAck',
-            // global-counter stamp: empty tree_state -> new_counter = 1
-            expect.objectContaining({ old_value: '', proof: expect.any(Array), new_counter: 1 }),
+            'WARDQueueUpdate',
+            'WARDQueueUpdateAck',
+            expect.objectContaining({ new_value: expect.any(String) }),
         );
+        const [, , queueParams] = typedCall.mock.calls.find(
+            ([reqType]) => reqType === 'WARDQueueUpdate',
+        )!;
+        expect(queueParams.old_value).toBeUndefined();
+        expect(queueParams.proof).toBeUndefined(); // pull model: proof is not pushed here
+
         expect(typedCall).toHaveBeenCalledWith('WARDSync', 'WARDSyncAck', {});
         expect(typedCall).toHaveBeenCalledWith(
             'WARDIngestAttestation',
@@ -124,13 +139,32 @@ describe('authDbUpdateAddress', () => {
             'WARDReconcileAck',
             expect.any(Object),
         );
-        // The whole WARD round runs: bootstrap sync -> AddPending -> CommitCandidate -> ConfirmCommit.
-        expect(typedCall).toHaveBeenCalledWith('WARDCommitCandidate', 'WARDCommitCandidateAck', {});
+        // The whole pull round runs: bootstrap sync -> QueueUpdate -> PerformUpdate -> ConfirmedByWM.
         expect(typedCall).toHaveBeenCalledWith(
-            'WARDConfirmCommit',
-            'WARDConfirmCommitAck',
-            expect.objectContaining({ counter: 1, qm_signature: expect.any(String) }),
+            'WARDPerformUpdate',
+            'WARDPerformUpdateAck',
+            expect.objectContaining({ pending_id: 1 }),
         );
+        expect(typedCall).toHaveBeenCalledWith(
+            'WARDConfirmedByWM',
+            'WARDConfirmedByWMAck',
+            expect.objectContaining({
+                counter: 1,
+                wm_signature: expect.any(String),
+                pending_id: 1,
+            }),
+        );
+
+        // A proof callback was registered for the perform-time pull; for an INSERT it
+        // carries the non-membership witness (proof array), not a membership value.
+        expect(setWardProofCallback).toHaveBeenCalled();
+        const proofCallback = setWardProofCallback.mock.calls[0][0];
+        const proofAck = proofCallback({ address: 'aa', pending_id: 1 });
+        expect(proofAck.value).toBeUndefined();
+        expect(proofAck.proof).toEqual(expect.any(Array));
+        // ...and it is cleared afterwards.
+        expect(setWardProofCallback).toHaveBeenLastCalledWith(undefined);
+
         expect(provider.upsert).toHaveBeenCalledWith(WALLET_ID, 'bc1qaddr', 'btc', {
             metadata: { label: 'x' },
             counter: 1,
@@ -152,23 +186,30 @@ describe('authDbUpdateAddress', () => {
             // global counter is 3 -> the new leaf is stamped 4
             getTreeState: jest.fn().mockResolvedValue({ root: 'r', counter: 3 }),
         });
-        settingsStore.update({ authLabelLookupProvider: provider });
+        settingsStore.update({ wardDataProvider: provider });
 
         const typedCall = buildWardTypedCall({ counter: 4, root: 'root2' });
-        const method = buildMethod({ device: {} }, buildDevice(typedCall));
+        const setWardProofCallback = jest.fn();
+        const method = buildMethod({ device: {} }, buildDevice(typedCall, setWardProofCallback));
 
         await method.run();
 
-        const addPendingCall = typedCall.mock.calls.find(
-            ([reqType]) => reqType === 'WARDAddPending',
-        );
-        expect(addPendingCall).toBeDefined();
-        const [reqType, , params] = addPendingCall!;
-        expect(reqType).toBe('WARDAddPending');
-        expect(params.old_value).not.toBe('');
-        expect(params.witness_address).toBeUndefined();
-        expect(params.old_counter).toBe(3); // previous global stamp of the leaf
-        expect(params.new_counter).toBe(4); // global counter 3 -> 4
+        // The queue step carries only the new value; proof/counter are supplied when the
+        // device pulls the proof.
+        const queueCall = typedCall.mock.calls.find(([reqType]) => reqType === 'WARDQueueUpdate');
+        expect(queueCall).toBeDefined();
+        const [reqType, , params] = queueCall!;
+        expect(reqType).toBe('WARDQueueUpdate');
+        expect(params.old_value).toBeUndefined();
+        expect(params.new_counter).toBeUndefined(); // device derives the counter now
+
+        // The pulled proof carries the membership value + the leaf's current counter.
+        const proofCallback = setWardProofCallback.mock.calls[0][0];
+        const proofAck = proofCallback({ address: 'aa', pending_id: 1 });
+        expect(proofAck.value).toBeDefined();
+        expect(proofAck.witness_address).toBeUndefined();
+        expect(proofAck.counter).toBe(3); // previous global stamp of the leaf
+
         expect(provider.upsert).toHaveBeenCalledWith(WALLET_ID, 'bc1qaddr', 'btc', {
             metadata: { label: 'x' },
             counter: 4,
@@ -177,7 +218,7 @@ describe('authDbUpdateAddress', () => {
 
     it('runs offline (no device) by persisting locally and recomputing the root', async () => {
         const provider = buildProvider();
-        settingsStore.update({ authLabelLookupProvider: provider });
+        settingsStore.update({ wardDataProvider: provider });
 
         const method = buildMethod({});
         const result = await method.run();
@@ -194,7 +235,7 @@ describe('authDbUpdateAddress', () => {
         const provider = buildProvider({
             upsert: jest.fn().mockRejectedValue(new Error('disk full')),
         });
-        settingsStore.update({ authLabelLookupProvider: provider });
+        settingsStore.update({ wardDataProvider: provider });
 
         const typedCall = buildWardTypedCall({ counter: 7, root: 'root7' });
         const method = buildMethod({ device: {} }, buildDevice(typedCall));
@@ -210,7 +251,7 @@ describe('authDbUpdateAddress', () => {
 
     it('rejects (before Finalize) when the device wallet_id does not match the requested walletId', async () => {
         const provider = buildProvider();
-        settingsStore.update({ authLabelLookupProvider: provider });
+        settingsStore.update({ wardDataProvider: provider });
 
         const typedCall = buildWardTypedCall({
             counter: 1,
@@ -220,9 +261,10 @@ describe('authDbUpdateAddress', () => {
         const method = buildMethod({ device: {} }, buildDevice(typedCall));
 
         await expect(method.run()).rejects.toThrow(/does not match requested walletId/);
-        // The mismatch is caught during the MVP bootstrap sync, so Finalize must never be sent.
+        // The mismatch is caught during the MVP bootstrap sync, so the WM confirmation
+        // must never be sent.
         expect(typedCall).not.toHaveBeenCalledWith(
-            'WARDConfirmCommit',
+            'WARDConfirmedByWM',
             expect.anything(),
             expect.anything(),
         );

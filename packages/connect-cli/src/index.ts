@@ -69,7 +69,7 @@ const DB_METHODS_NEEDING_DEVICE = new Set(['dbinit', 'dblookup', 'dbchange', 'db
 
 // When --db-path is explicit, the DB path is known upfront (independent of the
 // device), so it can be constructed before TrezorConnect.init() and injected as
-// `authLabelLookupProvider`. When the path must be derived from the device's pubkey
+// `wardDataProvider`. When the path must be derived from the device's pubkey
 // (no --db-path), the provider isn't known until after a device round-trip — in that
 // case runDbMethods() injects it post-init via TrezorConnect.updateConnectSettings().
 // Either way, dbchange/dblookup always call the high-level authDbUpdateAddress/
@@ -164,7 +164,7 @@ const runDbMethods = async (device?: Device): Promise<boolean> => {
         // The provider wasn't known at TrezorConnect.init() time — the path depends on the
         // device's pubkey — so inject it now via updateConnectSettings before dbchange/
         // dblookup below call the high-level methods that read it.
-        await TrezorConnect.updateConnectSettings({ authLabelLookupProvider: db });
+        await TrezorConnect.updateConnectSettings({ wardDataProvider: db });
     }
 
     // Resolve walletId to the device's real wallet_id (RIPEMD160(SHA256(master pubkey))).
@@ -621,7 +621,7 @@ const run = async () => {
             knownCredentials: getThpCredentials(),
             pairingMethods,
         },
-        ...(explicitDb && { authLabelLookupProvider: explicitDb }),
+        ...(explicitDb && { wardDataProvider: explicitDb }),
     });
 
     // Blockchain notification handler requires a seed-derived DB path; it is wired up

@@ -841,11 +841,11 @@ export class Core extends EventEmitter {
                 // Dispose the outgoing provider before swapping it in, so a resource it holds
                 // (e.g. an open database handle) isn't leaked across re-init.
                 const outgoingProvider = settingsStore.isLoaded()
-                    ? settingsStore.get('authLabelLookupProvider')
+                    ? settingsStore.get('wardDataProvider')
                     : undefined;
                 void outgoingProvider?.dispose?.();
                 settingsStore.update({
-                    authLabelLookupProvider: message.payload.authLabelLookupProvider,
+                    wardDataProvider: message.payload.wardDataProvider,
                 });
                 break;
             }

@@ -1,6 +1,4 @@
 /* eslint-disable no-console -- verbose AuthDB bootstrap diagnostics */
-// DEV/TEST-ONLY debug WM signer (stands in for the WARD Manager); see @trezor/authdb/mocks.
-import { ZERO_MAC_HEX, signWmAttestation } from '@trezor/authdb/src/mocks';
 import type { MethodPermission } from '@trezor/connect-common';
 import { AuthDbInitSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
@@ -8,6 +6,7 @@ import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
+import { getWardManagerService } from '../wardManagerService';
 
 export default class AuthDbInit extends AbstractMethod<'authDbInit', AuthDbInitSchema> {
     constructor(message: MethodMessage<'authDbInit'>) {
@@ -44,6 +43,7 @@ export default class AuthDbInit extends AbstractMethod<'authDbInit', AuthDbInitS
     async run() {
         const { counter, mac, root, walletId } = this.params;
         const vlog = (...m: unknown[]) => console.log('[authDbInit]', ...m);
+        const wardManager = getWardManagerService();
 
         const cmd = this.getDevice().getCommands();
 
@@ -68,10 +68,19 @@ export default class AuthDbInit extends AbstractMethod<'authDbInit', AuthDbInitS
             );
         }
 
-        // WM freshness attestation over the nonce-bound checkpoint. The debug QM signer
-        // stands in for the WARD Manager; a real provisioned WM key is a follow-up.
-        const macForSig = mac ?? ZERO_MAC_HEX;
-        const wmSignature = signWmAttestation(deviceWalletId, nonce, counter, macForSig);
+        vlog('-> WARD Manager service: sign attestation', {
+            wallet_id: deviceWalletId,
+            nonce,
+            counter,
+            mac: mac ?? '(none)',
+        });
+        const wmSignature = await wardManager.signAttestation({
+            walletId: deviceWalletId,
+            nonce,
+            counter,
+            mac,
+        });
+        vlog('<- WARD Manager service: attestation signature ready');
 
         vlog('-> WARDIngestAttestation (device)');
         const ingest = await cmd.typedCall('WARDIngestAttestation', 'WARDIngestAttestationAck', {

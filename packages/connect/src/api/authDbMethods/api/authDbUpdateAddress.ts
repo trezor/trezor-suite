@@ -8,16 +8,16 @@ import {
     generateNonMembershipProof,
 } from '@trezor/authdb';
 import type { AuthLabelEntry, TreeState } from '@trezor/authdb';
-// DEV/TEST-ONLY debug WM signer (stands in for the WARD Manager); see @trezor/authdb/mocks.
-import { ZERO_MAC_HEX, signWardUpdate, signWmAttestation } from '@trezor/authdb/src/mocks';
 import type { MethodPermission } from '@trezor/connect-common';
 import { AuthDbUpdateAddressSchema } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import type { MessagesSchema as Messages } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import * as settingsStore from '../../../data/settingsStore';
+import { getWardManagerService } from '../wardManagerService';
 
 const utf8Hex = (s: string) => bytesToHex(new TextEncoder().encode(s));
 
@@ -34,10 +34,11 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
         const counter = treeState?.counter ?? 0;
         const mac = treeState?.mac;
         const root = treeState?.root;
+        const wardManager = getWardManagerService();
 
-        // MVP only: the device-side queue/apply split is not implemented yet, so the
-        // high-level dbchange flow bootstrap-syncs the device to the host's current
-        // tree state immediately before the authenticated WARD write round.
+        // MVP: the high-level dbchange flow bootstrap-syncs the device to the host's
+        // current tree state immediately before the authenticated WARD update round
+        // (there is no auto-sync on reconnect yet).
         vlog('MVP bootstrap before device apply', {
             counter,
             root: root ?? '(none — empty tree)',
@@ -62,8 +63,19 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
             );
         }
 
-        const macForSig = mac ?? ZERO_MAC_HEX;
-        const wmSignature = signWmAttestation(deviceWalletId, nonce, counter, macForSig);
+        vlog('-> WARD Manager service: sign attestation', {
+            wallet_id: deviceWalletId,
+            nonce,
+            counter,
+            mac: mac ?? '(none)',
+        });
+        const wmSignature = await wardManager.signAttestation({
+            walletId: deviceWalletId,
+            nonce,
+            counter,
+            mac,
+        });
+        vlog('<- WARD Manager service: attestation signature ready');
 
         vlog('-> WARDIngestAttestation (device)');
         const ingest = await cmd.typedCall('WARDIngestAttestation', 'WARDIngestAttestationAck', {
@@ -124,13 +136,14 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
     }
 
     async run() {
-        const provider = settingsStore.get('authLabelLookupProvider');
+        const provider = settingsStore.get('wardDataProvider');
         if (!provider) {
             throw ERRORS.TypedError(
                 'Runtime',
-                'authDbUpdateAddress requires authLabelLookupProvider to be set via TrezorConnect.init()',
+                'authDbUpdateAddress requires wardDataProvider to be set via TrezorConnect.init()',
             );
         }
+        const wardManager = getWardManagerService();
 
         const { address, networkSymbol, metadata, walletId } = this.params;
         // Verbose diagnostics — prefixed so they're greppable in connect-cli output.
@@ -188,7 +201,7 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
             ? (nonMembership?.proof ?? [])
             : generateMerkleProof(rows, address, networkSymbol);
 
-        vlog('proof built', {
+        vlog('proof built from wardDataProvider', {
             oldValueHex: oldValueHex || '(empty)',
             newValueHex,
             proofLen: proof.length,
@@ -203,110 +216,152 @@ export default class AuthDbUpdateAddress extends AbstractMethod<
         const cmd = this.getDevice().getCommands();
         await this.bootstrapWardMvpOnly(cmd, walletId, currentTreeState, vlog);
 
-        // MVP only: there is no dedicated ApplyPending RPC yet, so the authenticated
-        // apply step still uses WARDAddPending directly after the bootstrap-sync above.
-        // The rest of the write round remains: AddPending -> CommitCandidate ->
-        // WM signs candidate -> ConfirmCommit.
-        vlog('-> WARDAddPending (device)');
-        const setEntry = await cmd.typedCall('WARDAddPending', 'WARDAddPendingAck', {
-            address: utf8Hex(address),
-            old_value: oldValueHex,
-            new_value: newValueHex,
-            proof,
-            ...(!isInsert && { old_counter: oldEntry.counter }),
-            new_counter: newEntry.counter,
-            ...(nonMembership?.witnessAddress !== null &&
-                nonMembership?.witnessAddress !== undefined && {
-                    witness_address: utf8Hex(nonMembership.witnessAddress),
-                    witness_value: bytesToHex(nonMembership.witnessValue!),
-                    witness_counter: nonMembership.witnessCounter!,
-                }),
-        });
-        vlog('<- WARDAddPendingAck', {
-            counter: setEntry.message.counter,
-            wallet_id: setEntry.message.wallet_id,
-        });
+        // Pull model: the host no longer pushes the proof up-front inside the queue
+        // step. Instead it answers a WARDProofRequest the device emits during
+        // WARDPerformUpdate, with the membership proof (UPDATE/DELETE) or the
+        // non-membership witness (INSERT) for the address being edited.
+        const proofAck: Messages.WARDProofAck = isInsert
+            ? {
+                  proof,
+                  ...(nonMembership?.witnessAddress !== null &&
+                      nonMembership?.witnessAddress !== undefined && {
+                          witness_address: utf8Hex(nonMembership.witnessAddress),
+                          witness_value: bytesToHex(nonMembership.witnessValue!),
+                          witness_counter: nonMembership.witnessCounter!,
+                      }),
+              }
+            : {
+                  value: oldValueHex,
+                  proof,
+                  counter: oldEntry.counter,
+              };
 
-        vlog('-> WARDCommitCandidate (device)');
-        const commit = await cmd.typedCall('WARDCommitCandidate', 'WARDCommitCandidateAck', {});
-        vlog('<- WARDCommitCandidateAck', {
-            counter: commit.message.counter,
-            new_root: commit.message.new_root,
-            mac: commit.message.mac,
-            wallet_id: commit.message.wallet_id,
-        });
-
-        const candidateCounter = commit.message.counter;
-        const candidateMac = commit.message.mac;
-        const deviceWalletId = commit.message.wallet_id;
-
-        // Defense in depth: the caller-supplied walletId scopes local storage, but only the
-        // device's own echoed wallet_id proves which seed+passphrase was actually unlocked.
-        // Check it before signing, since the signature binds to this wallet_id.
-        if (deviceWalletId !== undefined && deviceWalletId !== walletId) {
-            vlog('REJECT wallet_id mismatch', {
-                deviceWalletId,
-                requestedWalletId: walletId,
+        cmd.setWardProofCallback(request => {
+            vlog('<- WARDProofRequest (device)', {
+                address: request.address,
+                pending_id: request.pending_id,
             });
-            throw ERRORS.TypedError(
-                'Runtime',
-                `authDbUpdateAddress: device wallet_id (${deviceWalletId}) does not match requested walletId (${walletId})`,
-            );
-        }
-        if (deviceWalletId === undefined) {
-            throw ERRORS.TypedError(
-                'Runtime',
-                'authDbUpdateAddress: device did not return a wallet_id for the WARD candidate',
-            );
-        }
+            vlog('-> WARDProofAck', proofAck);
 
-        // WM final attestation over the exact committed candidate. The debug QM signer
-        // stands in for the WARD Manager here; a real provisioned WM key is a follow-up.
-        // A candidate that empties the tree has no root MAC, so the signature is over the
-        // all-zero MAC and no `mac` field is sent to Finalize.
-        const macForSig = candidateMac ?? ZERO_MAC_HEX;
-        const qmSignature = signWardUpdate(deviceWalletId, candidateCounter, macForSig);
-
-        vlog('-> WARDConfirmCommit (device)');
-        const response = await cmd.typedCall('WARDConfirmCommit', 'WARDConfirmCommitAck', {
-            counter: candidateCounter,
-            ...(candidateMac !== undefined && { mac: candidateMac }),
-            qm_signature: qmSignature,
-        });
-        vlog('<- WARDConfirmCommitAck', {
-            counter: response.message.counter,
-            new_root: response.message.new_root,
-            wallet_id: response.message.wallet_id,
-            root_mac: response.message.root_mac,
+            return proofAck;
         });
 
-        // The device already committed this update by the time we reach this point — a
-        // failure below means the local cache is now stale, not that the operation failed.
-        // Surface that as `localCacheError` on an otherwise-successful result instead of
-        // throwing, so callers still get the device-confirmed counter/root and can decide
-        // how to react (e.g. resync from getAllEntries()).
-        let localCacheError: string | undefined;
         try {
-            await provider.upsert(walletId, address, networkSymbol, newEntry);
-            if (response.message.new_root !== undefined) {
-                await provider.setTreeState(walletId, {
-                    root: response.message.new_root,
-                    counter: response.message.counter,
-                    mac: response.message.root_mac,
+            // Intent-only queue: the device shows a trusted queued update screen
+            // and returns a pending_id ONLY on user approval. No proof is sent here.
+            vlog('-> WARDQueueUpdate (device)');
+            const queued = await cmd.typedCall('WARDQueueUpdate', 'WARDQueueUpdateAck', {
+                address: utf8Hex(address),
+                new_value: newValueHex,
+            });
+            const pendingId = queued.message.pending_id;
+            vlog('<- WARDQueueUpdateAck', {
+                counter: queued.message.counter,
+                pending_id: pendingId,
+                wallet_id: queued.message.wallet_id,
+            });
+
+            // Perform: the device pulls the proof (answered by the callback above) and
+            // computes the candidate. The device counter is not advanced yet.
+            vlog('-> WARDPerformUpdate (device)');
+            const performed = await cmd.typedCall('WARDPerformUpdate', 'WARDPerformUpdateAck', {
+                ...(pendingId !== undefined && { pending_id: pendingId }),
+            });
+            vlog('<- WARDPerformUpdateAck', {
+                counter: performed.message.counter,
+                new_root: performed.message.new_root,
+                mac: performed.message.mac,
+                wallet_id: performed.message.wallet_id,
+            });
+
+            const candidateCounter = performed.message.counter;
+            const candidateMac = performed.message.mac;
+            const deviceWalletId = performed.message.wallet_id;
+
+            // Defense in depth: the caller-supplied walletId scopes local storage, but only
+            // the device's own echoed wallet_id proves which seed+passphrase was actually
+            // unlocked. Check it before signing, since the signature binds to this wallet_id.
+            if (deviceWalletId !== undefined && deviceWalletId !== walletId) {
+                vlog('REJECT wallet_id mismatch', {
+                    deviceWalletId,
+                    requestedWalletId: walletId,
                 });
+                throw ERRORS.TypedError(
+                    'Runtime',
+                    `authDbUpdateAddress: device wallet_id (${deviceWalletId}) does not match requested walletId (${walletId})`,
+                );
             }
-            vlog('local cache updated (upsert + setTreeState)');
-        } catch (err) {
-            localCacheError = err instanceof Error ? err.message : String(err);
-            vlog('LOCAL CACHE ERROR (device already committed)', localCacheError);
+            if (deviceWalletId === undefined) {
+                throw ERRORS.TypedError(
+                    'Runtime',
+                    'authDbUpdateAddress: device did not return a wallet_id for the WARD candidate',
+                );
+            }
+
+            // WM final attestation over the exact device-derived candidate. The debug
+            // signer stands in for the WARD Manager here; a real provisioned WM key is a
+            // follow-up. A candidate that empties the tree has no root MAC, so the
+            // signature is over the all-zero MAC and no `mac` field is sent.
+            vlog('-> WARD Manager service: sign candidate', {
+                wallet_id: deviceWalletId,
+                counter: candidateCounter,
+                mac: candidateMac ?? '(none)',
+                pending_id: pendingId,
+            });
+            const wmSignature = await wardManager.signCandidate({
+                walletId: deviceWalletId,
+                counter: candidateCounter,
+                mac: candidateMac,
+            });
+            vlog('<- WARD Manager service: candidate signature ready');
+
+            vlog('-> WARDConfirmedByWM (device)');
+            const response = await cmd.typedCall('WARDConfirmedByWM', 'WARDConfirmedByWMAck', {
+                counter: candidateCounter,
+                ...(candidateMac !== undefined && { mac: candidateMac }),
+                wm_signature: wmSignature,
+                ...(pendingId !== undefined && { pending_id: pendingId }),
+            });
+            vlog('<- WARDConfirmedByWMAck', {
+                counter: response.message.counter,
+                new_root: response.message.new_root,
+                wallet_id: response.message.wallet_id,
+                root_mac: response.message.root_mac,
+            });
+
+            // The device already installed this update by the time we reach this point — a
+            // failure below means the local cache is now stale, not that the operation
+            // failed. Surface that as `localCacheError` on an otherwise-successful result
+            // instead of throwing, so callers still get the device-confirmed counter/root
+            // and can decide how to react (e.g. resync from getAllEntries()).
+            let localCacheError: string | undefined;
+            try {
+                await provider.upsert(walletId, address, networkSymbol, newEntry);
+                if (response.message.new_root !== undefined) {
+                    await provider.setTreeState(walletId, {
+                        root: response.message.new_root,
+                        counter: response.message.counter,
+                        mac: response.message.root_mac,
+                    });
+                }
+                vlog('local cache updated (upsert + setTreeState)');
+            } catch (err) {
+                localCacheError = err instanceof Error ? err.message : String(err);
+                vlog('LOCAL CACHE ERROR (device already committed)', localCacheError);
+            }
+
+            vlog('DONE', {
+                counter: response.message.counter,
+                root: response.message.new_root ?? '',
+            });
+
+            return {
+                counter: response.message.counter,
+                root: response.message.new_root ?? '',
+                ...(localCacheError !== undefined && { localCacheError }),
+            };
+        } finally {
+            cmd.setWardProofCallback(undefined);
         }
-
-        vlog('DONE', { counter: response.message.counter, root: response.message.new_root ?? '' });
-
-        return {
-            counter: response.message.counter,
-            root: response.message.new_root ?? '',
-            ...(localCacheError !== undefined && { localCacheError }),
-        };
     }
 }

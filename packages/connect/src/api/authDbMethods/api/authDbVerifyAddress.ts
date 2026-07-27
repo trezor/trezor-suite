@@ -59,11 +59,11 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
     }
 
     async run() {
-        const provider = settingsStore.get('authLabelLookupProvider');
+        const provider = settingsStore.get('wardDataProvider');
         if (!provider) {
             throw ERRORS.TypedError(
                 'Runtime',
-                'authDbVerifyAddress requires authLabelLookupProvider to be set via TrezorConnect.init()',
+                'authDbVerifyAddress requires wardDataProvider to be set via TrezorConnect.init()',
             );
         }
 
@@ -125,7 +125,7 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
         let response;
         if (isMember) {
             const proof = generateMerkleProof(rows, address, networkSymbol);
-            vlog('-> WARDLookup (membership)', {
+            vlog('-> WARDLookup (membership, proof from wardDataProvider)', {
                 value: bytesToHex(entryToValueBytes(networkSymbol, entry)),
                 counter: entry.counter,
                 proofLen: proof.length,
@@ -139,7 +139,7 @@ export default class AuthDbVerifyAddress extends AbstractMethod<
             });
         } else {
             const nonMembership = generateNonMembershipProof(rows, address, networkSymbol);
-            vlog('-> WARDLookup (non-membership)', {
+            vlog('-> WARDLookup (non-membership, proof from wardDataProvider)', {
                 proofLen: nonMembership.proof.length,
                 proof: nonMembership.proof,
                 witnessAddress: nonMembership.witnessAddress,

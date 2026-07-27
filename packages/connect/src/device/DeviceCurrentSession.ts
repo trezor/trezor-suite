@@ -15,7 +15,7 @@ import {
 import { scheduleAction } from '@trezor/utils';
 
 import type { IDevice } from '../types/idevice';
-import type { TypedCallProvider } from '../types/typed-call-provider';
+import type { TypedCallProvider, WardProofCallback } from '../types/typed-call-provider';
 
 const blacklist: Record<string, string[] | true> = {
     PassphraseAck: ['passphrase'],
@@ -81,6 +81,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
     private disposed?: Error;
     private callPromise?: Promise<unknown>;
     private abortController?: AbortController;
+    private wardProofCallback?: WardProofCallback;
 
     constructor(device: IDevice, transport: Transport, session: Session) {
         this.device = device;
@@ -101,6 +102,18 @@ export class DeviceCurrentSession implements TypedCallProvider {
 
     isDisposed() {
         return !!this.disposed;
+    }
+
+    // Register (or clear with `undefined`) the answer to a device-initiated
+    // WARDProofRequest. The WARD pull model has the device request a proof mid-call
+    // instead of the host pushing it up-front; callLoop invokes this to reply with a
+    // WARDProofAck. Set it before the driving typedCall and clear it afterwards.
+    setWardProofCallback(callback: WardProofCallback | undefined) {
+        logger.debug(
+            'WARD proof callback',
+            callback ? 'registered for current call' : 'cleared for current call',
+        );
+        this.wardProofCallback = callback;
     }
 
     async typedCall(
@@ -283,6 +296,28 @@ export class DeviceCurrentSession implements TypedCallProvider {
                     }
 
                     [name, data] = ['WordAck', { word: promptRes.payload }];
+                    break;
+                }
+                case 'WARDProofRequest': {
+                    // WARD pull model: the device asks the host for a proof mid-call.
+                    // The driving method registers the answer via setWardProofCallback.
+                    if (!this.wardProofCallback) {
+                        return fail(
+                            'WARDProofRequest received but no WARD proof callback is registered',
+                        );
+                    }
+                    let ack;
+                    try {
+                        logger.debug(
+                            'Handling WARDProofRequest',
+                            filterForLog(res.type, res.message),
+                        );
+                        ack = await this.wardProofCallback(res.message);
+                        logger.debug('Prepared WARDProofAck', filterForLog('WARDProofAck', ack));
+                    } catch (err) {
+                        return error(err instanceof Error ? err : new Error(String(err)));
+                    }
+                    [name, data] = ['WARDProofAck', ack];
                     break;
                 }
                 default: {

@@ -32,6 +32,7 @@ export type AccountDescriptor = {
 
 export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
     const typedCall = deviceTypedCall.typedCall.bind(deviceTypedCall);
+    const setWardProofCallback = deviceTypedCall.setWardProofCallback.bind(deviceTypedCall);
 
     const unlockPath = (params?: Messages.UnlockPath) =>
         typedCall('UnlockPath', 'UnlockedPathRequest', params);
@@ -297,5 +298,6 @@ export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
         preauthorize,
         getAccountDescriptor,
         typedCall,
+        setWardProofCallback,
     };
 };

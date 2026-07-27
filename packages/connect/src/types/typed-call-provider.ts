@@ -13,6 +13,15 @@ type CallResult = { success: true; payload: MessageResponse } | { success: false
 type SendResult = { success: true; payload: undefined } | { success: false; error: Error };
 
 /**
+ * Answers a device-initiated WARDProofRequest with a WARDProofAck (WARD pull model).
+ * Registered per-call by the method that drives a flow which makes the device pull a
+ * proof on demand (e.g. WARDPerformUpdate, or an address-display lookup).
+ */
+export type WardProofCallback = (
+    request: Messages.WARDProofRequest,
+) => Messages.WARDProofAck | Promise<Messages.WARDProofAck>;
+
+/**
  * Minimal interface to communicate with a connected device through its current transport session.
  *
  * Placed in types/ (rather than device/DeviceCurrentSession.ts) so that it can be imported by
@@ -20,6 +29,7 @@ type SendResult = { success: true; payload: undefined } | { success: false; erro
  */
 export interface TypedCallProvider {
     typedCall: Messages.TypedCall;
+    setWardProofCallback: (callback: WardProofCallback | undefined) => void;
     isDisposed: () => boolean;
     cancelCall: () => Promise<CallResult>;
     call: (

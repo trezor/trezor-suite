@@ -3,41 +3,26 @@
 // DO NOT EDIT
 import { type Static, Type } from '@trezor/schema-utils';
 
-export type WARDCommitCandidate = Static<typeof WARDCommitCandidate>;
-export const WARDCommitCandidate = Type.Record(Type.Never(), Type.Never(), {
-    $id: 'WARDCommitCandidate',
-});
-
-export type WARDCommitCandidateAck = Static<typeof WARDCommitCandidateAck>;
-export const WARDCommitCandidateAck = Type.Object(
-    {
-        counter: Type.Number(),
-        new_root: Type.Optional(Type.String()),
-        mac: Type.Optional(Type.String()),
-        wallet_id: Type.Optional(Type.String()),
-    },
-    { $id: 'WARDCommitCandidateAck' },
-);
-
-export type WARDConfirmCommit = Static<typeof WARDConfirmCommit>;
-export const WARDConfirmCommit = Type.Object(
+export type WARDConfirmedByWM = Static<typeof WARDConfirmedByWM>;
+export const WARDConfirmedByWM = Type.Object(
     {
         counter: Type.Number(),
         mac: Type.Optional(Type.String()),
-        qm_signature: Type.String(),
+        wm_signature: Type.String(),
+        pending_id: Type.Optional(Type.Number()),
     },
-    { $id: 'WARDConfirmCommit' },
+    { $id: 'WARDConfirmedByWM' },
 );
 
-export type WARDConfirmCommitAck = Static<typeof WARDConfirmCommitAck>;
-export const WARDConfirmCommitAck = Type.Object(
+export type WARDConfirmedByWMAck = Static<typeof WARDConfirmedByWMAck>;
+export const WARDConfirmedByWMAck = Type.Object(
     {
         counter: Type.Number(),
         new_root: Type.Optional(Type.String()),
         wallet_id: Type.Optional(Type.String()),
         root_mac: Type.Optional(Type.String()),
     },
-    { $id: 'WARDConfirmCommitAck' },
+    { $id: 'WARDConfirmedByWMAck' },
 );
 
 export type WARDDebugSetRoot = Static<typeof WARDDebugSetRoot>;
@@ -59,6 +44,24 @@ export const WARDDebugSetRootAck = Type.Object(
     { $id: 'WARDDebugSetRootAck' },
 );
 
+export type WARDDiscardPending = Static<typeof WARDDiscardPending>;
+export const WARDDiscardPending = Type.Object(
+    {
+        pending_id: Type.Optional(Type.Number()),
+    },
+    { $id: 'WARDDiscardPending' },
+);
+
+export type WARDDiscardPendingAck = Static<typeof WARDDiscardPendingAck>;
+export const WARDDiscardPendingAck = Type.Object(
+    {
+        discarded_address: Type.Optional(Type.String()),
+        wallet_id: Type.Optional(Type.String()),
+        pending_id: Type.Optional(Type.Number()),
+    },
+    { $id: 'WARDDiscardPendingAck' },
+);
+
 export type WARDIngestAttestation = Static<typeof WARDIngestAttestation>;
 export const WARDIngestAttestation = Type.Object(
     {
@@ -78,19 +81,6 @@ export const WARDIngestAttestationAck = Type.Object(
     { $id: 'WARDIngestAttestationAck' },
 );
 
-export type WARDSync = Static<typeof WARDSync>;
-export const WARDSync = Type.Record(Type.Never(), Type.Never(), { $id: 'WARDSync' });
-
-export type WARDSyncAck = Static<typeof WARDSyncAck>;
-export const WARDSyncAck = Type.Object(
-    {
-        nonce: Type.String(),
-        version: Type.Number(),
-        wallet_id: Type.Optional(Type.String()),
-    },
-    { $id: 'WARDSyncAck' },
-);
-
 export type WARDListPendingEdits = Static<typeof WARDListPendingEdits>;
 export const WARDListPendingEdits = Type.Record(Type.Never(), Type.Never(), {
     $id: 'WARDListPendingEdits',
@@ -101,6 +91,7 @@ export const WARDListPendingEditsAck = Type.Object(
     {
         addresses: Type.Array(Type.String()),
         wallet_id: Type.Optional(Type.String()),
+        pending_ids: Type.Array(Type.Number()),
     },
     { $id: 'WARDListPendingEditsAck' },
 );
@@ -130,6 +121,66 @@ export const WARDLookupAck = Type.Object(
     { $id: 'WARDLookupAck' },
 );
 
+export type WARDPerformUpdate = Static<typeof WARDPerformUpdate>;
+export const WARDPerformUpdate = Type.Object(
+    {
+        pending_id: Type.Optional(Type.Number()),
+    },
+    { $id: 'WARDPerformUpdate' },
+);
+
+export type WARDPerformUpdateAck = Static<typeof WARDPerformUpdateAck>;
+export const WARDPerformUpdateAck = Type.Object(
+    {
+        counter: Type.Number(),
+        new_root: Type.Optional(Type.String()),
+        mac: Type.Optional(Type.String()),
+        wallet_id: Type.Optional(Type.String()),
+    },
+    { $id: 'WARDPerformUpdateAck' },
+);
+
+export type WARDProofAck = Static<typeof WARDProofAck>;
+export const WARDProofAck = Type.Object(
+    {
+        value: Type.Optional(Type.String()),
+        proof: Type.Array(Type.String()),
+        counter: Type.Optional(Type.Number()),
+        witness_address: Type.Optional(Type.String()),
+        witness_value: Type.Optional(Type.String()),
+        witness_counter: Type.Optional(Type.Number()),
+    },
+    { $id: 'WARDProofAck' },
+);
+
+export type WARDProofRequest = Static<typeof WARDProofRequest>;
+export const WARDProofRequest = Type.Object(
+    {
+        address: Type.String(),
+        pending_id: Type.Optional(Type.Number()),
+    },
+    { $id: 'WARDProofRequest' },
+);
+
+export type WARDQueueUpdate = Static<typeof WARDQueueUpdate>;
+export const WARDQueueUpdate = Type.Object(
+    {
+        address: Type.String(),
+        new_value: Type.String(),
+    },
+    { $id: 'WARDQueueUpdate' },
+);
+
+export type WARDQueueUpdateAck = Static<typeof WARDQueueUpdateAck>;
+export const WARDQueueUpdateAck = Type.Object(
+    {
+        counter: Type.Number(),
+        pending_id: Type.Optional(Type.Number()),
+        wallet_id: Type.Optional(Type.String()),
+    },
+    { $id: 'WARDQueueUpdateAck' },
+);
+
 export type WARDReconcile = Static<typeof WARDReconcile>;
 export const WARDReconcile = Type.Object(
     {
@@ -149,27 +200,15 @@ export const WARDReconcileAck = Type.Object(
     { $id: 'WARDReconcileAck' },
 );
 
-export type WARDAddPending = Static<typeof WARDAddPending>;
-export const WARDAddPending = Type.Object(
-    {
-        address: Type.String(),
-        old_value: Type.String(),
-        new_value: Type.String(),
-        proof: Type.Array(Type.String()),
-        witness_address: Type.Optional(Type.String()),
-        witness_value: Type.Optional(Type.String()),
-        old_counter: Type.Optional(Type.Number()),
-        new_counter: Type.Number(),
-        witness_counter: Type.Optional(Type.Number()),
-    },
-    { $id: 'WARDAddPending' },
-);
+export type WARDSync = Static<typeof WARDSync>;
+export const WARDSync = Type.Record(Type.Never(), Type.Never(), { $id: 'WARDSync' });
 
-export type WARDAddPendingAck = Static<typeof WARDAddPendingAck>;
-export const WARDAddPendingAck = Type.Object(
+export type WARDSyncAck = Static<typeof WARDSyncAck>;
+export const WARDSyncAck = Type.Object(
     {
-        counter: Type.Number(),
+        nonce: Type.String(),
+        version: Type.Number(),
         wallet_id: Type.Optional(Type.String()),
     },
-    { $id: 'WARDAddPendingAck' },
+    { $id: 'WARDSyncAck' },
 );

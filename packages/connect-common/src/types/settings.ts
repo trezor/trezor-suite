@@ -1,4 +1,4 @@
-import type { AuthLabelProvider } from '@trezor/authdb';
+import type { AuthLabelProvider as WardDataProvider } from '@trezor/authdb';
 import type { BlockchainSettings } from '@trezor/blockchain-link';
 import type { DeviceModelInternal } from '@trezor/device-utils';
 import type { ThpCredentials, ThpPairingMethod } from '@trezor/protocol';
@@ -56,7 +56,7 @@ export interface ConnectSettingsPublic {
     // storage backend for AuthDB auth-label entries, injected by the host application.
     // when set, high-level AuthDB methods (e.g. authDbUpdateAddress, authDbVerifyAddress)
     // compute Merkle proofs internally instead of requiring the caller to supply one.
-    authLabelLookupProvider?: AuthLabelProvider;
+    wardDataProvider?: WardDataProvider;
 }
 
 // internal part, not to be accepted from .init()

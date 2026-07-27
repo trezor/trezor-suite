@@ -307,20 +307,24 @@ import {
     TronWithdrawUnfreeze,
 } from './messages-tron';
 import {
-    WARDAddPending,
-    WARDAddPendingAck,
-    WARDCommitCandidate,
-    WARDCommitCandidateAck,
-    WARDConfirmCommit,
-    WARDConfirmCommitAck,
+    WARDConfirmedByWM,
+    WARDConfirmedByWMAck,
     WARDDebugSetRoot,
     WARDDebugSetRootAck,
+    WARDDiscardPending,
+    WARDDiscardPendingAck,
     WARDIngestAttestation,
     WARDIngestAttestationAck,
     WARDListPendingEdits,
     WARDListPendingEditsAck,
     WARDLookup,
     WARDLookupAck,
+    WARDPerformUpdate,
+    WARDPerformUpdateAck,
+    WARDProofAck,
+    WARDProofRequest,
+    WARDQueueUpdate,
+    WARDQueueUpdateAck,
     WARDReconcile,
     WARDReconcileAck,
     WARDSync,
@@ -635,12 +639,12 @@ export const MessageType = Type.Object(
         TronWithdrawUnfreeze,
         TronWithdrawBalance,
         TronSignature,
-        WARDAddPending,
-        WARDAddPendingAck,
-        WARDCommitCandidate,
-        WARDCommitCandidateAck,
-        WARDConfirmCommit,
-        WARDConfirmCommitAck,
+        WARDQueueUpdate,
+        WARDQueueUpdateAck,
+        WARDPerformUpdate,
+        WARDPerformUpdateAck,
+        WARDConfirmedByWM,
+        WARDConfirmedByWMAck,
         WARDSync,
         WARDSyncAck,
         WARDIngestAttestation,
@@ -653,6 +657,10 @@ export const MessageType = Type.Object(
         WARDLookupAck,
         WARDDebugSetRoot,
         WARDDebugSetRootAck,
+        WARDProofRequest,
+        WARDProofAck,
+        WARDDiscardPending,
+        WARDDiscardPendingAck,
     },
     { $id: 'MessageType' },
 );
@@ -827,15 +835,17 @@ export type WireInMessage =
     | 'TronUnfreezeBalanceV2Contract'
     | 'TronWithdrawUnfreeze'
     | 'TronWithdrawBalance'
-    | 'WARDAddPending'
-    | 'WARDCommitCandidate'
-    | 'WARDConfirmCommit'
+    | 'WARDQueueUpdate'
+    | 'WARDPerformUpdate'
+    | 'WARDConfirmedByWM'
     | 'WARDSync'
     | 'WARDIngestAttestation'
     | 'WARDListPendingEdits'
     | 'WARDReconcile'
     | 'WARDLookup'
-    | 'WARDDebugSetRoot';
+    | 'WARDDebugSetRoot'
+    | 'WARDProofAck'
+    | 'WARDDiscardPending';
 
 export type WireOutMessage =
     | 'Success'
@@ -936,15 +946,17 @@ export type WireOutMessage =
     | 'TronAddress'
     | 'TronContractRequest'
     | 'TronSignature'
-    | 'WARDAddPendingAck'
-    | 'WARDCommitCandidateAck'
-    | 'WARDConfirmCommitAck'
+    | 'WARDQueueUpdateAck'
+    | 'WARDPerformUpdateAck'
+    | 'WARDConfirmedByWMAck'
     | 'WARDSyncAck'
     | 'WARDIngestAttestationAck'
     | 'WARDListPendingEditsAck'
     | 'WARDReconcileAck'
     | 'WARDLookupAck'
-    | 'WARDDebugSetRootAck';
+    | 'WARDDebugSetRootAck'
+    | 'WARDProofRequest'
+    | 'WARDDiscardPendingAck';
 
 export type MessageKey = keyof MessageType;
 
