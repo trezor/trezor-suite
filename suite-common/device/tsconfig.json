@@ -13,6 +13,8 @@
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/type-utils" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../platform-encryption" },
+        { "path": "../test-utils" }
     ]
 }
