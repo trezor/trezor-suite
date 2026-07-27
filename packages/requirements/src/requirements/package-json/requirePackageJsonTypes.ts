@@ -103,6 +103,20 @@ const REQUIRED_TYPED_EXPORTS: Record<string, Record<string, PackageExport>> = {
     '@trezor/network-ripple': NETWORK_TYPED_EXPORTS,
     '@trezor/network-solana': NETWORK_TYPED_EXPORTS,
     '@trezor/network-stellar': NETWORK_TYPED_EXPORTS,
+    '@trezor/network-tron': {
+        './constants': {
+            types: './libDev/src/constants/index.d.ts',
+            default: './src/constants/index.ts',
+        },
+        './utils': {
+            types: './libDev/src/utils/index.d.ts',
+            default: './src/utils/index.ts',
+        },
+        '.': {
+            types: DEFAULT_TYPES_FIELD,
+            default: './src/index.ts',
+        },
+    },
     '@trezor/analytics-log-server': {
         '.': {
             types: './libDev/index.d.ts',
@@ -466,11 +480,7 @@ export const requirePackageJsonTypes: Requirement<'workspace'> = {
               }
             : packageJsonWithRequiredTypes;
 
-        writeFileSync(
-            packageJsonPath,
-            `${JSON.stringify(fixedPackageJson, null, 4)}\n`,
-            'utf-8',
-        );
+        writeFileSync(packageJsonPath, `${JSON.stringify(fixedPackageJson, null, 4)}\n`, 'utf-8');
 
         return Promise.resolve(getVerificationErrors(context));
     },

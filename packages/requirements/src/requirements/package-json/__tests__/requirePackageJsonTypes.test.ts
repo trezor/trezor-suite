@@ -183,6 +183,39 @@ describe(requirePackageJsonTypes.name, () => {
         });
     });
 
+    it('configures the Tron network declaration entries', async () => {
+        context = { ...context, workspaceName: '@trezor/network-tron' };
+        writePackageJson({
+            name: '@trezor/network-tron',
+            exports: {
+                './constants': './src/constants/index.ts',
+                './utils': './src/utils/index.ts',
+                '.': './src/index.ts',
+            },
+        });
+
+        const errors = await requirePackageJsonTypes.fix!(context);
+
+        expect(errors).toEqual([]);
+        expect(readPackageJson()).toMatchObject({
+            types: './libDev/src/index.d.ts',
+            exports: {
+                './constants': {
+                    types: './libDev/src/constants/index.d.ts',
+                    default: './src/constants/index.ts',
+                },
+                './utils': {
+                    types: './libDev/src/utils/index.d.ts',
+                    default: './src/utils/index.ts',
+                },
+                '.': {
+                    types: './libDev/src/index.d.ts',
+                    default: './src/index.ts',
+                },
+            },
+        });
+    });
+
     it('reports a root export that shadows an unmodeled declaration entry', async () => {
         writePackageJson({
             types: './libDev/src/index.d.ts',
@@ -292,19 +325,22 @@ describe(requirePackageJsonTypes.name, () => {
                 },
             },
         ],
-    ])('configures the typed-only public subpaths exposed by %s', async (workspaceName, exports) => {
-        context = { ...context, workspaceName };
-        rmSync(join(workspaceDir, 'src'), { recursive: true });
-        writePackageJson({
-            name: workspaceName,
-            types: './libDev/src/index.d.ts',
-        });
+    ])(
+        'configures the typed-only public subpaths exposed by %s',
+        async (workspaceName, exports) => {
+            context = { ...context, workspaceName };
+            rmSync(join(workspaceDir, 'src'), { recursive: true });
+            writePackageJson({
+                name: workspaceName,
+                types: './libDev/src/index.d.ts',
+            });
 
-        const errors = await requirePackageJsonTypes.fix!(context);
+            const errors = await requirePackageJsonTypes.fix!(context);
 
-        expect(errors).toEqual([]);
-        expect(readPackageJson()).toEqual({ name: workspaceName, exports });
-    });
+            expect(errors).toEqual([]);
+            expect(readPackageJson()).toEqual({ name: workspaceName, exports });
+        },
+    );
 
     it('reports missing or invalid package.json', async () => {
         const errorsWithoutFile = await requirePackageJsonTypes.verify(context);
