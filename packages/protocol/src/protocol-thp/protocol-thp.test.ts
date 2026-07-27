@@ -1,3 +1,5 @@
+import { decode as decodeV2 } from '../protocol-v2';
+
 import {
     ThpState,
     decode,
@@ -6,8 +8,7 @@ import {
     encodePreviousAck,
     getExpectedResponses,
     isAckExpected,
-} from '../../src/protocol-thp';
-import { decode as decodeV2 } from '../../src/protocol-v2';
+} from './index';
 
 const protobufEncoder = (..._args: any[]) => ({
     messageType: 1,

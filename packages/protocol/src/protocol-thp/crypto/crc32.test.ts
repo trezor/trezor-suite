@@ -1,6 +1,6 @@
 // fixtures: https://github.com/brianloveswords/buffer-crc32/blob/master/tests/crc.test.js
 
-import { crc32 } from '../../src/protocol-thp/crypto/crc32';
+import { crc32 } from './crc32';
 
 describe('crc32', () => {
     it('simple', () => {

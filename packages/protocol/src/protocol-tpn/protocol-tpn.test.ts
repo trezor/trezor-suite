@@ -1,9 +1,5 @@
-import { PROTOCOL_MALFORMED, PROTOCOL_MISSMATCH_VERSION, tpn } from '../src';
-import {
-    TrezorPushNotificationMode,
-    TrezorPushNotificationType,
-    Version,
-} from '../src/protocol-tpn/decode';
+import { PROTOCOL_MALFORMED, PROTOCOL_MISSMATCH_VERSION, tpn } from '../index';
+import { TrezorPushNotificationMode, TrezorPushNotificationType, Version } from './decode';
 
 describe('protocol-tpn', () => {
     describe('decode', () => {

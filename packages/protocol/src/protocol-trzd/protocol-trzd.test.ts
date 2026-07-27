@@ -1,4 +1,4 @@
-import { trzd } from '../src/index';
+import { trzd } from '../index';
 
 // duplicates the same fn from bufferUtils, to avoid a new dependency
 const bufferToBytes = (buffer: Buffer<ArrayBuffer>): ArrayBuffer =>

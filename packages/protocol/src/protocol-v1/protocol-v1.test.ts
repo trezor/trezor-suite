@@ -1,5 +1,5 @@
-import { v1 } from '../src/index';
-import { HEADER_SIZE } from '../src/protocol-v1/constants';
+import { v1 } from '../index';
+import { HEADER_SIZE } from './constants';
 
 describe('protocol-v1', () => {
     it('encode', () => {

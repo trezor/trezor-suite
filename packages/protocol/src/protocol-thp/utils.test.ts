@@ -1,9 +1,4 @@
-import {
-    addAckBit,
-    addSequenceBit,
-    clearControlBit,
-    getControlBit,
-} from '../../src/protocol-thp/utils';
+import { addAckBit, addSequenceBit, clearControlBit, getControlBit } from './utils';
 
 describe('controlBit', () => {
     it('ackBit', () => {
