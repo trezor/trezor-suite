@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
@@ -76,8 +77,8 @@ export const XpubScanScreen = ({
         validation: xpubFormValidationSchema,
         context: { symbol: networkSymbol },
     });
-    const { handleSubmit, setValue, watch } = form;
-    const watchXpubAddress = watch('xpubAddress');
+    const { handleSubmit, setValue, control } = form;
+    const watchXpubAddress = useWatch({ control, name: 'xpubAddress' });
 
     const isXpubFormFilled = watchXpubAddress?.length > 0;
 

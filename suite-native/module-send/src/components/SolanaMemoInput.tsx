@@ -12,19 +12,19 @@ import {
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
-import { useFormContext } from '@suite-native/forms';
+import { useFormContext, useWatch } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
 import { type SendFieldName, type SendOutputsFormValues } from '../sendOutputsFormSchema';
 
 export const SolanaMemoInput = () => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
-    const { setValue, watch } = useFormContext<SendOutputsFormValues>();
+    const { setValue, control } = useFormContext<SendOutputsFormValues>();
     const { translate } = useTranslate();
     const [localMemo, setLocalMemo] = useState('');
 
     const memoFieldName: SendFieldName = 'destinationTag';
-    const currentMemo = watch(memoFieldName) ?? '';
+    const currentMemo = useWatch({ control, name: memoFieldName }) ?? '';
     const memoByteSize = Buffer.from(localMemo, 'utf8').length;
 
     const handleOpen = () => {

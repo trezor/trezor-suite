@@ -23,7 +23,7 @@ import { type NativeAccountsRootState, selectFreshAccountAddress } from '@suite-
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
-import { TextInputField, useFormContext } from '@suite-native/forms';
+import { TextInputField, useFormContext, useWatch } from '@suite-native/forms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -64,7 +64,7 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
     const utxoLabelFieldName = getOutputFieldName(index, 'label');
     const amountFieldName = getOutputFieldName(index, 'amount');
     const tokenFieldName = getOutputFieldName(index, 'token');
-    const { setValue, watch } = useFormContext<SendOutputsFormValues>();
+    const { setValue, control } = useFormContext<SendOutputsFormValues>();
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
@@ -243,8 +243,8 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
             });
     };
 
-    const utxoLabel = watch(utxoLabelFieldName);
-    const outputToken = watch(tokenFieldName);
+    const utxoLabel = useWatch({ control, name: utxoLabelFieldName });
+    const outputToken = useWatch({ control, name: tokenFieldName });
 
     return (
         <VStack spacing="sp12">

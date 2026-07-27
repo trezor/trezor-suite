@@ -16,7 +16,7 @@ import {
     type FormState,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
-import { useFormContext } from '@suite-native/forms';
+import { useFormContext, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import { useDebounce } from '@trezor/react-utils';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
@@ -64,16 +64,32 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
         setError,
         trigger,
         getValues,
-        watch,
+        control,
     } = useFormContext<FeesFormValues>();
 
     const { customFeePerUnit, customFeeLimit, customMaxFeePerGas, customMaxPriorityFeePerGas } =
         getValues();
 
-    const watchedFeePerUnit = watch(FEE_PER_UNIT_FIELD_NAME, '0');
-    const watchedFeeLimit = watch(FEE_LIMIT_FIELD_NAME, '1') as string;
-    const watchedMaxFeePerGas = watch(MAX_FEE_PER_GAS_FIELD_NAME, '0');
-    const watchedMaxPriorityFeePerGas = watch(MAX_PRIORITY_FEE_PER_GAS_FIELD_NAME, '0');
+    const watchedFeePerUnit = useWatch({
+        control,
+        name: FEE_PER_UNIT_FIELD_NAME,
+        defaultValue: '0',
+    });
+    const watchedFeeLimit = useWatch({
+        control,
+        name: FEE_LIMIT_FIELD_NAME,
+        defaultValue: '1',
+    }) as string;
+    const watchedMaxFeePerGas = useWatch({
+        control,
+        name: MAX_FEE_PER_GAS_FIELD_NAME,
+        defaultValue: '0',
+    });
+    const watchedMaxPriorityFeePerGas = useWatch({
+        control,
+        name: MAX_PRIORITY_FEE_PER_GAS_FIELD_NAME,
+        defaultValue: '0',
+    });
 
     const normalLevelTransactionBytes = useSelector((state: NativeSendRootState) =>
         selectFeeLevelTransactionBytes(state, 'normal'),

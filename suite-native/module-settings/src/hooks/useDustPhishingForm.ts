@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { yup } from '@suite-common/validators';
 import { selectDustPhishingThreshold } from '@suite-common/wallet-core';
-import { useForm } from '@suite-native/forms';
+import { useForm, useWatch } from '@suite-native/forms';
 import { type Translate, useTranslate } from '@suite-native/intl';
 
 const validateIsEmpty = (value?: string) => {
@@ -59,10 +59,13 @@ export const useDustPhishingForm = () => {
         }),
     });
 
-    const dustThreshold = form.watch('dustThreshold');
+    const isSame = useWatch({
+        control: form.control,
+        name: 'dustThreshold',
+        compute: dustThreshold => dustThreshold.trim() === dustPhishingThreshold,
+    });
 
     const { isValid } = form.formState;
-    const isSame = dustThreshold.trim() === dustPhishingThreshold;
     const isDisabled = !isValid || isSame;
 
     return {
