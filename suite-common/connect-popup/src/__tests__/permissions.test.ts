@@ -1,6 +1,7 @@
 import { type PermissionRequest } from '@trezor/connect';
 
 import {
+    canonicalizePermissionCoins,
     deriveCardanoEnabledNetworks,
     groupPermissionsByCoin,
     mergePermissions,
@@ -33,21 +34,26 @@ describe('sanitizeRequestedPermissions', () => {
     });
 
     it('drops entries whose coin is not a known coin symbol', () => {
-        const requested: PermissionRequest[] = [
+        // Host-supplied input can carry arbitrary strings, so it violates the compile-time
+        // `CoinSymbol` type — cast to model the untrusted wire shape.
+        const requested = [
             { permission: 'read_address', coin: 'btc' },
             { permission: 'read_address', coin: 'not-a-coin' },
-        ];
+        ] as unknown as PermissionRequest[];
         expect(sanitizeRequestedPermissions(requested, false)).toEqual([
             { permission: 'read_address', coin: 'btc' },
         ]);
     });
 
-    it('accepts coin symbols regardless of casing', () => {
-        const requested: PermissionRequest[] = [
+    it('accepts coin symbols in any casing and canonicalizes them to lowercase', () => {
+        const requested = [
             { permission: 'read_address', coin: 'BTC' },
             { permission: 'read_address', coin: 'tADA' },
-        ];
-        expect(sanitizeRequestedPermissions(requested, false)).toEqual(requested);
+        ] as unknown as PermissionRequest[];
+        expect(sanitizeRequestedPermissions(requested, false)).toEqual([
+            { permission: 'read_address', coin: 'btc' },
+            { permission: 'read_address', coin: 'tada' },
+        ]);
     });
 
     it('drops unknown/garbage permission values', () => {
@@ -71,14 +77,14 @@ describe('mergePermissions', () => {
         ]);
     });
 
-    it('de-duplicates by permission and coin case-insensitively, keeping the base casing', () => {
-        const base: PermissionRequest[] = [{ permission: 'read_address', coin: 'BTC' }];
+    it('de-duplicates by permission and coin, base first', () => {
+        const base: PermissionRequest[] = [{ permission: 'read_address', coin: 'btc' }];
         const extra: PermissionRequest[] = [
             { permission: 'read_address', coin: 'btc' },
             { permission: 'read_xpub', coin: 'btc' },
         ];
         expect(mergePermissions(base, extra)).toEqual([
-            { permission: 'read_address', coin: 'BTC' },
+            { permission: 'read_address', coin: 'btc' },
             { permission: 'read_xpub', coin: 'btc' },
         ]);
     });
@@ -94,11 +100,11 @@ describe('mergePermissions', () => {
 
 describe('permissionsAreCovered', () => {
     const granted: PermissionRequest[] = [
-        { permission: 'read_address', coin: 'BTC' },
+        { permission: 'read_address', coin: 'btc' },
         { permission: 'read_features' },
     ];
 
-    it('matches coins case-insensitively', () => {
+    it('matches by permission and coin', () => {
         expect(permissionsAreCovered([{ permission: 'read_address', coin: 'btc' }], granted)).toBe(
             true,
         );
@@ -120,15 +126,15 @@ describe('permissionsAreCovered', () => {
 });
 
 describe('groupPermissionsByCoin', () => {
-    it('groups by coin (case-insensitively) with the coin-less group last', () => {
+    it('groups by coin with the coin-less group last', () => {
         const groups = groupPermissionsByCoin([
-            { permission: 'read_address', coin: 'BTC' },
+            { permission: 'read_address', coin: 'btc' },
             { permission: 'read_xpub', coin: 'btc' },
             { permission: 'read_features' },
             { permission: 'sign', coin: 'eth' },
         ]);
         expect(groups).toEqual([
-            { coin: 'BTC', permissions: ['read_address', 'read_xpub'] },
+            { coin: 'btc', permissions: ['read_address', 'read_xpub'] },
             { coin: 'eth', permissions: ['sign'] },
             { permissions: ['read_features'] },
         ]);
@@ -143,13 +149,37 @@ describe('groupPermissionsByCoin', () => {
     });
 });
 
-describe('deriveCardanoEnabledNetworks', () => {
-    it('projects only Cardano grants, lowercased and de-duplicated', () => {
-        const enabled = deriveCardanoEnabledNetworks([
+describe('canonicalizePermissionCoins', () => {
+    it('lowercases mixed-case coins persisted before canonicalization', () => {
+        // Legacy persisted grants kept the mixed-case `coinInfo.shortcut`.
+        const legacy = [
             { permission: 'read_address', coin: 'BTC' },
-            { permission: 'read_address', coin: 'ADA' },
+            { permission: 'read_xpub', coin: 'tDASH' },
+            { permission: 'read_features' },
+        ] as unknown as PermissionRequest[];
+        expect(canonicalizePermissionCoins(legacy)).toEqual([
+            { permission: 'read_address', coin: 'btc' },
+            { permission: 'read_xpub', coin: 'tdash' },
+            { permission: 'read_features' },
+        ]);
+    });
+
+    it('is idempotent on already-canonical coins', () => {
+        const canonical: PermissionRequest[] = [
+            { permission: 'read_address', coin: 'btc' },
+            { permission: 'read_features' },
+        ];
+        expect(canonicalizePermissionCoins(canonical)).toEqual(canonical);
+    });
+});
+
+describe('deriveCardanoEnabledNetworks', () => {
+    it('projects only Cardano grants, de-duplicated', () => {
+        const enabled = deriveCardanoEnabledNetworks([
+            { permission: 'read_address', coin: 'btc' },
+            { permission: 'read_address', coin: 'ada' },
             { permission: 'read_xpub', coin: 'ada' },
-            { permission: 'sign', coin: 'tADA' },
+            { permission: 'sign', coin: 'tada' },
         ]);
         expect(enabled).toEqual([{ coin: 'ada' }, { coin: 'tada' }]);
     });

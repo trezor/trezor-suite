@@ -1,18 +1,20 @@
 import { networks } from '@suite-common/wallet-config';
-import { type EnabledNetwork, type PermissionRequest, isCoinSymbol } from '@trezor/connect';
+import {
+    type CoinSymbol,
+    type EnabledNetwork,
+    type PermissionRequest,
+    isCoinSymbol,
+} from '@trezor/connect';
 import { unique } from '@trezor/utils/src/unique';
 
-// Coin symbols (`coinInfo.shortcut`) are unique regardless of casing, but a granted permission
-// keeps the shortcut's original casing (e.g. `BTC`, `tDASH`) while a declared/host-supplied one may
-// use any casing. Compare and de-duplicate coins case-insensitively so coverage and grouping match
-// across the two.
-const coinKey = (coin?: string) => coin?.toLowerCase();
-const sameCoin = (a?: string, b?: string) => coinKey(a) === coinKey(b);
+// A `PermissionRequest.coin` is the canonical lowercase `CoinSymbol`: call-derived permissions are
+// lowercased in `coinPerm`, host-declared ones in `sanitizeRequestedPermissions`. Everything below
+// therefore compares coins with `===`.
 
 // There are permissions that depend on a coin, e.g. `read_address` for Bitcoin.
 // There are also permissions that are not scoped to a coin, e.g. `management`.
 export type GroupedPermissions = {
-    coin?: string;
+    coin?: CoinSymbol;
     permissions: PermissionRequest['permission'][];
 };
 
@@ -21,10 +23,10 @@ export type GroupedPermissions = {
 export const PERMISSION_PREVIEW_LIMIT = 6;
 
 /**
- * Map a `PermissionRequest.coin` (which is `coinInfo.shortcut`, e.g. `BTC`,
- * `ETH`, `LTC`) to a human-readable network name. Falls back to the upper-case
- * shortcut when the coin is not known to suite (e.g. an altcoin recognised
- * only by `@trezor/connect`).
+ * Map a `PermissionRequest.coin` (the canonical lowercase `CoinSymbol`, e.g.
+ * `btc`, `eth`, `ltc`) to a human-readable network name. Falls back to the
+ * upper-case shortcut when the coin is not known to suite (e.g. an altcoin
+ * recognised only by `@trezor/connect`).
  */
 export const getCoinLabel = (shortcut: string): string => {
     const key = shortcut.toLowerCase() as keyof typeof networks;
@@ -56,34 +58,28 @@ export const permissionsAreCovered = (
     granted: PermissionRequest[],
 ): boolean =>
     requested.every(req =>
-        granted.some(g => g.permission === req.permission && sameCoin(g.coin, req.coin)),
+        granted.some(g => g.permission === req.permission && g.coin === req.coin),
     );
 
 export const groupPermissionsByCoin = (permissions: PermissionRequest[]): GroupedPermissions[] => {
-    const order: (string | undefined)[] = [];
-    // Keyed by the case-insensitive coin key; keeps the first-seen coin as the group's display coin.
-    const byCoin = new Map<
-        string | undefined,
-        { coin?: string; permissions: PermissionRequest['permission'][] }
-    >();
+    const order: (CoinSymbol | undefined)[] = [];
+    const byCoin = new Map<CoinSymbol | undefined, PermissionRequest['permission'][]>();
 
     for (const { coin, permission } of permissions) {
-        const key = coinKey(coin);
-        if (!byCoin.has(key)) {
-            byCoin.set(key, { coin, permissions: [] });
-            order.push(key);
+        if (!byCoin.has(coin)) {
+            byCoin.set(coin, []);
+            order.push(coin);
         }
-        byCoin.get(key)!.permissions.push(permission);
+        byCoin.get(coin)!.push(permission);
     }
 
-    const coinFirst = order.filter(c => c !== undefined);
-    const groups: GroupedPermissions[] = coinFirst.map(key => {
-        const group = byCoin.get(key)!;
-
-        return { coin: group.coin, permissions: unique(group.permissions) };
-    });
+    const coinFirst = order.filter((c): c is CoinSymbol => c !== undefined);
+    const groups: GroupedPermissions[] = coinFirst.map(coin => ({
+        coin,
+        permissions: unique(byCoin.get(coin)!),
+    }));
     if (byCoin.has(undefined)) {
-        groups.push({ permissions: unique(byCoin.get(undefined)!.permissions) });
+        groups.push({ permissions: unique(byCoin.get(undefined)!) });
     }
 
     return groups;
@@ -105,19 +101,34 @@ const GRANTABLE_PERMISSIONS: ReadonlySet<PermissionRequest['permission']> = new 
     'push_tx',
 ]);
 
+// Sanitize the host-declared `requestedPermissions`: drop entries whose permission is not
+// grantable, `push_tx` on deeplinks, and unknown coins; lowercase each `coin` to its `CoinSymbol`.
 export const sanitizeRequestedPermissions = (
     requested: PermissionRequest[] | undefined,
     isDeeplink: boolean,
 ): PermissionRequest[] =>
-    (requested ?? []).filter(
-        permission =>
-            GRANTABLE_PERMISSIONS.has(permission.permission) &&
-            !(permission.permission === 'push_tx' && isDeeplink) &&
-            (permission.coin === undefined || isCoinSymbol(permission.coin.toLowerCase())),
+    (requested ?? []).flatMap(({ permission, coin }) => {
+        if (!GRANTABLE_PERMISSIONS.has(permission)) return [];
+        if (permission === 'push_tx' && isDeeplink) return [];
+        if (coin === undefined) return [{ permission }];
+        const symbol = coin.toLowerCase();
+
+        return isCoinSymbol(symbol) ? [{ permission, coin: symbol }] : [];
+    });
+
+// Lowercase each permission's `coin` to its `CoinSymbol`. Normalizes grants persisted before coins
+// were canonicalized at the source.
+export const canonicalizePermissionCoins = (
+    permissions: PermissionRequest[],
+): PermissionRequest[] =>
+    permissions.map(permission =>
+        permission.coin === undefined
+            ? permission
+            : { ...permission, coin: permission.coin.toLowerCase() as CoinSymbol },
     );
 
-// Union two permission lists, de-duplicated by (permission, coin) with coin compared
-// case-insensitively. `base` comes first, so on a collision its entry (and coin casing) wins.
+// Union two permission lists, de-duplicated by (permission, coin). `base` comes first, so on a
+// collision its entry wins.
 export const mergePermissions = (
     base: PermissionRequest[],
     extra: PermissionRequest[],
@@ -125,7 +136,7 @@ export const mergePermissions = (
     const seen = new Set<string>();
     const out: PermissionRequest[] = [];
     for (const permission of [...base, ...extra]) {
-        const key = `${permission.permission}:${coinKey(permission.coin) ?? ''}`;
+        const key = `${permission.permission}:${permission.coin ?? ''}`;
         if (seen.has(key)) continue;
         seen.add(key);
         out.push(permission);
@@ -137,22 +148,18 @@ export const mergePermissions = (
 // Today `enabledNetworks` only gates Cardano `derive_cardano`, so project ONLY Cardano grants;
 // grants for other coins stay pure authorization for now.
 // TODO(#23879): generalize once enabledNetworks drives more than Cardano derivation.
-const CARDANO_COINS = new Set(['ada', 'tada']);
+const CARDANO_COINS: ReadonlySet<CoinSymbol> = new Set(['ada', 'tada']);
 
 /** Projects granted per-coin permissions into the Cardano networks to enable in `@trezor/connect`. */
 export const deriveCardanoEnabledNetworks = (
     permissions: PermissionRequest[],
 ): EnabledNetwork[] => {
-    const seen = new Set<string>();
+    const seen = new Set<CoinSymbol>();
     const enabledNetworks: EnabledNetwork[] = [];
     for (const { coin } of permissions) {
-        if (!coin) continue;
-        const key = coin.toLowerCase();
-        if (!CARDANO_COINS.has(key) || seen.has(key)) continue;
-        seen.add(key);
-        // Push the lowercased `key` (a canonical CoinSymbol, 'ada'/'tada') — the raw `coin` is the
-        // mixed-case shortcut (e.g. 'ADA') and is not a valid CoinSymbol.
-        enabledNetworks.push({ coin: key } as EnabledNetwork);
+        if (!coin || !CARDANO_COINS.has(coin) || seen.has(coin)) continue;
+        seen.add(coin);
+        enabledNetworks.push({ coin });
     }
 
     return enabledNetworks;

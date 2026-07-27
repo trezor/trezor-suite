@@ -27,7 +27,7 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
-import { type MethodPermission, type PermissionRequest } from '@trezor/connect';
+import { type CoinSymbol, type MethodPermission, type PermissionRequest } from '@trezor/connect';
 import {
     BellSlashIcon,
     BroadcastIcon,
@@ -168,7 +168,7 @@ const PermissionPreview = ({ permissions }: { permissions: MethodPermission[] })
 };
 
 type PermissionGroupProps = {
-    coin?: string;
+    coin?: CoinSymbol;
     permissions: MethodPermission[];
     defaultIsOpen: boolean;
     onRemovePermission?: (permission: PermissionRequest) => void;

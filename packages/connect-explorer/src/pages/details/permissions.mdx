@@ -30,9 +30,10 @@ to a third-party application. `push_tx` is additionally unavailable to deeplink 
 
 ## Coin scoping
 
-Coin-specific permissions carry a `coin` field, which is the coin's shortcut (for example `BTC`,
-`ETH`, `ADA`). Coin-less permissions such as `read_features` omit it. Coin shortcuts are matched
-case-insensitively, so `btc` and `BTC` refer to the same coin.
+Coin-specific permissions carry a `coin` field, which is the coin's symbol — the lowercase coin
+shortcut (for example `btc`, `eth`, `ada`). Coin-less permissions such as `read_features` omit it.
+Casing is not significant: a declared coin is normalized to lowercase, so `BTC` and `btc` refer to
+the same coin.
 
 ```javascript
 { permission: 'read_address', coin: 'btc' } // a specific coin
