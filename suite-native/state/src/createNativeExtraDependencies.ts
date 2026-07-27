@@ -53,6 +53,7 @@ export const extraDependencies: ExtraDependenciesStatic = {
             'setDeviceMetadataPasswordsReducer',
         ),
         storageLoadDevices: notImplementedReducer('storageLoadDevices'),
+        storageLoadPersistentDeviceData: notImplementedReducer('storageLoadPersistentDeviceData'),
         storageLoadFormDrafts: notImplementedReducer('storageLoadFormDrafts'),
         storageLoadTokenManagement: notImplementedReducer('storageLoadTokenManagement'),
         storageLoadWalletSettings: notImplementedReducer('storageLoadWalletSettings'),

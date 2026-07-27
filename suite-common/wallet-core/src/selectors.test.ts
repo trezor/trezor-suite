@@ -58,6 +58,7 @@ const getState = ({
     enabledNetworks = [solSymbol],
 }: GetStateOptions = {}): WalletCoreCompoundRootState => ({
     networks: mockNetworksState([solSymbol]),
+    persistentDeviceData: { devices: [] },
     wallet: {
         accounts,
         settings: { ...initialWalletSettingsState, enabledNetworks },
@@ -67,7 +68,6 @@ const getState = ({
     device: {
         devices: [device],
         selectedDevice: device,
-        persistentDeviceData: [],
     },
 });
 

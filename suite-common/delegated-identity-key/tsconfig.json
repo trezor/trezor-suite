@@ -7,6 +7,7 @@
         },
         { "path": "../dependency-injection" },
         { "path": "../device" },
+        { "path": "../persistent-device-data" },
         { "path": "../platform-encryption" },
         { "path": "../suite-types" },
         { "path": "../../packages/connect" },

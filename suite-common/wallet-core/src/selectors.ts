@@ -1,5 +1,6 @@
 import { type DeviceRootState, selectHasOnlyPortfolioDevice } from '@suite-common/device';
 import { type NetworksRootState } from '@suite-common/networks';
+import { type PersistentDeviceDataRootState } from '@suite-common/persistent-device-data';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
@@ -48,6 +49,7 @@ to prevent circular dependencies between reducers
 
 export type WalletCoreCompoundRootState = AccountsRootState &
     DeviceRootState &
+    PersistentDeviceDataRootState &
     DiscoveryRootState &
     WalletSettingsRootState &
     BlockchainRootState &

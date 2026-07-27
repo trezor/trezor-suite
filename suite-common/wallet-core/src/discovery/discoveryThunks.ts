@@ -6,13 +6,16 @@ import {
     deviceActions,
     selectDeviceByStaticSessionId,
     selectDevices,
-    selectEntropyCheckResultByDeviceId,
     selectSelectedDevice,
     shouldDeviceBeRemembered,
 } from '@suite-common/device';
 import { selectDeviceThunk } from '@suite-common/device';
 import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
+import {
+    type PersistentDeviceDataRootState,
+    selectEntropyCheckResultByDeviceId,
+} from '@suite-common/persistent-device-data';
 import {
     type SuiteCompatibleThunk,
     type WithServices,
@@ -61,7 +64,8 @@ const DEVICE_CANCELLATION_CODES = ['Method_Cancel', 'Failure_ActionCancelled'];
 
 type DiscoveryReportingThunkState = TokenDefinitionsRootState &
     WalletCoreCompoundRootState &
-    NetworksRootState;
+    NetworksRootState &
+    PersistentDeviceDataRootState;
 type DiscoveryReportingDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
 
 type ProgressEvent = UiEventBundleProgress<DiscoverAccountsProgress>['payload'];

@@ -13,6 +13,7 @@
         { "path": "../firmware" },
         { "path": "../metadata-types" },
         { "path": "../networks" },
+        { "path": "../persistent-device-data" },
         { "path": "../react-query" },
         { "path": "../redux-utils" },
         { "path": "../schemas" },

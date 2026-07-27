@@ -9,8 +9,6 @@ import {
 import {
     type DeviceRootState,
     getIsDeviceIdValid,
-    selectIsDeviceInvariabilityCheckSuccess,
-    selectIsEntropyCheckFailed,
     selectIsFirmwareAuthenticityCheckDismissed,
     selectSelectedDevice,
 } from '@suite-common/device';
@@ -27,11 +25,17 @@ import {
     type MessageSystemRootState,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
+import {
+    type PersistentDeviceDataRootState,
+    selectIsDeviceInvariabilityCheckSuccess,
+    selectIsEntropyCheckFailed,
+} from '@suite-common/persistent-device-data';
 
 import { SHOULD_ROUTER_APP_SKIP_AUTHENTICITY_CHECKS } from './config';
 
 export type AuthenticityChecksRootState = SuiteSettingsRootState &
     DeviceRootState &
+    PersistentDeviceDataRootState &
     MessageSystemRootState &
     RouterRootState;
 

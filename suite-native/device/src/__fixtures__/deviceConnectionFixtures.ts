@@ -2,6 +2,7 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
+import { preparePersistentDeviceDataReducer } from '@suite-common/persistent-device-data';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { prepareThpReducer } from '@suite-common/thp';
@@ -44,10 +45,15 @@ const walletSettingsReducer = prepareWalletSettingsReducer({
 const thpReducer = prepareThpReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
+const persistentDeviceDataReducer = preparePersistentDeviceDataReducer({
+    actionTypes: { storageLoad: mockActionType('storageLoad') },
+    reducers: { storageLoadPersistentDeviceData: mockReducer() },
+});
 
 type InitialStateConfig = {
     nativeFirmware?: Partial<NativeFirmwareState>;
     device?: Partial<ReturnType<typeof deviceReducer>>;
+    persistentDeviceData?: ReturnType<typeof persistentDeviceDataReducer>;
     deviceOnboarding?: Partial<typeof deviceOnboardingSlice.reducer>;
     walletSettings?: Partial<ReturnType<typeof walletSettingsReducer>>;
     appSettings?: Partial<AppSettingsState>;
@@ -62,6 +68,7 @@ type RootState = {
     wallet: {
         settings: ReturnType<typeof walletSettingsReducer>;
     };
+    persistentDeviceData: ReturnType<typeof persistentDeviceDataReducer>;
     messageSystem: ReturnType<typeof messageSystemReducer>;
     appSettings: AppSettingsState;
     featureFlags: ReturnType<typeof featureFlagsSlice.reducer>;
@@ -117,6 +124,7 @@ type NoNavigationFixture = {
 const buildInitialState = ({
     nativeFirmware,
     device,
+    persistentDeviceData,
     walletSettings,
     deviceOnboarding,
     appSettings,
@@ -141,6 +149,8 @@ const buildInitialState = ({
             ...walletSettings,
         },
     },
+    persistentDeviceData:
+        persistentDeviceData ?? persistentDeviceDataReducer(undefined, INIT_ACTION),
     appSettings: {
         ...appSettingsReducer(undefined, INIT_ACTION),
         ...appSettings,
@@ -380,7 +390,9 @@ export const deviceConnectCompromisedFixtures: NavigationFixture[] = [
             },
             device: {
                 selectedDevice: mockSuiteDevice(),
-                persistentDeviceData: [
+            },
+            persistentDeviceData: {
+                devices: [
                     {
                         ...defaultDevicePersistentData,
                         authenticityResult: { valid: false, error: 'ROOT_PUBKEY_NOT_FOUND' },

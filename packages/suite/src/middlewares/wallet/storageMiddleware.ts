@@ -30,6 +30,7 @@ import {
 import { discreetModeActions } from '@suite-common/discreet-mode';
 import { firmwareActions } from '@suite-common/firmware';
 import { messageSystemActions } from '@suite-common/message-system';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { receiveActions } from '@suite-common/receive';
 import {
     type ActionFromMatcher,
@@ -530,11 +531,11 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
         isAnyOf(
             deviceActions.connectDevice,
             deviceActions.deviceChanged,
-            deviceActions.setEntropyCheckResult,
-            deviceActions.setDeviceAuthenticityResult,
-            deviceActions.setManualDeviceCheckSuccess,
-            deviceActions.clearDevicePersistentData,
-            deviceActions.forgetDevicePersistentData,
+            persistentDeviceDataActions.setEntropyCheckResult,
+            persistentDeviceDataActions.setDeviceAuthenticityResult,
+            persistentDeviceDataActions.setManualDeviceCheckSuccess,
+            persistentDeviceDataActions.clearDevicePersistentData,
+            persistentDeviceDataActions.forgetDevicePersistentData,
         )(action)
     ) {
         api.dispatch(storageActions.savePersistentDeviceDataThunk());

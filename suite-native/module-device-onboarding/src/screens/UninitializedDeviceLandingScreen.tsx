@@ -6,11 +6,11 @@ import { useSetAtom } from 'jotai';
 
 import { useServices } from '@suite-common/dependency-injection';
 import {
-    deviceActions,
     selectHasDeviceFirmwareInstalled,
     selectSelectedDevice,
     selectShouldOfferUpdateFirmware,
 } from '@suite-common/device';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Box, Button, Text, TextButton, VStack } from '@suite-native/atoms';
@@ -82,7 +82,7 @@ export const UninitializedDeviceLandingScreen = ({
         useNavigateToNextScreenAfterFirmwareInstallation();
 
     const handleConfirmButtonPress = () => {
-        dispatch(deviceActions.setManualDeviceCheckSuccess({ deviceId }));
+        dispatch(persistentDeviceDataActions.setManualDeviceCheckSuccess({ deviceId }));
         if (hasDeviceFirmwareInstalled) {
             if (shouldOfferUpdateFirmware) {
                 navigation.replace(DeviceOnboardingStackRoutes.ConfirmFirmwareUpdate);

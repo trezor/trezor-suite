@@ -2,13 +2,13 @@ import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useGetter, useServices } from '@suite-common/dependency-injection';
-import {
-    type DeviceRootState,
-    deviceInvariabilityCheck,
-    getIsDeviceIdValid,
-    selectPersistentDeviceDataById,
-} from '@suite-common/device';
+import { type DeviceRootState, getIsDeviceIdValid } from '@suite-common/device';
 import { type FirmwareRootState, selectIsProductionFirmwareChannel } from '@suite-common/firmware';
+import {
+    type PersistentDeviceDataRootState,
+    deviceInvariabilityCheck,
+    selectPersistentDeviceDataById,
+} from '@suite-common/persistent-device-data';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice, selectGetAllowPrereleaseDep } from '@suite-common/suite-types';
 import { isDeviceKnown as getIsDeviceKnown, isDeviceAcquired } from '@suite-common/suite-utils';
@@ -131,7 +131,7 @@ const useReportHashCheck = ({ device }: DeviceProps) => {
 const useReportDeviceMetaChecks = ({ device }: DeviceProps) => {
     const { dispatch } = useServices(selectDispatch);
     const commonData = useCommonData({ device });
-    const previousData = useSelector((state: DeviceRootState) =>
+    const previousData = useSelector((state: DeviceRootState & PersistentDeviceDataRootState) =>
         selectPersistentDeviceDataById(state, device?.id),
     );
     const idCheckSuccess = getIsDeviceIdValid(device);

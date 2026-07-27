@@ -65,7 +65,6 @@ const deviceReducer = prepareDesktopDeviceReducer({
         setDeviceMetadataReducer: mockReducer(),
         storageLoadDevices: (state, { payload }) => {
             state.devices = payload.devices;
-            state.persistentDeviceData = payload.persistentDeviceData ?? [];
         },
     },
 });
@@ -321,7 +320,6 @@ describe('Storage actions', () => {
             getInitialState({
                 device: {
                     devices: [dev1, dev2, dev2Instance1],
-                    persistentDeviceData: [],
                     isConnectionModalOpen: false,
                     defaultConnectionMode: 'cable',
                 },
@@ -413,7 +411,6 @@ describe('Storage actions', () => {
             getInitialState({
                 device: {
                     devices: [dev1, dev2],
-                    persistentDeviceData: [],
                     isConnectionModalOpen: false,
                     defaultConnectionMode: 'cable',
                 },
@@ -457,7 +454,6 @@ describe('Storage actions', () => {
             getInitialState({
                 device: {
                     devices: [dev1Connected],
-                    persistentDeviceData: [],
                     isConnectionModalOpen: false,
                     defaultConnectionMode: 'cable',
                 },
@@ -496,7 +492,6 @@ describe('Storage actions', () => {
             getInitialState({
                 device: {
                     devices: [dev1],
-                    persistentDeviceData: [],
                     isConnectionModalOpen: false,
                     defaultConnectionMode: 'cable',
                 },

@@ -114,7 +114,6 @@ const createState = (accounts: Account[]): NativeAccountsRootState & NetworksRoo
     networks: mockNetworksState(supportedNetworks),
     device: {
         devices: [selectedDevice],
-        persistentDeviceData: [],
         selectedDevice,
     },
     wallet: {
