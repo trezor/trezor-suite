@@ -7,10 +7,10 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import type { StaticSessionId, UnavailableCapabilities } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
-import { SuiteSyncUnavailableOnDeviceError } from '../../createEnsureSuiteSyncKeys';
-import type { EnsureWalletSuiteSyncOnDeps } from '../createEnsureWalletSuiteSyncOn';
-import { createEnsureWalletSuiteSyncOn } from '../createEnsureWalletSuiteSyncOn';
-import { createSubscriptionStorageMock } from '../createSubscriptionStorage.mock';
+import { createSubscriptionStorageMock } from '../../mocks/mockCreateSubscriptionStorage';
+import { SuiteSyncUnavailableOnDeviceError } from '../createEnsureSuiteSyncKeys';
+import type { EnsureWalletSuiteSyncOnDeps } from './createEnsureWalletSuiteSyncOn';
+import { createEnsureWalletSuiteSyncOn } from './createEnsureWalletSuiteSyncOn';
 
 const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
 

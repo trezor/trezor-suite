@@ -3,13 +3,13 @@ import { type Dispatch } from '@reduxjs/toolkit';
 import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import { type StaticSessionId } from '@trezor/connect';
 
-import { setSuiteSyncOwner } from '../../suiteSyncSlice';
-import { createStorageIdFromDeviceStaticSessionId } from '../createStorageIdFromDeviceStaticSessionId';
-import { createSubscriptionStorageMock } from '../createSubscriptionStorage.mock';
+import { createSubscriptionStorageMock } from '../../mocks/mockCreateSubscriptionStorage';
+import { setSuiteSyncOwner } from '../suiteSyncSlice';
+import { createStorageIdFromDeviceStaticSessionId } from './createStorageIdFromDeviceStaticSessionId';
 import {
     type CreateTurnOffSuiteSyncForWalletDeps,
     createTurnOffSuiteSyncForWallet,
-} from '../createTurnOffSuiteSyncForWallet';
+} from './createTurnOffSuiteSyncForWallet';
 
 const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
 
