@@ -62,8 +62,14 @@ describe(requireTypeDeclarationSize.name, () => {
 
         expect(errors).toHaveLength(1);
         expect(errors[0]).toMatch(
-            /^packages\/example\/libDev\/src\/large\.d\.ts is \d+(?:\.\d+)? KiB; maximum is 50 KiB\.$/,
+            /^packages\/example\/libDev\/src\/large\.d\.ts is \d+(?:\.\d+)? KiB; maximum is 50 KiB\./,
         );
+        expect(errors[0]).toContain(
+            'Large generated declarations slow TypeScript and IDE performance.',
+        );
+        expect(errors[0]).toContain('add an explicit type or return type to the source export');
+        expect(errors[0]).toContain('yarn type-check --output-style=stream');
+        expect(errors[0]).toContain('yarn requirements:verify --only=type-declaration-size');
     });
 
     it('reports declarations larger than 5 KiB that exceed five times their source size', async () => {
@@ -77,8 +83,12 @@ describe(requireTypeDeclarationSize.name, () => {
 
         expect(errors).toHaveLength(1);
         expect(errors[0]).toMatch(
-            /^packages\/example\/libDev\/src\/bloated\.d\.ts is \d+(?:\.\d+)? KiB, \d+(?:\.\d+)?x the size of packages\/example\/src\/bloated\.ts \(\d+(?:\.\d+)? B\); maximum is 5x for declarations larger than 5 KiB\.$/,
+            /^packages\/example\/libDev\/src\/bloated\.d\.ts is \d+(?:\.\d+)? KiB, \d+(?:\.\d+)?x the size of packages\/example\/src\/bloated\.ts \(\d+(?:\.\d+)? B\); maximum is 5x for declarations larger than 5 KiB\./,
         );
+        expect(errors[0]).toContain(
+            'Large generated declarations slow TypeScript and IDE performance.',
+        );
+        expect(errors[0]).toContain('add an explicit type or return type to the source export');
     });
 
     it('uses declaration maps when the output path does not match the source path', async () => {

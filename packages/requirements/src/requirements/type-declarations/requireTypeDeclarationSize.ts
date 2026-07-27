@@ -10,6 +10,13 @@ export const MAX_DECLARATION_SIZE_BYTES = kibToBytes(50);
 export const MIN_DECLARATION_RATIO_SIZE_BYTES = kibToBytes(5);
 export const MAX_DECLARATION_SOURCE_RATIO = 5;
 
+const TYPE_DECLARATION_SIZE_FAILURE_GUIDANCE = [
+    'Large generated declarations slow TypeScript and IDE performance.',
+    'To fix this, reduce the public type surface; usually, add an explicit type or return type to the source export so TypeScript does not expand inferred dependency types.',
+    'Regenerate declarations with `yarn type-check --output-style=stream`, then rerun `yarn requirements:verify --only=type-declaration-size`.',
+    'Only add the declaration to `LEGIT_BIG_FILES` if its size is intrinsic to generated code or static data.',
+].join('\n      ');
+
 // Generated declarations and static datasets whose size is intrinsic to their content.
 const LEGIT_BIG_FILES = new Set<string>([
     'packages/connect-data/libDev/src/map-releases.d.ts',
@@ -71,6 +78,9 @@ const formatSize = (sizeBytes: number) => {
 
 const formatRatio = (ratio: number) =>
     Number.isInteger(ratio) ? ratio.toString() : ratio.toFixed(1);
+
+const addFailureGuidance = (error: string) =>
+    `${error}\n      ${TYPE_DECLARATION_SIZE_FAILURE_GUIDANCE}`;
 
 const DECLARATION_SOURCE_EXTENSIONS = [
     { declarationExtension: '.d.ts', sourceExtensions: ['.ts', '.tsx', '.js', '.jsx', '.json'] },
@@ -141,9 +151,11 @@ const getViolation = (context: DeclarationFileContext) => {
     const declarationSizeBytes = statSync(declarationFile).size;
 
     if (declarationSizeBytes > MAX_DECLARATION_SIZE_BYTES) {
-        return `${declarationPath} is ${formatSize(
-            declarationSizeBytes,
-        )}; maximum is ${formatSize(MAX_DECLARATION_SIZE_BYTES)}.`;
+        return addFailureGuidance(
+            `${declarationPath} is ${formatSize(
+                declarationSizeBytes,
+            )}; maximum is ${formatSize(MAX_DECLARATION_SIZE_BYTES)}.`,
+        );
     }
 
     if (declarationSizeBytes <= MIN_DECLARATION_RATIO_SIZE_BYTES) return undefined;
@@ -162,13 +174,15 @@ const getViolation = (context: DeclarationFileContext) => {
 
     const sourcePath = normalizePath(relative(repoRoot, sourceFile));
 
-    return `${declarationPath} is ${formatSize(declarationSizeBytes)}, ${formatRatio(
-        declarationSourceRatio,
-    )}x the size of ${sourcePath} (${formatSize(
-        sourceSizeBytes,
-    )}); maximum is ${MAX_DECLARATION_SOURCE_RATIO}x for declarations larger than ${formatSize(
-        MIN_DECLARATION_RATIO_SIZE_BYTES,
-    )}.`;
+    return addFailureGuidance(
+        `${declarationPath} is ${formatSize(declarationSizeBytes)}, ${formatRatio(
+            declarationSourceRatio,
+        )}x the size of ${sourcePath} (${formatSize(
+            sourceSizeBytes,
+        )}); maximum is ${MAX_DECLARATION_SOURCE_RATIO}x for declarations larger than ${formatSize(
+            MIN_DECLARATION_RATIO_SIZE_BYTES,
+        )}.`,
+    );
 };
 
 const verifyDeclarationFile = (context: DeclarationFileContext) => {
