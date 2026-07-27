@@ -1,4 +1,5 @@
-import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
+import { desktopQueryKeys } from '@suite/react-query';
+import { useQuery } from '@suite-common/react-query';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
 

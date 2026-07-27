@@ -1,5 +1,5 @@
 {
-    "name": "@suite-common/react-query",
+    "name": "@suite/react-query",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -11,7 +11,10 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@suite-common/react-query": "workspace:*",
+        "@suite-common/suite-utils": "workspace:*",
         "@tanstack/react-query": "5.101.2",
+        "@tanstack/react-query-devtools": "5.101.2",
         "react": "19.2.3"
     }
 }

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 
-import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
+import { desktopQueryKeys } from '@suite/react-query';
+import { useQuery } from '@suite-common/react-query';
 import { useCurrentRef } from '@trezor/react-utils';
 import { IMAGE_PROXY_API_AUTH_BEARER, IMAGE_PROXY_API_URL } from '@trezor/urls';
 

@@ -2,7 +2,6 @@ import { type ReactNode } from 'react';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
     type RenderResult,
     act,
@@ -14,6 +13,7 @@ import userEvent from '@testing-library/user-event';
 
 import { ServicesProvider } from '@suite-common/dependency-injection';
 import { MockedFormatterProvider } from '@suite-common/formatters';
+import { QueryClient, QueryClientProvider } from '@suite-common/react-query';
 
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 

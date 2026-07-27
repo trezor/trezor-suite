@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 
-import { useMutation } from '@tanstack/react-query';
-
+import { useMutation } from '@suite-common/react-query';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type ComposeFeeLevelsError,

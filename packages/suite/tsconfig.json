@@ -199,6 +199,7 @@
         {
             "path": "../../suite/onboarding-components"
         },
+        { "path": "../../suite/react-query" },
         { "path": "../../suite/receive" },
         { "path": "../../suite/recovery" },
         { "path": "../../suite/router" },

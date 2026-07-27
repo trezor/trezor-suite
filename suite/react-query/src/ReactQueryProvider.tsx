@@ -1,8 +1,12 @@
 import { type PropsWithChildren, Suspense, lazy, useMemo } from 'react';
 
-import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-import { isDevEnv } from '../config';
+import {
+    MutationCache,
+    QueryCache,
+    QueryClient,
+    QueryClientProvider,
+} from '@suite-common/react-query';
+import { isDevEnv } from '@suite-common/suite-utils';
 
 const Devtools = lazy(async () => {
     const { ReactQueryDevtools } = await import('@tanstack/react-query-devtools');
@@ -11,14 +15,14 @@ const Devtools = lazy(async () => {
 });
 
 /**
- * Fail fast during development, retry in production
+ * Fail fast during development, retry in production.
  */
 const MAX_RETRY_COUNT = isDevEnv ? 0 : 3;
 
-const DEV_TOOLS = isDevEnv && process.env.TANSTACK_REACT_QUERY_DEV_TOOLS === 'true';
+const isDevToolsEnabled = isDevEnv && process.env.TANSTACK_REACT_QUERY_DEV_TOOLS === 'true';
 
 /**
- * React Query provider for web (desktop) (@trezor/suite)
+ * React Query provider for Suite web and desktop applications.
  */
 export const ReactQueryProvider = ({ children }: PropsWithChildren) => {
     const queryClient = useMemo(
@@ -52,7 +56,7 @@ export const ReactQueryProvider = ({ children }: PropsWithChildren) => {
     return (
         <QueryClientProvider client={queryClient}>
             {children}
-            {DEV_TOOLS && (
+            {isDevToolsEnabled && (
                 <Suspense fallback={null}>
                     <Devtools />
                 </Suspense>

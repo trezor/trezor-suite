@@ -1,5 +1,5 @@
 {
-    "name": "@suite-common/react-query",
+    "name": "@suite-native/react-query",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -8,10 +8,12 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "lint:js:fix": "yarn lint:js --fix",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@tanstack/react-query": "5.101.2",
+        "@suite-common/react-query": "workspace:*",
+        "@suite-common/suite-utils": "workspace:*",
         "react": "19.2.3"
     }
 }

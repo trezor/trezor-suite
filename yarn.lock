@@ -10720,7 +10720,6 @@ __metadata:
   resolution: "@suite-common/react-query@workspace:suite-common/react-query"
   dependencies:
     "@tanstack/react-query": "npm:5.101.2"
-    "@tanstack/react-query-devtools": "npm:5.101.2"
     react: "npm:19.2.3"
   languageName: unknown
   linkType: soft
@@ -11548,7 +11547,6 @@ __metadata:
     "@suite-common/firmware-authenticity": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/message-system": "workspace:*"
-    "@suite-common/react-query": "workspace:^"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -11592,6 +11590,7 @@ __metadata:
     "@suite-native/module-trading": "workspace:*"
     "@suite-native/module-transactions": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/react-query": "workspace:*"
     "@suite-native/sentry": "workspace:*"
     "@suite-native/services": "workspace:*"
     "@suite-native/settings": "workspace:*"
@@ -13611,6 +13610,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/react-query@workspace:*, @suite-native/react-query@workspace:suite-native/react-query":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/react-query@workspace:suite-native/react-query"
+  dependencies:
+    "@suite-common/react-query": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
+    react: "npm:19.2.3"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/scrollview@workspace:*, @suite-native/scrollview@workspace:suite-native/scrollview":
   version: 0.0.0-use.local
   resolution: "@suite-native/scrollview@workspace:suite-native/scrollview"
@@ -15066,6 +15075,18 @@ __metadata:
   dependencies:
     "@suite-common/platform-encryption": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite/react-query@workspace:*, @suite/react-query@workspace:suite/react-query":
+  version: 0.0.0-use.local
+  resolution: "@suite/react-query@workspace:suite/react-query"
+  dependencies:
+    "@suite-common/react-query": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
+    "@tanstack/react-query": "npm:5.101.2"
+    "@tanstack/react-query-devtools": "npm:5.101.2"
+    react: "npm:19.2.3"
   languageName: unknown
   linkType: soft
 
@@ -17153,6 +17174,7 @@ __metadata:
     "@suite/modal": "workspace:*"
     "@suite/nfc": "workspace:*"
     "@suite/onboarding-components": "workspace:*"
+    "@suite/react-query": "workspace:*"
     "@suite/receive": "workspace:*"
     "@suite/recovery": "workspace:*"
     "@suite/router": "workspace:*"
@@ -17166,7 +17188,6 @@ __metadata:
     "@suite/tx-simulation": "workspace:^"
     "@suite/ui-animations": "workspace:*"
     "@suite/wallet": "workspace:*"
-    "@tanstack/react-query": "npm:5.101.2"
     "@testing-library/jest-dom": "npm:6.9.1"
     "@testing-library/react": "npm:^16.3.2"
     "@testing-library/user-event": "npm:^14.6.1"
