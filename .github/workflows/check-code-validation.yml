@@ -86,6 +86,8 @@ jobs:
             '!**/node_modules'
           key: ${{ runner.os }}-node-${{ hashFiles('./eslint.config.mjs') }} }}
       - name: Lint JS
+        env:
+          ESLINT_TYPE_AWARE: "true"
         run: yarn lint:js --output-style=stream
       - name: Lint Styles
         run: yarn lint:styles --output-style=stream
