@@ -1,5 +1,5 @@
-import { filterTokenTransfers, transformTransaction } from '../blockbook';
-import * as fixtures from './fixtures/blockbook';
+import { filterTokenTransfers, transformTransaction } from './blockbook';
+import * as fixtures from '../mocks/mockBlockbook';
 
 describe('blockbook/utils', () => {
     describe('filterTokenTransfers', () => {

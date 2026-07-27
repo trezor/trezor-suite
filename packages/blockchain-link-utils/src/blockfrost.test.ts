@@ -5,8 +5,8 @@ import {
     transformTokenInfo,
     transformTransaction,
     transformUtxos,
-} from '../blockfrost';
-import fixtures from './fixtures/blockfrost';
+} from './blockfrost';
+import fixtures from '../mocks/mockBlockfrost';
 
 describe('blockfrost/utils', () => {
     describe('transformUtxos', () => {
