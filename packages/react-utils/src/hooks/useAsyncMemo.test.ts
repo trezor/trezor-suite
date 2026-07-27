@@ -2,7 +2,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 
 import { createDeferred } from '@trezor/utils';
 
-import { useAsyncMemo } from '../useAsyncMemo';
+import { useAsyncMemo } from './useAsyncMemo';
 
 describe('useAsyncMemo', () => {
     it('returns undefined until the value resolves, then the value', async () => {
