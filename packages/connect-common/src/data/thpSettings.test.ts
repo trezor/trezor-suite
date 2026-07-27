@@ -1,4 +1,4 @@
-import { parseThpSettings } from '@trezor/connect-common/src/data/thpSettings';
+import { parseThpSettings } from './thpSettings';
 
 describe('data/thpSettings', () => {
     it('parseThpSettings', () => {

@@ -1,4 +1,4 @@
-import * as enabledNetworksStore from '../enabledNetworksStore';
+import * as enabledNetworksStore from './enabledNetworksStore';
 
 // Coins are referenced by symbol; the store keys by `coin`.
 const coins = (...symbols: string[]) => symbols.map(coin => ({ coin }));

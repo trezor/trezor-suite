@@ -1,6 +1,6 @@
 import { type CoinSymbol, coinSymbols, isCoinSymbol } from '@trezor/connect-common';
 
-import { getAllNetworks } from '../coinInfo';
+import { getAllNetworks } from './coinInfo';
 
 describe('data/coinSymbol', () => {
     // Guards `coinSymbols` against drift from the @trezor/connect-data coin definitions: it must
