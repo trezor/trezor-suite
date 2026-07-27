@@ -1,7 +1,7 @@
 import { BigNumber } from '@trezor/utils';
 
-import { buildStake } from '../../../../builder/evm/everstake/stake';
-import { Verifier } from '../../../../verifier';
+import { buildStake } from '../../../builder/evm/everstake/stake';
+import { Verifier } from '../../../verifier';
 
 const SOURCE = 1n;
 

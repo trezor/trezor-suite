@@ -1,5 +1,5 @@
-import { buildWethDeposit } from '../../../../builder/evm/weth/deposit';
-import { Verifier } from '../../../../verifier';
+import { buildWethDeposit } from '../../../builder/evm/weth/deposit';
+import { Verifier } from '../../../verifier';
 
 const depositHex = buildWethDeposit({}).data!;
 

@@ -1,7 +1,7 @@
 import { BigNumber } from '@trezor/utils';
 
-import { buildWethWithdraw } from '../../../../builder/evm/weth/withdraw';
-import { Verifier } from '../../../../verifier';
+import { buildWethWithdraw } from '../../../builder/evm/weth/withdraw';
+import { Verifier } from '../../../verifier';
 
 const WAD = 1_000_000_000_000_000_000n;
 const withdrawHex = buildWethWithdraw({ wad: new BigNumber(WAD.toString()) }).data!;

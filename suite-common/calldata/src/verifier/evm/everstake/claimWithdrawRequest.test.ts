@@ -1,4 +1,4 @@
-import { Verifier } from '../../../../verifier';
+import { Verifier } from '../../../verifier';
 
 const claimWithdrawRequestHex = '0x33986ffa';
 

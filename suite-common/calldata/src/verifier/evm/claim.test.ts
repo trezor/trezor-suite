@@ -1,8 +1,8 @@
 import { BigNumber } from '@trezor/utils';
 
-import { buildClaim } from '../../../builder/evm/claim';
-import { asEvmAddress } from '../../../types/evm';
-import { Verifier } from '../../../verifier';
+import { buildClaim } from '../../builder/evm/claim';
+import { asEvmAddress } from '../../types/evm';
+import { Verifier } from '../../verifier';
 
 const SENDER = asEvmAddress('0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3');
 const TOKEN = asEvmAddress('0x58D97B57BB95320F9a05dC918Aef65434969c2B2');

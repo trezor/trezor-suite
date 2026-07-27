@@ -1,7 +1,7 @@
 import { BigNumber } from '@trezor/utils';
 
-import { buildUnstake } from '../../../../builder/evm/everstake/unstake';
-import { Verifier } from '../../../../verifier';
+import { buildUnstake } from '../../../builder/evm/everstake/unstake';
+import { Verifier } from '../../../verifier';
 
 const VALUE = 100000000000000000n;
 const ALLOWED_INTERCHANGE_NUM = 5;

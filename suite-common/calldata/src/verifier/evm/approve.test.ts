@@ -1,8 +1,8 @@
 import { BigNumber } from '@trezor/utils';
 
-import { buildApprove } from '../../../builder/evm/approve';
-import { asEvmAddress } from '../../../types/evm';
-import { Verifier } from '../../../verifier';
+import { buildApprove } from '../../builder/evm/approve';
+import { asEvmAddress } from '../../types/evm';
+import { Verifier } from '../../verifier';
 
 const SPENDER = asEvmAddress('0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae');
 const SENDER = asEvmAddress('0x9ea3721b5bf3b64b4418c38b603154d2d597fae3');
