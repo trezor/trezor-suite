@@ -41,6 +41,7 @@ export const EarnAccountCell = ({
                         showNetworkIcon={showAssetNetworkIcon}
                         size={32}
                         isBordered={false}
+                        wrappedTokenIcon="network"
                     />
                 ) : (
                     <TokenIcon symbol={networkSymbol} size={32} />

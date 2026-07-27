@@ -36,3 +36,23 @@ export const getWrappedNativeAddress = (networkSymbol: NetworkSymbol) =>
 
 export const getWrappedNativeSymbol = (networkSymbol: NetworkSymbol) =>
     WRAPPED_NATIVE[networkSymbol]?.symbol;
+
+export const isWrappedNativeToken = (
+    networkSymbol: NetworkSymbol,
+    contractAddress?: string | null,
+): boolean => {
+    const wrappedNativeAddress = getWrappedNativeAddress(networkSymbol);
+
+    // TLRD: Don't use `areEvmAddressesEqual` here as it would drag wasm-adjacent dependencies into its webpack build (and that break `build-connect`).
+    //
+    // Checksum-agnostic equality. One side is always a known-valid WRAPPED_NATIVE constant, so a
+    // case-insensitive comparison is equivalent to a full EVM address comparison — and it keeps
+    // this module dependency-free for light consumers (e.g. connect-explorer reaches it through
+    // the design system's TokenIcon, where an EVM address library would drag wasm-adjacent
+    // dependencies into its webpack build).
+    return (
+        !!wrappedNativeAddress &&
+        !!contractAddress &&
+        wrappedNativeAddress.toLowerCase() === contractAddress.toLowerCase()
+    );
+};
