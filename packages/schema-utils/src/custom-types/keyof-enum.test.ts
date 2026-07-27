@@ -1,4 +1,4 @@
-import { type Static, Type, Validate } from '../src';
+import { type Static, Type, Validate } from '../index';
 
 describe('enum', () => {
     it('should work with keyof enum', () => {

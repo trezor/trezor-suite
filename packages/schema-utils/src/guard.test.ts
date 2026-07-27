@@ -1,4 +1,4 @@
-import { Type, Validate } from '../src';
+import { Type, Validate } from './index';
 
 describe('type-guard', () => {
     it('guard works when parsing unknown value', () => {

@@ -1,4 +1,4 @@
-import { setDeepValue } from '../src/utils';
+import { setDeepValue } from './utils';
 
 describe('setDeepValue', () => {
     it('sets a deep value in an object', () => {

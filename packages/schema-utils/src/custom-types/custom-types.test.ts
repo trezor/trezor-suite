@@ -1,4 +1,4 @@
-import { Type, Validate } from '../src';
+import { Type, Validate } from '../index';
 
 describe('custom-types', () => {
     it('should work with ArrayBuffer', () => {
