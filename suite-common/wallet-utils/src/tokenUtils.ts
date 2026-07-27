@@ -1,4 +1,3 @@
-import { areEvmAddressesEqual } from '@suite-common/address';
 import {
     type Explorer,
     type NetworkSymbol,
@@ -6,7 +5,6 @@ import {
     type NetworkType,
     getExplorerUrl,
     getNetworkType,
-    getWrappedNativeAddress,
 } from '@suite-common/wallet-config';
 import {
     type EthereumSpecific,
@@ -36,10 +34,8 @@ export const getContractAddressForNetworkSymbol = (
     }
 };
 
-export const isWrappedNativeToken = (
-    networkSymbol: NetworkSymbol,
-    contractAddress?: string | null,
-): boolean => areEvmAddressesEqual(getWrappedNativeAddress(networkSymbol), contractAddress);
+// Moved next to the WRAPPED_NATIVE config it reads; re-exported here for existing consumers.
+export { isWrappedNativeToken } from '@suite-common/wallet-config';
 
 export const getAssetLogoContractAddresses = async (
     symbol: NetworkSymbolExtended | undefined,
