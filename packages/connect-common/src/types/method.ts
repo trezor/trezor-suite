@@ -1,5 +1,6 @@
 import type { UiRequestConfirmation } from '../events/ui-request';
 import type { PrecomposeResultFinal } from './api/bitcoin/composeTransaction';
+import type { CoinSymbol } from './coinInfo';
 
 /**
  * Permission category requested by a `@trezor/connect` method.
@@ -25,13 +26,14 @@ export type MethodPermission =
 /**
  * A single permission request scoped (optionally) to a specific coin.
  *
- * `coin` is `coinInfo.shortcut` (e.g. `btc`, `eth`, `ltc`, `sol`, `ada`) when
- * the underlying method targets a coin; it is left `undefined` for coin-less
- * permissions such as `read_features` or `management`.
+ * `coin` is the canonical, lowercase coin symbol (`CoinSymbol`, e.g. `btc`,
+ * `eth`, `ada`) — the lowercased `coinInfo.shortcut` — when the underlying
+ * method targets a coin; it is left `undefined` for coin-less permissions such
+ * as `read_features` or `management`.
  */
 export type PermissionRequest = {
     permission: MethodPermission;
-    coin?: string;
+    coin?: CoinSymbol;
 };
 
 /**
