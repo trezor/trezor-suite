@@ -2,7 +2,7 @@ import UDP from 'dgram';
 
 import { PathInternal } from '@trezor/transport-common';
 
-import { UdpApi } from '../src/api/udp';
+import { UdpApi } from './udp';
 
 // mock dgram api
 jest.mock('dgram', () => ({
