@@ -113,10 +113,9 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
         setShowReserveBanner,
     });
 
-    const isFormLoading =
+    const isFormLoadingBase =
         isInitialDataLoading || formState.isSubmitting || isLoading || isComposing;
     const isFormInvalid = !(formIsValid && hasValues);
-    const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
 
     const { toggleAmountInCrypto } = useTradingCurrencySwitcher<TradingSellFormProps>({
         account,
@@ -127,16 +126,17 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
         },
     });
 
-    useSellQuotes({
-        control,
-        getValues,
-        setValue,
+    const { isScheduledQuotesRefresh } = useSellQuotes({
+        methods,
         network,
         shouldSendInSats,
         composeRequestCallback: () => {
             composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
         },
     });
+
+    const isFormLoading = isFormLoadingBase || isScheduledQuotesRefresh;
+    const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
 
     const helpers = useSellFormInputs({
         account,

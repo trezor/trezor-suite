@@ -8,10 +8,13 @@ import {
     type TradingAssetOption,
     type TradingBuyFormProps,
     type TradingCountryOption,
+    buyInitialState,
+    initialState as tradingInitialState,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 
-import { useBuyQuotes } from './useBuyQuotes';
+import { DEBOUNCE_DELAY_MS } from '../../common/useTradingQuoteRequest';
+import { useBuyQuotes } from '../useBuyQuotes';
 
 const QUOTES: BuyTrade[] = [
     {
@@ -65,6 +68,8 @@ const VALID_DEFAULTS: TradingBuyFormProps = {
     receiveAddress: 'bc1qreceive',
 };
 
+const NO_REFETCH_WAIT_MS = DEBOUNCE_DELAY_MS + 200;
+
 const wait = (ms: number) =>
     act(
         () =>
@@ -75,16 +80,15 @@ const wait = (ms: number) =>
 
 const renderBuyQuotes = (
     defaultValues: TradingBuyFormProps,
-    options: { resolver?: Resolver<TradingBuyFormProps>; quotes?: BuyTrade[] } = {},
+    options: { resolver?: Resolver<TradingBuyFormProps> } = {},
 ) => {
-    const { resolver, quotes = QUOTES } = options;
+    const { resolver } = options;
     const store = configureMockStore({
         preloadedState: {
             wallet: {
                 trading: {
-                    quoteRefetchingState: { status: 'idle', lastFetchTimestamp: null },
-                    buy: { quotes },
-                    sell: { quotes: [] },
+                    ...tradingInitialState,
+                    buy: { ...buyInitialState, quotes: QUOTES },
                 },
             },
         },
@@ -192,7 +196,7 @@ describe('useBuyQuotes', () => {
             result.current.setValue('provider', 'provider-2');
             await result.current.trigger();
         });
-        await wait(700);
+        await wait(NO_REFETCH_WAIT_MS);
 
         expect(mockHandleRequest).toHaveBeenCalledTimes(1);
     });
@@ -207,7 +211,7 @@ describe('useBuyQuotes', () => {
         await act(async () => {
             await result.current.trigger();
         });
-        await wait(700);
+        await wait(NO_REFETCH_WAIT_MS);
 
         expect(mockHandleRequest).not.toHaveBeenCalled();
     });

@@ -1,18 +1,34 @@
-import { type Resolver, type ResolverResult, useForm } from 'react-hook-form';
+import { type Resolver, useForm } from 'react-hook-form';
 
 import { act, waitFor } from '@testing-library/react';
 import { type CryptoId, type SellFiatTrade } from 'invity-api';
 
 import { configureMockStore, renderHookWithStoreProvider } from '@suite-common/test-utils';
-import { type TradingAssetSellOption, type TradingSellFormProps } from '@suite-common/trading';
-import { getNetwork } from '@suite-common/wallet-config';
+import {
+    type TradingAssetSellOption,
+    type TradingSellFormProps,
+    sellInitialState,
+    initialState as tradingInitialState,
+} from '@suite-common/trading';
+import { type Network, getNetwork } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
-import { useSellQuotes } from './useSellQuotes';
+import { DEBOUNCE_DELAY_MS } from '../../common/useTradingQuoteRequest';
+import { useSellQuotes } from '../useSellQuotes';
 
 const QUOTES: SellFiatTrade[] = [
-    { paymentMethod: 'bankTransfer', paymentMethodName: 'Bank transfer', exchange: 'provider-1' },
-    { paymentMethod: 'creditCard', paymentMethodName: 'Credit card', exchange: 'provider-2' },
+    {
+        paymentMethod: 'bankTransfer',
+        paymentMethodName: 'Bank transfer',
+        exchange: 'provider-1',
+        rate: 2,
+    },
+    {
+        paymentMethod: 'creditCard',
+        paymentMethodName: 'Credit card',
+        exchange: 'provider-2',
+        rate: 1,
+    },
 ];
 
 const mockAbort = jest.fn();
@@ -21,6 +37,7 @@ const mockHandleRequest = jest.fn((payload: unknown) => {
 
     return Object.assign(thunk, { payload });
 });
+const mockClearQuotes = jest.fn();
 
 jest.mock('@suite-common/dependency-injection', () => ({
     ...jest.requireActual('@suite-common/dependency-injection'),
@@ -35,6 +52,14 @@ jest.mock('@suite-common/trading', () => {
         sellThunks: {
             ...actual.sellThunks,
             handleRequestThunk: (payload: unknown) => mockHandleRequest(payload),
+        },
+        tradingSellActions: {
+            ...actual.tradingSellActions,
+            clearQuotes: () => {
+                mockClearQuotes();
+
+                return actual.tradingSellActions.clearQuotes();
+            },
         },
     };
 });
@@ -90,6 +115,8 @@ const VALID_DEFAULTS: TradingSellFormProps = {
     selectedUtxos: [],
 };
 
+const NO_REFETCH_WAIT_MS = DEBOUNCE_DELAY_MS + 200;
+
 const wait = (ms: number) =>
     act(
         () =>
@@ -100,37 +127,41 @@ const wait = (ms: number) =>
 
 const renderSellQuotes = (
     defaultValues: TradingSellFormProps,
-    resolver?: Resolver<TradingSellFormProps>,
+    options: { resolver?: Resolver<TradingSellFormProps> } = {},
 ) => {
+    const { resolver } = options;
+    const initialProps: { currentNetwork: Network | undefined } = {
+        currentNetwork: getNetwork('btc'),
+    };
+
     const store = configureMockStore({
         preloadedState: {
             wallet: {
                 trading: {
-                    quoteRefetchingState: { status: 'idle', lastFetchTimestamp: null },
+                    ...tradingInitialState,
+                    sell: { ...sellInitialState, quotes: QUOTES },
                 },
             },
         },
     });
 
     return renderHookWithStoreProvider(
-        () => {
+        ({ currentNetwork }) => {
             const methods = useForm<TradingSellFormProps>({
                 mode: 'onChange',
                 defaultValues,
                 resolver,
             });
             useSellQuotes({
-                control: methods.control,
-                getValues: methods.getValues,
-                setValue: methods.setValue,
-                network: getNetwork('btc'),
+                methods,
+                network: currentNetwork,
                 shouldSendInSats: false,
                 composeRequestCallback: jest.fn(),
             });
 
             return methods;
         },
-        { store },
+        { store, initialProps },
     );
 };
 
@@ -138,6 +169,7 @@ describe('useSellQuotes', () => {
     beforeEach(() => {
         mockHandleRequest.mockClear();
         mockAbort.mockClear();
+        mockClearQuotes.mockClear();
     });
 
     it('dispatches a quotes request after the debounce when the form is valid', async () => {
@@ -173,25 +205,6 @@ describe('useSellQuotes', () => {
         );
     });
 
-    it('debounces the refetch when the crypto amount changes', async () => {
-        const { result } = renderSellQuotes(VALID_DEFAULTS);
-
-        await act(async () => {
-            await result.current.trigger();
-        });
-        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
-
-        await act(async () => {
-            result.current.setValue('outputs.0.amount', '0.003');
-            await result.current.trigger();
-        });
-
-        await wait(150);
-        expect(mockHandleRequest).toHaveBeenCalledTimes(1);
-
-        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(2), { timeout: 1500 });
-    });
-
     it('refetches immediately (without the debounce) when a select field changes', async () => {
         const { result } = renderSellQuotes(VALID_DEFAULTS);
 
@@ -208,6 +221,28 @@ describe('useSellQuotes', () => {
         await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(2), { timeout: 200 });
     });
 
+    it('does not refetch on an output-fiat edit but does on the synced output-amount edit', async () => {
+        const { result } = renderSellQuotes(VALID_DEFAULTS);
+
+        await act(async () => {
+            await result.current.trigger();
+        });
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
+
+        await act(async () => {
+            result.current.setValue('outputs.0.fiat', '99');
+            await result.current.trigger();
+        });
+        await wait(NO_REFETCH_WAIT_MS);
+        expect(mockHandleRequest).toHaveBeenCalledTimes(1);
+
+        await act(async () => {
+            result.current.setValue('outputs.0.amount', '0.003');
+            await result.current.trigger();
+        });
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(2), { timeout: 1500 });
+    });
+
     it('does not refetch when only a non-key field (provider) changes', async () => {
         const { result } = renderSellQuotes(VALID_DEFAULTS);
 
@@ -220,7 +255,7 @@ describe('useSellQuotes', () => {
             result.current.setValue('provider', 'provider-2');
             await result.current.trigger();
         });
-        await wait(700);
+        await wait(NO_REFETCH_WAIT_MS);
 
         expect(mockHandleRequest).toHaveBeenCalledTimes(1);
     });
@@ -230,45 +265,24 @@ describe('useSellQuotes', () => {
             values: {},
             errors: { feePerUnit: { type: 'manual', message: 'invalid' } },
         });
-        const { result } = renderSellQuotes(VALID_DEFAULTS, invalidResolver);
+        const { result } = renderSellQuotes(VALID_DEFAULTS, { resolver: invalidResolver });
 
         await act(async () => {
             await result.current.trigger();
         });
-        await wait(700);
+        await wait(NO_REFETCH_WAIT_MS);
 
         expect(mockHandleRequest).not.toHaveBeenCalled();
     });
 
-    it('refetches on invalid → valid recovery even when the values are identical', async () => {
-        let isValid = true;
-        const resolver: Resolver<TradingSellFormProps> = (
-            values,
-        ): ResolverResult<TradingSellFormProps> => {
-            if (isValid) {
-                return { values, errors: {} };
-            }
+    it('clears quotes eagerly when the network becomes undefined', async () => {
+        const { rerender } = renderSellQuotes(VALID_DEFAULTS);
 
-            return { values: {}, errors: { feePerUnit: { type: 'manual', message: 'invalid' } } };
-        };
-        const { result } = renderSellQuotes(VALID_DEFAULTS, resolver);
-
-        await act(async () => {
-            await result.current.trigger();
-        });
         await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
+        expect(mockClearQuotes).not.toHaveBeenCalled();
 
-        isValid = false;
-        await act(async () => {
-            await result.current.trigger();
-        });
-        await wait(700);
-        expect(mockHandleRequest).toHaveBeenCalledTimes(1);
+        rerender({ currentNetwork: undefined });
 
-        isValid = true;
-        await act(async () => {
-            await result.current.trigger();
-        });
-        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(2), { timeout: 1500 });
+        await waitFor(() => expect(mockClearQuotes).toHaveBeenCalled());
     });
 });
