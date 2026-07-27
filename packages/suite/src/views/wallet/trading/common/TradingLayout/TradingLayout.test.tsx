@@ -8,7 +8,7 @@ import { configureStore } from 'src/support/tests/configureStore';
 import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
-import { TradingLayout } from '../TradingLayout';
+import { TradingLayout } from './TradingLayout';
 
 jest.mock('@suite-common/tx-simulation', () => ({}));
 
@@ -17,7 +17,7 @@ jest.mock('@suite/intl', () => ({
     Translation: ({ id }: { id: string }) => <span data-testid={id}>{id}</span>,
 }));
 
-jest.mock('../TradingLayoutNavigation', () => ({
+jest.mock('./TradingLayoutNavigation', () => ({
     TradingLayoutNavigation: ({ route }: { route?: string }) => (
         <div data-testid="trading-layout-navigation">{route}</div>
     ),

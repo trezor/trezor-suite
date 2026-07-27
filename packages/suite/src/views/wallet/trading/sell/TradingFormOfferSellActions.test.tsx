@@ -12,7 +12,7 @@ import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState'
 import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
-import { TradingFormOfferSellActions } from '../TradingFormOfferSellActions';
+import { TradingFormOfferSellActions } from './TradingFormOfferSellActions';
 
 const mockUseTradingFormContext = jest.fn();
 const mockUseTradingFormOfferCommon = jest.fn();

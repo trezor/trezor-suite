@@ -1,7 +1,7 @@
 import {
     type CanLocktimeTxBeBroadcastParams,
     canLocktimeTxBeBroadcast,
-} from '../canLocktimeTxBeBroadcast';
+} from './canLocktimeTxBeBroadcast';
 
 const data: Array<{
     it: string;

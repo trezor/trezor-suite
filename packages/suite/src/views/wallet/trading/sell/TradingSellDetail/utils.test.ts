@@ -1,6 +1,6 @@
 import { type SellTradeStatus } from 'invity-api';
 
-import { getSellDetailHeaderMessages } from '../utils';
+import { getSellDetailHeaderMessages } from './utils';
 
 describe('getSellDetailHeaderMessages', () => {
     it.each<SellTradeStatus>([

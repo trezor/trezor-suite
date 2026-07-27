@@ -16,7 +16,7 @@ import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState'
 import { extraDependenciesDesktopMock } from 'src/support/tests/extraDependenciesDesktop.mock';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
-import { TradingTransactionsList } from '../TradingTransactionsList';
+import { TradingTransactionsList } from './TradingTransactionsList';
 
 jest.mock('@suite-common/tx-simulation', () => ({}));
 

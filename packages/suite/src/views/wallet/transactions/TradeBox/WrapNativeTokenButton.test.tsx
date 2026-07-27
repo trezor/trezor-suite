@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { ThemeProvider } from 'src/support/suite/ThemeProvider';
 import { type Account } from 'src/types/wallet';
 
-import { WrapNativeTokenButton } from '../WrapNativeTokenButton';
+import { WrapNativeTokenButton } from './WrapNativeTokenButton';
 
 const mockDispatch = jest.fn();
 
