@@ -1,4 +1,4 @@
-import { parseHostname } from '../src/parseHostname';
+import { parseHostname } from './parseHostname';
 
 const fixtures = [
     ['localHOst', 'localhost'],

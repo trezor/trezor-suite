@@ -1,4 +1,4 @@
-import { clamp, roundTo } from '../src/number';
+import { clamp, roundTo } from './number';
 
 describe('clamp', () => {
     it('value within bounds', () => {

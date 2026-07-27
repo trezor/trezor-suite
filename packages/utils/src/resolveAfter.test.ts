@@ -1,4 +1,4 @@
-import { resolveAfter } from '../src/resolveAfter';
+import { resolveAfter } from './resolveAfter';
 
 describe('resolveAfter', () => {
     jest.useFakeTimers();

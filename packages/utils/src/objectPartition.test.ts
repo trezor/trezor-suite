@@ -1,4 +1,4 @@
-import { objectPartition } from '../src/objectPartition';
+import { objectPartition } from './objectPartition';
 
 describe('objectPartition', () => {
     it('two parts', () => {

@@ -1,4 +1,4 @@
-import { parseElectrumUrl } from '../src/parseElectrumUrl';
+import { parseElectrumUrl } from './parseElectrumUrl';
 
 const FIXTURE = [
     ['electrum.example.com:50001:t', 'electrum.example.com', 50001, 't'],

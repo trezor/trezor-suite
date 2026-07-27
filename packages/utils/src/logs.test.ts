@@ -1,4 +1,4 @@
-import { LogsManager } from '../src/logsManager';
+import { LogsManager } from './logsManager';
 
 describe('utils/debug', () => {
     it('max entries', () => {

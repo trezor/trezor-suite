@@ -1,4 +1,4 @@
-import { noop } from '../src/noop';
+import { noop } from './noop';
 
 describe(noop.name, () => {
     it('returns undefined', () => {
