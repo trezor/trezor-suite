@@ -10,6 +10,7 @@ import {
     type ConnectPopupCall,
     type ConnectPopupCallWithState,
 } from './connectPopupTypes';
+import { canonicalizePermissionCoins } from './permissions';
 
 export type ConnectPopupState = {
     activeCall?: ConnectPopupCall;
@@ -31,6 +32,12 @@ export const connectPopupInitialState: ConnectPopupState = {
     permissions: [],
 };
 
+// Canonicalize a persisted app's granted coins to their lowercase `CoinSymbol` (see storageLoad).
+const normalizeRememberedCoins = (app: AppRememberedPermission): AppRememberedPermission => ({
+    ...app,
+    allowedPermissions: canonicalizePermissionCoins(app.allowedPermissions),
+});
+
 export const prepareConnectPopupReducer = createReducerWithExtraDeps(
     connectPopupInitialState,
     (builder, extra) => {
@@ -43,18 +50,26 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                             ? payload.connect.permissions
                             : [];
 
-                        state.permissions = permissions.filter(
-                            (permission): permission is AppRememberedPermission =>
-                                permission !== null &&
-                                typeof permission === 'object' &&
-                                'allowedPermissions' in permission &&
-                                Array.isArray(permission.allowedPermissions) &&
-                                // Drop entries that do not have the expected format.
-                                permission.allowedPermissions.every(
-                                    (t: unknown) =>
-                                        t !== null && typeof t === 'object' && 'permission' in t,
-                                ),
-                        );
+                        state.permissions = permissions
+                            .filter(
+                                (permission): permission is AppRememberedPermission =>
+                                    permission !== null &&
+                                    typeof permission === 'object' &&
+                                    'allowedPermissions' in permission &&
+                                    Array.isArray(permission.allowedPermissions) &&
+                                    // Drop entries that do not have the expected format.
+                                    permission.allowedPermissions.every(
+                                        (t: unknown) =>
+                                            t !== null &&
+                                            typeof t === 'object' &&
+                                            'permission' in t,
+                                    ),
+                            )
+                            // Grants persisted before coins were canonicalized at the
+                            // source keep the mixed-case `coinInfo.shortcut` (e.g. `BTC`);
+                            // lowercase them on load. This reducer is shared, so it covers
+                            // both the web IDB store and native.
+                            .map(normalizeRememberedCoins);
                     }
                 },
             )
