@@ -2,7 +2,9 @@
     "ignore-patterns": ["libDev", "lib"],
     "ignores": [
         "stylelint-config-standard",
+        "@babel/preset-env",
         "@babel/preset-react",
+        "@babel/preset-typescript",
         "postcss-styled-syntax",
         "typescript-styled-plugin",
         "@storybook/react-webpack5",
