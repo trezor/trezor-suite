@@ -18,6 +18,7 @@ export const cryptoIcons = {
     etc: require('../cryptoAssets/cryptoIcons/etc.svg'),
     eth: require('../cryptoAssets/cryptoIcons/eth.svg'),
     gnt: require('../cryptoAssets/cryptoIcons/gnt.svg'),
+    hype: require('../cryptoAssets/cryptoIcons/hype.svg'),
     ltc: require('../cryptoAssets/cryptoIcons/ltc.svg'),
     name: require('../cryptoAssets/cryptoIcons/name.svg'),
     nmc: require('../cryptoAssets/cryptoIcons/nmc.svg'),

@@ -20,6 +20,7 @@ export const coinsColors: CoinsColors = {
     ltc: '#a6a8a9',
     op: '#ff0720',
     rhc: '#ccff00',
+    hype: '#97fce4',
     avax: '#e84142',
     pol: '#7b3fe4',
     regtest: '#e75f5f',

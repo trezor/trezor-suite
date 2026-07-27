@@ -27,6 +27,9 @@ export type Protocol =
     | 'zec'
     | 'eth'
     | 'etc'
+    | 'hyperliquid'
+    | 'hyperevm'
+    | 'hype'
     | 'xrp'
     | 'ada'
     | 'sol'
@@ -63,6 +66,7 @@ export const NETWORK_TO_PROTOCOLS: Record<NetworkSymbol, Protocol[]> = {
     zec: ['zcash', 'zec'],
     eth: ['ethereum', 'eth'],
     etc: ['ethclassic', 'etc'],
+    hype: ['hyperliquid', 'hyperevm', 'hype'],
     xrp: ['ripple', 'xrp'],
     ada: ['cardano', 'ada'],
     sol: ['solana', 'sol'],

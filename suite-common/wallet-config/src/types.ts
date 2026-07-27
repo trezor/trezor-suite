@@ -18,6 +18,7 @@ export type NetworkSymbol =
     | 'base'
     | 'op'
     | 'rhc'
+    | 'hype'
     | 'avax'
     | 'xlm'
     | 'test'
