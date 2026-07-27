@@ -1,6 +1,8 @@
 import { type ReactElement } from 'react';
 
+import { analyticsInitialState } from '@suite-common/analytics-redux';
 import { deviceInitialState } from '@suite-common/device';
+import { geolocationInitialState } from '@suite-common/geolocation';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { initialSuiteSyncDataState } from '@suite-common/suite-sync';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
@@ -17,8 +19,10 @@ import { getWalletState } from '@suite-native/trading-fixtures';
 export type { PreloadedStatePartial } from '@suite-native/test-utils-store';
 
 const createBaseTradingPreloadedState = () => ({
+    analytics: analyticsInitialState,
     device: deviceInitialState,
     featureFlags: featureFlagsInitialState,
+    geolocation: geolocationInitialState,
     locale: localeInitialState,
     messageSystem: messageSystemInitialState,
     suiteSyncData: initialSuiteSyncDataState,

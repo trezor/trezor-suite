@@ -2,8 +2,16 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/formatters"
+        },
+        {
+            "path": "../../suite-common/geolocation"
+        },
+        {
+            "path": "../../suite-common/message-system"
         },
         { "path": "../../suite-common/trading" },
         {
@@ -16,6 +24,7 @@
         { "path": "../atoms" },
         { "path": "../clipboard" },
         { "path": "../device" },
+        { "path": "../feedback-form" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../labeling" },
@@ -30,9 +39,8 @@
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/type-utils" },
-        { "path": "../../suite-common/device" },
         {
-            "path": "../../suite-common/message-system"
+            "path": "../../suite-common/analytics-redux"
         },
         {
             "path": "../../suite-common/suite-sync"
