@@ -1,6 +1,6 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
-import { createUpdateRelayConnectionStatus } from '../createUpdateRelayConnectionStatus';
+import { createUpdateRelayConnectionStatus } from './createUpdateRelayConnectionStatus';
 
 describe(createUpdateRelayConnectionStatus.name, () => {
     it.each([
