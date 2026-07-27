@@ -1,12 +1,11 @@
 import { useEffect, useRef } from 'react';
-import { type Control, type FieldValues, type Path } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 
 import {
     type TradingCountryOption,
     type TradingCountrySubdivisionOption,
 } from '@suite-common/trading';
-import { useWatch } from '@suite-native/forms';
+import { type Control, type FieldValues, type Path, useWatch } from '@suite-native/forms';
 import { residenceActions } from '@suite-native/trading-state';
 
 export const useCountryChangeEffect = <TFieldValues extends FieldValues>(

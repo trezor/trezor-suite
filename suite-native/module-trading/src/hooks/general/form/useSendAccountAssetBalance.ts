@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { type Control, type FieldValues, type Path } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import type { DeviceRootState } from '@suite-common/device';
@@ -10,7 +9,7 @@ import {
     selectAccountFormattedBalance,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { useWatch } from '@suite-native/forms';
+import { type Control, type FieldValues, type Path, useWatch } from '@suite-native/forms';
 import { selectAccountTokenBalance } from '@suite-native/tokens';
 import { type ExchangeFormValues } from '@suite-native/trading-types';
 
