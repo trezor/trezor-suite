@@ -44,7 +44,8 @@ export const YieldWithdrawForm = () => {
         toggleWithdrawFlowType,
         submitAction,
         setAmountInput,
-        completeUnwrapStep,
+        submitUnwrap,
+        skipUnwrap,
         openPendingTransaction,
         flow,
     } = useYieldWithdrawContext();
@@ -53,6 +54,8 @@ export const YieldWithdrawForm = () => {
         pendingTransaction,
         flowType,
     );
+    const unwrapPendingTransaction =
+        pendingTransaction?.type === 'unwrap' ? pendingTransaction : undefined;
     const withdrawInputUnit = flowType === 'redeem' ? 'shares' : 'asset';
 
     const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
@@ -76,6 +79,36 @@ export const YieldWithdrawForm = () => {
         });
 
         submitAction();
+    };
+
+    const handleOnUnwrap = () => {
+        analytics.report({
+            type: events.yieldWithdrawEvent.name,
+            payload: {
+                type: 'unwrap',
+                operation: flowType,
+                action: 'continue',
+                networkSymbol: token.networkSymbol,
+                vaultId: vault.id,
+            },
+        });
+
+        submitUnwrap();
+    };
+
+    const handleOnSkipUnwrap = () => {
+        analytics.report({
+            type: events.yieldWithdrawEvent.name,
+            payload: {
+                type: 'unwrap',
+                operation: flowType,
+                action: 'cancel',
+                networkSymbol: token.networkSymbol,
+                vaultId: vault.id,
+            },
+        });
+
+        skipUnwrap();
     };
 
     const handleToggleWithdrawInputUnit = () => {
@@ -232,8 +265,19 @@ export const YieldWithdrawForm = () => {
                                     tokenDecimals={token.decimals}
                                     tokenBalance={token.balance}
                                     onMaxClick={() => setAmountInput(token.balance)}
-                                    onSubmit={completeUnwrapStep}
-                                    onSkip={completeUnwrapStep}
+                                    isSubmitting={isSubmittingAction}
+                                    isSubmitDisabled={
+                                        isAmountEmpty || isAmountTooHigh || isAmountInvalidDecimals
+                                    }
+                                    warning={
+                                        !isAmountInvalidDecimals && isAmountTooHigh ? (
+                                            <YieldActionStepWarning isInsufficientFunds />
+                                        ) : undefined
+                                    }
+                                    pendingTransaction={unwrapPendingTransaction}
+                                    onSubmit={handleOnUnwrap}
+                                    onSkip={handleOnSkipUnwrap}
+                                    onPendingTxClick={openPendingTransaction}
                                 />
                             ),
                         },

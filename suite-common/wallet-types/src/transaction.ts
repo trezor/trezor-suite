@@ -265,6 +265,8 @@ export type EvmTransactionPurpose =
     | 'withdraw'
     | 'redeem'
     | 'claim'
+    | 'wrap'
+    | 'unwrap'
     | '';
 
 export interface RbfTransactionParamsEthereum {

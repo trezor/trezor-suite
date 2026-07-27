@@ -9,6 +9,7 @@ import {
     buildYieldWithdrawCalldata,
     buildYieldWrapTransactionData,
     getNextYieldFlowStep,
+    getWrappableNativeBalance,
     getYieldDepositableBalance,
     getYieldFlowStepSequence,
     getYieldWrapAmount,
@@ -95,15 +96,23 @@ describe('stablecoinYieldUtils', () => {
 
     describe('getNextYieldFlowStep', () => {
         it('advances deposit through wrap → approve → action → complete', () => {
-            expect(getNextYieldFlowStep('deposit', 'wrap')).toBe('approve');
-            expect(getNextYieldFlowStep('deposit', 'approve')).toBe('action');
-            expect(getNextYieldFlowStep('deposit', 'action')).toBe('complete');
+            expect(getNextYieldFlowStep('deposit', 'wrap', true)).toBe('approve');
+            expect(getNextYieldFlowStep('deposit', 'approve', true)).toBe('action');
+            expect(getNextYieldFlowStep('deposit', 'action', true)).toBe('complete');
         });
 
         it.each(['withdraw', 'redeem', 'claim'] as const)(
             'advances %s from action to complete',
             flowType => {
                 expect(getNextYieldFlowStep(flowType, 'action')).toBe('complete');
+            },
+        );
+
+        it.each(['withdraw', 'redeem'] as const)(
+            'advances wrapped-native %s through unwrap',
+            flowType => {
+                expect(getNextYieldFlowStep(flowType, 'action', true)).toBe('unwrap');
+                expect(getNextYieldFlowStep(flowType, 'unwrap', true)).toBe('complete');
             },
         );
 
@@ -380,6 +389,20 @@ describe('stablecoinYieldUtils', () => {
                     matchedTokenBalance: undefined,
                 }),
             ).toBe('0.995');
+        });
+    });
+
+    describe('getWrappableNativeBalance', () => {
+        it('keeps the gas reserve aside', () => {
+            expect(getWrappableNativeBalance('0.2')).toBe('0.195');
+        });
+
+        it('floors at zero when the balance does not cover the reserve', () => {
+            expect(getWrappableNativeBalance('0.003')).toBe('0');
+        });
+
+        it('treats an empty balance as zero', () => {
+            expect(getWrappableNativeBalance('')).toBe('0');
         });
     });
 

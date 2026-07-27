@@ -38,6 +38,22 @@ export const strip = (str: string): string => {
     return padLeftEven(str);
 };
 
+type WrappedNativeTxParams = {
+    networkSymbol: NetworkSymbol;
+    to?: string | null;
+    data?: string | null;
+};
+
+// deposit() (0xd0e30db0) is a generic selector shared by many contracts, so the selector alone is
+// not enough — the target must also be the chain's wrapped-native contract.
+export const isWrapNativeTx = ({ networkSymbol, to, data }: WrappedNativeTxParams): boolean =>
+    isWrappedNativeToken(networkSymbol, to) &&
+    Calldata.evm.weth.deposit.decode(data ?? undefined) !== null;
+
+export const isUnwrapNativeTx = ({ networkSymbol, to, data }: WrappedNativeTxParams): boolean =>
+    isWrappedNativeToken(networkSymbol, to) &&
+    Calldata.evm.weth.withdraw.decode(data ?? undefined) !== null;
+
 export const getEvmTransactionTextSignature = (data?: string): EvmTransactionPurpose => {
     if (!data) return '';
 
@@ -55,42 +71,50 @@ export const getEvmTransactionTextSignature = (data?: string): EvmTransactionPur
     return 'unknown';
 };
 
-type WrappedNativeTxParams = {
-    networkSymbol: NetworkSymbol;
-    to?: string | null;
-    data?: string | null;
+/**
+ * Purpose of an EVM transaction resolved from its full context. Extends the calldata-only
+ * `getEvmTransactionTextSignature` with the wrap/unwrap classification, which needs the
+ * transaction target — the WETH deposit()/withdraw() selectors are shared by many contracts,
+ * so they only count when the target is the chain's wrapped-native contract.
+ */
+export const getEvmTransactionPurpose = ({
+    networkSymbol,
+    to,
+    data,
+}: WrappedNativeTxParams): EvmTransactionPurpose => {
+    if (isWrapNativeTx({ networkSymbol, to, data })) return 'wrap';
+    if (isUnwrapNativeTx({ networkSymbol, to, data })) return 'unwrap';
+
+    return getEvmTransactionTextSignature(data ?? undefined);
 };
-
-// deposit() (0xd0e30db0) is a generic selector shared by many contracts, so the selector alone is
-// not enough — the target must also be the chain's wrapped-native contract.
-export const isWrapNativeTx = ({ networkSymbol, to, data }: WrappedNativeTxParams): boolean =>
-    isWrappedNativeToken(networkSymbol, to) &&
-    Calldata.evm.weth.deposit.decode(data ?? undefined) !== null;
-
-export const isUnwrapNativeTx = ({ networkSymbol, to, data }: WrappedNativeTxParams): boolean =>
-    isWrappedNativeToken(networkSymbol, to) &&
-    Calldata.evm.weth.withdraw.decode(data ?? undefined) !== null;
 
 // Amount (in wei) unwrapped by a WETH withdraw(uint256) call, or null when data is not one.
 export const getUnwrapAmountByEthereumDataHex = (data?: string): string | null =>
     Calldata.evm.weth.withdraw.decode(data)?.wad.toString() ?? null;
 
 /**
- * Classifies an EVM transaction as a native wrap/unwrap for display. The wrapped-native (WETH)
- * contract shows up as the value recipient for a wrap and as the internal ETH sender for an
- * unwrap, so both `targets` and `internalTransfers` are considered when resolving the target.
+ * The chain's wrapped-native (WETH) contract address when the transaction touches it. The contract
+ * shows up as the value recipient for a wrap and as the internal ETH sender for an unwrap, so both
+ * `targets` and `internalTransfers` are considered when resolving the target.
  */
+export const getWrappedNativeTxTarget = (
+    transaction: WalletAccountTransaction,
+): string | undefined => {
+    const candidateAddresses = [
+        ...transaction.targets.flatMap(target => target.addresses ?? []),
+        ...transaction.internalTransfers.map(transfer => transfer.from),
+    ];
+
+    return candidateAddresses.find(address => isWrappedNativeToken(transaction.symbol, address));
+};
+
+/** Classifies an EVM transaction as a native wrap/unwrap for display. */
 export const getNativeWrapTxKind = (
     transaction: WalletAccountTransaction,
 ): 'wrap' | 'unwrap' | undefined => {
     const { symbol } = transaction;
     const data = transaction.ethereumSpecific?.data;
-
-    const candidateAddresses = [
-        ...transaction.targets.flatMap(target => target.addresses ?? []),
-        ...transaction.internalTransfers.map(transfer => transfer.from),
-    ];
-    const to = candidateAddresses.find(address => isWrappedNativeToken(symbol, address));
+    const to = getWrappedNativeTxTarget(transaction);
 
     if (!to) return undefined;
     if (isWrapNativeTx({ networkSymbol: symbol, to, data })) return 'wrap';

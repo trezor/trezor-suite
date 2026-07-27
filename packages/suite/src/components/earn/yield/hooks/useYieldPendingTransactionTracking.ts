@@ -9,13 +9,19 @@ import {
     type YieldPendingTransactionState,
     type YieldWithdrawFlowType,
     fetchAndUpdateAccountThunk,
+    isYieldWithdrawFlow,
     selectConvertedNetworkFeeInfo,
     selectStablecoinYieldSession,
     selectTransactionByAccountKeyAndTxid,
     stablecoinYieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getApyBreakdown, isPending } from '@suite-common/wallet-utils';
+import {
+    getApyBreakdown,
+    getNativeWrapTxKind,
+    getWrappedNativeTxTarget,
+    isPending,
+} from '@suite-common/wallet-utils';
 import { type Analytics } from '@trezor/analytics-uploader';
 import { useCurrentRef } from '@trezor/react-utils';
 
@@ -35,8 +41,15 @@ const getPollIntervalMs = (blockTime: number | undefined): number => {
 };
 
 type ResolutionEventType =
-    | { type: 'deposit'; successType: 'approve-success' | 'revoke-success' | 'success' }
-    | { type: 'withdraw'; operation: YieldWithdrawFlowType; successType: 'success' }
+    | {
+          type: 'deposit';
+          successType: 'approve-success' | 'revoke-success' | 'wrap-success' | 'success';
+      }
+    | {
+          type: 'withdraw';
+          operation: YieldWithdrawFlowType;
+          successType: 'unwrap-success' | 'success';
+      }
     | { type: 'claim'; successType: 'success' };
 
 const getResolutionEventType = (
@@ -56,6 +69,12 @@ const getResolutionEventType = (
             return { type: 'withdraw', operation: 'redeem', successType: 'success' };
         case 'claim':
             return flowType === 'claim' ? { type: 'claim', successType: 'success' } : null;
+        case 'wrap':
+            return flowType === 'deposit' ? { type: 'deposit', successType: 'wrap-success' } : null;
+        case 'unwrap':
+            return isYieldWithdrawFlow(flowType)
+                ? { type: 'withdraw', operation: flowType, successType: 'unwrap-success' }
+                : null;
         default:
             return null;
     }
@@ -109,8 +128,10 @@ const reportResolution = (
     }
 
     if (resolution.type === 'withdraw') {
-        const apyBreakdown =
-            outcome === 'success' ? getApyBreakdown(context.vault?.rewardRate?.components) : '';
+        const isWithdrawSuccess = outcome === 'success' && resolution.successType === 'success';
+        const apyBreakdown = isWithdrawSuccess
+            ? getApyBreakdown(context.vault?.rewardRate?.components)
+            : '';
 
         analytics.report({
             type: events.yieldWithdrawEvent.name,
@@ -225,7 +246,19 @@ export const useYieldPendingTransactionTracking = ({
             durationMs,
         };
 
-        if (trackedPendingTransaction.type === 'failed') {
+        const wrappedNativeFlowType =
+            pendingTransaction.type === 'wrap' || pendingTransaction.type === 'unwrap'
+                ? pendingTransaction.type
+                : null;
+
+        const confirmedWrappedNativeKind = getNativeWrapTxKind(trackedPendingTransaction);
+        const didWrappedNativeOperationChange =
+            wrappedNativeFlowType !== null &&
+            (confirmedWrappedNativeKind !== undefined
+                ? confirmedWrappedNativeKind !== wrappedNativeFlowType
+                : getWrappedNativeTxTarget(trackedPendingTransaction) === undefined);
+
+        if (trackedPendingTransaction.type === 'failed' || didWrappedNativeOperationChange) {
             if (resolution) {
                 reportResolution(analytics, resolution, 'error', context);
             }
@@ -257,6 +290,19 @@ export const useYieldPendingTransactionTracking = ({
                 }),
             );
             dispatch(stablecoinYieldActions.invalidateAllowance({ flowType, flowKey }));
+
+            return;
+        }
+
+        if (pendingTransaction.type === 'wrap' || pendingTransaction.type === 'unwrap') {
+            dispatch(
+                stablecoinYieldActions.resolveWrappedNativeStep({
+                    flowType,
+                    flowKey,
+                    step: pendingTransaction.type,
+                    amount: pendingTransaction.amount,
+                }),
+            );
 
             return;
         }

@@ -17,11 +17,18 @@ type WrapNativeTokenPayload = {
     account: Account;
     token: YieldFlowDisplayToken & { contractAddress: string };
     wrapAmount: string;
+    yieldFlow?: {
+        flowKey: string;
+        flowType: 'deposit';
+    };
 };
 
 export const submitWrapNativeTokenThunk = createThunk(
     `${WRAP_NATIVE_TOKEN_PREFIX}/submit`,
-    async ({ account, token, wrapAmount }: WrapNativeTokenPayload, { dispatch, getState }) => {
+    async (
+        { account, token, wrapAmount, yieldFlow }: WrapNativeTokenPayload,
+        { dispatch, getState },
+    ) => {
         try {
             const result = await dispatch(
                 composeYieldWrapTransactionThunk({ account, token, wrapAmount }),
@@ -65,8 +72,8 @@ export const submitWrapNativeTokenThunk = createThunk(
                     contractAddress: null,
                 },
                 unsignedTransaction: result.unsignedTransaction,
-                flowKey: 'standalone-wrap-native',
-                flowType: 'deposit',
+                flowKey: yieldFlow?.flowKey ?? 'standalone-wrap-native',
+                flowType: yieldFlow?.flowType ?? 'deposit',
                 dispatch,
                 getState,
                 selectedFee: userAcceptedTxSimulation?.selectedFee ?? null,
