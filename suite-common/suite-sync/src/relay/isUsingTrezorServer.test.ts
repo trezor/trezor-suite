@@ -1,4 +1,4 @@
-import { isUsingTrezorServer } from '../isUsingTrezorServer';
+import { isUsingTrezorServer } from './isUsingTrezorServer';
 
 describe(isUsingTrezorServer.name, () => {
     it.each([

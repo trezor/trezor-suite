@@ -1,11 +1,11 @@
 import { isCodesignBuild } from '@trezor/env-utils';
 
-import { type WithSuiteSyncState } from '../../suiteSyncSlice';
+import { type WithSuiteSyncState } from '../suiteSyncSlice';
 import {
     getSuiteSyncDefaultRelayUrl,
     getSuiteSyncRelayUrl,
     selectSuiteSyncRelayUrl,
-} from '../relayUrl';
+} from './relayUrl';
 
 jest.mock('@trezor/env-utils', () => ({
     ...jest.requireActual('@trezor/env-utils'),

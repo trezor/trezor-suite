@@ -3,8 +3,8 @@ import { mockSuiteSyncStorage } from '@suite-common/suite-sync-storage/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 import { isCodesignBuild } from '@trezor/env-utils';
 
-import { type WithSuiteSyncState } from '../../suiteSyncSlice';
-import { type ReconnectAllRelaysDeps, createReconnectAllRelays } from '../createReconnectAllRelays';
+import { type WithSuiteSyncState } from '../suiteSyncSlice';
+import { type ReconnectAllRelaysDeps, createReconnectAllRelays } from './createReconnectAllRelays';
 
 jest.mock('@trezor/env-utils', () => ({
     ...jest.requireActual('@trezor/env-utils'),

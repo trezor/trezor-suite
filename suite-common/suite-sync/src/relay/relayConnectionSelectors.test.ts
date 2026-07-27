@@ -1,9 +1,9 @@
-import { type WithSuiteSyncState, initialSuiteSyncState } from '../../suiteSyncSlice';
+import { type WithSuiteSyncState, initialSuiteSyncState } from '../suiteSyncSlice';
 import {
     selectIsSuiteSyncRelayConnected,
     selectLastSuiteSyncRelayDisconnectedTimestamp,
-} from '../relayConnectionSelectors';
-import { type SuiteSyncRelayConnection } from '../relayConnectionStatus';
+} from './relayConnectionSelectors';
+import { type SuiteSyncRelayConnection } from './relayConnectionStatus';
 
 const createState = (relayConnectionStatuses: SuiteSyncRelayConnection[]): WithSuiteSyncState => ({
     suiteSync: {

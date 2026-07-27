@@ -2,8 +2,8 @@ import type { UnknownAction } from '@reduxjs/toolkit';
 
 import { mock } from '@suite-common/dependency-injection';
 
-import { setSuiteSyncRelayUrl } from '../../suiteSyncSlice';
-import { type ChangeRelayUrlDeps, createChangeRelayUrl } from '../createChangeRelayUrl';
+import { setSuiteSyncRelayUrl } from '../suiteSyncSlice';
+import { type ChangeRelayUrlDeps, createChangeRelayUrl } from './createChangeRelayUrl';
 
 describe(createChangeRelayUrl.name, () => {
     it('saves relay url and reconnects all storages', async () => {

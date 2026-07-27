@@ -5,7 +5,7 @@ import { type StaticSessionId } from '@trezor/connect';
 import {
     type DisconnectAllRelaysDeps,
     createDisconnectAllRelays,
-} from '../createDisconnectAllRelays';
+} from './createDisconnectAllRelays';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 
