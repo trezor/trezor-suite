@@ -28,6 +28,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { type TradingBuyFormContextProps } from 'src/types/trading/tradingForm';
 
 import { useBuyFlow } from './useBuyFlow';
@@ -105,12 +106,14 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
     const noProviders = buyInfo?.buyInfo?.providers.length === 0;
     const formIsValid = Object.keys(formState.errors).length === 0;
     const hasValues = (fiatInput || cryptoInput) && !!currencySelect?.value;
-    const isFormLoading = formState.isSubmitting || isLoading;
+    const isFormLoadingBase = formState.isSubmitting || isLoading;
     const isFormInvalid = !(formIsValid && hasValues) || !isReceiveAddressFormValid;
-    const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
 
     // based on selected cryptoSymbol, because of using for validation cryptoInput
     const network = getNetwork(cryptoSelect?.networkSymbol ?? TRADING_DEFAULT_CRYPTO_CURRENCY);
+    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(
+        cryptoSelect?.networkSymbol,
+    );
 
     const { toggleAmountInCrypto: baseToggleAmountInCrypto } = useTradingCurrencySwitcher({
         account,
@@ -128,7 +131,10 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
         baseToggleAmountInCrypto();
     };
 
-    useBuyQuotes({ control, getValues, setValue });
+    const { isScheduledQuotesRefresh } = useBuyQuotes({ methods, network, shouldSendInSats });
+
+    const isFormLoading = isFormLoadingBase || isScheduledQuotesRefresh;
+    const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
 
     useEffect(() => {
         setValue('receiveAddress', receiveAddress);

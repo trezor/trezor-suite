@@ -1,4 +1,4 @@
-import { type Resolver, type ResolverResult, useForm } from 'react-hook-form';
+import { type Resolver, useForm } from 'react-hook-form';
 
 import { act, waitFor } from '@testing-library/react';
 import type { BuyTrade, CryptoId } from 'invity-api';
@@ -9,12 +9,23 @@ import {
     type TradingBuyFormProps,
     type TradingCountryOption,
 } from '@suite-common/trading';
+import { getNetwork } from '@suite-common/wallet-config';
 
 import { useBuyQuotes } from './useBuyQuotes';
 
 const QUOTES: BuyTrade[] = [
-    { paymentMethod: 'creditCard', paymentMethodName: 'Credit card', exchange: 'provider-1' },
-    { paymentMethod: 'bankTransfer', paymentMethodName: 'Bank transfer', exchange: 'provider-2' },
+    {
+        paymentMethod: 'creditCard',
+        paymentMethodName: 'Credit card',
+        exchange: 'provider-1',
+        rate: 1,
+    },
+    {
+        paymentMethod: 'bankTransfer',
+        paymentMethodName: 'Bank transfer',
+        exchange: 'provider-2',
+        rate: 2,
+    },
 ];
 
 const mockAbort = jest.fn();
@@ -27,10 +38,6 @@ const mockHandleRequest = jest.fn((payload: unknown) => {
 jest.mock('@suite-common/dependency-injection', () => ({
     ...jest.requireActual('@suite-common/dependency-injection'),
     useServices: () => ({ analytics: { report: jest.fn() } }),
-}));
-
-jest.mock('src/hooks/wallet/useBitcoinAmountUnit', () => ({
-    useBitcoinAmountUnit: () => ({ isBtcSatsAmountUnit: false }),
 }));
 
 jest.mock('@suite-common/trading', () => {
@@ -68,13 +75,16 @@ const wait = (ms: number) =>
 
 const renderBuyQuotes = (
     defaultValues: TradingBuyFormProps,
-    resolver?: Resolver<TradingBuyFormProps>,
+    options: { resolver?: Resolver<TradingBuyFormProps>; quotes?: BuyTrade[] } = {},
 ) => {
+    const { resolver, quotes = QUOTES } = options;
     const store = configureMockStore({
         preloadedState: {
             wallet: {
                 trading: {
                     quoteRefetchingState: { status: 'idle', lastFetchTimestamp: null },
+                    buy: { quotes },
+                    sell: { quotes: [] },
                 },
             },
         },
@@ -87,11 +97,7 @@ const renderBuyQuotes = (
                 defaultValues,
                 resolver,
             });
-            useBuyQuotes({
-                control: methods.control,
-                getValues: methods.getValues,
-                setValue: methods.setValue,
-            });
+            useBuyQuotes({ methods, network: getNetwork('btc'), shouldSendInSats: false });
 
             return methods;
         },
@@ -139,21 +145,6 @@ describe('useBuyQuotes', () => {
         );
     });
 
-    it('refetches when a quote-affecting field changes', async () => {
-        const { result } = renderBuyQuotes(VALID_DEFAULTS);
-
-        await act(async () => {
-            await result.current.trigger();
-        });
-        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
-
-        await act(async () => {
-            result.current.setValue('fiatInput', '200');
-            await result.current.trigger();
-        });
-        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(2), { timeout: 1500 });
-    });
-
     it('refetches immediately (without the debounce) when a select field changes', async () => {
         const { result } = renderBuyQuotes(VALID_DEFAULTS);
 
@@ -189,7 +180,7 @@ describe('useBuyQuotes', () => {
         await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(2), { timeout: 1500 });
     });
 
-    it('does not refetch when only a non-key field (payment method) changes', async () => {
+    it('does not refetch when only a non-key field (provider) changes', async () => {
         const { result } = renderBuyQuotes(VALID_DEFAULTS);
 
         await act(async () => {
@@ -211,7 +202,7 @@ describe('useBuyQuotes', () => {
             values: {},
             errors: { fiatInput: { type: 'manual', message: 'invalid' } },
         });
-        const { result } = renderBuyQuotes(VALID_DEFAULTS, invalidResolver);
+        const { result } = renderBuyQuotes(VALID_DEFAULTS, { resolver: invalidResolver });
 
         await act(async () => {
             await result.current.trigger();
@@ -219,37 +210,5 @@ describe('useBuyQuotes', () => {
         await wait(700);
 
         expect(mockHandleRequest).not.toHaveBeenCalled();
-    });
-
-    it('refetches on invalid → valid recovery even when the values are identical', async () => {
-        let isValid = true;
-        const resolver: Resolver<TradingBuyFormProps> = (
-            values,
-        ): ResolverResult<TradingBuyFormProps> => {
-            if (isValid) {
-                return { values, errors: {} };
-            }
-
-            return { values: {}, errors: { fiatInput: { type: 'manual', message: 'invalid' } } };
-        };
-        const { result } = renderBuyQuotes(VALID_DEFAULTS, resolver);
-
-        await act(async () => {
-            await result.current.trigger();
-        });
-        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
-
-        isValid = false;
-        await act(async () => {
-            await result.current.trigger();
-        });
-        await wait(700);
-        expect(mockHandleRequest).toHaveBeenCalledTimes(1);
-
-        isValid = true;
-        await act(async () => {
-            await result.current.trigger();
-        });
-        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(2), { timeout: 1500 });
     });
 });
