@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
-import { QueuedAnalytics } from '../analytics';
-import { encodeDataToQueryString, getRandomId } from '../utils';
-import { fixtures } from './fixtures/encodeDataToQueryString';
+import { QueuedAnalytics } from './analytics';
+import { encodeDataToQueryString, getRandomId } from './utils';
+import { fixtures } from '../mocks/mockEncodeDataToQueryString';
 
 jest.mock('@trezor/utils', () => ({
     __esModule: true,
