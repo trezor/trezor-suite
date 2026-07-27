@@ -3,7 +3,7 @@ import { type IDBPDatabase, deleteDB, openDB } from 'idb';
 
 import { type SuiteDBSchema } from 'src/storage/definitions';
 
-import migration from '../25.10.0';
+import migration from './25.10.0';
 
 const DB_NAME = 'suite-idb-test-25.10.0';
 const INITIAL_VERSION = 1;

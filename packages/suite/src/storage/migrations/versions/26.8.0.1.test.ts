@@ -9,7 +9,7 @@ import { type StaticSessionId } from '@trezor/connect';
 import { type SuiteDBSchema } from 'src/storage/definitions';
 import { serializeDevice } from 'src/utils/suite/storage';
 
-import migration from '../26.8.0.1';
+import migration from './26.8.0.1';
 
 const DB_NAME = 'suite-idb-test-26.8.0.1';
 const INITIAL_VERSION = 1;

@@ -5,7 +5,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 
 import { type SuiteDBSchema } from 'src/storage/definitions';
 
-import migration from '../26.8.0';
+import migration from './26.8.0';
 
 const DB_NAME = 'suite-idb-test-26.8.0';
 const INITIAL_VERSION = 1;
