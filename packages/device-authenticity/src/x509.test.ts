@@ -1,4 +1,4 @@
-import { fixSignature, parseCertificate } from '../x509certificate';
+import { fixSignature, parseCertificate } from './x509certificate';
 
 describe('firmware/x509certificate extensions', () => {
     it('value with length = 128 (0x80)', () => {
