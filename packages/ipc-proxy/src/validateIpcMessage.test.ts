@@ -1,7 +1,7 @@
 import path from 'path';
 
-import { type ElectronIpcMainInvokeEvent } from '../types';
-import { validateIpcMessage } from '../validateIpcMessage';
+import { type ElectronIpcMainInvokeEvent } from './types';
+import { validateIpcMessage } from './validateIpcMessage';
 
 const createSenderFrame = (url: string, destroyed?: boolean): ElectronIpcMainInvokeEvent => ({
     senderFrame: { url: encodeURI(url), isDestroyed: () => destroyed === true },
