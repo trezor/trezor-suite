@@ -2001,7 +2001,6 @@
   "TR_PERMISSION_READ_ACCOUNT_INFO": "Read account info (balances, transactions) from your Trezor",
   "TR_PERMISSION_READ_ADDRESS": "Read an address derived on your Trezor",
   "TR_PERMISSION_READ_FEATURES": "Read device model, firmware, and capabilities",
-  "TR_PERMISSION_READ_SETTINGS": "Read Trezor Connect settings",
   "TR_PERMISSION_READ_XPUB": "Read an extended public key from your Trezor",
   "TR_PERMISSION_SIGN": "Allow transaction and data signing on Trezor",
   "TR_PERMISSION_SIGN_MESSAGE": "Allow message signing on Trezor",

@@ -308,7 +308,6 @@
     "moduleConnectPopup.permissions.read_address": "查看接收地址",
     "moduleConnectPopup.permissions.read_xpub": "访问扩展公钥（xpubs）",
     "moduleConnectPopup.permissions.read_account_info": "查看账户余额和交易记录",
-    "moduleConnectPopup.permissions.read_settings": "读取设备设置",
     "moduleConnectPopup.permissions.read_features": "读取设备功能",
     "moduleConnectPopup.permissions.sign": "允许在 Trezor 设备上进行交易和数据签名",
     "moduleConnectPopup.permissions.sign_message": "允许在 Trezor 设备上签名消息",

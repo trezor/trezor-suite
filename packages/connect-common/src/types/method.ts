@@ -14,7 +14,6 @@ export type MethodPermission =
     | 'read_address'
     | 'read_xpub'
     | 'read_account_info'
-    | 'read_settings'
     | 'read_features'
     | 'sign'
     | 'sign_message'
