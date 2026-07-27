@@ -2,6 +2,7 @@ import jsxA11y from 'eslint-plugin-jsx-a11y';
 import playwright from 'eslint-plugin-playwright';
 import globals from 'globals';
 
+import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
 import { globalNoExtraneousDependenciesDevDependencies, importConfig } from './importConfig.mjs';
 import { javascriptConfig, noCastedObjectHelpersSyntax } from './javascriptConfig.mjs';
 import { javascriptNodejsConfig } from './javascriptNodejsConfig.mjs';
@@ -41,6 +42,11 @@ export const eslint = [
         ],
     },
     { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
+    {
+        linterOptions: {
+            reportUnusedDisableDirectives: areExpensiveChecksEnabled ? 'warn' : 'off',
+        },
+    },
     { languageOptions: { globals: globals.browser } },
     {
         languageOptions: {
