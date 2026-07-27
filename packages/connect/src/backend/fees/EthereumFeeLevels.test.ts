@@ -54,7 +54,8 @@ describe('api/ethereum/Fees', () => {
 
         expect(feeLevels.levels).toHaveLength(1);
 
-        const smartLevels = await feeLevels.load(backend, ETH_REQUEST);
+        await feeLevels.load(backend, ETH_REQUEST);
+        const smartLevels = feeLevels.levels;
 
         expect(smartLevels).toHaveLength(3);
         expect(smartLevels?.map(l => l.label)).toEqual(['low', 'normal', 'high']);
@@ -78,9 +79,9 @@ describe('api/ethereum/Fees', () => {
             const backend = await initBlockchain(coinInfo, () => {});
             const feeLevels = new EthereumFeeLevels(coinInfo);
 
-            const levels = await feeLevels.load(backend, ETH_REQUEST);
+            await feeLevels.load(backend, ETH_REQUEST);
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const [level]: [FeeLevel] = levels;
+            const [level]: [FeeLevel] = feeLevels.levels;
 
             // 0.001 Gwei → 0.001 × 1e9 = 1 000 000 wei
             expect(level.feePerUnit).toBe('1000000');
@@ -98,9 +99,9 @@ describe('api/ethereum/Fees', () => {
             const backend = await initBlockchain(coinInfo, () => {});
             const feeLevels = new EthereumFeeLevels(coinInfo);
 
-            const levels = await feeLevels.load(backend, ETH_REQUEST);
+            await feeLevels.load(backend, ETH_REQUEST);
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const [level]: [FeeLevel] = levels;
+            const [level]: [FeeLevel] = feeLevels.levels;
 
             // must be an integer wei string — fromWei("1500000000.7", 'gwei') would crash
             expect(level.feePerUnit).toMatch(/^\d+$/);
@@ -127,7 +128,8 @@ describe('api/ethereum/Fees', () => {
             const backend = await initBlockchain(coinInfo, () => {});
             const feeLevels = new EthereumFeeLevels(coinInfo);
 
-            const levels = await feeLevels.load(backend, ETH_REQUEST);
+            await feeLevels.load(backend, ETH_REQUEST);
+            const { levels } = feeLevels;
 
             // minFee for eth = 0.001 Gwei → 0.001 × 1e9 = 1 000 000 wei
             // maxFeePerGas must be an integer wei string, never a decimal gwei string like "0.001"
@@ -150,9 +152,9 @@ describe('api/ethereum/Fees', () => {
             const backend = await initBlockchain(coinInfo, () => {});
             const feeLevels = new EthereumFeeLevels(coinInfo);
 
-            const levels = await feeLevels.load(backend, ETH_REQUEST);
+            await feeLevels.load(backend, ETH_REQUEST);
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const [level]: [FeeLevel] = levels;
+            const [level]: [FeeLevel] = feeLevels.levels;
 
             // maxFee = 10 000 Gwei → 10 000 × 1e9 = 10 000 000 000 000 wei
             expect(level.feePerUnit).toBe('10000000000000');
@@ -175,7 +177,8 @@ describe('api/ethereum/Fees', () => {
         const backend = await initBlockchain(coinInfo, () => {});
         const feeLevels = new EthereumFeeLevels(coinInfo);
 
-        const smartLevels = await feeLevels.load(backend, ETH_REQUEST);
+        await feeLevels.load(backend, ETH_REQUEST);
+        const smartLevels = feeLevels.levels;
 
         expect(smartLevels).toHaveLength(1);
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
@@ -226,7 +229,8 @@ describe('api/ethereum/Fees', () => {
         const backend = await initBlockchain(coinInfo, () => {});
         const feeLevels = new EthereumFeeLevels(coinInfo);
 
-        const smart = await feeLevels.load(backend, ETH_REQUEST);
+        await feeLevels.load(backend, ETH_REQUEST);
+        const smart = feeLevels.levels;
 
         smart.forEach(lvl => {
             expect(Number(lvl.maxPriorityFeePerGas)).toBe(30e9);
@@ -247,7 +251,8 @@ describe('api/ethereum/Fees', () => {
         const backend = await initBlockchain(coinInfo, () => {});
         const feeLevels = new EthereumFeeLevels(coinInfo);
 
-        const levelsAfterError = await feeLevels.load(backend, ETH_REQUEST);
+        await feeLevels.load(backend, ETH_REQUEST);
+        const levelsAfterError = feeLevels.levels;
 
         expect(levelsAfterError).toEqual(feeLevels.levels);
 

@@ -1,26 +1,32 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/Fees.js
 
-import type { BitcoinNetworkInfo } from '@trezor/connect-common';
+import type { BitcoinNetworkInfo, FeeLevel } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { cloneObject } from '@trezor/utils/src/cloneObject';
 import { clamp } from '@trezor/utils/src/number';
 
 import type { Blockchain } from '../Blockchain';
-import { MiscFeeLevels } from './MiscFeeLevels';
+import type { FeeLevels } from './feeLevelsBase';
 
-export class BitcoinFeeLevels extends MiscFeeLevels {
-    coinInfo: BitcoinNetworkInfo;
+export class BitcoinFeeLevels implements FeeLevels {
+    private coinInfo: BitcoinNetworkInfo;
+    private feeLevels: FeeLevel[];
+
+    get levels() {
+        return this.feeLevels;
+    }
 
     // override only to narrow down the coinInfo type
     constructor(coinInfo: BitcoinNetworkInfo) {
-        super(coinInfo);
         this.coinInfo = coinInfo;
+        this.feeLevels = cloneObject(coinInfo.defaultFees);
     }
 
     async load(blockchain: Blockchain) {
         try {
             const { minFee, maxFee } = this.coinInfo;
-            // get numbers of blocks to be requested, filter out 'custom' if present (the last one)
-            const blocks = this.levels.map(level => level.blocks).filter(b => b > 0);
+            // get numbers of blocks to be requested
+            const blocks = this.feeLevels.map(level => level.blocks);
             const response = await blockchain.estimateFee({ blocks });
 
             response.forEach(({ feePerUnit: feePerKB }, index) => {
@@ -32,13 +38,11 @@ export class BitcoinFeeLevels extends MiscFeeLevels {
 
                 const trimmedFeePerUnit = clamp(feePerB, minFee, maxFee);
                 // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                const level: (typeof this.levels)[number] = this.levels[index];
+                const level: (typeof this.feeLevels)[number] = this.feeLevels[index];
                 level.feePerUnit = trimmedFeePerUnit.toString();
             });
         } catch {
             // do not throw, just keep current fee levels
         }
-
-        return this.levels;
     }
 }

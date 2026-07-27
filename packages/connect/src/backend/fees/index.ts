@@ -4,10 +4,11 @@ import { exhaustive } from '@trezor/type-utils';
 import { BitcoinFeeLevels } from './BitcoinFeeLevels';
 import { EthereumFeeLevels } from './EthereumFeeLevels';
 import { MiscFeeLevels } from './MiscFeeLevels';
+import type { FeeLevels } from './feeLevelsBase';
 
-const instancesPerCoin: { [shortcut: CoinInfo['shortcut']]: MiscFeeLevels } = {};
+const instancesPerCoin: { [shortcut: CoinInfo['shortcut']]: FeeLevels } = {};
 
-const feeLevelsPerTypeFactory = (coinInfo: CoinInfo): MiscFeeLevels => {
+const feeLevelsPerTypeFactory = (coinInfo: CoinInfo): FeeLevels => {
     const { type } = coinInfo;
 
     switch (type) {

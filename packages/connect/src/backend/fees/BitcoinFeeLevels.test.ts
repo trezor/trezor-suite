@@ -52,7 +52,8 @@ describe('BitcoinFeeLevels', () => {
         // returns preloaded values from coins.json
         expect(feeLevelsInstance.levels.map(l => l.feePerUnit)).toEqual(['222', '111', '77', '22']);
 
-        const result = await feeLevelsInstance.load(backend);
+        await feeLevelsInstance.load(backend);
+        const result = feeLevelsInstance.levels;
         // linear mock of requested blocks
         expect(result.map(l => l.feePerUnit)).toEqual(['9.9', '9', '6', '2']);
     });
@@ -69,7 +70,8 @@ describe('BitcoinFeeLevels', () => {
         const backend = await initBlockchain(coinInfoMock, () => {});
         const feeLevelsInstance = new BitcoinFeeLevels(coinInfoMock);
 
-        const result = await feeLevelsInstance.load(backend);
+        await feeLevelsInstance.load(backend);
+        const result = feeLevelsInstance.levels;
         // linear mock of requested blocks, or preloaded values if not fetched successfully
         expect(result.map(l => l.feePerUnit)).toEqual(['9.9', '9', '6', '22']);
     });
@@ -93,7 +95,8 @@ describe('BitcoinFeeLevels', () => {
         // returns preloaded values from coins.json
         expect(feeLevelsInstance.levels.map(l => l.feePerUnit)).toEqual(['111']);
 
-        const result = await feeLevelsInstance.load(backend);
+        await feeLevelsInstance.load(backend);
+        const result = feeLevelsInstance.levels;
         expect(result?.map(l => l.feePerUnit)).toEqual(['9']);
     });
 });
