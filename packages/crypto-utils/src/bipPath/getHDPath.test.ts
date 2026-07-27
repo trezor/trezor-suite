@@ -1,6 +1,6 @@
 import { err, ok } from '@trezor/type-utils';
 
-import { getHDPath } from '../getHDPath';
+import { getHDPath } from './getHDPath';
 
 describe(getHDPath.name, () => {
     it.each([

@@ -1,4 +1,4 @@
-import { HD_HARDENED_PATH_PART, fromHardenedPathPart, toHardenedPathPart } from '../hardened';
+import { HD_HARDENED_PATH_PART, fromHardenedPathPart, toHardenedPathPart } from './hardened';
 
 describe('hardened path part', () => {
     it('converts path parts to and from hardened values', () => {

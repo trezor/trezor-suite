@@ -1,4 +1,4 @@
-import { comparePath } from '../comparePath';
+import { comparePath } from './comparePath';
 
 describe(comparePath.name, () => {
     it.each([
