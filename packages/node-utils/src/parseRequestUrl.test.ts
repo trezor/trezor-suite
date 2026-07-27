@@ -1,6 +1,6 @@
 import type { ParsedUrlQuery } from 'querystring';
 
-import { formatRequestUrl, parseRequestUrl } from '../parseRequestUrl';
+import { formatRequestUrl, parseRequestUrl } from './parseRequestUrl';
 
 type ParseFixture = {
     description: string;
