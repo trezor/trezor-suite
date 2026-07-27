@@ -7,5 +7,6 @@
         "types": ["jest", "node", "web"]
     },
     "include": ["./src"],
+    "exclude": ["./src/**/*.test.ts"],
     "references": [{ "path": "../utils" }]
 }

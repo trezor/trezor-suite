@@ -1,6 +1,6 @@
 import { type ServerOptions, type WebSocket, WebSocketServer } from 'ws';
 
-import { WebsocketClient } from '../src/client';
+import { WebsocketClient } from './client';
 
 class Client extends WebsocketClient<{ 'foo-event': 'bar-event' }> {}
 
