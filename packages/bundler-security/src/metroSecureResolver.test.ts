@@ -1,4 +1,4 @@
-import { checkSecurityViolation } from '../src/metroSecureResolver';
+import { checkSecurityViolation } from './metroSecureResolver';
 
 describe('checkSecurityViolation', () => {
     it('should detect violation when accessing @trezor scoped package from node_modules', () => {
