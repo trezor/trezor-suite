@@ -27,6 +27,7 @@
         { "path": "../device" },
         { "path": "../device-mutex" },
         { "path": "../formatters" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },

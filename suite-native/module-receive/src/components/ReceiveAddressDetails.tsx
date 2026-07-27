@@ -1,11 +1,12 @@
 import { Pressable, useWindowDimensions } from 'react-native';
 
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountDescriptor } from '@suite-common/wallet-types';
+import { type AccountDescriptor, type TokenAddress } from '@suite-common/wallet-types';
 import { AddressLabelEditable } from '@suite-native/address';
 import { Card, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { AddressFormatter } from '@suite-native/formatters';
+import { TokenIcon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 import { QRCode } from '@suite-native/qr-code';
 import type { StaticSessionId } from '@trezor/connect';
@@ -16,6 +17,7 @@ type ReceiveAddressDetailsProps = {
     deviceStaticSessionId: StaticSessionId;
     accountDescriptor: AccountDescriptor;
     networkSymbol: NetworkSymbol;
+    tokenContract?: TokenAddress;
     showLabelEdit?: boolean;
 };
 
@@ -36,6 +38,7 @@ export const ReceiveAddressDetails = ({
     deviceStaticSessionId,
     accountDescriptor,
     networkSymbol,
+    tokenContract,
     showLabelEdit = true,
 }: ReceiveAddressDetailsProps) => {
     const copyToClipboard = useCopyToClipboard();
@@ -66,6 +69,14 @@ export const ReceiveAddressDetails = ({
                         qrCodeSize={qrCodeSize}
                         paddingHorizontal="sp16"
                         paddingVertical="sp16"
+                        centerIcon={
+                            <TokenIcon
+                                symbol={networkSymbol}
+                                contractAddress={tokenContract}
+                                showNetworkIcon={tokenContract !== undefined}
+                                size="large"
+                            />
+                        }
                     />
                 </Card>
             </Pressable>
