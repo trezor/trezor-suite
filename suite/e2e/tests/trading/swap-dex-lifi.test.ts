@@ -37,7 +37,7 @@ const deviceReview = {
     intentTitle: 'Intent',
     intentValue: 'Swap',
     contractTitle: 'Confirm contract',
-    sendLabel: 'Amount to Send',
+    sendLabel: 'Amount to send',
     receiveLabel: 'Minimum to Receive',
     feeTitle: '', // this page renders no header title
     feeLabel: 'Maximum fee',
