@@ -17,6 +17,7 @@ export class BlockbookMock {
     private _mockServer: BackendWebsocketServerMock | undefined;
     private accountState: any = null;
     private mockType: SupportedSymbols | null = null;
+    private readonly newBlockSubscriptionIds = new Set<string>();
 
     get mockServer() {
         if (!this._mockServer) {
@@ -52,6 +53,11 @@ export class BlockbookMock {
     @step()
     async start(mockType: SupportedSymbols, serverType: BackendType = 'blockbook') {
         this._mockServer = await BackendWebsocketServerMock.create(serverType);
+        // Remember block-subscription request ids: a pushed notification is only routed to the
+        // client's `block` event when its id matches the id the subscription was created with.
+        this.mockServer.on('blockbook_subscribeNewBlock', (request: { id: string }) => {
+            this.newBlockSubscriptionIds.add(request.id);
+        });
         this.mockType = mockType;
         const fixtures = this.selectFixture(mockType);
         this.mockServer.setFixtures(fixtures);
@@ -133,6 +139,24 @@ export class BlockbookMock {
         });
 
         this.mockServer.setFixtures(updatedFixtures);
+    }
+
+    // Pushes a new-block notification to the subscribed clients — the same way a real blockbook
+    // surfaces on-chain changes. Suite reacts with onBlockMinedThunk, which immediately re-fetches
+    // all visible accounts on the network, so a preceding `updateAccountState` reaches Redux
+    // without waiting for the periodic account sync (whose timer is not controlled by page.clock).
+    @step()
+    async sendNewBlockNotification({ height, hash }: { height: number; hash: string }) {
+        if (this.newBlockSubscriptionIds.size === 0) {
+            throw new Error('No subscribeNewBlock subscription has been captured yet');
+        }
+
+        const notifications = [...this.newBlockSubscriptionIds].map(id => ({
+            id,
+            data: { height, hash, evmData: null },
+        }));
+
+        await this.mockServer.sendNotification(notifications);
     }
 
     // Updates the `rpcCall` fixture used by ERC-20 allowance checks. `rawAmount` is the

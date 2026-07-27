@@ -23,6 +23,8 @@ export interface Fixture {
 
 export interface PushNotification {
     delay?: number;
+    id?: string;
+    data?: unknown;
 }
 
 export class BackendWebsocketServerMock extends WebSocketServer {
