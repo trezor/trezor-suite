@@ -1,5 +1,5 @@
-import type { VerifyAuthenticityProofResult } from '../types';
-import { validateSerialNumbers } from '../validateSerialNumbers';
+import type { VerifyAuthenticityProofResult } from './types';
+import { validateSerialNumbers } from './validateSerialNumbers';
 
 describe(validateSerialNumbers.name, () => {
     const createValidResult = (

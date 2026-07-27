@@ -1,5 +1,12 @@
 import { bufferUtils } from '@trezor/utils';
 
+import { getRootPubKeys } from './utils';
+import {
+    matchRootPubKeyToCertificate,
+    prepareDeviceAuthenticityData,
+    verifyAuthenticityProof,
+} from './verifyAuthenticityProof';
+import { parseCertificate } from './x509certificate';
 import {
     CA_CERT_OPTIGA,
     DEVICE_CERT_OPTIGA,
@@ -7,18 +14,11 @@ import {
     T2B1_ROOT_PUB_KEY_OPTIGA,
     T3W1_ROOT_PUB_KEY_TROPIC,
     defaultOptigaProps,
-} from '../../mocks/mockDeviceAuthenticityData';
+} from '../mocks/mockDeviceAuthenticityData';
 import {
     matchRootPubKeyToCertificateFixtures,
     verifyAuthenticityProofFixtures,
-} from '../__fixtures__/verifyAuthenticityProof';
-import { getRootPubKeys } from '../utils';
-import {
-    matchRootPubKeyToCertificate,
-    prepareDeviceAuthenticityData,
-    verifyAuthenticityProof,
-} from '../verifyAuthenticityProof';
-import { parseCertificate } from '../x509certificate';
+} from '../mocks/mockVerifyAuthenticityProof';
 
 describe(verifyAuthenticityProof.name, () => {
     verifyAuthenticityProofFixtures.forEach(({ description, params, result }) => {
