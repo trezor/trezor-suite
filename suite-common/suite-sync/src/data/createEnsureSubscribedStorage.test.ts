@@ -15,14 +15,14 @@ import { type StaticSessionId } from '@trezor/connect';
 import { asWalletDescriptor } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';
 
-import { createSuiteSyncStorageMock } from '../../../tests/createSuiteSyncStorageMock.mock';
-import { SuiteSyncUnavailableOnDeviceError } from '../../createEnsureSuiteSyncKeys';
-import { createStorageIdFromDeviceStaticSessionId } from '../../storage/createStorageIdFromDeviceStaticSessionId';
-import { createSubscriptionStorage } from '../../storage/createSubscriptionStorage';
+import { createSuiteSyncStorageMock } from '../../mocks/mockCreateSuiteSyncStorage';
+import { SuiteSyncUnavailableOnDeviceError } from '../createEnsureSuiteSyncKeys';
 import {
     type CreateEnsureSubscribedStorageDeps,
     createEnsureSubscribedStorage,
-} from '../createEnsureSubscribedStorage';
+} from './createEnsureSubscribedStorage';
+import { createStorageIdFromDeviceStaticSessionId } from '../storage/createStorageIdFromDeviceStaticSessionId';
+import { createSubscriptionStorage } from '../storage/createSubscriptionStorage';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 

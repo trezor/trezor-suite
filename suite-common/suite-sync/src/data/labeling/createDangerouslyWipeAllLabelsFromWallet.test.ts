@@ -18,7 +18,7 @@ import { err, ok } from '@trezor/type-utils';
 import {
     type DangerouslyWipeAllLabelsFromWalletDeps,
     createDangerouslyWipeAllLabelsFromWallet,
-} from '../createDangerouslyWipeAllLabelsFromWallet';
+} from './createDangerouslyWipeAllLabelsFromWallet';
 
 const walletDescriptor = asWalletDescriptor('wallet1');
 const deviceStaticSessionId: StaticSessionId = 'wallet1@device:0';

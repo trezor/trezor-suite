@@ -5,8 +5,8 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/connect';
 import { ok } from '@trezor/type-utils';
 
-import { createSuiteSyncStorageMock } from '../../../../../tests/createSuiteSyncStorageMock.mock';
-import { type WriteAddressLabelDeps, createWriteAddressLabel } from '../createWriteAddressLabel';
+import { type WriteAddressLabelDeps, createWriteAddressLabel } from './createWriteAddressLabel';
+import { createSuiteSyncStorageMock } from '../../../../mocks/mockCreateSuiteSyncStorage';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3' as const;
 const networkSymbol: NetworkSymbol = 'btc';

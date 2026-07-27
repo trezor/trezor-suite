@@ -5,9 +5,9 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
-import { createSuiteSyncStorageMock } from '../../../../../tests/createSuiteSyncStorageMock.mock';
-import { SuiteSyncUnavailableOnDeviceError } from '../../../../createEnsureSuiteSyncKeys';
-import { type UpdateAddressLabelDeps, createUpdateAddressLabel } from '../createUpdateAddressLabel';
+import { type UpdateAddressLabelDeps, createUpdateAddressLabel } from './createUpdateAddressLabel';
+import { createSuiteSyncStorageMock } from '../../../../mocks/mockCreateSuiteSyncStorage';
+import { SuiteSyncUnavailableOnDeviceError } from '../../../createEnsureSuiteSyncKeys';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 const networkSymbol: NetworkSymbol = 'btc';
