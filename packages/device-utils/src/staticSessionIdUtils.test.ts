@@ -3,7 +3,7 @@ import {
     createStaticSessionId,
     isStaticSessionId,
     parseStaticSessionId,
-} from '../staticSessionIdUtils';
+} from './staticSessionIdUtils';
 
 describe('staticSessionIdUtils', () => {
     describe(isStaticSessionId.name, () => {
