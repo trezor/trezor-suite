@@ -86,9 +86,9 @@ describe('mergePermissions', () => {
     it('treats coin-less permissions as distinct from coin-scoped ones', () => {
         const merged = mergePermissions(
             [{ permission: 'read_features' }],
-            [{ permission: 'read_features' }, { permission: 'read_settings' }],
+            [{ permission: 'read_features' }, { permission: 'read_xpub' }],
         );
-        expect(merged).toEqual([{ permission: 'read_features' }, { permission: 'read_settings' }]);
+        expect(merged).toEqual([{ permission: 'read_features' }, { permission: 'read_xpub' }]);
     });
 });
 
