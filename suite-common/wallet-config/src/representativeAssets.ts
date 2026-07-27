@@ -52,9 +52,9 @@ const representativeAssets: Partial<Record<NetworkSymbol, readonly Representativ
     rhc: [
         { symbol: 'ETH' },
         { symbol: 'USDG', contract: '0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168' },
-        { symbol: 'AAPL', contract: '0xaF3D76f1834A1d425780943C99Ea8A608f8a93f9' },
+        { symbol: 'USDE', contract: '0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34' },
+        { symbol: 'VIRTUAL', contract: '0xc6911796042b15d7fa4f6cde69e245ddcd3d9c31' },
         { symbol: 'NVDA', contract: '0xd0601CE157Db5bdC3162BbaC2a2C8aF5320D9EEC' },
-        { symbol: 'TSLA', contract: '0x322F0929c4625eD5bAd873c95208D54E1c003b2d' },
     ],
     avax: [
         { symbol: 'AVAX' },
