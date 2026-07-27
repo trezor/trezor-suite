@@ -11,7 +11,7 @@ import {
     isStepCategoryUsed,
     isStepUsed,
     resolveNextAvailableStep,
-} from '../steps';
+} from './steps';
 
 const allSteps = stepCategories.flatMap(category => category.steps);
 

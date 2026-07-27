@@ -6,7 +6,7 @@ import {
     type TradingCountryOption,
 } from '@suite-common/trading';
 
-import { isBuyQuotesFetchAllowed } from '../buyQuotesRequestUtils';
+import { isBuyQuotesFetchAllowed } from './buyQuotesRequestUtils';
 
 const baseValues: TradingBuyFormProps = {
     cryptoSelect: { id: 'bitcoin' as CryptoId, networkSymbol: 'btc' } as TradingAssetOption,

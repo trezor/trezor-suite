@@ -1,6 +1,6 @@
 import { intermediaryTheme } from '@trezor/components';
 
-import { getThemeColors } from '../theme';
+import { getThemeColors } from './theme';
 
 describe('theme', () => {
     describe('getThemeColors', () => {

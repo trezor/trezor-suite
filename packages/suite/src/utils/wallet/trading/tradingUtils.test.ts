@@ -3,7 +3,6 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { type Account } from 'src/types/wallet';
-import { FIXTURE_ACCOUNT_OPTIONS } from 'src/utils/wallet/trading/__fixtures__/tradingUtils';
 import {
     getComposeAddressPlaceholder,
     resolveAddressAndToken,
@@ -11,6 +10,8 @@ import {
     tradingGetAmountLabels,
     tradingGetRoundedFiatAmount,
 } from 'src/utils/wallet/trading/tradingUtils';
+
+import { FIXTURE_ACCOUNT_OPTIONS } from '../../../../mocks/mockTradingUtils';
 
 describe('trading utils', () => {
     it('tradingGetAmountLabels', () => {

@@ -1,10 +1,6 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
-import {
-    calcCryptoFromFiat,
-    calcMaxTokenAmount,
-    calcRatioAmount,
-} from '../sellExchangeAmountUtils';
+import { calcCryptoFromFiat, calcMaxTokenAmount, calcRatioAmount } from './sellExchangeAmountUtils';
 
 describe('calcCryptoFromFiat', () => {
     it('converts a fiat amount to a crypto amount using the rate and network decimals', () => {

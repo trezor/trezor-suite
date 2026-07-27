@@ -1,6 +1,6 @@
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 
-import { type resolveAddressAndToken } from '../tradingUtils';
+import { type resolveAddressAndToken } from '../src/utils/wallet/trading/tradingUtils';
 
 type ResolveAddressAndTokenArgs = Parameters<typeof resolveAddressAndToken>;
 

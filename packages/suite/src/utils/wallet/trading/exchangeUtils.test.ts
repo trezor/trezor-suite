@@ -1,22 +1,25 @@
+import { type CryptoId, type ExchangeTradeQuoteRequest } from 'invity-api';
+
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
+import { type Account } from '@suite-common/wallet-types';
 
-import { type Account } from 'src/types/wallet';
-import * as fixtures from 'src/utils/wallet/trading/__fixtures__/sellUtils';
-import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
+import { createQuoteLink } from './exchangeUtils';
 
-const { QUOTE_REQUEST_FIAT, QUOTE_REQUEST_CRYPTO } = fixtures;
-
-describe('sellUtils', () => {
+describe('exchangeUtils', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
 
+    const mockQuotesRequest: ExchangeTradeQuoteRequest = {
+        send: 'bitcoin' as CryptoId,
+        receive: 'litecoin' as CryptoId,
+        sendStringAmount: '1',
+    };
     const mockAccount = {
         symbol: 'btc',
         accountType: 'normal',
         index: 1,
     } as Account;
-
     const mockComposedInfo = {
         selectedFee: 'normal',
         composed: {
@@ -26,53 +29,52 @@ describe('sellUtils', () => {
             feeLimit: '4',
         },
     } as TradingComposedTransactionInfo;
-
     const mockQuoteId = 'quoteId';
 
     describe('createQuoteLink', () => {
-        it('should create link for quote for fiat', async () => {
+        it('should create link for quote', async () => {
             expect(
                 await createQuoteLink(
-                    QUOTE_REQUEST_FIAT,
+                    mockQuotesRequest,
                     mockAccount,
                     mockComposedInfo,
                     mockQuoteId,
                 ),
             ).toStrictEqual(
-                `${window.location.origin}/coinmarket-redirect#sell-offers/btc/normal/1/p-qf/CZ/EUR/10/bitcoin/creditCard/quoteId/custom/1/2/3/4`,
+                `${window.location.origin}/coinmarket-redirect#exchange-offers/btc/normal/1/bitcoin/litecoin/1/quoteId/custom/1/2/3/4`,
             );
         });
 
         it('should create link for quote when selectedFee is high', async () => {
             expect(
                 await createQuoteLink(
-                    QUOTE_REQUEST_CRYPTO,
+                    mockQuotesRequest,
                     mockAccount,
                     { ...mockComposedInfo, selectedFee: 'high' },
                     mockQuoteId,
                 ),
             ).toStrictEqual(
-                `${window.location.origin}/coinmarket-redirect#sell-offers/btc/normal/1/p-qc/CZ/EUR/0.001/bitcoin/creditCard/quoteId/custom/1/2/3/4`,
+                `${window.location.origin}/coinmarket-redirect#exchange-offers/btc/normal/1/bitcoin/litecoin/1/quoteId/custom/1/2/3/4`,
             );
         });
 
         it('should create link for quote when selectedFee is custom', async () => {
             expect(
                 await createQuoteLink(
-                    QUOTE_REQUEST_CRYPTO,
+                    mockQuotesRequest,
                     mockAccount,
                     { ...mockComposedInfo, selectedFee: 'custom' },
                     mockQuoteId,
                 ),
             ).toStrictEqual(
-                `${window.location.origin}/coinmarket-redirect#sell-offers/btc/normal/1/p-qc/CZ/EUR/0.001/bitcoin/creditCard/quoteId/custom/1/2/3/4`,
+                `${window.location.origin}/coinmarket-redirect#exchange-offers/btc/normal/1/bitcoin/litecoin/1/quoteId/custom/1/2/3/4`,
             );
         });
 
         it('should create link for quote when account network type is solana', async () => {
             expect(
                 await createQuoteLink(
-                    QUOTE_REQUEST_CRYPTO,
+                    mockQuotesRequest,
                     {
                         ...mockAccount,
                         symbol: 'sol',
@@ -82,7 +84,7 @@ describe('sellUtils', () => {
                     mockQuoteId,
                 ),
             ).toStrictEqual(
-                `${window.location.origin}/coinmarket-redirect#sell-offers/sol/normal/1/p-qc/CZ/EUR/0.001/bitcoin/creditCard/quoteId/normal/1/2/3/4`,
+                `${window.location.origin}/coinmarket-redirect#exchange-offers/sol/normal/1/bitcoin/litecoin/1/quoteId/normal/1/2/3/4`,
             );
         });
     });

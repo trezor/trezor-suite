@@ -1,4 +1,4 @@
-import { HAS_BOOKMARK_FLAG, HAS_EMAIL_FLAG, addToFlags, isFlagPresent } from '../flags';
+import { HAS_BOOKMARK_FLAG, HAS_EMAIL_FLAG, addToFlags, isFlagPresent } from './flags';
 
 describe('flags utils', () => {
     it('should return bool indicating if flag is present for given number', () => {

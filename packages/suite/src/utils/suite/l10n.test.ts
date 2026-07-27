@@ -1,4 +1,4 @@
-import { getOsLocale } from '../l10n';
+import { getOsLocale } from './l10n';
 
 describe('utils/suite/l10n', () => {
     describe(getOsLocale.name, () => {

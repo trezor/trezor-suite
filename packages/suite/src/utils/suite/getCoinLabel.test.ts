@@ -1,4 +1,4 @@
-import { getCoinLabel } from '../getCoinLabel';
+import { getCoinLabel } from './getCoinLabel';
 
 describe('utils/suite/getCoinLabel', () => {
     it('should return testnet label', () => {
