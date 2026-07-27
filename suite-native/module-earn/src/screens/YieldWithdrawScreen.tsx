@@ -54,6 +54,7 @@ import { YieldDisabledAlert } from '../components/YieldDisabledAlert';
 import { YieldFeeEstimationErrorAlert } from '../components/YieldFeeEstimationErrorAlert';
 import { YieldPendingTransactionModal } from '../components/YieldPendingTransactionModal';
 import { YieldWithdrawWarning } from '../components/YieldWithdrawWarning';
+import { AMOUNT_INPUT_UNFOCUSED_OFFSET, AMOUNT_INPUT_WRAPPER_HEIGHT } from '../constants';
 import { useMessageSystemYield } from '../hooks/useMessageSystemYield';
 import { useNavigateBackAnalytics } from '../hooks/useNavigateBackAnalytics';
 import { useResolvedYieldFlowData } from '../hooks/useResolvedYieldFlowData';
@@ -572,6 +573,8 @@ export const YieldWithdrawScreen = () => {
                         <AnimatedDoubleInput
                             activeView={isSharesInput ? 'secondary' : 'primary'}
                             onInputSwitch={handleInputSwitch}
+                            unfocusedOffset={AMOUNT_INPUT_UNFOCUSED_OFFSET}
+                            wrapperHeight={AMOUNT_INPUT_WRAPPER_HEIGHT}
                             renderPrimary={({ inputRef, isDisabled, onPress }) => (
                                 <Input
                                     ref={inputRef}

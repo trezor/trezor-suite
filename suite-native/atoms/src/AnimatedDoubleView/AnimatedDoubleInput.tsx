@@ -21,6 +21,8 @@ export type AnimatedDoubleInputProps = {
     onInputSwitch?: (activeView: ActiveView) => void;
     switchLabel?: string;
     activeView?: ActiveView;
+    unfocusedOffset?: number;
+    wrapperHeight?: number;
 };
 
 export const AnimatedDoubleInput = ({
@@ -29,6 +31,8 @@ export const AnimatedDoubleInput = ({
     onInputSwitch = noop,
     switchLabel,
     activeView,
+    unfocusedOffset,
+    wrapperHeight,
 }: AnimatedDoubleInputProps) => {
     const primaryInputRef = useRef<InputType | null>(null);
     const secondaryInputRef = useRef<InputType | null>(null);
@@ -76,6 +80,8 @@ export const AnimatedDoubleInput = ({
             onViewSwitch={focusInput}
             switchLabel={switchLabel}
             activeView={activeView}
+            unfocusedOffset={unfocusedOffset}
+            wrapperHeight={wrapperHeight}
         />
     );
 };

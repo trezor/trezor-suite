@@ -19,6 +19,8 @@ export type BaseAmountInputsProps = {
     renderCryptoInput: (props: RenderInputProps) => ReactNode;
     renderFiatInput: (props: RenderInputProps) => ReactNode;
     renderErrorMessage?: (isFiatDisplayed: boolean) => ReactNode;
+    unfocusedOffset?: number;
+    wrapperHeight?: number;
 };
 
 export const BaseAmountInputs = ({
@@ -28,6 +30,8 @@ export const BaseAmountInputs = ({
     renderCryptoInput,
     renderFiatInput,
     renderErrorMessage,
+    unfocusedOffset,
+    wrapperHeight,
 }: BaseAmountInputsProps) => {
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
     const singleInputRef = useRef<InputType | null>(null);
@@ -44,6 +48,8 @@ export const BaseAmountInputs = ({
                     renderPrimary={props => renderCryptoInput(props)}
                     renderSecondary={props => renderFiatInput(props)}
                     onInputSwitch={onInputSwitch}
+                    unfocusedOffset={unfocusedOffset}
+                    wrapperHeight={wrapperHeight}
                 />
             ) : (
                 renderCryptoInput({ inputRef: singleInputRef })
