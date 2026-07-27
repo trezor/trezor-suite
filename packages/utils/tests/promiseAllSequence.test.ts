@@ -1,5 +1,5 @@
+import { mockTime, unmockTime } from '../mocks/mockTime';
 import { promiseAllSequence } from '../src/promiseAllSequence';
-import { mockTime, unmockTime } from './utils/mockTime';
 
 describe('promiseAllSequence', () => {
     beforeEach(() => {
