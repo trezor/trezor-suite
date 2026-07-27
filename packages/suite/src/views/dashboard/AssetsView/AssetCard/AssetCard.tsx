@@ -24,6 +24,7 @@ import {
 } from 'src/components/suite';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useSelector } from 'src/hooks/suite';
+import { getAssetAccountRouteParams } from 'src/utils/wallet/accountUtils';
 
 import { AssetActionButton } from '../AssetActionButton';
 import { handleTokensAndStakingData } from '../assetsViewUtils';
@@ -97,11 +98,7 @@ export const AssetCard = ({
         dispatch(
             goto({
                 routeName: 'wallet-index',
-                params: {
-                    symbol,
-                    accountIndex: 0,
-                    accountType: 'normal',
-                },
+                params: getAssetAccountRouteParams(accounts, symbol),
             }),
         );
     };
