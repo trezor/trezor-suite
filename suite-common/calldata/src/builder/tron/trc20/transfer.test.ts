@@ -1,7 +1,7 @@
 import { BigNumber } from '@trezor/utils';
 
-import { buildTrc20Transfer } from '../../../../builder/tron/trc20/transfer';
-import { asTronAddress } from '../../../../types/tron';
+import { buildTrc20Transfer } from './transfer';
+import { asTronAddress } from '../../../types/tron';
 
 const SENDER = asTronAddress('TX5XiRXdyz7sdFwF5mnhT1QoGCpbkncpke');
 const RECIPIENT = asTronAddress('TKWJhMU8NAviZ9TN5hroaFQPZ83FNctzz4');

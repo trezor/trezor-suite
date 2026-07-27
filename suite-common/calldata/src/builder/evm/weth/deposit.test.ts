@@ -1,4 +1,4 @@
-import { buildWethDeposit } from '../../../../builder/evm/weth/deposit';
+import { buildWethDeposit } from './deposit';
 
 describe('buildWethDeposit', () => {
     it('encodes the deposit selector with no args', () => {

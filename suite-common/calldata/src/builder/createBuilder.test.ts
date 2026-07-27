@@ -1,6 +1,6 @@
-import { createBuilder } from '../../builder/createBuilder';
-import { type Encoder } from '../../types/builder';
-import { type IssueWithSeverity } from '../../types/policy';
+import { createBuilder } from './createBuilder';
+import { type Encoder } from '../types/builder';
+import { type IssueWithSeverity } from '../types/policy';
 
 describe('createBuilder', () => {
     it('calls params and encode, returns encoded data when all valid', () => {

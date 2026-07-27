@@ -1,7 +1,7 @@
 import { BigNumber } from '@trezor/utils';
 
-import { buildTransfer } from '../../../builder/evm/transfer';
-import { asEvmAddress } from '../../../types/evm';
+import { buildTransfer } from './transfer';
+import { asEvmAddress } from '../../types/evm';
 
 const SENDER = asEvmAddress('0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3');
 const RECIPIENT = asEvmAddress('0xB836472D21991eB9842e15BEaE1AF6c8B63D6a96');

@@ -1,7 +1,7 @@
 import { BigNumber } from '@trezor/utils';
 
-import { buildWethWithdraw } from '../../../../builder/evm/weth/withdraw';
-import { Calldata } from '../../../../calldata';
+import { buildWethWithdraw } from './withdraw';
+import { Calldata } from '../../../calldata';
 
 describe('buildWethWithdraw', () => {
     it('encodes valid withdraw calldata', () => {

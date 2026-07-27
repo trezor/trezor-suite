@@ -1,7 +1,7 @@
 import { BigNumber } from '@trezor/utils';
 
-import { buildRedeem } from '../../../builder/evm/redeem';
-import { asEvmAddress } from '../../../types/evm';
+import { buildRedeem } from './redeem';
+import { asEvmAddress } from '../../types/evm';
 
 const SENDER = asEvmAddress('0x44Ab691a7492C3dCb88241AF8aC5371d84B61BB6');
 

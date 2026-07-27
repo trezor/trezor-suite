@@ -1,4 +1,4 @@
-import { createParam } from '../../builder/createParam';
+import { createParam } from './createParam';
 
 describe('createParam', () => {
     it('calls validate and policy, returns combined result', () => {
