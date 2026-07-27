@@ -9,7 +9,7 @@ import { PROTOCOL } from 'src/actions/suite/constants';
 import protocolReducer from 'src/reducers/suite/protocolReducer';
 import { configureStore } from 'src/support/tests/configureStore';
 
-import protocolMiddleware from '../protocolMiddleware';
+import protocolMiddleware from './protocolMiddleware';
 
 const middlewares = [protocolMiddleware];
 
