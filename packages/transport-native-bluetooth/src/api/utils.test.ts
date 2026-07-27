@@ -1,6 +1,6 @@
 import { type Device } from 'react-native-ble-plx';
 
-import { base64ToByteArray, toBluetoothDevice } from '../../api/utils';
+import { base64ToByteArray, toBluetoothDevice } from './utils';
 
 describe(base64ToByteArray.name, () => {
     test.each([
