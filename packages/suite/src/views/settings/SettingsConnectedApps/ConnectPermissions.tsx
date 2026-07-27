@@ -43,7 +43,6 @@ import {
     NotePencilIcon,
     SealCheckIcon,
     SignatureIcon,
-    SlidersHorizontalIcon,
     WalletIcon,
     XCircleIcon,
 } from '@trezor/icons';
@@ -77,7 +76,6 @@ const permissionIconsLocalMap: Record<keyof typeof permissionIcons, IconComponen
     read_address: EyeIcon,
     read_xpub: KeyIcon,
     read_account_info: WalletIcon,
-    read_settings: SlidersHorizontalIcon,
     read_features: CpuIcon,
     sign: SignatureIcon,
     sign_message: NotePencilIcon,
@@ -100,8 +98,6 @@ export const getPermissionText = (permissionType: MethodPermission | string) => 
             return <Translation id="TR_PERMISSION_READ_XPUB" />;
         case 'read_account_info':
             return <Translation id="TR_PERMISSION_READ_ACCOUNT_INFO" />;
-        case 'read_settings':
-            return <Translation id="TR_PERMISSION_READ_SETTINGS" />;
         case 'read_features':
             return <Translation id="TR_PERMISSION_READ_FEATURES" />;
         case 'sign':
