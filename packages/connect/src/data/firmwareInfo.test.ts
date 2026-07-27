@@ -5,14 +5,14 @@ import { FirmwareType } from '@trezor/device-utils';
 import { DeviceModelInternal } from '@trezor/protobuf/src/definitions';
 import { versionUtils } from '@trezor/utils';
 
-import { getDeviceFeatures } from '../../../setupJest';
 import {
     getFirmwareReleaseConfigInfo,
     getFirmwareStatus,
     initializeFirmwareConfig,
-} from '../firmwareInfo';
-import * as firmwareReleaseStore from '../firmwareReleaseStore';
-import * as settingsStore from '../settingsStore';
+} from './firmwareInfo';
+import * as firmwareReleaseStore from './firmwareReleaseStore';
+import * as settingsStore from './settingsStore';
+import { getDeviceFeatures } from '../../setupJest';
 
 describe('data/firmwareInfo', () => {
     describe('getFirmwareStatus', () => {

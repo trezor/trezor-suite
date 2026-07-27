@@ -1,6 +1,6 @@
 import type { CoinSymbol } from '@trezor/connect-common/src/types/coinInfo';
 
-import { getAllNetworks, getCoinInfoOrThrow, getMiscNetwork, getUniqueNetworks } from '../coinInfo';
+import { getAllNetworks, getCoinInfoOrThrow, getMiscNetwork, getUniqueNetworks } from './coinInfo';
 
 describe('data/coinInfo', () => {
     it('resolves a coin string by shortcut only (network name / label no longer accepted)', () => {

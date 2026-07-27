@@ -1,4 +1,4 @@
-import { getEthereumFeeLevels } from '../defaultFeeLevels';
+import { getEthereumFeeLevels } from './defaultFeeLevels';
 
 describe('getEthereumFeeLevels', () => {
     const fixtures = {
