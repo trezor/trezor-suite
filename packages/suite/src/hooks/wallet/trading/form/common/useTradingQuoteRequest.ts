@@ -4,7 +4,7 @@ import { type FieldPath, type FieldValues, type UseFormReturn } from 'react-hook
 import { useTradingRefetchScheduler } from '@suite-common/trading';
 import { useCurrentRef } from '@trezor/react-utils';
 
-const DEBOUNCE_DELAY_MS = 500;
+export const DEBOUNCE_DELAY_MS = 500;
 
 type AbortableRequest<TResult> = {
     abort: () => void;
@@ -16,7 +16,7 @@ type UseTradingQuoteRequestProps<TFormProps extends FieldValues, TResult> = {
     immediateFields: readonly FieldPath<TFormProps>[];
     debouncedFields: readonly FieldPath<TFormProps>[];
     isFetchAllowed: (values: TFormProps) => boolean;
-    requestQuotes: (values: TFormProps) => AbortableRequest<TResult>;
+    requestQuotes: (values: TFormProps) => AbortableRequest<TResult> | null;
     stopScheduler: () => void;
     onResolved?: (result: TResult, values: TFormProps) => void;
     isRequestContextAvailable?: boolean;
@@ -89,9 +89,16 @@ export const useTradingQuoteRequest = <TFormProps extends FieldValues, TResult>(
 
         const currentValues = methods.getValues();
 
+        const request = configRef.current.requestQuotes(currentValues);
+
+        if (!request) {
+            stopQuoteRequests();
+
+            return;
+        }
+
         setIsScheduledQuotesRefresh(true);
 
-        const request = configRef.current.requestQuotes(currentValues);
         signal.addEventListener('abort', () => request.abort(), { once: true });
         isQuoteLifecycleActive.current = true;
 
