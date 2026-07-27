@@ -1,4 +1,4 @@
-import { normalizeEvents } from '../normalizeEvents';
+import { normalizeEvents } from './normalizeEvents';
 
 describe('normalizeEvents', () => {
     it('keeps event.changelog.entries event-scoped (attributes do not leak into entries)', () => {

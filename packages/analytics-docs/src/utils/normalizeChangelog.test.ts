@@ -1,4 +1,4 @@
-import { normalizeChangelog } from '../normalizeChangelog';
+import { normalizeChangelog } from './normalizeChangelog';
 
 describe('normalizeChangelog', () => {
     it('ignores "?" for added/updated versions and places it at the end', () => {
