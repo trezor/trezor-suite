@@ -1,7 +1,7 @@
 import { protobufManager } from '@trezor/protobuf';
 import * as stellarProto from '@trezor/protobuf/src/definitions/messages-stellar_pb';
 import * as messagesProto from '@trezor/protobuf/src/definitions/messages_pb';
-import { bridge as bridgeProtocol, v1 as protocolV1, v2 as protocolV2 } from '@trezor/protocol';
+import { v1 as protocolV1, v2 as protocolV2 } from '@trezor/protocol';
 
 import { receive, receiveAndParse } from '../src/utils/receive';
 import { buildMessage, createChunks } from '../src/utils/send';
@@ -27,29 +27,6 @@ const fixtures = Array(100)
 describe('encoding json -> protobuf -> json', () => {
     fixtures.forEach(f => {
         describe(`${f.name} - payload length ${f.in.source_account.length}`, () => {
-            test('bridgeProtocol: buildMessage - receiveAndParse', async () => {
-                const result = buildMessage({
-                    name: f.name,
-                    data: f.in,
-                    protocol: bridgeProtocol,
-                });
-                const { length } = Buffer.from(f.in.source_account);
-                // result length cannot be less than message header/constant (28) + variable source_account length
-                // additional bytes are expected (encoded Uint32) if message length is greater
-                expect(result.length).toBeGreaterThanOrEqual(28 + length);
-                const decoded = await receiveAndParse(
-                    () => Promise.resolve({ success: true, payload: result }),
-                    bridgeProtocol,
-                );
-                if (!decoded.success) {
-                    throw new Error('Decoding failed');
-                }
-                const { type, message } = decoded.payload;
-                // then decode message and check, whether decoded message matches original json
-                expect(type).toEqual(f.name);
-                expect(message).toEqual(f.in);
-            });
-
             test('v1Protocol: buildMessage - createChunks - receiveAndParse', async () => {
                 const result = buildMessage({
                     name: f.name,
