@@ -130,6 +130,11 @@ export const isPrerequisiteGloballyExcluded = ({
         return true;
     }
 
+    // Activity (notifications) page does not depend on a connected device
+    if (router.app === 'notifications') {
+        return true;
+    }
+
     if (router.route?.name.startsWith('wallet-trading')) {
         return true;
     }
