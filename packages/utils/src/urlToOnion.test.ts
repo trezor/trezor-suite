@@ -1,4 +1,4 @@
-import { urlToOnion } from '../src/urlToOnion';
+import { urlToOnion } from './urlToOnion';
 
 const DICT = {
     'trezor.io': 'trezorioabcd.onion',

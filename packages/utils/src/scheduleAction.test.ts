@@ -1,5 +1,5 @@
+import { scheduleAction } from './scheduleAction';
 import { mockTime, unmockTime } from '../mocks/mockTime';
-import { scheduleAction } from '../src/scheduleAction';
 
 const ERR_SIGNAL = 'Aborted by signal';
 const ERR_DEADLINE = 'Aborted by deadline';

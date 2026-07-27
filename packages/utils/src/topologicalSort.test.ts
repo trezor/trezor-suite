@@ -1,4 +1,4 @@
-import { topologicalSort } from '../src/topologicalSort';
+import { topologicalSort } from './topologicalSort';
 
 type Fixture<T> = {
     description: string;

@@ -1,4 +1,4 @@
-import { typedObjectKeys } from '../src/typedObject';
+import { typedObjectKeys } from './typedObject';
 
 type AB = { a: 'A'; b: 'B' } | { b: 'BB' };
 

@@ -1,4 +1,4 @@
-import { safeBigIntStringify } from '../src';
+import { safeBigIntStringify } from './safeBigIntStringify';
 
 describe('safeStringify', () => {
     it('serializes regular objects normally', () => {

@@ -1,4 +1,4 @@
-import { splitStringEveryNCharacters } from '../src/splitStringEveryNCharacters';
+import { splitStringEveryNCharacters } from './splitStringEveryNCharacters';
 
 describe(splitStringEveryNCharacters.name, () => {
     it('splits string into parts of N characters', () => {

@@ -1,4 +1,4 @@
-import { typedObjectEntries, typedObjectFromEntries, typedObjectKeys } from '../src/typedObject';
+import { typedObjectEntries, typedObjectFromEntries, typedObjectKeys } from './typedObject';
 
 const map = {
     a: 1,
