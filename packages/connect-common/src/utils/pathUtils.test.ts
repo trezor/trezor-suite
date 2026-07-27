@@ -6,7 +6,7 @@ import {
     getOutputScriptType,
     getScriptType,
     validatePath,
-} from '../pathUtils';
+} from './pathUtils';
 
 describe('utils/pathUtils', () => {
     it('getScriptType', () => {

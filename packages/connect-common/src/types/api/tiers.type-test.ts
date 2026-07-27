@@ -1,8 +1,8 @@
 // Negative type tests: the public tier must not expose management or internal members.
 
-import type { TrezorConnectPrivilegedAPI, TrezorConnectPublicAPI } from '../../..';
-import type { TrezorConnectInternal } from '../internal';
-import type { TrezorConnectManagement } from '../management';
+import type { TrezorConnectInternal } from './internal';
+import type { TrezorConnectManagement } from './management';
+import type { TrezorConnectPrivilegedAPI, TrezorConnectPublicAPI } from '../../index';
 
 type AssertNever<T extends never> = T;
 

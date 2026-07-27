@@ -1,4 +1,4 @@
-import { corsValidator, parseConnectSettings } from '../connectSettings';
+import { corsValidator, parseConnectSettings } from './connectSettings';
 
 describe('data/connectSettings', () => {
     describe('parseConnectSettings enabledNetworks', () => {
