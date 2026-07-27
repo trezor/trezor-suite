@@ -6,7 +6,7 @@ import { mock } from '@suite-common/dependency-injection';
 import {
     type TorReconnectionLifecycleParams,
     useTorReconnectionLifecycle,
-} from '../useTorReconnectionLifecycle';
+} from './useTorReconnectionLifecycle';
 
 describe(useTorReconnectionLifecycle.name, () => {
     type Disconnect = TorReconnectionLifecycleParams['disconnect'];

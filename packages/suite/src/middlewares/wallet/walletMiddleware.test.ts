@@ -15,7 +15,7 @@ import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
 import { type Action } from 'src/types/suite';
 
-import * as fixtures from '../__fixtures__/walletMiddleware';
+import * as fixtures from '../../../mocks/mockWalletMiddleware';
 
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
 

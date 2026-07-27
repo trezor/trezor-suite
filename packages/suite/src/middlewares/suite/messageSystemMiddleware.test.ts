@@ -17,7 +17,7 @@ import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { walletReducers } from 'src/reducers/wallet';
 import { extraDependencies } from 'src/support/extraDependencies';
 
-import messageSystemMiddleware from '../messageSystemMiddleware';
+import messageSystemMiddleware from './messageSystemMiddleware';
 
 jest.mock('@suite-common/message-system/src/messageSystemUtils', () => ({
     ...jest.requireActual('@suite-common/message-system/src/messageSystemUtils'),

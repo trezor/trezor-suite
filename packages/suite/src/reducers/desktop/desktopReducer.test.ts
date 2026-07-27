@@ -2,7 +2,7 @@ import type { HandshakeElectron } from '@trezor/suite-desktop-api';
 
 import * as SUITE from 'src/actions/suite/constants/suiteConstants';
 
-import { desktopReducer } from '../index';
+import { desktopReducer } from './index';
 
 const handshakePayload: HandshakeElectron = {
     paths: {
