@@ -12308,10 +12308,6 @@ export const messages = defineMessages({
         id: 'TR_PERMISSION_READ_ACCOUNT_INFO',
         defaultMessage: 'Read account info (balances, transactions) from your Trezor',
     },
-    TR_PERMISSION_READ_SETTINGS: {
-        id: 'TR_PERMISSION_READ_SETTINGS',
-        defaultMessage: 'Read Trezor Connect settings',
-    },
     TR_PERMISSION_READ_FEATURES: {
         id: 'TR_PERMISSION_READ_FEATURES',
         defaultMessage: 'Read device model, firmware, and capabilities',

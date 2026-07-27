@@ -613,7 +613,6 @@ export const messages = {
             read_address: 'View receive addresses',
             read_xpub: 'Access extended public keys (XPUBs)',
             read_account_info: 'View account balances and transaction history',
-            read_settings: 'Read device settings',
             read_features: 'Read device features',
             sign: 'Allow transaction and data signing on Trezor',
             sign_message: 'Allow message signing on Trezor',

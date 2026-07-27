@@ -308,7 +308,6 @@
     "moduleConnectPopup.permissions.read_address": "Voir les adresses de réception",
     "moduleConnectPopup.permissions.read_xpub": "Accéder aux clés publiques étendues (xpubs)",
     "moduleConnectPopup.permissions.read_account_info": "Voir les soldes des comptes et l'historique des transactions",
-    "moduleConnectPopup.permissions.read_settings": "Lire les paramètres de l'appareil",
     "moduleConnectPopup.permissions.read_features": "Lire les caractéristiques de l'appareil",
     "moduleConnectPopup.permissions.sign": "Autoriser la signature de transactions et de données sur Trezor",
     "moduleConnectPopup.permissions.sign_message": "Autoriser la signature de messages sur Trezor",

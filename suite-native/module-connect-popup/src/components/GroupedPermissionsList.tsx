@@ -22,7 +22,6 @@ const permissionTranslationKeysMap = {
     read_address: 'moduleConnectPopup.permissions.read_address',
     read_xpub: 'moduleConnectPopup.permissions.read_xpub',
     read_account_info: 'moduleConnectPopup.permissions.read_account_info',
-    read_settings: 'moduleConnectPopup.permissions.read_settings',
     read_features: 'moduleConnectPopup.permissions.read_features',
     sign: 'moduleConnectPopup.permissions.sign',
     sign_message: 'moduleConnectPopup.permissions.sign_message',

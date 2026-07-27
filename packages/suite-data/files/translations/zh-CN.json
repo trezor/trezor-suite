@@ -1853,7 +1853,6 @@
   "TR_PERMISSION_READ_ACCOUNT_INFO": "从 Trezor 读取账户信息（余额、交易）",
   "TR_PERMISSION_READ_ADDRESS": "读取 Trezor 上生成的地址",
   "TR_PERMISSION_READ_FEATURES": "读取设备型号、固件和功能",
-  "TR_PERMISSION_READ_SETTINGS": "阅读 Trezor Connect 设置",
   "TR_PERMISSION_READ_XPUB": "从您的 Trezor 读取扩展公钥",
   "TR_PERMISSION_SIGN": "在 Trezor 设备上允许交易与数据签名",
   "TR_PERMISSION_SIGN_MESSAGE": "在 Trezor 上允许消息签名",
