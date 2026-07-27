@@ -1,4 +1,4 @@
-import { verifyEntropy } from '../verifyEntropy';
+import { verifyEntropy } from './verifyEntropy';
 
 describe('firmware/verifyEntropy', () => {
     it('bip39 success', async () => {

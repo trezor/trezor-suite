@@ -1,5 +1,5 @@
-import * as fixtures from '../__fixtures__/ethereumSignTypedData';
-import { encodeData, getFieldType, parseArrayType } from '../ethereumSignTypedData';
+import * as fixtures from './__fixtures__/ethereumSignTypedData';
+import { encodeData, getFieldType, parseArrayType } from './ethereumSignTypedData';
 
 describe('helpers/ethereumSignTypeData', () => {
     describe('parseArrayType', () => {

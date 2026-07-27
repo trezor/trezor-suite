@@ -1,7 +1,7 @@
 import { networks } from '@trezor/utxo-lib';
 
-import fixtures from '../__fixtures__/signtxVerify';
-import { getTransactionVbytes } from '../transactionBytes';
+import fixtures from './__fixtures__/signtxVerify';
+import { getTransactionVbytes } from './transactionBytes';
 
 describe('helpers/transactionBytes', () => {
     fixtures

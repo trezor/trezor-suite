@@ -3,10 +3,10 @@
 // Verifies byte-equivalence of the new viem-backed transformTypedData against
 // the firmware ground-truth fixtures in trezor-common.
 
+import { transformTypedData } from './ethereumSignTypedData';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import commonFixtures from '../../../../../../submodules/trezor-common/tests/fixtures/ethereum/sign_typed_data.json';
-import { transformTypedData } from '../ethereumSignTypedData';
+import commonFixtures from '../../../../../submodules/trezor-common/tests/fixtures/ethereum/sign_typed_data.json';
 
 // fixtures sometimes start with 0x, sometimes not — normalize for comparison
 function messageToHex(string: string) {

@@ -1,6 +1,6 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { calculateFirmwareHash } from '../calculateFirmwareHash';
+import { calculateFirmwareHash } from './calculateFirmwareHash';
 
 // NOTE: for unit test purposes create "firmware with empty bytes"
 // size doesn't matter, it will be padded by calculateFirmwareHash utility

@@ -1,9 +1,9 @@
-import { config } from '../../../data/config';
-import * as fixtures from '../__fixtures__/paramsValidator';
-import { getFirmwareRange, validateParams } from '../paramsValidator';
+import * as fixtures from './__fixtures__/paramsValidator';
+import { getFirmwareRange, validateParams } from './paramsValidator';
+import { config } from '../../data/config';
 
-jest.mock('../../../data/config', () => {
-    const actual = jest.requireActual('../../../data/config');
+jest.mock('../../data/config', () => {
+    const actual = jest.requireActual('../../data/config');
 
     return {
         __esModule: true,
@@ -11,7 +11,7 @@ jest.mock('../../../data/config', () => {
     };
 });
 
-const originalConfig = jest.requireActual('../../../data/config').config;
+const originalConfig = jest.requireActual('../../data/config').config;
 
 const resetConfig = () => {
     Object.keys(config).forEach(key => {

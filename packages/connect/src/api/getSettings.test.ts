@@ -1,6 +1,6 @@
-import * as enabledNetworksStore from '../../data/enabledNetworksStore';
-import * as settingsStore from '../../data/settingsStore';
-import GetSettings from '../getSettings';
+import GetSettings from './getSettings';
+import * as enabledNetworksStore from '../data/enabledNetworksStore';
+import * as settingsStore from '../data/settingsStore';
 
 // getSettings reads from settingsStore but overlays the dedicated enabledNetworksStore so the
 // live, sanitized set is what callers see. Constructing the method is enough — run() is sync.

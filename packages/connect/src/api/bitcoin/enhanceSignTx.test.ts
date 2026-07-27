@@ -1,5 +1,5 @@
-import { initBlockchain } from '../../../backend/BlockchainLink';
-import { enhanceSignTx } from '../enhanceSignTx';
+import { enhanceSignTx } from './enhanceSignTx';
+import { initBlockchain } from '../../backend/BlockchainLink';
 
 describe('api/bitcoin/enhanceSignTx', () => {
     it('zcash/zcash testnet', () => {
