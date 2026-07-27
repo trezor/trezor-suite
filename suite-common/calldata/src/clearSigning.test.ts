@@ -1,4 +1,4 @@
-import { isEvmClearSigningTx } from '../clearSigning';
+import { isEvmClearSigningTx } from './clearSigning';
 
 const UNISWAP_V3_ADDRESS = '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45';
 const LIFI_ADDRESS = '0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE';

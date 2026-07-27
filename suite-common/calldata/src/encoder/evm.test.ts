@@ -1,6 +1,6 @@
 import { parseAbi } from 'viem';
 
-import { createEvmEncoder } from '../../encoder/evm';
+import { createEvmEncoder } from './evm';
 
 describe('createEvmEncoder', () => {
     describe('ABI validation', () => {

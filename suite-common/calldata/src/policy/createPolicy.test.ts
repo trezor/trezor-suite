@@ -1,5 +1,5 @@
-import { createPolicyTestCases } from '../../fixtures/policy/createPolicy.fixture';
-import { createPolicy } from '../../policy/createPolicy';
+import { createPolicy } from './createPolicy';
+import { createPolicyTestCases } from '../../mocks/policy/mockCreatePolicy';
 
 describe('createPolicy', () => {
     it.each(createPolicyTestCases)('$description', ({ overrides, issues, expected }) => {
