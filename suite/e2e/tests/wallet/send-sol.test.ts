@@ -11,7 +11,7 @@ import { transformAddress } from '../../support/testExtends/customMatchers';
 
 const RECIPIENT_ADDRESS = 'ENk2eeP4umP6cjAGRsVG4NEVKEVQmRn6JEpN8hubv2Hf';
 const FORMATTED_ADDRESS = formatAddressWithNewlines(RECIPIENT_ADDRESS);
-const TRANSFORMED_ADDRESS = transformAddress(RECIPIENT_ADDRESS, 'fullLine');
+const TRANSFORMED_ADDRESS = transformAddress(RECIPIENT_ADDRESS, 'fourTetragrams');
 const SOL_DECIMALS = getNetwork('sol').decimals;
 
 test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {

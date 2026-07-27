@@ -99,7 +99,7 @@ test.describe('Trading - Swap coins', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, (
             await tradingPage.confirmation.openConfirmAndSendModal();
             await expect(devicePrompt.headerParagraph).toContainText('Solana #1');
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedSendAddress);
-            const transformedExpectedAddress = transformAddress(sendAddress, 'fullLine');
+            const transformedExpectedAddress = transformAddress(sendAddress, 'fourTetragrams');
             await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: 'Recipient' },
